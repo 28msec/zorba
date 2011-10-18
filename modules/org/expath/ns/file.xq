@@ -730,20 +730,25 @@ declare function file:path-to-native($path as xs:string) as xs:string external;
 declare function file:base-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
+  let $escapedDelim :=
+    if ($delim eq "/") then
+      $delim
+    else
+      fn:concat("\", $delim)
   let $normalized-file := 
     let $n := file:prepare-for-dirname-and-base-name($path)
-		return if ($delim eq "\" and fn:matches($n, "^[a-zA-Z]:$")) then
-			concat($n, "\")
-		else $n
+    return if ($delim eq "\" and fn:matches($n, "^[a-zA-Z]:$")) then
+      fn:concat($n, "\")
+    else $n
   return
-    if (matches($path, concat("^\", $delim, "+$"))) then
+    if (fn:matches($path, fn:concat("^", $escapedDelim, "+$"))) then
       ""
-    else if (file:directory-separator() eq '\' and matches($path, "^[a-zA-Z]:\\?$")) then
+    else if ($delim eq "\" and fn:matches($path, "^[a-zA-Z]:\\?$")) then
       ""
     else if ($path eq "") then
       "."
     else
-      replace($normalized-file, concat("^.*\", $delim), '')
+      fn:replace($normalized-file, fn:concat("^.*", $escapedDelim), "")
 };
 
 (:~
@@ -786,20 +791,25 @@ declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:
 declare function file:dir-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
+  let $escapedDelim :=
+    if ($delim eq "/") then
+      $delim
+    else
+      fn:concat("\", $delim)
   let $normalized-file := file:prepare-for-dirname-and-base-name($path)
   return
-    if (fn:matches($path, concat("^\", $delim, "+$"))) then
+    if (fn:matches($path, fn:concat("^", $escapedDelim, "+$"))) then
       $delim
     else if ($normalized-file eq $delim) then
       $delim
-    else if (file:directory-separator() eq '\' and fn:matches($path, "^[a-zA-Z]:\\$")) then
+    else if ($delim eq "\" and fn:matches($path, "^[a-zA-Z]:\\$")) then
       $path
-    else if (file:directory-separator() eq '\' and fn:matches($normalized-file, "^[a-zA-Z]:$")) then
+    else if ($delim eq "\" and fn:matches($normalized-file, "^[a-zA-Z]:$")) then
       fn:concat($normalized-file, '\')
     else if ($path eq "") then
       "."
-    else if (fn:matches($normalized-file, fn:concat("\", $delim))) then
-      fn:replace($normalized-file, fn:concat('^(.*)\', $delim,'.*'), '$1')
+    else if (fn:matches($normalized-file, $escapedDelim)) then
+      fn:replace($normalized-file, fn:concat("^(.*)", $escapedDelim, ".*"), "$1")
     else
       "."
 };
@@ -812,11 +822,16 @@ declare function file:dir-name($path as xs:string) as xs:string
 declare %private function file:prepare-for-dirname-and-base-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
+  let $escapedDelim :=
+    if ($delim eq "/") then
+      $delim
+    else
+      fn:concat("\", $delim)
   let $normalize-path := file:path-to-native($path)
   let $normalized :=
     if ($normalize-path eq $delim) then
       $normalize-path
     else
-      fn:replace($normalize-path, fn:concat("\", $delim, '+$'), '')
+      fn:replace($normalize-path, fn:concat($escapedDelim, "+$"), "")
   return $normalized
 };
