@@ -244,7 +244,10 @@ private:
   friend void serialization::operator&(serialization::Archiver&, INTEGER_IMPL&);
 };
 
-#ifndef ZORBA_WITH_BIG_INTEGER
+#ifdef ZORBA_WITH_BIG_INTEGER
+typedef IntegerImpl Integer;
+typedef IntegerImpl UInteger;
+#else
 typedef IntegerImpl<long long> Integer;
 typedef IntegerImpl<unsigned long long> UInteger;
 #endif /* ZORBA_WITH_BIG_INTEGER */
@@ -282,8 +285,8 @@ inline INTEGER_IMPL::IntegerImpl( long n ) :
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-template<typename IntType> inline
-IntegerImpl<IntType>::IntegerImpl( long long n ) :
+TEMPLATE_DECL
+inline INTEGER_IMPL::IntegerImpl( long long n ) :
   value_( n )
 {
 }
@@ -308,14 +311,14 @@ inline INTEGER_IMPL::IntegerImpl( unsigned int n ) :
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-template<typename IntType> inline
-IntegerImpl<IntType>::IntegerImpl( unsigned long n ) :
+TEMPLATE_DECL
+inline INTEGER_IMPL::IntegerImpl( unsigned long n ) :
   value_( static_cast<value_type>( n ) )
 {
 }
 
-template<typename IntType> inline
-IntegerImpl<IntType>::IntegerImpl( unsigned long long n ) :
+TEMPLATE_DECL
+inline INTEGER_IMPL::IntegerImpl( unsigned long long n ) :
   value_( static_cast<value_type>( n ) )
 {
 }
@@ -385,8 +388,8 @@ inline INTEGER_IMPL& INTEGER_IMPL::operator=( long n ) {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-template<typename IntType> inline
-IntegerImpl<IntType>& IntegerImpl<IntType>::operator=( long long n ) {
+TEMPLATE_DECL
+inline INTEGER_IMPL& INTEGER_IMPL::operator=( long long n ) {
   value_ = n;
   return *this;
 }
@@ -411,14 +414,14 @@ inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned int n ) {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-template<typename IntType> inline
-IntegerImpl<IntType>& IntegerImpl<IntType>::operator=( unsigned long n ) {
+TEMPLATE_DECL
+inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned long n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-template<typename IntType> inline
-IntegerImpl<IntType>& IntegerImpl<IntType>::operator=( unsigned long long n ) {
+TEMPLATE_DECL
+inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned long long n ) {
   value_ = n;
   return *this;
 }
@@ -459,9 +462,13 @@ inline INTEGER_IMPL& INTEGER_IMPL::operator=( IntegerImpl const &i ) {
 ZORBA_INTEGER_OP(+)
 ZORBA_INTEGER_OP(-)
 ZORBA_INTEGER_OP(*)
-ZORBA_INTEGER_OP(/)
 ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
+
+TEMPLATE_DECL inline
+INTEGER_IMPL operator/( INTEGER_IMPL const &i, INTEGER_IMPL const &j ) {
+  return INTEGER_IMPL::ftoi( i.value_ / j.value_ );
+}
 
 #define ZORBA_INTEGER_OP(OP)                                        \
   TEMPLATE_DECL inline                                              \
@@ -515,10 +522,10 @@ inline INTEGER_IMPL INTEGER_IMPL::operator--(int) {
 
 ////////// relational operators ///////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                              \
-  TEMPLATE_DECL inline                                                    \
+#define ZORBA_INTEGER_OP(OP)                                          \
+  TEMPLATE_DECL inline                                                \
   bool operator OP( INTEGER_IMPL const &i, INTEGER_IMPL const &j ) {  \
-    return i.value_ OP j.value_;                                          \
+    return i.value_ OP j.value_;                                      \
   }
 
 ZORBA_INTEGER_OP(==)

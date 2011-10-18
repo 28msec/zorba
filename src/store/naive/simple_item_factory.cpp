@@ -293,7 +293,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value <= Integer::zero());
+  ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem( value );
   return true;
 }
@@ -303,7 +303,7 @@ bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value < xs_integer::zero());
+  ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(value);
   return true;
 }
@@ -323,7 +323,7 @@ bool BasicItemFactory::createPositiveInteger(
     store::Item_t& result,
     const xs_positiveInteger& value)
 {
-  ZORBA_ASSERT(value > xs_positiveInteger::zero());
+  ZORBA_ASSERT(value.sign() > 0);
   result = new PositiveIntegerItem( value );
   return true;
 }

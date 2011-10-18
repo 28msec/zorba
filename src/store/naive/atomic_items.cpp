@@ -1754,6 +1754,31 @@ zstring IntegerItemImpl::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+long NonPositiveIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonPositiveIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
@@ -1784,6 +1809,36 @@ xs_long NonPositiveIntegerItem::getLongValue() const
   }
 }
 
+zstring NonPositiveIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonPositiveIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonPositiveIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonPositiveIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+store::Item_t NonPositiveIntegerItem::getEBV() const
+{
+  bool b = !!theValue.sign();
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
 zstring NonPositiveIntegerItem::show() const
 {
   zstring res("xs:nonPositiveInteger(");
@@ -1812,8 +1867,33 @@ zstring NegativeIntegerItem::show() const
 
 
 /*******************************************************************************
-  class NonNegativeINtegerItem
+  class NonNegativeIntegerItem
 ********************************************************************************/
+long NonNegativeIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getUnsignedIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonNegativeIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
@@ -1845,6 +1925,35 @@ xs_long NonNegativeIntegerItem::getLongValue() const
   }
 }
 
+zstring NonNegativeIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonNegativeIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonNegativeIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonNegativeIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+store::Item_t NonNegativeIntegerItem::getEBV() const
+{
+  bool b = !!theValue.sign();
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
 
 zstring NonNegativeIntegerItem::show() const
 {
@@ -1887,6 +1996,9 @@ xs_integer LongItem::getIntegerValue() const
   return xs_integer(theValue);
 }
 
+xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
+  return theValue >= 0 ? theValue : -theValue;
+}
 
 store::Item* LongItem::getType() const
 {

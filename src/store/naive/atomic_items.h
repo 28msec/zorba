@@ -1159,8 +1159,15 @@ public:
   virtual xs_decimal getDecimalValue() const = 0;
   virtual xs_integer getIntegerValue() const = 0;
   virtual xs_long getLongValue() const = 0;
+
+  virtual store::Item_t getEBV() const = 0;
   virtual store::Item* getType() const = 0;
 
+  virtual zstring getStringValue() const = 0;
+  virtual void getStringValue2(zstring&) const = 0;
+  virtual void appendStringValue(zstring& buf) const = 0;
+
+  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const = 0;
   bool isNaN() const { return false; }
 };
 
@@ -1183,35 +1190,29 @@ protected:
 
 public:
   xs_decimal getDecimalValue() const;
-
   xs_integer getIntegerValue() const { return theValue; }
-
   xs_long getLongValue() const; 
+  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
+
+  zstring getStringValue() const;
+  void getStringValue2(zstring&) const;
+  void appendStringValue(zstring&) const;
+
+  store::Item_t getEBV() const;
   virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
-
   virtual store::Item* getType() const;
-
   uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
-
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
+  virtual zstring show() const;
 
   long compare(
         const Item* other,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV( ) const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring& buf) const;
-
-  virtual zstring show() const;
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 };
 
 
@@ -1234,11 +1235,27 @@ public:
   xs_decimal getDecimalValue() const;
   xs_integer getIntegerValue() const;
   xs_long getLongValue() const;
+  xs_nonPositiveInteger getUnsignedIntegerValue() const { return theValue; }
 
+  zstring getStringValue() const;
+  void getStringValue2(zstring& val) const;
+  void appendStringValue(zstring&) const;
+
+  store::Item_t getEBV() const;
   store::Item* getType() const;
   SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
-
+  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
   zstring show() const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 };
 
 
@@ -1282,14 +1299,27 @@ public:
   xs_decimal getDecimalValue() const;
   xs_integer getIntegerValue() const;
   xs_long getLongValue() const;
-
   xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
-
+  store::Item_t getEBV() const;
   store::Item* getType() const;
-
+  SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
+  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
   zstring show() const;
+
+  zstring getStringValue() const;
+  void getStringValue2(zstring& val) const;
+  void appendStringValue(zstring&) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 };
 
 
@@ -1336,6 +1366,8 @@ public:
   xs_integer getIntegerValue() const;
 
   xs_long getLongValue() const { return theValue; }
+
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
 
   SchemaTypeCode getTypeCode() const { return XS_LONG; }
 

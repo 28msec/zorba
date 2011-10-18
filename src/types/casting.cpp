@@ -1354,14 +1354,14 @@ bool int_down(
   case TypeConstants::XS_NON_POSITIVE_INTEGER:
   {
     xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger <= xs_integer::zero())
+    if (lInteger.sign() <= 0)
       return aFactory->createNonPositiveInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_NEGATIVE_INTEGER:
   {
     xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger < xs_integer::zero())
+    if (lInteger.sign() < 0)
       return aFactory->createNegativeInteger(result, lInteger);
     break;
   }
@@ -1419,20 +1419,15 @@ bool int_down(
   }
   case TypeConstants::XS_NON_NEGATIVE_INTEGER:
   {
-#ifdef ZORBA_WITH_BIG_INTEGER
-    xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger.sign() >= 0)
-#else
     xs_decimal const d = aItem->getDecimalValue();
     if (d.sign() >= 0)
       try {
-        xs_nonNegativeInteger const lInteger(d);
-        return aFactory->createNonNegativeInteger(result, lInteger);
+        xs_nonNegativeInteger const i(d);
+        return aFactory->createNonNegativeInteger(result, i);
       }
       catch ( std::exception const& ) {
         // ignore
       }
-#endif /* ZORBA_WITH_BIG_INTEGER */
     break;
   }
   case TypeConstants::XS_UNSIGNED_LONG:
@@ -1489,8 +1484,10 @@ bool int_down(
   }
   case TypeConstants::XS_POSITIVE_INTEGER:
   {
-    xs_positiveInteger const lInteger = aItem->getUnsignedIntegerValue();
-    return aFactory->createPositiveInteger(result, lInteger);
+    xs_positiveInteger const i = aItem->getUnsignedIntegerValue();
+    if (i.sign() > 0)
+      return aFactory->createPositiveInteger(result, i);
+    break;
   }
   default:
     ZORBA_ASSERT (false);

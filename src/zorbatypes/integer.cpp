@@ -181,8 +181,8 @@ ZORBA_INTEGER_OP(>=)
 #undef ZORBA_INTEGER_OP
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-#define ZORBA_INSTANTIATE(OP) \
-  template bool operator OP( INTEGER_IMPL_LL const&, Decimal const& ); \
+#define ZORBA_INSTANTIATE(OP)                                           \
+  template bool operator OP( INTEGER_IMPL_LL const&, Decimal const& );  \
   template bool operator OP( INTEGER_IMPL_ULL const&, Decimal const& )
 
 ZORBA_INSTANTIATE(==);
@@ -218,7 +218,7 @@ INTEGER_IMPL INTEGER_IMPL::round( IntegerImpl const &precision ) const {
 
 TEMPLATE_DECL
 INTEGER_IMPL
-INTEGER_IMPL::roundHalfToEven( INTEGER_IMPL const &precision ) const {
+INTEGER_IMPL::roundHalfToEven( IntegerImpl const &precision ) const {
   return INTEGER_IMPL( Decimal::roundHalfToEven( itod(), precision.itod() ) );
 }
 

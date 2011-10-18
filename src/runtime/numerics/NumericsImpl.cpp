@@ -441,10 +441,11 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
   xs_integer ll0 = i0->getIntegerValue();
   xs_integer ll1 = i1->getIntegerValue();
 
-  if ( ll1 == Integer::zero() )
+  if ( ll1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
+
   return GENV_ITEMFACTORY->createInteger (result, ll0 / ll1);
 }
 
