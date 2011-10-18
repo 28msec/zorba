@@ -48,9 +48,9 @@ version 2.x
   * Fixed bug #869025 (segmentation fault with node-reference)
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
-  * Fixed bug #868325 (fn:analyze-string fails with some recursive subgroups)
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
   * Added undo for node revalidation
+  * Fixed bug #868325 (fn:analyze-string fails with some recursive subgroups)
 
 version 2.0.1
 
