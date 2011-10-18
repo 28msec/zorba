@@ -13,5 +13,8 @@
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
+declare variable $a external;
+declare variable $b external;
+declare variable $c := "foo"; 
 
-insert node <child>Content</child> into /parent
+$a, $b, $c

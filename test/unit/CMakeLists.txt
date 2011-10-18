@@ -18,7 +18,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_D
 
 #belongs to test cxx_api_changes.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch1.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch1.xq)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch2.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch2.xq)  
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch2.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch3.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch3.xq)  
 
 #belongs to test external_function.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
