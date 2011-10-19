@@ -1082,7 +1082,7 @@ _tmain(int argc, _TCHAR* argv[])
     if(generateW3CData)
     {
       std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
-      XMLreport << "<test-case name='" << queryName.file_string() << "' result='" << status << "' />" << std::endl;
+      XMLreport << "<Test Status='" << status << "'><Name>" << queryName.file_string() << "</Name></Test>" << std::endl;
     }
   }
 
@@ -1092,7 +1092,7 @@ _tmain(int argc, _TCHAR* argv[])
   if(generateW3CData)
   {
     std::ofstream w3cReportFile(XMLreportFilepath.c_str());
-    w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Testing>" << std::endl << XMLreport.str() << "</Testing>" << std::endl;
+    w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Site><Testing>" << std::endl << XMLreport.str() << "</Testing></Site>" << std::endl;
   }
 
   // Don't use theOutput here - this is the summary we always want to
