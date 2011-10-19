@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -229,7 +229,7 @@ void sigHandler(int sigNum)
 
 /*******************************************************************************
   Create all the directories in a filepath, if thehy don't exist already, and
-  make sure the file can be created/opened. 
+  make sure the file can be created/opened.
 ********************************************************************************/
 void createPath(const fs::path& filePath, std::ofstream& fileStream)
 {
@@ -238,19 +238,19 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
   {
     fs::path dirPath = filePath;
     dirPath = dirPath.remove_leaf();
-    
+
     if (!fs::exists(dirPath.file_string()))
     {
       fs::create_directories(dirPath.file_string());
 
       // clear the bad flag on windows, which for some unknown reason doesn't reset when opening a file again
-      fileStream.clear(); 
+      fileStream.clear();
       fileStream.open(filePath.file_string().c_str());
     }
 
     if (!fileStream.good())
     {
-      std::cerr << "Could not open file: " 
+      std::cerr << "Could not open file: "
                 << filePath.file_string() << std::endl;
       abort();
     }
@@ -261,9 +261,9 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
 /*******************************************************************************
 
 ********************************************************************************/
-bool checkErrors(const Specification& lSpec, const TestDiagnosticHandler& errHandler, std::ostream& lOutput) 
+bool checkErrors(const Specification& lSpec, const TestDiagnosticHandler& errHandler, std::ostream& lOutput)
 {
-  if (isErrorExpected(errHandler, &lSpec)) 
+  if (isErrorExpected(errHandler, &lSpec))
   {
     printErrors(errHandler,
       "The following execution errors occurred as expected",
@@ -350,7 +350,7 @@ DWORD WINAPI thread_main(LPVOID param)
 
     zorba::XQuery_t query;
 
-    // Choose a query to run. If no query is available, the thread finishes. 
+    // Choose a query to run. If no query is available, the thread finishes.
     // To choose the next query, the whole query container must be locked.
     // After the query is chosen, we release the global container lock and
     // acquire the query-specific lock for the chosen query. The query lock
@@ -393,7 +393,7 @@ DWORD WINAPI thread_main(LPVOID param)
     // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
     if (fs::exists(specPath))
-      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
+      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir);
 
     // Get the pathnames of the ref-result files found in the .spec file (if any).
     // If no ref-results file was specified in the .spec file, create a default
@@ -402,14 +402,14 @@ DWORD WINAPI thread_main(LPVOID param)
     // from the path
     for (std::vector<std::string>::const_iterator iter = querySpec.resultsBegin();
          iter != querySpec.resultsEnd();
-         ++iter) 
+         ++iter)
     {
       fs::path refFilePath(*iter);
       refFileSpecified = true;
       refFilePaths.push_back(refFilePath);
     }
 
-    if (refFilePaths.size() == 0) 
+    if (refFilePaths.size() == 0)
     {
       std::string relativeRefFile = relativeQueryFile;
       if (queries->theIsW3Cbucket)
@@ -424,7 +424,7 @@ DWORD WINAPI thread_main(LPVOID param)
       fs::path refFilePath = fs::path(queries->theRefsDir) / (relativeRefFile);
       refFilePath = fs::change_extension(refFilePath, ".xml.res");
 
-      if (fs::exists(refFilePath)) 
+      if (fs::exists(refFilePath))
         refFileSpecified = true;
 
       refFilePaths.push_back(refFilePath);
@@ -451,7 +451,7 @@ DWORD WINAPI thread_main(LPVOID param)
     // resolvers in the static context.
     zorba::StaticContext_t sctx = zorba->createStaticContext();
 
-    if (queries->theIsW3Cbucket) 
+    if (queries->theIsW3Cbucket)
     {
       mmapper.reset
         (new zorba::TestModuleURIMapper(mod_map_file.c_str(),
@@ -497,7 +497,7 @@ DWORD WINAPI thread_main(LPVOID param)
     errHandler.setErrorFile(errorFilePath.file_string());
 
     //
-    // Compile the query, if it has not been compiled already. 
+    // Compile the query, if it has not been compiled already.
     //
     if (queries->theQueryObjects[queryNo] == 0)
     {
@@ -555,7 +555,7 @@ DWORD WINAPI thread_main(LPVOID param)
     //
     // Clone the compiled query and register with it the error handler of the
     // current thread.
-    // 
+    //
     query = queries->theQueryObjects[queryNo]->clone();
 
     query->registerDiagnosticHandler(&errHandler);
@@ -607,7 +607,7 @@ DWORD WINAPI thread_main(LPVOID param)
         goto done;
       }
     }
-    else if (querySpec.getComparisonMethod() != "Ignore" 
+    else if (querySpec.getComparisonMethod() != "Ignore"
              && querySpec.errorsSize() > 0 && !refFileSpecified)
     {
       queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
@@ -626,16 +626,16 @@ DWORD WINAPI thread_main(LPVOID param)
       failure = true;
       goto done;
     }
-    else 
+    else
     {
       bool foundRefFile = false;
       ulong i;
-      for (i = 0; i < refFilePaths.size(); i++) 
+      for (i = 0; i < refFilePaths.size(); i++)
       {
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();
 
-        int lLine, lCol; 
+        int lLine, lCol;
         std::string lRefLine, lResultLine;
         bool success = zorba::fileEquals(refFilePath.c_str(), resFilePath.c_str(),
                                          lLine, lCol,
@@ -704,9 +704,10 @@ void usage()
   std::cerr << "\nusage: testdriver_mt -b <bucket> [options]       OR" << std::endl
             << "       testdriver_mt -p <path-to-bucket> [options]" << std::endl
             << "Options:" << std::endl
-            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q]" << std::endl
+            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q] [-w3c]" << std::endl            
             << "  [-k <known-failures file>] [-o <report logfile>]" << std::endl
-            << "  -q - Quiet; only a summary report will be displayed." << std::endl;
+            << "  -q - Quiet; only a summary report will be displayed." << std::endl
+            << "  -w3c means that the output also contains a XML report that can be used in the W3C conformance reports generation." << std::endl;
   exit(1);
 }
 
@@ -727,10 +728,13 @@ _tmain(int argc, _TCHAR* argv[])
   std::string refsDir;
   std::string modulePath;
   std::string reportFilename = "mt.log";
+  std::string XMLreportFilename = "Test.xml";
   std::string reportFilepath;
+  std::string XMLreportFilepath;
   std::string knownFailuresFilepath;
   bool haveKnownFailures = false;
   bool quiet = false;
+  bool generateW3CData = false;
 
   fs::path path;
   std::set<std::string> knownFailures;
@@ -744,7 +748,7 @@ _tmain(int argc, _TCHAR* argv[])
 
   // Parse the arg list
   long arg = 1;
- 
+
   while (arg < argc)
   {
     if (!strcmp(argv[arg], "-t"))
@@ -764,7 +768,7 @@ _tmain(int argc, _TCHAR* argv[])
     else if (!strcmp(argv[arg], "-b"))
     {
       arg++;
-      bucketName = argv[arg]; 
+      bucketName = argv[arg];
     }
     else if (!strcmp(argv[arg], "-p"))
     {
@@ -779,7 +783,7 @@ _tmain(int argc, _TCHAR* argv[])
     else if (!strcmp(argv[arg], "-o"))
     {
       arg++;
-      reportFilename = argv[arg]; 
+      reportFilename = argv[arg];
     }
     else if (!strcmp(argv[arg], "-k"))
     {
@@ -790,6 +794,10 @@ _tmain(int argc, _TCHAR* argv[])
     else if (!strcmp(argv[arg], "-q"))
     {
       quiet = true;
+    }
+    else if (!strcmp(argv[arg], "-w3c"))
+    {
+      generateW3CData = true;
     }
     else if (!strcmp(argv[arg], "--module-path"))
     {
@@ -804,7 +812,7 @@ _tmain(int argc, _TCHAR* argv[])
     arg++;
   }
 
-  if (bucketName == "" && bucketPath == "") 
+  if (bucketName == "" && bucketPath == "")
   {
     usage();
   }
@@ -858,6 +866,10 @@ _tmain(int argc, _TCHAR* argv[])
   }
 
   reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
+  if(generateW3CData)
+  {
+    XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
+  }
 
   //
   // Make sure the directories exist. For the results dir, if it doesn't exist,
@@ -924,7 +936,7 @@ _tmain(int argc, _TCHAR* argv[])
       queries.theQueryFilenames.push_back(relativeQueryFile);
     }
   }
-  else 
+  else
   {
     queries.theQueryFilenames = testNames;
   }
@@ -976,7 +988,7 @@ _tmain(int argc, _TCHAR* argv[])
   // shutdown
   delete[] threads;
 
-#else  
+#else
 
   // Windows code
   HANDLE* threads = new HANDLE[numThreads]; // pthread_t* threads = new pthread_t[numThreads];
@@ -989,7 +1001,7 @@ _tmain(int argc, _TCHAR* argv[])
   }
 
   WaitForMultipleObjects(numThreads, threads, TRUE, INFINITE);
-  
+
   // shutdown
   delete[] threads;
   delete[] thread_ids;
@@ -1002,18 +1014,18 @@ _tmain(int argc, _TCHAR* argv[])
   //
   // If known-failures file specified, load it into a map for quick lookups.
   //
-  if (haveKnownFailures) 
+  if (haveKnownFailures)
   {
     queries.theOutput << std::endl << "Loading known failures file "
                       << knownFailuresFilepath << "..." << std::endl;
     std::ifstream knownFailuresFile(knownFailuresFilepath.c_str());
-    while (knownFailuresFile.good()) 
+    while (knownFailuresFile.good())
     {
       std::string testname;
       getline(knownFailuresFile, testname);
       knownFailures.insert(testname);
     }
-    queries.theOutput << "Loaded " << knownFailures.size() 
+    queries.theOutput << "Loaded " << knownFailures.size()
                       << " known failures" << std::endl << std::endl;
   }
 
@@ -1023,7 +1035,7 @@ _tmain(int argc, _TCHAR* argv[])
   // on regressions/progressions or not. Also keep a running list of
   // failed tests.
   //
-  std::ostringstream report;
+  std::ostringstream report, XMLreport;
   std::ostringstream failedTests;
   long numFailures = 0;
   long numRegressions = 0;
@@ -1036,7 +1048,7 @@ _tmain(int argc, _TCHAR* argv[])
     fs::path queryPath = fs::path(pathPrefix) / (queries.theQueryFilenames[i]);
     fs::path queryName = fs::change_extension(queryPath, "");
     bool queryWasKnownToFail = false;
-    if (haveKnownFailures) 
+    if (haveKnownFailures)
     {
       queryWasKnownToFail = (knownFailures.count(queryName.file_string()) != 0);
     }
@@ -1056,6 +1068,7 @@ _tmain(int argc, _TCHAR* argv[])
       {
         report << i << ":" << queryName.file_string() << std::endl;
       }
+
     }
     else
     {
@@ -1066,27 +1079,38 @@ _tmain(int argc, _TCHAR* argv[])
                << queryName.file_string() << std::endl;
       }
     }
+    if(generateW3CData)
+    {
+      std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
+      XMLreport << "<test-case name='" << queryName.file_string() << "' result='" << status << "' />" << std::endl;
+    }
   }
 
   std::ofstream reportFile(reportFilepath.c_str());
   reportFile << report.str();
 
+  if(generateW3CData)
+  {
+    std::ofstream w3cReportFile(XMLreportFilepath.c_str());
+    w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Testing>" << std::endl << XMLreport.str() << "</Testing>" << std::endl;
+  }
+
   // Don't use theOutput here - this is the summary we always want to
   // see
-  std::cout << "Number of queries run = " 
-            << queries.theNumQueries << std::endl << "Number of failures = " 
+  std::cout << "Number of queries run = "
+            << queries.theNumQueries << std::endl << "Number of failures = "
             << numFailures << std::endl;
 
   if (haveKnownFailures)
   {
     std::cout << "Number of regressions = " << numRegressions << std::endl;
     std::cout << "Number of progressions = " << numProgressions << std::endl;
-    if (report.str().length() > 0) 
+    if (report.str().length() > 0)
     {
       std::cout << std::endl << "Individual test reports:" << std::endl
                 << report.str() << std::endl;
     }
-    if (numRegressions == 0 && numProgressions > 0) 
+    if (numRegressions == 0 && numProgressions > 0)
     {
       std::cout << "No regressions and some progressions!" << std::endl
                 << "Updating known failures file "
@@ -1101,7 +1125,7 @@ _tmain(int argc, _TCHAR* argv[])
       std::cout << std::endl << "Failed queries: " << std::endl
                 << report.str() << std::endl;
   }
-  
+
   queries.clear();
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
