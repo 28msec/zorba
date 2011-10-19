@@ -866,7 +866,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
-  ar & theModulePaths;
+  ar & theURIPath;
+  ar & theLibPath;
 
   // Options must be serialized BEFORE external modules
   ar & theOptionMap;
@@ -1519,6 +1520,13 @@ void static_context::apply_url_resolvers(
   for (std::vector<zstring>::iterator url = aUrls.begin();
        url != aUrls.end(); url++) 
   {
+    // if the http-client module is not available, we must not search
+    // for it by calling the http-client...
+    if (*url == "http://www.zorba-xquery.com/modules/http-client")
+    {
+      continue;
+    }
+
     // Iterate upwards through the static_context tree...
     for (static_context const* sctx = this;
          sctx != NULL; sctx = sctx->theParent)
@@ -1530,18 +1538,13 @@ void static_context::apply_url_resolvers(
       {
         try 
         {
-          // if the http-client module is not available, we must not search
-          // for it by calling the http-client...
-          if (*url != "http://www.zorba-xquery.com/modules/http-client") 
+          // Take ownership of returned Resource (if any)
+          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          if (oResource.get() != NULL)
           {
-            // Take ownership of returned Resource (if any)
-            oResource.reset((*resolver)->resolveURL(*url, aEntityData));
-            if (oResource.get() != NULL) 
-            {
-              // Populate the URL used to load this Resource
-              oResource->setUrl(*url);
-              return;
-            }
+            // Populate the URL used to load this Resource
+            oResource->setUrl(*url);
+            return;
           }
         }
         catch (const std::exception& e) 
@@ -1566,32 +1569,63 @@ void static_context::apply_url_resolvers(
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::set_module_paths(const std::vector<zstring>& paths)
+void static_context::set_uri_path(const std::vector<zstring>& path)
 {
-  theModulePaths = paths;
+  theURIPath = path;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_module_paths(std::vector<zstring>& paths) const
+void static_context::get_uri_path(std::vector<zstring>& path) const
 {
-  paths.insert(paths.end(), theModulePaths.begin(), theModulePaths.end());
+  path.insert(path.end(), theURIPath.begin(), theURIPath.end());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_full_module_paths(std::vector<zstring>& paths) const
+void static_context::get_full_uri_path(std::vector<zstring>& path) const
 {
   if (theParent != NULL)
   {
-    theParent->get_full_module_paths(paths);
+    theParent->get_full_uri_path(path);
   }
 
-  get_module_paths(paths);
+  get_uri_path(path);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::set_lib_path(const std::vector<zstring>& path)
+{
+  theLibPath = path;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_lib_path(std::vector<zstring>& path) const
+{
+  path.insert(path.end(), theLibPath.begin(), theLibPath.end());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_full_lib_path(std::vector<zstring>& path) const
+{
+  if (theParent != NULL)
+  {
+    theParent->get_full_lib_path(path);
+  }
+
+  get_lib_path(path);
 }
 
 

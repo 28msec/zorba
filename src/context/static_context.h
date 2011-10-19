@@ -515,7 +515,9 @@ protected:
   thesaurus_providers_t                   theThesaurusProviders;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  checked_vector<zstring>                 theModulePaths;
+  checked_vector<zstring>                 theURIPath;
+
+  checked_vector<zstring>                 theLibPath;
 
   ExternalModuleMap                     * theExternalModulesMap;
 
@@ -711,12 +713,17 @@ public:
   void remove_thesaurus_provider( internal::ThesaurusProvider const *p );
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  void set_module_paths(const std::vector<zstring>& aModulePaths);
+  void set_uri_path(const std::vector<zstring>& aURIPath);
 
-  void get_module_paths(std::vector<zstring>& aModulePaths) const;
+  void get_uri_path(std::vector<zstring>& oURIPath) const;
 
-  void get_full_module_paths(std::vector<zstring>& aFullModulePaths) const;
+  void get_full_uri_path(std::vector<zstring>& oURIPath) const;
 
+  void set_lib_path(const std::vector<zstring>& aLibPath);
+
+  void get_lib_path(std::vector<zstring>& oLibPath) const;
+
+  void get_full_lib_path(std::vector<zstring>& oLibPath) const;
 
   //
   // Validating Items
