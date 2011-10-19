@@ -179,13 +179,6 @@ public:
 
   static void endDocument(void * ctx);
 
-  static void processNamespaces(
-        void * ctx,
-        ElementNode* elemNode,
-        int numNamespaces,
-        const xmlChar ** namespaces,
-        bool pushBindings = true);
-
   static void startElement(
         void * ctx,
         const xmlChar * localname,

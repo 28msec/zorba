@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <libxml/parser.h>
+#include <store/api/iterator.h>
 
 namespace zorba {
 
@@ -41,7 +42,9 @@ public:
     root_elements_to_skip(0),
     ctxt(NULL),
     saved_instate(XML_PARSER_START),
-    first_start_doc(true)
+    first_start_doc(true),
+    parsed_nodes_count(0),
+    children(NULL)
   {
   };
 
@@ -73,6 +76,8 @@ public:
     ctxt = NULL;
     saved_instate = XML_PARSER_START;
     first_start_doc = true;
+    parsed_nodes_count = 0;
+    children = NULL;
   }
 
   virtual ~FragmentIStream()
@@ -91,6 +96,8 @@ public:
   xmlParserCtxtPtr ctxt;
   xmlParserInputState saved_instate;
   bool first_start_doc;
+  int parsed_nodes_count;
+  store::Iterator_t children;
 };
 
 }

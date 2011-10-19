@@ -172,6 +172,10 @@ store::Item_t FragmentXmlLoader::loadXml(
         return NULL;
       }
 
+      // startElementNS and endElementNS are SAX2 callbacks
+      // theFragmentStream->ctxt->sax2 = 1;
+      // xmlDetectSAX2(theFragmentStream->ctxt);
+
       // Delete the initial empty input stream
       xmlFreeInputStream(inputPop(theFragmentStream->ctxt));
 
@@ -191,6 +195,17 @@ store::Item_t FragmentXmlLoader::loadXml(
       input->length = theFragmentStream->buffer_size;
       input->end = input->base + input->length;
       xmlPushInput(theFragmentStream->ctxt, input);
+
+      // xmlParseExtParsedEnt(theFragmentStream->ctxt);
+
+      // Consume the XML declaration, if any
+      /*
+      if (equals(theFragmentStream->theBuffer, 5, "<?xml", 5) && ascii::is_space(theFragmentStream->theBuffer[5]))
+      {
+        xmlParseXMLDecl(theFragmentStream->ctxt);
+        theFragmentStream->current_offset = getCurrentInputOffset();
+      }
+      */
     }
 
     theFragmentStream->ctxt->userData = this;    // the loader has changed, update the address
@@ -199,6 +214,8 @@ store::Item_t FragmentXmlLoader::loadXml(
     // Update the input
     theFragmentStream->ctxt->input->base = (xmlChar*)(theFragmentStream->theBuffer);
     theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base + theFragmentStream->current_offset;
+
+    theFragmentStream->parsed_nodes_count = 0;
 
     // std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
 
@@ -215,13 +232,15 @@ store::Item_t FragmentXmlLoader::loadXml(
       FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
     }
 
+    // FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
+
     unsigned long start_offset = theFragmentStream->current_offset;
 
     xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
                   theFragmentStream->ctxt->input->end - theFragmentStream->ctxt->input->cur, 0);
 
-    if (theFragmentStream->current_element_depth > 0
-        &&
+    if ( // theFragmentStream->current_element_depth > 0
+    //    &&
         theFragmentStream->current_offset < getCurrentInputOffset())
       theFragmentStream->current_offset = getCurrentInputOffset();
 
@@ -235,6 +254,8 @@ store::Item_t FragmentXmlLoader::loadXml(
       // theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
       xmlParseCharData(theFragmentStream->ctxt, 0);
     }
+
+    FragmentXmlLoader::endDocument(theFragmentStream->ctxt->userData); // this would not be called otherwise
   }
   catch (...)
   {
@@ -302,9 +323,19 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  if (force || loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip)
+  unsigned long offset = loader.getCurrentInputOffset();
+
+  if (force
+      ||
+      offset >= loader.theFragmentStream->buffer_size
+      ||
+      loader.theFragmentStream->current_element_depth == 0
+      ||
+      (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip
+        &&
+        loader.theFragmentStream->parsed_nodes_count >= 1024))
   {
-    loader.theFragmentStream->current_offset = loader.getCurrentInputOffset();
+    loader.theFragmentStream->current_offset = offset;
 
     // std::cerr << "--> stopping parsing at: [" << (loader.theFragmentStream->theBuffer+loader.theFragmentStream->current_offset) << "] " << std::endl;
 
@@ -312,15 +343,9 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
 
     xmlStopParser(loader.theFragmentStream->ctxt);
     loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping
-    FragmentXmlLoader::endDocument(ctx); // this would not be called otherwise
   }
-  /*
-  else if (loader.theFragmentStream->current_element_depth == 0)
-  {
-    // Update the current buffer offset as this might be the end tag of the last element of the input buffer
-    loader.theFragmentStream->current_offset = loader.getCurrentInputOffset();
-  }
-  */
+
+  loader.theFragmentStream->parsed_nodes_count++;
 }
 
 void FragmentXmlLoader::startDocument(void * ctx)
@@ -356,21 +381,15 @@ void FragmentXmlLoader::startElement(
   loader.theFragmentStream->current_element_depth++;
   if (loader.theFragmentStream->current_element_depth > loader.theFragmentStream->root_elements_to_skip)
   {
+    const xmlChar** nsTab = namespaces;
+
     if (loader.theFragmentStream->current_element_depth == loader.theFragmentStream->root_elements_to_skip + 1)
     {
-      unsigned int skipped_ns = 0;
-      for (int i=0; i<loader.theFragmentStream->root_elements_to_skip && i<loader.theFragmentStream->ctxt->nameNr; i++)
-        skipped_ns += (int)loader.theFragmentStream->ctxt->pushTab[i*3+2] / 2;
-
-      if (skipped_ns > 0)
-      {
-        nb_namespaces += skipped_ns;
-        namespaces = loader.theFragmentStream->ctxt->nsTab;
-        //FastXmlLoader::processNamespaces(ctx, (ElementNode*)loader.theNodeStack[loader.theNodeStack.size()-2], skipped_ns, loader.theFragmentStream->ctxt->nsTab, false);
-      }
+      nsTab = loader.theFragmentStream->ctxt->nsTab;
+      nb_namespaces = loader.theFragmentStream->ctxt->nsNr/2;
     }
 
-    FastXmlLoader::startElement(ctx, localname, prefix, URI, nb_namespaces, namespaces, nb_attributes, nb_defaulted, attributes);
+    FastXmlLoader::startElement(ctx, localname, prefix, URI, nb_namespaces, nsTab, nb_attributes, nb_defaulted, attributes);
 
     /*
     std::cerr << "\n--> End element: " << localname << ", depth: " << loader.theFragmentStream->current_element_depth
@@ -390,7 +409,6 @@ void FragmentXmlLoader::startElement(
     }
     std::cerr << std::endl;
     */
-
   }
 }
 
