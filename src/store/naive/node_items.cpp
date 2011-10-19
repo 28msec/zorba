@@ -3613,7 +3613,6 @@ void TextNode::getOrdPath(OrdPath& ordPath) const
   {
     // The text node is the root
     ordPath.setAsRoot();
-    ordPath.appendComp(1);
     return;
   }
 
