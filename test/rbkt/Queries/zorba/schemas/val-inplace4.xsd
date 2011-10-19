@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.zorba-xquery.org/schema" xmlns="http://www.zorba-xquery.org/schema"
+	elementFormDefault="qualified">
+
+	<xs:element name="items">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="bigEl" type="bigEl" />
+				<xs:element name="smallEl" type="smallEl" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="bigEl">
+		<xs:sequence>
+			<xs:element name="a" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="smallEl">
+		<xs:sequence>
+			<xs:element name="a" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>
