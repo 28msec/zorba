@@ -5190,7 +5190,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
     theModulesInfo->theCCB->setIsUpdating(true);
   }
 
-  if(program ->is_sequential())
+  if(program->is_sequential())
   {
     theModulesInfo->theCCB->setIsSequential(true);
   }

@@ -197,8 +197,8 @@ bool DynamicContextImpl::getExternalVariables(
     std::vector<var_expr_t> lVars;
     theStaticContext->getVariables(lVars, true);
     
-    std::vector<var_expr_t>::iterator lIte = lVars.begin();
-    std::vector<var_expr_t>::iterator lEnd = lVars.end();
+    std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
+    std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
     
     for (; lIte != lEnd; ++lIte) 
     { 
