@@ -739,9 +739,6 @@ OrdPathNode::OrdPathNode(
   if (parent == NULL)
   {
     theOrdPath.setAsRoot();
-
-    if (nodeKind != store::StoreConsts::documentNode)
-      theOrdPath.appendComp(1);
   }
   else
   {

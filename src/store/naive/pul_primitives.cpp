@@ -783,6 +783,9 @@ void UpdPut::apply()
 {
   SimpleStore* store = &GET_STORE();
 
+  zstring targetUri;
+  theTargetUri->getStringValue2(targetUri);
+
   try
   {
     // Have to copy because addNode() will set the doc uri of target tree to
@@ -793,33 +796,32 @@ void UpdPut::apply()
     // a parent already.
     store::CopyMode copymode;
     copymode.set(true, true, true, true);
-    theTarget = theTarget->copy(NULL, copymode);
 
     if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
     {
-      XmlNode* target =  BASE_NODE(theTarget);
+      store::Item_t docItem;
+      GET_FACTORY().createDocumentNode(docItem, targetUri, targetUri);
 
-      DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
-      doc->setId(target->getTree(), NULL);
-      doc->insertChild(target, 0);
-      doc->getTree()->setRoot(doc);
+      theTarget = theTarget->copy(docItem.getp(), copymode);
 
-      store::Item_t docItem(doc);
-
-      theTarget = docItem;
+      theTarget.transfer(docItem);
+    }
+    else
+    {
+      theTarget = theTarget->copy(NULL, copymode);
     }
 
-    store->addNode(theTargetUri->getStringValue(), theTarget);
+    store->addNode(targetUri, theTarget);
   }
   catch(ZorbaException const& e)
   {
     if (e.diagnostic() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
-      theOldDocument = store->getDocument(theTargetUri->getStringValue());
+      theOldDocument = store->getDocument(targetUri);
 
-      store->deleteDocument(theTargetUri->getStringValue());
+      store->deleteDocument(targetUri);
 
-      store->addNode(theTargetUri->getStringValue(), theTarget);
+      store->addNode(targetUri, theTarget);
     }
     else
     {
