@@ -24,70 +24,43 @@
 
 namespace zorba{
 
-/**
- *
- *      fn:count(collection)
- *
- * Author: Zorba Team
- */
-class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>
+/*******************************************************************************
+  Iterator to optimize a fn:count(collection) expression
+
+  theCollectionType:
+  ------------------
+  Whether the Collection is a W3C or Zorba Collection and if it's dynamic or 
+  static collection module.
+********************************************************************************/
+class CountCollectionIterator : public NaryBaseIterator<CountCollectionIterator, 
+                                                        PlanIteratorState>
 {
-  protected:
-    //Whether the Collection is a W3C or Zorba Collection
-    //and if it's dynamic or static collection module
-    enum CollectionType {W3C = 0, ZORBASTATIC = 1, ZORBADYNAMIC = 2 };
-    CollectionType theCollectionType;
+public:
+  enum CollectionType { W3C = 0, ZORBASTATIC = 1, ZORBADYNAMIC = 2 };
 
-  public:
+protected:
+  CollectionType theCollectionType;
 
+public:
   SERIALIZABLE_CLASS(CountCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountCollectionIterator,
-      UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
+  NaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-        (UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
+  void serialize(::zorba::serialization::Archiver& ar);
 
-        /*This ugly casting is necesary, if we used a static_cast directly it
-          would create a new temporary variable with the "casted" value within
-          it. This of course cannot be passed by &, we can pass the value to
-          another variable, then pass the variable and sincronize the values of
-          both again after conversion. I feel this is slightly more efficient
-          and just as unreadable.*/
-        int *intCollectionType = reinterpret_cast<int*>(&theCollectionType);
-
-        ar & *intCollectionType;
-  }
-
+public:
   CountCollectionIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child,
-    bool aDynamicCollection)
-    :
-    UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
-        sctx, loc, child)
-  {
-    if(aDynamicCollection) theCollectionType = ZORBADYNAMIC;
-    else theCollectionType = ZORBASTATIC;
-  }
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children,
+      CollectionType collectionType);
 
-  CountCollectionIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    :
-    UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
-        sctx, loc, child),
-    theCollectionType(W3C)
-  {}
+  ~CountCollectionIterator();
 
-  bool isZorbaCollection() const {return W3C != theCollectionType;}
-  bool isDynamicCollection() const {return ZORBADYNAMIC == theCollectionType;}
+  bool isZorbaCollection() const { return W3C != theCollectionType; }
 
-  virtual ~CountCollectionIterator();
+  bool isDynamicCollection() const { return ZORBADYNAMIC == theCollectionType; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -95,6 +68,7 @@ class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator,
 
 protected:
   store::Collection_t getZorbaCollection(PlanState& planState) const;
+
   store::Collection_t getW3CCollection(PlanState& planState) const;
 };
 

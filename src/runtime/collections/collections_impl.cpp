@@ -141,19 +141,23 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   else
   {
     resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
-    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
 
-    if( NULL == resolvedURIItem)
+    if (NULL == resolvedURIItem)
       throw XQUERY_EXCEPTION(
         err::FODC0002,
         ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
         ERROR_LOC( loc )
       );
+
+    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
   }
 
+  lResource = theSctx->resolve_uri(resolvedURIString,
+                                   impl::EntityData::COLLECTION,
+                                   lErrorMessage);
 
-  lResource = theSctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
   lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
@@ -181,8 +185,34 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 
 /*******************************************************************************
-Iterator for optimizing fn:count when applied to collections
+  Iterator for optimizing fn:count when applied to collections
 ********************************************************************************/
+CountCollectionIterator::CountCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    CollectionType collectionType)
+  :
+  NaryBaseIterator<CountCollectionIterator, PlanIteratorState>(sctx, loc, children),
+  theCollectionType(collectionType)
+{
+}
+
+
+CountCollectionIterator::~CountCollectionIterator() 
+{
+}
+
+
+void CountCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(enum CollectionType, theCollectionType);
+}
+
+
 bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t coll;
@@ -191,28 +221,30 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(this->isZorbaCollection())
-    coll = this->getZorbaCollection(planState);
+  if (this->isZorbaCollection())
+    coll = getZorbaCollection(planState);
   else
-    coll = this->getW3CCollection(planState);
+    coll = getW3CCollection(planState);
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
 
   STACK_END(state);
 }
 
+
 store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planState) const
 {
-  store::Item_t resolvedURIItem, lURI;
+  store::Item_t lURI;
   store::Collection_t coll;
   std::auto_ptr<impl::Resource> lResource;
   impl::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
-  if(theChild != NULL) //if a URI was given
+  if (!theChildren.empty()) //if a URI was given
   {
-    ZORBA_ASSERT(consumeNext(lURI, theChild.getp(), planState));
+    ZORBA_ASSERT(consumeNext(lURI, theChildren[0].getp(), planState));
+
     try
     {
       resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
@@ -221,47 +253,54 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
     {
       throw XQUERY_EXCEPTION(
         err::FODC0004,
-        ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
+        ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)),
         ERROR_LOC( loc )
       );
     }
   }
   else
   {
-    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
-    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
-    if( NULL == resolvedURIItem)
+    lURI = planState.theGlobalDynCtx->get_default_collection();
+
+    if( NULL == lURI)
       throw XQUERY_EXCEPTION(
         err::FODC0002,
         ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
         ERROR_LOC( loc )
       );
+
+    resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
   }
 
 
-  lResource = theSctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
+  lResource = theSctx->resolve_uri(resolvedURIString, 
+                                   impl::EntityData::COLLECTION,
+                                   lErrorMessage);
+
   lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
       err::FODC0004,
-      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+      ERROR_PARAMS(resolvedURIString, lErrorMessage),
       ERROR_LOC( loc )
     );
   }
 
-return coll;
-
+  return coll;
 }
 
-store::Collection_t CountCollectionIterator::getZorbaCollection(PlanState& planState) const
+
+store::Collection_t CountCollectionIterator::getZorbaCollection(
+    PlanState& planState) const
 {
   store::Item_t qName;
   store::Collection_t coll;
 
-  ZORBA_ASSERT(consumeNext(qName, theChild.getp(), planState));
+  ZORBA_ASSERT(consumeNext(qName, theChildren[0].getp(), planState));
 
-  if(theSctx->lookup_collection(qName) == 0  && ! this->isDynamicCollection())
+  if (theSctx->lookup_collection(qName) == 0  && ! this->isDynamicCollection())
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
@@ -270,7 +309,7 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(PlanState& planS
     );
   }
 
-  coll = GENV_STORE.getCollection(qName, this->isDynamicCollection());
+  coll = GENV_STORE.getCollection(qName, isDynamicCollection());
 
   if (coll == NULL)
   {
@@ -284,25 +323,16 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(PlanState& planS
   return coll;
 }
 
-//Serialization data for CountCollectionIterator
-const char* CountCollectionIterator::class_name_str = "CountCollectionIterator";
-CountCollectionIterator::class_factory<CountCollectionIterator>
-CountCollectionIterator::g_class_factory;
 
-const serialization::ClassVersion
-CountCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
-const int CountCollectionIterator::class_versions_count =
-sizeof(CountCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-//Visitor functions for CountCollectionIterator
-UNARY_ACCEPT(CountCollectionIterator);
-
-//Desctructor
-CountCollectionIterator::~CountCollectionIterator() {}
+NARY_ACCEPT(CountCollectionIterator);
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 ZorbaCollectionIteratorState::~ZorbaCollectionIteratorState()
 {

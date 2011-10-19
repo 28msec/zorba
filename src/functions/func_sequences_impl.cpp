@@ -296,23 +296,36 @@ PlanIter_t fn_count::codegen(
   AnnotationHolder& ann) const
 {
   const std::type_info& counted_type = typeid(*argv[0]);
-  if(typeid(ZorbaCollectionIterator) == counted_type)
+
+  if (typeid(ZorbaCollectionIterator) == counted_type)
   {
     ZorbaCollectionIterator& collection =
-      static_cast<ZorbaCollectionIterator&>(*argv[0]);
-    return new CountCollectionIterator(sctx, loc,
-      collection.getChildren()[0], collection.isDynamic());
+    static_cast<ZorbaCollectionIterator&>(*argv[0]);
+
+    if (collection.isDynamic())
+    {
+      return new CountCollectionIterator(sctx,
+                                         loc,
+                                         collection.getChildren(),
+                                         CountCollectionIterator::ZORBADYNAMIC);
+    }
+    else
+    {
+      return new CountCollectionIterator(sctx,
+                                         loc,
+                                         collection.getChildren(),
+                                         CountCollectionIterator::ZORBASTATIC);
+    }
   }
-  else if(typeid(FnCollectionIterator) == counted_type)
+  else if (typeid(FnCollectionIterator) == counted_type)
   {
     FnCollectionIterator& collection =
-      static_cast<FnCollectionIterator&>(*argv[0]);
-    PlanIter_t child;
-    if(collection.getChildren().empty())
-      child = NULL;
-    else
-      child = collection.getChildren()[0];
-    return new CountCollectionIterator(sctx, loc, child);
+    static_cast<FnCollectionIterator&>(*argv[0]);
+
+    return new CountCollectionIterator(sctx, 
+                                       loc,
+                                       collection.getChildren(),
+                                       CountCollectionIterator::W3C);
   }
   else
   {
