@@ -84,8 +84,8 @@ DebuggerCommunicator::connect()
 			// Connect to the client on the given host and port
       std::auto_ptr<TCPSocket> lSocket(new TCPSocket(theHost, thePort));
       theSocket = lSocket.release();
-      theSocketInStream = new socket_streambuf(*theSocket);
-      theSocketOutStream = new socket_streambuf(*theSocket);
+      theSocketInStream = new SocketStreambuf(*theSocket);
+      theSocketOutStream = new SocketStreambuf(*theSocket);
       theCommunicatorInStream = new std::istream(theSocketInStream);
       theCommunicatorOutStream = new std::ostream(theSocketOutStream);
       theResponseQueue = new ResponseQueue(theCommunicatorOutStream);
