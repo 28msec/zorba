@@ -130,22 +130,22 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, seriali
 
 
 // HashMapZString
-SERIALIZABLE_CLASS_VERSIONS(HashMapZStringCmp)
-END_SERIALIZABLE_CLASS_VERSIONS(HashMapZStringCmp)
+SERIALIZABLE_CLASS_VERSIONS(serializable_HashMapZStringCmp)
+END_SERIALIZABLE_CLASS_VERSIONS(serializable_HashMapZStringCmp)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapZString)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapZString)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zstring, static_context::ctx_module_t>, 11)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, static_context::ctx_module_t, HashMapZStringCmp>, 11)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, static_context::ctx_module_t, serializable_HashMapZStringCmp>, 11)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<static_context::ctx_module_t>, 1)
 
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zstring, zstring>, 12)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, zstring, HashMapZStringCmp>,12)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, zstring, serializable_HashMapZStringCmp>,12)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<zstring>, 2)
 
@@ -155,7 +155,7 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<xqtref_t>, 3)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, xqtref_t, HashMapZStringCmp>,13)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, xqtref_t, serializable_HashMapZStringCmp>,13)
 
 
 

@@ -483,6 +483,7 @@ static_context::static_context()
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -530,6 +531,7 @@ static_context::static_context(static_context* parent)
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -582,6 +584,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -3088,8 +3091,12 @@ const std::string& static_context::get_default_collation(const QueryLoc& loc) co
 ********************************************************************************/
 XQPCollator* static_context::get_default_collator(const QueryLoc& loc) const
 {
-  const std::string& default_collation = get_default_collation(loc);
-  return get_collator(default_collation, loc);
+  if (!theCachedDefaultCollator)
+  {
+    const std::string& default_collation = get_default_collation(loc);
+    theCachedDefaultCollator = get_collator(default_collation, loc);
+  }
+  return theCachedDefaultCollator;
 }
 
 
