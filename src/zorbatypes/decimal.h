@@ -30,11 +30,11 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL  /* nothing */
-# define INTEGER_IMPL   IntegerImpl
+# define TEMPLATE_DECL(T) /* nothing */
+# define INTEGER_IMPL(T)  IntegerImpl
 #else
-# define TEMPLATE_DECL  template<typename T>
-# define INTEGER_IMPL   IntegerImpl<T>
+# define TEMPLATE_DECL(T) template<typename T>
+# define INTEGER_IMPL(T)  IntegerImpl<T>
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
@@ -60,7 +60,9 @@ public:
   Decimal( float n );
   Decimal( double n );
   Decimal( Decimal const &d );
-  TEMPLATE_DECL Decimal( INTEGER_IMPL const &i );
+
+  TEMPLATE_DECL(T)
+  Decimal( INTEGER_IMPL(T) const &i );
 
   /**
    * Constructs a %Decimal from a C string.
@@ -106,7 +108,9 @@ public:
   Decimal& operator=( Decimal const &d );
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
-  TEMPLATE_DECL Decimal& operator=( INTEGER_IMPL const &i );
+
+  TEMPLATE_DECL(T)
+  Decimal& operator=( INTEGER_IMPL(T) const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -116,11 +120,11 @@ public:
   friend Decimal operator/( Decimal const&, Decimal const& );
   friend Decimal operator%( Decimal const&, Decimal const& );
 
-#define ZORBA_DECIMAL_OP(OP)                                          \
-  TEMPLATE_DECL                                                       \
-  friend Decimal operator OP( Decimal const&, INTEGER_IMPL const& );  \
-  TEMPLATE_DECL                                                       \
-  friend Decimal operator OP( INTEGER_IMPL const&, Decimal const& )
+#define ZORBA_DECIMAL_OP(OP)                                            \
+  TEMPLATE_DECL(T)                                                      \
+  friend Decimal operator OP( Decimal const&, INTEGER_IMPL(T) const& ); \
+  TEMPLATE_DECL(T)                                                      \
+  friend Decimal operator OP( INTEGER_IMPL(T) const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(+);
   ZORBA_DECIMAL_OP(-);
@@ -136,7 +140,7 @@ public:
   Decimal& operator%=( Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP) \
-  TEMPLATE_DECL Decimal& operator OP( INTEGER_IMPL const& )
+  TEMPLATE_DECL(T) Decimal& operator OP( INTEGER_IMPL(T) const& )
 
   ZORBA_DECIMAL_OP(+=);
   ZORBA_DECIMAL_OP(-=);
@@ -149,12 +153,12 @@ public:
 
   ////////// relational operators /////////////////////////////////////////////
 
-#define ZORBA_DECIMAL_OP(OP)                                      \
-  friend bool operator OP( Decimal const&, Decimal const& );      \
-  TEMPLATE_DECL                                                   \
-  friend bool operator OP( Decimal const&, INTEGER_IMPL const& ); \
-  TEMPLATE_DECL                                                   \
-  friend bool operator OP( INTEGER_IMPL const&, Decimal const& )
+#define ZORBA_DECIMAL_OP(OP)                                          \
+  friend bool operator OP( Decimal const&, Decimal const& );          \
+  TEMPLATE_DECL(T)                                                    \
+  friend bool operator OP( Decimal const&, INTEGER_IMPL(T) const& );  \
+  TEMPLATE_DECL(T)                                                    \
+  friend bool operator OP( INTEGER_IMPL(T) const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(==);
   ZORBA_DECIMAL_OP(!=);
@@ -172,8 +176,11 @@ public:
   Decimal floor() const;
   Decimal round() const;
 
-  TEMPLATE_DECL Decimal round( INTEGER_IMPL const &precision ) const;
-  TEMPLATE_DECL Decimal roundHalfToEven( INTEGER_IMPL const &precision ) const;
+  TEMPLATE_DECL(T)
+  Decimal round( INTEGER_IMPL(T) const &precision ) const;
+
+  TEMPLATE_DECL(T)
+  Decimal roundHalfToEven( INTEGER_IMPL(T) const &precision ) const;
 
   Decimal sqrt() const;
 
@@ -224,7 +231,7 @@ private:
   static zstring toString( value_type const&,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
-  TEMPLATE_DECL friend class IntegerImpl;
+  TEMPLATE_DECL(T) friend class IntegerImpl;
   template<typename T> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );

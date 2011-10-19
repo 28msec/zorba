@@ -1235,7 +1235,7 @@ public:
   xs_decimal getDecimalValue() const;
   xs_integer getIntegerValue() const;
   xs_long getLongValue() const;
-  xs_nonPositiveInteger getUnsignedIntegerValue() const { return theValue; }
+  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   zstring getStringValue() const;
   void getStringValue2(zstring& val) const;

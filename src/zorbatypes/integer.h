@@ -33,31 +33,27 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL    /* nothing */
-# define INTEGER_IMPL     IntegerImpl
-# define INTEGER_IMPL_LL  IntegerImpl
-# define INTEGER_IMPL_ULL IntegerImpl
+# define TEMPLATE_DECL(T) /* nothing */
+# define INTEGER_IMPL(T)  IntegerImpl
 #else
-# define TEMPLATE_DECL    template<typename T>
-# define INTEGER_IMPL     IntegerImpl<T>
-# define INTEGER_IMPL_LL  IntegerImpl<long long>
-# define INTEGER_IMPL_ULL IntegerImpl<unsigned long long>
+# define TEMPLATE_DECL(T) template<typename T>
+# define INTEGER_IMPL(T)  IntegerImpl<T>
 #endif /* ZORBA_WITH_BIG_INTEGER */
+#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
+#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
 
 namespace zorba {
 
-TEMPLATE_DECL
+TEMPLATE_DECL(T)
 class IntegerImpl;
 
 namespace serialization {
-  TEMPLATE_DECL void operator&(Archiver&, INTEGER_IMPL&);
+  TEMPLATE_DECL(T) void operator&( Archiver&, INTEGER_IMPL(T)& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_WITH_BIG_INTEGER
-template<typename IntType>
-#endif /* ZORBA_WITH_BIG_INTEGER */
+TEMPLATE_DECL(IntType)
 class IntegerImpl {
 public:
 
@@ -77,7 +73,9 @@ public:
   IntegerImpl( float n );
   IntegerImpl( double n );
   IntegerImpl( Decimal const &d );
-  IntegerImpl( IntegerImpl const &i );
+
+  TEMPLATE_DECL(U)
+  IntegerImpl( INTEGER_IMPL(U) const &i );
 
   /**
    * Constructs an %IntegerImpl from a C string.
@@ -126,17 +124,20 @@ public:
   IntegerImpl& operator=( Decimal const &d );
   IntegerImpl& operator=( Double const &d );
   IntegerImpl& operator=( Float const &f );
-  IntegerImpl& operator=( IntegerImpl const &i );
+
+  TEMPLATE_DECL(U)
+  IntegerImpl& operator=( INTEGER_IMPL(U) const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                            \
-  TEMPLATE_DECL friend                                                  \
-  INTEGER_IMPL operator OP( INTEGER_IMPL const&, INTEGER_IMPL const& ); \
-  TEMPLATE_DECL friend                                                  \
-  Decimal operator OP( INTEGER_IMPL const&, Decimal const& );           \
-  TEMPLATE_DECL friend                                                  \
-  Decimal operator OP( Decimal const&, INTEGER_IMPL const& )
+#define ZORBA_INTEGER_OP(OP)                                      \
+  TEMPLATE_DECL(T) friend                                         \
+  INTEGER_IMPL(T) operator OP( INTEGER_IMPL(T) const&,            \
+                               INTEGER_IMPL(T) const& );          \
+  TEMPLATE_DECL(T) friend                                         \
+  Decimal operator OP( INTEGER_IMPL(T) const&, Decimal const& );  \
+  TEMPLATE_DECL(T) friend                                         \
+  Decimal operator OP( Decimal const&, INTEGER_IMPL(T) const& )
 
   ZORBA_INTEGER_OP(+);
   ZORBA_INTEGER_OP(-);
@@ -160,13 +161,13 @@ public:
 
   ////////// relational operators /////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                    \
-  TEMPLATE_DECL friend                                          \
-  bool operator OP( INTEGER_IMPL const&, INTEGER_IMPL const& ); \
-  TEMPLATE_DECL friend                                          \
-  bool operator OP( INTEGER_IMPL const&, Decimal const& );      \
-  TEMPLATE_DECL friend                                          \
-  bool operator OP( Decimal const&, INTEGER_IMPL const& )
+#define ZORBA_INTEGER_OP(OP)                                          \
+  TEMPLATE_DECL(T) friend                                             \
+  bool operator OP( INTEGER_IMPL(T) const&, INTEGER_IMPL(T) const& ); \
+  TEMPLATE_DECL(T) friend                                             \
+  bool operator OP( INTEGER_IMPL(T) const&, Decimal const& );         \
+  TEMPLATE_DECL(T) friend                                             \
+  bool operator OP( Decimal const&, INTEGER_IMPL(T) const& )
 
   ZORBA_INTEGER_OP(==);
   ZORBA_INTEGER_OP(!=);
@@ -235,97 +236,96 @@ private:
   friend class Decimal;
   template<typename T> friend class FloatImpl;
 
+#ifndef ZORBA_WITH_BIG_INTEGER
+  template<typename U> friend class IntegerImpl;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
   friend xs_int to_xs_int( INTEGER_IMPL_LL const& );
   friend xs_long to_xs_long( INTEGER_IMPL_LL const& );
   friend xs_unsignedInt to_xs_unsignedInt( INTEGER_IMPL_LL const& );
   friend xs_unsignedLong to_xs_unsignedLong( INTEGER_IMPL_LL const& );
 
-  TEMPLATE_DECL
-  friend void serialization::operator&(serialization::Archiver&, INTEGER_IMPL&);
+  TEMPLATE_DECL(T) friend
+  void serialization::operator&( serialization::Archiver&, INTEGER_IMPL(T)& );
 };
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-typedef IntegerImpl Integer;
-typedef IntegerImpl UInteger;
-#else
-typedef IntegerImpl<long long> Integer;
-typedef IntegerImpl<unsigned long long> UInteger;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+typedef INTEGER_IMPL_LL Integer;
+typedef INTEGER_IMPL_ULL UInteger;
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( char c ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( char c ) :
   value_( static_cast<long>( c ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( signed char c ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( signed char c ) :
   value_( static_cast<long>( c ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( short n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( short n ) :
   value_( static_cast<long>( n ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( int n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( int n ) :
   value_( static_cast<long>( n ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( long n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( long n ) :
   value_( n )
 {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( long long n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( long long n ) :
   value_( n )
 {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( unsigned char c ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned char c ) :
   value_( static_cast<long>( c ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( unsigned short n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned short n ) :
   value_( static_cast<long>( n ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( unsigned int n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned int n ) :
   value_( static_cast<long>( n ) )
 {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( unsigned long n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned long n ) :
   value_( static_cast<value_type>( n ) )
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( unsigned long long n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned long long n ) :
   value_( static_cast<value_type>( n ) )
 {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( float n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( float n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
   value_( static_cast<double>( n ) )
 #else
@@ -334,8 +334,8 @@ inline INTEGER_IMPL::IntegerImpl( float n ) :
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( double n ) :
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( double n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
   value_( n )
 #else
@@ -344,119 +344,122 @@ inline INTEGER_IMPL::IntegerImpl( double n ) :
 {
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( char const *s ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( char const *s ) {
   parse( s );
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL::IntegerImpl( IntegerImpl const &i ) :
+TEMPLATE_DECL(T)
+TEMPLATE_DECL(U)
+inline INTEGER_IMPL(T)::IntegerImpl( INTEGER_IMPL(U) const &i ) :
   value_( i.value_ )
 {
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( char c ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( char c ) {
   value_ = static_cast<long>( c );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( signed char c ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( signed char c ) {
   value_ = static_cast<long>( c );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( short n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( short n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( int n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( int n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( long n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( long n ) {
   value_ = n;
   return *this;
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( long long n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( long long n ) {
   value_ = n;
   return *this;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned char c ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( unsigned char c ) {
   value_ = static_cast<long>( c );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned short n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( unsigned short n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned int n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( unsigned int n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned long n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( unsigned long n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( unsigned long long n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( unsigned long long n ) {
   value_ = n;
   return *this;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( float n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( float n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( double n ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( double n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( char const *s ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( char const *s ) {
   parse( s );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator=( IntegerImpl const &i ) {
+TEMPLATE_DECL(T)
+TEMPLATE_DECL(U)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( INTEGER_IMPL(U) const &i ) {
   value_ = i.value_;
   return *this;
 }
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                                  \
-  TEMPLATE_DECL inline                                                        \
-  INTEGER_IMPL operator OP( INTEGER_IMPL const &i, INTEGER_IMPL const &j ) {  \
-    return i.value_ OP j.value_;                                              \
+#define ZORBA_INTEGER_OP(OP)                                \
+  TEMPLATE_DECL(T) inline                                   \
+  INTEGER_IMPL(T) operator OP( INTEGER_IMPL(T) const &i,    \
+                               INTEGER_IMPL(T) const &j ) { \
+    return i.value_ OP j.value_;                            \
   }
 
 ZORBA_INTEGER_OP(+)
@@ -465,16 +468,16 @@ ZORBA_INTEGER_OP(*)
 ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
 
-TEMPLATE_DECL inline
-INTEGER_IMPL operator/( INTEGER_IMPL const &i, INTEGER_IMPL const &j ) {
-  return INTEGER_IMPL::ftoi( i.value_ / j.value_ );
+TEMPLATE_DECL(T) inline
+INTEGER_IMPL(T) operator/( INTEGER_IMPL(T) const &i, INTEGER_IMPL(T) const &j ) {
+  return INTEGER_IMPL(T)::ftoi( i.value_ / j.value_ );
 }
 
-#define ZORBA_INTEGER_OP(OP)                                        \
-  TEMPLATE_DECL inline                                              \
-  INTEGER_IMPL& INTEGER_IMPL::operator OP( IntegerImpl const &i ) { \
-    value_ OP i.value_;                                             \
-    return *this;                                                   \
+#define ZORBA_INTEGER_OP(OP)                                              \
+  TEMPLATE_DECL(T) inline                                                 \
+  INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator OP( IntegerImpl const &i ) { \
+    value_ OP i.value_;                                                   \
+    return *this;                                                         \
   }
 
 ZORBA_INTEGER_OP(+=)
@@ -483,49 +486,49 @@ ZORBA_INTEGER_OP(*=)
 ZORBA_INTEGER_OP(%=)
 #undef ZORBA_INTEGER_OP
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator/=( IntegerImpl const &i ) {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator/=( IntegerImpl const &i ) {
   value_ = ftoi( value_ / i.value_ );
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL INTEGER_IMPL::operator-() const {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T) INTEGER_IMPL(T)::operator-() const {
   return -value_;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator++() {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator++() {
   ++value_;
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL INTEGER_IMPL::operator++(int) {
-  INTEGER_IMPL const result( *this );
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T) INTEGER_IMPL(T)::operator++(int) {
+  INTEGER_IMPL(T) const result( *this );
   ++value_;
   return result;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL& INTEGER_IMPL::operator--() {
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator--() {
   --value_;
   return *this;
 }
 
-TEMPLATE_DECL
-inline INTEGER_IMPL INTEGER_IMPL::operator--(int) {
-  INTEGER_IMPL const result( *this );
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T) INTEGER_IMPL(T)::operator--(int) {
+  INTEGER_IMPL(T) const result( *this );
   --value_;
   return result;
 }
 
 ////////// relational operators ///////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                          \
-  TEMPLATE_DECL inline                                                \
-  bool operator OP( INTEGER_IMPL const &i, INTEGER_IMPL const &j ) {  \
-    return i.value_ OP j.value_;                                      \
+#define ZORBA_INTEGER_OP(OP)                                                \
+  TEMPLATE_DECL(T) inline                                                   \
+  bool operator OP( INTEGER_IMPL(T) const &i, INTEGER_IMPL(T) const &j ) {  \
+    return i.value_ OP j.value_;                                            \
   }
 
 ZORBA_INTEGER_OP(==)
@@ -578,8 +581,8 @@ inline int IntegerImpl<IntType>::sign() const {
 
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL
-inline std::ostream& operator<<( std::ostream &os, INTEGER_IMPL const &i ) {
+TEMPLATE_DECL(T)
+inline std::ostream& operator<<( std::ostream &os, INTEGER_IMPL(T) const &i ) {
   return os << i.toString();
 }
 

@@ -1886,7 +1886,7 @@ bool NonNegativeIntegerItem::equals( const store::Item* other, long,
 {
   try
   {
-    return theValue == other->getIntegerValue();
+    return theValue == other->getUnsignedIntegerValue();
   }
   catch (ZorbaException const&)
   {

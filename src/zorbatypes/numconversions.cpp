@@ -56,6 +56,13 @@ xs_long to_xs_long( xs_integer const &i ) {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
+#ifndef ZORBA_WITH_BIG_INTEGER
+xs_long to_xs_long( xs_nonNegativeInteger const &i ) {
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_long>( temp.c_str() );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   zstring const temp( i.toString() );
