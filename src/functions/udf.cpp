@@ -53,7 +53,8 @@ user_function::user_function(
   theScriptingKind(scriptingKind),
   theIsExiting(false),
   theIsLeaf(true),
-  theIsOptimized(false)
+  theIsOptimized(false),
+  thePlanStateSize(0)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
@@ -115,7 +116,8 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         getPlan(ar.compiler_cb);
       }
 #else
-      getPlan(ar.compiler_cb);
+      uint32_t planStateSize;
+      getPlan(ar.compiler_cb, planStateSize);
 #endif
     }
     catch(...)
@@ -144,6 +146,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   //ar.set_is_temp_field(false);
   //if(save_plan)
   ar & thePlan;
+  ar & thePlanStateSize;
   ar & theArgVarsRefs;
 }
 
@@ -315,7 +318,7 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::getPlan(CompilerCB* ccb)
+  PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {
@@ -325,23 +328,25 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
       theIsOptimized = true;
 
       expr_t body = getBody();
+
       RewriterContext rctx(ccb,
                            body,
                            this,
                            zstring(),
                            body->get_sctx()->is_in_ordered_mode());
+
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
       body = rctx.getRoot();
       setBody(body);
     }
 
-    ulong numArgs = theArgVars.size();
+    csize numArgs = theArgVars.size();
 
     hash64map<std::vector<LetVarIter_t> *> argVarToRefsMap;
 
     theArgVarsRefs.resize(numArgs);
 
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
     }
@@ -357,6 +362,9 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                              nextVarId,
                              &argVarToRefsMap);
   }
+
+  planStateSize = thePlanStateSize;
+
   return thePlan;
 }
 
