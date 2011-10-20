@@ -1,27 +1,25 @@
 Iterator tree for main query:
-<SequentialIterator id="0179BA98">
-  <CtxVarDeclareIterator varid="2" varname="coll" id="0170A9E8">
-    <SingletonIterator value="xs:QName(,,collection)" id="0179D150"/>
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="coll">
+    <SingletonIterator value="xs:QName(,,collection)"/>
   </CtxVarDeclareIterator>
-  <SequentialIterator id="0179BA30">
-    <ApplyIterator id="0179D340">
-      <ZorbaCreateCollectionIterator id="015E6B00">
-        <PromoteIterator type="xs:QName" id="0179B8F8">
-          <FnDataIterator id="0179B828">
-            <CtxVarIterator varid="2" varname="coll" varkind="global" id="0170AA60"/>
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <PromoteIterator type="xs:QName">
+          <FnDataIterator>
+            <CtxVarIterator varid="2" varname="coll" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
-    <CountCollectionIterator id="015E6A20">
-      <PromoteIterator type="xs:QName" id="0179B9C8">
-        <FnDataIterator id="0179B960">
-          <CtxVarIterator varid="2" varname="coll" varkind="global" id="0170AAD8"/>
+    <CountCollectionIterator>
+      <PromoteIterator type="xs:QName">
+        <FnDataIterator>
+          <CtxVarIterator varid="2" varname="coll" varkind="global"/>
         </FnDataIterator>
       </PromoteIterator>
     </CountCollectionIterator>
   </SequentialIterator>
 </SequentialIterator>
 
-Iterator tree for main query:
-<FnConcatIterator id="0179BB68"/>
