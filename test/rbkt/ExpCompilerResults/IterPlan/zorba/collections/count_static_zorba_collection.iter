@@ -1,63 +1,62 @@
 Iterator tree for main query:
-<SequentialIterator id="0185BB68">
-  <CtxVarDeclareIterator varid="2" varname="ns:collection_1" id="017CD000">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_1)" id="0185CDE0"/>
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="ns:collection_1">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_1)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A2BE0">
-    <CtxVarIterator varid="2" varname="ns:collection_1" varkind="global" id="017CD0F0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="2" varname="ns:collection_1" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="3" varname="ns:collection_2" id="017CD078">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_2)" id="0185D258"/>
+  <CtxVarDeclareIterator varid="3" varname="ns:collection_2">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_2)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A2B70">
-    <CtxVarIterator varid="3" varname="ns:collection_2" varkind="global" id="017CD1E0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="3" varname="ns:collection_2" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="4" varname="ns:http" id="017CD168">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,http)" id="0185D200"/>
+  <CtxVarDeclareIterator varid="4" varname="ns:http">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,http)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A2B00">
-    <CtxVarIterator varid="4" varname="ns:http" varkind="global" id="01A36AF0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="4" varname="ns:http" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="5" varname="ns:test1" id="01A36A78">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)" id="0185D1A8"/>
+  <CtxVarDeclareIterator varid="5" varname="ns:test1">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A2A90">
-    <CtxVarIterator varid="5" varname="ns:test1" varkind="global" id="01A36BE0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="5" varname="ns:test1" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="6" varname="ns:test2" id="01A36B68">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test2)" id="0185D150"/>
+  <CtxVarDeclareIterator varid="6" varname="ns:test2">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test2)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A2A20">
-    <CtxVarIterator varid="6" varname="ns:test2" varkind="global" id="01A36CD0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="6" varname="ns:test2" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="7" varname="ns:test3" id="01A36C58">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test3)" id="0185D0A0"/>
+  <CtxVarDeclareIterator varid="7" varname="ns:test3">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test3)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:QName" quant="" id="016A29B0">
-    <CtxVarIterator varid="7" varname="ns:test3" varkind="global" id="01A36DC0"/>
+  <TreatIterator type="xs:QName" quant="">
+    <CtxVarIterator varid="7" varname="ns:test3" varkind="global"/>
   </TreatIterator>
-  <CtxVarDeclareIterator varid="8" varname="coll" id="01A36D48">
-    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)" id="0185D0F8"/>
+  <CtxVarDeclareIterator varid="8" varname="coll">
+    <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
   </CtxVarDeclareIterator>
-  <SequentialIterator id="0185B828">
-    <ApplyIterator id="0185D340">
-      <ZorbaCreateCollectionIterator id="016A2940">
-        <PromoteIterator type="xs:QName" id="0185B9C8">
-          <FnDataIterator id="0185BA98">
-            <CtxVarIterator varid="8" varname="coll" varkind="global" id="01A36E38"/>
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <PromoteIterator type="xs:QName">
+          <FnDataIterator>
+            <CtxVarIterator varid="8" varname="coll" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
-    <CountCollectionIterator id="016A2860">
-      <PromoteIterator type="xs:QName" id="0185B8F8">
-        <FnDataIterator id="0185B960">
-          <CtxVarIterator varid="8" varname="coll" varkind="global" id="01A36EB0"/>
+    <CountCollectionIterator>
+      <PromoteIterator type="xs:QName">
+        <FnDataIterator>
+          <CtxVarIterator varid="8" varname="coll" varkind="global"/>
         </FnDataIterator>
       </PromoteIterator>
     </CountCollectionIterator>
   </SequentialIterator>
 </SequentialIterator>
 
-Iterator tree for main query:
-<FnConcatIterator id="0185BB00"/>
+
