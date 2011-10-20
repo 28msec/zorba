@@ -210,11 +210,11 @@ namespace zorba { namespace debugclient {
     virtual bool execute(const std::vector<std::string>& args)
     {
       CommandInstance<Func, Tuple, CommandIdx> instance(theFunction, theTuple);
-      if (instance.parseArguments(args, theArgs))
+      if (instance.parseArguments(args, theArgs)) {
         instance.execute();
-      else
-        return false;
-      return true;
+        return true;
+      }
+      return false;
     }
   private:
     std::string theName;

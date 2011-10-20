@@ -58,6 +58,9 @@ void
 EventHandler::parseMessage(const std::string &aMessage)
 {
   try {
+#ifndef NDEBUG
+    std::cout << "Processing response: " << aMessage << std::endl;
+#endif
     zorba::String queryString = "dmh:process(";
     queryString += aMessage + ")";
     XQuery_t query = theZorbaInstance->compileQuery(queryString, theStaticContext);
@@ -83,8 +86,10 @@ EventHandler::parseMessage(const std::string &aMessage)
       std::stringstream stream(item.getStringValue().c_str());
       stream >> lId;
     }
+#ifndef NDEBUG
     lIter->next(item);
     std::cout << item.getStringValue() << std::endl;
+#endif
     theContinueProducer.produce(doContinue);
     theIdQueue.produce(lId);
   } catch (ZorbaException& e) {

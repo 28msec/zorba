@@ -127,9 +127,12 @@ declare %private function dmh:process-response($resp as element())
     (
       dmh:has-to-stop($resp),
 
-      $resp/fn:data(@transaction_id),
+      if (fn:exists($resp/@transaction_id)) then
+        $resp/fn:data(@transaction_id)
+      else
+        0,
 
-      switch (fn:local-name($resp))
+      switch ($resp/@command)
       case "eval"               return dmh:eval($resp)
       case "context_get"        return dmh:context-get($resp)
       case "context_names"      return dmh:context-names($resp)
@@ -141,7 +144,8 @@ declare %private function dmh:process-response($resp as element())
       case "run"                return dmh:run($resp)
       case "stop"               return dmh:stop($resp)
       case "status"             return dmh:status($resp)
-      default return fn:concat("Command not implemented: ", fn:node-name($resp))
+
+      default return fn:concat("ERROR: Command not implemented: ", $resp/@command)
     )
 };
 

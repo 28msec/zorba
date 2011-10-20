@@ -36,8 +36,9 @@ namespace zorba { namespace debugclient {
         std::cout << args[0] << ": Command not found" << std::endl;
         continue;
       }
-      if (!lIter->second->execute(args))
+      if (!lIter->second->execute(args)) {
         continue;
+      }
       return;
     }
   }
