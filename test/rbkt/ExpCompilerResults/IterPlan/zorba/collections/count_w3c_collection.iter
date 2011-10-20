@@ -1,0 +1,691 @@
+Iterator tree for main query:
+<SequentialIterator id="0173A9B8">
+  <CtxVarDeclareIterator varid="2" varname="coll" id="016ABC28">
+    <SingletonIterator value="xs:string(http://www.zorba-xquery.com/collection)" id="0173BDB8"/>
+  </CtxVarDeclareIterator>
+  <SequentialIterator id="0173A950">
+    <ApplyIterator id="01914420">
+      <UDFunctionCallIterator id="019174E0">
+        <PromoteIterator type="xs:string" id="0173A610">
+          <FnDataIterator id="0173A6E0">
+            <CtxVarIterator varid="2" varname="coll" varkind="global" id="016ABCA0"/>
+          </FnDataIterator>
+        </PromoteIterator>
+      </UDFunctionCallIterator>
+    </ApplyIterator>
+    <CountCollectionIterator id="01917470">
+      <PromoteIterator type="xs:string" id="0173A8E8">
+        <FnDataIterator id="0173A880">
+          <CtxVarIterator varid="2" varname="coll" varkind="global" id="016ABD18"/>
+        </FnDataIterator>
+      </PromoteIterator>
+    </CountCollectionIterator>
+  </SequentialIterator>
+</SequentialIterator>
+
+Iterator tree for main query:
+<FnConcatIterator id="0173AA88"/>
+
+Iterator tree for ddl:create:
+<ZorbaCreateCollectionIterator id="01917630">
+  <FunctionTraceIterator id="01916400">
+    <QNameIterator id="019150E0">
+      <LetVarIterator varname="coll-name" id="01917550"/>
+      <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)" id="0173B940"/>
+    </QNameIterator>
+  </FunctionTraceIterator>
+</ZorbaCreateCollectionIterator>
+
+<?xml version="1.0" encoding="UTF-8"?>
+Iterator tree for main query:
+<SequentialIterator id="01915C88">
+  <CtxVarDeclareIterator varid="2" varname="err:errNS" id="0191E958">
+    <SingletonIterator value="xs:string(http://expath.org/ns/error)" id="01970758"/>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:string" quant="" id="0198A290">
+    <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="0191DDA0"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="3" varname="err:HC001" id="019B99D0">
+    <QNameIterator id="01914DE0">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="0191DD28"/>
+      <SingletonIterator value="xs:string(err:HC001)" id="01970440"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A220">
+    <CtxVarIterator varid="3" varname="err:HC001" varkind="global" id="019B9AC0"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="4" varname="err:HC002" id="019B9B38">
+    <QNameIterator id="01915260">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="019B9A48"/>
+      <SingletonIterator value="xs:string(err:HC002)" id="019701D8"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A1B0">
+    <CtxVarIterator varid="4" varname="err:HC002" varkind="global" id="019B9C28"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="5" varname="err:HC003" id="019B9CA0">
+    <QNameIterator id="019144E0">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="019B9BB0"/>
+      <SingletonIterator value="xs:string(err:HC003)" id="01970808"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A6F0">
+    <CtxVarIterator varid="5" varname="err:HC003" varkind="global" id="019B9D90"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="6" varname="err:HC004" id="019B9E08">
+    <QNameIterator id="01914660">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="019B9D18"/>
+      <SingletonIterator value="xs:string(err:HC004)" id="01970020"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A760">
+    <CtxVarIterator varid="6" varname="err:HC004" varkind="global" id="019A99D0"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="7" varname="err:HC005" id="0196BE68">
+    <QNameIterator id="019148A0">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="019B9E80"/>
+      <SingletonIterator value="xs:string(err:HC005)" id="01970650"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A7D0">
+    <CtxVarIterator varid="7" varname="err:HC005" varkind="global" id="0196BF58"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="8" varname="err:HC006" id="0196BFD0">
+    <QNameIterator id="019151A0">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="0196BEE0"/>
+      <SingletonIterator value="xs:string(err:HC006)" id="01971308"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A840">
+    <CtxVarIterator varid="8" varname="err:HC006" varkind="global" id="0196C0C0"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="9" varname="err:HCV01" id="0196C138">
+    <QNameIterator id="01915200">
+      <CtxVarIterator varid="2" varname="err:errNS" varkind="global" id="0196C048"/>
+      <SingletonIterator value="xs:string(err:HCV01)" id="01970910"/>
+    </QNameIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:QName" quant="" id="0198A8B0">
+    <CtxVarIterator varid="9" varname="err:HCV01" varkind="global" id="0196C228"/>
+  </TreatIterator>
+  <FnConcatIterator id="01915CF0"/>
+</SequentialIterator>
+
+Iterator tree for main query:
+<SequentialIterator id="019159B0">
+  <CtxVarDeclareIterator varid="2" varname="xxx-func-name" id="016AB9D0"/>
+  <TreatIterator type="xs:QName" quant="" id="0198A1B0">
+    <CtxVarIterator varid="2" varname="xxx-func-name" varkind="global" id="0196BE68"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="3" varname="arg0" id="019A99D0"/>
+  <CtxVarDeclareIterator varid="4" varname="arg1" id="0196BEE0"/>
+  <CtxVarDeclareIterator varid="5" varname="arg2" id="0196BF58"/>
+  <flwor::FLWORIterator id="018E9D60">
+    <ForVariable name="temp_invoke_var1" referenced-by="019BACE8">
+      <CtxVarIterator varid="2" varname="xxx-func-name" varkind="global" id="0196BFD0"/>
+    </ForVariable>
+    <LetVariable name="temp_invoke_var2" materialize="true" referenced-by="0198A840">
+      <CtxVarIterator varid="3" varname="arg0" varkind="global" id="0196C048"/>
+    </LetVariable>
+    <LetVariable name="temp_invoke_var3" materialize="true" referenced-by="0198A7D0">
+      <CtxVarIterator varid="4" varname="arg1" varkind="global" id="0196C0C0"/>
+    </LetVariable>
+    <LetVariable name="temp_invoke_var4" materialize="true" referenced-by="0198AA00">
+      <CtxVarIterator varid="5" varname="arg2" varkind="global" id="0196C138"/>
+    </LetVariable>
+    <MaterializeClause>
+      <MaterializeForVariable inputVar="temp_invoke_var1 : 019BACE8" referenced-by="019BABE0 019BB000 019BAC90"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var2 : 0198A840" referenced-by="0198A8B0"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var3 : 0198A7D0" referenced-by="0198A920"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var4 : 0198AA00" referenced-by="0198AA70"/>
+    </MaterializeClause>
+    <ReturnClause>
+      <EvalIterator id="007E9880">
+        <ConcatStrIterator id="019156D8">
+          <SingletonIterator value="xs:string(")" id="019BA920"/>
+          <FnStringIterator id="0198A6F0">
+            <NamespaceUriFromQNameIterator id="019BAF50">
+              <ForVarIterator varname="temp_invoke_var1" id="019BABE0"/>
+            </NamespaceUriFromQNameIterator>
+          </FnStringIterator>
+          <SingletonIterator value="xs:string(":)" id="019BAEA0"/>
+          <FnStringIterator id="0198A760">
+            <LocalNameFromQNameIterator id="019BAD40">
+              <ForVarIterator varname="temp_invoke_var1" id="019BB000"/>
+            </LocalNameFromQNameIterator>
+          </FnStringIterator>
+          <SingletonIterator value="xs:string(($temp_invoke_var2,$temp_invoke_var3,$temp_invoke_var4))" id="019BAD98"/>
+        </ConcatStrIterator>
+        <ForVarIterator varname="temp_invoke_var1" id="019BAC90"/>
+        <LetVarIterator varname="temp_invoke_var2" id="0198A8B0"/>
+        <LetVarIterator varname="temp_invoke_var3" id="0198A920"/>
+        <LetVarIterator varname="temp_invoke_var4" id="0198AA70"/>
+      </EvalIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)" id="019BA768"/>
+
+Iterator tree for const-folded expr:
+<OrIterator id="01915BB8">
+  <SingletonIterator value="xs:boolean(false)" id="019BA768"/>
+  <SingletonIterator value="xs:boolean(false)" id="019BAC38"/>
+  <SingletonIterator value="xs:boolean(false)" id="019BA660"/>
+</OrIterator>
+
+Iterator tree for main query:
+<UDFunctionCallIterator id="0198AD10">
+  <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: request] content=[XQType ANY_TYPE_KIND*]]" quant="?" id="0198ACA0">
+    <CtxVarIterator varid="7" varname="temp_invoke_var2" varkind="global" id="01969FD0"/>
+  </TreatIterator>
+  <PromoteIterator type="xs:string" id="019898D8">
+    <FnDataIterator id="01989870">
+      <CtxVarIterator varid="8" varname="temp_invoke_var3" varkind="global" id="0196A048"/>
+    </FnDataIterator>
+  </PromoteIterator>
+  <CtxVarIterator varid="9" varname="temp_invoke_var4" varkind="global" id="0196A0C0"/>
+</UDFunctionCallIterator>
+
+Iterator tree for http:send-request:
+<TreatIterator quant="+" id="01917B00">
+  <flwor::FLWORIterator id="018F0AE0">
+    <LetVariable name="request" materialize="true" referenced-by="01918350 01918200 01918120 01917FD0">
+      <LetVarIterator varname="request" id="0198ADF0"/>
+    </LetVariable>
+    <LetVariable name="href" materialize="true" referenced-by="01918270 01918190 01917D30">
+      <LetVarIterator varname="href" id="0198AE60"/>
+    </LetVariable>
+    <LetVariable name="bodies" materialize="true" referenced-by="019180B0 01917C50">
+      <LetVarIterator varname="bodies" id="0198AED0"/>
+    </LetVariable>
+    <WhereClause>
+      <FunctionTraceIterator id="01916680">
+        <flwor::FLWORIterator id="018F09E0">
+          <LetVariable name="should-be-empty" materialize="true" referenced-by="01918040">
+            <flwor::FLWORIterator id="018F0B60">
+              <ForVariable name="x" referenced-by="0173BAA0 0173BBA8">
+                <DescendantAxisIterator id="019B22A0" test kind="match_name_test" qname="xs:QName(http://expath.org/ns/http-client,http-schema,body)" typename="*" nill allowed="0">
+                  <LetVarIterator varname="request" id="01918350"/>
+                </DescendantAxisIterator>
+              </ForVariable>
+              <WhereClause>
+                <AndIterator id="01915A18">
+                  <AttributeAxisIterator id="019B2690" test kind="match_name_test" qname="xs:QName(,,src)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="x" id="0173BAA0"/>
+                  </AttributeAxisIterator>
+                  <FnBooleanIterator id="01915200">
+                    <FnExactlyOneIterator id="019182E0">
+                      <FnSubsequenceIterator id="01915948">
+                        <AttributeAxisIterator id="019B10A0" test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                          <ForVarIterator varname="x" id="0173BBA8"/>
+                        </AttributeAxisIterator>
+                        <SingletonIterator value="xs:double(2)" id="0173BCB0"/>
+                        <SingletonIterator value="xs:double(2)" id="0173BE10"/>
+                      </FnSubsequenceIterator>
+                    </FnExactlyOneIterator>
+                  </FnBooleanIterator>
+                </AndIterator>
+              </WhereClause>
+              <ReturnClause>
+                <SingletonIterator value="xs:integer(1)" id="0173BA48"/>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </LetVariable>
+          <ReturnClause>
+            <IfThenElseIterator id="01989E88">
+              <AndIterator id="019157A8">
+                <FnEmptyIterator id="01915810">
+                  <LetVarIterator varname="href" id="01918270"/>
+                </FnEmptyIterator>
+                <FnEmptyIterator id="01915740">
+                  <LetVarIterator varname="request" id="01918200"/>
+                </FnEmptyIterator>
+              </AndIterator>
+              <ErrorIterator id="01915608">
+                <CtxVarIterator varid="7" varname="err:HC005" varkind="global" id="019B9CA0"/>
+                <SingletonIterator value="xs:string(The request element is not valid.)" id="0173B838"/>
+              </ErrorIterator>
+              <IfThenElseIterator id="01989E20">
+                <FnBooleanIterator id="01914A20">
+                  <TypedValueCompareIterator_STRING id="019B9C28">
+                    <LetVarIterator varname="href" id="01918190"/>
+                    <SingletonIterator value="xs:string()" id="0173BE68"/>
+                  </TypedValueCompareIterator_STRING>
+                </FnBooleanIterator>
+                <ErrorIterator id="019155A0">
+                  <CtxVarIterator varid="7" varname="err:HC005" varkind="global" id="019B9E80"/>
+                  <SingletonIterator value="xs:string(The request element is not valid.)" id="0173B998"/>
+                </ErrorIterator>
+                <IfThenElseIterator id="01989B48">
+                  <FnBooleanIterator id="01914960">
+                    <TypedValueCompareIterator_INTEGER id="0196A138">
+                      <FnCountIterator id="01915538">
+                        <NodeDistinctIterator id="01915140" allow-atomics="false" check-only="false">
+                          <flwor::FLWORIterator id="018EA460">
+                            <ForVariable name="$$dot" referenced-by="0173B7E0">
+                              <DescendantSelfAxisIterator id="019B1880" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                                <LetVarIterator varname="request" id="01918120"/>
+                              </DescendantSelfAxisIterator>
+                            </ForVariable>
+                            <ForVariable name="$$dot" referenced-by="0173BD60 0173BF70 0173B9F0">
+                              <ChildAxisIterator id="019B19A0" test kind="match_name_test" qname="xs:QName(http://expath.org/ns/http-client,http-schema,body)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="$$dot" id="0173B7E0"/>
+                              </ChildAxisIterator>
+                            </ForVariable>
+                            <WhereClause>
+                              <AndIterator id="01989DB8">
+                                <FnBooleanIterator id="01914C60">
+                                  <FnExistsIterator id="019899A8">
+                                    <ChildAxisIterator id="019B17F0" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                                      <ForVarIterator varname="$$dot" id="0173BD60"/>
+                                    </ChildAxisIterator>
+                                  </FnExistsIterator>
+                                </FnBooleanIterator>
+                                <FnBooleanIterator id="01914CC0">
+                                  <FnExistsIterator id="01989CE8">
+                                    <AttributeAxisIterator id="019B1910" test kind="match_name_test" qname="xs:QName(,,src)" typename="*" nill allowed="0">
+                                      <ForVarIterator varname="$$dot" id="0173BF70"/>
+                                    </AttributeAxisIterator>
+                                  </FnExistsIterator>
+                                </FnBooleanIterator>
+                              </AndIterator>
+                            </WhereClause>
+                            <ReturnClause>
+                              <ForVarIterator varname="$$dot" id="0173B9F0"/>
+                            </ReturnClause>
+                          </flwor::FLWORIterator>
+                        </NodeDistinctIterator>
+                      </FnCountIterator>
+                      <FnCountIterator id="019154D0">
+                        <LetVarIterator varname="bodies" id="019180B0"/>
+                      </FnCountIterator>
+                    </TypedValueCompareIterator_INTEGER>
+                  </FnBooleanIterator>
+                  <ErrorIterator id="01989D50">
+                    <CtxVarIterator varid="7" varname="err:HC005" varkind="global" id="0196A1B0"/>
+                    <SingletonIterator value="xs:string(The request element is not valid.)" id="0173BC58"/>
+                  </ErrorIterator>
+                  <IfThenElseIterator id="01989BB0">
+                    <FnBooleanIterator id="01914A80">
+                      <LetVarIterator varname="should-be-empty" id="01918040"/>
+                    </FnBooleanIterator>
+                    <ErrorIterator id="01989C80">
+                      <CtxVarIterator varid="6" varname="err:HC004" varkind="global" id="0196A228"/>
+                      <SingletonIterator value="xs:string(The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).)" id="0173BAF8"/>
+                    </ErrorIterator>
+                    <SingletonIterator value="xs:boolean(true)" id="0173BD08"/>
+                  </IfThenElseIterator>
+                </IfThenElseIterator>
+              </IfThenElseIterator>
+            </IfThenElseIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </FunctionTraceIterator>
+    </WhereClause>
+    <MaterializeClause>
+      <MaterializeLetVariable inputVar="request : 01917FD0" referenced-by="01917F60 01917EF0"/>
+      <MaterializeLetVariable inputVar="href : 01917D30" referenced-by="01917CC0"/>
+      <MaterializeLetVariable inputVar="bodies : 01917C50" referenced-by="01917BE0"/>
+    </MaterializeClause>
+    <ReturnClause>
+      <SequentialIterator id="0196B008">
+        <CtxVarDeclareIterator varid="1" varname="req" id="0196A318">
+          <IfThenElseIterator id="0196AFA0">
+            <FnBooleanIterator id="0196DEC8">
+              <LetVarIterator varname="request" id="01917F60"/>
+            </FnBooleanIterator>
+            <TryCatchIterator id="01917E10">
+              <ValidateIterator id="0196AE68">
+                <UDFunctionCallIterator id="01917E80">
+                  <LetVarIterator varname="request" id="01917EF0"/>
+                </UDFunctionCallIterator>
+              </ValidateIterator>
+              <ErrorIterator id="0196AED0">
+                <CtxVarIterator varid="7" varname="err:HC005" varkind="global" id="0196A2A0"/>
+                <SingletonIterator value="xs:string(The request element is not valid.)" id="01961078"/>
+              </ErrorIterator>
+            </TryCatchIterator>
+            <FnConcatIterator id="0196AF38"/>
+          </IfThenElseIterator>
+        </CtxVarDeclareIterator>
+        <CtxVarDeclareIterator varid="2" varname="result" id="0196A480">
+          <TreatIterator type="[XQType ITEM_KIND]" quant="+" id="01917B70">
+            <ExtFunctionCallIterator id="0196A408">
+              <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: request] content=[UserDefinedXQType   requestType@http://expath.org/ns/http-client isComplex elementOnlyContent base:[XQType ANY_TYPE_KIND*] ]]" quant="?" id="01917DA0">
+                <CtxVarIterator varid="1" varname="req" varkind="local" id="0196A390"/>
+              </TreatIterator>
+              <LetVarIterator varname="href" id="01917CC0"/>
+              <LetVarIterator varname="bodies" id="01917BE0"/>
+            </ExtFunctionCallIterator>
+          </TreatIterator>
+        </CtxVarDeclareIterator>
+        <CtxVarIterator varid="2" varname="result" varkind="local" id="0196A4F8"/>
+      </SequentialIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</TreatIterator>
+
+Iterator tree for http:set-content-type:
+<TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: request] content=[XQType ANY_TYPE_KIND*]]" quant="?" id="019622C8">
+  <flwor::FLWORIterator id="018F0C60">
+    <LetVariable name="request" materialize="true" referenced-by="019179B0 01917940 01917860">
+      <LetVarIterator varname="request" id="01917A20"/>
+    </LetVariable>
+    <WhereClause>
+      <FnBooleanIterator id="01915320">
+        <LetVarIterator varname="request" id="019179B0"/>
+      </FnBooleanIterator>
+    </WhereClause>
+    <ReturnClause>
+      <ElementIterator id="01962258">
+        <SingletonIterator value="xs:QName(http://expath.org/ns/http-client,http-schema,request)" id="01960DB8"/>
+        <FnConcatIterator id="0196BA30">
+          <EnclosedIterator attr_cont="false" id="0196DF28">
+            <AttributeAxisIterator id="019B1760" test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+              <LetVarIterator varname="request" id="01917940"/>
+            </AttributeAxisIterator>
+          </EnclosedIterator>
+          <EnclosedIterator attr_cont="false" id="0196F968">
+            <flwor::FLWORIterator id="018F0BE0">
+              <ForVariable name="x" referenced-by="019615A0 01961548 019607E0 01960F18 019608E8">
+                <ChildAxisIterator id="019B16D0" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                  <LetVarIterator varname="request" id="01917860"/>
+                </ChildAxisIterator>
+              </ForVariable>
+              <ReturnClause>
+                <IfThenElseIterator id="0196B9C8">
+                  <InstanceOfIterator id="0196DE68">
+                    <ForVarIterator varname="x" id="019615A0"/>
+                  </InstanceOfIterator>
+                  <FunctionTraceIterator id="01916860">
+                    <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: body] content=[XQType ANY_TYPE_KIND*]]" quant="" id="01962108">
+                      <flwor::FLWORIterator id="018F0A60">
+                        <ForVariable name="body" referenced-by="01961700 01960890 01960CB0 01961288 01961650 01960A48 019614F0 01960C58 01960998">
+                          <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: body] content=[XQType ANY_TYPE_KIND*]]" quant="" id="019178D0">
+                            <ForVarIterator varname="x" id="01961548"/>
+                          </TreatIterator>
+                        </ForVariable>
+                        <ReturnClause>
+                          <ElementIterator id="01962098">
+                            <SingletonIterator value="xs:QName(http://expath.org/ns/http-client,http-schema,body)" id="01960AF8"/>
+                            <FnConcatIterator id="0196B8F8">
+                              <EnclosedIterator attr_cont="false" id="0196DF88">
+                                <AttributeAxisIterator id="019B1AC0" test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                                  <ForVarIterator varname="body" id="01961700"/>
+                                </AttributeAxisIterator>
+                              </EnclosedIterator>
+                              <EnclosedIterator attr_cont="false" id="0196F6C8">
+                                <IfThenElseIterator id="0196B890">
+                                  <FnBooleanIterator id="0196F2A8">
+                                    <AttributeAxisIterator id="019B2DE0" test kind="match_name_test" qname="xs:QName(,,method)" typename="*" nill allowed="0">
+                                      <ForVarIterator varname="body" id="01960890"/>
+                                    </AttributeAxisIterator>
+                                  </FnBooleanIterator>
+                                  <FnConcatIterator id="0196B070"/>
+                                  <AttributeIterator qname="xs:QName(,,method)" id="0196B828">
+                                    <EnclosedIterator attr_cont="true" id="0196F728">
+                                      <IfThenElseIterator id="0196B7C0">
+                                        <OrIterator id="0196B480">
+                                          <CompareIterator id="01961E68">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0196B1A8">
+                                              <FnDataIterator id="0196B0D8">
+                                                <AttributeAxisIterator id="019B2D50" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="01960CB0"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(text/xml)" id="01961180"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="01961ED8">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0196B278">
+                                              <FnDataIterator id="0196B210">
+                                                <AttributeAxisIterator id="019B2CC0" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="01961288"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(application/xml)" id="01961440"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="01961F48">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0196B348">
+                                              <FnDataIterator id="0196B2E0">
+                                                <AttributeAxisIterator id="019B2C30" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="01961650"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(text/xml-external-parsed-entity)" id="01960E68"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="01961FB8">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0196B418">
+                                              <FnDataIterator id="0196B3B0">
+                                                <AttributeAxisIterator id="019B29F0" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="01960A48"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(application/xml-external-parsed-entity)" id="01960BA8"/>
+                                          </CompareIterator>
+                                        </OrIterator>
+                                        <SingletonIterator value="xs:string(xml)" id="01960E10"/>
+                                        <IfThenElseIterator id="0196B758">
+                                          <FnBooleanIterator id="0196F608">
+                                            <CompareIterator id="01962028">
+                                              <PromoteIterator type="xs:anyAtomicType" id="0196B550">
+                                                <FnDataIterator id="0196B4E8">
+                                                  <AttributeAxisIterator id="01990960" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                    <ForVarIterator varname="body" id="019614F0"/>
+                                                  </AttributeAxisIterator>
+                                                </FnDataIterator>
+                                              </PromoteIterator>
+                                              <SingletonIterator value="xs:string(text/html)" id="01960C00"/>
+                                            </CompareIterator>
+                                          </FnBooleanIterator>
+                                          <SingletonIterator value="xs:string(html)" id="019616A8"/>
+                                          <IfThenElseIterator id="0196B6F0">
+                                            <StartsWithIterator id="0196B688">
+                                              <PromoteIterator type="xs:string" id="0196B620">
+                                                <FnDataIterator id="0196B5B8">
+                                                  <AttributeAxisIterator id="019900F0" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                    <ForVarIterator varname="body" id="01960C58"/>
+                                                  </AttributeAxisIterator>
+                                                </FnDataIterator>
+                                              </PromoteIterator>
+                                              <SingletonIterator value="xs:string(text/)" id="01960B50"/>
+                                            </StartsWithIterator>
+                                            <SingletonIterator value="xs:string(text)" id="01961390"/>
+                                            <SingletonIterator value="xs:string(binary)" id="01961758"/>
+                                          </IfThenElseIterator>
+                                        </IfThenElseIterator>
+                                      </IfThenElseIterator>
+                                    </EnclosedIterator>
+                                  </AttributeIterator>
+                                </IfThenElseIterator>
+                              </EnclosedIterator>
+                              <EnclosedIterator attr_cont="false" id="0196F788">
+                                <ChildAxisIterator id="01962E68" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                                  <ForVarIterator varname="body" id="01960998"/>
+                                </ChildAxisIterator>
+                              </EnclosedIterator>
+                            </FnConcatIterator>
+                          </ElementIterator>
+                        </ReturnClause>
+                      </flwor::FLWORIterator>
+                    </TreatIterator>
+                  </FunctionTraceIterator>
+                  <IfThenElseIterator id="0196B960">
+                    <InstanceOfIterator id="0196F488">
+                      <ForVarIterator varname="x" id="019607E0"/>
+                    </InstanceOfIterator>
+                    <UDFunctionCallIterator id="019621E8">
+                      <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: multipart] content=[XQType ANY_TYPE_KIND*]]" quant="" id="01962178">
+                        <ForVarIterator varname="x" id="01960F18"/>
+                      </TreatIterator>
+                    </UDFunctionCallIterator>
+                    <ForVarIterator varname="x" id="019608E8"/>
+                  </IfThenElseIterator>
+                </IfThenElseIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </EnclosedIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</TreatIterator>
+
+Iterator tree for http:create-multipart:
+<TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: multipart] content=[XQType ANY_TYPE_KIND*]]" quant="" id="01962808">
+  <flwor::FLWORIterator id="018F0DE0">
+    <ForVariable name="multipart" referenced-by="01960D08 01961230">
+      <LetVarIterator varname="multipart" id="019623A8"/>
+    </ForVariable>
+    <ReturnClause>
+      <ElementIterator id="01962798">
+        <SingletonIterator value="xs:QName(http://expath.org/ns/http-client,http-schema,multipart)" id="01960940"/>
+        <FnConcatIterator id="01960068">
+          <EnclosedIterator attr_cont="false" id="0196E888">
+            <AttributeAxisIterator id="01962F88" test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+              <ForVarIterator varname="multipart" id="01960D08"/>
+            </AttributeAxisIterator>
+          </EnclosedIterator>
+          <EnclosedIterator attr_cont="false" id="0196EAC8">
+            <flwor::FLWORIterator id="018F0D60">
+              <ForVariable name="x" referenced-by="019615F8 019610D0 019BAC38">
+                <ChildAxisIterator id="01963018" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                  <ForVarIterator varname="multipart" id="01961230"/>
+                </ChildAxisIterator>
+              </ForVariable>
+              <ReturnClause>
+                <IfThenElseIterator id="01960000">
+                  <InstanceOfIterator id="0196E528">
+                    <ForVarIterator varname="x" id="019615F8"/>
+                  </InstanceOfIterator>
+                  <FunctionTraceIterator id="019169A0">
+                    <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: body] content=[XQType ANY_TYPE_KIND*]]" quant="" id="01962728">
+                      <flwor::FLWORIterator id="018F0CE0">
+                        <ForVariable name="body" referenced-by="019611D8 019BA0E0 019BB898 019BAE48 019BBA50 019BADF0 019BBC08 019BA1E8 019B9F80">
+                          <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://expath.org/ns/http-client, local: body] content=[XQType ANY_TYPE_KIND*]]" quant="" id="01962418">
+                            <ForVarIterator varname="x" id="019610D0"/>
+                          </TreatIterator>
+                        </ForVariable>
+                        <ReturnClause>
+                          <ElementIterator id="019626B8">
+                            <SingletonIterator value="xs:QName(http://expath.org/ns/http-client,http-schema,body)" id="019613E8"/>
+                            <FnConcatIterator id="0195FF98">
+                              <EnclosedIterator attr_cont="false" id="0196E8E8">
+                                <AttributeAxisIterator id="019630A8" test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                                  <ForVarIterator varname="body" id="019611D8"/>
+                                </AttributeAxisIterator>
+                              </EnclosedIterator>
+                              <EnclosedIterator attr_cont="false" id="0196EA68">
+                                <IfThenElseIterator id="0195FF30">
+                                  <FnBooleanIterator id="0196E468">
+                                    <AttributeAxisIterator id="01963138" test kind="match_name_test" qname="xs:QName(,,method)" typename="*" nill allowed="0">
+                                      <ForVarIterator varname="body" id="019BA0E0"/>
+                                    </AttributeAxisIterator>
+                                  </FnBooleanIterator>
+                                  <FnConcatIterator id="01989EF0"/>
+                                  <AttributeIterator qname="xs:QName(,,method)" id="0195FEC8">
+                                    <EnclosedIterator attr_cont="true" id="0196E288">
+                                      <IfThenElseIterator id="0195FE60">
+                                        <OrIterator id="0195FB20">
+                                          <CompareIterator id="01962488">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0195F848">
+                                              <FnDataIterator id="0195F7E0">
+                                                <AttributeAxisIterator id="019631C8" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="019BB898"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(text/xml)" id="019BA660"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="019624F8">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0195F918">
+                                              <FnDataIterator id="0195F8B0">
+                                                <AttributeAxisIterator id="01963258" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="019BAE48"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(application/xml)" id="019BA7C0"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="01962568">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0195F9E8">
+                                              <FnDataIterator id="0195F980">
+                                                <AttributeAxisIterator id="019632E8" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="019BBA50"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(text/xml-external-parsed-entity)" id="019BA240"/>
+                                          </CompareIterator>
+                                          <CompareIterator id="019625D8">
+                                            <PromoteIterator type="xs:anyAtomicType" id="0195FAB8">
+                                              <FnDataIterator id="0195FA50">
+                                                <AttributeAxisIterator id="01963378" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                  <ForVarIterator varname="body" id="019BADF0"/>
+                                                </AttributeAxisIterator>
+                                              </FnDataIterator>
+                                            </PromoteIterator>
+                                            <SingletonIterator value="xs:string(application/xml-external-parsed-entity)" id="019BB9F8"/>
+                                          </CompareIterator>
+                                        </OrIterator>
+                                        <SingletonIterator value="xs:string(xml)" id="019BAA28"/>
+                                        <IfThenElseIterator id="0195FDF8">
+                                          <FnBooleanIterator id="0196E408">
+                                            <CompareIterator id="01962648">
+                                              <PromoteIterator type="xs:anyAtomicType" id="0195FBF0">
+                                                <FnDataIterator id="0195FB88">
+                                                  <AttributeAxisIterator id="01963408" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                    <ForVarIterator varname="body" id="019BBC08"/>
+                                                  </AttributeAxisIterator>
+                                                </FnDataIterator>
+                                              </PromoteIterator>
+                                              <SingletonIterator value="xs:string(text/html)" id="019BBEC8"/>
+                                            </CompareIterator>
+                                          </FnBooleanIterator>
+                                          <SingletonIterator value="xs:string(html)" id="019BB0B0"/>
+                                          <IfThenElseIterator id="0195FD90">
+                                            <StartsWithIterator id="0195FD28">
+                                              <PromoteIterator type="xs:string" id="0195FCC0">
+                                                <FnDataIterator id="0195FC58">
+                                                  <AttributeAxisIterator id="01963498" test kind="match_name_test" qname="xs:QName(,,media-type)" typename="*" nill allowed="0">
+                                                    <ForVarIterator varname="body" id="019BA1E8"/>
+                                                  </AttributeAxisIterator>
+                                                </FnDataIterator>
+                                              </PromoteIterator>
+                                              <SingletonIterator value="xs:string(text/)" id="019BA3F8"/>
+                                            </StartsWithIterator>
+                                            <SingletonIterator value="xs:string(text)" id="019BA558"/>
+                                            <SingletonIterator value="xs:string(binary)" id="019BB1B8"/>
+                                          </IfThenElseIterator>
+                                        </IfThenElseIterator>
+                                      </IfThenElseIterator>
+                                    </EnclosedIterator>
+                                  </AttributeIterator>
+                                </IfThenElseIterator>
+                              </EnclosedIterator>
+                              <EnclosedIterator attr_cont="false" id="0196E3A8">
+                                <ChildAxisIterator id="01963528" test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                                  <ForVarIterator varname="body" id="019B9F80"/>
+                                </ChildAxisIterator>
+                              </EnclosedIterator>
+                            </FnConcatIterator>
+                          </ElementIterator>
+                        </ReturnClause>
+                      </flwor::FLWORIterator>
+                    </TreatIterator>
+                  </FunctionTraceIterator>
+                  <ForVarIterator varname="x" id="019BAC38"/>
+                </IfThenElseIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </EnclosedIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</TreatIterator>
