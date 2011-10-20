@@ -13,7 +13,7 @@ xquery version "1.0";
  : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  : See the License for the specific language governing permissions and
  : limitations under the License.
-:)
+ :)
 
 (:~
  : This module provides a function (np:node-position) that, given a node, 
@@ -26,7 +26,7 @@ xquery version "1.0";
  : Within this module, the term "node position" will be used to refer to an
  : xs:anyURI item that is returned by the np:node-position function.
  :
- : @author Federico Cavalieri 
+ : @author Federico Cavalieri, Markos Zaharioudakis 
  :)
 module namespace np = "http://www.zorba-xquery.com/modules/node-position";
 
@@ -53,16 +53,20 @@ declare function np:node-position(
 ) as xs:anyURI external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is an ancestor of the node whose 
- : node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : an ancestor of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is an ancestor of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential descendant node position
  : @param $n-pos2 the potential ancestor node position
  :
- : @return true if the node whose node position is $n-pos2 
- : is an ancestor of the node whose node position is $n-pos1;
- : false otherwise.
+ : @return true if the node position $n-pos2 is an ancestor of the node position
+ : $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function. 
@@ -72,16 +76,20 @@ declare function np:ancestor-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument belongs to the subtree rooted 
- : at the node whose node position is given as first argument.
+ : Determines whether the node position given as second argument belongs
+ : to the subtree rooted at the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node belongs to the subtree rooted at the 
+ : first. Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential subtree root node position
  : @param $n-pos2 the potential node in the subtree node position
  :
- : @return true if the node whose node position is $n-pos2 
- : belongs to the subtree rooted at the node whose node position 
- : is $n-pos1; false otherwise.
+ : @return true if the node position $n-pos2 belongs to the subtree rooted at 
+ : the node position $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -91,16 +99,20 @@ declare function np:in-subtree-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is a descendant of the node whose 
- : node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : a descendant of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is a descendant of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential ancestor node position
  : @param $n-pos2 the potential descendant node position
  :
- : @return true if the node whose node position is $n-pos2 
- : is a descendant of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is a descendant of the node 
+ : position $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -110,16 +122,20 @@ declare function np:descendant-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is the parent of the node whose 
- : node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : the parent of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is the parent of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential child node position
  : @param $n-pos2 the potential parent node position
  :
- : @return true if the node whose node position is $n-pos2
- : is the parent of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is the parent of the node position 
+ : $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -129,16 +145,20 @@ declare function np:parent-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is a child of the node whose 
- : node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : a child of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is a child of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential parent node position
  : @param $n-pos2 the potential child node position
  :
- : @return true if the node whose node position is $n-pos2
- : is a child of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is a child of the node position 
+ : $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -148,16 +168,20 @@ declare function np:child-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is an attribute of the node whose 
- : node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : an attribute of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is an attribute of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential parent node position
  : @param $n-pos2 the potential attribute node position
  :
- : @return true if the node whose node position is $n-pos2
- : is an attribute of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is an attribute of the node 
+ : position $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -167,16 +191,20 @@ declare function np:attribute-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is a following-sibling of the node 
- : whose node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : a following-sibling of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is a following-sibling of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential preceding-sibling node position
  : @param $n-pos2 the potential following-sibling node position
  :
- : @return true if the node whose node position is $n-pos2
- : is a following-sibling of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is a following-sibling of the node 
+ : position $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -186,16 +214,20 @@ declare function np:following-sibling-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is a preceding-sibling of the node 
- : whose node position is given as first argument.
+ : Determines whether the node position given as second argument is
+ : a preceding-sibling of the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is a preceding-sibling of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 the potential following-sibling node position
  : @param $n-pos2 the potential preceding-sibling node position
  :
- : @return true if the node whose node position is $n-pos2 
- : is a preceding-sibling of the node whose node position is $n-pos1; 
- : false otherwise.
+ : @return true if the node position $n-pos2 is a preceding-sibling of the node 
+ : position $n-pos1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -205,109 +237,19 @@ declare function np:preceding-sibling-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose node position is 
- : given as second argument is following the node whose 
- : node position is given as first argument.
+ : Determines whether two node positions are siblings.
  :
- : @param $n-pos1 the potential preceding node position
- : @param $n-pos2 the potential following node position
- :
- : @return true if the node whose node position is $n-pos2 
- : is following the node whose node position is $n-pos1;
- : false otherwise.
- :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:following-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
-
-  
-(:~
- : Determines whether the node whose node position is given as 
- : second argument is following in document order the node 
- : whose node position is given as first argument.
- :
- : @param $n-pos1 the potential preceding node position
- : @param $n-pos2 the potential following node position
- :
- : @return true if the node whose node position is $n-pos2 
- : is following in document order the node whose node position
- : is $n-pos1; false otherwise.
- :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:following-in-document-order-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
-
-
-(:~
- : Determines whether the node whose node position is 
- : given as second argument is preceding the node whose 
- : node position is given as first argument.
- :
- : @param $n-pos1 the potential following node position
- : @param $n-pos2 the potential preceding node position
- :
- : @return true if the node whose node position is $n-pos2 
- : is preceding the node whose node position is $n-pos1; 
- : false otherwise.
- :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:preceding-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
-
-(:~
- : Determines whether the node whose node position is 
- : given as second argument is preceding the node whose 
- : node position is given as first argument.
- :
- : @param $n-pos1 the potential following node position
- : @param $n-pos2 the potential preceding node position
- :
- : @return true if the node whose node position is $n-pos2 
- : is preceding in document order the node whose node position 
- : is $n-pos1; false otherwise.
- :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:preceding-in-document-order-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
-
-
-(:~
- : Computes the level of a node in the tree given its node position.
- :
- : Note: The first level has the number one.
- :
- : @param $n-pos the node position of the node whose level should be 
- : determined.
- :
- : @return the level in the tree of the node whose node position is 
- : $n-pos as xs:integer.
- :
- : @error zerr:ZAPI0028 if the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:level(
-  $n-pos as xs:anyURI) as xs:integer external;  
-
-(:~
- : Determines whether two nodes are siblings given their node position.
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is a sibling of the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
  :
  : @param $n-pos1 a node position
  : @param $n-pos2 a node position
  :
- : @return true if the two nodes whose node positions are $n-pos1
- : and $n-pos2 are siblings; false otherwise.
+ : @return true if the two node positions $n-pos1 and $n-pos2 are siblings; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -317,12 +259,120 @@ declare function np:sibling-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
   
 (:~
- : Determines whether a node is an attribute given its node position.
+ : Determines whether the node position given as second argument is
+ : following the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is following the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
+ :
+ : @param $n-pos1 the potential preceding node position
+ : @param $n-pos2 the potential following node position
+ :
+ : @return true if the node position $n-pos2 is following the node position 
+ : $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:following-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+  
+(:~
+ : Determines whether the node position given as second argument is
+ : following in document order the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is following in document order the 
+ : first. Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
+ :
+ : @param $n-pos1 the potential preceding node position
+ : @param $n-pos2 the potential following node position
+ :
+ : @return true if the node position $n-pos2 is following in document order the
+ : node position $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:following-in-document-order-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+
+(:~
+ : Determines whether the node position given as second argument is
+ : preceding the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is preceding the first.
+ : Otherwise, the result of the function does not imply anything about the
+ : positional relationship of the two nodes.
+ :
+ : @param $n-pos1 the potential following node position
+ : @param $n-pos2 the potential preceding node position
+ :
+ : @return true if the node position $n-pos2 is preceding the node position 
+ : $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:preceding-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+
+(:~
+ : Determines whether the node position given as second argument is
+ : preceding in document order the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node is preceding in document order the 
+ : first. Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
+ :
+ : @param $n-pos1 the potential following node position
+ : @param $n-pos2 the potential preceding node position
+ :
+ : @return true if the node position $n-pos2 is preceding in document order the 
+ : node position $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:preceding-in-document-order-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+
+(:~
+ : Computes the level of a node position in its tree.
+ :
+ : Note: The first level has the number one.
+ :
+ : @param $n-pos the node position of the node whose level should be 
+ : determined.
+ :
+ : @return the level in the tree of the node position $n-pos as xs:integer.
+ :
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:level(
+  $n-pos as xs:anyURI) as xs:integer external;  
+
+(:~
+ : Determines whether a node position corresponds to an attribute node.
  :
  : @param $n-pos the potential attribute node position
  :
- : @return true if the node whose node position is $n-pos
- : is an attribute; false otherwise.
+ : @return true if the node position $n-pos corresponds to an attribute; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -331,12 +381,12 @@ declare function np:is-attribute(
   $n-pos1 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether a node is a comment given its node position.
+ : Determines whether a node position corresponds to a comment node.
  :
  : @param $n-pos the potential comment node position
  :
- : @return true if the node whose node position is $n-pos
- : is a comment; false otherwise.
+ : @return true if the node position $n-pos corresponds to an comment; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -344,13 +394,13 @@ declare function np:is-attribute(
 declare function np:is-comment(
   $n-pos1 as xs:anyURI) as xs:boolean external;
   
- (:~
- : Determines whether a node is a document given its node position.
+(:~
+ : Determines whether a node position corresponds to a document node.
  :
  : @param $n-pos the potential document node position
  :
- : @return true if the node whose node position is $n-pos
- : is a document; false otherwise.
+ : @return true if the node position $n-pos corresponds to a document; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -358,13 +408,13 @@ declare function np:is-comment(
 declare function np:is-document(
   $n-pos1 as xs:anyURI) as xs:boolean external;
   
- (:~
- : Determines whether a node is an element given its node position.
+(:~
+ : Determines whether a node position corresponds to an element node.
  :
  : @param $n-pos the potential element node position
  :
- : @return true if the node whose node position is $n-pos
- : is an element; false otherwise.
+ : @return true if the node position $n-pos corresponds to an element; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -372,14 +422,14 @@ declare function np:is-document(
 declare function np:is-element(
   $n-pos1 as xs:anyURI) as xs:boolean external;
   
- (:~
- : Determines whether a node is a processing-instruction given its 
- : node position.
+(:~
+ : Determines whether a node position corresponds to an processing-instruction
+ : node.
  :
  : @param $n-pos the potential processing-instruction node position
  :
- : @return true if the node whose node position is $n-pos
- : is a processing-instruction; false otherwise.
+ : @return true if the node position $n-pos corresponds to a processing 
+ : instruction; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -387,13 +437,13 @@ declare function np:is-element(
 declare function np:is-processing-instruction(
   $n-pos1 as xs:anyURI) as xs:boolean external;
   
- (:~
- : Determines whether a node is a text given its node position.
+(:~
+ : Determines whether a node position corresponds to a text node.
  :
  : @param $n-pos the potential text node position
  :
- : @return true if the node whose node position is $n-pos
- : is a text; false otherwise.
+ : @return true if the node position $n-pos corresponds to a text; 
+ : false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -402,8 +452,7 @@ declare function np:is-text(
   $n-pos1 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether two nodes belong to the same tree given their
- : node position.
+ : Determines whether two node positions belong to the same tree.
  :
  : @param $n-pos1 a node position
  : @param $n-pos2 a node position
@@ -419,12 +468,11 @@ declare function np:in-same-tree-of(
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether a node belongs to a collection given its 
- : node position.
+ : Determines whether a node position belongs to a collection.
  :
  : @param $n-pos the node position
  :
- : @return true if the node whose node position is $n-pos 
+ : @return true if the node position $n-pos 
  : belongs to a collection; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node
@@ -434,8 +482,7 @@ declare function np:in-collection(
   $n-pos as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether two nodes belong to the same collection given 
- : their node position.
+ : Determines whether two node positions belong to the same collection.
  :
  : @param $n-pos1 a node position
  : @param $n-pos2 a node position
