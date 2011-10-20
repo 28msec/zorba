@@ -50,24 +50,26 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : The probe-index-point-value function retrieves the domain nodes associated
- : by value equality with a particular search tuple. This function is variadic
- : because the number of search keys comprising the search tuple is not fixed.
- : 
- : The first argument is the QName identifying the index to probe. The remaining 
- : arguments specify the search condition, which is given as a number of search
- : keys comprising a search tuple. Each search key is either an atomic item
- : or the empty sequence. The number of search keys given must be equal to the
- : number of keys declared for the index. 
+ : The probe-index-point-value function retrieves from an index the domain 
+ : nodes associated by value equality with a given <strong>search tuple</strong>.
+ : The search tuple consists of a number of <strong>search keys</strong>, where
+ : each search key is either an atomic item or the empty sequence.  The number
+ : of search keys given must be equal to the number of keys declared for the 
+ : index. Since the number of keys differs from one index to another, this 
+ : function is variadic.
+ :
+ : The result of the function is either an error or the set of domain nodes for 
+ : which the following xquery expression returns true:
+ :
+ : $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
+ :
+ : where keyExpr<sub>i</sub> is the expression specified in the i-th keyspec 
+ : of the index.
  :
  : @param $name The QName of the index to probe
  : @param $key_i the search keys used to probe the index with. The i-th search
  :        key corresponds to the i-th key expression in the index declaration.
- :
- : @return the set of domain nodes for which the following xquery expression 
- : returns true:
- :
- : $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
+ : @return the set of domain nodes that satisfy the search condition.
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
@@ -83,7 +85,16 @@ declare %ann:variadic function idml:probe-index-point-value(
 
 
 (:~
- : @param $name The QName of the index to probe
+ : @param $name The QName of the index to probe.
+ : @param $key The search sequence.
+ : @return the set of domain nodes that satisfy the search condition.
+ :
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0029 if the index is not general.
+ : @error err:XPTY0004  if the search sequence contains a search key, 
+ :        whose type does not match the atomic type specified in the
+ :        index declaration for the corresponding key expression.
  :)
 declare %ann:variadic function idml:probe-index-point-general(
   $name as xs:QName, 
@@ -125,13 +136,13 @@ declare %ann:variadic function idml:probe-index-point-general(
  : @param $rangeUpperBoundIncluded If false, then the range is open from above, 
  :          i.e., the rangeUpperBound value is not considered part of the 
  :          range. Otherwise, the range is closed from above, i.e., the 
- :          rangeUpperBound value is part of the range.  
- : @return The sequence of domain nodes matching this range probe.
+ :          rangeUpperBound value is part of the range.
+ : @return the set of domain nodes that satisfy the search condition.
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
  : @error zerr:ZDDY0025 if the number of rangespecs passed as arguments
- :    does not match the number of keys declared for the index.
+ :        does not match the number of keys declared for the index.
  :)
 declare %ann:variadic function idml:probe-index-range-value(
   $name                as xs:QName, 
@@ -144,7 +155,8 @@ declare %ann:variadic function idml:probe-index-range-value(
 
 
 (:~
- : @param $name The QName of the index to probe
+ : @param $name The QName of the index to probe.
+ : @return the set of domain nodes that satisfy the search condition
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
