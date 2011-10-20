@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 #include <zorba/config.h>
-#include "debug_command.h"
+
+#include "command.h"
+#include "command_prompt.h"
 #include "command_line_handler.h"
 
 using namespace zorba;
-using namespace zorba::debugclient;
+using namespace zorba::debugger;
 
 #ifndef _WIN32_WCE
 int
@@ -43,8 +45,8 @@ _tmain(int argc, _TCHAR* argv[])
     EventHandler lEventHandler(lQueue, lContEvent);
     lEventHandler.init();
 
-    CommandLine lCommandLine;
-    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandLine);
+    CommandPrompt lCommandPrompt;
+    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
     lCommandLineHandler.execute();
   } catch (...) {
     return 4;

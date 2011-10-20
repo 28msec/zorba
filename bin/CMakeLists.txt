@@ -17,15 +17,13 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
 IF (ZORBA_WITH_DEBUGGER)
   SET (DEBUG_CLIENT_SRCS
-    debug_client/tuple.h
-    debug_client/main.cpp
-    debug_client/debug_command.h
-    debug_client/debug_command.cpp
-    debug_client/command_line_handler.h
-    debug_client/command_line_handler.cpp
-    debug_client/lock_free_queue.h
-    debug_client/event_handler.h
-    debug_client/event_handler.cpp
+    debugger/tuple.h
+    debugger/main.cpp
+    debugger/command.cpp
+    debugger/command_prompt.cpp
+    debugger/command_line_handler.cpp
+    debugger/lock_free_queue.cpp
+    debugger/event_handler.cpp
   )
   ZORBA_GENERATE_EXE ("debuggercmd" "${DEBUG_CLIENT_SRCS}" "" "debugger" "bin")
 ENDIF (ZORBA_WITH_DEBUGGER)

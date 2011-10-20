@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 #pragma once
-#include <zorba/config.h>
+#ifndef ZORBA_DEBUGGER_COMMAND_H
+#define ZORBA_DEBUGGER_COMMAND_H
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -23,9 +25,23 @@
 #include <sstream>
 #include <memory>
 #include <typeinfo>
-#include "debug_client/tuple.h"
 
-namespace zorba { namespace debugclient {
+#include <zorba/config.h>
+
+#include "tuple.h"
+
+
+namespace std {
+  
+  /**
+   * This is a helper split function
+   */
+  vector<string>& operator<< (vector<string>& vec, const string& str);
+  
+  set<string>& operator<< (set<string>& vec, const string& str);
+} // namespace std
+
+namespace zorba { namespace debugger {
   
   class DebugClientParseException : public std::exception {
   };
@@ -154,19 +170,6 @@ namespace zorba { namespace debugclient {
     std::string theDescription;
     bool theIsRequired;
   };
-}} // end namespace zorba
-
-namespace std {
-  
-  /**
-   * This is a helper split function
-   */
-  vector<string>& operator<< (vector<string>& vec, const string& str);
-  
-  set<string>& operator<< (set<string>& vec, const string& str);
-} //end namespace std
-
-namespace zorba { namespace debugclient {
 
   template<typename Func, typename Tuple, int CommandIdx>
   class CommandInstance
@@ -224,16 +227,6 @@ namespace zorba { namespace debugclient {
     std::map<std::string, CommandArg<Tuple>* > theArgs;
   };
   
-  class CommandLine {
-  public:
-    ~CommandLine();
-  public:
-    void execute();
-    CommandLine& operator<< (UntypedCommand* aCommand);
-  private:
-    std::map<std::string, UntypedCommand*> theCommands;
-  };
-  
   template<typename Func, typename Tuple, int CommandIdx>
   Command<Func, Tuple, CommandIdx>::~Command()
   {
@@ -243,7 +236,6 @@ namespace zorba { namespace debugclient {
     }
   }
     
- 
   template<typename Func, typename Tuple, int CommandIdx>
   Command<Func, Tuple, CommandIdx>& 
   Command<Func, Tuple, CommandIdx>::operator() (unsigned aId,
@@ -336,4 +328,7 @@ namespace zorba { namespace debugclient {
     theFunction.template handle<CommandIdx>(this->theTuple);
   }
 
-}} // end of namespace zorba::debugclient
+} // namespace zorba
+} // namespace debugger
+
+#endif // ZORBA_DEBUGGER_COMMAND_H

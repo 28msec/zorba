@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "debug_client/event_handler.h"
+#include "event_handler.h"
 
 #include <sstream>
 
@@ -22,7 +22,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/iterator.h>
 
-namespace zorba { namespace debugclient {
+namespace zorba { namespace debugger {
   
 EventHandler::EventHandler(LockFreeProducer<std::size_t>& aQueue, LockFreeProducer<bool>& aContProducer)
   : theIdQueue(aQueue), theContinueProducer(aContProducer),
@@ -107,4 +107,4 @@ EventHandler::error(unsigned int errcode, const std::string &msg)
 }
 
 } // namespace zorba
-} // namespace debugclient
+} // namespace debugger

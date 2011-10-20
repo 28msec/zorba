@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 #pragma once
+#ifndef ZORBA_DEBUGGER_EVENT_HANDLER_H
+#define ZORBA_DEBUGGER_EVENT_HANDLER_H
+
 #include <string>
 #include <iostream>
+
 #include <zorba/debugger_event_handler.h>
 #include <zorba/static_context.h>
+
 #include "lock_free_queue.h"
 
-namespace zorba {
-  class Zorba;
-}
 
-namespace zorba { namespace debugclient {
-  
+namespace zorba { namespace debugger {
+
+class zorba::Zorba;
+
 class EventHandler : public zorba::DebuggerEventHandler
 {
   public:
@@ -52,4 +56,6 @@ class EventHandler : public zorba::DebuggerEventHandler
 };
   
 } // namespace zorba
-} // namespace debugclient
+} // namespace debugger
+
+#endif // ZORBA_DEBUGGER_EVENT_HANDLER_H

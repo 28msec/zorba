@@ -13,10 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
-#include <zorba/config.h>
-#if ZORBA_TR1_IN_TR1_SUBDIRECTORY
-# include <tr1/tuple>
-#else
-# include <tuple>
-#endif
+#include "command.h"
+
+#include <iostream>
+
+
+namespace std {
+  
+  set<string>& operator<< (set<string>& vec, const string& str)
+  {
+    string::size_type before = 0;
+    string::size_type pos = str.find(" ", 0);
+    while (pos != str.npos) {
+      vec.insert(str.substr(before, pos));
+      before = pos + 1;
+      pos = str.find(" ", before);
+    }
+    vec.insert(str.substr(before));
+    return vec;
+  }
+
+}
