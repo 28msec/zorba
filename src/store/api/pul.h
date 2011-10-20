@@ -141,6 +141,9 @@ public:
         Item_t& typeName,
         std::vector<Item_t>& typedValue) = 0;
 
+  virtual void addRevalidate(
+          const QueryLoc* aQueryLoc,
+          Item_t& target) = 0;
 
   virtual void addPut(
         const QueryLoc* aQueryLoc,
