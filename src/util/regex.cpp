@@ -127,33 +127,69 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case 'c': // NameChar
           *icu_re += "[" bs_c "]";
           continue;
-        case 'C': // ^\c
+        case 'C': // [^\c]
           *icu_re += "[^" bs_c "]";
           continue;
         case 'i': // initial NameChar
           *icu_re += "[" bs_i "]";
           continue;
-        case 'I': // ^\i
+        case 'I': // [^\i]
           *icu_re += "[^" bs_i "]";
           continue;
-        default:
-          if ( ascii::is_digit( *xq_c ) ) {
-            backref_no = *xq_c - '0';
-            if ( !backref_no )          // \0 is illegal
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
-            if ( in_char_class ) {
-              //
-              // XQuery 3.0 F&O 5.6.1: Within a character class expression,
-              // \ followed by a digit is invalid.
-              //
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BackRefIllegalInCharClass )
-              );
-            }
-            in_backref = true;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          backref_no = *xq_c - '0';
+          if ( !backref_no )          // \0 is illegal
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
+          if ( in_char_class ) {
+            //
+            // XQuery 3.0 F&O 5.6.1: Within a character class expression,
+            // \ followed by a digit is invalid.
+            //
+            throw INVALID_RE_EXCEPTION(
+              xq_re, ZED( BackRefIllegalInCharClass )
+            );
           }
+          in_backref = true;
+          // no break;
+        case '$':
+        case '(':
+        case ')':
+        case '*':
+        case '+':
+        case '-':
+        case '.':
+        case '?':
+        case 'd': // [0-9]
+        case 'D': // [^\d]
+        case 'n': // newline
+        case 'p': // category escape
+        case 'P': // [^\p]
+        case 'r': // carriage return
+        case 's': // whitespace
+        case 'S': // [^\s]
+        case 't': // tab
+        case 'w': // word char
+        case 'W': // [^\w]
+        case '[':
+        case '\\':
+        case ']':
+        case '^':
+        case '{':
+        case '|':
+        case '}':
           *icu_re += '\\';
           break;
+        default:
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
       }
     } else {
       if ( in_backref ) {

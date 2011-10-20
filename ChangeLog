@@ -50,6 +50,9 @@ version 2.x
 	different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
   * Added undo for node revalidation
+  * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
+  * Fixed bug #872799 (validate-in-place can set incorrect types)
+  * Fixed bug #855715 (Invalid escaped characters in regex not caught)
   * Fixed bug #868325 (fn:analyze-string fails with some recursive subgroups)
 
 version 2.0.1

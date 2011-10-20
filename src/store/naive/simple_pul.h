@@ -185,6 +185,9 @@ protected:
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
+  // Validate in place primitives
+  std::vector<UpdatePrimitive*>      theRevalidateList;
+
   // Index Maintenance
   std::set<XmlNode*>                 theModifiedDocs;
   std::vector<XmlNode*>              theInsertedDocs;
@@ -253,6 +256,7 @@ protected:
 class PULImpl : public store::PUL
 {
   friend class CollectionPul;
+  friend class UpdRevalidate;
 
 public:
   enum UpdListKind
@@ -404,6 +408,10 @@ public:
         store::Item_t&              target,
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
+
+  void addRevalidate(
+          const QueryLoc* aQueryLoc,
+          store::Item_t&              target);
 
   // Collection primitives
   void addCreateCollection(
