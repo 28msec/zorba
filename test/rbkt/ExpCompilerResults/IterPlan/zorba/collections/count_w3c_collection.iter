@@ -130,10 +130,10 @@ Iterator tree for main query:
       <CtxVarIterator varid="5" varname="arg2" varkind="global"/>
     </LetVariable>
     <MaterializeClause>
-      <MaterializeForVariable inputVar="temp_invoke_var1 : 01BE6688"/>
-      <MaterializeLetVariable inputVar="temp_invoke_var2 : 01B2E040"/>
-      <MaterializeLetVariable inputVar="temp_invoke_var3 : 01B2E0B0"/>
-      <MaterializeLetVariable inputVar="temp_invoke_var4 : 01B2DE80"/>
+      <MaterializeForVariable inputVar="temp_invoke_var1 : 01BB7D80"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var2 : 01B010B8"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var3 : 01B01128"/>
+      <MaterializeLetVariable inputVar="temp_invoke_var4 : 01B00EF8"/>
     </MaterializeClause>
     <ReturnClause>
       <EvalIterator>
@@ -321,9 +321,9 @@ Iterator tree for http:send-request:
       </FunctionTraceIterator>
     </WhereClause>
     <MaterializeClause>
-      <MaterializeLetVariable inputVar="request : 01BB4C50"/>
-      <MaterializeLetVariable inputVar="href : 01B2DCC0"/>
-      <MaterializeLetVariable inputVar="bodies : 01B2DBE0"/>
+      <MaterializeLetVariable inputVar="request : 01B86460"/>
+      <MaterializeLetVariable inputVar="href : 01B00D38"/>
+      <MaterializeLetVariable inputVar="bodies : 01B00C58"/>
     </MaterializeClause>
     <ReturnClause>
       <SequentialIterator>
