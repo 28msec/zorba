@@ -562,13 +562,13 @@ extern entry const dict_en[] = {
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct. Valid characters are [a-zA-Z0-9-]" },
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_INVALID_ATOM_CHAR", "$3 - invalid character for at atom. Forbidden characters are: [{}?*+|^]" },
+  { "~REGEX_INVALID_ATOM_CHAR", "$3 - invalid character for at atom; forbidden characters are: [{}?*+|^]" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
@@ -577,7 +577,7 @@ extern entry const dict_en[] = {
   { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction. The class subtraction must be the last construct in a class group [xxx-[yyy]]" },
+  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
@@ -595,31 +595,31 @@ extern entry const dict_en[] = {
   { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char. Supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups." },
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category. Supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block. See supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes " },
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category. Supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category. Supported categories: M, Mn, Mc, Me" },
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category; supported categories: M, Mn, Mc, Me" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category. Supported categories: N, Nd, Nl, No" },
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category; supported categories: N, Nd, Nl, No" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category. Supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category. Supported categories: S, Sm, Sc, Sk, So" },
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
-  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category. Supported categories: Z, Zs, Zl, Zp" },
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
 #endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
@@ -633,7 +633,7 @@ extern entry const dict_en[] = {
   { "~SeqFnBody", "only a function declared sequential can have a body that is a sequential expression" },
   { "~SeqNoCastToQName", "sequence of more than one item can not be cast to QName" },
 #if defined(ZORBA_NO_UNICODE)
-  { "~SerializeEncodingNotSupportedForNoUnicode", "setting encoding for serialization is not supported in ASCII only mode (Zorba is compiled with ZORBA_NO_UNICODE flag)" },
+  { "~SerializeEncodingNotSupportedForNoUnicode", "setting encoding for serialization is not supported in ASCII only mode (Zorba was compiled with ZORBA_NO_UNICODE=ON)" },
 #endif
   { "~SingletonExpected_2o", "singleton expected${ (2)}" },
   { "~StackOverflow", "stack overflow" },
