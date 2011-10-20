@@ -81,9 +81,6 @@ protected:
   virtual ~DynamicContextImpl();
 
 public:
-  virtual bool
-  getExternalVariables(
-      std::vector<Item>& aVars)const;
 
   virtual bool
   getVariable(

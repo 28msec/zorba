@@ -795,7 +795,8 @@ public:
   void getVariables(
     std::vector<var_expr_t>& variableList,
     bool localsOnly = false,
-    bool returnPrivateVars = false) const;
+    bool returnPrivateVars = false,
+    bool externalVarsOnly = false) const;
 
   void set_context_item_type(xqtref_t& t);
 

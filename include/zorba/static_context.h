@@ -576,6 +576,14 @@ namespace zorba {
       virtual audit::Event*
       getAuditEvent() = 0;
 
+	  /** \brief Returns a vector with the Qname of variables not 
+	    *         bound to the dynamic context.
+	    *
+	    * @param aVars variable to store the results.
+	    * @throw ZorbaException if an error occured.
+	    */
+	  virtual bool
+	  getExternalVariables(std::vector<Item>& aVars) const = 0;
 };
 } /* namespace zorba */
 #endif

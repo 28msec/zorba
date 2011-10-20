@@ -265,9 +265,12 @@ public:
 
   virtual void
   setAuditEvent(audit::Event* anEvent);
-
+  
   virtual audit::Event*
   getAuditEvent();
+
+  virtual bool
+  getExternalVariables(std::vector<Item>& aVars) const;  
 
 protected:
   String

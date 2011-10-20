@@ -97,7 +97,7 @@ cxx_api_changes_test3(Zorba* aZorba)
 
     XQuery_t lQuery = aZorba->compileQuery(lIn);
     std::vector<Item> lVars;
-    lQuery->getDynamicContext()->getExternalVariables(lVars);
+    lQuery->getStaticContext()->getExternalVariables(lVars);
 
     std::ostringstream lOut;
     std::vector<Item>::iterator lIte = lVars.begin();

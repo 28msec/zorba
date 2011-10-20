@@ -185,43 +185,6 @@ var_expr* DynamicContextImpl::get_var_expr(
 /****************************************************************************//**
 
 ********************************************************************************/
-
-bool DynamicContextImpl::getExternalVariables(
-  std::vector<Item>& aVars
-  ) const 
-{
-  
-  ZORBA_DCTX_TRY
-  {
-    //get all the local variables to check them later
-    std::vector<var_expr_t> lVars;
-    theStaticContext->getVariables(lVars, true);
-    
-    std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
-    std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
-    
-    for (; lIte != lEnd; ++lIte) 
-    { 
-          
-      if(lIte->getp()->is_external())
-        aVars.push_back(lIte->getp()->get_name());
-            
-    }
-    
-    if(!aVars.empty())
-      return true;
-       
-  }
-  ZORBA_DCTX_CATCH
-  
-  return false;
-}
-
-
-
-/****************************************************************************//**
-
-********************************************************************************/
 bool DynamicContextImpl::getVariable(
   const String& inNamespace,
   const String& inLocalname,

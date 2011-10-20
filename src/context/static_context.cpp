@@ -2023,7 +2023,8 @@ var_expr* static_context::lookup_var(
 void static_context::getVariables(
   std::vector<var_expr_t>& vars,
   bool aLocalsOnly,
-  bool returnPrivateVars) const
+  bool returnPrivateVars,
+  bool externalVarsOnly) const
 {
   const static_context* sctx = this;
 
@@ -2045,7 +2046,15 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if(externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+            vars.push_back((*ite).second);
+        }
       }
     }
     
@@ -2065,7 +2074,15 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if(externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+            vars.push_back((*ite).second);
+        }
       }
     }
 
