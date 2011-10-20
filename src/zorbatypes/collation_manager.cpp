@@ -18,8 +18,8 @@
 #include "common/common.h"
 
 #ifndef ZORBA_NO_UNICODE
-#include "zorbatypes/libicu.h"
-#endif
+# include <unicode/coll.h>
+#endif /* ZORBA_NO_UNICODE */
 
 #include <vector>
 #include <iostream>

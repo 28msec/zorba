@@ -35,7 +35,8 @@
 #ifdef ZORBA_NO_UNICODE
 # include "diagnostics/assert.h"
 #else
-# include "zorbatypes/libicu.h"
+# include <unicode/coll.h>
+# include <unicode/sortkey.h>
 #endif /* ZORBA_NO_UNICODE */
 
 namespace zorba {
