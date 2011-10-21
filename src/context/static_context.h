@@ -544,6 +544,7 @@ protected:
 
   CollationMap                          * theCollationMap;
   std::string                           * theDefaultCollation;
+  mutable XQPCollator                   * theCachedDefaultCollator;
 
   OptionMap                             * theOptionMap;
 
