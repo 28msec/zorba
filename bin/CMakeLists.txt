@@ -41,7 +41,7 @@ SET(SRCS
   zorbacmdproperties.cpp
   error_printer.cpp
   util.cpp
-  module_path.cpp
+  path_util.cpp
 )
 
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
@@ -84,3 +84,34 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST004
 # test the --option option to set an option in the static context
 ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_option PASS_REGULAR_EXPRESSION "value")
+
+# test the --uri-path, --lib-path, and --module-path args.
+# Use the versioning tests as they utilize test modules already.
+SET (_testdir
+  "${CMAKE_CURRENT_SOURCE_DIR}/../test/rbkt/Queries/zorba/versioning")
+SET (_uridir "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
+SET (_libdir "${CMAKE_BINARY_DIR}/TEST_LIB_PATH")
+ZORBA_ADD_TEST(bin/zorba_uri_path_1 zorbacmd -f -q "${_testdir}/import1.xq"
+  --uri-path "${_uridir}")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_1
+  PASS_REGULAR_EXPRESSION "hello, v2")
+
+ZORBA_ADD_TEST(bin/zorba_uri_path_2 zorbacmd -f -q "${_testdir}/external1.xq"
+  --uri-path "${_uridir}")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_2
+  PASS_REGULAR_EXPRESSION "ZXQP0008")
+
+ZORBA_ADD_TEST(bin/zorba_uri_path_3 zorbacmd -f -q "${_testdir}/external1.xq"
+  --uri-path "${_uridir}" --lib-path "${_libdir}")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_3
+  PASS_REGULAR_EXPRESSION "hello, v2")
+
+IF(WIN32)
+  SET(PATH_SEP ";")
+ELSE(WIN32)
+  SET(PATH_SEP ":")
+ENDIF(WIN32)
+ZORBA_ADD_TEST(bin/zorba_module_path_1 zorbacmd -f -q "${_testdir}/external1.xq"
+  --module-path "${_libdir}${PATH_SEP}${_uridir}")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
+  PASS_REGULAR_EXPRESSION "hello, v2")

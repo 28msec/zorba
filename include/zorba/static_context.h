@@ -452,7 +452,9 @@ namespace zorba {
 
       /**
        * @brief Set the URI and library lookup paths (lists of filesystem
-       * directories) for this static context.
+       * directories) for this static context. Note that calling this method
+       * will override any values previously passed to \link setURIPath()
+       * and \link setLibPath().
        * @deprecated Use \link setURIPath() and \link setLibPath().
        *
        * Convenience method which adds the listed directories to both the

@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <string>
+#include <zorba/api_shared_types.h>
 
 class ZorbaCMDProperties;
 
@@ -25,30 +26,14 @@ namespace zorba {
 
   class String;
 
-  class ModulePath {
-  protected:
-    static std::string
-    getEnvironmentModulePath();
+  namespace PathUtil {
 
-    static void
-    convertVector(const std::vector<std::string>& aSource,
-                  std::vector<String>& aDest); 
-
-    static void
-    tokenizeModulePath(const std::string& aModulePath,
-                       std::vector<std::string>& aResult);
-
-    static void
-    getInstalledModulePath(const std::string& aModulePath,
-                       std::vector<std::string>& aResult);
-
-  public:
-    static void
-    getModulePaths(const ZorbaCMDProperties& aProperties,
-                   std::vector<String>& aModulePaths);
+    void
+    setPathsOnContext(const ZorbaCMDProperties& aProperties,
+                      zorba::StaticContext_t& aStaticCtx);
 
 
-  };
+  }
 } /* namespace zorba */
 
 #endif
