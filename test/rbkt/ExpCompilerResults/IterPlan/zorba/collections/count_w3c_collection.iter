@@ -23,9 +23,6 @@ Iterator tree for main query:
   </SequentialIterator>
 </SequentialIterator>
 
-Iterator tree for main query:
-<FnConcatIterator/>
-
 Iterator tree for ddl:create:
 <ZorbaCreateCollectionIterator>
   <FunctionTraceIterator>
