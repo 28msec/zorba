@@ -113,9 +113,7 @@ private:
 Resource*
 TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
   static TestThesaurus thesaurus;
-  if ( uri == uri_ )
-    return &thesaurus;
-  return 0;
+  return uri == uri_ ? &thesaurus : 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,7 +150,7 @@ int thesaurus( int argc, char *argv[] ) {
   }
   catch ( ZorbaException const &e ) {
     cerr << e << endl;
-    result = 2;
+    result = 3;
   }
 
   zorba->shutdown();

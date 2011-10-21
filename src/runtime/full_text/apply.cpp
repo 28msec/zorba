@@ -35,9 +35,9 @@
 #include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
-#include "system/properties.h"
-#define DOUT            Properties::instance()->debug_out()
-#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
+# include "system/properties.h"
+# define DOUT             Properties::instance()->debug_out()
+# define TRACE_FULL_TEXT  Properties::instance()->traceFulltext()
 #endif /* NDEBUG */
 
 #include "apply.h"
@@ -50,9 +50,9 @@
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.
-#undef max
-#undef min
-#endif
+# undef max
+# undef min
+#endif /* WIN32 */
 
 using namespace std;
 using namespace zorba::locale;
@@ -1209,21 +1209,24 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   zstring const &uri = tid.get_uri();
 
-  // CEEJ Need to think about error-handling here: message from
-  // resolve_uri() as well as what happens if the dynamic_cast<>
-  // below returns nullptr.
-  zstring errorMsg;
-  auto_ptr<internal::Resource> lResource =
-      static_ctx_.resolve_uri(uri,
-                              internal::ThesaurusEntityData(qt0.lang()),
-                              errorMsg);
-  internal::Thesaurus::ptr thesaurus
-      (dynamic_cast<internal::Thesaurus*>(lResource.release()));
+  zstring error_msg;
+  auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
+    uri, internal::ThesaurusEntityData( qt0.lang() ), error_msg
+  );
+  if ( !rsrc.get() )
+    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+
+  internal::Thesaurus::ptr thesaurus(
+    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
+  );
+  ZORBA_ASSERT( thesaurus );
 
   internal::Thesaurus::iterator::ptr tresult(
-    thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )
+    thesaurus->lookup(
+      query_phrase, tid.get_relationship(), at_least, at_most
+    )
   );
-  if ( !tresult.get() )
+  if ( !tresult )
     return;
 
   FTTokenSeqIterator::FTTokens synonyms;

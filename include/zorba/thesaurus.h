@@ -38,7 +38,9 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ThesaurusEntityData : public EntityData {
 public:
   /**
-   * @brief Return the language for which a thesaurus is being requested.
+   * Gets the language for which a thesaurus is being requested.
+   *
+   * @return said language.
    */
   virtual locale::iso639_1::type getLanguage() const = 0;
 };
@@ -78,6 +80,7 @@ public:
      * @return Returns \c true only if there is a next synonym.
      */
     virtual bool next( String *synonym ) = 0;
+
   protected:
     virtual ~iterator() { }
   };
