@@ -974,8 +974,7 @@ toInternalPath(const std::vector<String>& aPublicStrings,
     {
       aInternalStrings.push_back(Unmarshaller::getInternalString(*lIter).c_str());
       zstring& lPath = aInternalStrings.back();
-      if (lPath.rfind(filesystem_path::get_directory_separator())
-          != std::string::npos)
+      if (lPath[lPath.length() - 1] != *filesystem_path::get_directory_separator())
       {
         lPath.append(filesystem_path::get_directory_separator());
       }
