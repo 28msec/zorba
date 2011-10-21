@@ -34,6 +34,8 @@
 #endif
 #include "thesauri/xqftts_thesaurus.h"
 
+#include "context/default_url_resolvers.h"
+
 using namespace std;
 using namespace zorba::locale;
 
@@ -108,50 +110,48 @@ Thesaurus::~Thesaurus() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//ThesaurusProvider::~ThesaurusProvider() {
-//  // Out-of-line since it's virtual.
-//}
+Resource*
+ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
+  if ( data->getKind() != internal::EntityData::THESAURUS )
+    return nullptr;
+  ThesaurusEntityData const *const t_data =
+    dynamic_cast<ThesaurusEntityData const*>( data );
+  iso639_1::type const lang = t_data->getLanguage();
 
-//ThesaurusProvider const& ThesaurusProvider::get_default_provider() {
-//  static ThesaurusProvider default_provider;
-//  return default_provider;
-//}
+  cerr << "\n*** HERE: url=" << url << " ***\n\n";
 
-//Thesaurus::ptr
-//ThesaurusProvider::get_thesaurus( zstring const &in_uri,
-//                                  iso639_1::type lang )  const {
-//  thesaurus_impl::type th_impl;
-//  zstring uri;
-//  parse_mapping( in_uri, &th_impl, &uri );
+  thesaurus_impl::type t_impl;
+  zstring mapped_url;
+  parse_mapping( url, &t_impl, &mapped_url );
 
-//  zstring th_path;
-//  switch ( uri::get_scheme( uri ) ) {
-//    case uri::file:
-//    case uri::none:
-//      th_path = fs::get_normalized_path( uri );
-//      break;
-//    default:
-//      throw XQUERY_EXCEPTION(
-//        zerr::ZXQP0004_NOT_IMPLEMENTED,
-//        ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
-//      );
-//  }
+  zstring t_path;
+  switch ( uri::get_scheme( mapped_url ) ) {
+    case uri::file:
+    case uri::none:
+      t_path = fs::get_normalized_path( mapped_url );
+      break;
+    default:
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0004_NOT_IMPLEMENTED,
+        ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
+      );
+  }
 
-//  Thesaurus *result;
-//  switch ( th_impl ) {
-//#   ifdef ZORBA_WITH_FILE_ACCESS
-//    case thesaurus_impl::wordnet:
-//      result = new wordnet::thesaurus( th_path, lang );
-//      break;
-//#   endif /* ZORBA_WITH_FILE_ACCESS */
-//    case thesaurus_impl::xqftts:
-//      result = new xqftts::thesaurus( th_path, lang );
-//      break;
-//    default:
-//      throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
-//  }
-//  return Thesaurus::ptr( result );
-//}
+  Thesaurus *result;
+  switch ( t_impl ) {
+#   ifdef ZORBA_WITH_FILE_ACCESS
+    case thesaurus_impl::wordnet:
+      result = new wordnet::thesaurus( t_path, lang );
+      break;
+#   endif /* ZORBA_WITH_FILE_ACCESS */
+    case thesaurus_impl::xqftts:
+      result = new xqftts::thesaurus( t_path, lang );
+      break;
+    default:
+      throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );
+  }
+  return nullptr;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

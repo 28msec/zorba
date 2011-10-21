@@ -97,6 +97,9 @@ void root_static_context::init()
   // TODO move into globalenv? memory leaks?
   add_url_resolver(new internal::FileURLResolver());
   add_url_resolver(new internal::HTTPURLResolver());
+#ifndef ZORBA_NO_FULL_TEXT
+  add_url_resolver(new internal::ThesaurusURLResolver());
+#endif /* ZORBA_NO_FULL_TEXT */
   add_uri_mapper(new internal::FileizeURIMapper());
   add_uri_mapper(new internal::ModuleVersioningURIMapper());
   add_uri_mapper(new internal::AutoFSURIMapper());

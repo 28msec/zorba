@@ -33,6 +33,8 @@ namespace zorba {
 
 namespace internal {
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * @brief http: URL Resolver.
  */
@@ -67,12 +69,24 @@ public:
     EntityData const* aEntityData);
 };
 
+#ifndef ZORBA_NO_FULL_TEXT
+
+class ThesaurusURLResolver : public URLResolver
+{
+public:
+  // inherited
+  Resource* resolveURL( zstring const &aUrl, EntityData const* );
+};
+
+#endif /* ZORBA_NO_FULL_TEXT */
+
+///////////////////////////////////////////////////////////////////////////////
+
 } /* namespace zorba::impl */
 
 } /* namespace zorba */
 
 #endif /* ZORBA_DEFAULT_URL_RESOLVERS_H */
-
 /*
  * Local variables:
  * mode: c++
