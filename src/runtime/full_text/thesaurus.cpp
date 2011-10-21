@@ -118,8 +118,6 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
     dynamic_cast<ThesaurusEntityData const*>( data );
   iso639_1::type const lang = t_data->getLanguage();
 
-  cerr << "\n*** HERE: url=" << url << " ***\n\n";
-
   thesaurus_impl::type t_impl;
   zstring mapped_url;
   parse_mapping( url, &t_impl, &mapped_url );
