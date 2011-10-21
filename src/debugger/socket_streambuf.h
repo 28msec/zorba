@@ -16,6 +16,8 @@
 #ifndef ZORBA_SOCKET_STREAMBUF_H
 #define ZORBA_SOCKET_STREAMBUF_H
 
+#include <streambuf>
+
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 

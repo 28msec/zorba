@@ -28,8 +28,6 @@
 
 namespace zorba { namespace debugger {
 
-class zorba::Zorba;
-
 class EventHandler : public zorba::DebuggerEventHandler
 {
   public:

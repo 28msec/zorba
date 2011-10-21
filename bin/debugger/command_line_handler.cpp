@@ -95,7 +95,7 @@ CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
   while (!answered) {
     std::cout << "Do you really want to stop debugging and exit? (y/n) ";
     std::string lAnswer;
-    std::getline(cin, lAnswer);
+    std::getline(std::cin, lAnswer);
     if (lAnswer == "y" || lAnswer == "yes") {
       answered = true;
     } else if (lAnswer == "n" || lAnswer == "no") {
