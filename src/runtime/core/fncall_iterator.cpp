@@ -28,6 +28,7 @@
 #include "diagnostics/user_exception.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/xquery_stack_trace.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/dynamic_context.h"
 
@@ -91,6 +92,7 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   thePlan(NULL),
   thePlanState(NULL),
   thePlanStateSize(0),
+  theLocalDCtx(NULL),
   thePlanOpen(false)
 {
 }
@@ -102,19 +104,13 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
-  {
     thePlan->close(*thePlanState);
-    thePlanOpen = false;
-  }
 
   if (thePlanState != NULL)
-  {
-    if (thePlanState->theLocalDynCtx)
-      delete thePlanState->theLocalDynCtx;
-
     delete thePlanState;
-    thePlanState = NULL;
-  }
+
+  if (theLocalDCtx != NULL)
+    delete theLocalDCtx;
 }
 
 
@@ -123,17 +119,17 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB).getp();
+  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf
   // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
-  dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
   thePlanState = new PlanState(planState.theGlobalDynCtx,
-                               localDCtx,
+                               theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
@@ -224,9 +220,10 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > planState.theMaxStackDepth)
-    throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-                           ERROR_PARAMS(ZED(StackOverflow)),
-                           ERROR_LOC(loc));
+  {
+    RAISE_ERROR(zerr::ZXQP0003_INTERNAL_ERROR, loc,
+    ERROR_PARAMS(ZED(StackOverflow)));
+  }
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
@@ -234,7 +231,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
-  ulong numArgs = (ulong)theChildren.size();
+  csize numArgs = theChildren.size();
 
   state->theArgWrappers.resize(numArgs);
 
@@ -310,7 +307,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen) {
+    if (!state->thePlanOpen) 
+    {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;

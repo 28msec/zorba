@@ -101,6 +101,7 @@
 #include "util/tracer.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+#include "util/hashmap.h"
 
 
 #define NODE_SORT_OPT

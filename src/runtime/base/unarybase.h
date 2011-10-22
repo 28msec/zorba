@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@ public:
 public:
   UnaryBaseIterator(
       static_context* sctx,
-      const QueryLoc& loc, 
+      const QueryLoc& loc,
       const PlanIter_t& child)
     :
     Batcher<IterType>(sctx, loc),
@@ -64,9 +64,14 @@ public:
 
   virtual ~UnaryBaseIterator() {}
 
-  virtual uint32_t getStateSize() const 
+  const PlanIter_t& getChild()
   {
-    return StateTraitsImpl<StateType>::getStateSize(); 
+    return theChild;
+  }
+
+  virtual uint32_t getStateSize() const
+  {
+    return StateTraitsImpl<StateType>::getStateSize();
   }
 
   virtual uint32_t getStateSizeOfSubtree() const
@@ -100,8 +105,8 @@ void
 UnaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
-    
-  theChild->reset(planState); 
+
+  theChild->reset(planState);
 }
 
 
@@ -159,7 +164,7 @@ public:                                                                 \
 ********************************************************************************/
 
 #define UNARY_ITER(name) \
-UNARY_ITER_STATE(name, PlanIteratorState) 
+UNARY_ITER_STATE(name, PlanIteratorState)
 
 
 }; /* namespace zorba*/

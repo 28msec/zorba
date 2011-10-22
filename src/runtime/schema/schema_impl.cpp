@@ -86,23 +86,22 @@ ZorbaValidateInPlaceIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t node;
 
-  PlanIteratorState *state;
-  std::auto_ptr<store::PUL> pul;
+  PlanIteratorState* state;
+  store::PUL_t pul;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(node, theChild.getp(), planState))
   {
-    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+    pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
     pul->addRevalidate(&loc,node);
 
-    result = pul.release();
+    result.transfer(pul);
     STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
-
+  STACK_END(state);
 }
 
 
