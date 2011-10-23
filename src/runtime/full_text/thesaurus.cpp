@@ -135,16 +135,13 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       );
   }
 
-  Thesaurus *result;
   switch ( t_impl ) {
 #   ifdef ZORBA_WITH_FILE_ACCESS
     case thesaurus_impl::wordnet:
-      result = new wordnet::thesaurus( t_path, lang );
-      break;
+      return new wordnet::thesaurus( t_path, lang );
 #   endif /* ZORBA_WITH_FILE_ACCESS */
     case thesaurus_impl::xqftts:
-      result = new xqftts::thesaurus( t_path, lang );
-      break;
+      return new xqftts::thesaurus( t_path, lang );
     default:
       throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );
   }
