@@ -36,9 +36,6 @@ declare option ver:module-version "2.0";
 (:~
  : Compute a stable and opaque positional information representation 
  : (with type xs:anyURI) for a given node.
- :
- : <p>The returned URI is stable, i.e. it does not change when other 
- : nodes are inserted, deleted or modified.</p>
  : 
  : <p>Each node in a snapshot has a different URI. Note however that
  : different nodes in different snapshots might have the same URI.</p>  
@@ -355,6 +352,12 @@ declare function np:preceding-in-document-order-of(
  :
  : Note: The first level has the number one.
  :
+ : The result of the function applies to the corresponding node as well, 
+ : that is, within the snapshot in which the position was computed, the node 
+ : level is the returned one.
+ : The result of the function does not imply anything about the
+ : node level in other snapshots.
+ :
  : @param $n-pos the node position of the node whose level should be 
  : determined.
  :
@@ -454,6 +457,12 @@ declare function np:is-text(
 (:~
  : Determines whether two node positions belong to the same tree.
  :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the two nodes belong to the same tree. 
+ : Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
+ :
  : @param $n-pos1 a node position
  : @param $n-pos2 a node position
  :
@@ -483,6 +492,12 @@ declare function np:in-collection(
 
 (:~
  : Determines whether two node positions belong to the same collection.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the two nodes belong to the same collection. 
+ : Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
  :
  : @param $n-pos1 a node position
  : @param $n-pos2 a node position
