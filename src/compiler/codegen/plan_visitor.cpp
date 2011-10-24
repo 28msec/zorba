@@ -1366,7 +1366,7 @@ bool nativeColumnSort(expr* colExpr)
 
   xqtref_t colType = colExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *colType, *rtm.ANY_NODE_TYPE_STAR, loc))
+  if (colType->type_kind() == XQType::NODE_TYPE_KIND)
   {
     colType = static_cast<const NodeXQType*>(colType.getp())->get_content_type();
   }
