@@ -17,7 +17,8 @@
 #ifndef ZORBA_DYNAMIC_CONTEXT_H
 #define ZORBA_DYNAMIC_CONTEXT_H
 
-#include "util/hashmap.h"
+#include <zorba/external_function_parameter.h>
+#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 #include "common/shared_types.h"
 
@@ -94,8 +95,7 @@ protected:
     ~VarValue(); 
   };
 
-  // QQQ zstring?
-  typedef hashmap<std::string, dctx_value_t> ValueMap;
+  typedef HashMapZString<dctx_value_t> ValueMap;
 
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
 
@@ -109,7 +109,7 @@ protected:
 
   std::vector<VarValue>        theVarValues;
 
-  ValueMap                     keymap;
+  ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
 
@@ -202,12 +202,19 @@ public:
   ExternalFunctionParameter* getExternalFunctionParameter(
       const std::string& aName) const;
 
-  //std::vector<zstring>* get_all_keymap_keys() const;
-
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const
   {
-    return keymap.get(key, val);
+    if (keymap)
+    {
+      ValueMap::iterator lIter = keymap->find(key);
+      if (lIter != keymap->end())
+      {
+        val = lIter.getValue();
+        return true;
+      }
+    }
+    return false;
   }
 
   bool context_value(const std::string& key, dctx_value_t& val) const
@@ -223,7 +230,7 @@ protected:
   {
     if (lookup_once (key, val))
     {
-      if (map != NULL) *map = &keymap;
+      if (map != NULL) *map = keymap;
       return true;
     }
     return theParent == NULL ? false : theParent->context_value(key, val, map);

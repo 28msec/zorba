@@ -33,7 +33,7 @@ namespace zorba
   Class to privide the equality and hash functions for the HashMapZString
   class defined below.
 *******************************************************************************/
-class HashMapZStringCmp : public ::zorba::serialization::SerializeBaseClass
+class serializable_HashMapZStringCmp : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   static uint32_t hash(const zstring& str)
@@ -47,9 +47,9 @@ public:
   }
 
 public:
-  SERIALIZABLE_CLASS(HashMapZStringCmp);
+  SERIALIZABLE_CLASS(serializable_HashMapZStringCmp);
 
-  HashMapZStringCmp(::zorba::serialization::Archiver& ar)
+  serializable_HashMapZStringCmp(::zorba::serialization::Archiver& ar)
   {
   }
 
@@ -57,7 +57,7 @@ public:
   {
   }
 
-  HashMapZStringCmp()
+  serializable_HashMapZStringCmp()
   {
   }
 };
@@ -70,27 +70,27 @@ public:
 template<class V>
 class serializable_HashMapZString : public serializable_HashMap<zstring,
                                                                 V,
-                                                                HashMapZStringCmp>
+                                                                serializable_HashMapZStringCmp>
 {
 public:
   SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMapZString)
 
   serializable_HashMapZString(::zorba::serialization::Archiver& ar)
     :
-    serializable_HashMap<zstring, V, HashMapZStringCmp>(ar)
+    serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>(ar)
   {
   }
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (serializable_HashMap<zstring, V, HashMapZStringCmp>*)this);
+    (serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>*)this);
   }
 
 public:
   serializable_HashMapZString(ulong size, bool sync)
     :
-    serializable_HashMap<zstring, V, HashMapZStringCmp>(size, sync)
+    serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>(size, sync)
   {
   }
 
