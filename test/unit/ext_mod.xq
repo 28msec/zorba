@@ -31,3 +31,7 @@ declare function ext:foo2()
 };
 
 declare function ext:bar2() as xs:string? external;
+
+
+declare function ext:bar3($seq as xs:integer*) external;
+

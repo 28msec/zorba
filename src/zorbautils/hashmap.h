@@ -108,6 +108,11 @@ public:
   {
     return (theNext == 0 ? NULL : this + theNext);
   }
+
+  const HASHENTRY* getNext() const
+  {
+    return (theNext == 0 ? NULL : this + theNext);
+  }
 };
 
 
@@ -256,7 +261,7 @@ protected:
 
   bool                              theUseTransfer;
 
-  SYNC_CODE(Mutex                   theMutex;)
+  SYNC_CODE(mutable Mutex           theMutex;)
   SYNC_CODE(Mutex                 * theMutexp;)
 
   int                               numCollisions;
@@ -411,21 +416,15 @@ bool empty() const
   return (theNumEntries == 0);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-ulong object_count() const
+ulong size() const
 {
   return theNumEntries;
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-C get_compare_function()
-{
-  return theCompareFunction;
-}
 
 /*******************************************************************************
 
@@ -433,6 +432,15 @@ C get_compare_function()
 size_t capacity() const
 {
   return theHashTab.size();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+C get_compare_function()
+{
+  return theCompareFunction;
 }
 
 
@@ -477,7 +485,7 @@ iterator end() const
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool find(const T& item)
+bool exists(const T& item)
 {
   ulong hval = hash(item);
 
@@ -505,13 +513,13 @@ bool find(const T& item)
   If the given item is already in the set, return an iterator positioned at the
   associated hash entry; otherwise return the end iterator.
 ********************************************************************************/
-iterator get(const T& item)
+iterator find(const T& item)
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HASHENTRY<T, V>* entry = bucket(hval);
+  const HASHENTRY<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return end();
@@ -532,13 +540,13 @@ iterator get(const T& item)
   If the given item is already in the set, return true and a copy of the value
   associated with the item; otherwise return false.
 ********************************************************************************/
-bool get(const T& item, V& value)
+bool get(const T& item, V& value) const
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HASHENTRY<T, V>* entry = bucket(hval);
+  const HASHENTRY<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -555,6 +563,30 @@ bool get(const T& item, V& value)
   }
 
   return false;
+}
+
+
+/******************************************************************************
+  If the set does not already contain an item I that is "equal" to the given
+  item, make a copy of the given item and its associated value and place the
+  new (item, value) pair in the map; then return true. Otherwise, return false.
+********************************************************************************/
+bool insert(const std::pair<const T, V>& pair)
+{
+  bool found;
+  ulong hval = hash(pair.first);
+
+  SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  HASHENTRY<T, V>* entry = hashInsert(pair.first, hval, found);
+
+  if (!found)
+  {
+    entry->theItem = pair.first;
+    entry->theValue = pair.second;
+  }
+
+  return !found;
 }
 
 
@@ -635,13 +667,13 @@ bool update(const T& item, const V& value)
   Remove the item that is pointed to by the given iterator and move the iterator
   to the next item.
 ********************************************************************************/
-void remove(iterator& ite)
+void erase(iterator& ite)
 {
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
   if (ite.thePos < theHashTabSize)
   {
-    removeEntry(&theHashTab[ite.thePos], NULL);
+    eraseEntry(&theHashTab[ite.thePos], NULL);
   }
   else
   {
@@ -649,7 +681,7 @@ void remove(iterator& ite)
 
     ulong hval = hash(item);
 
-    removeNoSync(item, hval);
+    eraseNoSync(item, hval);
   }
 
   ++ite;
@@ -660,25 +692,25 @@ void remove(iterator& ite)
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
 ********************************************************************************/
-bool remove(const T& item)
+bool erase(const T& item)
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  return removeNoSync(item, hval);
+  return eraseNoSync(item, hval);
 }
 
 
-bool removeNoSync(const T& item)
+bool eraseNoSync(const T& item)
 {
   ulong hval = hash(item);
 
-  return removeNoSync(item, hval);
+  return eraseNoSync(item, hval);
 }
 
 
-bool removeNoSync(const T& item, ulong hval)
+bool eraseNoSync(const T& item, ulong hval)
 {
   HASHENTRY<T, V>* entry = bucket(hval);
 
@@ -690,7 +722,7 @@ bool removeNoSync(const T& item, ulong hval)
   // else copy the 2nd entry to the 1st entry and freeup the 2nd entry.
   if (equal(entry->theItem, item))
   {
-    removeEntry(entry, NULL);
+    eraseEntry(entry, NULL);
     return true;
   }
 
@@ -703,7 +735,7 @@ bool removeNoSync(const T& item, ulong hval)
   {
     if (equal(entry->theItem, item))
     {
-      removeEntry(entry, preventry);
+      eraseEntry(entry, preventry);
       return true;
     }
 
@@ -721,7 +753,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-size_t computeTabSize(size_t size)
+size_t computeTabSize(size_t size) const
 {
   return size + 32 + size/5;
 }
@@ -730,13 +762,13 @@ size_t computeTabSize(size_t size)
 /*******************************************************************************
 
 ********************************************************************************/
-ulong hash(const T& item)
+ulong hash(const T& item) const
 {
   return theCompareFunction.hash(item);
 }
 
 
-bool equal(const T& item1, const T& item2)
+bool equal(const T& item1, const T& item2) const
 {
   return theCompareFunction.equal(item1, item2);
 }
@@ -754,6 +786,15 @@ HASHENTRY<T, V>* bucket(ulong hvalue)
 /*******************************************************************************
 
 ********************************************************************************/
+const HASHENTRY<T, V>* bucket(ulong hvalue) const
+{
+  return &theHashTab[hvalue % theHashTabSize];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 HASHENTRY<T, V>* freelist()
 {
   return &theHashTab[theHashTabSize];
@@ -763,7 +804,7 @@ HASHENTRY<T, V>* freelist()
 /*******************************************************************************
 
 ********************************************************************************/
-void removeEntry(HASHENTRY<T, V>* entry, HASHENTRY<T, V>* preventry)
+void eraseEntry(HASHENTRY<T, V>* entry, HASHENTRY<T, V>* preventry)
 {
   if (preventry == NULL)
   {

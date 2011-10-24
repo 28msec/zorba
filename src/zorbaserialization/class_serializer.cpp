@@ -31,13 +31,13 @@ namespace zorba{
 class ClassFactoriesCompare
 {
 public: 
-  uint32_t hash(const char * s1)
+  uint32_t hash(const char * s1) const
   {
     uint32_t  h = 0;
     h = hashfun::h32(s1, FNV_32_INIT);
     return h;
   }
-  bool equal(const char * s1, const char * s2)
+  bool equal(const char * s1, const char * s2) const
   {
     if((s1 == s2) || !strcmp(s1, s2))
       return true;

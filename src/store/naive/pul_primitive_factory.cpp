@@ -230,7 +230,18 @@ PULPrimitiveFactory::createUpdSetAttributeType(
 {
   return new UpdSetAttributeType(pul, aLoc, target, typeName, typedValue, haveListValue);
 }
-    
+
+/***************************************************************************
+
+***************************************************************************/
+UpdRevalidate*
+PULPrimitiveFactory::createUpdRevalidate(
+    PULImpl*       pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target)
+{
+  return new UpdRevalidate(pul, aLoc, target);
+}
 
 /***************************************************************************
 

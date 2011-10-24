@@ -101,6 +101,7 @@
 #include "util/tracer.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+#include "util/hashmap.h"
 
 
 #define NODE_SORT_OPT
@@ -1294,7 +1295,7 @@ void normalize_fo(fo_expr* foExpr)
   const function* func = foExpr->get_func();
 
   if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
-      (n == 0 || (n - 1) % 6 != 0))
+      (n < 7 || (n - 1) % 6 != 0))
   {
     const store::Item* qname = NULL;
 

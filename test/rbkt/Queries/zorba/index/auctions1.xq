@@ -72,6 +72,7 @@ catch *
 Probing the typed AuctionDates sorted general index
 ---------------------------------------------------
 
+probe 1:
 ",
 
 try
@@ -85,6 +86,7 @@ catch *
 
 "
 
+probe 2:
 ",
 
 try
@@ -98,6 +100,7 @@ catch *
 
 "
 
+probe 3:
 ",
 
 for $id in index_dml:probe-index-point-general($auctions:AuctionDates, 
@@ -108,12 +111,13 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 4:
 ",
 
 try
 {
   index_dml:probe-index-point-general($auctions:AuctionDates, 
-                                  (xs:date("2000-12-04"), "2000-12-04"))
+                                      (xs:date("2000-12-04"), "2000-12-04"))
 }
 catch * 
 {
@@ -122,6 +126,24 @@ catch *
 
 "
 
+probe 5:
+",
+
+try
+{
+  index_dml:probe-index-range-value($auctions:AuctionDates, 
+                                    xs:date("1998-12-11"),
+                                    xs:date("1999-12-11"),
+                                    fn:true(), fn:true(), fn:true(), fn:true())
+}
+catch * 
+{
+  <exception>{$err:code} : {$err:description}</exception>
+},
+
+"
+
+probe 6:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates,
@@ -136,6 +158,7 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 7:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
@@ -150,6 +173,7 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 8:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
@@ -164,6 +188,7 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 9:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
@@ -350,6 +375,108 @@ for $id in index_dml:probe-index-range-general($auctions:AuctionDates2,
                                                fn:true(),
                                                fn:true())/@id
 return <open_auction>{$id}</open_auction>,
+
+"
+
+-----------------------------------------------------------
+Probing the untyped PersonIncome2 sorted general 1-1 index
+-----------------------------------------------------------
+
+probe 1:
+
+",
+
+try
+{
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 10000,
+                                                 50000,
+                                                 fn:false(),
+                                                 fn:false(),
+                                                 fn:true(),
+                                                 fn:true())
+return <person>{$person/@id, $person//@income}</person>
+}
+catch *
+{
+  <exception>{$err:code} : {$err:description}</exception>
+},
+
+"
+
+probe 2:
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "10000",
+                                                 "50000",
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true())
+return <person>{$person/@id, $person//@income}</person>,
+
+"
+
+probe 3:
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "10000",
+                                                 fn:true(),
+                                                 fn:false(),
+                                                 fn:true(),
+                                                 fn:true())
+return <person>{$person/@id, $person//@income}</person>,
+
+"
+
+probe 4:
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "10000",
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true())
+return <person>{$person/@id, $person//@income}</person>,
+
+"
+
+probe 5:
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "50000",
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:false())
+return <person>{$person/@id, $person//@income}</person>,
+
+"
+
+probe 6 (full probe):
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "50000",
+                                                 fn:false(),
+                                                 fn:false(),
+                                                 fn:true(),
+                                                 fn:false())
+return <person>{$person/@id, $person//@income}</person>,
+
 
 "
 "

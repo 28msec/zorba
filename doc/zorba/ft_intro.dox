@@ -17,10 +17,10 @@ implemented.
 The features that are not (completely) implemented are:
 
   - The <a href="http://www.w3.org/TR/xpath-full-text-10/#ftignoreoption">Ignore Option</a>
-    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586">3187470</a>).
+    (bug <a href="https://bugs.launchpad.net/zorba/+bug/sf-3187470">3187470</a>).
   - <a href="http://www.w3.org/TR/xpath-full-text-10/#section-score-variables">Score Variables</a>
     and <a href="http://www.w3.org/TR/xpath-full-text-10/#section-using-weights">Using Weights Within a Scored FTContainsExpr</a>
-    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586">3187462</a>).
+    (bug <a href="https://bugs.launchpad.net/zorba/+bug/sf-3187462">3187462</a>).
 
 */
 /* vim:set et sw=2 ts=2: */

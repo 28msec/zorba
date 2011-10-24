@@ -9,7 +9,7 @@ For building Zorba on Ubuntu 11.04 (gcc version 4.5.2) folow the next steps:
 Install tools
 \code
 sudo apt-get update
-sudo apt-get install subversion build-essential cmake
+sudo apt-get install subversion bzr build-essential cmake
 \endcode
 
 Optional
@@ -100,7 +100,7 @@ sudo apt-get install libjansson4 libjansson-dev
 \section bu_build_zorba Get and build Zorba
 
 \code
-svn co https://zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba
+bzr branch lp:zorba
 cd zorba
 cmake -Doutdir=../zm -Dallmodules=1 -P modules/DownloadModules.cmake
 mkdir build

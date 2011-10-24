@@ -50,6 +50,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include <zorba/external_function_parameter.h>
 
 using namespace std;
 
@@ -119,6 +120,7 @@ dynamic_context::VarValue::VarValue(const VarValue& other)
 dynamic_context::dynamic_context(dynamic_context* parent)
   :
   theParent(NULL),
+  keymap(NULL),
   theAvailableIndices(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
@@ -143,6 +145,22 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 ********************************************************************************/
 dynamic_context::~dynamic_context()
 {
+  if (keymap)
+  {
+    for (ValueMap::iterator lIter = keymap->begin();
+         lIter != keymap->end();
+         ++lIter)
+    {
+      dctx_value_t lValue = lIter.getValue();
+      if (lValue.type == dctx_value_t::ext_func_param_typed &&
+          lValue.func_param)
+      {
+        static_cast<ExternalFunctionParameter*>(lValue.func_param)->destroy();
+      }
+    }
+    delete keymap;
+  }
+
   if (theAvailableIndices)
     delete theAvailableIndices;
 }
@@ -529,7 +547,7 @@ void dynamic_context::bindIndex(
 void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (theAvailableIndices != NULL)
-    theAvailableIndices->remove(qname);
+    theAvailableIndices->erase(qname);
 }
 
 
@@ -554,57 +572,149 @@ store::IC* dynamic_context::getIC(const store::Item* qname)
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::addExternalFunctionParam (
+bool dynamic_context::addExternalFunctionParam(
     const std::string& aName,
-    void* aValue )
+    void* aValue)
 {
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::ext_func_param;
   val.func_param = aValue;
 
-  return keymap.put ( aName, val);
+  if (!keymap)
+  {
+    keymap = new ValueMap(8, false);
+  }
+
+  if (!keymap->insert(aName, val))
+  {
+    keymap->update(aName, val);
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::getExternalFunctionParam (
+bool dynamic_context::getExternalFunctionParam(
   const std::string& aName,
   void*& aValue) const
 {
+  if (!keymap)
+  {
+    if (theParent)
+    {
+      return theParent->getExternalFunctionParam(aName, aValue);
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::no_val;
   val.func_param = 0;
 
-  if ( !keymap.get(aName, val) ) {
+  ValueMap::iterator lIter = keymap->find(aName);
+  if ( lIter == keymap->end() )
+  {
     if (theParent)
       return theParent->getExternalFunctionParam(aName, aValue);
     else
       return false;
   }
 
-  ZORBA_ASSERT(val.type == dynamic_context::dctx_value_t::ext_func_param);
-  aValue = val.func_param;
-  return true;
-}
+  val = lIter.getValue();
 
-
-/*
-std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
-{
-  std::auto_ptr<std::vector<zstring> > keys;
-  if (theParent != NULL)
-    keys.reset(theParent->get_all_keymap_keys());
+  if (val.type == dynamic_context::dctx_value_t::ext_func_param)
+  {
+    aValue = val.func_param;
+    return true;
+  }
   else
-    keys.reset(new std::vector<zstring>);
-
-  for (unsigned int i=0; i<keymap.size(); i++)
-    keys->push_back(keymap.getentryKey(i));
-
-  return keys.release();
+  {
+    // could also be of type ext_func_param_typed
+    return false;
+  }
 }
-*/
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool dynamic_context::addExternalFunctionParameter(
+   const std::string& aName,
+   ExternalFunctionParameter* aValue)
+{
+  if (!keymap)
+  {
+    keymap = new ValueMap(8, false);
+  }
+
+  dctx_value_t val;
+  val.type = dynamic_context::dctx_value_t::ext_func_param_typed;
+  val.func_param = aValue;
+
+  ExternalFunctionParameter* lValue = getExternalFunctionParameter(aName);
+  if (lValue)
+  {
+    // destroy the object if it's already contained in the map
+    lValue->destroy();
+    keymap->erase(aName);
+    keymap->insert(aName, val);
+    return false;
+  }
+  else
+  {
+    keymap->insert(aName, val);
+    return true;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ExternalFunctionParameter*
+dynamic_context::getExternalFunctionParameter(const std::string& aName) const
+{
+  if (!keymap)
+  {
+    if (theParent)
+    {
+      return theParent->getExternalFunctionParameter(aName);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
+  dctx_value_t val;
+  val.type = dynamic_context::dctx_value_t::no_val;
+  val.func_param = 0;
+
+  ValueMap::iterator lIter = keymap->find(aName);
+  if (lIter == keymap->end())
+  {
+    if (theParent)
+      return theParent->getExternalFunctionParameter(aName);
+    else
+      return 0;
+  }
+
+  val = lIter.getValue();
+
+  ExternalFunctionParameter* lRes = 
+  static_cast<ExternalFunctionParameter*>(val.func_param);
+
+  return lRes;
+}
 
 
 } // namespace zorba
