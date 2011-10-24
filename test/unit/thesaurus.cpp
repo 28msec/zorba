@@ -34,7 +34,7 @@ static bool destroy_called;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class TestThesaurus : public ThesaurusResource {
+class TestThesaurus : public Thesaurus {
 public:
   // inherited
   void destroy() const;
@@ -46,7 +46,7 @@ private:
 
   static thesaurus_t const& get_thesaurus();
 
-  class iterator : public ThesaurusResource::iterator {
+  class iterator : public Thesaurus::iterator {
   public:
     iterator( synonyms_t const &s ) : synonyms_( s ), i_( s.begin() ) { }
     void destroy() const;
@@ -74,12 +74,12 @@ void TestThesaurus::destroy() const {
   destroy_called = true;
 }
 
-ThesaurusResource::iterator::ptr
+Thesaurus::iterator::ptr
 TestThesaurus::lookup( String const &phrase, String const &relationship,
                        range_type at_least, range_type at_most ) const {
   static thesaurus_t const &thesaurus = get_thesaurus();
   thesaurus_t::const_iterator const i = thesaurus.find( phrase );
-  ThesaurusResource::iterator::ptr result;
+  Thesaurus::iterator::ptr result;
   if ( i != thesaurus.end() )
     result.reset( new iterator( *i->second ) );
   return std::move( result );

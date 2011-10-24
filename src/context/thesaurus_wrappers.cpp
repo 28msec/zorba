@@ -57,7 +57,7 @@ bool ThesaurusWrapper::iterator_wrapper::next( zstring *synonym ) {
   return false;
 }
 
-ThesaurusWrapper::ThesaurusWrapper( zorba::ThesaurusResource::ptr p ) :
+ThesaurusWrapper::ThesaurusWrapper( zorba::Thesaurus::ptr p ) :
   api_thesaurus_( std::move( p ) )
 {
   ZORBA_ASSERT( api_thesaurus_.get() );

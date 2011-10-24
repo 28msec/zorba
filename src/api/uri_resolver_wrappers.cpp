@@ -158,13 +158,12 @@ namespace zorba
         lUserStream->setStreamReleaser(nullptr);
       }
       else {
-        ThesaurusResource* lUserThesaurus =
-            dynamic_cast<ThesaurusResource*>(lUserPtr.get());
+        Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
         if (lUserThesaurus != NULL) {
-          // Here we pass memory ownership of the actual ThesaurusResource
-          // to the internal ThesaurusWrapper.
+          // Here we pass memory ownership of the actual Thesaurus to the
+          // internal ThesaurusWrapper.
           lRetval = new internal::ThesaurusWrapper
-              (ThesaurusResource::ptr(lUserThesaurus));
+              (Thesaurus::ptr(lUserThesaurus));
           lUserPtr.release();
         }
         else {

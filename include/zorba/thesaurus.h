@@ -46,12 +46,11 @@ public:
 };
 
 /**
- * A %ThesaurusResource is-a Resource for thesaurus implementations.
+ * A %Thesaurus is-a Resource for thesaurus implementations.
  */
-class ZORBA_DLL_PUBLIC ThesaurusResource : public Resource {
+class ZORBA_DLL_PUBLIC Thesaurus : public Resource {
 public:
-  typedef std::unique_ptr<ThesaurusResource,
-                          internal::ztd::destroy_delete<ThesaurusResource> >
+  typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
           ptr;
 
   /**
@@ -86,16 +85,14 @@ public:
   };
 
   /**
-   * Destroys this %ThesaurusResource.
-   * This function is called by Zorba when the %ThesaurusResource is no longer
-   * needed.
+   * Destroys this %Thesaurus.
+   * This function is called by Zorba when the %Thesaurus is no longer needed.
    *
-   * If your URLResolver dynamically allocates %ThesaurusResource
-   * objects, then the implementation can simply be (and usually is)
-   * <code>delete this</code>.
+   * If your URLResolver dynamically allocates %Thesaurus objects, then the
+   * implementation can simply be (and usually is) <code>delete this</code>.
    *
-   * If your URLResolver returns a pointer to a static %ThesaurusResource
-   * object, then the implementation should do nothing.
+   * If your URLResolver returns a pointer to a static %Thesaurus object, then
+   * the implementation should do nothing.
    */
   virtual void destroy() const = 0;
 
@@ -117,7 +114,7 @@ public:
           range_type at_least, range_type at_most ) const = 0;
 
 protected:
-  virtual ~ThesaurusResource();
+  virtual ~Thesaurus();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
