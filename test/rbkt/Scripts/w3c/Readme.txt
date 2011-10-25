@@ -25,9 +25,9 @@ To generate a report for submitting to the W3C:
 2.  Use the "testdriver" to do the testing.
     Run a CTest dashboard from your build directory:
 
-    ctest -T test -R w3c_testsuite/XQuery or
+    ctest -T test -R w3c_testsuite/XQuery -E XQueryX or
     ctest -T test -R w3c_testsuite/XQueryX
-    ctest -T test -R w3c_full_text_testsuite/XQuery or
+    ctest -T test -R w3c_full_text_testsuite/XQuery -E XQueryX or
     ctest -T test -R w3c_full_text_testsuite/XQueryX
 
 or, *ONLY* for XQTS you can use the "testdriver_mt" to do the testing:
