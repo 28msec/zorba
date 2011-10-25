@@ -199,6 +199,13 @@ typename StackType::value_type pop_stack( StackType &s ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<NumericType>::value,
+                        bool>::type
+gt0( NumericType n ) {                  // for completeness
+  return n > 0;
+}
+
+template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 ge0( NumericType n ) {
   return n >= 0;
@@ -208,6 +215,30 @@ template<typename IntType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 ge0( IntType ) {
   return true;
+}
+
+template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+lt0( NumericType n ) {
+  return n < 0;
+}
+
+template<typename IntType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
+lt0( IntType ) {
+  return false;
+}
+
+template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+le0( NumericType n ) {
+  return n <= 0;
+}
+
+template<typename IntType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
+le0( IntType n ) {
+  return n == 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

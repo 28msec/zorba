@@ -29,6 +29,14 @@
 #include "schema_types.h"
 #include "zorbatypes_decl.h"
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define TEMPLATE_DECL(T) /* nothing */
+# define INTEGER_IMPL(T)  IntegerImpl
+#else
+# define TEMPLATE_DECL(T) template<typename T>
+# define INTEGER_IMPL(T)  IntegerImpl<T>
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 namespace zorba {
 
 template<typename FloatType>
@@ -36,7 +44,7 @@ class FloatImpl;
 
 namespace serialization {
   template<typename FloatType>
-  void operator&(Archiver&, FloatImpl<FloatType>&);
+  void operator&( Archiver&, FloatImpl<FloatType>& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +70,9 @@ public:
   FloatImpl( float n );
   FloatImpl( double n );
   FloatImpl( Decimal const &d );
-  FloatImpl( Integer const &i );
+
+  TEMPLATE_DECL(T)
+  FloatImpl( INTEGER_IMPL(T) const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -221,11 +231,7 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-  friend class IntegerImpl;
-#else
-  template<typename T> friend class IntegerImpl;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+  TEMPLATE_DECL(T) friend class IntegerImpl;
   friend class Decimal;
 
   friend class FloatImpl<float>;
@@ -777,6 +783,10 @@ std::ostream& operator<<( std::ostream &os, FloatImpl<FloatType> const &f ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+
+#undef TEMPLATE_DECL
+#undef INTEGER_IMPL
+
 #endif // ZORBA_FLOATIMPL_H
 /*
  * Local variables:

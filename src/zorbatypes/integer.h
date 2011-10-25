@@ -24,6 +24,7 @@
 #include <zorba/config.h>
 #include "common/common.h"
 
+#include "util/stl_util.h"
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/zorba_class_serializer.h"
 
@@ -198,7 +199,7 @@ private:
 #ifdef ZORBA_WITH_BIG_INTEGER
   typedef MAPM value_type;
 #else
-  typedef long long value_type;
+  typedef IntType value_type;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
   value_type value_;
@@ -555,12 +556,7 @@ inline int IntegerImpl::sign() const {
 
 template<typename IntType>
 inline int IntegerImpl<IntType>::compare( IntegerImpl const &i ) const {
-  //
-  // Note that we can't return the difference directly since it will be
-  // truncated if it's ether > max(int) or < min(int) yielding a wrong result.
-  //
-  value_type const temp = value_ - i.value_;
-  return temp < 0 ? -1 : temp > 0 ? 1 : 0;
+  return value_ < i.value_ ? -1 : value_ > i.value_ ? 1 : 0;
 }
 
 template<typename IntType>
@@ -576,7 +572,7 @@ inline bool IntegerImpl<IntType>::is_long() const {
 
 template<typename IntType>
 inline int IntegerImpl<IntType>::sign() const {
-  return value_ < 0 ? -1 : value_ > 0 ? 1 : 0;
+  return ztd::lt0( value_ ) ? -1 : value_ > 0 ? 1 : 0;
 }
 
 #endif /* ZORBA_WITH_BIG_INTEGER */
