@@ -868,7 +868,7 @@ _tmain(int argc, _TCHAR* argv[])
   reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
   if(generateW3CData)
   {
-    XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
+	XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
   }
 
   //
@@ -1090,8 +1090,8 @@ _tmain(int argc, _TCHAR* argv[])
   
   if(generateW3CData)
   {
-    std::ofstream w3cReportFile(XMLreportFilepath.c_str());
-    w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Site><Testing>" << std::endl << XMLreport.str() << "</Testing></Site>" << std::endl;
+	std::ofstream w3cReportFile(XMLreportFilepath.c_str());
+	w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Site><Testing>" << std::endl << XMLreport.str() << "</Testing></Site>" << std::endl;
   }
 
   // Don't use theOutput here - this is the summary we always want to
