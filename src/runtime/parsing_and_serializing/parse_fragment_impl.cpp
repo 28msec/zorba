@@ -269,23 +269,15 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
             result = NULL;
         }
 
-        if (result != NULL)
+        if (result == NULL)
+          continue;
+
+        // Return the children of document node
+        state->theFragmentStream.children = result->getChildren();
+        while (state->theFragmentStream.children->next(result) && result != NULL)
         {
-          state->theFragmentStream.children = result->getChildren();
-          while (state->theFragmentStream.children->next(result) && result != NULL)
-          {
             STACK_PUSH(true, state);
-          }
         }
-
-        /*
-        // Skip document node if present
-        if (result != NULL)
-          result->getChildren()->next(result);
-
-        if (result != NULL)
-          STACK_PUSH(true, state);
-        */
       }
     }
     ////////////////////////////////////////////////////////////////////////

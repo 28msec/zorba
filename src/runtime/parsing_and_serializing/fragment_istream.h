@@ -41,7 +41,6 @@ public:
     current_element_depth(0),
     root_elements_to_skip(0),
     ctxt(NULL),
-    saved_instate(XML_PARSER_START),
     first_start_doc(true),
     parsed_nodes_count(0),
     children(NULL)
@@ -74,7 +73,6 @@ public:
     current_element_depth = 0;
     root_elements_to_skip = 0;
     ctxt = NULL;
-    saved_instate = XML_PARSER_START;
     first_start_doc = true;
     parsed_nodes_count = 0;
     children = NULL;
@@ -94,7 +92,6 @@ public:
   int current_element_depth;
   int root_elements_to_skip;
   xmlParserCtxtPtr ctxt;
-  xmlParserInputState saved_instate;
   bool first_start_doc;
   int parsed_nodes_count;
   store::Iterator_t children;

@@ -72,6 +72,13 @@ namespace zorba { namespace simplestore {
       return; \
   } while (0);
 
+// convinience function to setup the LibXml's parser context input
+static void setupInput(FragmentIStream* theFragmentStream)
+{
+  theFragmentStream->ctxt->input->base = (xmlChar*)(theFragmentStream->theBuffer);
+  theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base + theFragmentStream->current_offset;
+}
+
 
 /*******************************************************************************
 
@@ -172,10 +179,6 @@ store::Item_t FragmentXmlLoader::loadXml(
         return NULL;
       }
 
-      // startElementNS and endElementNS are SAX2 callbacks
-      // theFragmentStream->ctxt->sax2 = 1;
-      // xmlDetectSAX2(theFragmentStream->ctxt);
-
       // Delete the initial empty input stream
       xmlFreeInputStream(inputPop(theFragmentStream->ctxt));
 
@@ -188,60 +191,34 @@ store::Item_t FragmentXmlLoader::loadXml(
         return NULL;
       }
 
-      // Initialize the parser input
+      // Initialize the parser input (buffer length and end)
       input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
-      input->base = (xmlChar*)(theFragmentStream->theBuffer);
-      input->cur = input->base + theFragmentStream->current_offset;
-      input->length = theFragmentStream->buffer_size;
-      input->end = input->base + input->length;
       xmlPushInput(theFragmentStream->ctxt, input);
-
-      // xmlParseExtParsedEnt(theFragmentStream->ctxt);
-
-      // Consume the XML declaration, if any
-      /*
-      if (equals(theFragmentStream->theBuffer, 5, "<?xml", 5) && ascii::is_space(theFragmentStream->theBuffer[5]))
-      {
-        xmlParseXMLDecl(theFragmentStream->ctxt);
-        theFragmentStream->current_offset = getCurrentInputOffset();
-      }
-      */
+      theFragmentStream->ctxt->input->length = theFragmentStream->buffer_size;
+      theFragmentStream->ctxt->input->end = (xmlChar*)(theFragmentStream->theBuffer) + theFragmentStream->buffer_size;
     }
+
+    // Setup/update the input (buffer start)
+    setupInput(theFragmentStream);
 
     theFragmentStream->ctxt->userData = this;    // the loader has changed, update the address
     theFragmentStream->ctxt->disableSAX = false; // xmlStopParser() sets disableSAX to true
-
-    // Update the input
-    theFragmentStream->ctxt->input->base = (xmlChar*)(theFragmentStream->theBuffer);
-    theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base + theFragmentStream->current_offset;
-
     theFragmentStream->parsed_nodes_count = 0;
 
     // std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
 
-    if (theFragmentStream->current_offset > 0
-        ||
-        !theFragmentStream->first_start_doc)
+    if ( ! theFragmentStream->first_start_doc)
     {
-      // try to restore the parser state
-      //if (theFragmentStream->ctxt->instate == XML_PARSER_EOF)
-      //  theFragmentStream->ctxt->instate = theFragmentStream->saved_instate;
-      //if (theFragmentStream->ctxt->instate == XML_PARSER_EPILOG)
       theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
-
       FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
     }
-
-    // FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
 
     unsigned long start_offset = theFragmentStream->current_offset;
 
     xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
                   theFragmentStream->ctxt->input->end - theFragmentStream->ctxt->input->cur, 0);
 
-    if ( // theFragmentStream->current_element_depth > 0
-    //    &&
-        theFragmentStream->current_offset < getCurrentInputOffset())
+    if (theFragmentStream->current_offset < getCurrentInputOffset())
       theFragmentStream->current_offset = getCurrentInputOffset();
 
     // If we didn't get an error and we haven't moved, we might have some freestanding text. Parse it as element character data.
@@ -251,7 +228,7 @@ store::Item_t FragmentXmlLoader::loadXml(
         &&
         start_offset == theFragmentStream->current_offset)
     {
-      // theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
+      setupInput(theFragmentStream); // The input has been reset by xmlStopParser()
       xmlParseCharData(theFragmentStream->ctxt, 0);
     }
 
@@ -309,7 +286,7 @@ store::Item_t FragmentXmlLoader::loadXml(
   return resultNode;
 }
 
-unsigned long FragmentXmlLoader::getCurrentInputOffset()
+unsigned long FragmentXmlLoader::getCurrentInputOffset() const
 {
   unsigned long offset = theFragmentStream->ctxt->input->cur
       - theFragmentStream->ctxt->input->base
@@ -336,11 +313,6 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
         loader.theFragmentStream->parsed_nodes_count >= 1024))
   {
     loader.theFragmentStream->current_offset = offset;
-
-    // std::cerr << "--> stopping parsing at: [" << (loader.theFragmentStream->theBuffer+loader.theFragmentStream->current_offset) << "] " << std::endl;
-
-    loader.theFragmentStream->saved_instate = loader.theFragmentStream->ctxt->instate;
-
     xmlStopParser(loader.theFragmentStream->ctxt);
     loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping
   }
@@ -420,15 +392,9 @@ void FragmentXmlLoader::endElement(
 {
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
   if (loader.theFragmentStream->current_element_depth > loader.theFragmentStream->root_elements_to_skip)
     FastXmlLoader::endElement(ctx, localname, prefix, URI);
-
   loader.theFragmentStream->current_element_depth--;
-
-  // if (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip)
-  //  namePop(loader.theFragmentStream->ctxt);
-
   checkStopParsing(ctx);
 }
 
@@ -439,22 +405,8 @@ void FragmentXmlLoader::characters(
 {
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
-  // std::string tmp((char*)loader.theFragmentStream->ctxt->input->cur);
-  // std::cerr << "--> characters() input->cur: \"" << tmp.substr(0, tmp.find("\n")) << "...\"" << std::endl;
-
   if (loader.theFragmentStream->current_element_depth >= loader.theFragmentStream->root_elements_to_skip)
     FastXmlLoader::characters(ctx, ch, len);
-
-  if (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip
-      &&
-      loader.theFragmentStream->ctxt->input->cur < loader.theFragmentStream->ctxt->input->end
-      &&
-      loader.theFragmentStream->ctxt->input->cur[0] != '<')
-  {
-    loader.theFragmentStream->ctxt->input->cur += len;
-  }
-
   checkStopParsing(ctx);
 }
 

@@ -255,7 +255,7 @@ public:
         std::istream& xmlStream);
 
 protected:
-  unsigned long getCurrentInputOffset();
+  unsigned long getCurrentInputOffset() const;
 
   static void checkStopParsing(void* ctx, bool force = false);
 
