@@ -28,6 +28,8 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/xquery_exception.h>
 
+#include "rbkt\testdriverconfig.h"
+
 using namespace zorba;
 
 bool 
@@ -86,6 +88,8 @@ cxx_api_changes_test2 (Zorba* aZorba)
   return true;
 }
 
+
+
 bool
 cxx_api_changes_test3(Zorba* aZorba)
 {
@@ -125,6 +129,49 @@ cxx_api_changes_test3(Zorba* aZorba)
   return true;
 }
 
+bool 
+cxx_api_changes_test4(Zorba* aZorba)
+{
+  try
+  {
+    std::ifstream lIn("cxx_api_ch4.xq");
+    assert(lIn.good());
+
+    StaticContext_t lStaticContext = aZorba->createStaticContext();
+    std::vector<String> lModulePaths;
+    lModulePaths.push_back(zorba::CMAKE_BINARY_DIR+"/TEST_URI_PATH/");
+    lStaticContext->setModulePaths(lModulePaths);
+    
+    XQuery_t lQuery = aZorba->compileQuery(lIn, lStaticContext);
+    std::vector<Item> lVars;
+    lQuery->getExternalVariables(lVars);
+
+    std::ostringstream lOut;
+    std::vector<Item>::const_iterator lIte = lVars.begin();
+    std::vector<Item>::const_iterator lEnd = lVars.end();
+    
+    for (; lIte != lEnd; ++lIte)
+    {
+      lOut << lIte->getStringValue() << " ";
+    }
+
+    if(lOut.str().compare("a testGetExtVarA:ext testGetExtVarB:ext "))
+      return false;
+  }
+  catch (XQueryException& qe)
+  {
+    std::cerr << qe << std::endl;
+    return false;
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 int
 cxx_api_changes (int argc, char* argv[])
 {
@@ -147,6 +194,12 @@ cxx_api_changes (int argc, char* argv[])
   if (!cxx_api_changes_test3(lZorba))
   {
     return 3;
+  }
+
+  std::cout << "executing cxx_api_changes_test4" << std::endl;
+  if (!cxx_api_changes_test4(lZorba))
+  {
+    return 4;
   }
 
   lZorba->shutdown();

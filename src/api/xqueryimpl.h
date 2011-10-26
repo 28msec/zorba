@@ -349,6 +349,9 @@ public:
   StaticCollectionManager*
   getStaticCollectionManager() const;
 
+  bool
+  getExternalVariables(std::vector<Item>& aVars) const;
+
 protected:
 
   void doCompile(

@@ -576,8 +576,8 @@ namespace zorba {
       virtual audit::Event*
       getAuditEvent() = 0;
 
-	  /** \brief Returns a vector with the Qname of variables not 
-	    *         bound to the dynamic context.
+	  /** \brief Returns the QName of all external variables within the
+	    *        static context
 	    *
 	    * @param aVars variable to store the results.
 	    * @throw ZorbaException if an error occured.
