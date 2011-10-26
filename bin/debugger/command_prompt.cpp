@@ -38,23 +38,20 @@ CommandPrompt::execute()
 {
   for (;;) {
     std::cout << "(xqdb) ";
-    std::string lCommand;
-    std::getline(std::cin, lCommand);
+    std::string lCommandLine;
+    std::getline(std::cin, lCommandLine);
     std::vector<std::string> args;
     // we define the << operator to split the command (see below)
-    parseLine(lCommand, args);
+    parseLine(lCommandLine, args);
     if (args.size() == 0) {
       continue;
     }
-    std::map<std::string, UntypedCommand*>::iterator lIter = theCommands.find(args[0]);
-    if (lIter == theCommands.end()) {
-      std::cout << args[0] << ": Command not found" << std::endl;
-      continue;
+    //std::map<std::string, UntypedCommand*>::iterator lIter
+    UntypedCommand* lCommand = NULL;
+    if (findCommand(args[0], lCommand) && lCommand->execute(args)) {
+      return;
     }
-    if (!lIter->second->execute(args)) {
-      continue;
-    }
-    return;
+    continue;
   }
 }
   
@@ -63,6 +60,42 @@ CommandPrompt::operator<<(UntypedCommand *aCommand)
 {
   theCommands.insert(std::make_pair(aCommand->get_name(), aCommand));
   return *this;
+}
+
+bool
+CommandPrompt::findCommand(const std::string& aPrefix, UntypedCommand*& aCommand)
+{
+  std::vector<UntypedCommand*> lFoundCommands;
+
+  std::map<std::string, UntypedCommand*>::iterator lIter = theCommands.begin();
+  while (lIter != theCommands.end()) {
+    // if a command name is equal with the prefix, this is the command we want
+    if ((*lIter).first == aPrefix) {
+      aCommand = (*lIter).second;
+      return true;
+    }
+    if ((*lIter).first.find(aPrefix) == 0) {
+      lFoundCommands.push_back((*lIter).second);
+    }
+    lIter++;
+  }
+
+  if (lFoundCommands.empty()) {
+    std::cout << "Command not found: " << aPrefix << std::endl;
+    return false;
+  }
+
+  if (lFoundCommands.size() > 1) {
+    std::cout << "Ambigous command: " << aPrefix << std::endl;
+    // show all possible commands that start with this prefix
+    for (std::string::size_type i = 0; i < lFoundCommands.size(); i++) {
+      std::cout << "\t" << lFoundCommands.at(i)->get_name() << std::endl;
+    }
+    return false;
+  }
+
+  aCommand = lFoundCommands[0];
+  return true;
 }
 
 void

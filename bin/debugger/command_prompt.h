@@ -35,11 +35,15 @@ class CommandPrompt
 
     void execute();
 
-    CommandPrompt& operator<< (UntypedCommand* aCommand);
+    CommandPrompt& operator<< (UntypedCommand* command);
 
   private:
 
-    void parseLine(const std::string& line, std::vector<std::string>& vector);
+    bool
+    findCommand(const std::string& prefix, UntypedCommand*& command);
+
+    void
+    parseLine(const std::string& line, std::vector<std::string>& vector);
 
   private:
     std::map<std::string, UntypedCommand*> theCommands;
