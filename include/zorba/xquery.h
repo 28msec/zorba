@@ -535,8 +535,10 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   virtual StaticCollectionManager*
   getStaticCollectionManager() const = 0;
 
-   /**
+  /** \brief Returns the QName of all external variables 
    *
+   * @param aVars variable to store the results.
+   * @throw ZorbaException if an error occured.
    */
   virtual bool
   getExternalVariables(std::vector<Item>& aVars) const = 0;
