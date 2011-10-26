@@ -83,12 +83,6 @@ else
           result="pass"
           comment="Opened W3C bug #11584."
         />
-      else if($testname = 'fn-collection-2')then
-      <test-case
-          name="{$testname}"
-          result="pass"
-          comment="Opened W3C bug #12542."
-        />
       else
         <test-case
           name="{$testname}"
