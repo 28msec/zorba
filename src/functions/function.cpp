@@ -231,5 +231,20 @@ BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
 }
 
 
+/*******************************************************************************
+  Check whether this function cares whether nodes bound to the given input 
+  parameter belong to "standalone" trees or not. A tree is standalone if it
+  does not contain references to other trees. Such references are created when
+  the optimizer decides that it is ok to avoid copying the referenced subtree
+  (as required by the spec, eg. during node construction). The decision may 
+  depend on whether the result of this function, at the point where it is called, 
+  must be a node or nodes within standalone trees or not.
+********************************************************************************/
+BoolAnnotationValue function::requiresNodeCopy(expr* fo, ulong input) const
+{
+  return ANNOTATION_TRUE;
+}
+
+
 }
 /* vim:set et sw=2 ts=2: */

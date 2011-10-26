@@ -154,6 +154,8 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
+  BoolAnnotationValue requiresNodeCopy(expr* fo, ulong input) const;
+
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }

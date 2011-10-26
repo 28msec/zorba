@@ -56,21 +56,50 @@ typedef rchandle<var_expr> var_expr_t;
   For vars declared in FOR, LET, or WINDOW clauses, their defining expr is
   stored in the associated clause (see theForletClause data member below).
 
-  theUniqueId    : A unique numeric id for variales whose value is stored in
-                   the dynamic context, ie, prolog and local vars. It is used
-                   as an index into an array that stores the values.
+  theUniqueId:
+  ------------
+  A unique numeric id for variales whose value is stored in the dynamic context,
+  ie, prolog and local vars. It is used as an index into an array that stores
+  the values.
 
-  theKind        : The kind of the variable (see var_kind enum below)
-  theVarName     : The fully expanded qname of the var (qname item)
-  theStaticType  : The static type of the variable
-  theFlworClause : If this is a var declared in flwor clause, theFlworClause
-                   points to the defining clause. That clause also contains
-                   the defining expr for the var and a pointer back to this
-                   var_exr.
-  theCopyClause  : If this is a var declared in a copy clause of a transform
-                   expr, theCopyClause points to that clause. That clause
-                   contains the defining expr for the var and a pointer back
-                   to this var_exr.
+  theKind:
+  --------
+  The kind of the variable (see var_kind enum below)
+
+  theVarName:
+  -----------
+  The fully expanded qname of the var (qname item)
+
+  theDeclaredType:
+  ----------------
+  The type, if any, specified in the declaration of the variable
+
+  theFlworClause:
+  ---------------
+  If this is a var declared in flwor clause, theFlworClause points to the 
+  defining clause. That clause also contains the defining expr for the var
+  and a pointer back to this var_exr.
+
+  theCopyClause:
+  --------------
+  If this is a var declared in a copy clause of a transform expr, theCopyClause
+  points to that clause. That clause contains the defining expr for the var and
+  a pointer back to this var_exr.
+
+  theParamPos:
+  ------------
+  For arg vars, it is the position, within the param list, of parameter that is
+  bound to this arg var.
+  
+  theIsExternal:
+  --------------
+
+  theIsPrivate:
+  -------------
+
+  theIsMutable:
+  -------------
+
 *******************************************************************************/
 class var_expr : public expr
 {
@@ -111,15 +140,21 @@ protected:
   ulong          theUniqueId;
 
   var_kind       theKind;
+
   store::Item_t  theName;
+
   xqtref_t       theDeclaredType;
 
   flwor_clause * theFlworClause;
+
   copy_clause  * theCopyClause;
+
+  csize          theParamPos;
 
   bool           theIsExternal;
 
   bool           theIsPrivate; 
+
   bool           theIsMutable;
 
 public:
@@ -178,6 +213,10 @@ public:
   expr* get_domain_expr() const;
 
   const var_expr* get_pos_var() const;
+
+  csize get_param_pos() const { return theParamPos; }
+
+  void set_param_pos(csize pos) { theParamPos = pos; }
 
   bool is_context_item() const;
 

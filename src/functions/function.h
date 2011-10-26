@@ -180,6 +180,8 @@ public:
 
   virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
+  virtual BoolAnnotationValue requiresNodeCopy(expr* fo, ulong input) const;
+
   virtual bool isArithmeticFunction() const { return false; }
 
   virtual ArithmeticConsts::OperationKind arithmeticKind() const

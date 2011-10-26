@@ -83,6 +83,7 @@ var_expr::var_expr(
   theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL),
+  theParamPos(0),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true)
@@ -105,6 +106,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theDeclaredType;
   ar & theFlworClause;
   ar & theCopyClause;
+  ar & theParamPos;
   ar & theIsPrivate;
   ar & theIsExternal;
   ar & theIsMutable;

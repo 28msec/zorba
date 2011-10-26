@@ -19,6 +19,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -520,6 +521,399 @@ static void set_bit(
   VarIdMap::const_iterator i = varmap.find(v);
   if (i != varmap.end())
     freeset.set(i->second, value);
+}
+
+
+/*******************************************************************************
+  If the no-node-copy annotation of the target expr is not set to false
+  already, set it to the value of the no-node-copy annotations of the
+  source expr.
+********************************************************************************/
+static void pushdown_no_node_copy(expr* src, expr* target) 
+{
+  if (target->getNoNodeCopy1() != ANNOTATION_FALSE)
+    target->setNoNodeCopy1(src->getNoNodeCopy1());
+
+  if (target->getNoNodeCopy2() != ANNOTATION_FALSE)
+    target->setNoNodeCopy2(src->getNoNodeCopy2());
+}
+
+
+/*******************************************************************************
+  If the no-node-copy annotation of the target expr is not set to false
+  already, set it to the given value.
+********************************************************************************/
+static void set_no_node_copy(expr* target, BoolAnnotationValue v) 
+{
+  if (target->getNoNodeCopy1() != ANNOTATION_FALSE)
+    target->setNoNodeCopy1(v);
+
+  if (target->getNoNodeCopy2() != ANNOTATION_FALSE)
+    target->setNoNodeCopy2(v);
+}
+
+
+/*******************************************************************************
+  If the no-node-copy annotation of the target expr is not set to false
+  already, set it to the value of the no-node-copy annotations of the
+  source expr.
+********************************************************************************/
+static void pushdown_window_vars(const flwor_wincond* cond, expr* target) 
+{
+  const flwor_wincond::vars& inVars = cond->get_in_vars();
+
+  if (inVars.curr)
+    pushdown_no_node_copy(inVars.curr.getp(), target);
+
+  if (inVars.prev)
+    pushdown_no_node_copy(inVars.prev.getp(), target);
+
+  if (inVars.next)
+    pushdown_no_node_copy(inVars.next.getp(), target);
+
+  const flwor_wincond::vars& outVars = cond->get_out_vars();
+
+  if (outVars.curr)
+    pushdown_no_node_copy(outVars.curr.getp(), target);
+
+  if (outVars.prev)
+    pushdown_no_node_copy(outVars.prev.getp(), target);
+  
+  if (outVars.next)
+    pushdown_no_node_copy(outVars.next.getp(), target);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void computeNoNodeCopyProperty(expr* inExpr)
+{
+  switch(inExpr->get_expr_kind()) 
+  {
+  case const_expr_kind:
+  {
+    return;
+  }
+
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(inExpr);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::pos_var:
+    case var_expr::win_var:
+    case var_expr::score_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::count_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    case var_expr::copy_var:
+    {
+      return;
+    }
+
+    case var_expr::arg_var:
+    {
+      return;
+      //expr* argExpr = argExprs[e->get_param_pos()];
+      //pushdown_no_node_copy(inExpr, argExpr);
+    }
+
+    case var_expr::prolog_var: 
+    case var_expr::local_var:
+    {
+      // TODO: pass into this function a map with one entry per in-scope var.
+      // The entry maps the var to the most recently encountered assignment 
+      // expr for this var. 
+      return;
+    }
+
+    case var_expr::catch_var:
+    {
+      // TODO: associate the catch var with the try clause and keep track inside the
+      // try_catch expr of all the fn:error() calls that return an item()* seq.
+      return;
+    }
+
+    case var_expr::eval_var: // TODO
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+
+    break;
+  }
+
+  case doc_expr_kind:
+  {
+    doc_expr* e = static_cast<doc_expr*>(inExpr);
+    pushdown_no_node_copy(inExpr, e->getContent());
+    break;
+  }
+
+  case elem_expr_kind:
+  {
+    elem_expr* e = static_cast<elem_expr*>(inExpr);
+    pushdown_no_node_copy(inExpr, e->getContent());
+    pushdown_no_node_copy(inExpr, e->getAttrs());
+    set_no_node_copy(e->getQNameExpr(), ANNOTATION_TRUE);
+    break;
+  }
+
+  case attr_expr_kind:
+  {
+    attr_expr* e = static_cast<attr_expr*>(inExpr);
+    pushdown_no_node_copy(inExpr, e->getValueExpr());
+    break;
+  }
+
+  case text_expr_kind:
+  {
+    text_expr* e = static_cast<text_expr*>(inExpr);
+    set_no_node_copy(e->get_text(), ANNOTATION_TRUE);
+    break;
+  }
+
+  case pi_expr_kind:
+  {
+    pi_expr* e = static_cast<pi_expr*>(inExpr);
+    set_no_node_copy(e->get_target_expr(), ANNOTATION_TRUE);
+    set_no_node_copy(e->get_content_expr(), ANNOTATION_TRUE);
+    break;
+  }
+
+  case relpath_expr_kind:
+  {
+    const relpath_expr* e = static_cast<const relpath_expr*>(inExpr);
+
+    std::vector<expr_t>::const_iterator ite = e->begin();
+    std::vector<expr_t>::const_iterator end = e->end();
+
+    for (++ite; ite != end; ++ite)
+    {
+      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
+      axis_kind_t axisKind = axisExpr->getAxis();
+
+      if (axisKind != axis_kind_child &&
+          axisKind != axis_kind_descendant &&
+          axisKind != axis_kind_self &&
+          axisKind != axis_kind_attribute)
+      {
+        set_no_node_copy((*e)[0].getp(), ANNOTATION_FALSE);
+        break;
+      }
+    }
+
+    break;
+  }
+
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
+  {
+    flwor_expr* e = static_cast<flwor_expr*>(inExpr);
+
+    pushdown_no_node_copy(inExpr, e->get_return_expr());
+
+    csize i = e->num_clauses();
+    for (; i > 0; --i)
+    {
+      flwor_clause* clause = e->get_clause(i-1);
+
+      switch(clause->get_kind())
+      {
+      case flwor_clause::for_clause:
+      {
+        for_clause* fc = static_cast<for_clause*>(clause);
+        pushdown_no_node_copy(fc->get_var(), fc->get_expr());
+        computeNoNodeCopyProperty(fc->get_expr());
+        break;
+      }
+      case flwor_clause::let_clause:
+      {
+        let_clause* lc = static_cast<let_clause*>(clause);
+        pushdown_no_node_copy(lc->get_var(), lc->get_expr());
+        computeNoNodeCopyProperty(lc->get_expr());
+        break;
+      }
+      case flwor_clause::window_clause:
+      {
+        window_clause* wc = static_cast<window_clause*>(clause);
+
+        pushdown_no_node_copy(wc->get_var(), wc->get_expr());
+
+        const flwor_wincond* startCond = wc->get_win_start();
+        const flwor_wincond* endCond = wc->get_win_start();
+
+        if (startCond)
+        {
+          set_no_node_copy(startCond->get_cond(), ANNOTATION_TRUE);
+
+          computeNoNodeCopyProperty(startCond->get_cond());
+
+          pushdown_window_vars(startCond, wc->get_expr());
+        }
+
+        if (endCond)
+        {
+          set_no_node_copy(endCond->get_cond(), ANNOTATION_TRUE);
+
+          computeNoNodeCopyProperty(endCond->get_cond());
+
+          pushdown_window_vars(endCond, wc->get_expr());
+        }
+
+        computeNoNodeCopyProperty(wc->get_expr());
+        break;
+      }
+      case flwor_clause::where_clause:
+      {
+        where_clause* cc = static_cast<where_clause*>(clause);
+        set_no_node_copy(cc->get_expr(), ANNOTATION_TRUE);
+        computeNoNodeCopyProperty(cc->get_expr());
+        break;
+      }
+      case flwor_clause::group_clause:
+      {
+        group_clause* gc = static_cast<group_clause*>(clause);
+
+        flwor_clause::rebind_list_t::iterator ite = gc->beginGroupVars();
+        flwor_clause::rebind_list_t::iterator end = gc->endGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          pushdown_no_node_copy((*ite).second.getp(), (*ite).first.getp());
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          pushdown_no_node_copy((*ite).second.getp(), (*ite).first.getp());
+        }
+
+        break;
+      }
+      case flwor_clause::order_clause:
+      {
+        orderby_clause* ob = static_cast<orderby_clause*>(clause);
+
+        std::vector<expr_t>::iterator ite = ob->begin();
+        std::vector<expr_t>::iterator end = ob->end();
+
+        for (; ite != end; ++ite)
+        {
+          set_no_node_copy((*ite), ANNOTATION_TRUE);
+          computeNoNodeCopyProperty(*ite);
+        }
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        break;
+      }
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+
+    return;
+  }
+
+  case if_expr_kind:
+  {
+    if_expr* e = static_cast<if_expr*>(inExpr);
+    pushdown_no_node_copy(inExpr, e->get_cond_expr());
+    pushdown_no_node_copy(inExpr, e->get_then_expr());
+    pushdown_no_node_copy(inExpr, e->get_else_expr());
+    break;
+  }
+
+  case trycatch_expr_kind:
+  {
+    trycatch_expr* e = static_cast<trycatch_expr*>(inExpr);
+    pushdown_no_node_copy(inExpr, e->get_try_expr());
+    pushdown_no_node_copy(inExpr, e->get_catch_expr());
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr*>(inExpr);
+    function* func = e->get_func();
+
+    csize numArgs = e->num_args();
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      set_no_node_copy(e->get_arg(i), func->requiresNodeCopy(e, i));
+    }
+
+    break;
+  }
+
+#if 0
+  case dynamic_function_invocation_expr_kind:
+  case function_item_expr_kind:
+
+  case castable_expr_kind:
+  case instanceof_expr_kind:
+  case cast_expr_kind:
+  case treat_expr_kind:
+  case promote_expr_kind:
+  case name_cast_expr_kind:
+
+  case validate_expr_kind:
+
+  case extension_expr_kind:
+
+  case order_expr_kind:
+
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case transform_expr_kind:
+
+  case block_expr_kind:
+  case var_decl_expr_kind:
+  case apply_expr_kind:
+  case exit_expr_kind:
+  case exit_catcher_expr_kind:
+  case flowctl_expr_kind:
+  case while_expr_kind:
+
+  case eval_expr_kind:
+  case debugger_expr_kind:
+  case wrapper_expr_kind:
+  case function_trace_expr_kind:
+
+#ifndef ZORBA_NO_FULL_TEXT
+	case ft_expr_kind:
+#endif /* ZORBA_NO_FULL_TEXT */
+
+#endif
+
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  ExprIterator iter(inExpr);
+  while (!iter.done())
+  {
+    computeNoNodeCopyProperty(*iter);
+    iter.next();
+  }
 }
 
 

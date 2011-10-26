@@ -566,7 +566,7 @@ public:
 public:
   doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
 
-  const expr* getContent() const { return theContent.getp(); }
+  expr* getContent() const { return theContent.getp(); }
 
   void compute_scripting_kind();
 
@@ -635,11 +635,11 @@ public:
         expr_t aContent,
         const namespace_context* aNSCtx);
   
-  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
+  expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  const expr* getContent() const { return theContent.getp(); }
+  expr* getContent() const { return theContent.getp(); }
 
-  const expr* getAttrs() const { return theAttrs; }
+  expr* getAttrs() const { return theAttrs.getp(); }
 
   void compute_scripting_kind();
   
@@ -696,9 +696,9 @@ public:
     expr_t aQNameExpr,
     expr_t aValueExpr);
 
-  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
+  expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  const expr* getValueExpr() const { return theValueExpr.getp(); }
+  expr* getValueExpr() const { return theValueExpr.getp(); }
 
   const store::Item* getQName() const;
 
@@ -738,10 +738,10 @@ public:
 
 public:
   text_expr(
-        static_context* sctx,
-        const QueryLoc&,
-        text_constructor_type,
-        expr_t);
+      static_context* sctx,
+      const QueryLoc&,
+      text_constructor_type,
+      expr_t);
 
   expr* get_text() const { return theContentExpr.getp(); }
 
@@ -777,9 +777,9 @@ public:
 public:
   pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
  
-  const expr* get_target_expr() const { return theTargetExpr.getp(); }
+  expr* get_target_expr() const { return theTargetExpr.getp(); }
 
-  const expr* get_content_expr() const { return theContentExpr.getp(); }
+  expr* get_content_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
   
@@ -990,15 +990,15 @@ public:
 
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
-  expr* get_catch_expr(ulong i) const { return theCatchExprs[i].getp(); }
+  expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
 
   void add_catch_expr(expr_t e);
 
   void add_clause(catch_clause_t cc);
   
-  uint32_t clause_count() const { return (uint32_t)theCatchClauses.size(); }
+  csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
+  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

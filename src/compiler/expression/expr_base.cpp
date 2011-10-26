@@ -526,6 +526,40 @@ bool expr::containsRecursiveCall() const
 
 
 /*******************************************************************************
+  assuming the caller requires copy
+********************************************************************************/
+BoolAnnotationValue expr::getNoNodeCopy1() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & NO_NODE_COPY_1_MASK) >> NO_NODE_COPY_1);
+}
+
+
+void expr::setNoNodeCopy1(BoolAnnotationValue v)
+{
+  theFlags1 &= ~NO_NODE_COPY_1_MASK;
+  theFlags1 |= (v << NO_NODE_COPY_1);
+}
+
+
+/*******************************************************************************
+  assuming the caller does not require copy
+********************************************************************************/
+BoolAnnotationValue expr::getNoNodeCopy2() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & NO_NODE_COPY_2_MASK) >> NO_NODE_COPY_2);
+}
+
+
+void expr::setNoNodeCopy2(BoolAnnotationValue v)
+{
+  theFlags1 &= ~NO_NODE_COPY_2_MASK;
+  theFlags1 |= (v << NO_NODE_COPY_2);
+}
+
+
+/*******************************************************************************
   Return true if the expr does not reference any variables.
 ********************************************************************************/
 bool expr::is_constant() const

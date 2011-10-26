@@ -49,33 +49,41 @@ class expr_visitor;
 
 enum expr_kind_t
 {
-  attr_expr_kind,
-  axis_step_expr_kind,
-  castable_expr_kind,
-  cast_expr_kind,
   const_expr_kind,
-  doc_expr_kind,
-  elem_expr_kind,
-  extension_expr_kind,
-  flwor_expr_kind,
-  fo_expr_kind,
-  gflwor_expr_kind,
-  if_expr_kind,
-  instanceof_expr_kind,
-  match_expr_kind,
-  name_cast_expr_kind,
-  order_expr_kind,
-  pi_expr_kind,
-  promote_expr_kind,
-  relpath_expr_kind,
-  text_expr_kind,
-  treat_expr_kind,
-  validate_expr_kind,
+
   var_expr_kind,
 
+  doc_expr_kind,
+  elem_expr_kind,
+  attr_expr_kind,
+  text_expr_kind,
+  pi_expr_kind,
+
+  relpath_expr_kind,
+  axis_step_expr_kind,
+  match_expr_kind,
+
+  flwor_expr_kind,
+  gflwor_expr_kind,
+  if_expr_kind,
+  trycatch_expr_kind,
+
+  fo_expr_kind,
   dynamic_function_invocation_expr_kind,
   function_item_expr_kind,
-  trycatch_expr_kind,
+
+  castable_expr_kind,
+  cast_expr_kind,
+  instanceof_expr_kind,
+  treat_expr_kind,
+  promote_expr_kind,
+  name_cast_expr_kind,
+
+  validate_expr_kind,
+
+  extension_expr_kind,
+
+  order_expr_kind,
 
 #ifndef ZORBA_NO_FULL_TEXT
 	ft_expr_kind,
@@ -132,18 +140,22 @@ public:
     IGNORES_DUPLICATE_NODES = 6,
     NON_DISCARDABLE         = 8,
     UNFOLDABLE              = 10,
-    CONTAINS_RECURSIVE_CALL = 12
+    CONTAINS_RECURSIVE_CALL = 12,
+    NO_NODE_COPY_1          = 14,
+    NO_NODE_COPY_2          = 16
   } Annotationkey;
 
   typedef enum
   {
-    PRODUCES_SORTED_NODES_MASK   = 0x003,
-    PRODUCES_DISTINCT_NODES_MASK = 0x00C,
-    IGNORES_SORTED_NODES_MASK  = 0x030,
+    PRODUCES_SORTED_NODES_MASK    = 0x003,
+    PRODUCES_DISTINCT_NODES_MASK  = 0x00C,
+    IGNORES_SORTED_NODES_MASK     = 0x030,
     IGNORES_DUPLICATE_NODES_MASK  = 0x0C0,
-    NON_DISCARDABLE_MASK         = 0x300,
-    UNFOLDABLE_MASK              = 0xC00,
-    CONTAINS_RECURSIVE_CALL_MASK = 0x3000
+    NON_DISCARDABLE_MASK          = 0x300,
+    UNFOLDABLE_MASK               = 0xC00,
+    CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
+    NO_NODE_COPY_1_MASK           = 0xC000,
+    NO_NODE_COPY_2_MASK           = 0x30000
   } AnnotationMask;
 
 
@@ -277,6 +289,16 @@ public:
   void setContainsRecursiveCall(BoolAnnotationValue v);
 
   bool containsRecursiveCall() const;
+
+  // Annotation : noNodeCopy1
+  BoolAnnotationValue getNoNodeCopy1() const;
+
+  void setNoNodeCopy1(BoolAnnotationValue v);
+
+  // Annotation : noNodeCopy1
+  BoolAnnotationValue getNoNodeCopy2() const;
+
+  void setNoNodeCopy2(BoolAnnotationValue v);
 
   bool is_constant() const;
 

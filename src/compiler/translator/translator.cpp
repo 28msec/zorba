@@ -3538,10 +3538,11 @@ void end_visit(const Param& v, void* /*visit_state*/)
   var_expr_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
   var_expr_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
+  arg_var->set_param_pos(flwor->num_clauses());
+
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-  // theCurrentPrologVFDecl might be null in case
-  // of inline functions
+  // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull())
@@ -10329,14 +10330,12 @@ void* begin_visit(const LiteralFunctionItem& v)
 
   if ( !theSctx->is_feature_set(feature::hof) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("higher-order functions (hof)"));
   }
   return no_state;
 }
+
 
 void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 {
@@ -10345,10 +10344,12 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  try {
+  try 
+  {
     arity = to_xs_unsignedInt(v.getArity());
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& ) 
+  {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }
@@ -10373,6 +10374,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     for (ulong i = 0; i < arity; ++i)
     {
       var_expr_t argVar = create_temp_var(loc, var_expr::arg_var);
+
+      argVar->set_param_pos(i);
 
       udfArgs[i] = argVar;
       foArgs[i] = argVar.getp();
@@ -10462,8 +10465,10 @@ void* begin_visit(const InlineFunction& v)
 
     var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
+
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
+    arg_var->set_param_pos(flwor->num_clauses());
     arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
