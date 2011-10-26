@@ -18,8 +18,9 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 IF (ZORBA_WITH_DEBUGGER)
   SET (DEBUG_CLIENT_SRCS
     debugger/tuple.h
+    debugger/command.h
+    debugger/command_arg.h
     debugger/main.cpp
-    debugger/command.cpp
     debugger/command_prompt.cpp
     debugger/command_line_handler.cpp
     debugger/lock_free_queue.cpp

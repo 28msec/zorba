@@ -24,50 +24,75 @@
 
 
 namespace zorba { namespace debugger {
-  
-  template<typename Tuple>
-  class CommandArg;
-  
-  template<typename Tuple>
-  class CommandArgInstance {
+
+template<typename Tuple>
+class CommandArg;
+
+template<typename Tuple>
+class CommandArgInstance {
   public:
     virtual int get_index() const = 0;
     virtual const CommandArg<Tuple>* get_arg() const = 0;
     virtual void insertValue(Tuple& t) = 0;
     virtual bool isSet(Tuple& t) const = 0;
-  };
-  
-  template<typename T, int Idx, typename Tuple>
-  class TypedCommandArgInstance : public CommandArgInstance<Tuple>
-  {
+};
+
+template<typename T, int Idx, typename Tuple>
+class TypedCommandArgInstance : public CommandArgInstance<Tuple>
+{
   public:
     TypedCommandArgInstance(T aValue, const CommandArg<Tuple>* aArg)
-    : theValue(aValue), theArg(aArg) {}
-    virtual int get_index() const { return Idx; }
-    virtual const CommandArg<Tuple>* get_arg() const { return theArg; }
-    virtual void insertValue(Tuple& t)
+      : theValue(aValue), theArg(aArg)
+    {
+    }
+
+    virtual int
+    get_index() const
+    {
+      return Idx;
+    }
+
+    virtual const CommandArg<Tuple>*
+    get_arg() const
+    {
+      return theArg;
+    }
+
+    virtual void
+    insertValue(Tuple& t)
     {
       ZORBA_TR1_NS::get<Idx>(t).first = true;
       ZORBA_TR1_NS::get<Idx>(t).second = theValue;
     }
+
     virtual bool isSet(Tuple& t) const
     {
       return ZORBA_TR1_NS::get<Idx>(t).first;
     }
+
   private:
+
     T theValue;
     const CommandArg<Tuple>* theArg;
-  };
+};
   
-  template<typename Tuple>
-  class CommandArgType {
+template<typename Tuple>
+class CommandArgType
+{
   public:
-    virtual CommandArgInstance<Tuple>* parse(const std::string& str,
-                                             const CommandArg<Tuple>* arg) = 0;
-    virtual bool isVoid() const = 0;
-    virtual bool isSet(Tuple& t) const = 0;
+    virtual CommandArgInstance<Tuple>*
+    parse(
+      const std::string& str,
+      const CommandArg<Tuple>* arg) = 0;
+
+    virtual bool
+    isVoid() const = 0;
+  
+    virtual bool
+    isSet(Tuple& t) const = 0;
+
     virtual ~CommandArgType() {}
-  };
+};
   
   template<typename T, int Idx, typename Tuple>
   class TypedCommandArgType : public CommandArgType<Tuple> {
@@ -118,15 +143,27 @@ namespace zorba { namespace debugger {
     theIsRequired(aIsRequired)
     {
     }
-    ~CommandArg() { delete theType; }
-    unsigned get_id() const { return theId; }
-    bool canHandle(const std::string& arg) const
+
+    ~CommandArg()
+    { 
+      delete theType;
+    }
+
+    unsigned
+    get_id() const
+    {
+      return theId;
+    }
+
+    bool
+    canHandle(const std::string& arg) const
     {
       if (theFlags.find(arg) != theFlags.end()) {
         return true;
       }
       return false;
     }
+
     CommandArgInstance<Tuple>*
     parse(const std::string& str) const
     {
@@ -158,6 +195,7 @@ namespace zorba { namespace debugger {
     }
 
   private:
+
     unsigned theId;
     CommandArgType<Tuple>* theType;
     std::set<std::string> theNames;
