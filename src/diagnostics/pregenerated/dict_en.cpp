@@ -286,7 +286,7 @@ extern entry const dict_en[] = {
   { "ZDDY0022", "\"$1\": index already exists" },
   { "ZDDY0023", "\"$1\": index does not exist" },
   { "ZDDY0024", "\"$1\": index uniqueness violation" },
-  { "ZDDY0025", "${\"1\": }invalid number of arguments to $2 operation; given $3 expected $4" },
+  { "ZDDY0025", "$1: invalid number of arguments to $2 operation; given $3 expected $4" },
   { "ZDDY0026", "\"$1\": index range probe not allowed" },
   { "ZDDY0027", "\"$1\": index multiple creates" },
   { "ZDDY0028", "\"$1\": index domain has duplicate nodes" },
