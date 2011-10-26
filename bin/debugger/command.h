@@ -31,16 +31,6 @@
 #include "tuple.h"
 
 
-namespace std {
-  
-  /**
-   * This is a helper split function
-   */
-  vector<string>& operator<< (vector<string>& vec, const string& str);
-  
-  set<string>& operator<< (set<string>& vec, const string& str);
-} // namespace std
-
 namespace zorba { namespace debugger {
   
   class DebugClientParseException : public std::exception {
@@ -204,13 +194,18 @@ namespace zorba { namespace debugger {
     ~Command();
   public:
 
-    Command&
+    void
     addArgument(
       unsigned aId,
       const std::string& aFlags,
       CommandArgType<Tuple>* aType,
       const std::string& aDescription = "",
       bool isRequired = false);
+
+    static void
+    splitNames(
+      const std::string& names,
+      std::set<std::string>& set);
 
     virtual std::string get_name() const { return theName; }
     virtual std::string get_description() const { return theDescription; }
@@ -230,16 +225,54 @@ namespace zorba { namespace debugger {
     std::string theDescription;
     std::map<std::string, CommandArg<Tuple>* > theArgs;
   };
-  
-  template<typename Func, typename Tuple, int CommandIdx>
-  Command<Func, Tuple, CommandIdx>::~Command()
-  {
-    typedef std::map<std::string, CommandArg<Tuple>* > ArgType;
-    for (typename ArgType::iterator i = theArgs.begin(); i != theArgs.end(); ++i) {
-      delete i->second;
-    }
+
+/*****************************************************************************/
+/*****************************************************************************/
+
+template<typename Func, typename Tuple, int CommandIdx>
+Command<Func, Tuple, CommandIdx>::~Command()
+{
+  typedef std::map<std::string, CommandArg<Tuple>* > ArgType;
+  for (typename ArgType::iterator i = theArgs.begin(); i != theArgs.end(); ++i) {
+    delete i->second;
   }
-    
+}
+
+template<typename Func, typename Tuple, int CommandIdx>
+void
+Command<Func, Tuple, CommandIdx>::splitNames(const std::string& aNames, std::set<std::string>& aSet)
+{
+  std::string::size_type before = 0;
+  std::string::size_type pos = aNames.find(" ", 0);
+  while (pos != aNames.npos) {
+    aSet.insert(aNames.substr(before, pos));
+    before = pos + 1;
+    pos = aNames.find(" ", before);
+  }
+  aSet.insert(aNames.substr(before));
+}
+
+template<typename Func, typename Tuple, int CommandIdx>
+void
+Command<Func, Tuple, CommandIdx>::addArgument(
+  unsigned aId,
+  const std::string& aFlags,
+  CommandArgType<Tuple>* aType,
+  const std::string& aDescription,
+  bool isRequired)
+{
+  std::set<std::string> lNames;
+  splitNames(aFlags, lNames);
+
+  for (std::set<std::string>::iterator i = lNames.begin(); i != lNames.end(); ++i) {
+    std::string toAdd = (i->size() == 1) ? "-" + *i : "--" + *i;
+    CommandArg<Tuple>* lArg = new CommandArg<Tuple>(aId, aType, lNames, aDescription, isRequired);
+    theArgs.insert(std::make_pair(toAdd, lArg));
+  }
+}
+
+/*****************************************************************************/
+
   template<typename Tuple, typename T, int Idx>
   CommandArgType<Tuple>* createArgType(Tuple t)
   {
