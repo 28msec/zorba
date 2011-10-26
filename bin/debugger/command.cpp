@@ -34,3 +34,34 @@ namespace std {
   }
 
 }
+
+namespace zorba { namespace debugger {
+
+template<typename Func, typename Tuple, int CommandIdx>
+Command<Func, Tuple, CommandIdx>& 
+Command<Func, Tuple, CommandIdx>::addArgument(
+  unsigned aId,
+  const std::string& aFlags,
+  CommandArgType<Tuple>* aType,
+  const std::string& aDescription,
+  bool isRequired)
+{
+  std::set<std::string> args;
+  args << aFlags;
+  for (std::set<std::string>::iterator i = args.begin(); i != args.end(); ++i) {
+    std::string toAdd = (i->size() == 1) ? "-" + *i : "--" + *i;
+    theArgs.insert(std::make_pair(toAdd,
+                                  new CommandArg<Tuple>(aId,
+                                                        aType,
+                                                        args,
+                                                        aDescription,
+                                                        isRequired)
+                                  )
+                    );
+  }
+  return *this;
+}
+
+
+} // namespace zorba
+} // namespace debugger

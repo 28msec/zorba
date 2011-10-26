@@ -203,11 +203,15 @@ namespace zorba { namespace debugger {
       : theName(aName), theFunction(aFunction), theDescription(aDescription) {}
     ~Command();
   public:
-    Command& operator() (unsigned aId,
-                         const std::string& aFlags,
-                         CommandArgType<Tuple>* aType,
-                         const std::string& aDescription = "",
-                         bool isRequired = false);
+
+    Command&
+    addArgument(
+      unsigned aId,
+      const std::string& aFlags,
+      CommandArgType<Tuple>* aType,
+      const std::string& aDescription = "",
+      bool isRequired = false);
+
     virtual std::string get_name() const { return theName; }
     virtual std::string get_description() const { return theDescription; }
     virtual bool execute(const std::vector<std::string>& args)
@@ -236,30 +240,6 @@ namespace zorba { namespace debugger {
     }
   }
     
-  template<typename Func, typename Tuple, int CommandIdx>
-  Command<Func, Tuple, CommandIdx>& 
-  Command<Func, Tuple, CommandIdx>::operator() (unsigned aId,
-                                    const std::string& aFlags,
-                                    CommandArgType<Tuple>* aType,
-                                    const std::string& aDescription,
-                                    bool isRequired)
-  {
-    std::set<std::string> args;
-    args << aFlags;
-    for (std::set<std::string>::iterator i = args.begin(); i != args.end(); ++i) {
-      std::string toAdd = (i->size() == 1) ? "-" + *i : "--" + *i;
-      theArgs.insert(std::make_pair(toAdd,
-                                    new CommandArg<Tuple>(aId,
-                                                          aType,
-                                                          args,
-                                                          aDescription,
-                                                          isRequired)
-                                    )
-                     );
-    }
-    return *this;
-  }
-  
   template<typename Tuple, typename T, int Idx>
   CommandArgType<Tuple>* createArgType(Tuple t)
   {
