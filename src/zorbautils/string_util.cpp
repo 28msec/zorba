@@ -24,9 +24,9 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 using namespace std;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 U_NAMESPACE_USE
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 namespace utf8 {
@@ -35,12 +35,12 @@ namespace utf8 {
 
 size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
              XQPCollator const *collator ) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   if ( !collator || collator->doMemCmp()) {
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
     char const *const result = ::strstr( s, ss );
     return result ? result - s : zstring::npos;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   }
 
   unicode::string u_s, u_ss;
@@ -61,19 +61,19 @@ size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
     }
   }
   return zstring::npos;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 
 size_t rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
               XQPCollator const *collator ) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   if ( ! collator || collator->doMemCmp()) {
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
     zstring_b tmp;
     tmp.wrap_memory(const_cast<char*>(s), s_len);
     return tmp.rfind(ss, ss_len);
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   }
 
   unicode::string u_s, u_ss;
@@ -100,7 +100,7 @@ size_t rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
   }
 
   return zstring::npos;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 bool match_part( char const *in, char const *pattern, char const *flags ) {

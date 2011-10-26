@@ -289,7 +289,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
-IF(NOT ZORBA_NO_UNICODE)
+IF(NOT ZORBA_NO_ICU)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err10 3405597)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err12 3405597)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 3405597)
@@ -297,9 +297,9 @@ IF(NOT ZORBA_NO_UNICODE)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err25 3405597)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err7 3405597)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 3405597)
-ENDIF(NOT ZORBA_NO_UNICODE)
+ENDIF(NOT ZORBA_NO_ICU)
 
-IF(ZORBA_NO_UNICODE)
+IF(ZORBA_NO_ICU)
   SET_TESTS_PROPERTIES(test/rbkt/zorba/string/CodepointToStringFunc/CodepointToStringFunc1
                       test/rbkt/zorba/string/CodepointToStringFunc/UnicodeNormalization1
                       test/rbkt/zorba/utf-8/utf8inDataDe
@@ -313,7 +313,7 @@ IF(ZORBA_NO_UNICODE)
                       test/rbkt/zorba/http-client/put/put3_xml
                       test/rbkt/zorba/parsing_and_serializing/fn_serialize_04_xml_decl
                       PROPERTIES WILL_FAIL TRUE)
-ENDIF(ZORBA_NO_UNICODE)
+ENDIF(ZORBA_NO_ICU)
 
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)

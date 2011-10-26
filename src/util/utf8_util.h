@@ -32,12 +32,12 @@
 #include "zorbatypes/collation_manager.h"
 #include "zorbautils/hashfun.h"
 
-#ifdef ZORBA_NO_UNICODE
+#ifdef ZORBA_NO_ICU
 # include "diagnostics/assert.h"
 #else
 # include <unicode/coll.h>
 # include <unicode/sortkey.h>
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 namespace utf8 {
@@ -309,7 +309,7 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
 
 ////////// Encoding conversion ////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 /**
  * Converts a unicode::char_type array into a UTF-8 encoded string.
@@ -380,7 +380,7 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
   return to_string( in, u_strlen( in ), out );
 }
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 /**
  * Converts a unicode::string into a UTF-8 encoded string.
@@ -391,15 +391,15 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
  */
 template<class StringType> inline
 bool to_string( unicode::string const &in, StringType *out ) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   return to_string( in.getBuffer(), in.length(), out );
 #else
   *out = in.c_str();
   return true;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 //
 // On Windows, UChar == wchar_t, so these functions would multiply define those
@@ -524,7 +524,7 @@ bool to_wchar_t( StringType const &in, wchar_t **out,
   return to_wchar_t( in.data(), in.size(), out, out_len );
 }
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ////////// HTML URI ///////////////////////////////////////////////////////////
 
@@ -682,7 +682,7 @@ void iri_to_uri( StringType &s ) {
 
 ////////// Unicode normalization //////////////////////////////////////////////
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 /**
  * Normalizes the Unicode characters in the string.
  *
@@ -694,7 +694,7 @@ void iri_to_uri( StringType &s ) {
 template<class InputStringType,class OutputStringType>
 bool normalize( InputStringType const &in, unicode::normalization::type n,
                 OutputStringType *out );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ////////// Whitespace /////////////////////////////////////////////////////////
 
@@ -774,7 +774,7 @@ template<class StringType1,class StringType2> inline
 int compare(const StringType1 &s1, const StringType2 &s2,
             const XQPCollator* collation)
 {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   if (collation == NULL || collation->doMemCmp())
     return s1.compare(s2);
 
@@ -787,7 +787,7 @@ int compare(const StringType1 &s1, const StringType2 &s2,
   return static_cast<Collator*>( collation->getCollator() )->compare(us1, us2);
 #else
   return s1.compare(s2);
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 
@@ -796,9 +796,9 @@ int compare(const StringType1 &s1, const StringType2 &s2,
  */
 template<class StringType> inline
 uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   if (!collation || collation->doMemCmp()) {
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
     const char* str = s.data();
     ulong len = (ulong)s.size();
     uint32_t hash = 5381;
@@ -810,11 +810,11 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
       ++i;
     }
     return hash;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   }
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   CollationKey collKey;
   UErrorCode status = U_ZERO_ERROR;
 
@@ -832,7 +832,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
   return collKey.hashCode();
 #else
   ZORBA_ASSERT(false);
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

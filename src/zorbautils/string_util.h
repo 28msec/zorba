@@ -148,13 +148,13 @@ bool replace_all( char const *in, char const *pattern, char const *flags,
                   char const *replacement, OutputStringType *out ) {
   unicode::regex re;
   re.compile( pattern, flags );
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
 #else
   return re.replace_all( in, replacement, out );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 /**
@@ -182,13 +182,13 @@ bool replace_all( InputStringType const &in, char const *pattern,
                   OutputStringType *out ) {
   unicode::regex re;
   re.compile( pattern, flags );
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
 #else
   return re.replace_all( in, replacement, out );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 /**
@@ -218,13 +218,13 @@ bool replace_all( InputStringType const &in, PatternStringType const &pattern,
                   OutputStringType *out ) {
   unicode::regex re;
   re.compile( pattern, flags );
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
 #else
   return re.replace_all( in, replacement, out );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

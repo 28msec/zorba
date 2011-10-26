@@ -17,9 +17,9 @@
 
 #include "common/common.h"
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 # include <unicode/coll.h>
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 #include <vector>
 #include <iostream>
@@ -116,7 +116,7 @@ CollationFactory::createCollator(const std::string& aCollationURI)
   
   Collator* lCollator;
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   UErrorCode lError = U_ZERO_ERROR;
   if (lTokens.size() == 2) 
   {
@@ -140,31 +140,31 @@ CollationFactory::createCollator(const std::string& aCollationURI)
 
   if (lTokens[0].compare("PRIMARY") == 0) 
   {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     lCollator->setStrength(Collator::PRIMARY);
 #endif
   }
   else if (lTokens[0].compare("SECONDARY") == 0) 
   {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     lCollator->setStrength(Collator::SECONDARY);
 #endif
   }
   else if (lTokens[0].compare("TERTIARY") == 0) 
   {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     lCollator->setStrength(Collator::TERTIARY);
 #endif
   }
   else if (lTokens[0].compare("QUATERNARY") == 0) 
   {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     lCollator->setStrength(Collator::QUATERNARY);
 #endif
   }
   else if (lTokens[0].compare("IDENTICAL") == 0) 
   {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     lCollator->setStrength(Collator::IDENTICAL);
 #endif
   }
@@ -181,7 +181,7 @@ XQPCollator*
 CollationFactory::createCollator()
 {
   Collator* lCollator;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   UErrorCode lError = U_ZERO_ERROR;
   lCollator = Collator::createInstance(Locale("en", "US"), lError); 
   if( U_FAILURE(lError) ) {

@@ -25,13 +25,13 @@
 namespace zorba
 {
 
-#ifdef ZORBA_NO_UNICODE
+#ifdef ZORBA_NO_ICU
 
 class Collator
 {
 };
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 class XQPCollator
 {

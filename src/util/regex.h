@@ -21,7 +21,7 @@
 #include "unicode_util.h"
 #include "zorbatypes/zstring.h"
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 #include <unicode/regex.h>
 
@@ -494,7 +494,7 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#else /* ZORBA_NO_UNICODE (ascii part:) */
+#else /* ZORBA_NO_ICU (ascii part:) */
 
 #include "util/regex_ascii.h"
 #include <string>
@@ -877,7 +877,7 @@ private:
 } // namespace unicode
 } // namespace zorba
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 #endif /* ZORBA_REGEX_H */
 /*
  * Local variables:

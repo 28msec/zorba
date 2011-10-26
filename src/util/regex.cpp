@@ -33,7 +33,7 @@
 #define INVALID_RE_EXCEPTION(...) \
   XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 # include <unicode/uversion.h>
 U_NAMESPACE_USE
 
@@ -445,7 +445,7 @@ int regex::get_match_end( int groupId ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#else /* ZORBA_NO_UNICODE */
+#else /* ZORBA_NO_ICU */
 
 #include "zorbatypes/zstring.h"
 
@@ -691,7 +691,7 @@ int regex::get_match_end( int groupId )
 
 } // namespace unicode
 } // namespace zorba
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ///////////////////////////////////////////////////////////////////////////////
 

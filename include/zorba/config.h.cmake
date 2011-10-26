@@ -144,7 +144,7 @@ typedef __int64 int64_t;
 
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
-#cmakedefine ZORBA_NO_UNICODE
+#cmakedefine ZORBA_NO_ICU
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE

@@ -17,11 +17,11 @@
 
 #include "common/common.h"
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 # include <unicode/uclean.h>
 # include <unicode/utypes.h>
 # include <unicode/udata.h>
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # include "zorbatypes/m_apm.h"
@@ -171,7 +171,7 @@ void GlobalEnvironment::init_icu()
   // from one thread only
   // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
   // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 #  if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
   {
     TCHAR    self_path[1024];
@@ -207,7 +207,7 @@ void GlobalEnvironment::init_icu()
   UErrorCode lICUInitStatus = U_ZERO_ERROR;
   u_init(&lICUInitStatus);
   ZORBA_ASSERT(lICUInitStatus == U_ZERO_ERROR);
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 
@@ -219,12 +219,12 @@ void GlobalEnvironment::cleanup_icu()
   // releases statically initialized memory and prevents
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   u_cleanup();
 # if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
   delete[] icu_appdata;
 # endif
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
 

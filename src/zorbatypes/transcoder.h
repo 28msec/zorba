@@ -40,21 +40,21 @@ protected:
   std::ostream &os;
   bool const utf16;
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   utf8::encoded_char_type utf8_buf_;
   int utf8_buf_len_;
   int utf8_char_len_;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 public:
   transcoder(std::ostream& output_stream, bool in_utf16);
 
   transcoder& write( char const *s, std::streamsize n ) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     if ( utf16 )
       write_utf16( s, n );
     else
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
       os.write( s, n );
     return *this;
   }
@@ -68,11 +68,11 @@ public:
   }
 
   transcoder& operator<<( char ch ) {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     if ( utf16 )
       write_utf16_char(ch);
     else
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
       os << ch;
     return *this;
   }
@@ -97,10 +97,10 @@ public:
   }
 
 private:
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   void write_utf16(const char* str, std::streamsize n);
   void write_utf16_char(char ch);
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 };
 
 } // namespace zorba

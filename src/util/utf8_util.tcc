@@ -99,7 +99,7 @@ unicode::code_point prev_char( OctetIterator &oi ) {
   return next_char( temp );
 }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 template<class InputStringType,class OutputStringType>
 bool normalize( InputStringType const &in, unicode::normalization::type n,
@@ -123,11 +123,11 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
 template<class InputStringType,class OutputStringType>
 void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
   InputStringType in_normalized;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   normalize( in, unicode::normalization::NFKD, &in_normalized );
 #else
   in_normalized = in.c_str();
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
   out->clear();
   out->reserve( in_normalized.size() );
   std::copy(
@@ -165,7 +165,7 @@ bool to_string( wchar_t const *in, size_type in_len, StringType *out ) {
 }
 #endif /* WIN32 */
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
 void to_lower( InputStringType const &in, OutputStringType *out ) {

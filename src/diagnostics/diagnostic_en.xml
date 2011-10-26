@@ -2629,8 +2629,8 @@
       <value>valid values are: UTF-8, UTF-16</value>
     </entry>
 
-    <entry key="SerializeEncodingNotSupportedForNoUnicode" if="defined(ZORBA_NO_UNICODE)">
-      <value>setting encoding for serialization is not supported in ASCII only mode (Zorba was compiled with ZORBA_NO_UNICODE=ON)</value>
+    <entry key="SerializeEncodingNotSupportedForNoUnicode" if="defined(ZORBA_NO_ICU)">
+      <value>setting encoding for serialization is not supported in ASCII only mode (Zorba was compiled with ZORBA_NO_ICU=ON)</value>
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">
@@ -3029,164 +3029,164 @@
       <value>item type is not a subtype of "$3"</value>
     </entry>
 
-    <entry key="U_REGEX_BAD_ESCAPE_SEQUENCE" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_BAD_ESCAPE_SEQUENCE" if="!defined(ZORBA_NO_ICU)">
       <value>unrecognized backslash escape sequence</value>
     </entry>
 
-    <entry key="U_REGEX_BAD_INTERVAL" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_BAD_INTERVAL" if="!defined(ZORBA_NO_ICU)">
       <value>error in {min,max} interval</value>
     </entry>
 
-    <entry key="U_REGEX_INTERNAL_ERROR" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_INTERNAL_ERROR" if="!defined(ZORBA_NO_ICU)">
       <value>an internal ICU error (bug) was detected</value>
     </entry>
 
-    <entry key="U_REGEX_INVALID_BACK_REF" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_INVALID_BACK_REF" if="!defined(ZORBA_NO_ICU)">
       <value>backreference to a non-existent capture group</value>
     </entry>
 
-    <entry key="U_REGEX_INVALID_FLAG" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_INVALID_FLAG" if="!defined(ZORBA_NO_ICU)">
       <value>invalid value for match mode flags</value>
     </entry>
 
-    <entry key="U_REGEX_INVALID_RANGE" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_INVALID_RANGE" if="!defined(ZORBA_NO_ICU)">
       <value>in character range [x-y], x is greater than y</value>
     </entry>
 
-    <entry key="U_REGEX_INVALID_STATE" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_INVALID_STATE" if="!defined(ZORBA_NO_ICU)">
       <value>RegexMatcher in invalid state for requested operation</value>
     </entry>
 
-    <entry key="U_REGEX_LOOK_BEHIND_LIMIT" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_LOOK_BEHIND_LIMIT" if="!defined(ZORBA_NO_ICU)">
       <value>look-behind pattern matches must have a bounded maximum length</value>
     </entry>
 
-    <entry key="U_REGEX_MAX_LT_MIN" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_MAX_LT_MIN" if="!defined(ZORBA_NO_ICU)">
       <value>in {min,max}, max is less than min</value>
     </entry>
 
-    <entry key="U_REGEX_MISMATCHED_PAREN" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_MISMATCHED_PAREN" if="!defined(ZORBA_NO_ICU)">
       <value>incorrectly nested parentheses</value>
     </entry>
 
-    <entry key="U_REGEX_MISSING_CLOSE_BRACKET" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_MISSING_CLOSE_BRACKET" if="!defined(ZORBA_NO_ICU)">
       <value>missing ']'</value>
     </entry>
 
-    <entry key="U_REGEX_NUMBER_TOO_BIG" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_NUMBER_TOO_BIG" if="!defined(ZORBA_NO_ICU)">
       <value>decimal number is too large</value>
     </entry>
 
-    <entry key="U_REGEX_OCTAL_TOO_BIG" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_OCTAL_TOO_BIG" if="!defined(ZORBA_NO_ICU)">
       <value>octal character constants must be &lt;= 0377</value>
     </entry>
 
-    <entry key="U_REGEX_PROPERTY_SYNTAX" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_PROPERTY_SYNTAX" if="!defined(ZORBA_NO_ICU)">
       <value>incorrect Unicode property</value>
     </entry>
 
-    <entry key="U_REGEX_RULE_SYNTAX" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_RULE_SYNTAX" if="!defined(ZORBA_NO_ICU)">
       <value>syntax error</value>
     </entry>
 
-    <entry key="U_REGEX_SET_CONTAINS_STRING" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_SET_CONTAINS_STRING" if="!defined(ZORBA_NO_ICU)">
       <value>can not have UnicodeSets containing strings</value>
     </entry>
 
-    <entry key="U_REGEX_STACK_OVERFLOW" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_STACK_OVERFLOW" if="!defined(ZORBA_NO_ICU)">
       <value>backtrack stack overflow</value>
     </entry>
 
-    <entry key="U_REGEX_STOPPED_BY_CALLER" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_STOPPED_BY_CALLER" if="!defined(ZORBA_NO_ICU)">
       <value>matching operation aborted by user callback fn</value>
     </entry>
 
-    <entry key="U_REGEX_TIME_OUT" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_TIME_OUT" if="!defined(ZORBA_NO_ICU)">
       <value>maximum allowed match time exceeded</value>
     </entry>
 
-    <entry key="U_REGEX_UNIMPLEMENTED" if="!defined(ZORBA_NO_UNICODE)">
+    <entry key="U_REGEX_UNIMPLEMENTED" if="!defined(ZORBA_NO_ICU)">
       <value>use of regular expression feature that is not yet implemented</value>
     </entry>
 
     <!-- Regex Ascii error messages-->
-    <entry key="REGEX_UNIMPLEMENTED" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNIMPLEMENTED" if="defined(ZORBA_NO_ICU)">
       <value>use of regular expression feature that is not yet implemented</value>
     </entry>
 
-    <entry key="REGEX_MISMATCHED_PAREN" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_MISMATCHED_PAREN" if="defined(ZORBA_NO_ICU)">
       <value>incorrectly nested parentheses</value>
     </entry>
 
-    <entry key="REGEX_BROKEN_P_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_BROKEN_P_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>broken \\p construct</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PL_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PL_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PM_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PM_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{M?} category; supported categories: M, Mn, Mc, Me</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PN_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PN_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{N?} category; supported categories: N, Nd, Nl, No</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PP_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PP_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PZ_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PZ_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PS_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PS_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PC_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PC_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)</value>
     </entry>
 
-    <entry key="REGEX_BROKEN_PIs_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_BROKEN_PIs_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_PIs_CONSTRUCT" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_PIs_CONSTRUCT" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes</value>
     </entry>
 
-    <entry key="REGEX_UNKNOWN_ESC_CHAR" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_UNKNOWN_ESC_CHAR" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups</value>
     </entry>
 
-    <entry key="REGEX_INVALID_BACK_REF" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_INVALID_BACK_REF" if="defined(ZORBA_NO_ICU)">
       <value>\\$3 backreference to a non-existent capture group ($4 groups so far)</value>
     </entry>
 
-    <entry key="REGEX_INVALID_ATOM_CHAR" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_INVALID_ATOM_CHAR" if="defined(ZORBA_NO_ICU)">
       <value>$3 - invalid character for at atom; forbidden characters are: [{}?*+|^]</value>
     </entry>
 
-    <entry key="REGEX_INVALID_SUBCLASS" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_INVALID_SUBCLASS" if="defined(ZORBA_NO_ICU)">
       <value>malformed class subtraction</value>
     </entry>
 
-    <entry key="REGEX_INVALID_USE_OF_SUBCLASS" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_INVALID_USE_OF_SUBCLASS" if="defined(ZORBA_NO_ICU)">
       <value>improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]</value>
     </entry>
 
-    <entry key="REGEX_MULTICHAR_IN_CHAR_RANGE" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_MULTICHAR_IN_CHAR_RANGE" if="defined(ZORBA_NO_ICU)">
       <value>multichars or char categories cannot be part of a char range</value>
     </entry>
 
-    <entry key="REGEX_MISSING_CLOSE_BRACKET" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_MISSING_CLOSE_BRACKET" if="defined(ZORBA_NO_ICU)">
       <value>missing close bracket in char group</value>
     </entry>
 
-    <entry key="REGEX_MAX_LT_MIN" if="defined(ZORBA_NO_UNICODE)">
+    <entry key="REGEX_MAX_LT_MIN" if="defined(ZORBA_NO_ICU)">
       <value>in {min,max}, max is less than min</value>
     </entry>
 
