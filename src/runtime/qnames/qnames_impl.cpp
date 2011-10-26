@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,7 +52,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemQName, theChild0.getp(), planState )) 
+  if (consumeNext(itemQName, theChild0.getp(), planState ))
   {
     itemQName->getStringValue2(qname);
 
@@ -60,7 +60,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     index = qname.find(":", 0, 1);
 
-    if (index != zstring::npos) 
+    if (index != zstring::npos)
     {
       resPre = qname.substr(0, index);
       resLocal = qname.substr(index+1, qname.size() - index);
@@ -70,7 +70,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         throw XQUERY_EXCEPTION(
           err::FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc)
         );
-    } 
+    }
     else
     {
       resLocal = qname;
@@ -80,8 +80,8 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           err::FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc)
         );
     }
-      
-    if (consumeNext(itemElem, theChild1, planState )) 
+
+    if (consumeNext(itemElem, theChild1, planState ))
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
 
@@ -104,7 +104,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           err::FONS0004, ERROR_PARAMS( resPre ), ERROR_LOC( loc )
         );
     }
-    
+
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
 
     STACK_PUSH(true, state);
@@ -128,7 +128,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemURI, theChild0.getp(), planState )) 
+  if (consumeNext(itemURI, theChild0.getp(), planState ))
   {
     itemURI->getStringValue2(resNs);
 
@@ -138,12 +138,12 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   consumeNext(itemQName, theChild1.getp(), planState );
 
   itemQName->getStringValue2(qname);
-  
+
   ascii::trim_whitespace(qname);
 
   index = qname.find(":", 0, 1);
 
-  if (index != zstring::npos) 
+  if (index != zstring::npos)
   {
     if (resNs.empty())
       throw XQUERY_EXCEPTION(
@@ -152,12 +152,12 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     resPre = qname.substr(0, index);
     resLocal = qname.substr(index+1, qname.size() - index);
-  } 
+  }
   else
   {
     resLocal = qname;
   }
-  
+
   if ((index != zstring::npos && ! GENV_GCAST.castableToNCName(resPre)) ||
       ! GENV_GCAST.castableToNCName(resLocal))
   {
@@ -209,7 +209,7 @@ bool QNameEqualIterator::nextImpl(
 
 //11.2.2 fn:prefix-from-QName
 bool PrefixFromQNameIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t item;
@@ -232,8 +232,8 @@ bool PrefixFromQNameIterator::nextImpl(
 
 //11.2.3 fn:local-name-from-QName
 bool LocalNameFromQNameIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring localName;
@@ -253,7 +253,7 @@ bool LocalNameFromQNameIterator::nextImpl(
 //11.2.4 fn:namespace-uri-from-QName
 bool NamespaceUriFromQNameIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring ns;
@@ -277,6 +277,7 @@ bool NamespaceUriForPrefixIterator::nextImpl(
 {
   store::Item_t itemPrefix, itemElem;
   zstring resNs;
+  zstring prefix;
   bool found = false;
   store::NsBindings NamespaceBindings;
   store::NsBindings::const_iterator iter;
@@ -284,43 +285,35 @@ bool NamespaceUriForPrefixIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-//  According to W3C bug #11590 comment #9
-//  http://www.w3.org/Bugs/Public/show_bug.cgi?id=11590#c9
-//  namespace-uri-for-prefix('', <a/>)
-//  and
-//  namespace-uri-for-prefix((), <a/>)
-//  should return the empty sequence
   if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
   {
-    resNs = theSctx->default_elem_type_ns();
-    found = true;
+    prefix = "";
   }
   else
   {
-    if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
+    itemPrefix->getStringValue2(prefix);
+    ascii::trim_whitespace(prefix);
+  }
+
+  if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    itemElem->getNamespaceBindings(NamespaceBindings);
+
+    for (iter = NamespaceBindings.begin();
+         iter != NamespaceBindings.end();
+         ++iter)
     {
-      ZORBA_ASSERT(false);
-    }
-    else 
-    {
-      itemElem->getNamespaceBindings(NamespaceBindings);
-
-      for (iter = NamespaceBindings.begin();
-           iter != NamespaceBindings.end();
-           ++iter)
-      {
-        zstring pre;
-        itemPrefix->getStringValue2(pre);
-
-        ascii::trim_whitespace(pre);
-
-        if ((*iter).first == pre)
+      if (((*iter).first == prefix) &&
+          !(*iter).second.empty())
         {
           resNs = (*iter).second;
           found = true;
           break;
         }
-      }
     }
   }
 
