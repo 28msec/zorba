@@ -56,6 +56,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
+#include "runtime/collections/collections_impl.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -186,7 +187,7 @@ void PrinterVisitor::endVisit(const SelfAxisIterator&)
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const TreatIterator& a ) 
+void PrinterVisitor::beginVisit ( const TreatIterator& a )
 {
   thePrinter.startBeginVisit("TreatIterator", ++theId);
   if (a.theCheckPrime)
@@ -197,13 +198,13 @@ void PrinterVisitor::beginVisit ( const TreatIterator& a )
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit ( const TreatIterator& ) 
+void PrinterVisitor::endVisit ( const TreatIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) 
+void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a )
 {
   thePrinter.startBeginVisit("NumArithIterator_AddOperation", ++theId);
   printCommons( &a, theId );
@@ -1116,7 +1117,7 @@ void PrinterVisitor::endVisitFlworReturn(const PlanIterator& )
 }
 
 
-void PrinterVisitor::beginVisit(const CastIterator& a) 
+void PrinterVisitor::beginVisit(const CastIterator& a)
 {
   thePrinter.startBeginVisit("CastIterator", ++theId);
   std::ostringstream lStream;
@@ -1154,26 +1155,26 @@ void PrinterVisitor::beginVisit(const CastableIterator& a) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastableIterator&) 
+void PrinterVisitor::endVisit(const CastableIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const FTContainsIterator& a) 
+void PrinterVisitor::beginVisit(const FTContainsIterator& a)
 {
   thePrinter.startBeginVisit("FTContainsIterator", ++theId);
   // TODO
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const FTContainsIterator&) 
+void PrinterVisitor::endVisit(const FTContainsIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) 
+void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a)
 {
   thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
@@ -1181,7 +1182,7 @@ void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const flwor::OuterForIterator&) 
+void PrinterVisitor::endVisit(const flwor::OuterForIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -1389,5 +1390,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
+
+  PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
 }
 /* vim:set et sw=2 ts=2: */

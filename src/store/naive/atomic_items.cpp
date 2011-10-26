@@ -562,6 +562,18 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
+bool UntypedAtomicItem::equals(
+    const store::Item* other,
+    long timezone,
+    const XQPCollator* collation) const
+{
+  if (collation == NULL || collation->doMemCmp())
+    return theValue == other->getString();
+
+  return (utf8::compare(theValue, other->getString(), collation) == 0);
+}
+
+
 store::Item_t UntypedAtomicItem::getEBV() const
 {
   bool b = ! ( theValue == "" );
@@ -598,10 +610,12 @@ void QNameItem::free()
   GET_STORE().getQNamePool().remove(this);
 }
 
+
 QNameItem* QNameItem::getNormalized() const
 {
   return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
 }
+
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
@@ -618,21 +632,19 @@ store::Item* QNameItem::getType() const
 
 store::Item_t QNameItem::getEBV() const
 {
-  throw XQUERY_EXCEPTION(
-    err::FORG0006,
-    ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "QName"
-    )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0006,
+  ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "QName"));
 }
 
+
 bool QNameItem::equals(
-        const store::Item* item,
-        long timezone,
-        const XQPCollator* aCollation) const
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
   return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
 }
+
 
 zstring QNameItem::getStringValue() const
 {
@@ -742,7 +754,8 @@ bool NotationItem::equals(const store::Item* item,
                           long timezone,
                           const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return (theQName->getNormalized() == 
+          static_cast<const NotationItem*>(item)->theQName->getNormalized());
 }
 
 
@@ -849,6 +862,8 @@ long StringItem::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
+  // Note: utf8::compare does byte comparison if the collation is null or
+  // requires byte comparison.
   return utf8::compare(theValue, other->getString(), aCollation);
 }
 
@@ -871,10 +886,11 @@ zstring StringItem::show() const
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
-FTTokenIterator_t
-StringItem::getTokens( TokenizerProvider const &provider,
-                       Tokenizer::Numbers &numbers, iso639_1::type lang,
-                       bool wildcards ) const
+FTTokenIterator_t StringItem::getTokens( 
+    TokenizerProvider const &provider,
+    Tokenizer::Numbers &numbers,
+    iso639_1::type lang,
+    bool wildcards ) const
 {
   typedef NaiveFTTokenIterator::container_type tokens_t;
   unique_ptr<tokens_t> tokens( new tokens_t );
@@ -893,7 +909,8 @@ StringItem::getTokens( TokenizerProvider const &provider,
 ********************************************************************************/
 void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   aBuf += theValue;
@@ -905,7 +922,8 @@ long StreamableStringItem::compare(
     long aTimezone,
     const XQPCollator* aCollator) const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return StringItem::compare(aOther, aTimezone, aCollator);
@@ -917,7 +935,8 @@ bool StreamableStringItem::equals(
     long aTimezone,
     XQPCollator const* aCollator) const 
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return StringItem::equals(aItem, aTimezone, aCollator);
@@ -926,7 +945,8 @@ bool StreamableStringItem::equals(
 
 store::Item_t StreamableStringItem::getEBV() const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return StringItem::getEBV();
@@ -935,7 +955,8 @@ store::Item_t StreamableStringItem::getEBV() const
 
 zstring const& StreamableStringItem::getString() const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return theValue;
@@ -944,7 +965,8 @@ zstring const& StreamableStringItem::getString() const
 
 zstring StreamableStringItem::getStringValue() const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return theValue;
@@ -953,7 +975,8 @@ zstring StreamableStringItem::getStringValue() const
 
 void StreamableStringItem::getStringValue2(zstring &val) const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   val = theValue;
@@ -964,7 +987,8 @@ uint32_t StreamableStringItem::hash(
     long aTimezone,
     XQPCollator const* aCollator) const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return StringItem::hash(aTimezone, aCollator);
@@ -973,7 +997,8 @@ uint32_t StreamableStringItem::hash(
 
 zstring StreamableStringItem::show() const
 {
-  if (!theIsMaterialized) {
+  if (!theIsMaterialized) 
+  {
     materialize();
   }
   return StringItem::show();
@@ -1016,10 +1041,12 @@ std::istream& StreamableStringItem::getStream()
   return theIstream;
 }
 
+
 StreamReleaser StreamableStringItem::getStreamReleaser()
 {
   return theStreamReleaser;
 }
+
 
 void StreamableStringItem::setStreamReleaser(StreamReleaser aReleaser)
 {

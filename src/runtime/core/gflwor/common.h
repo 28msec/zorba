@@ -107,6 +107,7 @@ public:
   std::vector<ForVarIter_t> theVarRefs;
   std::string               theCollation;
   XQPCollator             * theCollator;
+  bool                      theDoFastComparison;
 
 public:
   SERIALIZABLE_CLASS(GroupingSpec)
@@ -119,7 +120,8 @@ public:
   GroupingSpec(
         PlanIter_t inputVar,
         const std::vector<PlanIter_t>& varRefs,
-        const std::string& aCollation);
+        const std::string& aCollation,
+        bool doFastComparison);
 
   virtual ~GroupingSpec() {}
 
