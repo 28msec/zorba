@@ -101,6 +101,7 @@
 #include "util/tracer.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+#include "util/hashmap.h"
 
 
 #define NODE_SORT_OPT
@@ -1304,11 +1305,25 @@ void normalize_fo(fo_expr* foExpr)
     if (qname != NULL)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
+      ERROR_PARAMS(
+        qname->getStringValue(),
+        "index",
+        n-1,
+        "multiple of 6"
+      )
+      );
     }
     else
     {
-      RAISE_ERROR_NO_PARAMS(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc);
+      RAISE_ERROR(
+          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+          ERROR_PARAMS(
+            "anonymous",
+            "index",
+            n-1,
+            "multiple of 6"
+          )
+      );
     }
   }
 

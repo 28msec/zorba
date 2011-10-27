@@ -10,7 +10,7 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
-    
+
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
@@ -54,7 +54,7 @@
       <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
-  
+
 </zorba:iterator>
 
 <!--
@@ -81,7 +81,7 @@
 
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:isSource returnValue="true"/>        
+        <zorba:isSource returnValue="true"/>
         <zorba:producesDistinctNodes returnValue="YES"/>
         <zorba:producesSortedNodes returnValue="YES"/>
       </zorba:methods>
@@ -102,6 +102,7 @@
     </zorba:method>
 
     <zorba:member type="bool" name="theDynamicCollection"
+      getterName="isDynamic"
       brief="whether it's the function of the dynamic or the static collection module"/>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
@@ -110,7 +111,7 @@
       <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
-  
+
 </zorba:iterator>
 
 <!--
@@ -296,7 +297,7 @@
 
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>        
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -735,7 +736,7 @@
     </zorba:state>
 
 </zorba:iterator>
- 
+
 
 <!--
 /*******************************************************************************
@@ -1110,8 +1111,8 @@
       </zorba:methods>
     </zorba:function>
 
-    <zorba:state  generateInit="false" 
-                  generateReset="false" 
+    <zorba:state  generateInit="false"
+                  generateReset="false"
                   generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="nameItState"
                     brief="the current iterator"/>

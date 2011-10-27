@@ -1,11 +1,11 @@
 # Copyright 2006-2008 The FLWOR Foundation.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,10 @@ ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 
-FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS 
+FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
 IF(ZORBA_TEST_XQUERYX)
-  FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS 
+  FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
   IF (TESTFILES_XQX)
     LIST(APPEND TESTFILES ${TESTFILES_XQX})
@@ -94,7 +94,7 @@ IF(${cxqNO} STRGREATER "0")
     LIST(SORT CHAINED_TESTS_FILES)
 
     SET(TEST_NAME "test/rbkt/${TEST_NAME}")
-    
+
     # finally add the test
     ZORBA_ADD_TEST("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
 
@@ -143,7 +143,7 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(HTTP_CLIENT)
   ENDIF(NOT CURL_FOUND)
-  
+
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")
@@ -211,6 +211,7 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
 
   IF(NOT ZORBA_WITH_BIG_INTEGER)
     # These tests fail due to integer overflow.
