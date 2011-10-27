@@ -22,6 +22,8 @@
 #include <set>
 #include <sstream>
 
+#include "tuple.h"
+
 
 namespace zorba { namespace debugger {
 
@@ -158,7 +160,7 @@ class CommandArgType
     bool
     canHandle(const std::string& arg) const
     {
-      if (theFlags.find(arg) != theFlags.end()) {
+      if (theNames.find(arg) != theNames.end()) {
         return true;
       }
       return false;

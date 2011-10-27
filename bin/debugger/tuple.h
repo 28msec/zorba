@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #pragma once
+#ifndef ZORBA_DEBUGGER_TUPLE_H
+#define ZORBA_DEBUGGER_TUPLE_H
 
 #include <zorba/config.h>
 
@@ -22,3 +24,5 @@
 #else
 # include <tuple>
 #endif
+
+#endif ZORBA_DEBUGGER_TUPLE_H
