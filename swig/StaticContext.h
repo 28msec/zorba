@@ -10,7 +10,7 @@ private:
 public:
   StaticContext();
   StaticContext(const StaticContext& aStaticContext);
-  StaticContext::StaticContext(zorba::StaticContext_t aStaticContext);
+  StaticContext(zorba::StaticContext_t aStaticContext);
   
   virtual void addColation(const std::string& aURI); 
   virtual bool addNamespace(const std::string& aPrefix,
