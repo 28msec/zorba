@@ -15,7 +15,6 @@
  */
 #include <zorba/config.h>
 
-#include "command.h"
 #include "command_prompt.h"
 #include "command_line_handler.h"
 
