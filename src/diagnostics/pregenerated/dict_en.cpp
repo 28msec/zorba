@@ -632,9 +632,6 @@ extern entry const dict_en[] = {
   { "~SearchKeyTypeNoProbeIndex_23", "\"$2\": search key type can not probe index \"$3\"" },
   { "~SeqFnBody", "only a function declared sequential can have a body that is a sequential expression" },
   { "~SeqNoCastToQName", "sequence of more than one item can not be cast to QName" },
-#if defined(ZORBA_NO_ICU)
-  { "~SerializeEncodingNotSupportedForNoUnicode", "setting encoding for serialization is not supported in ASCII only mode (Zorba was compiled with ZORBA_NO_ICU=ON)" },
-#endif
   { "~SingletonExpected_2o", "singleton expected${ (2)}" },
   { "~StackOverflow", "stack overflow" },
   { "~StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
