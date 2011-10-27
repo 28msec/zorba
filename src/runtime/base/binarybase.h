@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ extern const int g_BinaryBaseIterator_class_versions_count;
 
 /*******************************************************************************
   Superclass for all iterators which have 2 child iterators and no additional
-  data members. 
+  data members.
 ********************************************************************************/
 template <class IterType, class StateType>
 class BinaryBaseIterator : public Batcher<IterType>
@@ -52,7 +52,7 @@ public:
   BinaryBaseIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        PlanIter_t& child0, 
+        PlanIter_t& child0,
         PlanIter_t& child1)
     :
     Batcher<IterType>(sctx, loc),
@@ -63,9 +63,19 @@ public:
 
   virtual ~BinaryBaseIterator() {}
 
-  virtual uint32_t getStateSize() const 
+  PlanIter_t& getChild0()
   {
-    return StateTraitsImpl<StateType>::getStateSize(); 
+    return theChild0;
+  }
+
+  PlanIter_t& getChild1()
+  {
+    return theChild1;
+  }
+
+  virtual uint32_t getStateSize() const
+  {
+    return StateTraitsImpl<StateType>::getStateSize();
   }
 
   virtual uint32_t getStateSizeOfSubtree() const
@@ -179,7 +189,7 @@ public:                                                                 \
 ********************************************************************************/
 
 #define BINARY_ITER(name) \
-BINARY_ITER_STATE(name, PlanIteratorState) 
+BINARY_ITER_STATE(name, PlanIteratorState)
 
 
 

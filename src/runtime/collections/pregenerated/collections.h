@@ -134,6 +134,8 @@ public:
 
   virtual ~ZorbaCollectionIterator();
 
+  bool isDynamic() const { return theDynamicCollection; }
+
 public:
   const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;

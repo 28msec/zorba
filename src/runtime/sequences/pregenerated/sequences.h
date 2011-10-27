@@ -92,22 +92,22 @@ public:
 
 /**
  * 
- *  Summary: Returns a sequence of positive integers giving the positions 
- *  within the sequence $seqParam of items that are equal to $srchParam. 
- *      
- *  The collation used by the invocation of this function is determined 
- *  according to the rules in 7.3.1 Collations. The collation is used when 
- *  string comparison is required. 
- *      
- *  The items in the sequence $seqParam are compared with $srchParam under 
- *  the rules for the 'eq' operator. Values that cannot be compared, i.e. 
- *  the 'eq' operator is not defined for their types, are considered to be 
- *  distinct. If an item compares equal, then the position of that item in 
- *  the sequence $seqParam is included in the result. 
- *      
- *  If the value of $seqParam is the empty sequence, or if no item in 
- *  $seqParam matches $srchParam, then the empty sequence is returned. 
- *      
+ *  Summary: Returns a sequence of positive integers giving the positions
+ *  within the sequence $seqParam of items that are equal to $srchParam.
+ *
+ *  The collation used by the invocation of this function is determined
+ *  according to the rules in 7.3.1 Collations. The collation is used when
+ *  string comparison is required.
+ *
+ *  The items in the sequence $seqParam are compared with $srchParam under
+ *  the rules for the 'eq' operator. Values that cannot be compared, i.e.
+ *  the 'eq' operator is not defined for their types, are considered to be
+ *  distinct. If an item compares equal, then the position of that item in
+ *  the sequence $seqParam is included in the result.
+ *
+ *  If the value of $seqParam is the empty sequence, or if no item in
+ *  $seqParam matches $srchParam, then the empty sequence is returned.
+ *
  *  The first item in a sequence is at position 1, not position 0.
  *  The result sequence is in ascending numeric order.
  *  
@@ -197,7 +197,7 @@ public:
 
 /**
  * 
- *  If the value of $arg is not the empty sequence, the function returns true; 
+ *  If the value of $arg is not the empty sequence, the function returns true;
  *  otherwise, the function returns false.
  *  
  * Author: Zorba Team
@@ -234,7 +234,7 @@ public:
 
 /**
  * 
- *  Returns the sequence that results from removing from arg all but one of a 
+ *  Returns the sequence that results from removing from arg all but one of a
  *  set of values that are eq to one other. Values of type xs:untypedAtomic are
  *  compared as if they were of type xs:string. Values that cannot be compared,
  *  i.e. the eq operator is not defined for their types, are considered to be
@@ -763,8 +763,8 @@ public:
 /**
  * 
  *  Hashing semi/anti join iterator.
- *      
- *  First producer goes in the result if a match in the second producer is 
+ *
+ *  First producer goes in the result if a match in the second producer is
  *  found/not found. The order of the first producer is retained. No duplicate
  *  elimination is performed.
  *  
@@ -826,7 +826,7 @@ public:
  *  First producer goes in the result if a match in the second producer is found.
  *  Precondition: both inputs must be sorted.
  *  Postcondition: the order of the first producer is retained.
- *      
+ *
  *  If either of the inputs is guaranteed to contain no duplicates, then the
  *  output will be duplicate-free. Otherwise the output may contain duplicates.
  *  
@@ -934,7 +934,7 @@ public:
 
 /**
  * 
- *  Returns a value obtained by adding together the values in $arg. If $zero is 
+ *  Returns a value obtained by adding together the values in $arg. If $zero is
  *  not specified, then the value returned for an empty sequence is the xs:integer
  *  value 0. If $zero is specified, then the value returned for an empty sequence
  *  is $zero.
@@ -1167,7 +1167,7 @@ public:
 /**
  * 
  *  Returns the sequence of element nodes that are in the target document and have
- *  an ID value matching the value of one or more of the IDREF values supplied in 
+ *  an ID value matching the value of one or more of the IDREF values supplied in
  *  $arg. The target document is the document containing $node, or the document
  *  containing the context item (.) if the second argument is omitted.
  *  

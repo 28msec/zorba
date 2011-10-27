@@ -138,15 +138,6 @@ PlanIter_t fn_deep_equal::codegen(
   return new FnDeepEqualIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_count::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnCountIterator(sctx, loc, argv);
-}
 
 PlanIter_t fn_avg::codegen(
   CompilerCB*,
