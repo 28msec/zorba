@@ -182,22 +182,27 @@ Command<Func, Tuple, CommandIdx>::addArgument(
     for (ArgType::size_type i = 1; i < size; ++i) {
       typename CArgType::const_iterator pos = aCommandArgs.find(args[i]);
       if (pos == aCommandArgs.end()) {
-        std::cerr << "Error: Unknown Argument " << args[i] << std::endl;
+        std::cerr << "Error: Unknown option " << args[i] << std::endl;
         parseError = true;
         return false;
       }
       const CommandArg<Tuple>& arg = *(pos->second);
-      if (!arg.isVoid() && args[++i][0] == '-') {
-        std::cerr << "Did not expect parameter for option " << args[i] << std::endl;
-        return false;
-      }
       std::auto_ptr<CommandArgInstance<Tuple> > instance;
       if (arg.isVoid()) {
         instance.reset(arg.parse("1"));
       } else {
+        ++i;
+        if (i >= size) {
+          std::cerr << "Error: Missing value for argument " << args[i - 1] << std::endl;
+          parseError = true;
+          allSet = false;
+          return false;
+        }
         instance.reset(arg.parse(args[i]));
       }
-      instance->insertValue(theTuple);
+      if (instance.get()) {
+        instance->insertValue(theTuple);
+      }
     }
     bool allSet = true;
     for (typename CArgType::const_iterator i = aCommandArgs.begin();

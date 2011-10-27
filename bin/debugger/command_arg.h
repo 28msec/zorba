@@ -112,7 +112,7 @@ class CommandArgType
       std::stringstream stream(str);
       stream >> aValue;
       if (stream.fail()) {
-        std::cerr << "Could not parse argument of type "
+        std::cerr << "Error: Could not parse value \"" << str << "\" as type "
           << typeid(T).name()
           << std::endl;
         return 0;
