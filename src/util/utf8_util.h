@@ -25,6 +25,7 @@
 
 #include "ascii_util.h"
 #include "cxx_util.h"
+#include "string_util.h"
 #include "unicode_util.h"
 #include "utf8_string.h"
 #include "utf8_util_base.h"
@@ -799,19 +800,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
 #ifndef ZORBA_NO_ICU
   if (!collation || collation->doMemCmp())
 #endif /* ZORBA_NO_ICU */
-  {
-    const char* str = s.data();
-    ulong len = (ulong)s.size();
-    uint32_t hash = 5381;
-    ulong i = 0;
-    int c;
-    while (i < len && (c = *str++))
-    {
-      hash = ((hash << 5) + hash) + c;
-      ++i;
-    }
-    return hash;
-  }
+    return ztd::hash( s.data(), s.size() );
 
 #ifndef ZORBA_NO_ICU
   CollationKey collKey;

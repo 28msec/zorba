@@ -121,6 +121,13 @@ unsigned long long atoull( char const *s ) {
   return result;
 }
 
+uint32_t hash( char const *data, size_t len ) {
+  uint32_t result = 5381;
+  for ( size_t i = 0; i < len; ++i )
+    result = (result << 5) + result + *data++;
+  return result;
+}
+
 char* itoa( long long n, char *buf ) {
   //
   // This implementation is much faster than using sprintf(3).
