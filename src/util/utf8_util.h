@@ -797,8 +797,9 @@ int compare(const StringType1 &s1, const StringType2 &s2,
 template<class StringType> inline
 uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
 #ifndef ZORBA_NO_ICU
-  if (!collation || collation->doMemCmp()) {
+  if (!collation || collation->doMemCmp())
 #endif /* ZORBA_NO_ICU */
+  {
     const char* str = s.data();
     ulong len = (ulong)s.size();
     uint32_t hash = 5381;
@@ -810,9 +811,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
       ++i;
     }
     return hash;
-#ifndef ZORBA_NO_ICU
   }
-#endif /* ZORBA_NO_ICU */
 
 #ifndef ZORBA_NO_ICU
   CollationKey collKey;
