@@ -389,6 +389,11 @@ public:
    * Returns all keys stored in this index
    */
   virtual KeyIterator_t keys() const = 0;
+
+  virtual bool insert(
+        store::IndexKey*& key,
+        store::Item_t& item,
+        bool multikey = false) = 0;
 };
 
 

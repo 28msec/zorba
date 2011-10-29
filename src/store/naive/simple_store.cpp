@@ -557,6 +557,9 @@ void SimpleStore::populateValueIndex(
     store::Iterator* aSourceIter,
     ulong aNumColumns)
 {
+  if (!aSourceIter)
+    return;
+
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 

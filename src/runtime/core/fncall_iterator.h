@@ -79,6 +79,7 @@ public:
   dynamic_context              * theLocalDCtx;
   bool                           thePlanOpen;
   std::vector<store::Iterator_t> theArgWrappers;
+  store::Index                 * theCache;
 
   UDFunctionCallIteratorState();
 
@@ -139,6 +140,22 @@ public:
   void closeImpl(PlanState& planState);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+protected:
+  void createCache(
+    PlanState& planState,
+    UDFunctionCallIteratorState* state);
+
+  bool probeCache(
+    PlanState& planState,
+    UDFunctionCallIteratorState* state,
+    store::Item_t& result,
+    std::vector<store::Item_t>& aKey) const;
+
+  void insertCacheEntry(
+    UDFunctionCallIteratorState* state,
+    std::vector<store::Item_t>& aKey,
+    store::Item_t& aValue) const;
 };
 
 

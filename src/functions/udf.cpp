@@ -318,7 +318,7 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
 /*******************************************************************************
 
 ********************************************************************************/
-  PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
+PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {
@@ -368,6 +368,41 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
   return thePlan;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::cacheResults() const
+{
+  // only cache recursive functions with singleton atomic input and output
+  if (!isRecursive())
+  {
+    return false;
+  }
+
+  const xqtref_t& lRes = theSignature.returnType();
+  if (lRes->get_quantifier() != TypeConstants::QUANT_ONE)
+  {
+    return false;
+  }
+
+  TypeManager* tm = lRes->get_manager();
+
+  size_t lArity = theSignature.paramCount();
+  for (size_t i = 0; i < lArity; ++i)
+  {
+    const xqtref_t& lArg = theSignature[i];
+    if (lArg->get_quantifier() != TypeConstants::QUANT_ONE &&
+        !TypeOps::is_subtype(tm,
+                            *lArg,
+                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+                            QueryLoc::null))
+    {
+      return false;
+    }
+  }
+  return true;
+}
 
 /*******************************************************************************
 

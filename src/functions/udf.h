@@ -160,6 +160,8 @@ public:
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
 
+  bool cacheResults() const;
+
   PlanIter_t codegen(
         CompilerCB* cb,
         static_context* sctx,
