@@ -25,6 +25,11 @@
 namespace zorba 
 {
 
+  namespace store
+  {
+    class Index;
+  }
+
 
 /*******************************************************************************
   A udf with params $x1, $x2, ..., $xn and a body_expr is translated into a
@@ -102,6 +107,8 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
+  mutable store::Index*       theCache;
+
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
@@ -159,6 +166,10 @@ public:
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
+
+  store::Index* getCache() const;
+
+  void setCache(store::Index* aCache);
 
   bool cacheResults() const;
 

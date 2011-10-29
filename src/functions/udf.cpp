@@ -54,7 +54,8 @@ user_function::user_function(
   theIsExiting(false),
   theIsLeaf(true),
   theIsOptimized(false),
-  thePlanStateSize(0)
+  thePlanStateSize(0),
+  theCache(0)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
@@ -372,6 +373,24 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 /*******************************************************************************
 
 ********************************************************************************/
+store::Index* user_function::getCache() const
+{
+  return theCache;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void user_function::setCache(store::Index* aCache)
+{
+  theCache = aCache;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool user_function::cacheResults() const
 {
   // only cache recursive functions with singleton atomic input and output
@@ -381,26 +400,30 @@ bool user_function::cacheResults() const
   }
 
   const xqtref_t& lRes = theSignature.returnType();
-  if (lRes->get_quantifier() != TypeConstants::QUANT_ONE)
+  TypeManager* tm = lRes->get_manager();
+
+  if (!TypeOps::is_subtype(tm,
+                           *lRes,
+                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+                           QueryLoc::null))
   {
     return false;
   }
-
-  TypeManager* tm = lRes->get_manager();
 
   size_t lArity = theSignature.paramCount();
   for (size_t i = 0; i < lArity; ++i)
   {
     const xqtref_t& lArg = theSignature[i];
-    if (lArg->get_quantifier() != TypeConstants::QUANT_ONE &&
-        !TypeOps::is_subtype(tm,
-                            *lArg,
-                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                            QueryLoc::null))
+    if (!TypeOps::is_subtype(tm,
+                             *lArg,
+                             *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+                             QueryLoc::null))
     {
       return false;
     }
   }
+
+  // recursive, singelton atomic in and output
   return true;
 }
 

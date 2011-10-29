@@ -207,9 +207,10 @@ void UDFunctionCallIterator::createCache(
     PlanState& planState,
     UDFunctionCallIteratorState* state)
 {
-  if (theUDF->cacheResults())
+  store::Index_t lIndex = theUDF->getCache();
+  if (!lIndex && theUDF->cacheResults())
   {
-    store::Index_t lIndex = planState.theGlobalDynCtx->getIndex(theUDF->getName());
+    lIndex = planState.theGlobalDynCtx->getIndex(theUDF->getName());
     if (!lIndex)
     {
       const signature& sig = theUDF->getSignature();
@@ -228,13 +229,10 @@ void UDFunctionCallIterator::createCache(
       }
       lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
       planState.theGlobalDynCtx->bindIndex(theUDF->getName(), lIndex);
+      theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
     }
-    state->theCache = lIndex.getp();
   }
-  else
-  {
-    state->theCache = 0;
-  }
+  state->theCache = lIndex.getp();
 }
 
 
@@ -259,7 +257,7 @@ bool UDFunctionCallIterator::probeCache(
   {
     store::Iterator_t& argWrapper = (*lIter);
     store::Item_t lArg;
-    argWrapper->next(lArg);
+    argWrapper->next(lArg); // guaranteed to have exactly one result
     aKey.push_back(lArg);
     lCond->pushItem(lArg);
   }
@@ -273,6 +271,7 @@ bool UDFunctionCallIterator::probeCache(
   }
   else
   {
+    // reset the arguments for evaluating the function if not cached
     resetImpl(planState);
     return false;
   }
