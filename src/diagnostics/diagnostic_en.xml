@@ -2389,6 +2389,10 @@
       <value>invalid library module</value>
     </entry>
 
+    <entry key="BadRegexEscape_3">
+      <value>"$3": illegal escape character</value>
+    </entry>
+
     <entry key="BadPath">
       <value>invalid path</value>
     </entry>
