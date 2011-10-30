@@ -117,7 +117,7 @@ public:
 
   order_type_t get_type() const { return theType; }
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
 
@@ -157,7 +157,7 @@ public:
         expr_t,
         rchandle<TypeManager>);
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   const store::Item* get_type_name() const { return theTypeName; }
 
@@ -883,7 +883,7 @@ public:
 
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -918,7 +918,9 @@ public:
 
 ********************************************************************************/
 class catch_clause;
+
 typedef rchandle<catch_clause> catch_clause_t;
+
 
 class catch_clause : public SimpleRCObject 
 {

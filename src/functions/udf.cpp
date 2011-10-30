@@ -309,36 +309,18 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::requiresNodeCopy(expr* fo, ulong input) const
+BoolAnnotationValue user_function::mustCopyNodes(expr* fo, ulong input) const
 {
-  BoolAnnotationValue callerNoCopy1 = fo->getNoNodeCopy1();
-  BoolAnnotationValue callerNoCopy2 = fo->getNoNodeCopy2();
+  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
+  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
 
-  BoolAnnotationValue argNoCopy1 = theArgVars[input]->getNoNodeCopy1();
-  BoolAnnotationValue argNoCopy2 = theArgVars[input]->getNoNodeCopy2();
-
-  if (argNoCopy1 == argNoCopy2)
+  if (argMustCopy == ANNOTATION_TRUE)
   {
-    // The decision does not depend on the caller
-    return;
+    // The decision depends on the caller
+    return callerMustCopy;
   }
 
-  if (callerNoCopy1 == callerNoCopy2)
-  {
-    if (callerNoCopy1 == TRUE)
-    {
-      // The coller says no copy is necessary
-      argNoCopy1 = argNoCopy2;
-    }
-    else
-    {
-      argNoCopy2 = argNoCopy1;
-    }
-  }
-  else
-  {
-    
-  }
+  return argMustCopy;
 }
 
 
@@ -354,7 +336,7 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
 /*******************************************************************************
 
 ********************************************************************************/
-  PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
+PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {

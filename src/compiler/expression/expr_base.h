@@ -141,8 +141,7 @@ public:
     NON_DISCARDABLE         = 8,
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
-    NO_NODE_COPY_1          = 14,
-    NO_NODE_COPY_2          = 16
+    MUST_COPY_NODES         = 14
   } Annotationkey;
 
   typedef enum
@@ -154,8 +153,7 @@ public:
     NON_DISCARDABLE_MASK          = 0x300,
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
-    NO_NODE_COPY_1_MASK           = 0xC000,
-    NO_NODE_COPY_2_MASK           = 0x30000
+    MUST_COPY_NODES_MASK          = 0xC000
   } AnnotationMask;
 
 
@@ -290,15 +288,10 @@ public:
 
   bool containsRecursiveCall() const;
 
-  // Annotation : noNodeCopy1
-  BoolAnnotationValue getNoNodeCopy1() const;
+  // Annotation : mustCopyNodes
+  BoolAnnotationValue getMustCopyNodes() const;
 
-  void setNoNodeCopy1(BoolAnnotationValue v);
-
-  // Annotation : noNodeCopy1
-  BoolAnnotationValue getNoNodeCopy2() const;
-
-  void setNoNodeCopy2(BoolAnnotationValue v);
+  void setMustCopyNodes(BoolAnnotationValue v);
 
   bool is_constant() const;
 

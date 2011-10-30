@@ -1120,9 +1120,7 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (node == NULL || !node->isNode())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
@@ -1134,13 +1132,7 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (!inserted && node.getp() != root.getp())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
-    );
-  }
-  else if (inserted)
-  {
-    root->setDocUri(uri);
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS(uri));
   }
 
   ZORBA_FATAL(node.getp() == root.getp(), "");
@@ -1463,12 +1455,14 @@ bool SimpleStore::getPathInfo(
   if (docRoot == NULL)
     return false;
 
+#ifdef DATAGUIDE
   GuideNode* guideRoot = docRoot->getDataGuide();
 
   if (!guideRoot)
     return false;
 
   guideRoot->getPathInfo(contextPath, relativePath, isAttrPath, found, unique);
+#endif
   return true;
 }
 

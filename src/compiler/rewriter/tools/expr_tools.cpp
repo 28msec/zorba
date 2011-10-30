@@ -524,70 +524,94 @@ static void set_bit(
 }
 
 
-/*******************************************************************************
-  If the no-node-copy annotation of the target expr is not set to false
-  already, set it to the value of the no-node-copy annotations of the
-  source expr.
-********************************************************************************/
-static void pushdown_no_node_copy(expr* src, expr* target) 
-{
-  if (target->getNoNodeCopy1() != ANNOTATION_FALSE)
-    target->setNoNodeCopy1(src->getNoNodeCopy1());
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  if (target->getNoNodeCopy2() != ANNOTATION_FALSE)
-    target->setNoNodeCopy2(src->getNoNodeCopy2());
+
+/*******************************************************************************
+
+********************************************************************************/
+static void set_must_copy(expr* target, BoolAnnotationValue v) 
+{
+  assert(v != ANNOTATION_UNKNOWN);
+
+  if (target == NULL)
+    return;
+
+  switch (target->getMustCopyNodes())
+  {
+  case ANNOTATION_UNKNOWN:
+  {
+    target->setMustCopyNodes(v);
+    return;
+  }
+  case ANNOTATION_TRUE_FIXED:
+  {
+    return;
+  }
+  case ANNOTATION_TRUE:
+  {
+    if (v == ANNOTATION_TRUE_FIXED)
+      target->setMustCopyNodes(v);
+
+    return;
+  }
+  case ANNOTATION_FALSE:
+  {
+    target->setMustCopyNodes(v);
+    return;
+  }
+  }
 }
 
 
 /*******************************************************************************
   If the no-node-copy annotation of the target expr is not set to false
-  already, set it to the given value.
+  already, set it to the value of the no-node-copy annotations of the
+  source expr.
 ********************************************************************************/
-static void set_no_node_copy(expr* target, BoolAnnotationValue v) 
+static void pushdown_must_copy(expr* src, expr* target) 
 {
-  if (target->getNoNodeCopy1() != ANNOTATION_FALSE)
-    target->setNoNodeCopy1(v);
-
-  if (target->getNoNodeCopy2() != ANNOTATION_FALSE)
-    target->setNoNodeCopy2(v);
+  set_must_copy(target, src->getMustCopyNodes());
 }
 
 
 /*******************************************************************************
-  If the no-node-copy annotation of the target expr is not set to false
-  already, set it to the value of the no-node-copy annotations of the
-  source expr.
+
 ********************************************************************************/
 static void pushdown_window_vars(const flwor_wincond* cond, expr* target) 
 {
   const flwor_wincond::vars& inVars = cond->get_in_vars();
 
   if (inVars.curr)
-    pushdown_no_node_copy(inVars.curr.getp(), target);
+    pushdown_must_copy(inVars.curr.getp(), target);
 
   if (inVars.prev)
-    pushdown_no_node_copy(inVars.prev.getp(), target);
+    pushdown_must_copy(inVars.prev.getp(), target);
 
   if (inVars.next)
-    pushdown_no_node_copy(inVars.next.getp(), target);
+    pushdown_must_copy(inVars.next.getp(), target);
 
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
   if (outVars.curr)
-    pushdown_no_node_copy(outVars.curr.getp(), target);
+    pushdown_must_copy(outVars.curr.getp(), target);
 
   if (outVars.prev)
-    pushdown_no_node_copy(outVars.prev.getp(), target);
+    pushdown_must_copy(outVars.prev.getp(), target);
   
   if (outVars.next)
-    pushdown_no_node_copy(outVars.next.getp(), target);
+    pushdown_must_copy(outVars.next.getp(), target);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void computeNoNodeCopyProperty(expr* inExpr)
+void computeMustCopyProperty(expr* inExpr)
 {
   switch(inExpr->get_expr_kind()) 
   {
@@ -655,38 +679,39 @@ void computeNoNodeCopyProperty(expr* inExpr)
   case doc_expr_kind:
   {
     doc_expr* e = static_cast<doc_expr*>(inExpr);
-    pushdown_no_node_copy(inExpr, e->getContent());
+    pushdown_must_copy(inExpr, e->getContent());
     break;
   }
 
   case elem_expr_kind:
   {
     elem_expr* e = static_cast<elem_expr*>(inExpr);
-    pushdown_no_node_copy(inExpr, e->getContent());
-    pushdown_no_node_copy(inExpr, e->getAttrs());
-    set_no_node_copy(e->getQNameExpr(), ANNOTATION_TRUE);
+    pushdown_must_copy(inExpr, e->getContent());
+    pushdown_must_copy(inExpr, e->getAttrs());
+    set_must_copy(e->getQNameExpr(), ANNOTATION_FALSE);
     break;
   }
 
   case attr_expr_kind:
   {
     attr_expr* e = static_cast<attr_expr*>(inExpr);
-    pushdown_no_node_copy(inExpr, e->getValueExpr());
+    pushdown_must_copy(inExpr, e->getValueExpr());
+    set_must_copy(e->getQNameExpr(), ANNOTATION_FALSE);
     break;
   }
 
   case text_expr_kind:
   {
     text_expr* e = static_cast<text_expr*>(inExpr);
-    set_no_node_copy(e->get_text(), ANNOTATION_TRUE);
+    set_must_copy(e->get_text(), ANNOTATION_FALSE);
     break;
   }
 
   case pi_expr_kind:
   {
     pi_expr* e = static_cast<pi_expr*>(inExpr);
-    set_no_node_copy(e->get_target_expr(), ANNOTATION_TRUE);
-    set_no_node_copy(e->get_content_expr(), ANNOTATION_TRUE);
+    set_must_copy(e->get_target_expr(), ANNOTATION_FALSE);
+    set_must_copy(e->get_content_expr(), ANNOTATION_FALSE);
     break;
   }
 
@@ -707,7 +732,7 @@ void computeNoNodeCopyProperty(expr* inExpr)
           axisKind != axis_kind_self &&
           axisKind != axis_kind_attribute)
       {
-        set_no_node_copy((*e)[0].getp(), ANNOTATION_FALSE);
+        set_must_copy((*e)[0].getp(), ANNOTATION_TRUE_FIXED);
         break;
       }
     }
@@ -720,7 +745,7 @@ void computeNoNodeCopyProperty(expr* inExpr)
   {
     flwor_expr* e = static_cast<flwor_expr*>(inExpr);
 
-    pushdown_no_node_copy(inExpr, e->get_return_expr());
+    pushdown_must_copy(inExpr, e->get_return_expr());
 
     csize i = e->num_clauses();
     for (; i > 0; --i)
@@ -732,52 +757,52 @@ void computeNoNodeCopyProperty(expr* inExpr)
       case flwor_clause::for_clause:
       {
         for_clause* fc = static_cast<for_clause*>(clause);
-        pushdown_no_node_copy(fc->get_var(), fc->get_expr());
-        computeNoNodeCopyProperty(fc->get_expr());
+        pushdown_must_copy(fc->get_var(), fc->get_expr());
+        computeMustCopyProperty(fc->get_expr());
         break;
       }
       case flwor_clause::let_clause:
       {
         let_clause* lc = static_cast<let_clause*>(clause);
-        pushdown_no_node_copy(lc->get_var(), lc->get_expr());
-        computeNoNodeCopyProperty(lc->get_expr());
+        pushdown_must_copy(lc->get_var(), lc->get_expr());
+        computeMustCopyProperty(lc->get_expr());
         break;
       }
       case flwor_clause::window_clause:
       {
         window_clause* wc = static_cast<window_clause*>(clause);
 
-        pushdown_no_node_copy(wc->get_var(), wc->get_expr());
+        pushdown_must_copy(wc->get_var(), wc->get_expr());
 
         const flwor_wincond* startCond = wc->get_win_start();
         const flwor_wincond* endCond = wc->get_win_start();
 
         if (startCond)
         {
-          set_no_node_copy(startCond->get_cond(), ANNOTATION_TRUE);
+          set_must_copy(startCond->get_cond(), ANNOTATION_FALSE);
 
-          computeNoNodeCopyProperty(startCond->get_cond());
+          computeMustCopyProperty(startCond->get_cond());
 
           pushdown_window_vars(startCond, wc->get_expr());
         }
 
         if (endCond)
         {
-          set_no_node_copy(endCond->get_cond(), ANNOTATION_TRUE);
+          set_must_copy(endCond->get_cond(), ANNOTATION_FALSE);
 
-          computeNoNodeCopyProperty(endCond->get_cond());
+          computeMustCopyProperty(endCond->get_cond());
 
           pushdown_window_vars(endCond, wc->get_expr());
         }
 
-        computeNoNodeCopyProperty(wc->get_expr());
+        computeMustCopyProperty(wc->get_expr());
         break;
       }
       case flwor_clause::where_clause:
       {
         where_clause* cc = static_cast<where_clause*>(clause);
-        set_no_node_copy(cc->get_expr(), ANNOTATION_TRUE);
-        computeNoNodeCopyProperty(cc->get_expr());
+        set_must_copy(cc->get_expr(), ANNOTATION_FALSE);
+        computeMustCopyProperty(cc->get_expr());
         break;
       }
       case flwor_clause::group_clause:
@@ -789,7 +814,7 @@ void computeNoNodeCopyProperty(expr* inExpr)
 
         for (; ite != end; ++ite)
         {
-          pushdown_no_node_copy((*ite).second.getp(), (*ite).first.getp());
+          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
         }
 
         ite = gc->beginNonGroupVars();
@@ -797,7 +822,7 @@ void computeNoNodeCopyProperty(expr* inExpr)
 
         for (; ite != end; ++ite)
         {
-          pushdown_no_node_copy((*ite).second.getp(), (*ite).first.getp());
+          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
         }
 
         break;
@@ -811,8 +836,8 @@ void computeNoNodeCopyProperty(expr* inExpr)
 
         for (; ite != end; ++ite)
         {
-          set_no_node_copy((*ite), ANNOTATION_TRUE);
-          computeNoNodeCopyProperty(*ite);
+          set_must_copy((*ite), ANNOTATION_FALSE);
+          computeMustCopyProperty(*ite);
         }
         break;
       }
@@ -831,17 +856,22 @@ void computeNoNodeCopyProperty(expr* inExpr)
   case if_expr_kind:
   {
     if_expr* e = static_cast<if_expr*>(inExpr);
-    pushdown_no_node_copy(inExpr, e->get_cond_expr());
-    pushdown_no_node_copy(inExpr, e->get_then_expr());
-    pushdown_no_node_copy(inExpr, e->get_else_expr());
+    pushdown_must_copy(inExpr, e->get_cond_expr());
+    pushdown_must_copy(inExpr, e->get_then_expr());
+    pushdown_must_copy(inExpr, e->get_else_expr());
     break;
   }
 
   case trycatch_expr_kind:
   {
     trycatch_expr* e = static_cast<trycatch_expr*>(inExpr);
-    pushdown_no_node_copy(inExpr, e->get_try_expr());
-    pushdown_no_node_copy(inExpr, e->get_catch_expr());
+    pushdown_must_copy(inExpr, e->get_try_expr());
+
+    csize numCatches = e->clause_count();
+    for (csize i = 0; i < numCatches; ++i)
+    {
+      pushdown_must_copy(inExpr, e->get_catch_expr(i));
+    }
     break;
   }
 
@@ -854,29 +884,75 @@ void computeNoNodeCopyProperty(expr* inExpr)
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      set_no_node_copy(e->get_arg(i), func->requiresNodeCopy(e, i));
+      set_must_copy(e->get_arg(i), func->mustCopyNodes(e, i));
     }
 
     break;
   }
 
-#if 0
   case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
+  {
+    ZORBA_ASSERT(false); // TODO
+  }
 
   case castable_expr_kind:
   case instanceof_expr_kind:
   case cast_expr_kind:
+  {
+    cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
+
   case treat_expr_kind:
   case promote_expr_kind:
+  {
+    cast_base_expr* e = static_cast<cast_base_expr*>(inExpr);
+
+    if (TypeOps::is_subtype(e->get_type_manager(),
+                            *e->get_target_type(),
+                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    {
+      set_must_copy(e, ANNOTATION_FALSE);
+    }
+
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
+
   case name_cast_expr_kind:
+  {
+    name_cast_expr* e = static_cast<name_cast_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
 
   case validate_expr_kind:
+  {
+    validate_expr* e = static_cast<validate_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_TRUE_FIXED);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
 
   case extension_expr_kind:
+  {
+    extension_expr* e = static_cast<extension_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
 
   case order_expr_kind:
+  {
+    order_expr* e = static_cast<order_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
 
+#if 0
   case delete_expr_kind:
   case insert_expr_kind:
   case rename_expr_kind:
@@ -893,11 +969,30 @@ void computeNoNodeCopyProperty(expr* inExpr)
 
   case eval_expr_kind:
   case debugger_expr_kind:
+
   case wrapper_expr_kind:
+  {
+    wrapper_expr* e = static_cast<wrapper_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
   case function_trace_expr_kind:
+  {
+    function_trace_expr* e = static_cast<function_trace_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
 
 #ifndef ZORBA_NO_FULL_TEXT
 	case ft_expr_kind:
+  {
+    ft_expr* e = static_cast<ft_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    set_must_copy(e->get_range(), ANNOTATION_TRUE_FIXED);
+    set_must_copy(e->get_ignore(), ANNOTATION_TRUE_FIXED);
+    break;
+  }
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #endif
@@ -911,7 +1006,7 @@ void computeNoNodeCopyProperty(expr* inExpr)
   ExprIterator iter(inExpr);
   while (!iter.done())
   {
-    computeNoNodeCopyProperty(*iter);
+    computeMustCopyProperty(*iter);
     iter.next();
   }
 }

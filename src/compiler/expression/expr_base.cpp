@@ -526,36 +526,24 @@ bool expr::containsRecursiveCall() const
 
 
 /*******************************************************************************
-  assuming the caller requires copy
+  This annotation tells whether the expr must produce nodes that belong to 
+  "standalone" trees or not. A tree is standalone if it does not contain 
+  references to other trees. Such references are created when the optimizer 
+  decides that it is ok to avoid copying the referenced subtree (as would be
+  required by required by a strict implementation of the spec, eg., during 
+  node construction).
 ********************************************************************************/
-BoolAnnotationValue expr::getNoNodeCopy1() const
+BoolAnnotationValue expr::getMustCopyNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & NO_NODE_COPY_1_MASK) >> NO_NODE_COPY_1);
+         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
 }
 
 
-void expr::setNoNodeCopy1(BoolAnnotationValue v)
+void expr::setMustCopyNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~NO_NODE_COPY_1_MASK;
-  theFlags1 |= (v << NO_NODE_COPY_1);
-}
-
-
-/*******************************************************************************
-  assuming the caller does not require copy
-********************************************************************************/
-BoolAnnotationValue expr::getNoNodeCopy2() const
-{
-  return (BoolAnnotationValue)
-         ((theFlags1 & NO_NODE_COPY_2_MASK) >> NO_NODE_COPY_2);
-}
-
-
-void expr::setNoNodeCopy2(BoolAnnotationValue v)
-{
-  theFlags1 &= ~NO_NODE_COPY_2_MASK;
-  theFlags1 |= (v << NO_NODE_COPY_2);
+  theFlags1 &= ~MUST_COPY_NODES_MASK;
+  theFlags1 |= (v << MUST_COPY_NODES);
 }
 
 

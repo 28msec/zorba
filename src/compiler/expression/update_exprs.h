@@ -37,19 +37,45 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-class insert_expr : public expr
+class update_expr_base : public expr
+{
+protected:
+	expr_t  theTargetExpr;
+	expr_t  theSourceExpr;
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(update_expr_base)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(update_expr_base, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+	update_expr_base(
+    static_context* sctx,
+		const QueryLoc&,
+    expr_kind_t kind,
+		const expr_t& targetExpr,
+    const expr_t& sourceExpr);
+
+	expr* getTargetExpr() const { return theTargetExpr.getp(); }
+
+	expr* getSourceExpr() const { return theSourceExpr.getp(); }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class insert_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
 
 protected:
   store::UpdateConsts::InsertType theType;
-	expr_t                          theSourceExpr;
-	expr_t                          theTargetExpr;
 
 public:
   SERIALIZABLE_CLASS(insert_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -57,14 +83,10 @@ public:
     static_context* sctx,
 		const QueryLoc&,
     store::UpdateConsts::InsertType,
-		expr_t aSourceExpr,
-		expr_t aTargetExpr);
+		const expr_t& aSourceExpr,
+		const expr_t& aTargetExpr);
 
   store::UpdateConsts::InsertType getType() const { return theType; }
-
-	expr* getSourceExpr() const { return theSourceExpr.getp(); }
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
   
   void compute_scripting_kind();
 
@@ -79,7 +101,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class delete_expr : public expr
+class delete_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
@@ -89,13 +111,11 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(delete_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
 	delete_expr(static_context* sctx, const QueryLoc&, expr_t);
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -110,7 +130,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class replace_expr : public expr
+class replace_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
@@ -122,7 +142,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(replace_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -130,12 +150,10 @@ public:
     static_context* sctx,
 		const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
-		expr_t,
-		expr_t);
+		const expr_t&,
+		const expr_t&);
 
   store::UpdateConsts::ReplaceType getType() const { return theType; }
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
 	expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
 
@@ -152,28 +170,26 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class rename_expr : public expr
+class rename_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
 
 protected:
-	expr_t             theTargetExpr;
-	expr_t             theNameExpr;
+	expr_t  theTargetExpr;
+	expr_t  theNameExpr;
 
 public:
   SERIALIZABLE_CLASS(rename_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
 	rename_expr(
-        static_context* sctx,
-        const QueryLoc&,
-        expr_t,
-        expr_t);
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
+      static_context* sctx,
+      const QueryLoc&,
+      const expr_t&,
+      const expr_t&);
 
 	expr* getNameExpr() const { return theNameExpr.getp(); }
 
