@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,12 +32,12 @@ namespace zorba {
 
 
 /*******************************************************************************
-  Check that the type of a node to be inserted into a collection matches with 
+  Check that the type of a node to be inserted into a collection matches with
   the statically declared type of the collection nodes. If not, raise an error.
 ********************************************************************************/
 void checkNodeType(
     const static_context* sctx,
-    const store::Item_t& node, 
+    const store::Item_t& node,
     const StaticallyKnownCollection* collectionDecl,
     const QueryLoc& loc,
     bool dyn_coll);
@@ -52,7 +52,7 @@ getCopyMode(
  ******************************************************************************/
 template <class Iter, class State>
 class ZorbaCollectionIteratorHelper : public NaryBaseIterator<Iter, State>
-{ 
+{
 protected:
   //whether it's the function of the dynamic or the static collection module
   bool theDynamicCollection;
@@ -66,7 +66,7 @@ protected:
       store::Collection_t& coll) const
   {
     const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-    if (collectionDecl == 0  && !aDynamicCollection) 
+    if (collectionDecl == 0  && !aDynamicCollection)
     {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
@@ -74,10 +74,10 @@ protected:
         ERROR_LOC( aLoc )
       );
     }
-  
+
     coll = GENV_STORE.getCollection(aName, aDynamicCollection);
-  
-    if (coll == NULL) 
+
+    if (coll == NULL)
     {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
@@ -85,7 +85,7 @@ protected:
         ERROR_LOC( aLoc )
       );
     }
-  
+
     return collectionDecl;
   }
 
@@ -102,21 +102,21 @@ protected:
     store::Item_t                    node;
     store::Item_t                    copyNode;
     xs_integer                       targetPos;
-  
+
     store::CopyMode lCopyMode;
-  
+
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
-  
+
     collectionDecl = getCollection(
         this->theSctx, collName, this->loc, theDynamicCollection, collection);
 
     if (beforeOrAfter) {
-      if(!this->consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState)) 
+      if(!this->consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState))
       {
         ZORBA_ASSERT(false);
       }
 
-      if (!collection->findNode(targetNode.getp(), targetPos)) 
+      if (!collection->findNode(targetNode.getp(), targetPos))
       {
         throw XQUERY_EXCEPTION(
           zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
@@ -125,9 +125,9 @@ protected:
         );
       }
     }
-  
+
     getCopyMode(lCopyMode, this->theSctx);
-  
+
     while (this->consumeNext(node, this->theChildren[this->theChildren.size()-1].getp(), planState))
     {
       checkNodeType(this->theSctx, node, collectionDecl, this->loc, theDynamicCollection);

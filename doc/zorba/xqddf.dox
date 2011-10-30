@@ -1908,7 +1908,7 @@ not match the sequence type specified in the keyspec of the index.
 
 The probe-index-range-value function retrieves the domain nodes associated by 
 value order-comparison (operators le, lt, ge, gt) with a given <strong>search 
-box</strong>. The search "box" is specified as a number M of <strong>rangespecs
+box</strong>. The search box is specified as a number M of <strong>rangespecs
 </strong>, where each rangespec consists of six values. The number M must be 
 greater than 0 and less than or equal to the number N of keyspecs found in the 
 index declaration [<a href="#ERRZDDY0025">zerr:ZDDY0025</a>]. If M is less 
@@ -1952,13 +1952,17 @@ if the index is not among the statically known indexes or the available indexes.
 [<a href="#ERRZDDY0026">zerr:ZDDY0026</a>], if the index is not a range index.
 </li>
 <li>
-[err:XPTY0004], if $haveLowerBound-i is true and $lowerBound-i is an atomic 
-item whose type does not match the sequence type specified by i<sup>th</sup> 
-keyspec, or $haveUpperBound-i is true and $upperBound-i is an atomic item 
-whose type does not match the sequence type specified by i<sup>th</sup> keyspec.
+[<a href="#ERRZDDY0025">zerr:ZDDY0025</a>], if the number of rangespecs passed 
+as arguments is zero or greater than the number of keys declared for the index.
 </li>
 <li>
-[<a href="#ERRZDDY0026">zerr:ZDDY0034</a>], (a) if the index is general (in which 
+[err:XPTY0004], if $haveLowerBound-i is true and $lowerBound-i is an atomic 
+item whose type does not match the sequence type specified by the i<sup>th</sup> 
+keyspec, or $haveUpperBound-i is true and $upperBound-i is an atomic item 
+whose type does not match the sequence type specified by the i<sup>th</sup> keyspec.
+</li>
+<li>
+[<a href="#ERRZDDY0034">zerr:ZDDY0034</a>], if (a) the index is general (in which 
 case there is only one rangespac), (b) the index is untyped, (c) there is both a
 lower and an upper bound, and (d) if T1 and T2 are the types of the lower and 
 upper bound, neither T1 is a subtype of T2 nor T2 is a subtype of T1.   
@@ -1987,12 +1991,6 @@ arbitrary number of <strong>search keys</strong>, where each search key is
 an atomic item. This method is supported by general range indexes only 
 [<a href="#ERRZDDY0030">zerr:ZDDY0030</a>]. Its result is either an error or
 the set of domain nodes for which the following xquery expression returns true:
-
- If any of the search sequences is
-non-empty, the type of each atomic item in it must match the atomic type specified 
-by the IndexKeyTypeDecl of the index; otherwise, a type error is raised 
-[zerr:XPTY0004]. 
-
 
 \code
 if ($haveLowerBound and $haveUpperBound) then
@@ -2499,6 +2497,9 @@ constraint with URI is not declared.
 
   <a name="ERRZDDY0033" id="ERRZDDY0033"></a>zerr:ZDDY0033, Conditions for
 integrity constraint were not met on collection.
+
+  <a name="ERRZDDY0034" id="ERRZDDY0034"></a>zerr:ZDDY0034, Index range-value
+ probe has search keys with incompatible types
 </strong>
 
 */

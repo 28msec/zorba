@@ -306,12 +306,9 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue == other->getString();
-  }
+        const XQPCollator* collation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -635,7 +632,8 @@ public:
 
   ~StreamableStringItem()
   {
-    if (theStreamReleaser) {
+    if (theStreamReleaser) 
+    {
       theStreamReleaser(&theIstream);
     }
   }

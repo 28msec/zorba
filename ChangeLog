@@ -53,6 +53,7 @@ version 2.x
   * General index cannot be declared as unique if the type of its key is
     xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
+  * Optimization for count(collection()) expressions
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)
