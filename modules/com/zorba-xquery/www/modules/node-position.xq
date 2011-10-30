@@ -34,10 +34,9 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Compute a stable and opaque positional information representation 
- : (with type xs:anyURI) for a given node.
- : 
- : <p>Each node in a snapshot has a different URI. Note however that
+ : Return a URI item containing positional information for a given node.
+ :
+ : <p>Within a snapshot, each has a different positional URI. However,
  : different nodes in different snapshots might have the same URI.</p>  
  :
  : @param $arg the node for which the positional information URI
@@ -69,31 +68,8 @@ declare function np:node-position(
  : position computed by the <tt>np:node-position</tt> function. 
  :)
 declare function np:ancestor-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
-
-(:~
- : Determines whether the node position given as second argument belongs
- : to the subtree rooted at the node position given as first argument.
- :
- : If the two positions were obtained within the same snapshot S, then the
- : result of the function applies to the corresponding nodes as well, that
- : is, within snapshot S, the second node belongs to the subtree rooted at the 
- : first. Otherwise, the result of the function does not imply anything about 
- : the positional relationship of the two nodes.
- :
- : @param $n-pos1 the potential subtree root node position
- : @param $n-pos2 the potential node in the subtree node position
- :
- : @return true if the node position $n-pos2 belongs to the subtree rooted at 
- : the node position $n-pos1; false otherwise.
- :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
- :)
-declare function np:in-subtree-of(
-  $n-pos1 as xs:anyURI,
-  $n-pos2 as xs:anyURI) as xs:boolean external;
+  $pos1 as xs:anyURI,
+  $pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
  : Determines whether the node position given as second argument is
@@ -115,6 +91,37 @@ declare function np:in-subtree-of(
  : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:descendant-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+
+(:~
+ : Determines whether the node position given as second argument belongs
+ : to the subtree rooted at the node position given as first argument.
+ :
+ : If the two positions were obtained within the same snapshot S, then the
+ : result of the function applies to the corresponding nodes as well, that
+ : is, within snapshot S, the second node belongs to the subtree rooted at the 
+ : first. Otherwise, the result of the function does not imply anything about 
+ : the positional relationship of the two nodes.
+ :
+ : This function differs from np:descendant-of in the way it treats attribute
+ : nodes. np:descendant-of follows the XQuery/XPath specification for the 
+ : descendant axis, and as a result, it does not consider attributes as 
+ : descendants of any nodes; it will always return false if $n-pos2 was
+ : obtained from an attribute node.In contrast, np:in-subtree-of will return
+ : true if $n-pos2 was obtained from an attribute node that appeared in the 
+ : subtree of the node that $n-pos1 was obtained from.
+ :
+ : @param $n-pos1 the potential subtree root node position
+ : @param $n-pos2 the potential node in the subtree node position
+ :
+ : @return true if the node position $n-pos2 belongs to the subtree rooted at 
+ : the node position $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:in-subtree-of(
   $n-pos1 as xs:anyURI,
   $n-pos2 as xs:anyURI) as xs:boolean external;
 
@@ -268,11 +275,12 @@ declare function np:sibling-of(
  : @param $n-pos1 the potential preceding node position
  : @param $n-pos2 the potential following node position
  :
- : @return true if the node position $n-pos2 is following the node position 
- : $n-pos1; false otherwise.
+ : @return true if node positions $n-pos1 and $n-pos2 belong to the same XML
+ :         tree and $n-pos2 is following the node position $n-pos1; false 
+ :         otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node
- : position computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node position
+ :        computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:following-of(
   $n-pos1 as xs:anyURI,
@@ -314,8 +322,9 @@ declare function np:following-in-document-order-of(
  : @param $n-pos1 the potential following node position
  : @param $n-pos2 the potential preceding node position
  :
- : @return true if the node position $n-pos2 is preceding the node position 
- : $n-pos1; false otherwise.
+ : @return true if node positions $n-pos1 and $n-pos2 belong to the same XML
+ :         tree and $n-pos2 is preceding the node position $n-pos1; false
+ :         otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node
  : position computed by the <tt>np:node-position</tt> function.
@@ -350,7 +359,7 @@ declare function np:preceding-in-document-order-of(
 (:~
  : Computes the level of a node position in its tree.
  :
- : Note: The first level has the number one.
+ : Note: The root node of a tree is at level one.
  :
  : The result of the function applies to the corresponding node as well, 
  : that is, within the snapshot in which the position was computed, the node 
