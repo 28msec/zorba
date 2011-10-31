@@ -663,30 +663,25 @@ int regex::get_pattern_group_count()
   return (int)regex_matcher->get_indexed_regex_count();
 }
 
-int regex::get_match_start( int groupId )
+bool regex::get_match_start_end_bytes( int groupId, int *start, int *end )
 {
+  *start = -1;
+  *end = -1;
   if(groupId == 0)
-    return m_match_pos;
+  {
+    *start = m_match_pos;
+    *end = m_match_pos + m_matched_len;
+    return true;
+  }
   if(groupId > (int)regex_matcher->get_indexed_regex_count())
-    return -1;
+    return false;
   const char *submatched_source;
   int   submatched_len;
   if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
-    return -1;
-  return submatched_source - s_in_.c_str();
-}
-
-int regex::get_match_end( int groupId )
-{
-  if(groupId == 0)
-    return m_match_pos + m_matched_len;
-  if(groupId > (int)regex_matcher->get_indexed_regex_count())
-    return -1;
-  const char *submatched_source;
-  int   submatched_len;
-  if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
-    return -1;
-  return submatched_source - s_in_.c_str() + submatched_len;
+    return false;
+  *start = submatched_source - s_in_.c_str();
+  *end = *start + submatched_len;
+  return true;
 }
 
 } // namespace unicode

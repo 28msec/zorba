@@ -1592,15 +1592,24 @@ static void copyUtf8Chars(const char *&sin,
                           int utf8end,
                           zstring &out)
 {
+#ifndef ZORBA_NO_ICU
   utf8::size_type clen;
   while(utf8start < utf8end)
   {
     clen = utf8::char_length(*sin);
+    if(clen == 0)
+      clen = 1;
     out.append(sin, clen);
     utf8start++;
     bytestart += clen;
     sin += clen;
   }
+#else
+  out.append(sin, utf8end-utf8start);
+  sin += utf8end-utf8start;
+  utf8start = utf8end;
+  bytestart = utf8end;
+#endif
 }
 
 static void addNonMatchElement(store::Item_t &parent, 
@@ -1659,9 +1668,17 @@ static void addGroupElement(store::Item_t &parent,
       i--;
       break;
     }
+#ifndef ZORBA_NO_ICU
     match_startg = rx.get_match_start(i+1);
     if((match_startg < 0) && (gparent < 0))
       continue;
+#else
+    int temp_endg;
+    match_startg = -1;
+    temp_endg = -1;
+    if(!rx.get_match_start_end_bytes(i+1, &match_startg, &temp_endg) && (gparent < 0))
+      continue;
+#endif
     if(match_endgood < match_startg)
     {
       //add non-group match text
@@ -1671,7 +1688,11 @@ static void addGroupElement(store::Item_t &parent,
       store::Item_t non_group_text_item;
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
+#ifndef ZORBA_NO_ICU
     match_endg = rx.get_match_end(i+1);
+#else
+    match_endg = temp_endg;
+#endif
     //add group match text
     GENV_ITEMFACTORY->createQName(group_element_name,
                                   static_context::W3C_FN_NS, "fn", "group");
@@ -1939,8 +1960,14 @@ bool FnAnalyzeStringIterator::nextImpl(
       reachedEnd = false;
       while(rx.find_next_match(&reachedEnd))
       {
-        int    match_start2 = rx.get_match_start();
-        int    match_end2 = rx.get_match_end();
+        int    match_start2;
+        int    match_end2;
+#ifndef ZORBA_NO_ICU
+        match_start2 = rx.get_match_start();
+        match_end2 = rx.get_match_end();
+#else
+        rx.get_match_start_end_bytes(0, &match_start2, &match_end2);
+#endif
         ZORBA_ASSERT(match_start2 >= 0);
 
         if(is_input_stream && reachedEnd && !instream->eof())
@@ -1960,7 +1987,7 @@ bool FnAnalyzeStringIterator::nextImpl(
         match_end1 = match_end2;
       }
 
-      if(is_input_stream && reachedEnd && !instream->eof())
+      if(is_input_stream && !instream->eof())
       {
         //load some more data, maybe the match will be different
         if(match_end1_bytes)

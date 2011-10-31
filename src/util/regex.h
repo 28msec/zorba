@@ -834,27 +834,18 @@ public:
 
   /**
    * Get the start position of the matched group.
-   * If groupId is zero, then the start position of the whole match is returned.
-   * If groupId is non-zero, then the start position of that group is returned.
-   * If that group has not been matched, -1 is returned.
+   * If groupId is zero, then the start and end position of the whole match is returned.
+   * If groupId is non-zero, then the start and end position of that group is returned.
+   * If that group has not been matched, false is returned.
    *
    * @param groupId the id of the group, either zero for the entire regex,
    *  or [1 .. group_count] for that specific group
-   * @return the start position, zero based, or -1 if that group didn't match
+   * @param start to return start position in bytes
+   * @param end to return end position in bytes
+   * @return true if that group exists and has been matched
    */
-  int get_match_start( int groupId = 0 );
+  bool get_match_start_end_bytes( int groupId, int *start, int *end );
 
-  /**
-   * Get the end position of the matched group.
-   * If groupId is zero, then the end position of the whole match is returned.
-   * If groupId is non-zero, then the end position of that group is returned.
-   * If that group has not been matched, -1 is returned.
-   *
-   * @param groupId the id of the group, either zero for the entire regex,
-   *  or [1 .. group_count] for that specific group
-   * @return the end position, zero based, or -1 if that group didn't match
-   */
-  int get_match_end( int groupId = 0 );
 
 private:
   regex_xquery::CRegexXQuery_regex  *regex_matcher;

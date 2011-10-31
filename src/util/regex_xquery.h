@@ -99,7 +99,7 @@ public:
   unsigned int get_indexed_regex_count();
 
   bool get_reachedEnd() {return reachedEnd;}
-  void set_reachedEnd() {reachedEnd = true;}
+  void set_reachedEnd(const char *source) {if(source > source_start) reachedEnd = true;}
   unsigned int get_flags() {return flags;}
 public:
   virtual bool match(const char *source, int *start_from_branch, int *matched_len,

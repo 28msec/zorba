@@ -96,6 +96,14 @@ static bool compare_unicode_ni(const char *str1, const char *str2, int len)
   }
   return true;
 }
+static utf8::size_type myutf8len(const char *source)
+{
+  utf8::size_type  len = utf8::char_length(*source);
+  if(!len)
+    return 1;
+  else
+    return len;
+}
 ////////////////////////////////////
 ////Regular expression parsing and building of the tree
 ////////////////////////////////////
@@ -1347,7 +1355,7 @@ bool CRegexXQuery_regex::match_from(const char *source, unsigned int flags,
       {
         //go to next line
         while(source[*match_pos] && (source[*match_pos] != '\n') && (source[*match_pos] != '\r'))
-          (*match_pos)++;
+          (*match_pos) += myutf8len(source);
         if(source[*match_pos] == '\n')
         {
           (*match_pos)++;
@@ -1368,13 +1376,13 @@ bool CRegexXQuery_regex::match_from(const char *source, unsigned int flags,
     }
     if(!source[*match_pos])
       break;
-    (*match_pos)++;
+    (*match_pos) += myutf8len(source);
   }
   while(source[*match_pos]);
-  if(!source[*match_pos])
-  {
-    reachedEnd = true;
-  }
+//  if(!source[*match_pos])
+//  {
+//    reachedEnd = true;
+//  }
   return false;
 }
 
@@ -1932,7 +1940,7 @@ bool CRegexXQuery_piece::match_piece_times(const char *source,
     *piecelen += atomlen;
     if(!atomlen && !source[*piecelen])
     {
-    //  atom->regex_intern->set_reachedEnd();
+    //  atom->regex_intern->set_reachedEnd(source);
       break;
     }
     if(first_branch && (atomlen == 0))//avoid infinite loop
@@ -1955,7 +1963,7 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   bool found = false;
@@ -2093,7 +2101,7 @@ bool CRegexXQuery_multicharIs::match_internal(const char *source, int *start_fro
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   bool found = false;
@@ -2141,7 +2149,7 @@ bool CRegexXQuery_multicharOther::match_internal(const char *source, int *start_
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   bool found = false;
@@ -2218,7 +2226,7 @@ bool CRegexXQuery_char_ascii::match_internal(const char *source, int *start_from
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   if(source[0] == c)
@@ -2234,7 +2242,7 @@ bool CRegexXQuery_char_ascii_i::match_internal(const char *source, int *start_fr
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   char  sup = toupper(source[0]);
@@ -2251,7 +2259,7 @@ bool CRegexXQuery_char_range_ascii::match_internal(const char *source, int *star
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   if((source[0] >= c1) && (source[0] <= c2))
@@ -2267,7 +2275,7 @@ bool CRegexXQuery_char_range_ascii_i::match_internal(const char *source, int *st
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   char  sup = toupper(source[0]);
@@ -2284,7 +2292,7 @@ bool CRegexXQuery_char_unicode::match_internal(const char *source, int *start_fr
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   if(!memcmp(source, c, len))
@@ -2300,7 +2308,7 @@ bool CRegexXQuery_char_unicode_cp::match_internal(const char *source, int *start
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   const char *temp_source = source;
@@ -2318,7 +2326,7 @@ bool CRegexXQuery_char_unicode_i::match_internal(const char *source, int *start_
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   const char *temp_source = source;
@@ -2336,7 +2344,7 @@ bool CRegexXQuery_char_range_unicode::match_internal(const char *source, int *st
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   const char *temp_source = source;
@@ -2354,7 +2362,7 @@ bool CRegexXQuery_char_range_unicode_i::match_internal(const char *source, int *
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   const char *temp_source = source;
@@ -2439,12 +2447,12 @@ bool CRegexXQuery_negchargroup::match_internal(const char *source, int *start_fr
 {
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   if(!CRegexXQuery_chargroup::match_internal(source, start_from_branch, matched_len))
   {
-    *matched_len = utf8::char_length(*source);
+    *matched_len = myutf8len(source);
     return true;
   }
   return false;
@@ -2455,13 +2463,13 @@ bool CRegexXQuery_wildchar::match_internal(const char *source, int *start_from_b
   *matched_len = 0;
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   if((regex_intern->flags & REGEX_ASCII_DOTALL) || 
     (source[0] != '\n') && (source[0] != '\r'))
   {
-    *matched_len = utf8::char_length(*source);
+    *matched_len = myutf8len(source);
     return true;
   }
   else
@@ -2478,7 +2486,7 @@ bool CRegexXQuery_backref::match_internal(const char *source, int *start_from_br
   }
   if(!source[0])
   {
-    regex_intern->set_reachedEnd();
+    regex_intern->set_reachedEnd(source);
     return false;
   }
   *matched_len = regex_intern->subregex.at(backref-1)->matched_len;
