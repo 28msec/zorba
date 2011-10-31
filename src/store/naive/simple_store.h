@@ -61,7 +61,6 @@ class NodeFactory;
 class PULPrimitiveFactory;
 
 typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
-typedef zorba::HashMapZString<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 typedef ItemPointerHashMap<store::IC_t> ICSet;
 
