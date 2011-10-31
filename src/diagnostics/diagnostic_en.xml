@@ -3154,6 +3154,10 @@
       <value>unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes</value>
     </entry>
 
+    <entry key="REGEX_INVALID_UNICODE_CODEPOINT_u" if="defined(ZORBA_NO_ICU)">
+      <value>invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX</value>
+    </entry>
+
     <entry key="REGEX_UNKNOWN_ESC_CHAR" if="defined(ZORBA_NO_ICU)">
       <value>unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups</value>
     </entry>

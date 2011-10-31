@@ -577,6 +577,9 @@ extern entry const dict_en[] = {
   { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
 #endif
 #if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX" },
+#endif
+#if defined(ZORBA_NO_ICU)
   { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
 #endif
 #if defined(ZORBA_NO_ICU)

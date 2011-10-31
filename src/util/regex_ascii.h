@@ -38,30 +38,30 @@ namespace zorba {
 #define REGEX_ASCII_WHOLE_MATCH         128  //match only all string, like having "^regex$"
 #define REGEX_ASCII_GROUPING_LEN_WHOLE_PIECE    256  //compute the len of a grouping as for the whole piece ( for example (a)+ when matching "aa" and referred as $1 will get string len 2 instead of last 1)
 
-class CRegexAscii_regex;
-class CRegexAscii_piece;
+class CRegexXQuery_regex;
+class CRegexXQuery_piece;
 
 struct RegexAscii_pieceinfo
 {
   union
   {
-    CRegexAscii_piece*  piece;
-    CRegexAscii_regex*  group_regex;
+    CRegexXQuery_piece*  piece;
+    CRegexXQuery_regex*  group_regex;
   };
   int nr_matches;
 
-  RegexAscii_pieceinfo(CRegexAscii_piece* piece) {nr_matches=0;this->piece=piece;}
-  RegexAscii_pieceinfo(CRegexAscii_regex* group_regex) {nr_matches=-1;this->group_regex=group_regex;}
+  RegexAscii_pieceinfo(CRegexXQuery_piece* piece) {nr_matches=0;this->piece=piece;}
+  RegexAscii_pieceinfo(CRegexXQuery_regex* group_regex) {nr_matches=-1;this->group_regex=group_regex;}
 };
 
 
 class IRegexAtom
 {
 protected:
-  friend class CRegexAscii_piece;
-  CRegexAscii_regex *regex_intern;
+  friend class CRegexXQuery_piece;
+  CRegexXQuery_regex *regex_intern;
 public:
-  IRegexAtom(CRegexAscii_regex* regex)  : regex_intern(regex) {}
+  IRegexAtom(CRegexXQuery_regex* regex)  : regex_intern(regex) {}
   virtual ~IRegexAtom() {}
 
   virtual bool match(const char *source, int *start_from_branch, int *matched_len,
@@ -72,24 +72,24 @@ public:
 //  virtual void restore_match() {}
 };
 
-class CRegexAscii_branch;
-class CRegexAscii_piece;
-class CRegexAscii_chargroup;
-class CRegexAscii_parser;
+class CRegexXQuery_branch;
+class CRegexXQuery_piece;
+class CRegexXQuery_chargroup;
+class CRegexXQuery_parser;
 
-class CRegexAscii_regex : public IRegexAtom
+class CRegexXQuery_regex : public IRegexAtom
 {
-  friend class CRegexAscii_parser;
-  friend class CRegexAscii_branch;
-  friend class CRegexAscii_piece;
-  friend class CRegexAscii_chargroup;
-  friend class CRegexAscii_negchargroup;
-  friend class CRegexAscii_wildchar;
-  friend class CRegexAscii_backref;
-  friend class CRegexAscii_pinstart;
+  friend class CRegexXQuery_parser;
+  friend class CRegexXQuery_branch;
+  friend class CRegexXQuery_piece;
+  friend class CRegexXQuery_chargroup;
+  friend class CRegexXQuery_negchargroup;
+  friend class CRegexXQuery_wildchar;
+  friend class CRegexXQuery_backref;
+  friend class CRegexXQuery_pinstart;
 public:
-  CRegexAscii_regex(CRegexAscii_regex *);
-  virtual ~CRegexAscii_regex();
+  CRegexXQuery_regex(CRegexXQuery_regex *);
+  virtual ~CRegexXQuery_regex();
 
   bool match_anywhere(const char *source, unsigned int flags, int *match_pos, int *matched_len);
   bool match_from(const char *source, unsigned int flags, int *match_pos, int *matched_len);
@@ -99,6 +99,8 @@ public:
   unsigned int get_indexed_regex_count();
 
   bool get_reachedEnd() {return reachedEnd;}
+  void set_reachedEnd() {reachedEnd = true;}
+  unsigned int get_flags() {return flags;}
 public:
   virtual bool match(const char *source, int *start_from_branch, int *matched_len,
                     std::list<RegexAscii_pieceinfo>::iterator next_piece,
@@ -107,34 +109,34 @@ public:
   virtual void reset_match();
 //  virtual void restore_match();
 private:
-  void add_branch(CRegexAscii_branch *branch);
+  void add_branch(CRegexXQuery_branch *branch);
 
   void save_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex);
   void load_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex);
 private:
   unsigned int flags;
-  std::list<CRegexAscii_branch*>   branch_list;
+  std::list<CRegexXQuery_branch*>   branch_list;
 
   const char  *source_start;
 
   const char  *matched_source;
   int         matched_len;
-//  const char  *backup_matched_source;
+//  const unicode::code_point  *backup_matched_source;
 //  int         backup_matched_len;
-  std::vector<CRegexAscii_regex*>    subregex;//for grouping
+  std::vector<CRegexXQuery_regex*>    subregex;//for grouping
 
   bool        reachedEnd;
 };
 
-class CRegexAscii_branch
+class CRegexXQuery_branch
 {
-  friend class CRegexAscii_parser;
+  friend class CRegexXQuery_parser;
 public:
-  CRegexAscii_branch(CRegexAscii_regex* regex);
-  ~CRegexAscii_branch();
+  CRegexXQuery_branch(CRegexXQuery_regex* regex);
+  ~CRegexXQuery_branch();
 
   bool match(const char *source, int *matched_len,
-              CRegexAscii_regex* group_regex,
+              CRegexXQuery_regex* group_regex,
               std::list<RegexAscii_pieceinfo>::iterator next_piece,
               std::list<RegexAscii_pieceinfo>::iterator end_piece);
   void reset();
@@ -142,17 +144,17 @@ public:
 private:
   std::list<RegexAscii_pieceinfo>   piece_list;
 private:
-  void add_piece(CRegexAscii_piece *piece);
+  void add_piece(CRegexXQuery_piece *piece);
  
 };
 
-class CRegexAscii_piece //: public IRegexMatcher
+class CRegexXQuery_piece //: public IRegexMatcher
 {
-  friend class CRegexAscii_parser;
-  friend class CRegexAscii_branch;
+  friend class CRegexXQuery_parser;
+  friend class CRegexXQuery_branch;
 
   IRegexAtom *atom;
-  CRegexAscii_regex *regex_atom;
+  CRegexXQuery_regex *regex_atom;
 
   //quantifier
   bool  strict_max;
@@ -161,8 +163,8 @@ class CRegexAscii_piece //: public IRegexMatcher
   bool  is_reluctant;
 
 public:
-  CRegexAscii_piece();
-  ~CRegexAscii_piece();
+  CRegexXQuery_piece();
+  ~CRegexXQuery_piece();
 public:
   void set_atom(IRegexAtom *atom);
   void set_quantifier_min_max(int min, int max, bool strict_max);
@@ -192,77 +194,234 @@ protected:
 enum CHARGROUP_t
 {
 CHARGROUP_NO_MULTICHAR = 0,
-CHARGROUP_FLAGS_CHAR_RANGE,
+//CHARGROUP_FLAGS_CHAR_RANGE,
 CHARGROUP_FLAGS_MULTICHAR_p,
 CHARGROUP_FLAGS_MULTICHAR_Is,
 CHARGROUP_FLAGS_MULTICHAR_OTHER,
-CHARGROUP_FLAGS_ONECHAR,
-CHARGROUP_FLAGS_ENDLINE
+CHARGROUP_FLAGS_ONECHAR_ASCII,
+CHARGROUP_FLAGS_ONECHAR_UNICODE
+//CHARGROUP_FLAGS_ENDLINE
 };
 
-class CRegexAscii_chargroup : public IRegexAtom
+
+class CRegexXQuery_charmatch : public IRegexAtom
 {
-  friend class CRegexAscii_parser;
+  friend CRegexXQuery_parser;
+protected:
+  //enum CHARGROUP_t  type;
 public:
-  CRegexAscii_chargroup(CRegexAscii_regex* regex);
-  virtual ~CRegexAscii_chargroup();
+  CRegexXQuery_charmatch(CRegexXQuery_regex* regex);//, enum CHARGROUP_t  type);
+  virtual ~CRegexXQuery_charmatch() {}
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len) = 0;
+  virtual unicode::code_point get_c() {return 0;}
+};
+
+class CRegexXQuery_multicharP : public CRegexXQuery_charmatch
+{
+  char multichar_type;
+  bool is_reverse;
+public:
+  CRegexXQuery_multicharP(CRegexXQuery_regex* regex, char type, bool is_reverse);
+  virtual ~CRegexXQuery_multicharP() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_multicharIs : public CRegexXQuery_charmatch
+{
+  int block_index;
+  bool is_reverse;
+public:
+  CRegexXQuery_multicharIs(CRegexXQuery_regex* regex, int block_index, bool is_reverse);
+  virtual ~CRegexXQuery_multicharIs() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_multicharOther : public CRegexXQuery_charmatch
+{
+  char multichar_type;
+public:
+  CRegexXQuery_multicharOther(CRegexXQuery_regex* regex, char type);
+  virtual ~CRegexXQuery_multicharOther() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_char_ascii : public CRegexXQuery_charmatch
+{
+  friend CRegexXQuery_parser;
+protected:
+  char c;
+public:
+  CRegexXQuery_char_ascii(CRegexXQuery_regex* regex, char c);
+  virtual ~CRegexXQuery_char_ascii() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+  virtual unicode::code_point get_c() {return c;}
+};
+
+class CRegexXQuery_char_ascii_i : public CRegexXQuery_char_ascii
+{
+public:
+  CRegexXQuery_char_ascii_i(CRegexXQuery_regex* regex, char c);
+  virtual ~CRegexXQuery_char_ascii_i() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+  virtual unicode::code_point get_c()  {return c;}
+};
+
+class CRegexXQuery_char_range_ascii : public CRegexXQuery_charmatch
+{
+protected:
+  char c1;
+  char c2;
+public:
+  CRegexXQuery_char_range_ascii(CRegexXQuery_regex* regex, char c1, char c2);
+  virtual ~CRegexXQuery_char_range_ascii() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_char_range_ascii_i : public CRegexXQuery_char_range_ascii
+{
+public:
+  CRegexXQuery_char_range_ascii_i(CRegexXQuery_regex* regex, char c1, char c2);
+  virtual ~CRegexXQuery_char_range_ascii_i() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_char_unicode : public CRegexXQuery_charmatch
+{
+  unsigned char c[6];
+  int len;
+public:
+  CRegexXQuery_char_unicode(CRegexXQuery_regex* regex, const char *c, int len);
+  virtual ~CRegexXQuery_char_unicode() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+  virtual unicode::code_point get_c();
+};
+
+class CRegexXQuery_char_unicode_cp : public CRegexXQuery_charmatch
+{
+protected:
+  unicode::code_point c;
+public:
+  CRegexXQuery_char_unicode_cp(CRegexXQuery_regex* regex, unicode::code_point c);
+  virtual ~CRegexXQuery_char_unicode_cp() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+  virtual unicode::code_point get_c()  {return c;}
+};
+
+class CRegexXQuery_char_unicode_i : public CRegexXQuery_char_unicode_cp
+{
+public:
+  CRegexXQuery_char_unicode_i(CRegexXQuery_regex* regex, unicode::code_point c);
+  virtual ~CRegexXQuery_char_unicode_i() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+  virtual unicode::code_point get_c()  {return c;}
+};
+
+class CRegexXQuery_char_range_unicode : public CRegexXQuery_charmatch
+{
+protected:
+  unicode::code_point c1;
+  unicode::code_point c2;
+public:
+  CRegexXQuery_char_range_unicode(CRegexXQuery_regex* regex, unicode::code_point c1, unicode::code_point c2);
+  virtual ~CRegexXQuery_char_range_unicode() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_char_range_unicode_i : public CRegexXQuery_char_range_unicode
+{
+public:
+  CRegexXQuery_char_range_unicode_i(CRegexXQuery_regex* regex, unicode::code_point c1, unicode::code_point c2);
+  virtual ~CRegexXQuery_char_range_unicode_i() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+class CRegexXQuery_endline : public CRegexXQuery_charmatch
+{
+public:
+  CRegexXQuery_endline(CRegexXQuery_regex* regex);
+  virtual ~CRegexXQuery_endline() {}
+
+  virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
+};
+
+
+class CRegexXQuery_chargroup : public IRegexAtom
+{
+  friend class CRegexXQuery_parser;
+public:
+  CRegexXQuery_chargroup(CRegexXQuery_regex* regex);
+  virtual ~CRegexXQuery_chargroup();
 private:
-  typedef struct
+/*  typedef struct
   {
     CHARGROUP_t  flags;
     char  c1;
     char  c2;
   }chargroup_t;
-  std::list<chargroup_t>    chargroup_list;
-  CRegexAscii_chargroup *classsub;
+*/
+  std::list<std::unique_ptr<CRegexXQuery_charmatch> >    chargroup_list;
+  CRegexXQuery_chargroup *classsub;
 public:
-  void addMultiChar(char c, CHARGROUP_t multichar_type);
-  void addEndLine();
-  void addCharRange(char c1, char c2);
-  void addOneChar(char c);
-  void addClassSub(CRegexAscii_chargroup* classsub);
+  //void addMultiChar(char c, CHARGROUP_t multichar_type);
+  //void addEndLine();
+  //void addCharRange(char c1, char c2);
+  //void addOneChar(char c);
+  void addCharMatch(CRegexXQuery_charmatch *charmatch);
+  void addClassSub(CRegexXQuery_chargroup* classsub);
 
   virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
 };
 
-class CRegexAscii_negchargroup : public CRegexAscii_chargroup
+class CRegexXQuery_negchargroup : public CRegexXQuery_chargroup
 {
 public:
-  CRegexAscii_negchargroup(CRegexAscii_regex* regex);
-  virtual ~CRegexAscii_negchargroup();
+  CRegexXQuery_negchargroup(CRegexXQuery_regex* regex);
+  virtual ~CRegexXQuery_negchargroup();
 
   virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
 };
 
-class CRegexAscii_wildchar : public IRegexAtom
+class CRegexXQuery_wildchar : public IRegexAtom
 {
 public:
-  CRegexAscii_wildchar(CRegexAscii_regex* regex);
-  virtual ~CRegexAscii_wildchar();
+  CRegexXQuery_wildchar(CRegexXQuery_regex* regex);
+  virtual ~CRegexXQuery_wildchar();
 
   virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
 };
 
-class CRegexAscii_backref : public IRegexAtom
+class CRegexXQuery_backref : public IRegexAtom
 {
 public:
-  CRegexAscii_backref(CRegexAscii_regex* regex, unsigned int backref);
-  virtual ~CRegexAscii_backref();
+  CRegexXQuery_backref(CRegexXQuery_regex* regex, unsigned int backref);
+  virtual ~CRegexXQuery_backref();
 
   virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
 private:
   unsigned int backref;
 };
 
-class CRegexAscii_pinstart : public IRegexAtom
+class CRegexXQuery_pinstart : public IRegexAtom
 {
 public:
-  CRegexAscii_pinstart(CRegexAscii_regex* regex);
+  CRegexXQuery_pinstart(CRegexXQuery_regex* regex);
 
   virtual bool match_internal(const char *source, int *start_from_branch, int *matched_len);
 };
 
-class CRegexAscii_parser
+class CRegexXQuery_parser
 {
 public:
   typedef struct
@@ -272,26 +431,29 @@ public:
     const char    *group_name;
   }block_escape_t;
 
-  CRegexAscii_parser();
-  ~CRegexAscii_parser();
+  CRegexXQuery_parser();
+  ~CRegexXQuery_parser();
 
 public:
-  CRegexAscii_regex* parse(const char *pattern, unsigned int flags);
+  CRegexXQuery_regex* parse(const char *pattern, unsigned int flags);
 
 protected:
-  CRegexAscii_regex* parse_regexp(const char *pattern, int *regex_len);
-  CRegexAscii_branch* parse_branch(const char *pattern, int *branch_len);
-  CRegexAscii_piece* parse_piece(const char *pattern, int *piece_len);
+  CRegexXQuery_regex* parse_regexp(const char *pattern, int *regex_len);
+  CRegexXQuery_branch* parse_branch(const char *pattern, int *branch_len);
+  CRegexXQuery_piece* parse_piece(const char *pattern, int *piece_len);
   char myishex(char c);
   bool myisdigit(char c);
   bool myisletterAZ(char c);
-  char readChar(const char *pattern, bool for_atom, int *char_len, CHARGROUP_t *multichar_type);
+  CRegexXQuery_charmatch* readChar(const char *pattern, int *char_len, CHARGROUP_t *multichar_type);
+  CRegexXQuery_charmatch *create_charmatch(unicode::code_point utf8c,
+                                            const char *pattern, int utf8len,
+                                            enum CHARGROUP_t *multichar_type);
   IRegexAtom* read_atom(const char *pattern, int *atom_len);
-  CRegexAscii_chargroup* readchargroup(const char *pattern, int *chargroup_len);
-  void read_quantifier(CRegexAscii_piece *piece, const char *pattern, int *quantif_len);
+  CRegexXQuery_chargroup* readchargroup(const char *pattern, int *chargroup_len);
+  void read_quantifier(CRegexXQuery_piece *piece, const char *pattern, int *quantif_len);
 
 private:
-  CRegexAscii_regex   *current_regex;
+  CRegexXQuery_regex   *current_regex;
   int   regex_depth;
   unsigned int flags;
 };

@@ -23,6 +23,7 @@
 #include "zorbatypes/chartype.h"
 #include "util/unicode_categories.h"
 #include "util/ascii_util.h"
+#include "util/utf8_string.h"
 
 namespace zorba {
   namespace regex_ascii{
@@ -65,7 +66,7 @@ charProp    ::=    IsCategory | IsBlock
 */
 
 
-static bool compare_i(const char *str1, const char *str2)
+static bool compare_ascii_i(const char *str1, const char *str2)
 {
   while(*str1 && *str2)
   {
@@ -78,42 +79,45 @@ static bool compare_i(const char *str1, const char *str2)
     return false;
   return true;
 }
-static bool compare_ni(const char *str1, const char *str2, unsigned int maxlen)
+
+static bool compare_unicode_ni(const char *str1, const char *str2, int len)
 {
-  while(*str1 && *str2 && maxlen)
+  while(len > 0)
   {
-    if(ascii::to_lower(*str1) != ascii::to_lower(*str2))
+    const char *temp_str1 = str1;
+    const char *temp_str2 = str2;
+    unicode::code_point cp1 = unicode::to_upper(utf8::next_char(temp_str1));
+    unicode::code_point cp2 = unicode::to_upper(utf8::next_char(temp_str2));
+    if(cp1 != cp2)
       return false;
-    str1++;
-    str2++;
-    maxlen--;
+    len -= temp_str1-str1;
+    str1 = temp_str1;
+    str2 = temp_str2;
   }
-  if(maxlen && (*str1 || *str2))
-    return false;
   return true;
 }
 ////////////////////////////////////
 ////Regular expression parsing and building of the tree
 ////////////////////////////////////
 
-CRegexAscii_regex* CRegexAscii_parser::parse(const char *pattern, unsigned int flags)
+CRegexXQuery_regex* CRegexXQuery_parser::parse(const char *pattern, unsigned int flags)
 {
   this->flags = flags;
   
   int   regex_len;
-  CRegexAscii_regex*  regex = parse_regexp(pattern, &regex_len);
+  CRegexXQuery_regex*  regex = parse_regexp(pattern, &regex_len);
   
   return regex;
 }
 
 //until '\0' or ')'
-CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern, 
+CRegexXQuery_regex* CRegexXQuery_parser::parse_regexp(const char *pattern, 
                                                     int *regex_len)
 {
   *regex_len = 0;
   int   branch_len;
   regex_depth++;
-  std::auto_ptr<CRegexAscii_regex>  regex(new CRegexAscii_regex(current_regex));
+  std::auto_ptr<CRegexXQuery_regex>  regex(new CRegexXQuery_regex(current_regex));
   if(!current_regex)
     current_regex = regex.get();
   if(regex_depth >= 2)
@@ -124,7 +128,7 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
     else
       *regex_len = 2;
   }
-  CRegexAscii_branch  *branch;
+  CRegexXQuery_branch  *branch;
   bool must_read_another_branch = true;
   while(pattern[*regex_len] && (pattern[*regex_len] != ')'))
   {
@@ -148,18 +152,18 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
   if(pattern[*regex_len])
     (*regex_len)++;
   if(must_read_another_branch)
-    regex->add_branch(new CRegexAscii_branch(current_regex));//add empty branch
+    regex->add_branch(new CRegexXQuery_branch(current_regex));//add empty branch
   regex->flags = 0;//finished initialization
   regex_depth--;
   return regex.release();
 }
 
-CRegexAscii_branch* CRegexAscii_parser::parse_branch(const char *pattern, int *branch_len)
+CRegexXQuery_branch* CRegexXQuery_parser::parse_branch(const char *pattern, int *branch_len)
 {
   int piece_len;
 
-  std::auto_ptr<CRegexAscii_branch>    branch(new CRegexAscii_branch(current_regex));
-  CRegexAscii_piece     *piece;
+  std::auto_ptr<CRegexXQuery_branch>    branch(new CRegexXQuery_branch(current_regex));
+  CRegexXQuery_piece     *piece;
   *branch_len = 0;
   while(pattern[*branch_len] && (pattern[*branch_len] != '|') && (pattern[*branch_len] != ')'))
   {
@@ -168,7 +172,7 @@ CRegexAscii_branch* CRegexAscii_parser::parse_branch(const char *pattern, int *b
     {
       return NULL;
     }
-    if(branch->piece_list.size() && dynamic_cast<CRegexAscii_pinstart*>(piece->atom))
+    if(branch->piece_list.size() && dynamic_cast<CRegexXQuery_pinstart*>(piece->atom))
     {
       //found ^ that is not at the beginning of branch
       throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_INVALID_ATOM_CHAR), '^') );
@@ -182,9 +186,9 @@ CRegexAscii_branch* CRegexAscii_parser::parse_branch(const char *pattern, int *b
 }
 
 //piece = atom + quantifier
-CRegexAscii_piece* CRegexAscii_parser::parse_piece(const char *pattern, int *piece_len)
+CRegexXQuery_piece* CRegexXQuery_parser::parse_piece(const char *pattern, int *piece_len)
 {
-  std::auto_ptr<CRegexAscii_piece>  piece(new CRegexAscii_piece);
+  std::auto_ptr<CRegexXQuery_piece>  piece(new CRegexXQuery_piece);
   IRegexAtom  *atom;
   *piece_len = 0;
 
@@ -204,7 +208,7 @@ CRegexAscii_piece* CRegexAscii_parser::parse_piece(const char *pattern, int *pie
   return piece.release();
 }
 
-char CRegexAscii_parser::myishex(char c)
+char CRegexXQuery_parser::myishex(char c)
 {
   if((c >= '0') && (c <= '9'))
     return c-'0'+1;
@@ -215,19 +219,19 @@ char CRegexAscii_parser::myishex(char c)
   return 0;//not a hex
 }
 
-bool CRegexAscii_parser::myisdigit(char c)
+bool CRegexXQuery_parser::myisdigit(char c)
 {
   return (c >= '0') && (c <= '9');
 }
 
-bool CRegexAscii_parser::myisletterAZ(char c)
+bool CRegexXQuery_parser::myisletterAZ(char c)
 {
   return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z'));
 }
 
 static const unicode::code_point specials_extcp[] = {0xFFF0, 0xFFFD, 0};
 
-static CRegexAscii_parser::block_escape_t block_escape[] = 
+static CRegexXQuery_parser::block_escape_t block_escape[] = 
 {
 {{0x0000, 0x007F}, NULL, "BasicLatin"},
 {{0x0080, 0x00FF}, NULL, "Latin-1Supplement"},
@@ -315,9 +319,9 @@ static CRegexAscii_parser::block_escape_t block_escape[] =
 {{0xFF00, 0xFFEF}, NULL, "HalfwidthandFullwidthForms"}
 };
 
-char CRegexAscii_parser::readChar(const char *pattern, 
-                                  bool for_atom, 
-                                  int *char_len, CHARGROUP_t *multichar_type)
+CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern, 
+                                  int *char_len,
+                                  enum CHARGROUP_t *multichar_type)
 {
   char  c = 0;
   *char_len = 0;
@@ -349,11 +353,16 @@ char CRegexAscii_parser::readChar(const char *pattern,
     case '^'://#x5E
     case '$'://+
        c = pattern[*char_len];
-       break;
+      (*char_len)++;
+      *multichar_type = CHARGROUP_FLAGS_ONECHAR_ASCII;
+      return new CRegexXQuery_char_ascii(current_regex, c);
     case 'p'://catEsc
     case 'P'://complEsc
+    {
       //ignore the prop for now
-      *multichar_type = (CHARGROUP_t)((pattern[*char_len] == 'P') ? 128 : 0);
+      *multichar_type = CHARGROUP_FLAGS_MULTICHAR_p;//(CHARGROUP_t)((pattern[*char_len] == 'P') ? 128 : 0);
+      bool is_reverse = (pattern[*char_len] == 'P');
+      c = 0;
       if(pattern[(*char_len)+1] != '{')
       {
         throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_P_CONSTRUCT)) );
@@ -363,9 +372,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       {//IsCategory
       case 'L':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -386,9 +392,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'M':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -405,9 +408,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'N':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -424,9 +424,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'P':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -451,9 +448,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'Z':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -470,9 +464,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'S':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -491,9 +482,6 @@ char CRegexAscii_parser::readChar(const char *pattern,
       }break;
       case 'C':
       {
-        unsigned int temp_int = *multichar_type;
-        temp_int |= CHARGROUP_FLAGS_MULTICHAR_p;
-        *multichar_type = (CHARGROUP_t)temp_int;
         switch(pattern[(*char_len)+1])
         {
         case '}':
@@ -510,33 +498,39 @@ char CRegexAscii_parser::readChar(const char *pattern,
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PC_CONSTRUCT)) );
         }
       }break;
-      case 'I':
-        switch(pattern[(*char_len)+1])
+      }//end switch
+      if(c)
+      {
+        if(pattern[(*char_len) + 1] != '}')
+            throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_P_CONSTRUCT)) );
+        (*char_len)++;
+        (*char_len)++;
+        return new CRegexXQuery_multicharP(current_regex, c, is_reverse);
+      }
+      if(pattern[*char_len] == 'I')
+      {
+        if(pattern[(*char_len)+1] == 's')//IsBlock
         {
-        case 's'://IsBlock
-        {
-          unsigned int temp_int = *multichar_type;
-          temp_int |= CHARGROUP_FLAGS_MULTICHAR_Is;
-          *multichar_type = (CHARGROUP_t)temp_int;
-          (*char_len)++;
+          *multichar_type = CHARGROUP_FLAGS_MULTICHAR_Is;
+          (*char_len) += 2;
           zstring block_name;
-          char tempc = pattern[(*char_len)+1];
+          char tempc = pattern[(*char_len)];
           while(tempc && (tempc != '}'))
           {
             if(!myisletterAZ(tempc) && !myisdigit(tempc) && (tempc != '-'))
               throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_PIs_CONSTRUCT)) );
             block_name.append(1, tempc);
             (*char_len)++;
-            tempc = pattern[(*char_len)+1];
+            tempc = pattern[(*char_len)];
           }
-          if(!pattern[(*char_len)+1])
+          if(!tempc)
             throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_PIs_CONSTRUCT)) );
           //search for the block name
           int i;
-          int nr_blocks = sizeof(block_escape)/sizeof(CRegexAscii_parser::block_escape_t);
+          int nr_blocks = sizeof(block_escape)/sizeof(CRegexXQuery_parser::block_escape_t);
           for(i=0;i<nr_blocks;i++)
           {
-            if(compare_i(block_name.c_str(), block_escape[i].group_name))
+            if(compare_ascii_i(block_name.c_str(), block_escape[i].group_name))
             {
               c = i;
               break;
@@ -544,17 +538,18 @@ char CRegexAscii_parser::readChar(const char *pattern,
           }
           if(i==nr_blocks)
             throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PIs_CONSTRUCT)) );
-        }break;
-        default:
+          (*char_len)++;
+          return new CRegexXQuery_multicharIs(current_regex, i, is_reverse);
+        }
+        else
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_PIs_CONSTRUCT)) );
-        }break;
-      default:
+      }
+      else
+      {
         throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_P_CONSTRUCT)) );
       }
-      if(pattern[(*char_len) + 1] != '}')
-          throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_BROKEN_P_CONSTRUCT)) );
-      (*char_len)++;
-      break;
+      break;//unreachable
+    }//end case 'p'
       //multiCharEsc
     case 's':
     case 'S':
@@ -568,49 +563,101 @@ char CRegexAscii_parser::readChar(const char *pattern,
     case 'W':
        *multichar_type = CHARGROUP_FLAGS_MULTICHAR_OTHER;
        c = pattern[*char_len];
-       break;
+       (*char_len)++;
+       return new CRegexXQuery_multicharOther(current_regex, c);
+    case 'u'://unicode codepoint \uXXXX
+    {
+      unicode::code_point utf8c = 0;
+      (*char_len)++;
+      for(int i=0;i<4;i++)
+      {
+        char hex = myishex(pattern[*char_len]);
+        if(!hex)
+        {
+          throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_INVALID_UNICODE_CODEPOINT_u)) );
+        }
+        utf8c <<= 4;
+        utf8c |= (hex-1) & 0x0f;
+        (*char_len)++;
+      }
+      return create_charmatch(utf8c, NULL, 0, multichar_type);
+    }
+    case 'U'://unicode codepoint \UXXXXXXXX
+    {
+      unicode::code_point utf8c = 0;
+      (*char_len)++;
+      for(int i=0;i<8;i++)
+      {
+        char hex = myishex(pattern[*char_len]);
+        if(!hex)
+        {
+          throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_INVALID_UNICODE_CODEPOINT_u)) );
+        }
+        utf8c <<= 4;
+        utf8c |= (hex-1) & 0x0f;
+        (*char_len)++;
+      }
+      return create_charmatch(utf8c, NULL, 0, multichar_type);
+    }
     default:
       throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_ESC_CHAR)) );
     }
-    break;
-  }
-  case '#':///might be #xXX
-  {
-    if((pattern[*char_len+1] == 'x') &&
-      myishex(pattern[*char_len+2]) && myishex(pattern[*char_len+3]))
-    {
-      c = (myishex(pattern[*char_len+2])-1)<<4 | (myishex(pattern[*char_len+3])-1);
-      *char_len += 3;
-      break;
-    }
-  }
+    break;//unreachable
+  }//end case '\'
   default:
-     c = pattern[*char_len];
-     break;
-  }
-
-  (*char_len)++;
-  if((flags & REGEX_ASCII_NO_WHITESPACE) && for_atom &&
-    ((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n')))
   {
-    //ignore this whitespace
-    int char_len2;
-    char c2 = readChar(pattern + *char_len, for_atom, &char_len2, multichar_type);
-    *char_len += char_len2;
-    return c2;
+    const char *temp_pattern = pattern;
+    unicode::code_point utf8c = utf8::next_char(temp_pattern);
+    (*char_len) = temp_pattern - pattern;
+    return create_charmatch(utf8c, pattern, *char_len, multichar_type);
   }
-  return c;
+  }
+  return NULL;
 }
 
+CRegexXQuery_charmatch *CRegexXQuery_parser::create_charmatch(unicode::code_point utf8c,
+                                                              const char *pattern, int utf8len,
+                                                              enum CHARGROUP_t *multichar_type)
+{
+  if(utf8c <= 0x7F)
+  {
+    *multichar_type = CHARGROUP_FLAGS_ONECHAR_ASCII;
+    if(flags & REGEX_ASCII_CASE_INSENSITIVE)
+      return new CRegexXQuery_char_ascii_i(current_regex, (char)utf8c);
+    else
+      return new CRegexXQuery_char_ascii(current_regex, (char)utf8c);
+  }
+  else
+  {
+    *multichar_type = CHARGROUP_FLAGS_ONECHAR_UNICODE;
+    if(flags & REGEX_ASCII_CASE_INSENSITIVE)
+      return new CRegexXQuery_char_unicode_i(current_regex, utf8c);
+    else
+    {
+      if(pattern)
+        return new CRegexXQuery_char_unicode(current_regex, pattern, utf8len);
+      else
+        return new CRegexXQuery_char_unicode_cp(current_regex, utf8c);
+    }
+  }
+}
 
-
-IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
+IRegexAtom* CRegexXQuery_parser::read_atom(const char *pattern, int *atom_len)
 {
   *atom_len = 0;
-  char  c;
-  bool is_end_line = false;
-  c = pattern[*atom_len];
-  if((!(flags & REGEX_ASCII_LITERAL)) && (c == '\\'))
+  if(flags & REGEX_ASCII_LITERAL)
+  {
+    unicode::code_point  utf8c;
+    //bool is_end_line = false;
+    const char *temp_pattern = pattern;
+    utf8c = utf8::next_char(temp_pattern);
+    *atom_len = temp_pattern - pattern;
+    enum CHARGROUP_t multichar_type;
+    return create_charmatch(utf8c, pattern, *atom_len, &multichar_type);
+  }
+
+  char c = *pattern;
+  if(c == '\\')
   {
     //check for back reference
     if(myisdigit(pattern[(*atom_len)+1]))
@@ -641,13 +688,13 @@ IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
         }
       }
       (*atom_len)++;
-      return new CRegexAscii_backref(current_regex, backref);
+      return new CRegexXQuery_backref(current_regex, backref);
     }
   }
-  if((!(flags & REGEX_ASCII_LITERAL)) && (c == '^'))
+  if(c == '^')
   {
     (*atom_len)++;
-    return new CRegexAscii_pinstart(current_regex);
+    return new CRegexXQuery_pinstart(current_regex);
   }
   if((c == '}') || (c == '{') || (c == '?') || (c == '*') || (c == '+') || (c == '|'))
   {
@@ -657,55 +704,59 @@ IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
   {
   case '[':
   {
-    if(!(flags & REGEX_ASCII_LITERAL))
-    {
-      (*atom_len)++;
-      CRegexAscii_chargroup *chargroup = NULL;
-      int chargroup_len;
-      chargroup = readchargroup(pattern+*atom_len, &chargroup_len);
-      *atom_len += chargroup_len;
-      return chargroup;
-    }
+    (*atom_len)++;
+    CRegexXQuery_chargroup *chargroup = NULL;
+    int chargroup_len;
+    chargroup = readchargroup(pattern+*atom_len, &chargroup_len);
+    *atom_len += chargroup_len;
+    return chargroup;
   }
   case '.'://WildCharEsc
   {
-    if(!(flags & REGEX_ASCII_LITERAL))
-    {
-      CRegexAscii_wildchar  *wildchar = new CRegexAscii_wildchar(current_regex);
-      (*atom_len)++;
-      return wildchar;
-    }
+    (*atom_len)++;
+    return new CRegexXQuery_wildchar(current_regex);
   }
   case '('://begin an embedded reg exp
   {  
-    if(!(flags & REGEX_ASCII_LITERAL))
-    {
-      (*atom_len)++;
-      CRegexAscii_regex *emb_regex = NULL;
-      int   regex_len;
-      emb_regex = parse_regexp(pattern + *atom_len, &regex_len);
-      *atom_len += regex_len;
-      return emb_regex;
-    }
+    (*atom_len)++;
+    CRegexXQuery_regex *emb_regex = NULL;
+    int   regex_len;
+    emb_regex = parse_regexp(pattern + *atom_len, &regex_len);
+    *atom_len += regex_len;
+    return emb_regex;
   }
   case '$'://end line
-    if(!(flags & REGEX_ASCII_LITERAL))
-    {
-      is_end_line = true;
-    }
+    //is_end_line = true;
+    (*atom_len)++;
+    return new CRegexXQuery_endline(current_regex);
   default:
   {  
-    char  c;
+    //char  c;
+    CRegexXQuery_charmatch *charmatch = NULL;
     int   c_len;
     CHARGROUP_t   multichar_type = CHARGROUP_NO_MULTICHAR;
-    if(!(flags & REGEX_ASCII_LITERAL))
-      c = readChar(pattern+*atom_len, true, &c_len, &multichar_type);
-    else
+    *atom_len = 0;
+    while(pattern[*atom_len])
     {
-      c = pattern[*atom_len];
-      c_len = 1;
+      charmatch = readChar(pattern+*atom_len, &c_len, &multichar_type);
+      *atom_len += c_len;
+      if((flags & REGEX_ASCII_NO_WHITESPACE) && (multichar_type == CHARGROUP_FLAGS_ONECHAR_ASCII))
+      {
+        char c = (char)charmatch->get_c();
+        if((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n'))
+        {
+          //ignore this whitespace
+          delete charmatch;
+          continue;
+        }
+        else
+          break;
+      }
+      else
+        break;
     }
-    std::auto_ptr<CRegexAscii_chargroup> chargroup(new CRegexAscii_chargroup(current_regex));
+    /*
+    std::auto_ptr<CRegexXQuery_chargroup> chargroup(new CRegexXQuery_chargroup(current_regex));
     if(multichar_type)
       chargroup->addMultiChar(c, multichar_type);
     else if(is_end_line)
@@ -714,6 +765,8 @@ IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
       chargroup->addOneChar(c);
     *atom_len += c_len;
     return chargroup.release();
+    */
+    return charmatch;
   }
   }
 }
@@ -721,28 +774,26 @@ IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
 //read until ']'
 //posCharGroup  ::=   ( charRange | charClassEsc )+  
 //charRange     ::=    seRange | XmlCharIncDash
-CRegexAscii_chargroup* CRegexAscii_parser::readchargroup(const char *pattern, int *chargroup_len)
+CRegexXQuery_chargroup* CRegexXQuery_parser::readchargroup(const char *pattern, int *chargroup_len)
 {
-  std::auto_ptr<CRegexAscii_chargroup> chargroup;
+  std::auto_ptr<CRegexXQuery_chargroup> chargroup;
   *chargroup_len = 0;
   if(pattern[*chargroup_len] == '^')//negative group
   {
     (*chargroup_len)++;
-    chargroup.reset(new CRegexAscii_negchargroup(current_regex));
+    chargroup.reset(new CRegexXQuery_negchargroup(current_regex));
   }
   else
-    chargroup.reset(new CRegexAscii_chargroup(current_regex));
+    chargroup.reset(new CRegexXQuery_chargroup(current_regex));
   while(pattern[*chargroup_len] && (pattern[*chargroup_len]!=']'))
   {
-    char  c1, c2;
+    //char  c1, c2;
     CHARGROUP_t  multichar_type = CHARGROUP_NO_MULTICHAR;
     int   c1_len;
-    c1 = pattern[*chargroup_len];
-    c2 = pattern[*chargroup_len+1];
-    if((c1 == '-') && (c2 == '['))//charClassSub
+    if((pattern[*chargroup_len] == '-') && (pattern[(*chargroup_len)+1] == '['))//charClassSub
     {
       int classsub_len;
-      CRegexAscii_chargroup *classsub = readchargroup(pattern + *chargroup_len+1 + 1, &classsub_len);
+      CRegexXQuery_chargroup *classsub = readchargroup(pattern + (*chargroup_len)+1 + 1, &classsub_len);
       if(!classsub)
       {
         throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_INVALID_SUBCLASS)) );
@@ -756,44 +807,75 @@ CRegexAscii_chargroup* CRegexAscii_parser::readchargroup(const char *pattern, in
       return chargroup.release();
     }
 
-    c1 = readChar(pattern+*chargroup_len, false, &c1_len, &multichar_type);
-    if(multichar_type)//first char is multichar
+    std::unique_ptr<CRegexXQuery_charmatch> charmatch(readChar(pattern+*chargroup_len, &c1_len, &multichar_type));
+    if((multichar_type == CHARGROUP_FLAGS_MULTICHAR_p) ||
+      (multichar_type == CHARGROUP_FLAGS_MULTICHAR_Is) ||
+      (multichar_type == CHARGROUP_FLAGS_MULTICHAR_OTHER))//first char is multichar
     {
-      if((pattern[*chargroup_len+c1_len] == '-') &&///might be a range
+      if((pattern[*chargroup_len+c1_len] == '-') &&///should not be a range
         (pattern[*chargroup_len+c1_len+1] != ']'))
       {
         throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_MULTICHAR_IN_CHAR_RANGE)) );
       }
-      chargroup->addMultiChar(c1, multichar_type);
+      //chargroup->addMultiChar(c1, multichar_type);
+      chargroup->addCharMatch(charmatch.release());
       *chargroup_len += c1_len;
       continue;
     }
-    if(pattern[*chargroup_len+c1_len] == '-')///might be a range
+    (*chargroup_len) += c1_len;
+    if(pattern[*chargroup_len] == '-')///might be a range
     {
-      if(pattern[*chargroup_len+c1_len+1] == ']')//no range, just the last char is '-'
+      if(pattern[(*chargroup_len)+1] == ']')//no range, just the last char is '-'
       {
-        chargroup->addOneChar(c1);
-        chargroup->addOneChar('-');
-        *chargroup_len += c1_len + 1;
+        //chargroup->addOneChar(c1);
+        //chargroup->addOneChar('-');
+        chargroup->addCharMatch(charmatch.release());
+        chargroup->addCharMatch(new CRegexXQuery_char_ascii(current_regex, '-'));
+        (*chargroup_len)++;
         continue;
       }
-      else if(pattern[*chargroup_len+c1_len+1] != '[')
+      else if(pattern[(*chargroup_len)+1] != '[')
       {
         //it is a range
-        char c3;
-        int  c3_len;
-        c3 = readChar(pattern+*chargroup_len+c1_len+1, false, &c3_len, &multichar_type);
-        if(multichar_type)
+        (*chargroup_len)++;
+        std::unique_ptr<CRegexXQuery_charmatch>  charmatch2;
+        CHARGROUP_t  multichar_type2 = CHARGROUP_NO_MULTICHAR;
+        int  c2_len;
+        charmatch2.reset(readChar(pattern+(*chargroup_len), &c2_len, &multichar_type2));
+        if((multichar_type2 != CHARGROUP_FLAGS_ONECHAR_ASCII) &&
+          (multichar_type2 != CHARGROUP_FLAGS_ONECHAR_ASCII))//second char in range is multichar
         {
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_MULTICHAR_IN_CHAR_RANGE)) );
         }
-        chargroup->addCharRange(c1, c3);
-        *chargroup_len += c1_len + 1 + c3_len;
+        //chargroup->addCharRange(c1, c3);
+        if((multichar_type == CHARGROUP_FLAGS_ONECHAR_ASCII) && (multichar_type2 == CHARGROUP_FLAGS_ONECHAR_ASCII))
+        {
+          if(flags & REGEX_ASCII_CASE_INSENSITIVE)
+            chargroup->addCharMatch(new CRegexXQuery_char_range_ascii_i(current_regex, 
+                                                                    (char)charmatch->get_c(),
+                                                                    (char)charmatch2->get_c()));
+          else
+            chargroup->addCharMatch(new CRegexXQuery_char_range_ascii(current_regex, 
+                                                                    (char)charmatch->get_c(),
+                                                                    (char)charmatch2->get_c()));
+        }
+        else
+        {
+          if(flags & REGEX_ASCII_CASE_INSENSITIVE)
+            chargroup->addCharMatch(new CRegexXQuery_char_range_unicode_i(current_regex, 
+                                                                    charmatch->get_c(),
+                                                                    charmatch2->get_c()));
+          else
+            chargroup->addCharMatch(new CRegexXQuery_char_range_unicode(current_regex, 
+                                                                    charmatch->get_c(),
+                                                                    charmatch2->get_c()));
+        }
+        *chargroup_len += c2_len;
         continue;
       }
     }
-    chargroup->addOneChar(c1);
-    *chargroup_len += c1_len;
+    //chargroup->addOneChar(c1);
+    chargroup->addCharMatch(charmatch.release());
   }
   if(pattern[*chargroup_len])
     (*chargroup_len)++;
@@ -804,7 +886,7 @@ CRegexAscii_chargroup* CRegexAscii_parser::readchargroup(const char *pattern, in
   return chargroup.release();
 }
 
-void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
+void CRegexXQuery_parser::read_quantifier(CRegexXQuery_piece *piece,
                                          const char *pattern, int *quantif_len)
 {
   *quantif_len = 0;
@@ -884,7 +966,7 @@ void CRegexAscii_parser::read_quantifier(CRegexAscii_piece *piece,
 ///Constructors and destructors and internal functions
 ////////////////////////////
 
-CRegexAscii_regex::CRegexAscii_regex(CRegexAscii_regex *topregex) : IRegexAtom(topregex?topregex:this)
+CRegexXQuery_regex::CRegexXQuery_regex(CRegexXQuery_regex *topregex) : IRegexAtom(topregex?topregex:this)
 {
   matched_source = NULL;
   matched_len = 0;
@@ -893,16 +975,16 @@ CRegexAscii_regex::CRegexAscii_regex(CRegexAscii_regex *topregex) : IRegexAtom(t
   flags = 128;//set to 0 after initialization
 }
 
-CRegexAscii_regex::~CRegexAscii_regex()
+CRegexXQuery_regex::~CRegexXQuery_regex()
 {
-  std::list<CRegexAscii_branch*>::iterator  branch_it;
+  std::list<CRegexXQuery_branch*>::iterator  branch_it;
 
   for(branch_it = branch_list.begin(); branch_it != branch_list.end(); branch_it++)
   {
     delete (*branch_it);
   }
 /*
-  std::vector<CRegexAscii_regex*>::iterator   subregex_it;
+  std::vector<CRegexXQuery_regex*>::iterator   subregex_it;
   for(subregex_it = subregex.begin(); subregex_it != subregex.end(); subregex_it++)
   {
     delete (*subregex_it);
@@ -910,18 +992,18 @@ CRegexAscii_regex::~CRegexAscii_regex()
 */
 }
 
-void CRegexAscii_regex::add_branch(CRegexAscii_branch *branch)
+void CRegexXQuery_regex::add_branch(CRegexXQuery_branch *branch)
 {
   branch_list.push_back(branch);
 }
 
-bool  CRegexAscii_regex::get_indexed_match(int index, 
+bool  CRegexXQuery_regex::get_indexed_match(int index, 
                                            const char **matched_source, 
                                            int *matched_len)
 {
   if(!index || index > (int)subregex.size())
     return false;
-  CRegexAscii_regex *subr = subregex[index-1];
+  CRegexXQuery_regex *subr = subregex[index-1];
   *matched_source = subr->matched_source;
   if(!*matched_source)
     return false;
@@ -929,18 +1011,18 @@ bool  CRegexAscii_regex::get_indexed_match(int index,
   return true;
 }
 
-unsigned int CRegexAscii_regex::get_indexed_regex_count()
+unsigned int CRegexXQuery_regex::get_indexed_regex_count()
 {
   return subregex.size();
 }
 
-CRegexAscii_branch::CRegexAscii_branch(CRegexAscii_regex* regex) 
+CRegexXQuery_branch::CRegexXQuery_branch(CRegexXQuery_regex* regex) 
       //:
       //IRegexMatcher(regex)
 {
 }
 
-CRegexAscii_branch::~CRegexAscii_branch()
+CRegexXQuery_branch::~CRegexXQuery_branch()
 {
   std::list<RegexAscii_pieceinfo>::iterator  piece_it;
 
@@ -950,45 +1032,45 @@ CRegexAscii_branch::~CRegexAscii_branch()
   }
 }
 
-void CRegexAscii_branch::add_piece(CRegexAscii_piece *piece)
+void CRegexXQuery_branch::add_piece(CRegexXQuery_piece *piece)
 {
   piece_list.push_back(piece);
 }
 
-CRegexAscii_piece::CRegexAscii_piece()
+CRegexXQuery_piece::CRegexXQuery_piece()
 {
   atom = NULL;
   regex_atom = NULL;
 }
 
-CRegexAscii_piece::~CRegexAscii_piece()
+CRegexXQuery_piece::~CRegexXQuery_piece()
 {
   delete atom;
 }
 
-void CRegexAscii_piece::set_atom(IRegexAtom *atom)
+void CRegexXQuery_piece::set_atom(IRegexAtom *atom)
 {
   this->atom = atom;
-  this->regex_atom = dynamic_cast<CRegexAscii_regex*>(atom);
+  this->regex_atom = dynamic_cast<CRegexXQuery_regex*>(atom);
 }
 
-void CRegexAscii_piece::set_quantifier_min_max(int min, int max, bool strict_max)
+void CRegexXQuery_piece::set_quantifier_min_max(int min, int max, bool strict_max)
 {
   this->min = min;
   this->max = max;
   this->strict_max = strict_max;
 }
-void CRegexAscii_piece::set_is_reluctant(bool is_reluctant)
+void CRegexXQuery_piece::set_is_reluctant(bool is_reluctant)
 {
   this->is_reluctant = is_reluctant;
 }
-void CRegexAscii_piece::get_quantifier(int *min, int *max, bool *strict_max)
+void CRegexXQuery_piece::get_quantifier(int *min, int *max, bool *strict_max)
 {
   *min = this->min;
   *max = this->max;
   *strict_max = this->strict_max;
 }
-bool CRegexAscii_piece::get_is_reluctant()
+bool CRegexXQuery_piece::get_is_reluctant()
 {
   if(atom->regex_intern->flags & REGEX_ASCII_MINIMAL_MATCH)
     return true;
@@ -996,97 +1078,139 @@ bool CRegexAscii_piece::get_is_reluctant()
 }
 
 
-CRegexAscii_chargroup::CRegexAscii_chargroup(CRegexAscii_regex* regex) :
+CRegexXQuery_charmatch::CRegexXQuery_charmatch(CRegexXQuery_regex* regex) :
+    IRegexAtom(regex)
+{
+}
+CRegexXQuery_multicharP::CRegexXQuery_multicharP(CRegexXQuery_regex* regex, char type, bool is_reverse) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->multichar_type = type; this->is_reverse = is_reverse;
+}
+CRegexXQuery_multicharIs::CRegexXQuery_multicharIs(CRegexXQuery_regex* regex, int block_index, bool is_reverse) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->block_index = block_index; this->is_reverse = is_reverse;
+}
+CRegexXQuery_multicharOther::CRegexXQuery_multicharOther(CRegexXQuery_regex* regex, char type) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->multichar_type = type;
+}
+CRegexXQuery_char_ascii::CRegexXQuery_char_ascii(CRegexXQuery_regex* regex, char c) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->c = c;
+}
+CRegexXQuery_char_ascii_i::CRegexXQuery_char_ascii_i(CRegexXQuery_regex* regex, char c) :
+    CRegexXQuery_char_ascii(regex, toupper(c))
+{
+}
+CRegexXQuery_char_range_ascii::CRegexXQuery_char_range_ascii(CRegexXQuery_regex* regex, char c1, char c2) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->c1 = c1; this->c2 = c2;
+}
+CRegexXQuery_char_range_ascii_i::CRegexXQuery_char_range_ascii_i(CRegexXQuery_regex* regex, char c1, char c2) :
+    CRegexXQuery_char_range_ascii(regex, toupper(c1), toupper(c2))
+{
+}
+CRegexXQuery_char_unicode::CRegexXQuery_char_unicode(CRegexXQuery_regex* regex, const char *source, int len) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->len = len;
+  memcpy(c, source, len);
+}
+CRegexXQuery_char_unicode_cp::CRegexXQuery_char_unicode_cp(CRegexXQuery_regex* regex, unicode::code_point c) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->c = c;
+}
+CRegexXQuery_char_unicode_i::CRegexXQuery_char_unicode_i(CRegexXQuery_regex* regex, unicode::code_point c) :
+    CRegexXQuery_char_unicode_cp(regex, unicode::to_upper(c))
+{
+}
+CRegexXQuery_char_range_unicode::CRegexXQuery_char_range_unicode(CRegexXQuery_regex* regex, unicode::code_point c1, unicode::code_point c2) :
+    CRegexXQuery_charmatch(regex)
+{
+  this->c1 = c1; this->c2 = c2;
+}
+CRegexXQuery_char_range_unicode_i::CRegexXQuery_char_range_unicode_i(CRegexXQuery_regex* regex, unicode::code_point c1, unicode::code_point c2) :
+    CRegexXQuery_char_range_unicode(regex, unicode::to_upper(c1), unicode::to_upper(c2))
+{
+}
+CRegexXQuery_endline::CRegexXQuery_endline(CRegexXQuery_regex* regex) :
+    CRegexXQuery_charmatch(regex)
+{
+}
+
+unicode::code_point CRegexXQuery_char_unicode::get_c()
+{
+  const char *temp_c = (const char*)c;
+  return utf8::next_char(temp_c);
+}
+
+
+CRegexXQuery_chargroup::CRegexXQuery_chargroup(CRegexXQuery_regex* regex) :
     IRegexAtom(regex)
 {
   classsub = NULL;
 }
 
-CRegexAscii_chargroup::~CRegexAscii_chargroup()
+CRegexXQuery_chargroup::~CRegexXQuery_chargroup()
 {
   delete classsub;
 }
 
-void CRegexAscii_chargroup::addMultiChar(char c, CHARGROUP_t multichar_type)
+void CRegexXQuery_chargroup::addCharMatch(CRegexXQuery_charmatch *charmatch)
 {
-  chargroup_t cgt;
-  cgt.flags = multichar_type;
-  cgt.c1 = c;
-  cgt.c2 = 0;
-  chargroup_list.push_back(cgt);
+  chargroup_list.push_back(std::unique_ptr<CRegexXQuery_charmatch>(charmatch));
 }
-
-void CRegexAscii_chargroup::addEndLine()
-{
-  chargroup_t cgt;
-  cgt.flags = CHARGROUP_FLAGS_ENDLINE;
-  cgt.c1 = '$';
-  cgt.c2 = 0;
-  chargroup_list.push_back(cgt);
-}
-
-void CRegexAscii_chargroup::addCharRange(char c1, char c2)
-{
-  chargroup_t cgt;
-  cgt.flags = CHARGROUP_FLAGS_CHAR_RANGE;
-  cgt.c1 = c1;
-  cgt.c2 = c2;
-  chargroup_list.push_back(cgt);
-}
-
-void CRegexAscii_chargroup::addOneChar(char c)
-{
-  chargroup_t cgt;
-  cgt.flags = CHARGROUP_FLAGS_ONECHAR;
-  cgt.c1 = c;
- chargroup_list.push_back(cgt);
-}
-
-void CRegexAscii_chargroup::addClassSub(CRegexAscii_chargroup* classsub)
+void CRegexXQuery_chargroup::addClassSub(CRegexXQuery_chargroup* classsub)
 {
   this->classsub = classsub;
 }
 
-CRegexAscii_negchargroup::CRegexAscii_negchargroup(CRegexAscii_regex* regex) :
-  CRegexAscii_chargroup(regex)
+CRegexXQuery_negchargroup::CRegexXQuery_negchargroup(CRegexXQuery_regex* regex) :
+  CRegexXQuery_chargroup(regex)
 {
 }
 
-CRegexAscii_negchargroup::~CRegexAscii_negchargroup()
+CRegexXQuery_negchargroup::~CRegexXQuery_negchargroup()
 {
 }
 
-CRegexAscii_wildchar::CRegexAscii_wildchar(CRegexAscii_regex* regex) :
+CRegexXQuery_wildchar::CRegexXQuery_wildchar(CRegexXQuery_regex* regex) :
       IRegexAtom(regex)
 {
 }
 
-CRegexAscii_wildchar::~CRegexAscii_wildchar()
+CRegexXQuery_wildchar::~CRegexXQuery_wildchar()
 {
 }
 
-CRegexAscii_backref::CRegexAscii_backref(CRegexAscii_regex* regex, unsigned int backref_) :
+CRegexXQuery_backref::CRegexXQuery_backref(CRegexXQuery_regex* regex, unsigned int backref_) :
       IRegexAtom(regex),
       backref(backref_)
 {
 }
 
-CRegexAscii_backref::~CRegexAscii_backref()
+CRegexXQuery_backref::~CRegexXQuery_backref()
 {
 }
 
-CRegexAscii_pinstart::CRegexAscii_pinstart(CRegexAscii_regex* regex):
+CRegexXQuery_pinstart::CRegexXQuery_pinstart(CRegexXQuery_regex* regex):
       IRegexAtom(regex)
 {
 }
 
-CRegexAscii_parser::CRegexAscii_parser()
+CRegexXQuery_parser::CRegexXQuery_parser()
 {
   current_regex = NULL;
   regex_depth = 0;
 }
 
-CRegexAscii_parser::~CRegexAscii_parser()
+CRegexXQuery_parser::~CRegexXQuery_parser()
 {
 }
 
@@ -1155,7 +1279,7 @@ bool IRegexAtom::match(const char *source, int *start_from_branch, int *matched_
 }
 
 //try every position in source to match the pattern
-bool CRegexAscii_regex::match_anywhere(const char *source, unsigned int flags,
+bool CRegexXQuery_regex::match_anywhere(const char *source, unsigned int flags,
                                        int *match_pos, int *matched_len)
 {
   *match_pos = 0;
@@ -1163,14 +1287,14 @@ bool CRegexAscii_regex::match_anywhere(const char *source, unsigned int flags,
   return match_from(source, flags, match_pos, matched_len);
 }
 
-bool CRegexAscii_regex::match_from(const char *source, unsigned int flags,
+bool CRegexXQuery_regex::match_from(const char *source, unsigned int flags,
                                        int *match_pos, int *matched_len)
 {
   this->flags = flags;
   this->source_start = source;
   reachedEnd = false;
 
-  std::vector<CRegexAscii_regex*>::iterator regex_it;
+  std::vector<CRegexXQuery_regex*>::iterator regex_it;
   for(regex_it = subregex.begin(); regex_it != subregex.end(); regex_it++)
   {
     (*regex_it)->matched_source = NULL;
@@ -1253,24 +1377,24 @@ bool CRegexAscii_regex::match_from(const char *source, unsigned int flags,
   return false;
 }
 
-void CRegexAscii_regex::reset_match()
+void CRegexXQuery_regex::reset_match()
 {
 //  this->backup_matched_source = this->matched_source;
 //  this->backup_matched_len = this->matched_len;
   this->matched_source = NULL;
   this->matched_len = 0;
-  std::list<CRegexAscii_branch*>::iterator  branch_it;
+  std::list<CRegexXQuery_branch*>::iterator  branch_it;
   for(branch_it = branch_list.begin(); branch_it != branch_list.end(); branch_it++)
   {
     (*branch_it)->reset();
   }
 }
 /*
-void CRegexAscii_regex::restore_match()
+void CRegexXQuery_regex::restore_match()
 {
   this->matched_source = this->backup_matched_source;
   this->matched_len = this->backup_matched_len;
-  std::list<CRegexAscii_branch*>::iterator  branch_it;
+  std::list<CRegexXQuery_branch*>::iterator  branch_it;
   for(branch_it = branch_list.begin(); branch_it != branch_list.end(); branch_it++)
   {
     (*branch_it)->restore();
@@ -1278,7 +1402,7 @@ void CRegexAscii_regex::restore_match()
 }
 */
 //match any of the branches
-bool CRegexAscii_regex::match(const char *source, int *start_from_branch, int *matched_len,
+bool CRegexXQuery_regex::match(const char *source, int *start_from_branch, int *matched_len,
                               std::list<RegexAscii_pieceinfo>::iterator next_piece,
                               std::list<RegexAscii_pieceinfo>::iterator end_piece)
 {
@@ -1287,7 +1411,7 @@ bool CRegexAscii_regex::match(const char *source, int *start_from_branch, int *m
     (this->matched_source == NULL) || ((this->matched_source + this->matched_len) != source))
     this->matched_source = source;
   *matched_len = 0;
-  std::list<CRegexAscii_branch*>::iterator  branch_it;
+  std::list<CRegexXQuery_branch*>::iterator  branch_it;
 
   if(*start_from_branch == 0)
   {
@@ -1320,21 +1444,21 @@ bool CRegexAscii_regex::match(const char *source, int *start_from_branch, int *m
   return false;
 }
 
-void CRegexAscii_regex::save_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex)
+void CRegexXQuery_regex::save_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex)
 {
   saved_subregex.resize(0);
   saved_subregex.reserve(subregex.size());
-  std::vector<CRegexAscii_regex*>::iterator   it;
+  std::vector<CRegexXQuery_regex*>::iterator   it;
   for(it=subregex.begin(); it != subregex.end(); it++)
   {
     saved_subregex.push_back(std::pair<const char*, int>((*it)->matched_source, (*it)->matched_len));
   }
 }
 
-void CRegexAscii_regex::load_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex)
+void CRegexXQuery_regex::load_subregex_list(std::vector<std::pair<const char*, int> > &saved_subregex)
 {
   std::vector<std::pair<const char*, int> >::iterator   it;
-  std::vector<CRegexAscii_regex*>::iterator            subit;
+  std::vector<CRegexXQuery_regex*>::iterator            subit;
   for(it=saved_subregex.begin(), subit = subregex.begin(); it != saved_subregex.end(); it++, subit++)
   {
     (*subit)->matched_source = (*it).first;
@@ -1342,7 +1466,7 @@ void CRegexAscii_regex::load_subregex_list(std::vector<std::pair<const char*, in
   }
 }
 
-void CRegexAscii_branch::reset()
+void CRegexXQuery_branch::reset()
 {
   std::list<RegexAscii_pieceinfo>::iterator  piece_it;
   for(piece_it = piece_list.begin(); piece_it != piece_list.end(); piece_it++)
@@ -1351,7 +1475,7 @@ void CRegexAscii_branch::reset()
   }
 }
 /*
-void CRegexAscii_branch::restore()
+void CRegexXQuery_branch::restore()
 {
   std::list<RegexAscii_pieceinfo>::iterator  piece_it;
   for(piece_it = piece_list.begin(); piece_it != piece_list.end(); piece_it++)
@@ -1361,8 +1485,8 @@ void CRegexAscii_branch::restore()
 }
 */
 //match all the pieces
-bool CRegexAscii_branch::match(const char *source, int *matched_len,
-                              CRegexAscii_regex* group_regex,
+bool CRegexXQuery_branch::match(const char *source, int *matched_len,
+                              CRegexXQuery_regex* group_regex,
                               std::list<RegexAscii_pieceinfo>::iterator next_piece,
                               std::list<RegexAscii_pieceinfo>::iterator end_piece)
 {
@@ -1391,7 +1515,7 @@ bool CRegexAscii_branch::match(const char *source, int *matched_len,
   return (*piece_it).piece->match_piece(temp_pieces.begin(), temp_pieces.end(), source, matched_len);
 }
 
-bool CRegexAscii_piece::match_piece(std::list<RegexAscii_pieceinfo>::iterator piece_it,
+bool CRegexXQuery_piece::match_piece(std::list<RegexAscii_pieceinfo>::iterator piece_it,
                                     std::list<RegexAscii_pieceinfo>::iterator end_it,
                                     const char *source, int *matched_len)
 {
@@ -1412,7 +1536,7 @@ bool CRegexAscii_piece::match_piece(std::list<RegexAscii_pieceinfo>::iterator pi
     return match_piece_iter_reluctant(piece_it, end_it, source, matched_len);
 }
 
-int CRegexAscii_piece::choose_another_branch(std::vector<std::pair<int,int> > &match_lens)
+int CRegexXQuery_piece::choose_another_branch(std::vector<std::pair<int,int> > &match_lens)
 {
   int i = match_lens.size()-1;
   i--;
@@ -1425,13 +1549,13 @@ int CRegexAscii_piece::choose_another_branch(std::vector<std::pair<int,int> > &m
   return i;
 }
 
-bool CRegexAscii_piece::is_regex_atom()
+bool CRegexXQuery_piece::is_regex_atom()
 {
   return regex_atom != NULL;
 }
 
 //match as less as possible (shortest string)
-bool CRegexAscii_piece::match_piece_iter_reluctant(
+bool CRegexXQuery_piece::match_piece_iter_reluctant(
                                         std::list<RegexAscii_pieceinfo>::iterator piece_it,
                                         std::list<RegexAscii_pieceinfo>::iterator end_it,
                                         const char *source, int *matched_len)
@@ -1598,7 +1722,7 @@ bool CRegexAscii_piece::match_piece_iter_reluctant(
 }
 
 //match as much as possible
-bool CRegexAscii_piece::match_piece_iter_normal(
+bool CRegexXQuery_piece::match_piece_iter_normal(
                                         std::list<RegexAscii_pieceinfo>::iterator piece_it,
                                         std::list<RegexAscii_pieceinfo>::iterator end_it,
                                         const char *source, int *matched_len)
@@ -1763,7 +1887,7 @@ bool CRegexAscii_piece::match_piece_iter_normal(
   return false;
 }
 
-bool CRegexAscii_piece::match_piece_times(const char *source, 
+bool CRegexXQuery_piece::match_piece_times(const char *source, 
                                           int *piecelen, 
                                           int times,
                                           std::vector<std::pair<int,int> >    *match_lens)
@@ -1807,7 +1931,7 @@ bool CRegexAscii_piece::match_piece_times(const char *source,
     *piecelen += atomlen;
     if(!atomlen && !source[*piecelen])
     {
-      atom->regex_intern->reachedEnd = true;
+    //  atom->regex_intern->set_reachedEnd();
       break;
     }
     if(first_branch && (atomlen == 0))//avoid infinite loop
@@ -1826,12 +1950,449 @@ bool CRegexAscii_piece::match_piece_times(const char *source,
   return true;
 }
 
-//match any of chargroups
-bool CRegexAscii_chargroup::match_internal(const char *source, int *start_from_branch, int *matched_len)
+bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  bool found = false;
+  const char *temp_source = source;
+  unicode::code_point utf8c = utf8::next_char(temp_source);
+  switch(multichar_type)
+  {
+  case unicode::UNICODE_Ll + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ll) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lm) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lo) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lt) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lu))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Mc + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Mn) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Mc) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Me))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Nd + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nd) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nl) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_No))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Pc + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pc) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pd) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ps) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pe) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pi) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pf) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Po))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Zl + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zs) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zl) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zp))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Sc + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sm) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sc) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sk) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_So))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  case unicode::UNICODE_Cc + 50:
+    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cc) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cf) ||
+        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Co))//ignore unicode::UNICODE_Cn
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  default:
+    if(unicode::check_codepoint_category(utf8c, (unicode::category)multichar_type))
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+    break;
+  }
+
+  if(found)
+  {
+    *matched_len = temp_source - source;
+  }
+  return found;
+}
+
+bool CRegexXQuery_multicharIs::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  bool found = false;
+  const char *temp_source = source;
+  unicode::code_point utf8c = utf8::next_char(temp_source);
+  const unicode::code_point *cp = block_escape[block_index].cp;
+  if((utf8c >= cp[0]) && (utf8c <= cp[1]))
+  {
+    if(!is_reverse)
+      found = true;
+  }
+  else if(block_escape[block_index].ext_cp)
+  {
+    cp = block_escape[block_index].ext_cp;
+    while(*cp)
+    {
+      if((utf8c >= cp[0]) && (utf8c <= cp[1]))
+        break;
+      cp += 2;
+    }
+    if(*cp)
+    {
+      if(!is_reverse)
+        found = true;
+    }
+    else
+    {
+      if(is_reverse)
+        found = true;
+    }
+  }
+  else
+  {
+    if(is_reverse)
+      found = true;
+  }
+  if(found)
+  {
+    *matched_len = temp_source - source;
+  }
+  return found;
+}
+
+bool CRegexXQuery_multicharOther::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  bool found = false;
+  bool value_true = true;
+  const char *temp_source = source;
+  unicode::code_point utf8c = utf8::next_char(temp_source);
+  switch(multichar_type)
+  {
+    case 'S':value_true = false;//[^\s]
+    case 's'://[#x20\t\n\r]
+      switch(utf8c)
+      {
+      case '\t':
+      case '\r':
+      case '\n':
+      case ' ':
+        found = true;
+      default:
+        break;
+      }
+      break;
+    case 'I':value_true = false;//[^\i]
+    case 'i'://the set of initial name characters, those matched by Letter | '_' | ':'
+      if((utf8c == '_') ||
+        (utf8c == ':') ||
+        XQCharType::isLetter(utf8c))
+      {
+        found = true;
+      }
+      break;
+    case 'C':value_true = false;//[^\c]
+    case 'c'://the set of name characters, those matched by NameChar
+      if(XQCharType::isNameChar(utf8c))
+      {
+        found = true;
+      }
+      break;
+    case 'D':value_true = false;//[^\d]
+    case 'd':
+      if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nd))
+        found = true;
+      break;
+    case 'W':value_true = false;//[^\w]
+    case 'w':
+      found = !(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pc) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pd) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ps) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pe) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pi) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pf) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Po) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zs) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zl) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zp) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cc) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cf) ||
+                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Co));//ignore unicode::UNICODE_Cn
+      break;
+    default:
+      throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(source, ZED(REGEX_UNIMPLEMENTED)) );
+  }
+  if((found && value_true) || (!found && !value_true))
+  {
+    *matched_len = temp_source - source;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool CRegexXQuery_char_ascii::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  if(source[0] == c)
+  {
+    *matched_len = 1;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_ascii_i::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  char  sup = toupper(source[0]);
+  if(sup == c)
+  {
+    *matched_len = 1;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_range_ascii::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  if((source[0] >= c1) && (source[0] <= c2))
+  {
+    *matched_len = 1;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_range_ascii_i::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  char  sup = toupper(source[0]);
+  if((sup >= c1) && (sup <= c2))
+  {
+    *matched_len = 1;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_unicode::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  if(!memcmp(source, c, len))
+  {
+    *matched_len = len;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_unicode_cp::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  const char *temp_source = source;
+  unicode::code_point  utf8c = utf8::next_char(temp_source);
+  if(utf8c == c)
+  {
+    *matched_len = temp_source - source;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_unicode_i::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  const char *temp_source = source;
+  unicode::code_point  sup = unicode::to_upper(utf8::next_char(temp_source));
+  if(sup == c)
+  {
+    *matched_len = temp_source - source;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_range_unicode::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  const char *temp_source = source;
+  unicode::code_point  utf8c = utf8::next_char(temp_source);
+  if((utf8c >= c1) && (utf8c <= c2))
+  {
+    *matched_len = temp_source - source;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_char_range_unicode_i::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
+  const char *temp_source = source;
+  unicode::code_point  sup = unicode::to_upper(utf8::next_char(temp_source));
+  if((sup >= c1) && (sup <= c2))
+  {
+    *matched_len = temp_source - source;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CRegexXQuery_endline::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   *matched_len = 0;
-  std::list<chargroup_t>::iterator  cgt_it;
+  if(!source[0])
+  {
+  //  regex_intern->reachedEnd = true;
+    return true;
+  }
+  if((source[0] == 0x0A) || ((source[0] == 0x0D) && (source[1] == 0x0A)))
+  {
+    if(regex_intern->get_flags() & REGEX_ASCII_MULTILINE)
+    {
+    //  regex_intern->reachedEnd = true;
+      return true;
+    }
+  }
+  return false;
+}
 
+
+//match any of chargroups
+bool CRegexXQuery_chargroup::match_internal(const char *source, int *start_from_branch, int *matched_len)
+{
+  *matched_len = 0;
+  std::list<std::unique_ptr<CRegexXQuery_charmatch> >::iterator  cgt_it;
+/*
   if(!source[0])
   {
     regex_intern->reachedEnd = true;
@@ -1852,275 +2413,11 @@ bool CRegexAscii_chargroup::match_internal(const char *source, int *start_from_b
       return true;
     }
   }
-
-  bool found = false;
+*/
+  //bool found = false;
   for(cgt_it = chargroup_list.begin(); cgt_it != chargroup_list.end(); cgt_it++)
   {
-    switch(cgt_it->flags&0x7F)
-    {
-    case CHARGROUP_FLAGS_MULTICHAR_p:
-      switch(cgt_it->c1)
-      {
-      case unicode::UNICODE_Ll + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Ll) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Lm) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Lo) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Lt) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Lu))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Mc + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Mn) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Mc) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Me))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Nd + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Nd) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Nl) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_No))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Pc + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Pc) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Pd) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Ps) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Pe) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Pi) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Pf) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Po))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Zl + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Zs) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Zl) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Zp))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Sc + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Sm) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Sc) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Sk) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_So))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      case unicode::UNICODE_Cc + 50:
-        if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Cc) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Cf) ||
-           unicode::check_codepoint_category(source[0], unicode::UNICODE_Co))//ignore unicode::UNICODE_Cn
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      default:
-        if(unicode::check_codepoint_category(source[0], (unicode::category)cgt_it->c1))
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-        break;
-      }break;
-    case CHARGROUP_FLAGS_MULTICHAR_Is:
-    {
-      const unicode::code_point *cp = block_escape[cgt_it->c1].cp;
-      if(((unicode::code_point)source[0] >= cp[0]) && 
-        ((unicode::code_point)source[0] <= cp[1]))
-      {
-        if(!(cgt_it->flags & 0x80))
-          found = true;
-      }
-      else if(block_escape[cgt_it->c1].ext_cp)
-      {
-        cp = block_escape[cgt_it->c1].ext_cp;
-        while(*cp)
-        {
-          if(((unicode::code_point)source[0] >= cp[0]) && 
-            ((unicode::code_point)source[0] <= cp[1]))
-            break;
-          cp += 2;
-        }
-        if(*cp)
-        {
-          if(!(cgt_it->flags & 0x80))
-            found = true;
-        }
-        else
-        {
-          if(cgt_it->flags & 0x80)
-            found = true;
-        }
-      }
-      else
-      {
-        if(cgt_it->flags & 0x80)
-          found = true;
-      }
-    }break;
-    case CHARGROUP_FLAGS_MULTICHAR_OTHER:
-    {
-      bool value_true = true;
-      switch(cgt_it->c1)
-      {
-        case 'S':value_true = false;//[^\s]
-        case 's'://[#x20\t\n\r]
-          switch(source[0])
-          {
-          case '\t':
-          case '\r':
-          case '\n':
-          case ' ':
-            found = true;
-          default:
-            break;
-          }
-          break;
-        case 'I':value_true = false;//[^\i]
-        case 'i'://the set of initial name characters, those matched by Letter | '_' | ':'
-          if((source[0] == '_') ||
-            (source[0] == ':') ||
-            XQCharType::isLetter(source[0]))
-          {
-            found = true;
-          }
-          break;
-        case 'C':value_true = false;//[^\c]
-        case 'c'://the set of name characters, those matched by NameChar
-          if(XQCharType::isNameChar(source[0]))
-          {
-            found = true;
-          }
-          break;
-        case 'D':value_true = false;//[^\d]
-        case 'd':
-          if(unicode::check_codepoint_category(source[0], unicode::UNICODE_Nd))
-            found = true;
-          break;
-        case 'W':value_true = false;//[^\w]
-        case 'w':
-         found = !(unicode::check_codepoint_category(source[0], unicode::UNICODE_Pc) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Pd) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Ps) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Pe) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Pi) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Pf) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Po) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Zs) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Zl) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Zp) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Cc) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Cf) ||
-                   unicode::check_codepoint_category(source[0], unicode::UNICODE_Co));//ignore unicode::UNICODE_Cn
-          break;
-        default:
-          throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(source, ZED(REGEX_UNIMPLEMENTED)) );
-      }
-      if((found && value_true) || (!found && !value_true))
-      {
-        if(!source[0])
-          regex_intern->reachedEnd = true;
-        *matched_len = 1;
-        return true;
-      }
-      else
-        return false;
-    }
-    case CHARGROUP_FLAGS_ENDLINE:
-    {
-      return false;
-    }
-    case CHARGROUP_FLAGS_ONECHAR:
-    {
-      if(regex_intern->flags & REGEX_ASCII_CASE_INSENSITIVE)
-      {
-        char  sup = toupper(source[0]);
-        if(sup == toupper(cgt_it->c1))
-          found = true;
-      }
-      else
-      {
-        if(source[0] == cgt_it->c1)
-          found = true;
-      }
-      break;
-    }
-    default:
-    {
-      if(regex_intern->flags & REGEX_ASCII_CASE_INSENSITIVE)
-      {
-        char  sup = toupper(source[0]);
-        if((sup >= toupper(cgt_it->c1)) &&
-          (sup <= toupper(cgt_it->c2)))
-          found = true;
-      }
-      else
-      {
-        if((source[0] >= cgt_it->c1) &&
-          (source[0] <= cgt_it->c2))
-          found = true;
-      }
-      break;
-    }
-    }
-    if(found)
+    if((*cgt_it)->match_internal(source, start_from_branch, matched_len))
       break;
   }
   if(cgt_it == chargroup_list.end())
@@ -2133,49 +2430,44 @@ bool CRegexAscii_chargroup::match_internal(const char *source, int *start_from_b
       return false;
   }
 
-  *matched_len = 1;
+  //*matched_len = 1;
   return true;
 }
 
-bool CRegexAscii_negchargroup::match_internal(const char *source, int *start_from_branch, int *matched_len)
+bool CRegexXQuery_negchargroup::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   if(!source[0])
   {
-    regex_intern->reachedEnd = true;
+    regex_intern->set_reachedEnd();
     return false;
   }
-  if(!CRegexAscii_chargroup::match_internal(source, start_from_branch, matched_len))
+  if(!CRegexXQuery_chargroup::match_internal(source, start_from_branch, matched_len))
   {
-    *matched_len = 1;
+    *matched_len = utf8::char_length(*source);
     return true;
   }
   return false;
 }
 
-bool CRegexAscii_wildchar::match_internal(const char *source, int *start_from_branch, int *matched_len)
+bool CRegexXQuery_wildchar::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   *matched_len = 0;
-  if(source[0])
+  if(!source[0])
   {
-    if((regex_intern->flags & REGEX_ASCII_DOTALL) || 
-      (source[0] != '\n') && (source[0] != '\r'))
-    {
-      *matched_len = 1;
-      return true;
-    }
-    else
-      return false;
-  }
-  else
-  {
-    if(!source[0])
-      regex_intern->reachedEnd = true;
-    *matched_len = 0;
+    regex_intern->set_reachedEnd();
     return false;
   }
+  if((regex_intern->flags & REGEX_ASCII_DOTALL) || 
+    (source[0] != '\n') && (source[0] != '\r'))
+  {
+    *matched_len = utf8::char_length(*source);
+    return true;
+  }
+  else
+    return false;
 }
 
-bool CRegexAscii_backref::match_internal(const char *source, int *start_from_branch, int *matched_len)
+bool CRegexXQuery_backref::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   const char *submatch = regex_intern->subregex.at(backref-1)->matched_source;
   if(!submatch)
@@ -2183,17 +2475,22 @@ bool CRegexAscii_backref::match_internal(const char *source, int *start_from_bra
     *matched_len = 0;
     return true;
   }
+  if(!source[0])
+  {
+    regex_intern->set_reachedEnd();
+    return false;
+  }
   *matched_len = regex_intern->subregex.at(backref-1)->matched_len;
   if(regex_intern->flags & REGEX_ASCII_CASE_INSENSITIVE)
   {
-    if(compare_ni(source, submatch, *matched_len)) 
+    if(compare_unicode_ni(source, submatch, *matched_len)) 
     {
       return true;
     }
   }
   else
   {
-    if(!strncmp(source, submatch, *matched_len))
+    if(!memcmp(source, submatch, *matched_len))
     {
       return true;
     }
@@ -2202,7 +2499,7 @@ bool CRegexAscii_backref::match_internal(const char *source, int *start_from_bra
   return false;
 }
 
-bool CRegexAscii_pinstart::match_internal(const char *source, int *start_from_branch, int *matched_len)
+bool CRegexXQuery_pinstart::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   *matched_len = 0;
   if(source == regex_intern->source_start)

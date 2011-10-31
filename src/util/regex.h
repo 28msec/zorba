@@ -857,7 +857,7 @@ public:
   int get_match_end( int groupId = 0 );
 
 private:
-  regex_ascii::CRegexAscii_regex  *regex_matcher;
+  regex_ascii::CRegexXQuery_regex  *regex_matcher;
   uint32_t    parsed_flags;
 
   zstring s_in_;
