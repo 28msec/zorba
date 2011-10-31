@@ -39,6 +39,18 @@
 
 using namespace std;
 
+#ifndef ZORBA_WITH_BIG_INTEGER
+unsigned long long MaxUIntegerValue = ~0ull >> 1;
+
+inline bool is_too_big( long long ) {
+  return false;
+}
+
+inline bool is_too_big( unsigned long long n ) {
+  return n > MaxUIntegerValue;
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,7 +61,12 @@ void IntegerImpl::parse( char const *s ) {
 #else
 template<typename IntType>
 void IntegerImpl<IntType>::parse( char const *s ) {
-  value_ = ztd::aton<value_type>( s );
+  value_type const temp = ztd::aton<value_type>( s );
+  if ( is_too_big( temp ) )
+    throw std::invalid_argument(
+      BUILD_STRING( '"', temp, "\": unsigned integer too big" )
+    );
+  value_ = temp;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
