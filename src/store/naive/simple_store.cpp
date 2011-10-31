@@ -929,6 +929,7 @@ SimpleStore::getMap(const store::Item* aQName) const
   return lIndex.getp();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -936,6 +937,7 @@ store::Iterator_t SimpleStore::listMapNames()
 {
   return new NameIterator<IndexSet>(theHashMaps);
 }
+
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -964,10 +966,8 @@ store::Collection_t SimpleStore::createCollection(
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 
   return collection;
@@ -985,10 +985,8 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 }
 
@@ -1005,9 +1003,12 @@ store::Collection_t SimpleStore::getCollection(
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) {
+  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  {
     return collection;
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -1182,7 +1183,7 @@ void SimpleStore::deleteDocument(const zstring& docUri)
   zstring_b urib;
   urib.wrap_memory(docUri.data(), docUri.size());
 
-  theDocuments.remove(urib);
+  theDocuments.erase(urib);
 }
 
 
@@ -1194,7 +1195,9 @@ void SimpleStore::deleteAllDocuments()
   theDocuments.clear();
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::createHashMap(
@@ -1432,7 +1435,9 @@ bool SimpleStore::unregisterNode(XmlNode* node)
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 

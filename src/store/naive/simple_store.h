@@ -34,6 +34,7 @@
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 namespace zorba
 {
@@ -59,8 +60,8 @@ class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
 
-typedef store::StringBufHashMap<XmlNode_t> DocumentSet;
-typedef store::StringBufHashMap<store::Collection_t> UriCollectionSet;
+typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
+typedef zorba::HashMapZString<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 typedef ItemPointerHashMap<store::IC_t> ICSet;
 
