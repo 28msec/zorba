@@ -20,6 +20,8 @@
 # include <strsafe.h>
 #endif
 
+#include <vector>
+
 #include <zorba/config.h>
 
 #include "command_prompt.h"
@@ -30,94 +32,94 @@ using namespace zorba::debugger;
 
 #ifdef WIN32
 size_t ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t SecondsToWait) 
-{ 
-    DWORD iReturnVal = 0;
-    DWORD dwExitCode = 0;
-    std::wstring lTempStr = L"";
+{
+  DWORD iReturnVal = 0;
+  DWORD dwExitCode = 0;
+  std::wstring lTempStr = L"";
 
-    // Add a space to the beginning of the Parameters
-    if (aParameters.size() != 0) {
-      if (aParameters[0] != L' ') {
-        aParameters.insert(0, L" ");
-      }
+  // Add a space to the beginning of the Parameters
+  if (aParameters.size() != 0) {
+    if (aParameters[0] != L' ') {
+      aParameters.insert(0, L" ");
     }
+  }
 
-    // The first parameter needs to be the exe itself
-    lTempStr = aPathToExe;
-    std::wstring::size_type iPos = lTempStr.find_last_of(L"\\");
-    lTempStr.erase(0, iPos + 1);
-    aParameters = lTempStr.append(aParameters);
+  // The first parameter needs to be the exe itself
+  lTempStr = aPathToExe;
+  std::wstring::size_type iPos = lTempStr.find_last_of(L"\\");
+  lTempStr.erase(0, iPos + 1);
+  aParameters = lTempStr.append(aParameters);
 
-    // CreateProcessW can modify Parameters thus we allocate needed memory
-    wchar_t * pwszParam = new wchar_t[aParameters.size() + 1];
-    if (pwszParam == 0) {
-      return 1;
-    }
-    const wchar_t* pchrTemp = aParameters.c_str();
-    wcscpy_s(pwszParam, aParameters.size() + 1, pchrTemp); 
+  // CreateProcessW can modify Parameters thus we allocate needed memory
+  wchar_t * pwszParam = new wchar_t[aParameters.size() + 1];
+  if (pwszParam == 0) {
+    return 1;
+  }
+  const wchar_t* pchrTemp = aParameters.c_str();
+  wcscpy_s(pwszParam, aParameters.size() + 1, pchrTemp); 
 
-    // CreateProcess API initialization
-    STARTUPINFOW siStartupInfo;
-    PROCESS_INFORMATION piProcessInfo;
-    memset(&siStartupInfo, 0, sizeof(siStartupInfo));
-    memset(&piProcessInfo, 0, sizeof(piProcessInfo));
-    siStartupInfo.cb = sizeof(siStartupInfo);
+  // CreateProcess API initialization
+  STARTUPINFOW siStartupInfo;
+  PROCESS_INFORMATION piProcessInfo;
+  memset(&siStartupInfo, 0, sizeof(siStartupInfo));
+  memset(&piProcessInfo, 0, sizeof(piProcessInfo));
+  siStartupInfo.cb = sizeof(siStartupInfo);
 
-    BOOL lResult = CreateProcessW(
-      const_cast<LPCWSTR>(aPathToExe.c_str()),
-      pwszParam, 0, 0, false,
-      CREATE_DEFAULT_ERROR_MODE, 0, 0,
-      &siStartupInfo, &piProcessInfo);
+  BOOL lResult = CreateProcessW(
+    const_cast<LPCWSTR>(aPathToExe.c_str()),
+    pwszParam, 0, 0, false,
+    CREATE_DEFAULT_ERROR_MODE, 0, 0,
+    &siStartupInfo, &piProcessInfo);
 
-    if (lResult) {
-      // Watch the process
-      dwExitCode = WaitForSingleObject(piProcessInfo.hProcess, (SecondsToWait * 1000));
-    }
-    else {
-      // CreateProcess failed
-      iReturnVal = GetLastError();
-      LPVOID lpMsgBuf;
-      LPVOID lpDisplayBuf;
+  if (lResult) {
+    // Watch the process
+    dwExitCode = WaitForSingleObject(piProcessInfo.hProcess, (SecondsToWait * 1000));
+  }
+  else {
+    // CreateProcess failed
+    iReturnVal = GetLastError();
+    LPVOID lpMsgBuf;
+    LPVOID lpDisplayBuf;
 
-      FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        iReturnVal,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR) &lpMsgBuf,
-        0, NULL);
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      iReturnVal,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      (LPTSTR) &lpMsgBuf,
+      0, NULL);
 
-      // Display the error message and exit the process
+    // Display the error message and exit the process
 
-      lpDisplayBuf = (LPVOID)LocalAlloc(
-        LMEM_ZEROINIT,
-        (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR));
+    lpDisplayBuf = (LPVOID)LocalAlloc(
+      LMEM_ZEROINIT,
+      (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR));
 
-      StringCchPrintf(
-        (LPTSTR)lpDisplayBuf,
-        LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        TEXT("Error (%d) when starting zorba: %s"),
-        iReturnVal,
-        lpMsgBuf);
+    StringCchPrintf(
+      (LPTSTR)lpDisplayBuf,
+      LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+      TEXT("Error (%d) when starting zorba: %s"),
+      iReturnVal,
+      lpMsgBuf);
 
-      std::wstring lErrorW((wchar_t*)lpDisplayBuf);
-      std::string lError;
-      lError.assign(lErrorW.begin(), lErrorW.end());
-      std::cout << lError << std::endl;
+    std::wstring lErrorW((wchar_t*)lpDisplayBuf);
+    std::string lError;
+    lError.assign(lErrorW.begin(), lErrorW.end());
+    std::cout << lError << std::endl;
 
-      LocalFree(lpMsgBuf);
-      LocalFree(lpDisplayBuf);
-    }
+    LocalFree(lpMsgBuf);
+    LocalFree(lpDisplayBuf);
+  }
 
-    // Free memory
-    delete[]pwszParam;
-    pwszParam = 0;
+  // Free memory
+  delete[]pwszParam;
+  pwszParam = 0;
 
-    // Release handles
-    CloseHandle(piProcessInfo.hProcess);
-    CloseHandle(piProcessInfo.hThread);
+  // Release handles
+  CloseHandle(piProcessInfo.hProcess);
+  CloseHandle(piProcessInfo.hThread);
 
-    return iReturnVal; 
+  return iReturnVal; 
 }
 #else
 
@@ -126,10 +128,87 @@ size_t ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t 
 #endif
 
 
+int startZorba(std::string& aExec, std::vector<std::string>& aArgs)
+{
+  std::wstring lExecW, lParamsW;
+  lExecW.assign(aExec.begin(), aExec.end());
+
+  for (std::vector<std::string>::size_type j = 0; j < aArgs.size(); j++) {
+    std::string lArg(aArgs.at(j));
+    std::wstring lArgW;
+    lArgW.assign(lArg.begin(), lArg.end());
+    lParamsW.append(lArgW);
+    lParamsW.append(L" ");
+  }
+
+#ifdef WIN32
+  int lResult = ExecuteProcess(lExecW, lParamsW, 0);
+  return lResult;
+#else
+    std::cout << "On Linux, Zorba is not started by the debugger. Start it manually!";
+#endif
+}
+
 void printUsage(std::string& aProgram)
 {
   std::cerr << "Usage:" << std::endl
-    << "\t" << aProgram << " [-p PORT] <zorba_executable> <zorba_arguments>" << std::endl;
+    << "    " << aProgram << " <zorba_executable> <zorba_arguments>" << std::endl
+    << "        the debugger will start the given zorba executable with the given arguments" << std::endl;
+}
+
+bool processArguments(int argc, char* argv[], std::string& aProgram, std::string& aZorba, unsigned int& aPort, std::vector<std::string>& aZorbaArgs)
+{
+  // we will need the program name in usage info
+  aProgram = argv[0];
+  std::string::size_type lPos = aProgram.find_last_of(
+#ifdef WIN32
+    '\\'
+#else
+    '/'
+#endif
+  );
+  aProgram = aProgram.substr(lPos + 1);
+
+  switch (argc) {
+  case 1:
+    std::cerr << "The Zorba executable is needed." << std::endl;
+    return false;
+  case 2:
+  case 3:
+  case 4:
+    std::cerr << "The Zorba executable has not enough arguments." << std::endl;
+    return false;
+  }
+
+  // get the zorba executable
+  aZorba = argv[1];
+
+  // zorba will need the -d flag
+  aZorbaArgs.push_back("-d");
+
+  // gather all arguments (excepting the program name)
+  for (int i = 2; i < argc; i++) {
+    std::string lArg = argv[i];
+
+    // read the port option
+    if (lArg == "-p" || lArg == "--debug-port") {
+      // if there is one more argument
+      if (i < argc - 1) {
+        // get the port value
+        int lPort = 28028;
+        std::stringstream lStream(argv[i + 1]);
+        lStream >> lPort;
+        if (!lStream.fail()) {
+          aPort = lPort;
+        }
+      }
+    }
+
+    // add to Zorba arguments
+    aZorbaArgs.push_back(lArg);
+  }
+
+  return true;
 }
 
 #ifndef _WIN32_WCE
@@ -140,28 +219,33 @@ int
 _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  std::string lProgram(argv[0]);
-  std::string::size_type lPos = lProgram.find_last_of('\\');
-  lProgram = lProgram.substr(lPos + 1);
+  // **************************************************************************
+  // processing arguments
 
-  if (argc < 2 || (argv[1] == "-p" && argc < 3)) {
+  std::string lProgram, lZorbaExec;
+  unsigned int lPort = 28028;
+  std::vector<std::string> lZorbaArgs;
+
+  if (!processArguments(argc, argv, lProgram, lZorbaExec, lPort, lZorbaArgs)) {
     printUsage(lProgram);
     return 1;
   }
 
-  int lPort = 28028;
-  if (argv[1] == "-p") {
-    std::stringstream lStream(argv[2]);
-    lStream >> lPort;
-    if (lStream.fail() || argv[2]) {
-      std::cerr << "Invalid port: " << argv[2] << std::endl;
-      printUsage(lProgram);
-      return 2;
-    }
-  }
 #ifndef NDEBUG
-  std::cout << "Communicating on port: " << lPort << std::endl;
+  // **************************************************************************
+  // debug reporting
+
+  std::cout << "Communication port: " << lPort << std::endl;
+  std::cout << "Zorba executable:   " << lZorbaExec << std::endl;
+  std::cout << "Zorba arguments:   ";
+  for (std::vector<std::string>::size_type j = 0; j < lZorbaArgs.size(); j++) {
+    std::cout << " " << lZorbaArgs.at(j);
+  }
+  std::cout << std::endl;
 #endif
+
+  // **************************************************************************
+  // processing arguments
 
   try {
     LockFreeQueue<std::size_t> lQueue;
@@ -172,44 +256,23 @@ _tmain(int argc, _TCHAR* argv[])
     CommandPrompt lCommandPrompt;
     CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
 
-    // now fork to start a zorba
 
-    std::string lExec(argv[1]);
-    std::wstring lExecW, lParamsW;
-    lExecW.assign(lExec.begin(), lExec.end());
+    // **************************************************************************
+    // start a zorba
 
-#ifndef NDEBUG
-    std::cout << "Zorba arguments:" << std::endl;
-#endif
-    lParamsW.append(L"-d ");
-#ifndef NDEBUG
-    std::cout << "\tArgument 1: -d" << std::endl;
-#endif
-
-    int offset = argv[1] == "-p" ? 4 : 2;
-    for (int j = 0; j + offset < argc; j++) {
-#ifndef NDEBUG
-      std::cout << "\tArgument " << j + 2 << ": " << argv[j + offset] << std::endl;
-#endif
-      std::string lArg(argv[j + offset]);
-      std::wstring lArgW;
-      lArgW.assign(lArg.begin(), lArg.end());
-      lParamsW.append(lArgW);
-      lParamsW.append(L" ");
-    }
-
-#ifdef WIN32
-    int lResult = ExecuteProcess(lExecW, lParamsW, 0);
+    int lResult = startZorba(lZorbaExec, lZorbaArgs);
     if (lResult) {
       return lResult;
     }
-#else
-    std::cout << "On Linux, Zorba is not started by the debugger. Start it manually!"
-#endif
+
+    // **************************************************************************
+    // start the debugger command line
 
     lCommandLineHandler.execute();
+
   } catch (...) {
-    return 4;
+    return -1;
   }
+
   return 0;
 }
