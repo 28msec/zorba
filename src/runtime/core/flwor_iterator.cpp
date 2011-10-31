@@ -18,6 +18,7 @@
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 
@@ -1474,9 +1475,9 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            throw XQUERY_EXCEPTION(err::XPTY0004,
-                                   ERROR_PARAMS(ZED(SingletonExpected_2o),
-                                                ZED(AtomizationHasMoreThanOneValue)));
+            RAISE_ERROR(err::XPTY0004, loc,
+            ERROR_PARAMS(ZED(SingletonExpected_2o),
+                         ZED(AtomizationHasMoreThanOneValue)));
           }
         }
       }
@@ -1485,9 +1486,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
 

@@ -28,6 +28,13 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   ELSE (WIN32)
     SWIG_ADD_MODULE(zorba_api ruby zorba_api.i)
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${RUBY_LIBRARY})
+    # Necessary because UseSWIG.cmake uses ADD_LIBRARY(..MODULE..), which
+    # apparently doesn't allow CMake's RPATH-rewriting magic to work.
+    GET_TARGET_PROPERTY(_rpath zorba_simplestore LOCATION)
+    GET_FILENAME_COMPONENT(_rpath "${_rpath}" PATH)
+    SET_TARGET_PROPERTIES(zorba_api PROPERTIES
+      INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${_rpath}"
+      BUILD_WITH_INSTALL_RPATH ON)
   ENDIF (WIN32)
 
   IF ( APPLE )
@@ -43,6 +50,8 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
     OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
   #STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemFactory.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemFactory.h")
   
   SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
   
@@ -67,6 +76,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
       
     ENDIF ( LINUX )
   ENDIF ( APPLE )
+
 ELSE (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   MESSAGE(STATUS "SWIG Ruby: binding not generated because library and include files are not installed.")
 ENDIF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)

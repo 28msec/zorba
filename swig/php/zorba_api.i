@@ -28,6 +28,12 @@
   #define PHP_COMPILER_ID "VC6"
 #endif
 #endif
+
+#if defined(_MSC_VER)
+#define strtoll _strtoi64
+#define strtoull _strtoui64
+#endif
+
 %}
 
 
