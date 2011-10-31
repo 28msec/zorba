@@ -389,12 +389,12 @@ void user_function::setCache(store::Index* aCache)
 
 
 /*******************************************************************************
-
+ only cache recursive (non-sequential, non-updating, deterministic)
+ functions with singleton atomic input and output
 ********************************************************************************/
 bool user_function::cacheResults() const
 {
-  // only cache recursive functions with singleton atomic input and output
-  if (!isRecursive())
+  if ( !isRecursive() || isSequential() || isUpdating() || !isDeterministic() )
   {
     return false;
   }

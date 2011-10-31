@@ -132,6 +132,8 @@ namespace StaticContextConsts
     zann_nonsequential,
     zann_variadic,
     zann_streamable,
+    zann_cache,
+    zann_no_cache,
     zann_unique,
     zann_nonunique,
     zann_value_equality,

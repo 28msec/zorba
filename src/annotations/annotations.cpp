@@ -307,6 +307,12 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
   GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "streamable");
   aCtx->add_ann(StaticContextConsts::zann_streamable, lTmp);
 
+  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "cache");
+  aCtx->add_ann(StaticContextConsts::zann_cache, lTmp);
+
+  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "no-cache");
+  aCtx->add_ann(StaticContextConsts::zann_no_cache, lTmp);
+
   //
   // Zorba annotations - xqddf
   //
@@ -416,6 +422,10 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
   theRuleSet.push_back(
       ZANN(zann_read_only_nodes) |
       ZANN(zann_mutable_nodes)
+    );
+  theRuleSet.push_back(
+      ZANN(zann_cache) |
+      ZANN(zann_no_cache)
     );
 #undef ZANN
 }
