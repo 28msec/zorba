@@ -496,14 +496,14 @@ private:
 
 #else /* ZORBA_NO_ICU (ascii part:) */
 
-#include "util/regex_ascii.h"
+#include "util/regex_xquery.h"
 #include <string>
 
 namespace zorba {
 
 /**
  * Converts an XQuery regular expression to the form used by the regular
- * expression library Zorba is using (here regex_ascii).
+ * expression library Zorba is using (here regex_xquery).
  *
  * @param xq_re The XQuery regular expression.
  * @param lib_re A pointer to the resuling library regular expression.
@@ -857,7 +857,7 @@ public:
   int get_match_end( int groupId = 0 );
 
 private:
-  regex_ascii::CRegexXQuery_regex  *regex_matcher;
+  regex_xquery::CRegexXQuery_regex  *regex_matcher;
   uint32_t    parsed_flags;
 
   zstring s_in_;

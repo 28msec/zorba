@@ -18,7 +18,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "regex_ascii.h"
+#include "regex_xquery.h"
 #include <string.h>
 #include "zorbatypes/chartype.h"
 #include "util/unicode_categories.h"
@@ -26,7 +26,7 @@
 #include "util/utf8_string.h"
 
 namespace zorba {
-  namespace regex_ascii{
+  namespace regex_xquery{
 //ascii regular expression matching
 
 /*http://www.w3.org/TR/xmlschema-2/#regexs
@@ -333,9 +333,9 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
     (*char_len)++;
     switch(pattern[*char_len])
     {
-    case 'n': c = '\n';break;
-    case 'r': c = '\r';break;
-    case 't': c = '\t';break;
+    case 'n': c = '\n';return new CRegexXQuery_char_ascii(current_regex, c);
+    case 'r': c = '\r';return new CRegexXQuery_char_ascii(current_regex, c);
+    case 't': c = '\t';return new CRegexXQuery_char_ascii(current_regex, c);
     case '\\':
     case '/'://+
     case '|':
@@ -602,6 +602,7 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
     default:
       throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_ESC_CHAR)) );
     }
+    assert(false);
     break;//unreachable
   }//end case '\'
   default:
@@ -2511,6 +2512,6 @@ bool CRegexXQuery_pinstart::match_internal(const char *source, int *start_from_b
   return false;
 }
 
-  }//end namespace regex_ascii
+  }//end namespace regex_xquery
 }//end namespace zorba
 /* vim:set et sw=2 ts=2: */

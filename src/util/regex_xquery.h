@@ -24,7 +24,7 @@
 #include "util/unicode_util.h"
 
 namespace zorba {
-  namespace regex_ascii{
+  namespace regex_xquery{
 
 //matching flags
 #define REGEX_ASCII_CASE_INSENSITIVE    1   //i
@@ -459,7 +459,7 @@ private:
 };
 
 }
-}//end namespace zorba::regex_ascii
+}//end namespace zorba::regex_xquery
 
 #endif
 /* vim:set et sw=2 ts=2: */
