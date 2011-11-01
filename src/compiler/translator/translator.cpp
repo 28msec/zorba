@@ -3721,18 +3721,21 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure the initExpr is a simple expr.
     if (initExpr != NULL)
+    {
       expr::checkSimpleExpr(initExpr);
+      ve->setHasInitializer(true);
+    }
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
-      QueryLoc lExpandedLocation = expandQueryLoc(
-        v.get_name()->get_location(),
-        initExpr->get_loc());
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    {
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                  initExpr->get_loc());
+
       wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
     }
 #endif

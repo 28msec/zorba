@@ -28,7 +28,8 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/xquery_exception.h>
 
-#include "rbkt\testdriverconfig.h"
+
+#include "rbkt/testdriverconfig.h"
 
 using namespace zorba;
 
@@ -123,6 +124,7 @@ cxx_api_changes_test3(Zorba* aZorba)
   catch (ZorbaException& e)
   {
     std::cerr << e << std::endl;
+
     return false;
   }
 
