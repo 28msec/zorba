@@ -341,9 +341,9 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
     (*char_len)++;
     switch(pattern[*char_len])
     {
-    case 'n': c = '\n';return new CRegexXQuery_char_ascii(current_regex, c);
-    case 'r': c = '\r';return new CRegexXQuery_char_ascii(current_regex, c);
-    case 't': c = '\t';return new CRegexXQuery_char_ascii(current_regex, c);
+    case 'n': c = '\n';(*char_len)++;return new CRegexXQuery_char_ascii(current_regex, c);
+    case 'r': c = '\r';(*char_len)++;return new CRegexXQuery_char_ascii(current_regex, c);
+    case 't': c = '\t';(*char_len)++;return new CRegexXQuery_char_ascii(current_regex, c);
     case '\\':
     case '/'://+
     case '|':

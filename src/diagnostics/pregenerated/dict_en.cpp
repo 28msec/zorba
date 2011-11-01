@@ -568,7 +568,7 @@ extern entry const dict_en[] = {
   { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_INVALID_ATOM_CHAR", "$3 - invalid character for at atom; forbidden characters are: [{}?*+|^]" },
+  { "~REGEX_INVALID_ATOM_CHAR", "$3 - invalid character for an atom; forbidden characters are: [{}?*+|^]" },
 #endif
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
