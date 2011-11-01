@@ -70,7 +70,7 @@ declare option ver:module-version "2.0";
  : @param $name The QName of the index to probe
  : @param $key_i the search keys used to probe the index with. The i-th search
  :        key corresponds to the i-th key expression in the index declaration.
- : @return the set of domain nodes that satisfy the search condition.
+ : @return The set of domain nodes that satisfy the search condition.
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
@@ -100,7 +100,7 @@ declare %ann:variadic function idml:probe-index-point-value(
  :
  : @param $name The QName of the index to probe.
  : @param $key The search sequence.
- : @return the set of domain nodes that satisfy the search condition.
+ : @return The set of domain nodes that satisfy the search condition.
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
@@ -169,7 +169,7 @@ declare function idml:probe-index-point-general(
  :        i.e., the upperBound-i value is not considered part of the 
  :        range. Otherwise, the range is closed from above, i.e., the 
  :        upperBound-i value is part of the range.
- : @return the set of domain nodes that satisfy the search condition.
+ : @return The set of domain nodes that satisfy the search condition.
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
@@ -223,7 +223,15 @@ declare %ann:variadic function idml:probe-index-range-value(
  : &lt; operator depending on whether $upperBoundsIncluded is true or false</p>.
  :
  : @param $name The QName of the index to probe.
- : @return the set of domain nodes that satisfy the search condition
+ : @param $lowerBound The lower bound search sequence.
+ : @param $upperBound The upper bound search sequence.
+ : @param $haveLowerBound Whether a lower bound search sequence exists or not.
+ : @param $haveUpperBound Whether an upper bound search sequence exists or not.
+ : @param $lowerBoundIncluded Whether to use the &lt;= or the &lt; operator when
+ :        comparing a search key from $lowerBound with an index key.
+ : @param $upperBoundIncluded Whether to use the &lt;= or the &lt; operator when
+ :        comparing an index key with a search key from $upperBound.
+ : @return The set of domain nodes that satisfy the search condition
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
@@ -239,7 +247,7 @@ declare function idml:probe-index-range-general(
   $lowerBound         as xs:anyAtomicType*,
   $upperBound         as xs:anyAtomicType*,
   $haveLowerBound     as xs:boolean,
-  $haveupperBound     as xs:boolean,
+  $haveUpperBound     as xs:boolean,
   $lowerBoundIncluded as xs:boolean,
   $upperBoundIncluded as xs:boolean) as node()*  external;
 
