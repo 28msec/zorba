@@ -634,7 +634,12 @@ bool ProbeIndexPointValueIterator::nextImpl(
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
+        ERROR_PARAMS(
+          qnameItem->getStringValue(),
+          "index",
+          numChildren-1,
+          state->theIndexDecl->getKeyExpressions().size())
+        );
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -800,7 +805,12 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
           numChildren != 2)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
+        ERROR_PARAMS(
+          qnameItem->getStringValue(),
+          "index",
+          numChildren-1,
+          state->theIndexDecl->getKeyExpressions().size())
+        );
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -973,13 +983,23 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if ((numChildren-1) % 6 != 0)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
+      ERROR_PARAMS(
+        qname->getStringValue(),
+        "index",
+        numChildren-1,
+        "multiple of 6"
+      ));
     }
 
     if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
+      ERROR_PARAMS(
+        qname->getStringValue(),
+        "index",
+        numChildren-1,
+        indexDecl->getKeyExpressions().size() * 6
+      ));
     }
 
     state->theIndex = (indexDecl->isTemp() ?
