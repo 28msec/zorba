@@ -99,8 +99,8 @@ public:
 
   ~ItemHandleHashMap()
   {
-    ItemHandleHashMap::iterator ite = this->begin();
-    ItemHandleHashMap::iterator end = this->end();
+    iterator ite = this->begin();
+    iterator end = this->end();
 
     for (; ite != end; ++ite)
     {
