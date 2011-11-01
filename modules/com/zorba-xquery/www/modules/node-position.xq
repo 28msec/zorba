@@ -27,6 +27,8 @@ xquery version "1.0";
  : xs:anyURI item that is returned by the np:node-position function.
  :
  : @author Federico Cavalieri, Markos Zaharioudakis 
+ :
+ : @project XDM/node
  :)
 module namespace np = "http://www.zorba-xquery.com/modules/node-position";
 
