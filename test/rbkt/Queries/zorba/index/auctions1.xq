@@ -391,7 +391,7 @@ try
 for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
                                                  10000,
                                                  50000,
-                                                 fn:false(),
+                                                 fn:true(),
                                                  fn:false(),
                                                  fn:true(),
                                                  fn:true())
