@@ -130,6 +130,7 @@ size_t ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t 
 
 int startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 {
+#ifdef WIN32
   std::wstring lExecW, lParamsW;
   lExecW.assign(aExec.begin(), aExec.end());
 
@@ -141,11 +142,29 @@ int startZorba(std::string& aExec, std::vector<std::string>& aArgs)
     lParamsW.append(L" ");
   }
 
-#ifdef WIN32
   int lResult = ExecuteProcess(lExecW, lParamsW, 0);
   return lResult;
 #else
-    std::cout << "On Linux, Zorba is not started by the debugger. Start it manually!";
+  pid_t pID = fork();
+  if (pID == 0) {
+    // Code only executed by child process
+    std::stringstream lCommand;
+    lCommand << aExec;
+    for (std::vector<std::string>::size_type j = 0; j < aArgs.size(); j++) {
+      lCommand << " " << aArgs.at(j);
+    }
+
+    int lRes = system(lCommand.str().c_str());
+    exit(lRes);
+  }
+  else if (pID < 0) {
+    std::cerr << "Failed to fork Zorba" << std::endl;
+    exit(1);
+  }
+  else {
+    // Code only executed by parent process
+    return 0;
+  }
 #endif
 }
 
@@ -153,12 +172,16 @@ void printUsage(std::string& aProgram)
 {
   std::cerr << "Usage:" << std::endl
     << "    " << aProgram << " <zorba_executable> <zorba_arguments>" << std::endl
-    << "        the debugger will start the given zorba executable with the given arguments" << std::endl;
+    << "        the debugger will start the given Zorba executable with the given arguments" << std::endl
+    << std::endl
+    << "    " << aProgram << " [-p PORT]" << std::endl
+    << "        the debugger will start standalone and wait for an incomming connection from Zorba" << std::endl;
 }
 
 bool processArguments(int argc, char* argv[], std::string& aProgram, std::string& aZorba, unsigned int& aPort, std::vector<std::string>& aZorbaArgs)
 {
   // we will need the program name in usage info
+  aPort = 28028;
   aProgram = argv[0];
   std::string::size_type lPos = aProgram.find_last_of(
 #ifdef WIN32
@@ -169,15 +192,26 @@ bool processArguments(int argc, char* argv[], std::string& aProgram, std::string
   );
   aProgram = aProgram.substr(lPos + 1);
 
-  switch (argc) {
-  case 1:
-    std::cerr << "The Zorba executable is needed." << std::endl;
-    return false;
-  case 2:
-  case 3:
-  case 4:
-    std::cerr << "The Zorba executable has not enough arguments." << std::endl;
-    return false;
+  for (int i = 1; i < argc; i++) {
+    std::string lArg = argv[i];
+    if (lArg == "-h" || lArg == "--help") {
+      return false;
+    } else if (lArg == "-p") {
+      ++i;
+      if (i == argc) {
+        std::cerr << "Missing value for -p option." << std::endl;
+        return false;
+      }
+    } else if (lArg.at(0) == '-'){
+      std::cerr << "Invalid option \"" << lArg << "\"" << std::endl;
+      return false;
+    }
+  }
+
+  if (argc < 5) {
+    std::cout << "Not enough arguments to start Zorba." << std::endl;
+    std::cout << "Running the standalone XQuery debugger client on port: " << aPort << std::endl;
+    return true;
   }
 
   // get the zorba executable
@@ -195,7 +229,7 @@ bool processArguments(int argc, char* argv[], std::string& aProgram, std::string
       // if there is one more argument
       if (i < argc - 1) {
         // get the port value
-        int lPort = 28028;
+        int lPort;
         std::stringstream lStream(argv[i + 1]);
         lStream >> lPort;
         if (!lStream.fail()) {
@@ -231,17 +265,25 @@ _tmain(int argc, _TCHAR* argv[])
     return 1;
   }
 
+  bool lStandalone = false;
+
+  if (lZorbaExec == "") {
+    lStandalone = true;
+  }
+
 #ifndef NDEBUG
   // **************************************************************************
   // debug reporting
 
-  std::cout << "Communication port: " << lPort << std::endl;
-  std::cout << "Zorba executable:   " << lZorbaExec << std::endl;
-  std::cout << "Zorba arguments:   ";
-  for (std::vector<std::string>::size_type j = 0; j < lZorbaArgs.size(); j++) {
-    std::cout << " " << lZorbaArgs.at(j);
+  if (!lStandalone) {
+    std::cout << "Communication port: " << lPort << std::endl;
+    std::cout << "Zorba executable:   " << lZorbaExec << std::endl;
+    std::cout << "Zorba arguments:   ";
+    for (std::vector<std::string>::size_type j = 0; j < lZorbaArgs.size(); j++) {
+      std::cout << " " << lZorbaArgs.at(j);
+    }
+    std::cout << std::endl;
   }
-  std::cout << std::endl;
 #endif
 
   // **************************************************************************
@@ -260,15 +302,25 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start a zorba
 
-    int lResult = startZorba(lZorbaExec, lZorbaArgs);
-    if (lResult) {
-      return lResult;
+    if (!lStandalone) {
+      int lResult = startZorba(lZorbaExec, lZorbaArgs);
+      if (lResult) {
+        return lResult;
+      }
+    } else {
+      std::cout << "Waiting for an incomming Zorba connection..." << std::endl;
     }
 
     // **************************************************************************
     // start the debugger command line
 
     lCommandLineHandler.execute();
+
+#ifndef WIN32
+    std::cout << "Waiting...";
+    wait();
+    std::cout << "Done!";
+#endif
 
   } catch (...) {
     return -1;
