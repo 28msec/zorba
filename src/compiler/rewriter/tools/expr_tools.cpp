@@ -952,11 +952,41 @@ void computeMustCopyProperty(expr* inExpr)
     break;
   }
 
-#if 0
   case delete_expr_kind:
   case insert_expr_kind:
   case rename_expr_kind:
   case replace_expr_kind:
+  {
+    update_expr_base* e = static_cast<update_expr_base*>(inExpr);
+
+    set_must_copy(e->getTargetExpr(), ANNOTATION_TRUE_FIXED);
+
+    if (e->get_expr_kind() == rename_expr_kind)
+    {
+      set_must_copy(e->getSourceExpr(), ANNOTATION_FALSE);
+    }
+    else if (e->get_expr_kind() == replace_expr_kind)
+    {
+      replace_expr* re = static_cast<replace_expr*>(inExpr);
+
+      if (re->getType() == store::UpdateConsts::VALUE_OF_NODE)
+      {
+        set_must_copy(e->getSourceExpr(), ANNOTATION_FALSE);
+      }
+      else
+      {
+        set_must_copy(e->getSourceExpr(), ANNOTATION_TRUE_FIXED);
+      }
+    }
+    else
+    {
+      set_must_copy(e->getSourceExpr(), ANNOTATION_TRUE_FIXED);
+    }
+
+    break;
+  }
+
+#if 0
   case transform_expr_kind:
 
   case block_expr_kind:

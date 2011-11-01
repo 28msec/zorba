@@ -161,8 +161,7 @@ static expr_t translate_aux(
 /*******************************************************************************
 
 ********************************************************************************/
-#define ZANN_CONTAINS( ann ) \
-  theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts:: ann))
+#define ZANN_CONTAINS( ann ) theAnnotations->contains(AnnotationInternal::ann)
 
 
 /*******************************************************************************
@@ -3655,19 +3654,15 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   {
     if (v.is_global())
     {
-      if (theAnnotations->contains(
-
-            theSctx->lookup_ann(StaticContextConsts::fn_private)))
+      if (ZANN_CONTAINS(fn_private))
         ve->set_private(true);
     }
 
-    if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_assignable)))
+    if (ZANN_CONTAINS(zann_assignable))
     {
       ve->set_mutable(true);
     }
-    else if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_nonassignable)))
+    else if (ZANN_CONTAINS(zann_nonassignable))
     {
       ve->set_mutable(false);
     }
@@ -3791,26 +3786,30 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  bool recognised = false;
+
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
-  if (lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
-      lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
-      lExpandedQName->getNamespace() == XSI_NS ||
-      lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
-      lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
-      lExpandedQName->getNamespace() == ZORBA_ANNOTATIONS_NS)
+  zstring annotNS = lExpandedQName->getNamespace();
+
+  if (annotNS == static_context::W3C_XML_NS ||
+      annotNS == XML_SCHEMA_NS ||
+      annotNS == XSI_NS ||
+      annotNS == static_context::W3C_FN_NS ||
+      annotNS == XQUERY_MATH_FN_NS ||
+      annotNS == ZORBA_ANNOTATIONS_NS)
   {
-    if ( theSctx->lookup_ann(lExpandedQName) ==  StaticContextConsts::zann_end)
+    if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
-      throw XQUERY_EXCEPTION(
-          err::XQST0045,
-          ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                        "\'" + lExpandedQName->getNamespace() + "\'"
-                        : lExpandedQName->getPrefix())
-                        + ":" + lExpandedQName->getLocalName()),
-          ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0045, loc,
+      ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
+                           "\'" + lExpandedQName->getNamespace() + "\'"
+                           : lExpandedQName->getPrefix())
+                    + ":" + lExpandedQName->getLocalName()));
     }
+
+    recognised = true;
   }
   else
   {
@@ -3826,6 +3825,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
+
   if (v.get_literals())
   {
     std::vector<rchandle<exprnode> >::const_iterator lIter;
@@ -3839,7 +3839,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     }
   }
 
-  theAnnotations->push_back(lExpandedQName, lLiterals);
+  if (recognised)
+    theAnnotations->push_back(lExpandedQName, lLiterals);
 }
 
 
@@ -4018,62 +4019,62 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   StaticContextConsts::node_modifier_t lNodeModifier;
 
   std::vector<rchandle<const_expr> > lLiterals;
-  if ( ZANN_CONTAINS (zann_queue) )
+  if (ZANN_CONTAINS(zann_queue))
   {
     lUpdateMode = StaticContextConsts::decl_queue;
   }
-  else if ( ZANN_CONTAINS ( zann_append_only) )
+  else if (ZANN_CONTAINS(zann_append_only))
   {
     lUpdateMode = StaticContextConsts::decl_append_only;
   }
-  else if ( ZANN_CONTAINS ( zann_const ) )
+  else if (ZANN_CONTAINS(zann_const))
   {
     lUpdateMode = StaticContextConsts::decl_const;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable ) )
+  else if (ZANN_CONTAINS(zann_mutable))
   {
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable),
+              lLiterals);
+
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
 
-  if ( ZANN_CONTAINS ( zann_ordered) )
+  if (ZANN_CONTAINS(zann_ordered))
   {
     lOrderMode = StaticContextConsts::decl_ordered;
   }
-  else if ( ZANN_CONTAINS ( zann_unordered ) )
+  else if (ZANN_CONTAINS(zann_unordered))
   {
     lOrderMode = StaticContextConsts::decl_unordered;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_unordered ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_unordered),
+              lLiterals);
+
     lOrderMode = StaticContextConsts::decl_unordered;
   }
 
-  if ( ZANN_CONTAINS ( zann_read_only_nodes) )
+  if (ZANN_CONTAINS(zann_read_only_nodes))
   {
     lNodeModifier = StaticContextConsts::read_only;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable_nodes ) )
+  else if (ZANN_CONTAINS(zann_mutable_nodes))
   {
     lNodeModifier = StaticContextConsts::mutable_node;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable_nodes ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes),
+              lLiterals);
+
     lNodeModifier = StaticContextConsts::mutable_node;
   }
 

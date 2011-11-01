@@ -808,7 +808,7 @@ ostream& replace_expr::put( ostream& os) const
 {
   BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);
-  PUT_SUB( ",", theReplaceExpr );
+  PUT_SUB( ",", theSourceExpr );
   END_PUT();
 }
 
@@ -816,7 +816,7 @@ ostream& rename_expr::put(ostream& os) const
 {
   BEGIN_PUT(rename_expr);
   theTargetExpr->put(os);
-  PUT_SUB(",", theNameExpr);
+  PUT_SUB(",", theSourceExpr);
   END_PUT();
 }
 

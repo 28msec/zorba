@@ -180,6 +180,8 @@ public:
 
   virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
+  virtual BoolAnnotationValue propagatesInputNodes(expr* fo, ulong input) const;
+
   virtual BoolAnnotationValue mustCopyNodes(expr* fo, ulong input) const;
 
   virtual bool isArithmeticFunction() const { return false; }

@@ -59,6 +59,8 @@ public:
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
 	expr* getSourceExpr() const { return theSourceExpr.getp(); }
+
+  void compute_scripting_kind();
 };
 
 
@@ -88,8 +90,6 @@ public:
 
   store::UpdateConsts::InsertType getType() const { return theType; }
   
-  void compute_scripting_kind();
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -106,18 +106,13 @@ class delete_expr : public update_expr_base
   friend class ExprIterator;
   friend class expr;
 
-protected:
-	expr_t theTargetExpr;
-
 public:
   SERIALIZABLE_CLASS(delete_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	delete_expr(static_context* sctx, const QueryLoc&, expr_t);
-
-  void compute_scripting_kind();
+	delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -137,8 +132,6 @@ class replace_expr : public update_expr_base
 
 protected:
   store::UpdateConsts::ReplaceType theType;
-	expr_t                           theTargetExpr;
-	expr_t                           theReplaceExpr;
 
 public:
   SERIALIZABLE_CLASS(replace_expr)
@@ -155,9 +148,7 @@ public:
 
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-	expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
-
-  void compute_scripting_kind();
+	expr* getReplaceExpr() const { return theSourceExpr.getp(); }
 
   expr_t clone(substitution_t& s) const;
 
@@ -175,10 +166,6 @@ class rename_expr : public update_expr_base
   friend class ExprIterator;
   friend class expr;
 
-protected:
-	expr_t  theTargetExpr;
-	expr_t  theNameExpr;
-
 public:
   SERIALIZABLE_CLASS(rename_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, update_expr_base)
@@ -191,9 +178,7 @@ public:
       const expr_t&,
       const expr_t&);
 
-	expr* getNameExpr() const { return theNameExpr.getp(); }
-
-  void compute_scripting_kind();
+	expr* getNameExpr() const { return theSourceExpr.getp(); }
 
   expr_t clone(substitution_t& s) const;
 

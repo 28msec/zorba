@@ -117,7 +117,7 @@ public:
 
   order_type_t get_type() const { return theType; }
 
-  expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
 

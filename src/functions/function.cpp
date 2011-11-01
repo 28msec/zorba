@@ -104,22 +104,16 @@ void function::setAnnotations(AnnotationList* annotations)
   if (!theAnnotationList)
     return;
 
-  static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
-
-  if (theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::zann_nondeterministic)))
+  if (theAnnotationList->contains(AnnotationInternal::zann_nondeterministic))
     setDeterministic(false);
 
-  setPrivate(theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::fn_private)));
+  setPrivate(theAnnotationList->contains(AnnotationInternal::fn_private));
 
-  if (isUpdating()
-      &&
-      theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::zann_sequential)))
+  if (isUpdating() &&
+      theAnnotationList->contains(AnnotationInternal::zann_sequential))
   {
     throw XQUERY_EXCEPTION(zerr::XSST0001,
-                           ERROR_PARAMS(getName()->getStringValue()));
+    ERROR_PARAMS(getName()->getStringValue()));
   }
 }
 
@@ -228,6 +222,23 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const
 BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+  Check whether this function may return a node that belongs to the subtree 
+  of a node that is bound to the given input parameter.
+********************************************************************************/
+BoolAnnotationValue function::propagatesInputNodes(expr* fo, ulong input) const
+{
+  TypeManager* tm = fo->get_type_manager();
+
+  xqtref_t rt = fo->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    return ANNOTATION_FALSE;
+
+  return ANNOTATION_TRUE; // conservative answer
 }
 
 
