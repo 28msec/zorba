@@ -74,6 +74,7 @@ class Item
   friend class DocumentManager; 
   friend class SingletonIterator;
   friend class DynamicContext;
+  friend class ItemFactory;
 
 private:
   zorba::Item theItem;
@@ -209,6 +210,17 @@ public:
     return lStream.str();
   }
 
+  void compile (const std::string &aQuery)
+  {
+    theQuery->compile(aQuery);
+  }
+
+  void compile (const std::string &aQuery, StaticContext &aStaticContext )
+  {
+    Zorba_CompilerHints_t hints;
+    theQuery->compile(aQuery, aStaticContext.theStaticContext, hints);
+  }
+
   std::string printPlanAsXML()
   {
     std::ostringstream lStream;
@@ -322,6 +334,8 @@ public:
   std::string execute();
   std::string printPlanAsXML();
   std::string printPlanAsDOT();
+  void compile (const std::string &aQuery);
+  void compile (const std::string &aQuery, StaticContext &aStaticContext);
 
 #ifdef SWIGPYTHON
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy);

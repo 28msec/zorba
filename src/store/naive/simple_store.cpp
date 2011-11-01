@@ -513,10 +513,8 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (spec.theIsGeneral && spec.theIsSorted)
@@ -639,10 +637,8 @@ void SimpleStore::populateGeneralIndex(
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          throw ZORBA_EXCEPTION(
-            zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-            ERROR_PARAMS( index->getName()->getStringValue() )
-          );
+          throw ZORBA_EXCEPTION(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          ERROR_PARAMS(index->getName()->getStringValue()));
         }
 
         // Compute the keys of the current domain node. We must check whether
@@ -929,6 +925,7 @@ SimpleStore::getMap(const store::Item* aQName) const
   return lIndex.getp();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -936,6 +933,7 @@ store::Iterator_t SimpleStore::listMapNames()
 {
   return new NameIterator<IndexSet>(theHashMaps);
 }
+
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -964,10 +962,8 @@ store::Collection_t SimpleStore::createCollection(
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 
   return collection;
@@ -985,10 +981,8 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 }
 
@@ -1005,9 +999,12 @@ store::Collection_t SimpleStore::getCollection(
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) {
+  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  {
     return collection;
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -1026,10 +1023,8 @@ void SimpleStore::deleteCollection(
 
   if (!theCollections->remove(aName, aDynamicCollection))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-      ERROR_PARAMS( aName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
+    ERROR_PARAMS(aName->getStringValue()));
   }
 }
 
@@ -1125,10 +1120,7 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
 
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  bool inserted = theDocuments.insert(urib, root);
+  bool inserted = theDocuments.insert(uri, root);
 
   if (!inserted && node.getp() != root.getp())
   {
@@ -1147,21 +1139,19 @@ store::Iterator_t SimpleStore::getDocumentNames() const
   return new DocumentNameIterator<DocumentSet>(theDocuments);
 }
 
+
 /*******************************************************************************
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-store::Item_t SimpleStore::getDocument(const zstring& docUri)
+store::Item_t SimpleStore::getDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return NULL;
-
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
 
   XmlNode_t root;
 
-  bool found = theDocuments.get(urib, root);
+  bool found = theDocuments.get(uri, root);
 
   if (found)
     return root.getp();
@@ -1174,15 +1164,12 @@ store::Item_t SimpleStore::getDocument(const zstring& docUri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(const zstring& docUri)
+void SimpleStore::deleteDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return;
 
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
-
-  theDocuments.remove(urib);
+  theDocuments.erase(uri);
 }
 
 
@@ -1194,7 +1181,9 @@ void SimpleStore::deleteAllDocuments()
   theDocuments.clear();
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::createHashMap(
@@ -1432,7 +1421,9 @@ bool SimpleStore::unregisterNode(XmlNode* node)
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 

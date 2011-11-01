@@ -77,9 +77,9 @@ void AnnotationInternal::createBuiltIn()
   theAnnotId2NameMap[id] = qname;
   theAnnotName2IdMap.insert(qname, id);
 
-#define ZANN(a)                                                       \
-  GENV_ITEMFACTORY->createQName(qname, ZORBA_ANNOTATIONS_NS, "", #a); \
-  id = zann_##a;                                                      \
+#define ZANN(a, b)                                                     \
+  GENV_ITEMFACTORY->createQName(qname, ZORBA_ANNOTATIONS_NS, "", #a);  \
+  id = zann_##b;                                                      \
   theAnnotId2NameMap[id] = qname;                                     \
   theAnnotName2IdMap.insert(qname, id);
 
@@ -87,49 +87,49 @@ void AnnotationInternal::createBuiltIn()
   //
   // Zorba annotations - deterministic/nondeterministic
   //
-  ZANN(deterministic);
-  ZANN(nondeterministic);
+  ZANN(deterministic, deterministic);
+  ZANN(nondeterministic, nondeterministic);
 
   //
   // Zorba annotations - xquery scripting
   //
-  ZANN(assignable);
-  ZANN(nonassignable);
+  ZANN(assignable, assignable);
+  ZANN(nonassignable, nonassignable);
 
-  ZANN(sequential);
-  ZANN(nonsequential);
+  ZANN(sequential, sequential);
+  ZANN(nonsequential, nonsequential);
 
   //
   // Zorba annotations - misc
   //
-  ZANN(variadic);
+  ZANN(variadic, variadic);
 
-  ZANN(streamable);
+  ZANN(streamable, streamable);
 
   //
   // Zorba annotations - xqddf
   //
-  ZANN(unique);
-  ZANN(nonunique);
+  ZANN(unique, unique);
+  ZANN(nonunique, nonunique);
 
-  ZANN(value_equality);
-  ZANN(general_equality);
-  ZANN(value_range);
-  ZANN(general_range);
+  ZANN(value-equality, value_equality);
+  ZANN(general-equality, general_equality);
+  ZANN(value-range, value_range);
+  ZANN(general-range, general_range);
 
-  ZANN(automatic);
-  ZANN(manual);
+  ZANN(automatic, automatic);
+  ZANN(manual, manual);
 
-  ZANN(mutable);
-  ZANN(queue);
-  ZANN(append_only);
-  ZANN(const);
+  ZANN(mutable, mutable);
+  ZANN(queue, queue);
+  ZANN(append-only, append_only);
+  ZANN(const, const);
 
-  ZANN(ordered);
-  ZANN(unordered);
+  ZANN(ordered, ordered);
+  ZANN(unordered, unordered);
 
-  ZANN(read_only_nodes);
-  ZANN(mutable_nodes);
+  ZANN(read-only-nodes, read_only_nodes);
+  ZANN(mutable-nodes, mutable_nodes);
 
 #undef ZANN
 
