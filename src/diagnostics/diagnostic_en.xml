@@ -2307,6 +2307,14 @@
       <value>Sequential FLWOR expr may not have the semantics you expect</value>
     </diagnostic>
 
+    <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
+      <value>"$1": </value>
+    </diagnostic>
+
+    <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
+      <value></value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->

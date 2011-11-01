@@ -28,6 +28,8 @@
 #include "functions/udf.h"
 #include "functions/function_impl.h"
 
+#include "diagnostics/xquery_warning.h"
+
 #include "types/typeops.h"
 
 
@@ -394,10 +396,19 @@ void user_function::setCache(store::Index* aCache)
 ********************************************************************************/
 bool user_function::cacheResults() const
 {
-  if ( !isRecursive() || isSequential() || isUpdating() || !isDeterministic() )
+  // default: cache
+  // explicit no-cache => false
+  // recursive, nosequential, deterministic, nonupdating => true
+  // explicit cache but non atomic param or return type => warning, false
+  static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
+  if (theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::zann_no_cache)))
   {
     return false;
   }
+
+  bool lExplicitCacheRequest = theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::zann_cache));
 
   const xqtref_t& lRes = theSignature.returnType();
   TypeManager* tm = lRes->get_manager();
@@ -407,6 +418,12 @@ bool user_function::cacheResults() const
                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
                            QueryLoc::null))
   {
+    if (lExplicitCacheRequest)
+    {
+      NEW_XQUERY_WARNING(zwarn::ZWST005_CACHING_NOT_POSSIBLE,
+                         WARN_PARAMS(getName()->getStringValue()),
+                         WARN_LOC(theLoc));
+    }
     return false;
   }
 
@@ -419,9 +436,40 @@ bool user_function::cacheResults() const
                              *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
                              QueryLoc::null))
     {
+      if (lExplicitCacheRequest)
+      {
+        // raise warning
+      }
       return false;
     }
   }
+
+  if (isUpdating())
+  {
+    if (lExplicitCacheRequest)
+    {
+      // raise warning
+    }
+    return false;
+  }
+
+  if (!lExplicitCacheRequest) // will trust users here
+  {
+    if (!isRecursive())
+    {
+      return false;
+    }
+
+    if (isSequential() || !isDeterministic())
+    {
+      if (lExplicitCacheRequest)
+      {
+        // raise warning
+      }
+      return false;
+    }
+  }
+
 
   // recursive, singelton atomic in and output
   return true;
