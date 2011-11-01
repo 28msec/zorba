@@ -728,57 +728,41 @@ XQueryImpl::getStaticCollectionManager() const
   return theCollMgr;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-bool compareStringValueItem(Item a, Item b)
-{
-  return (a.getStringValue() < b.getStringValue());
-}
-
 bool XQueryImpl::getExternalVariables(std::vector<Item>& aVars) const
 {
   try
   {
-    std::map<short, static_context_t>::const_iterator lIte = theCompilerCB->theSctxMap.begin();
-    std::map<short, static_context_t>::const_iterator lEnd = theCompilerCB->theSctxMap.end();
+    checkNotClosed();
+    checkCompiled();
+
+    std::vector<var_expr_t> lVars;
+
+    std::map<short, static_context_t>::const_iterator lIte = 
+    theCompilerCB->theSctxMap.begin();
+
+    std::map<short, static_context_t>::const_iterator lEnd = 
+    theCompilerCB->theSctxMap.end();
 
     for(; lIte != lEnd; ++lIte)
     {
-      std::vector<var_expr_t> lVars;
       lIte->second.getp()->getVariables(lVars, false, false, true);
-
-      std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
-      std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
-      
-      for(; lVarIte != lVarEnd; ++lVarIte)
-      { 
-        aVars.push_back(lVarIte->getp()->get_name());
-      }
-      std::sort(aVars.begin(), aVars.end(),compareStringValueItem);
-      
-      std::vector<Item>::iterator aVarIte = aVars.begin();
-      std::vector<Item>::iterator aVarEnd = aVars.end();
-      
-      while((aVarIte+1) != aVarEnd)
-      {
-        if(aVarIte->getStringValue() == (aVarIte+1)->getStringValue())
-        {
-          aVars.erase(aVarIte+1);
-          aVarEnd = aVars.end();
-        }
-        else
-          aVarIte++;
-      }
-
     }
     
+    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
+    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
     
+    for(; lVarIte != lVarEnd; ++lVarIte)
+    { 
+      aVars.push_back((*lVarIte)->get_name());
+    } 
   }
   QUERY_CATCH
   return true;
 }
-
 
 
 /*******************************************************************************
@@ -840,6 +824,7 @@ bool XQueryImpl::isSequential() const
   QUERY_CATCH
   return false;
 }
+
 
 /*******************************************************************************
   Serialize the execution plan inot the given output stream.
@@ -937,7 +922,6 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
   QUERY_CATCH
   return false;
 }
-
 
 
 /*******************************************************************************

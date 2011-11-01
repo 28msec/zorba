@@ -104,17 +104,18 @@ cxx_api_changes_test3(Zorba* aZorba)
     std::vector<Item> lVars;
     lQuery->getStaticContext()->getExternalVariables(lVars);
 
-    std::ostringstream lOut;
+    if (lVars.size() != 2)
+      return false;
+
     std::vector<Item>::iterator lIte = lVars.begin();
     std::vector<Item>::iterator lEnd = lVars.end();
     
     for (; lIte != lEnd; ++lIte) 
     {
-      lOut << lIte->getStringValue() << " ";
+      String name = lIte->getStringValue();
+      if (name != "a" && name != "b")
+        return false;
     }
-
-    if(lOut.str().compare("a b "))
-      return false;
   }
   catch (XQueryException& qe)
   {
@@ -148,6 +149,9 @@ cxx_api_changes_test4(Zorba* aZorba)
     std::vector<Item> lVars;
     lQuery->getExternalVariables(lVars);
 
+    if (lVars.size() != 3)
+      return false;
+
     std::ostringstream lOut;
     std::vector<Item>::const_iterator lIte = lVars.begin();
     std::vector<Item>::const_iterator lEnd = lVars.end();
@@ -157,7 +161,14 @@ cxx_api_changes_test4(Zorba* aZorba)
       lOut << lIte->getStringValue() << " ";
     }
 
-    if(lOut.str().compare("a testGetExtVarA:ext testGetExtVarB:ext "))
+    std::string out = lOut.str();
+
+    if (out != "testGetExtVarA:ext a testGetExtVarB:ext " &&
+        out != "testGetExtVarB:ext a testGetExtVarA:ext " &&
+        out != "a testGetExtVarA:ext testGetExtVarB:ext " &&
+        out != "a testGetExtVarB:ext testGetExtVarA:ext " &&
+        out != "testGetExtVarA:ext testGetExtVarB:ext a " &&
+        out != "testGetExtVarB:ext testGetExtVarA:ext a ")
       return false;
   }
   catch (XQueryException& qe)

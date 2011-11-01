@@ -284,6 +284,8 @@ public:
 
   const StaticContext* getStaticContext() const;
 
+  bool getExternalVariables(std::vector<Item>& aVars) const;
+
   bool isUpdating() const;
   
   bool isSequential() const;
@@ -348,9 +350,6 @@ public:
 
   StaticCollectionManager*
   getStaticCollectionManager() const;
-
-  bool
-  getExternalVariables(std::vector<Item>& aVars) const;
 
 protected:
 
