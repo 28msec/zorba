@@ -1966,7 +1966,7 @@
     </diagnostic>
 
     <diagnostic code="ZDDY0025" name="INDEX_WRONG_NUMBER_OF_PROBE_ARGS">
-      <value>${"1": }invalid number of arguments in probe</value>
+      <value>"$1": invalid number of arguments to $2 operation; given $3 expected $4</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0026" name="INDEX_RANGE_PROBE_NOT_ALLOWED">
