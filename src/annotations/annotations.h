@@ -29,13 +29,11 @@
 namespace zorba
 {
 
-class AnnotationLiteral;
 class AnnotationInternal;
 class AnnotationList;
 
 typedef rchandle<AnnotationInternal> AnnotationInternal_t;
 typedef rchandle<AnnotationList> AnnotationList_t;
-typedef rchandle<AnnotationLiteral> AnnotationLiteral_t;
 
 class const_expr;
 
@@ -91,9 +89,9 @@ protected:
   static std::vector<RuleBitSet>         theRuleSet;
 
 protected:
-  AnnotationId                         theId;
-  store::Item_t                        theQName;
-  std::vector<AnnotationLiteral_t>     theLiteralList;
+  AnnotationId                   theId;
+  store::Item_t                  theQName;
+  std::vector<store::Item_t>     theLiterals;
 
 public:
   static void createBuiltIn();
@@ -109,7 +107,7 @@ public:
 
   AnnotationInternal(
     const store::Item_t& qname,
-    const std::vector<AnnotationLiteral_t>& literals); 
+    std::vector<store::Item_t>& literals); 
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
@@ -125,31 +123,7 @@ public:
 
   csize getNumLiterals() const;
 
-  const AnnotationLiteral* getLiteral(csize index) const;
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class AnnotationLiteral : public SimpleRCObject
-{
-protected:
-  store::Item_t  theLiteral;
-
-public:
-  AnnotationLiteral(const store::Item_t& aLiteral);
-
-public:
-  SERIALIZABLE_CLASS(AnnotationLiteral);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationLiteral, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  ~AnnotationLiteral() {};
-
-  store::Item_t getLiteralItem() const;
+  store::Item* getLiteral(csize index) const;
 };
 
 
@@ -189,8 +163,6 @@ public:
   void push_back(
       const store::Item_t& qname,
       const std::vector<rchandle<const_expr> >& literals);
-
-  //bool contains(const store::Item_t& searchQName) const;
 
   bool contains(AnnotationInternal::AnnotationId id) const;
 

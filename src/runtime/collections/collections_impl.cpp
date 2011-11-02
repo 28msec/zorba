@@ -586,7 +586,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
       for (csize j = 0; j < lTmp->getNumLiterals(); ++j)
       {
-        lAnn->theLiterals.push_back(lTmp->getLiteral(j)->getLiteralItem());
+        lAnn->theLiterals.push_back(lTmp->getLiteral(j));
       }
       lAnnotations.push_back(lAnn);
     }

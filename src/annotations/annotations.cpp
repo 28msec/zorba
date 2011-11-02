@@ -15,10 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <cmath>
-
 #include "annotations/annotations.h"
-#include "system/globalenv.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -36,9 +33,6 @@ namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 END_SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
-
-SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
 END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
@@ -62,7 +56,7 @@ void AnnotationInternal::createBuiltIn()
   store::Item_t qname;
   AnnotationId id;
 
-  theAnnotId2NameMap.resize(zann_end+1);
+  theAnnotId2NameMap.resize(zann_end);
 
   //
   // W3C annotations
@@ -226,6 +220,7 @@ AnnotationInternal::AnnotationId AnnotationInternal::lookup(
 ********************************************************************************/
 store::Item* AnnotationInternal::lookup(AnnotationInternal::AnnotationId id)
 {
+  assert(id < zann_end);
   assert(id < theAnnotId2NameMap.size());
 
   return theAnnotId2NameMap[id].getp();
@@ -237,9 +232,12 @@ store::Item* AnnotationInternal::lookup(AnnotationInternal::AnnotationId id)
 ********************************************************************************/
 AnnotationInternal::AnnotationInternal(const store::Item_t& qname)
   :
-  theId((*theAnnotName2IdMap.find(qname)).second),
+  theId(zann_end),
   theQName(qname)
 {
+  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.find(qname);
+  if (ite != theAnnotName2IdMap.end())
+    theId = (*ite).second;
 }
 
 
@@ -248,12 +246,16 @@ AnnotationInternal::AnnotationInternal(const store::Item_t& qname)
 ********************************************************************************/
 AnnotationInternal::AnnotationInternal(
   const store::Item_t& qname,
-  const std::vector<AnnotationLiteral_t>& literals)
+  std::vector<store::Item_t>& literals)
   :
-  theId((*theAnnotName2IdMap.find(qname)).second),
-  theQName(qname),
-  theLiteralList(literals)
+  theId(zann_end),
+  theQName(qname)
 {
+  theLiterals.swap(literals);
+
+  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.find(qname);
+  if (ite != theAnnotName2IdMap.end())
+    theId = (*ite).second;
 }
 
 
@@ -264,7 +266,7 @@ void AnnotationInternal::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_ENUM(AnnotationId, theId);
   ar & theQName;
-  ar & theLiteralList;
+  ar & theLiterals;
 }
 
 
@@ -282,47 +284,19 @@ const store::Item* AnnotationInternal::getQName() const
 ********************************************************************************/
 csize AnnotationInternal::getNumLiterals() const
 {
-  return theLiteralList.size();
+  return theLiterals.size();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const AnnotationLiteral* AnnotationInternal::getLiteral(csize index) const
+store::Item* AnnotationInternal::getLiteral(csize index) const
 {
-  if (index < theLiteralList.size())
-    return theLiteralList[index];
+  if (index < theLiterals.size())
+    return theLiterals[index].getp();
   else
     return NULL;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void AnnotationLiteral::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theLiteral;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-AnnotationLiteral::AnnotationLiteral(const store::Item_t& aLiteralValue)
-  :
-  theLiteral(aLiteralValue)
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t AnnotationLiteral::getLiteralItem() const
-{
-  return theLiteral;
 }
 
 
@@ -370,41 +344,18 @@ void AnnotationList::push_back(
     const store::Item_t& qname,
     const std::vector<rchandle<const_expr> >& literals)
 {
-  std::vector<AnnotationLiteral_t> lLiterals;
+  std::vector<store::Item_t> lLiterals;
 
   for (std::vector<rchandle<const_expr> >::const_iterator it = literals.begin();
        it != literals.end();
        ++it)
   {
-    lLiterals.push_back(new AnnotationLiteral((*it)->get_val()));
+    lLiterals.push_back((*it)->get_val());
   }
 
   theAnnotationList.push_back(new AnnotationInternal(qname, lLiterals));
 }
 
-
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-bool AnnotationList::contains(const store::Item_t& aSearchQName) const
-{
-  if (aSearchQName.getp() == NULL)
-    return false;
-
-  // sequential search might not be the most efficient but
-  // how many annotations might a function or variable have? 5?
-  for (ListConstIter_t lIter = theAnnotationList.begin();
-       lIter != theAnnotationList.end();
-       ++lIter)
-  {
-    if ((*lIter)->getQName()->equals(aSearchQName))
-      return true;
-  }
-
-  return false;
-}
-#endif
 
 /*******************************************************************************
 
@@ -443,7 +394,7 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     AnnotationId id = (*ite)->getId();
 
     // detect duplicate annotations (if we "know" them)
-    if (lCurrAnn.test(id))
+    if (id != AnnotationInternal::zann_end && lCurrAnn.test(id))
     {
       RAISE_ERROR(err::XQST0106, loc,
       ERROR_PARAMS(qname->getStringValue(), ZED(XQST0106_THE_SAME)));
@@ -464,9 +415,7 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     {
       // build error string to return set of conflicting annotations
       std::ostringstream lProblems;
-      for (csize i = 0, j = 0;
-           i < AnnotationInternal::zann_end;
-           ++i)
+      for (csize i = 0, j = 0; i < AnnotationInternal::zann_end; ++i)
       {
         if (lCurrSet.test(i))
         {
