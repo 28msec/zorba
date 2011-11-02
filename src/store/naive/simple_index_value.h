@@ -25,6 +25,39 @@ namespace zorba
 namespace simplestore
 {
 
+/******************************************************************************
+
+********************************************************************************/
+class ValueIndexCompareFunction
+{
+private:
+  csize                       theNumColumns;
+  long                        theTimezone;
+  std::vector<XQPCollator*>   theCollators;
+
+public:
+  ValueIndexCompareFunction(
+       csize numCols,
+       long timezone,
+       const std::vector<std::string>& collation);
+
+  ~ValueIndexCompareFunction();
+
+  const XQPCollator* getCollator(ulong i) const { return theCollators[i]; }
+
+  uint32_t hash(const store::IndexKey* key) const;
+
+  bool equal(const store::IndexKey* key1, const store::IndexKey* key2) const;
+
+  long compare(const store::IndexKey* key1, const store::IndexKey* key2) const;
+
+  bool operator()(const store::IndexKey* key1, const store::IndexKey* key2) const
+  {
+    return compare(key1, key2) < 0;
+  }
+};
+
+
 /**************************************************************************//**
   Class ValueIndexValue represents a value set as a vector of item handles.
 *******************************************************************************/
@@ -43,9 +76,22 @@ class ValueIndex : public IndexImpl
   friend class SimpleStore;
 
 protected:
-  ValueIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
+  ValueIndexCompareFunction   theCompFunction;
+
+protected:
+  ValueIndex(const store::Item_t& qname, const store::IndexSpecification& spec);
+
+  virtual ~ValueIndex();
+
+public:
+  const XQPCollator* getCollator(ulong i) const;
+
+  virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
+
+  virtual bool remove(
+        const store::IndexKey* key,
+        store::Item_t& item,
+        bool all = false) = 0;
 };
 
 
@@ -59,7 +105,7 @@ class ValueHashIndex : public ValueIndex
 
   typedef HashMap<const store::IndexKey*,
                   ValueIndexValue*,
-                  IndexCompareFunction> IndexMap;
+                  ValueIndexCompareFunction> IndexMap;
 
 protected:
 
@@ -82,8 +128,14 @@ protected:
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  IndexCompareFunction   theCompFunction;
-  IndexMap               theMap;
+  IndexMap  theMap;
+
+protected:
+  ValueHashIndex(
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
+
+  ~ValueHashIndex();
 
 public:
   void clear();
@@ -92,16 +144,9 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
+  bool insert(store::IndexKey*& key, store::Item_t& item);
 
   bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
-
-protected:
-  ValueHashIndex(
-      const store::Item_t& qname,
-      const store::IndexSpecification& spec);
-
-  ~ValueHashIndex();
 };
 
 
@@ -113,7 +158,7 @@ class ProbeValueHashIndexIterator : public store::IndexProbeIterator
 protected:
   rchandle<ValueHashIndex>               theIndex;
 
-  rchandle<IndexPointValueCondition>     theCondition;
+  rchandle<IndexPointCondition>          theCondition;
 
   ValueIndexValue                      * theResultSet;
   ValueIndexValue::const_iterator        theIte;
@@ -149,7 +194,7 @@ class ValueTreeIndex : public ValueIndex
 
   typedef std::map<const store::IndexKey*,
                    ValueIndexValue*,
-                   IndexCompareFunction> IndexMap;
+                   ValueIndexCompareFunction> IndexMap;
 
   class KeyIterator : public Index::KeyIterator
   {
@@ -164,9 +209,16 @@ class ValueTreeIndex : public ValueIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  IndexCompareFunction   theCompFunction;
-  IndexMap               theMap;
-  SYNC_CODE(Mutex        theMapMutex;)
+  IndexMap          theMap;
+
+  SYNC_CODE(Mutex   theMapMutex;)
+
+protected:
+  ValueTreeIndex(
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec);
+
+  ~ValueTreeIndex();
 
 public:
   void clear();
@@ -175,16 +227,9 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
+  bool insert(store::IndexKey*& key, store::Item_t& item);
 
   bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
-
-protected:
-  ValueTreeIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
-
-  ~ValueTreeIndex();
 };
 
 
@@ -196,7 +241,7 @@ class ProbeValueTreeIndexIterator : public store::IndexProbeIterator
 protected:
   rchandle<ValueTreeIndex>                  theIndex;
 
-  rchandle<IndexPointValueCondition>        thePointCond;
+  rchandle<IndexPointCondition>             thePointCond;
   rchandle<IndexBoxValueCondition>          theBoxCond;
 
   bool                                      theDoExtraFiltering;
@@ -208,6 +253,11 @@ protected:
   ValueIndexValue                         * theResultSet;
   ValueIndexValue::const_iterator           theIte;
   ValueIndexValue::const_iterator           theEnd;
+
+protected:
+  void initExact();
+
+  void initBox();
 
 public:
   ProbeValueTreeIndexIterator(const store::Index_t& index)
@@ -227,11 +277,6 @@ public:
   void reset();
 
   void close();
-
-protected:
-  void initExact();
-
-  void initBox();
 };
 
 
