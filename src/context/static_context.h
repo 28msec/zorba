@@ -317,13 +317,6 @@ public:
   different arities. One of these versions is stored in the theFunctionMap,
   and the rest are regisreded in theFunctionArityMap.
 
-  theAnnotations:
-  --------------
-  annotations_t -> store::Item_t map that contains a list of built-in annotations
-  Those annotations are used in the translator to check if a function,
-  variable, index, or collection declares any of these annotations.
-
-
   theCollectionMap :
   ------------------
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
@@ -408,8 +401,6 @@ class static_context : public SimpleRCObject
   typedef serializable_HashMapZString<xqtref_t> W3CCollectionMap;
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
-
-  typedef std::map<uint64_t, store::Item_t> AnnotationMap;
 
 public:
 
@@ -528,8 +519,6 @@ protected:
 
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
-
-  AnnotationMap                         * theAnnotationMap;
 
   CollectionMap                         * theCollectionMap;
 
@@ -822,16 +811,6 @@ public:
   ExternalFunction* lookup_external_function(
         const zstring& prefix,
         const zstring& local);
-
-
-  //
-  // Annotation
-  //
-  void add_ann(StaticContextConsts::annotations_t ann, const store::Item_t& aQName);
-
-  store::Item_t lookup_ann(StaticContextConsts::annotations_t ann) const;
-
-  StaticContextConsts::annotations_t lookup_ann(const store::Item_t& aQName) const;
 
 
   //

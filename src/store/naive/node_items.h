@@ -180,14 +180,13 @@ protected:
   ulong                     theId;
   ulong                     thePos;
 
-  zstring                   theDocUri;
-  zstring                   theBaseUri;
-
   SimpleCollection        * theCollection;
 
   XmlNode                 * theRootNode;
 
+#ifdef DATAGUIDE
   GuideNode               * theDataGuideRootNode;
+#endif
 
   bool                      theIsValidated;
   bool                      theIsRecursive;
@@ -220,14 +219,6 @@ public:
 
   ulong getId() const { return theId; }
 
-  const zstring& getDocUri() const { return theDocUri; }
-
-  void setDocUri(const zstring& uri) { theDocUri = uri; }
-
-  const zstring& getBaseUri() const { return theBaseUri; }
-
-  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
-
   ulong getCollectionId() const;
 
   const SimpleCollection* getCollection() const { return theCollection; }
@@ -250,9 +241,11 @@ public:
 
   bool isRecursive() const { return theIsRecursive; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
+#endif
 
 #ifndef EMBEDED_TYPE
   store::Item* getType(const XmlNode* n) const;
@@ -491,15 +484,9 @@ public:
 
   void setParent(InternalNode* p) { theParent = p; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
-
-  const zstring& getBaseUri() const { return getTree()->getBaseUri(); }
-
-  void setBaseUri(const zstring& uri) { getTree()->setBaseUri(uri); }
-
-  const zstring& getDocUri() const { return getTree()->getDocUri(); }
-
-  void setDocUri(const zstring& uri) { getTree()->setDocUri(uri); }
+#endif
 
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
@@ -793,10 +780,14 @@ class DocumentNode : public InternalNode
   friend class NodeFactory;
 
 protected:
+  zstring  theBaseUri;
+  zstring  theDocUri;
+
+protected:
   DocumentNode(
       XmlTree* tree,
-      zstring& baseUri,
-      zstring& docUri);
+      const zstring& baseUri,
+      const zstring& docUri);
 
   DocumentNode();
 
@@ -807,7 +798,7 @@ public:
 
   store::Item* getType() const;
 
-  void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
+  void getDocumentURI(zstring& uri) const { uri = theDocUri; }
 
   store::Iterator_t getChildren() const;
 
@@ -837,6 +828,12 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copyMode) const;
+
+  const zstring& getBaseUri() const { return theBaseUri; }
+
+  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
+
+  void setDocUri(const zstring& uri) { theDocUri = uri; }
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;

@@ -554,15 +554,15 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     // dynamic collections have some default properties
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable);
     lAnnotations.push_back(lAnn);
 
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_ordered);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_ordered);
     lAnnotations.push_back(lAnn);
 
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable_nodes);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes);
     lAnnotations.push_back(lAnn);
 
     pul->addCreateCollection(
@@ -584,9 +584,9 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
       lAnn->theName = lTmp->getQName();
 
-      for (size_t j = 0; j < lTmp->getNumLiterals(); ++j)
+      for (csize j = 0; j < lTmp->getNumLiterals(); ++j)
       {
-        lAnn->theLiterals.push_back(lTmp->getLiteral(j)->getLiteralItem());
+        lAnn->theLiterals.push_back(lTmp->getLiteral(j));
       }
       lAnnotations.push_back(lAnn);
     }

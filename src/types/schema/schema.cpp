@@ -1177,7 +1177,7 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   }
   else if ( XMLString::equals(SchemaSymbols::fgDT_MONTH, local) )
   {
-    result = GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
+    result = GENV_TYPESYSTEM.GMONTH_TYPE_ONE;
   }
   else if ( XMLString::equals(SchemaSymbols::fgDT_DURATION, local) )
   {

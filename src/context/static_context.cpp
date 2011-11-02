@@ -475,7 +475,6 @@ static_context::static_context()
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(NULL),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -523,7 +522,6 @@ static_context::static_context(static_context* parent)
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -576,7 +574,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
@@ -651,9 +648,6 @@ static_context::~static_context()
 
     delete theFunctionArityMap;
   }
-
-  if (theAnnotationMap)
-    delete theAnnotationMap;
 
   if (theW3CCollectionMap)
     delete theW3CCollectionMap;
@@ -889,8 +883,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionMap;
   ar & theFunctionArityMap;
   ar.set_serialize_only_for_eval(false);
-
-  ar & theAnnotationMap;
 
   ar & theCollectionMap;
 
@@ -2602,49 +2594,6 @@ ExternalFunction* static_context::lookup_external_function(
   return lModule->getExternalFunction(aLocalName.str());
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Annotations                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-void
-static_context::add_ann(
-    StaticContextConsts::annotations_t aAnnotation,
-    const store::Item_t& aQName)
-{
-  if (!theAnnotationMap) {
-    theAnnotationMap = new AnnotationMap();
-  }
-  (*theAnnotationMap)[static_cast<uint64_t>(aAnnotation)] = aQName;
-}
-
-store::Item_t
-static_context::lookup_ann(StaticContextConsts::annotations_t aAnnotation) const
-{
-  std::map<uint64_t, store::Item_t>::const_iterator lIter;
-  if (!theAnnotationMap ||
-      (lIter = theAnnotationMap->find(static_cast<uint64_t>(aAnnotation))) == theAnnotationMap->end()) {
-    return theParent?theParent->lookup_ann(aAnnotation):NULL;
-  }
-  return lIter->second;
-}
-
-StaticContextConsts::annotations_t
-static_context::lookup_ann(const store::Item_t& aQName) const
-{
-  if ( theAnnotationMap )
-  {
-    std::map<uint64_t, store::Item_t>::const_iterator lIter;
-    for (lIter = theAnnotationMap->begin(); lIter != theAnnotationMap->end(); ++lIter)
-    {
-      if (aQName->equals(lIter->second))
-      {
-        return static_cast<StaticContextConsts::annotations_t>(lIter->first);
-      }
-    }
-  }
-  return theParent?theParent->lookup_ann(aQName):StaticContextConsts::zann_end;
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

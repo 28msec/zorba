@@ -26,6 +26,7 @@ IF (SWIG_FOUND)
   SET (SWIG_MODULE_zorba_api_EXTRA_DEPS ${SWIG_FILES})
   SET (SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
 
+  
   # on apple and cmake 2.8, the generated swig libraries are prefixed with "lib"
   SET (ZORBA_SWIG_LIB_PREFIX)
   IF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
