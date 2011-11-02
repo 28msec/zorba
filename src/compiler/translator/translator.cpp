@@ -4139,11 +4139,8 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "data-definition (ddl)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("data-definition (ddl)"));
   }
 
   const QName* qname = v.getName();
@@ -4165,10 +4162,10 @@ void* begin_visit(const AST_IndexDecl& v)
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
-  index->setGeneral ( false );
-  index->setUnique ( false );
-  index->setMethod ( IndexDecl::HASH );
-  index->setMaintenanceMode ( IndexDecl::MANUAL );
+  index->setGeneral(false);
+  index->setUnique(false);
+  index->setMethod(IndexDecl::HASH);
+  index->setMaintenanceMode(IndexDecl::MANUAL);
 
   AnnotationListParsenode* lAnns = v.get_annotations();
   if (lAnns)
@@ -4176,27 +4173,28 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if ( theAnnotations )
+  if (theAnnotations)
   {
-    if ( ZANN_CONTAINS ( zann_general_equality ) ||
-         ZANN_CONTAINS ( zann_general_range ) ) 
+    if (ZANN_CONTAINS(zann_general_equality) ||
+        ZANN_CONTAINS(zann_general_range)) 
     {
-      index->setGeneral( true );
+      index->setGeneral(true);
     }
-    if ( ZANN_CONTAINS ( zann_general_range ) ||
-         ZANN_CONTAINS ( zann_value_range ) ) 
+    if (ZANN_CONTAINS(zann_general_range) ||
+        ZANN_CONTAINS(zann_value_range)) 
     {
-      index->setMethod( IndexDecl::TREE );
+      index->setMethod(IndexDecl::TREE);
     }
-    if ( ZANN_CONTAINS ( zann_unique ) )
+    if (ZANN_CONTAINS(zann_unique))
     {
-      index->setUnique( true );
+      index->setUnique(true);
     }
-    if ( ZANN_CONTAINS ( zann_automatic ) )
+    if (ZANN_CONTAINS(zann_automatic))
     {
       index->setMaintenanceMode(IndexDecl::REBUILD);
     }
   }
+
   theAnnotations = NULL;
 
   theIndexDecl = index;
