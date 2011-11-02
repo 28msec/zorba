@@ -280,6 +280,9 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
+static_context::ZORBA_NODEPOS_FN_NS = NS_PRE + "modules/node-position";
+
+const zstring
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
   = NS_PRE + "modules/store/dynamic/collections/ddl";
 
@@ -373,6 +376,7 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
+            ns == ZORBA_NODEPOS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||

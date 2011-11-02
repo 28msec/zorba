@@ -57,6 +57,8 @@ version 2.x
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)
+  * New node-position module. This module allows to obtain a representation of a node position, which
+    can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
 
 version 2.0.1
