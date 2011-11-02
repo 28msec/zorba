@@ -31,7 +31,8 @@ using namespace zorba;
 using namespace zorba::debugger;
 
 #ifdef WIN32
-size_t ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t SecondsToWait) 
+size_t
+ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t SecondsToWait) 
 {
   DWORD iReturnVal = 0;
   DWORD dwExitCode = 0;
@@ -121,14 +122,10 @@ size_t ExecuteProcess(std::wstring aPathToExe, std::wstring aParameters, size_t 
 
   return iReturnVal; 
 }
-#else
-
-// add execute process in Linux
-
 #endif
 
-
-int startZorba(std::string& aExec, std::vector<std::string>& aArgs)
+int
+startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 {
 #ifdef WIN32
   std::wstring lExecW, lParamsW;
@@ -157,18 +154,20 @@ int startZorba(std::string& aExec, std::vector<std::string>& aArgs)
     int lRes = system(lCommand.str().c_str());
     exit(lRes);
   }
-  else if (pID < 0) {
-    std::cerr << "Failed to fork Zorba" << std::endl;
-    exit(1);
-  }
   else {
     // Code only executed by parent process
-    return 0;
+    if (pID < 0) {
+      std::cerr << "Failed to fork Zorba" << std::endl;
+      return pID;
+    } else {
+      return 0;
+    }
   }
 #endif
 }
 
-void printUsage(std::string& aProgram)
+void
+printUsage(std::string& aProgram)
 {
   std::cerr << "Usage:" << std::endl
     << "    " << aProgram << " <zorba_executable> <zorba_arguments>" << std::endl
@@ -178,7 +177,14 @@ void printUsage(std::string& aProgram)
     << "        the debugger will start standalone and wait for an incomming connection from Zorba" << std::endl;
 }
 
-bool processArguments(int argc, char* argv[], std::string& aProgram, std::string& aZorba, unsigned int& aPort, std::vector<std::string>& aZorbaArgs)
+bool
+processArguments(
+  int argc,
+  char* argv[],
+  std::string& aProgram,
+  std::string& aZorba,
+  unsigned int& aPort,
+  std::vector<std::string>& aZorbaArgs)
 {
   // we will need the program name in usage info
   aPort = 28028;
@@ -206,6 +212,8 @@ bool processArguments(int argc, char* argv[], std::string& aProgram, std::string
       std::cerr << "Invalid option \"" << lArg << "\"" << std::endl;
       return false;
     }
+   
+    break;
   }
 
   if (argc < 5) {
@@ -286,19 +294,7 @@ _tmain(int argc, _TCHAR* argv[])
   }
 #endif
 
-  // **************************************************************************
-  // processing arguments
-
   try {
-    LockFreeQueue<std::size_t> lQueue;
-    LockFreeQueue<bool> lContEvent;
-    EventHandler lEventHandler(lQueue, lContEvent);
-    lEventHandler.init();
-
-    CommandPrompt lCommandPrompt;
-    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
-
-
     // **************************************************************************
     // start a zorba
 
@@ -314,12 +310,18 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start the debugger command line
 
+    LockFreeQueue<std::size_t> lQueue;
+    LockFreeQueue<bool> lContEvent;
+    EventHandler lEventHandler(lQueue, lContEvent);
+    lEventHandler.init();
+
+    CommandPrompt lCommandPrompt;
+    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
+
     lCommandLineHandler.execute();
 
 #ifndef WIN32
-    std::cout << "Waiting...";
     wait();
-    std::cout << "Done!";
 #endif
 
   } catch (...) {
@@ -328,3 +330,4 @@ _tmain(int argc, _TCHAR* argv[])
 
   return 0;
 }
+
