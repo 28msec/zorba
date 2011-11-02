@@ -68,7 +68,9 @@ XmlTree::XmlTree()
   thePos(0),
   theCollection(NULL),
   theRootNode(NULL),
+#ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
+#endif
   theIsValidated(false),
   theIsRecursive(false)
 #ifndef EMBEDED_TYPE
@@ -86,7 +88,9 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   thePos(0),
   theCollection(NULL),
   theRootNode(root),
+#ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
+#endif
   theIsValidated(false),
   theIsRecursive(false)
 #ifndef EMBEDED_TYPE
@@ -137,11 +141,13 @@ void XmlTree::free()
     theRootNode = NULL;
   }
 
+#ifdef DATAGUIDE
   if (theDataGuideRootNode != NULL)
   {
     theDataGuideRootNode->deleteTree();
     theDataGuideRootNode = NULL;
   }
+#endif
 
 #ifndef EMBEDED_TYPE
   if (theTypesMap)
@@ -1328,16 +1334,13 @@ DocumentNode::DocumentNode()
 ********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree* tree,
-    zstring& baseUri,
-    zstring& docUri)
+    const zstring& baseUri,
+    const zstring& docUri)
   :
-  InternalNode(tree, NULL, false, 0, store::StoreConsts::documentNode)
+  InternalNode(tree, NULL, false, 0, store::StoreConsts::documentNode),
+  theBaseUri(baseUri),
+  theDocUri(docUri)
 {
-  if (!baseUri.empty())
-    tree->setBaseUri(baseUri);
-
-  tree->setDocUri(docUri);
-
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
@@ -1363,10 +1366,7 @@ XmlNode* DocumentNode::copyInternal(
   {
     tree = NodeFactory::instance().createXmlTree();
 
-    zstring baseuri = getBaseUri();
-    zstring docuri = getDocUri();
-
-    copyNode = NodeFactory::instance().createDocumentNode(tree, baseuri, docuri);
+    copyNode = NodeFactory::instance().createDocumentNode(tree, theBaseUri, theDocUri);
 
     const_iterator ite = childrenBegin();
     const_iterator end = childrenEnd();
@@ -1400,7 +1400,7 @@ XmlNode* DocumentNode::copyInternal(
 void DocumentNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   local = true;
-  uri = getBaseUri();
+  uri = theBaseUri;
 }
 
 
@@ -1504,8 +1504,8 @@ zstring DocumentNode::show() const
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
-  strStream << " baseUri = \"" << getBaseUri() << "\"";
-  strStream << " docUri = \"" << getDocUri();
+  strStream << " baseUri = \"" << theBaseUri << "\"";
+  strStream << " docUri = \"" << theDocUri;
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();

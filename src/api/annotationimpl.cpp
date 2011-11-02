@@ -50,7 +50,7 @@ Item AnnotationImpl::getLiteral(unsigned int i) const
   if (i >= theAnnotation->getNumLiterals())
     return Item(NULL);
 
-  Item lItem(theAnnotation->getLiteral(i)->getLiteralItem().getp());
+  Item lItem(theAnnotation->getLiteral(i));
   return lItem;
 }
 

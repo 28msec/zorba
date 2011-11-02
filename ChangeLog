@@ -40,6 +40,7 @@ version 2.x
   * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
+  * Removed ZSTR0005 and ZSTR0006 error codes
   * Fixed bug #867662 ("nullptr" warning)
   * Fixed bug #868258 (Assertion failure with two delete collection)
   * Fixed bug #871623 and #871629 (assertion failures with insertions in dynamic collections)
@@ -49,6 +50,8 @@ version 2.x
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
+  * General index cannot be declared as unique if the type of its key is
+    xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
   * Optimization for count(collection()) expressions
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
@@ -56,6 +59,7 @@ version 2.x
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
+  * Fixed bug #872502 (validation of the JSON module xqdoc fails)
 
 version 2.0.1
 
