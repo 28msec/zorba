@@ -57,7 +57,8 @@ user_function::user_function(
   theIsLeaf(true),
   theIsOptimized(false),
   thePlanStateSize(0),
-  theCache(0)
+  theCache(0),
+  theCacheResults(false)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
@@ -364,6 +365,8 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
                              ccb,
                              nextVarId,
                              &argVarToRefsMap);
+
+    computeResultCaching(ccb->theXQueryDiagnostics);
   }
 
   planStateSize = thePlanStateSize;
@@ -391,24 +394,33 @@ void user_function::setCache(store::Index* aCache)
 
 
 /*******************************************************************************
- only cache recursive (non-sequential, non-updating, deterministic)
- functions with singleton atomic input and output
 ********************************************************************************/
 bool user_function::cacheResults() const
 {
-  // default: cache
-  // explicit no-cache => false
-  // recursive, nosequential, deterministic, nonupdating => true
-  // explicit cache but non atomic param or return type => warning, false
+  return theCacheResults;
+}
+
+
+/*******************************************************************************
+ only cache recursive (non-sequential, non-updating, deterministic)
+ functions with singleton atomic input and output
+********************************************************************************/
+void user_function::computeResultCaching(XQueryDiagnostics* diag) const
+{
   static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
-  if (theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::zann_no_cache)))
+  if (theAnnotationList)
   {
-    return false;
+    if (theAnnotationList->contains(
+          lCtx.lookup_ann(StaticContextConsts::zann_no_cache)))
+    {
+      theCacheResults = false;
+      return;
+    }
   }
 
-  bool lExplicitCacheRequest = theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::zann_cache));
+  bool lExplicitCacheRequest = theAnnotationList
+    ?theAnnotationList->contains(lCtx.lookup_ann(StaticContextConsts::zann_cache))
+    :false;
 
   const xqtref_t& lRes = theSignature.returnType();
   TypeManager* tm = lRes->get_manager();
@@ -416,15 +428,22 @@ bool user_function::cacheResults() const
   if (!TypeOps::is_subtype(tm,
                            *lRes,
                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                           QueryLoc::null))
+                           theLoc))
   {
     if (lExplicitCacheRequest)
     {
-      NEW_XQUERY_WARNING(zwarn::ZWST005_CACHING_NOT_POSSIBLE,
-                         WARN_PARAMS(getName()->getStringValue()),
-                         WARN_LOC(theLoc));
+      diag->add_warning(NEW_XQUERY_WARNING(
+        zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+        WARN_PARAMS(
+          getName()->getStringValue(),
+          lRes->toString()
+        ),
+        WARN_LOC(theLoc)
+       )
+     );
     }
-    return false;
+    theCacheResults = false;
+    return;
   }
 
   size_t lArity = theSignature.paramCount();
@@ -434,13 +453,14 @@ bool user_function::cacheResults() const
     if (!TypeOps::is_subtype(tm,
                              *lArg,
                              *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                             QueryLoc::null))
+                             theLoc))
     {
       if (lExplicitCacheRequest)
       {
         // raise warning
       }
-      return false;
+      theCacheResults = false;
+      return;
     }
   }
 
@@ -450,14 +470,16 @@ bool user_function::cacheResults() const
     {
       // raise warning
     }
-    return false;
+    theCacheResults = false;
+    return;
   }
 
   if (!lExplicitCacheRequest) // will trust users here
   {
     if (!isRecursive())
     {
-      return false;
+      theCacheResults = false;
+      return;
     }
 
     if (isSequential() || !isDeterministic())
@@ -466,21 +488,25 @@ bool user_function::cacheResults() const
       {
         // raise warning
       }
-      return false;
+      theCacheResults = false;
+      return;
     }
   }
 
-
-  // recursive, singelton atomic in and output
-  return true;
+  theCacheResults = true;
 }
 
 /*******************************************************************************
 
 ********************************************************************************/
-CODEGEN_DEF(user_function)
+PlanIter_t user_function::codegen(
+      CompilerCB* cb,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const
 {
-  return new UDFunctionCallIterator(aSctx, aLoc, aArgs, this);
+  return new UDFunctionCallIterator(sctx, loc, argv, this);
 }
 
 

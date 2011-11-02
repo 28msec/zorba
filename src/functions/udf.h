@@ -108,6 +108,7 @@ private:
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
   mutable store::Index*       theCache;
+  mutable bool                theCacheResults;
 
 public:
   SERIALIZABLE_CLASS(user_function)
@@ -179,6 +180,9 @@ public:
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const;
+
+  void
+  computeResultCaching(XQueryDiagnostics*) const;
 };
 
 

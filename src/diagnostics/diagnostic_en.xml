@@ -2308,7 +2308,7 @@
     </diagnostic>
 
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
-      <value>"$1": </value>
+      <value>"$1": function caching not possible because return type ($2) is not subtype of xs:anyAtomicType</value>
     </diagnostic>
 
     <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
