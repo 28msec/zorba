@@ -3296,14 +3296,13 @@ void* begin_visit(const VFO_DeclList& v)
                                 sig,
                                 scriptKind,
                                 ef);
-      f->setAnnotations(theAnnotations);
     }
     else // Process UDF (non-external) function declaration
     {
       f = new user_function(loc, sig, NULL, scriptKind); // no body for now
-      f->setAnnotations(theAnnotations);
     }
 
+    f->setAnnotations(theAnnotations);
     theAnnotations = NULL; // important to reset
 
     // Create bindings between (function qname item, arity) and function obj
