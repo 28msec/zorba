@@ -131,6 +131,8 @@ public:
 
   void setDynamic() { theIsDynamic = true; }
 
+  bool isCached() const;
+
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);

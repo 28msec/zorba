@@ -365,8 +365,6 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
                              ccb,
                              nextVarId,
                              &argVarToRefsMap);
-
-    computeResultCaching(ccb->theXQueryDiagnostics);
   }
 
   planStateSize = thePlanStateSize;
@@ -408,6 +406,8 @@ bool user_function::cacheResults() const
 void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 {
   static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
+  // check necessary conditions
+  // %ann:cache or not %ann:no-cache
   if (theAnnotationList)
   {
     if (theAnnotationList->contains(
@@ -418,10 +418,13 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     }
   }
 
+  // was the %ann:cache annotation given explicitly by the user
   bool lExplicitCacheRequest = theAnnotationList
-    ?theAnnotationList->contains(lCtx.lookup_ann(StaticContextConsts::zann_cache))
+    ?theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::zann_cache))
     :false;
 
+  // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
   TypeManager* tm = lRes->get_manager();
 
@@ -432,15 +435,17 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
   {
     if (lExplicitCacheRequest)
     {
-      diag->add_warning(NEW_XQUERY_WARNING(
-        zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-        WARN_PARAMS(
-          getName()->getStringValue(),
-          lRes->toString()
-        ),
-        WARN_LOC(theLoc)
-       )
-     );
+      diag->add_warning(
+        NEW_XQUERY_WARNING(
+          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+          WARN_PARAMS(
+            getName()->getStringValue(),
+            ZED( ZWST0005_RETURN_TYPE ),
+            lRes->toString()
+          ),
+          WARN_LOC(theLoc)
+        )
+      );
     }
     theCacheResults = false;
     return;
@@ -457,37 +462,70 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     {
       if (lExplicitCacheRequest)
       {
-        // raise warning
+        diag->add_warning(
+          NEW_XQUERY_WARNING(
+            zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+            WARN_PARAMS(
+              getName()->getStringValue(),
+              ZED( ZWST0005_PARAM_TYPE ),
+              i+1,
+              lArg->toString()
+            ),
+            WARN_LOC(theLoc)
+          )
+        );
       }
       theCacheResults = false;
       return;
     }
   }
 
+  // function updating?
   if (isUpdating())
   {
     if (lExplicitCacheRequest)
     {
-      // raise warning
+      diag->add_warning(
+        NEW_XQUERY_WARNING(
+          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+          WARN_PARAMS(
+            getName()->getStringValue(),
+            ZED( ZWST0005_UPDATING )
+          ),
+          WARN_LOC(theLoc)
+        )
+      );
     }
     theCacheResults = false;
     return;
   }
 
-  if (!lExplicitCacheRequest) // will trust users here
+  if (lExplicitCacheRequest)
   {
-    if (!isRecursive())
-    {
-      theCacheResults = false;
-      return;
-    }
-
     if (isSequential() || !isDeterministic())
     {
       if (lExplicitCacheRequest)
       {
-        // raise warning
+        diag->add_warning(
+          NEW_XQUERY_WARNING(
+            zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
+            WARN_PARAMS(
+              getName()->getStringValue(),
+              (isSequential()?"sequential":"non-deterministic")
+            ),
+            WARN_LOC(theLoc)
+          )
+        );
       }
+    }
+    theCacheResults = true;
+    return;
+  }
+
+  if (!lExplicitCacheRequest)
+  {
+    if (!isRecursive())
+    {
       theCacheResults = false;
       return;
     }

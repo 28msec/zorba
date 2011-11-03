@@ -278,6 +278,25 @@ In this example, the <tt>file:read-text</tt> function returns a streamable strin
 In order to be able to use the value twice, the <tt>string:materialize</tt> function must be used to materialize the entire contents of the file <tt>myfile.txt</tt> in memory.
 Otherwise, the error zerr:ZSTR0055 is raised.
 
+\paragraph caching_annotation Caching Results of Functions
+Caching of function results might improve the performance if computational expensive functions are invoked multiple times with the same arguments.
+
+Zorba automatically caches results of recursive, deterministic, and non-sequential functions whose parameters and return types are subtypes of xs:anyAtomicType.
+Specifically, if such a function is called twice with the same arguments, the result of the second call will return the same value without re-evaluating the function.
+
+For example, in the following recursive function computing a fibonacci number, each result is automatically cached and, hence, dramatically improves the performance.
+
+\include zorba/udf/udf-fib-rec.xq
+
+In order to explicitly disable function caching, the user can specify the <tt>%ann:no-cache</tt> annotation.
+
+In addition, the user can use the <tt>%ann:cache</tt> annotation to cache the results of functions other than the ones that are automatically cached.
+However, this will only work if the function is not updating and its parameter and return types are subtypes of xs:anyAtomicType.
+Zorba will raise a warning if caching is explicitly enabled but the function does not meet this criteria (zwarn:ZWST0005).
+
+Please note, that explicitly enforcing caching for sequential or nondeterministic functions might not give the intended result.
+In such cases, Zorba will raise a warning (zwarn:ZWST0006).
+
 \paragraph collection_index_annotations Annotations on Collections and Indexes
 
 The \ref xqddf uses annotations to assign properties to collections and indexes.

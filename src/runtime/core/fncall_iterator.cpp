@@ -203,6 +203,14 @@ bool UDFunctionCallIterator::isUpdating() const
 /*******************************************************************************
 
 ********************************************************************************/
+bool UDFunctionCallIterator::isCached() const
+{
+  return theUDF->cacheResults();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 void UDFunctionCallIterator::createCache(
     PlanState& planState,
     UDFunctionCallIteratorState* state)

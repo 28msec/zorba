@@ -98,6 +98,7 @@
 #endif
 
 #include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/library.h"
 
 #include "types/typeops.h"
@@ -2277,11 +2278,14 @@ void end_visit(fo_expr& v)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setInUpdateExpr();
       }
     }
-#if 0
     else if (func->isUdf())
     {
+      // need to computeResultCaching here for iterprint to work
       const user_function* udf = static_cast<const user_function*>(func);
+      udf->computeResultCaching(theCCB->theXQueryDiagnostics);
+    }
 
+#if 0
       if (udf->isExiting())
       {
         TypeManager* tm = v.get_type_manager();
