@@ -200,7 +200,10 @@ typedef rchandle<VarRebind> VarRebind_t;
 
 
 /*******************************************************************************
-
+  A FlworClauseVarMap is created for each flwor clause that defines variables.
+  If M is such a clause, then for each variable Vi defined by M, theVarExprs[i]
+  and theVarRebinds[i] contain an entry for Vi. theVarExprs[i] contains the
+  var_expr representing the Vi definition. 
 ********************************************************************************/
 class FlworClauseVarMap : public SimpleRCObject
 {
@@ -208,7 +211,7 @@ public:
   bool                          theIsGeneral;
   const flwor_clause          * theClause;
 
-  std::vector<const var_expr*>  theVarExprs;
+  std::vector<var_expr*>        theVarExprs;
   std::vector<VarRebind_t>      theVarRebinds;
 
 public:
@@ -223,8 +226,8 @@ public:
 
   long find_var(const var_expr* var) const
   {
-    ulong numVars = (ulong)theVarExprs.size();
-    for (ulong i = 0; i < numVars; ++i)
+    csize numVars = theVarExprs.size();
+    for (csize i = 0; i < numVars; ++i)
     {
       if (theVarExprs[i] == var)
         return i;
@@ -760,7 +763,7 @@ void general_var_codegen(const var_expr& var)
         {
           varRebind = new VarRebind;
 
-          clauseVarMap->theVarExprs.push_back(&var);
+          clauseVarMap->theVarExprs.push_back(const_cast<var_expr*>(&var));
           clauseVarMap->theVarRebinds.push_back(varRebind);
 
           varRebind->theInputVar = varIter;
@@ -1190,14 +1193,14 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     const group_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
     const group_clause::rebind_list_t& nongrouping_vars = gbc->get_nongrouping_vars();
 
-    for (unsigned i = 0; i < grouping_vars.size(); i++)
+    for (unsigned i = 0; i < grouping_vars.size(); ++i)
     {
       VarRebind_t varRebind = new VarRebind;
       clauseVarMap->theVarExprs.push_back(grouping_vars[i].second.getp());
       clauseVarMap->theVarRebinds.push_back(varRebind);
     }
 
-    for (unsigned i = 0; i < nongrouping_vars.size(); i++)
+    for (unsigned i = 0; i < nongrouping_vars.size(); ++i)
     {
       VarRebind_t varRebind = new VarRebind;
       clauseVarMap->theVarExprs.push_back(nongrouping_vars[i].second.getp());
@@ -1364,22 +1367,17 @@ bool nativeColumnSort(expr* colExpr)
 
   xqtref_t colType = colExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *colType, *rtm.STRING_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DOUBLE_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.FLOAT_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.LONG_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.UNSIGNED_LONG_TYPE_STAR, loc) ||
-      TypeOps::is_equal(tm,
-                        *TypeOps::prime_type(tm, *colType),
-                        *rtm.DECIMAL_TYPE_ONE,
-                        loc) ||
-      TypeOps::is_equal(tm,
-                        *TypeOps::prime_type(tm, *colType),
-                        *rtm.INTEGER_TYPE_ONE,
-                        loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DATE_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.TIME_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DATETIME_TYPE_STAR, loc))
+  if (colType->type_kind() == XQType::NODE_TYPE_KIND)
+  {
+    colType = static_cast<const NodeXQType*>(colType.getp())->get_content_type();
+  }
+
+  if (colType != NULL &&
+      TypeOps::is_subtype(tm, *colType, *rtm.ANY_ATOMIC_TYPE_STAR, loc) &&
+      !TypeOps::is_equal(tm, 
+                         *TypeOps::prime_type(tm, *colType),
+                         *rtm.ANY_ATOMIC_TYPE_ONE,
+                         loc))
   {
     return true;
   }
@@ -1670,7 +1668,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
     if (c.get_kind() != flwor_clause::where_clause)
     {
       ZORBA_ASSERT(!theClauseStack.empty());
-      ulong stackSize = (ulong)theClauseStack.size();
+      csize stackSize = theClauseStack.size();
 
       clauseVarMap = theClauseStack[stackSize-1];
       theClauseStack.resize(stackSize - 1);
@@ -1879,9 +1877,12 @@ void generate_groupby(
     std::vector<flwor::NonGroupingSpec>& ngspecs)
 {
   const group_clause* gbc = static_cast<const group_clause*>(clauseVarMap->theClause);
+
   const group_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
   const group_clause::rebind_list_t& ngvars = gbc->get_nongrouping_vars();
+
   const std::vector<std::string>& collations = gbc->get_collations();
+
   long numVars = (long)(gvars.size() + ngvars.size());
   long numGroupVars = (long)gvars.size();
   long i = numVars - 1;
@@ -1901,7 +1902,12 @@ void generate_groupby(
 
     const std::vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
 
-    gspecs.push_back(flwor::GroupingSpec(pop_itstack(), varRefs, collations[i]));
+    bool fastComparison = nativeColumnSort(clauseVarMap->theVarExprs[i]);
+
+    gspecs.push_back(flwor::GroupingSpec(pop_itstack(),
+                                         varRefs,
+                                         collations[i],
+                                         fastComparison));
   }
 }
 

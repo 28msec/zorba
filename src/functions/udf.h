@@ -28,6 +28,7 @@ namespace zorba
   namespace store
   {
     class Index;
+    typedef rchandle<Index> Index_t;
   }
 
 
@@ -107,7 +108,7 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  mutable store::Index*       theCache;
+  mutable store::Index_t      theCache;
   mutable bool                theCacheResults;
 
 public:

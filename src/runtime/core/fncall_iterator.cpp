@@ -218,27 +218,22 @@ void UDFunctionCallIterator::createCache(
   store::Index_t lIndex = theUDF->getCache();
   if (!lIndex && theUDF->cacheResults())
   {
-    lIndex = planState.theGlobalDynCtx->getIndex(theUDF->getName());
-    if (!lIndex)
+    const signature& sig = theUDF->getSignature();
+
+    csize numArgs = theChildren.size();
+
+    store::IndexSpecification lSpec;
+    lSpec.theNumKeyColumns = numArgs;
+    lSpec.theKeyTypes.resize(numArgs);
+    lSpec.theCollations.resize(numArgs);
+    lSpec.theIsTemp = true;
+    lSpec.theIsUnique = true;
+    for (csize i = 0; i < numArgs; ++i)
     {
-      const signature& sig = theUDF->getSignature();
-
-      csize numArgs = theChildren.size();
-
-      store::IndexSpecification lSpec;
-      lSpec.theNumKeyColumns = numArgs;
-      lSpec.theKeyTypes.resize(numArgs);
-      lSpec.theCollations.resize(numArgs);
-      lSpec.theIsTemp = true;
-      lSpec.theIsUnique = true;
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        lSpec.theKeyTypes[i] = sig[i]->get_qname().getp();
-      }
-      lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
-      planState.theGlobalDynCtx->bindIndex(theUDF->getName(), lIndex);
-      theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
+      lSpec.theKeyTypes[i] = sig[i]->get_qname().getp();
     }
+    lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
+    theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
   }
   state->theCache = lIndex.getp();
 }

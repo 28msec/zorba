@@ -26,11 +26,14 @@
 #include "compiler/rewriter/framework/rewriter.h"
 
 #include "functions/udf.h"
+#include "annotations/annotations.h"
 #include "functions/function_impl.h"
 
 #include "diagnostics/xquery_warning.h"
 
 #include "types/typeops.h"
+
+#include "store/api/index.h" // needed for destruction of the cache
 
 
 namespace zorba
@@ -405,13 +408,11 @@ bool user_function::cacheResults() const
 ********************************************************************************/
 void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 {
-  static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
   // check necessary conditions
   // %ann:cache or not %ann:no-cache
   if (theAnnotationList)
   {
-    if (theAnnotationList->contains(
-          lCtx.lookup_ann(StaticContextConsts::zann_no_cache)))
+    if (theAnnotationList->contains(AnnotationInternal::zann_nocache))
     {
       theCacheResults = false;
       return;
@@ -420,8 +421,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 
   // was the %ann:cache annotation given explicitly by the user
   bool lExplicitCacheRequest = theAnnotationList
-    ?theAnnotationList->contains(
-        lCtx.lookup_ann(StaticContextConsts::zann_cache))
+    ?theAnnotationList->contains(AnnotationInternal::zann_cache)
     :false;
 
   // parameter and return types are subtype of xs:anyAtomicType?
