@@ -434,18 +434,18 @@ SET(ZORBA_LIB_DIRNAME "lib" CACHE STRING
 # files) and schemas (.xsd files) - which are platform-
 # independent. Lib dir is for platform-specific files, specifically
 # shared libraries for module external functions.
-SET(ZORBA_CORE_URI_DIR "share/zorba-${ZORBA_VERSION}/uris"
-  CACHE STRING "Path (relative to installdir) to core modules/schemas")
-MARK_AS_ADVANCED(ZORBA_CORE_URI_DIR)
 SET(ZORBA_NONCORE_URI_DIR "share/zorba/uris"
   CACHE STRING "Path (relative to installdir) to non-core modules/schemas")
 MARK_AS_ADVANCED(ZORBA_NONCORE_URI_DIR)
-SET(ZORBA_CORE_LIB_DIR "${ZORBA_LIB_DIRNAME}/zorba-${ZORBA_VERSION}"
-  CACHE STRING "Path (relative to installdir) to core libraries")
-MARK_AS_ADVANCED(ZORBA_CORE_LIB_DIR)
+SET(ZORBA_CORE_URI_DIR "${ZORBA_NONCORE_URI_DIR}/core/${ZORBA_VERSION}"
+  CACHE STRING "Path (relative to installdir) to core modules/schemas")
+MARK_AS_ADVANCED(ZORBA_CORE_URI_DIR)
 SET(ZORBA_NONCORE_LIB_DIR "${ZORBA_LIB_DIRNAME}/zorba"
   CACHE STRING "Path (relative to installdir) to non-core libraries")
 MARK_AS_ADVANCED(ZORBA_NONCORE_LIB_DIR)
+SET(ZORBA_CORE_LIB_DIR "${ZORBA_NONCORE_LIB_DIR}/core/${ZORBA_VERSION}"
+  CACHE STRING "Path (relative to installdir) to core libraries")
+MARK_AS_ADVANCED(ZORBA_CORE_LIB_DIR)
 
 # add compiler variables
 ADD_DEFINITIONS(${DEFINITIONS})
@@ -482,7 +482,7 @@ IF (WIN32)
   SET(ZORBA_CMAKE_DIR "cmake" CACHE STRING
     "Relative path to CMake files in Zorba installation")
 ELSE (WIN32)
-  SET(ZORBA_CMAKE_DIR "share/zorba-${ZORBA_VERSION}/cmake" CACHE STRING
+  SET(ZORBA_CMAKE_DIR "share/cmake/zorba-${ZORBA_VERSION}" CACHE STRING
     "Relative path to CMake files in Zorba installation")
 ENDIF (WIN32)
 
