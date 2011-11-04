@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+#include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
 
@@ -38,6 +39,7 @@
 #include "store/naive/item_iterator.h"
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
+#include "store/naive/ordpath.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
@@ -827,6 +829,723 @@ zstring AnyUriItem::show() const
   res += theValue;
   res += ")";
   return res;
+}
+
+
+bool AnyUriItem::isAncestor(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isAncestor(aOther);
+}
+
+
+bool AnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isFollowingSibling(aOther);
+}
+
+
+bool AnyUriItem::isFollowing(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isFollowing(aOther);
+}
+
+
+bool AnyUriItem::isDescendant(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isDescendant(aOther);
+}
+
+
+bool AnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isInSubtreeOf(aOther);
+}
+
+
+bool AnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isPrecedingSibling(aOther);
+}
+
+
+bool AnyUriItem::isPreceding(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isPreceding(aOther);
+}
+
+
+bool AnyUriItem::isChild(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isChild(aOther);
+}
+
+
+bool AnyUriItem::isAttribute(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isAttribute(aOther);
+}
+
+
+bool AnyUriItem::isParent(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isParent(aOther);
+}
+
+
+bool AnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isPrecedingInDocumentOrder(aOther);
+}
+
+
+bool AnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isFollowingInDocumentOrder(aOther);
+}
+
+
+store::Item_t AnyUriItem::getLevel() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->getLevel();
+}
+
+
+bool AnyUriItem::isAttribute() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isAttribute();
+}
+
+
+bool AnyUriItem::isComment() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isComment();
+}
+
+
+bool AnyUriItem::isDocument() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isDocument();
+}
+
+
+bool AnyUriItem::isElement() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isElement();
+}
+
+
+bool AnyUriItem::isProcessingInstruction() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isProcessingInstruction();
+}
+
+
+bool AnyUriItem::isText() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isText();
+}
+
+
+bool AnyUriItem::isSibling(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isSibling(aOther);
+}
+
+
+bool AnyUriItem::inSameTree(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->inSameTree(aOther);
+}
+
+
+bool AnyUriItem::inCollection() const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return static_cast<StructuralAnyUriItem *>(lThisUri.getp())->inCollection();
+}
+
+
+bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->inSameCollection(aOther);
+}
+
+
+/*******************************************************************************
+  class StructuralAnyUriItem
+********************************************************************************/
+
+StructuralAnyUriItem::StructuralAnyUriItem(
+    zstring& encoded,
+    ulong collectionId,
+    ulong treeId, 
+    store::StoreConsts::NodeKind nodeKind,
+    const OrdPath& ordPath)
+  :
+  theCollectionId(collectionId),
+  theTreeId(treeId),
+  theNodeKind(nodeKind),
+  theOrdPath(ordPath)
+{
+  theValue.take(encoded);
+}
+
+
+StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
+{
+  theValue.take(value);
+
+  ulong prefixlen = (ulong)strlen("zorba:");
+
+  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  const char* start;
+
+  errno = 0;
+
+  //
+  // Decode collection id
+  //
+  start = theValue.c_str() + prefixlen;
+
+  char* next = const_cast<char*>(start);
+
+  theCollectionId = strtoul(start, &next, 10);
+
+  if (errno != 0 || start == next)
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  start = next;
+
+  if (*start != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  ++start;
+
+  //
+  // Decode tree id
+  //
+  theTreeId = strtoul(start, &next, 10);
+
+  if (errno != 0 || start == next)
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  start = next;
+
+  if (*start != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  ++start;
+
+  //
+  // Parse the node kind
+  //
+  if (*start > '0' && *start <='6')
+    theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
+  else
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  ++start;
+
+  if (*start != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
+  ++start;
+
+  //
+  // Decode OrdPath
+  //
+  theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
+}
+
+
+bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
+{
+  // Is the "other" an ancestor of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isAncestor(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::ANCESTOR);
+  }
+}
+
+
+bool StructuralAnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
+{
+  // Is the "other" a following sibling of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isFollowingSibling(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     other->theNodeKind != store::StoreConsts::attributeNode &&
+     theNodeKind != store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::FOLLOWING_SIBLING);
+  }
+}
+
+
+bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
+{
+  // Is the "other" a following node of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isFollowing(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::FOLLOWING);
+  }
+}
+
+
+bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
+{
+  // Is the "other" a descendant of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isDescendant(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     other->theNodeKind != store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::DESCENDANT);
+  }
+}
+
+
+bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
+{
+  // Is the "other" in the subtree rooted at "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isInSubtreeOf(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::DESCENDANT);
+  }
+}
+
+
+bool StructuralAnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
+{
+  // Is the "other" a preceding sibling of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isPrecedingSibling(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     other->theNodeKind != store::StoreConsts::attributeNode &&
+     theNodeKind != store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::PRECEDING_SIBLING);
+  }
+}
+
+
+bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
+{
+  // Is the "other" a preceding node of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isPreceding(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::PRECEDING);
+  }
+}
+
+
+bool StructuralAnyUriItem::isChild(const store::Item_t& aOther) const
+{
+  // Is the "other" a child of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isChild(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     other->theNodeKind != store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::CHILD);
+  }
+}
+
+
+bool StructuralAnyUriItem::isAttribute(const store::Item_t& aOther) const
+{
+  // Is the "other" an attribute of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isAttribute(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     other->theNodeKind == store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::CHILD);
+  }
+}
+
+
+bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
+{
+  // Is the "other" an parent of "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isParent(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theCollectionId == theCollectionId &&
+     other->theTreeId == theTreeId &&
+     theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::PARENT);
+  }
+}
+
+
+bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
+{
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isPrecedingInDocumentOrder(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return
+    (theCollectionId > other->theCollectionId ||
+    (theCollectionId == other->theCollectionId && theTreeId > other->theTreeId) ||
+    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath > other->theOrdPath));
+  }
+}
+
+
+bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
+{
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isFollowingInDocumentOrder(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return
+    (theCollectionId < other->theCollectionId ||
+    (theCollectionId == other->theCollectionId && theTreeId < other->theTreeId) ||
+    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath < other->theOrdPath));
+  }
+}
+
+
+store::Item_t StructuralAnyUriItem::getLevel() const
+{
+  store::Item_t lResult;
+  GET_FACTORY().createInteger(lResult, theOrdPath.getLevel());
+  return lResult;
+}
+
+
+bool StructuralAnyUriItem::isAttribute() const
+{
+  return theNodeKind == store::StoreConsts::attributeNode;
+}
+
+
+bool StructuralAnyUriItem::isComment() const
+{
+  return theNodeKind == store::StoreConsts::commentNode;
+}
+
+
+bool StructuralAnyUriItem::isDocument() const
+{
+  return theNodeKind == store::StoreConsts::documentNode;
+}
+
+
+bool StructuralAnyUriItem::isElement() const
+{
+  return theNodeKind == store::StoreConsts::elementNode;
+}
+
+
+bool StructuralAnyUriItem::isProcessingInstruction() const
+{
+  return theNodeKind == store::StoreConsts::piNode;
+}
+
+
+bool StructuralAnyUriItem::isText() const
+{
+  return theNodeKind == store::StoreConsts::textNode;
+}
+
+
+bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
+{
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isSibling(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+
+    if (other->theCollectionId == theCollectionId &&
+        other->theTreeId == theTreeId &&
+        other->theNodeKind != store::StoreConsts::attributeNode &&
+        theNodeKind != store::StoreConsts::attributeNode)
+    {
+      OrdPath::RelativePosition pos = 
+      theOrdPath.getRelativePosition2(other->theOrdPath);
+
+      return (pos == OrdPath::FOLLOWING_SIBLING ||
+              pos==OrdPath::PRECEDING_SIBLING);
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+
+bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
+{
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return inSameTree(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return (theCollectionId == other->theCollectionId &&
+            theTreeId == other->theTreeId);
+  }
+}
+
+
+bool StructuralAnyUriItem::inCollection() const
+{
+  return theCollectionId != 0;
+}
+
+
+bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
+{
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return inSameCollection(lOtherUri);
+  }
+  else
+  {
+    return
+    (
+     theCollectionId !=0 &&
+     theCollectionId == static_cast<StructuralAnyUriItem*>(aOther.getp())->theCollectionId
+    );
+
+  }
 }
 
 

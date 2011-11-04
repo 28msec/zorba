@@ -75,10 +75,11 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_rootStaticContext = new root_static_context();
   m_globalEnv->m_rootStaticContext->init();
-  RCHelper::addReference (m_globalEnv->m_rootStaticContext);
+  RCHelper::addReference(m_globalEnv->m_rootStaticContext);
 
   BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
-  AnnotationList::createBuiltIn(m_globalEnv->m_rootStaticContext);
+
+  AnnotationInternal::createBuiltIn();
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
@@ -93,9 +94,10 @@ void GlobalEnvironment::init(store::Store* store)
 
   std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
     XQueryCompilerSubsystem::create();
+
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_http_resolver      = new impl::HTTPURLResolver();
+  m_globalEnv->m_http_resolver = new impl::HTTPURLResolver();
 }
 
 
@@ -118,8 +120,10 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
+  RCHelper::removeReference(m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;
+
+  AnnotationInternal::destroyBuiltIn();
 
   m_globalEnv->m_store = NULL;
 
@@ -132,6 +136,8 @@ void GlobalEnvironment::destroy()
   m_globalEnv->cleanup_icu();
 
   BuiltinFunctionLibrary::destroy();
+
+  AnnotationInternal::destroyBuiltIn();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

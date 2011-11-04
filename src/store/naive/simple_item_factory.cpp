@@ -106,6 +106,35 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
+bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
+{
+  result =  new StructuralAnyUriItem(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createStructuralAnyURI(
+    store::Item_t& result,
+    ulong collectionId,
+    ulong treeId,
+    store::StoreConsts::NodeKind nodeKind,
+    const OrdPath& ordPath)
+{
+  ZORBA_FATAL(nodeKind,"Unexpected node kind");
+  std::ostringstream stream;
+  stream   << "zorba:"
+           << collectionId << "."
+           << treeId << "."
+           << static_cast<int>(nodeKind) << "."
+           << ordPath.serialize();
+  zstring uri = stream.str();
+
+  theUriPool->insert(uri);
+  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  return true;
+}
+
+
 bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 {
   result = new StringItem(value);
@@ -117,7 +146,8 @@ bool BasicItemFactory::createStreamableString(
     store::Item_t& result,
     std::istream &stream,
     StreamReleaser streamReleaser,
-    bool seekable) {
+    bool seekable) 
+{
   result = new StreamableStringItem( stream, streamReleaser, seekable );
   return true;
 }

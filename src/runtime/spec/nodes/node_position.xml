@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="NodePositionIterator">
+
+  <zorba:description author="Federico Cavalieri"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="node-position" prefix="fn-zorba-pos">
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:anyURI</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+   
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsAncestorPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="ancestor-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsFollowingSiblingPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="following-sibling-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsFollowingPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="following-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsInSubtreeOfPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="in-subtree-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsDescendantPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="descendant-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsPrecedingSiblingPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="preceding-sibling-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsPrecedingPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="preceding-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsChildPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="child-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsAttributeOfPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="attribute-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsParentPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="parent-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsPrecedingInDocumentOrderPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="preceding-in-document-order-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsFollowingInDocumentOrderPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="following-in-document-order-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="LevelPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="level" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:integer</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsAttributePositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-attribute" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsCommentPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-comment" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+    <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsDocumentPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-document" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+    <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsElementPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-element" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+    <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsProcessingInstructionPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-processing-instruction" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+    <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsTextPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="is-text" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsSiblingPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="sibling-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="InSameTreePositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="in-same-tree-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="InCollectionPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="in-collection" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>        
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="InSameCollectionPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="in-same-collection-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+</zorba:iterators>

@@ -34,7 +34,8 @@ SET(Zorba_TESTDRIVER "${ZORBA_ROOT}/bin/testdriver")
 SET(Zorba_EXE_PATH "${ZORBA_ROOT}/bin/zorba")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
   "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")   
-SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_ROOT}/${ZORBA_MODULES_INSTALL_DIR}")
+SET(Zorba_NONCORE_URI_DIR "${ZORBA_ROOT}/${ZORBA_NONCORE_URI_DIR}")
+SET(Zorba_NONCORE_LIB_DIR "${ZORBA_ROOT}/${ZORBA_NONCORE_LIB_DIR}")
 
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
@@ -58,7 +59,7 @@ IF (WIN32)
   STRING (REPLACE ".exe" ".bat" Zorba_TESTDRIVER ${Zorba_TESTDRIVER})
 ENDIF (WIN32)
 
-SET(Zorba_EXE_PATH     "${ZORBA_EXE}")
+SET(Zorba_EXE_PATH "${ZORBA_EXE}")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
   "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in")
 # Note: We also set these two into the parent's scope, so that it is
@@ -67,10 +68,9 @@ SET(Zorba_EXTERNALMODULECONFIG_FILE
   "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in"
   PARENT_SCOPE)
 SET(Zorba_EXE "${ZORBA_EXE}" PARENT_SCOPE)
+SET(Zorba_NONCORE_URI_DIR "${ZORBA_NONCORE_URI_DIR}")
+SET(Zorba_NONCORE_LIB_DIR "${ZORBA_NONCORE_LIB_DIR}")
 
-# Note: This value doesn't really make much sense, but neither does any
-# other value
-SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_MODULES_INSTALL_DIR}")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 

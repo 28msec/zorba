@@ -216,11 +216,9 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     if (stream.bad())
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
-        )
-      );
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                    ERROR_PARAMS(ZED(BadStreamState))));
     }
 
     return stream.gcount();

@@ -558,7 +558,7 @@ void SimpleStore::populateValueIndex(
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 
-  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+  ValueIndex* index = static_cast<ValueIndex*>(aIndex.getp());
 
   aSourceIter->open();
 
@@ -619,7 +619,6 @@ void SimpleStore::populateGeneralIndex(
   store::Item_t domainNode;
   store::Item_t firstKeyItem;
   store::Item_t keyItem;
-  store::IndexKey* key = NULL;
 
   GeneralIndex* index = static_cast<GeneralIndex*>(idx.getp());
 
@@ -632,65 +631,54 @@ void SimpleStore::populateGeneralIndex(
       bool more = true;
 
       assert(domainNode->isNode());
+      assert(keyItem == NULL);
 
+      // Compute the keys associated with the current domain node. Note: We
+      // must check whether the domain node has more than one key, before we
+      // do any insertions in the index.
       while (more)
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          throw ZORBA_EXCEPTION(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          RAISE_ERROR_NO_LOC(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
           ERROR_PARAMS(index->getName()->getStringValue()));
         }
-
-        // Compute the keys of the current domain node. We must check whether
-        // the domain node has more than one key, before we do any insertions
-        // in the index.
-
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
 
         // Compute 1st key, or next domain node
         more = sourceIter->next(firstKeyItem);
 
+        // If current node has no keys, put it in the "null" entry and continue
+        // with the next domain node, if nay.
         if (!more || firstKeyItem->isNode())
         {
-          // Current node has no keys
-          (*key)[0] = NULL;
-          index->insert(key, domainNode, false);
+          index->insert(keyItem, domainNode);
 
-          if (more)
-            domainNode.transfer(firstKeyItem);
-
+          domainNode.transfer(firstKeyItem);
           continue;
         }
-
-        // Prepare to insert the 1st key. Note: we have to copy domainNode
-        // rchandle because index->insert() will transfer the given node.
-        store::Item_t node = domainNode;
-        (*key)[0].transfer(firstKeyItem);
 
         // Compute 2nd key, or next domain node
         more = sourceIter->next(keyItem);
 
+        // If current domain node has exactly 1 key, insert it in the index
+        // and continue with next domain node, if any.
         if (!more || keyItem->isNode())
         {
-          // Current domain node has exactly 1 key. So insert it in the
-          // index and continue with next domain node, if any.
-          index->insert(key, node, false);
+          index->insert(firstKeyItem, domainNode);
 
           domainNode.transfer(keyItem);
           continue;
         }
 
         // Current domain node has at least 2 keys. So insert them in the index.
-        index->insert(key, node, true);
+        // Note: we have to copy the domainNode rchandle because index->insert()
+        // will transfer the given node.
+        index->setMultiKey();
 
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
-
+        store::Item_t node = domainNode;
+        index->insert(firstKeyItem, node);
         node = domainNode;
-        (*key)[0].transfer(keyItem);
-
-        index->insert(key, node, true);
+        index->insert(keyItem, node);
 
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
@@ -701,29 +689,18 @@ void SimpleStore::populateGeneralIndex(
             break;
           }
 
-          if (key == NULL)
-            key = new store::IndexKey(numColumns);
-
-          (*key)[0].transfer(keyItem);
           node = domainNode;
-
-          index->insert(key, node);
+          index->insert(keyItem, node);
         }
       }
     }
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
-
     sourceIter->close();
 
     throw;
   }
-
-  if (key != NULL)
-    delete key;
 
   sourceIter->close();
 }
@@ -1320,6 +1297,48 @@ store::Iterator_t SimpleStore::distinctNodes(
 store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 {
   return new StoreNodeDistinctIterator(input, true);
+}
+
+
+/*******************************************************************************
+  Computes the Structural Reference for the given node.
+********************************************************************************/
+bool SimpleStore::getStructuralInformation(
+    store::Item_t& result, 
+    const store::Item* node)
+{
+#ifdef TEXT_ORDPATH
+  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+  return theItemFactory->createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
+#else
+  if (node->getNodeKind() == store::StoreConsts::textNode)
+  {
+    OrdPath ordPath;
+    const TextNode* n = static_cast<const TextNode*>(node);
+    n->getOrdPath(ordPath);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  store::StoreConsts::textNode,
+                                                  ordPath);
+  }
+  else
+  {
+    const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  n->getNodeKind(),
+                                                  n->getOrdPath());
+  }
+#endif
 }
 
 
