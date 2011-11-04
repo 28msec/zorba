@@ -34,6 +34,30 @@ CommandPrompt::~CommandPrompt()
 }
 
 void
+CommandPrompt::printHelp(UntypedCommand* aCommand)
+{
+  // if no command is provided, print all the available commands
+  if (!aCommand) {
+    std::cout << "Available commands:" << std::endl;
+
+    // print the names of all commands
+    std::map<std::string, UntypedCommand*>::iterator lIter = theCommands.begin();
+    while (lIter != theCommands.end()) {
+      std::cout << "  " << (*lIter).first << std::endl;
+      lIter++;
+    }
+
+    // some hints for detailed help
+    std::cout << std::endl;
+    std::cout << "Type help <command> to get more information about one command." << std::endl;
+    std::cout << std::endl;
+  } else {
+    // ok, so we have a command; then print the help
+    aCommand->printHelp();
+  }
+}
+
+void
 CommandPrompt::execute()
 {
   for (;;) {
@@ -41,13 +65,34 @@ CommandPrompt::execute()
     std::string lCommandLine;
     std::getline(std::cin, lCommandLine);
     std::vector<std::string> args;
-    // we define the << operator to split the command (see below)
+
+    // split the command into arguments
     parseLine(lCommandLine, args);
-    if (args.size() == 0) {
+    std::string::size_type lSize = args.size();
+
+    // empty command? do nothing!
+    if (lSize == 0) {
       continue;
     }
-    //std::map<std::string, UntypedCommand*>::iterator lIter
+
     UntypedCommand* lCommand = NULL;
+
+    // help is not a command but a hook here, so please do not add commands that have
+    // "h" or "help" as prefix, or you will get the help instead of that command
+    if (args.at(0) == "h" || args.at(0) == "help") {
+      std::string lCmd = "";
+
+      // if the user needs the help for a specific command
+      if (lSize > 1) {
+        // do nothing if we don't have a command starting with this prefix?
+        // findCommand will print the appropriate errors
+        if (!findCommand(args[1], lCommand)) {
+          continue;
+        }
+      }
+      printHelp(lCommand);
+      continue;
+    }
     if (findCommand(args[0], lCommand) && lCommand->execute(args)) {
       return;
     }
@@ -58,7 +103,7 @@ CommandPrompt::execute()
 CommandPrompt&
 CommandPrompt::operator<<(UntypedCommand *aCommand)
 {
-  theCommands.insert(std::make_pair(aCommand->get_name(), aCommand));
+  theCommands.insert(std::make_pair(aCommand->getName(), aCommand));
   return *this;
 }
 
@@ -89,7 +134,7 @@ CommandPrompt::findCommand(const std::string& aPrefix, UntypedCommand*& aCommand
     std::cout << "Ambigous command: " << aPrefix << std::endl;
     // show all possible commands that start with this prefix
     for (std::string::size_type i = 0; i < lFoundCommands.size(); i++) {
-      std::cout << "\t" << lFoundCommands.at(i)->get_name() << std::endl;
+      std::cout << "  " << lFoundCommands.at(i)->getName() << std::endl;
     }
     return false;
   }

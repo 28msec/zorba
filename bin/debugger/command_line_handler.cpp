@@ -79,14 +79,14 @@ CommandLineHandler::getNextId(std::set<std::size_t>& aIdList)
     aIdList.insert(result);
   }
 }
-  
+
 template<>
 void
 CommandLineHandler::handle<Status>(ZORBA_TR1_NS::tuple<> &t)
 {
   theWaitFor = theClient->status();
 }
-  
+
 template<>
 void
 CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)

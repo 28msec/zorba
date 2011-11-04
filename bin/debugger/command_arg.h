@@ -185,11 +185,17 @@ class CommandArgType
     }
 
     std::string
-    get_name() const
+    getName() const
     {
       return *(theNames.begin());
     }
-    
+
+    std::string
+    getDescription() const
+    {
+      return theDescription;
+    }
+
     bool
     isSet(Tuple& t) const
     {

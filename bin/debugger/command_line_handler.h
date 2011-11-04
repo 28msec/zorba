@@ -104,10 +104,10 @@ private:
 
 template<>
 void CommandLineHandler::handle<Status> (ZORBA_TR1_NS::tuple<>& t);
-  
+
 template<>
 void CommandLineHandler::handle<Quit> (ZORBA_TR1_NS::tuple<>& t);
-  
+
 template<>
 void CommandLineHandler::handle<Run> (ZORBA_TR1_NS::tuple<> &t);
   

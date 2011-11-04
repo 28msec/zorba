@@ -39,6 +39,9 @@ class CommandPrompt
 
   private:
 
+    void
+    printHelp(UntypedCommand* command);
+
     bool
     findCommand(const std::string& prefix, UntypedCommand*& command);
 

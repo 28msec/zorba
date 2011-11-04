@@ -57,8 +57,9 @@ namespace zorba { namespace debugger {
   
   class UntypedCommand {
   public:
-    virtual std::string get_name() const = 0;
-    virtual std::string get_description() const = 0;
+    virtual std::string getName() const = 0;
+    virtual std::string getDescription() const = 0;
+    virtual void printHelp() const = 0;
     virtual bool execute(const std::vector<std::string>& args) = 0;
   };
   
@@ -83,8 +84,21 @@ namespace zorba { namespace debugger {
       const std::string& names,
       std::set<std::string>& set);
 
-    virtual std::string get_name() const { return theName; }
-    virtual std::string get_description() const { return theDescription; }
+    virtual std::string
+    getName() const
+    {
+      return theName;
+    }
+
+    virtual std::string
+    getDescription() const
+    {
+      return theDescription;
+    }
+
+    virtual void
+    printHelp() const;
+
     virtual bool execute(const std::vector<std::string>& args)
     {
       CommandInstance<Func, Tuple, CommandIdx> instance(theFunction, theTuple);
@@ -99,7 +113,7 @@ namespace zorba { namespace debugger {
     Func& theFunction;
     Tuple theTuple;
     std::string theDescription;
-    std::map<std::string, CommandArg<Tuple>* > theArgs;
+    std::map<std::string, CommandArg<Tuple>*> theArgs;
   };
 
 /*****************************************************************************/
@@ -108,10 +122,30 @@ namespace zorba { namespace debugger {
 template<typename Func, typename Tuple, int CommandIdx>
 Command<Func, Tuple, CommandIdx>::~Command()
 {
-  typedef std::map<std::string, CommandArg<Tuple>* > ArgType;
+  typedef std::map<std::string, CommandArg<Tuple>*> ArgType;
   for (typename ArgType::iterator i = theArgs.begin(); i != theArgs.end(); ++i) {
     delete i->second;
   }
+}
+
+template<typename Func, typename Tuple, int CommandIdx>
+void
+Command<Func, Tuple, CommandIdx>::printHelp() const
+{
+  std::cout << "Purpose: " << getDescription() << std::endl;
+
+  std::map<std::string, CommandArg<Tuple>*>::const_iterator lIter = theArgs.begin();
+  if (lIter == theArgs.end()) {
+    std::cout << "This command has no arguments." << std::endl;
+    std::cout << std::endl;
+    return;
+  }
+  
+  std::cout << "Arguments:" << std::endl << std::endl;
+  for (; lIter != theArgs.end(); ++lIter) {
+    std::cout << "  " << lIter->first << "\t" << lIter->second->getDescription() << std::endl;
+  }
+  std::cout << std::endl;
 }
 
 template<typename Func, typename Tuple, int CommandIdx>
@@ -209,7 +243,7 @@ Command<Func, Tuple, CommandIdx>::addArgument(
          i != aCommandArgs.end(); ++i)
     {
       if (i->second->isRequired() && !i->second->isSet(theTuple)) {
-        std::cerr << "Error: Argument " << i->second->get_name() << " not set" << std::endl;
+        std::cerr << "Error: Argument " << i->second->getName() << " not set" << std::endl;
         allSet = false;
       }
     }
