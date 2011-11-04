@@ -112,8 +112,8 @@ be necessary for you to place the shared object such that Zorba can
 load it at runtime.
 
 To locate a dynamic libary, Zorba first transforms its target
-namespace URI to a relative file path and then uses the "modules path"
-mechanism (described in \ref uriresolvers) to turn this relative path
+namespace URI to a relative file path and then uses the "Library Path"
+mechanism (described in \ref libpath) to turn this relative path
 to the absolute path name of the dynamic library file. The
 transformation of the URI to a relative path is done using the
 following steps. In describing the steps, we will use the URI
