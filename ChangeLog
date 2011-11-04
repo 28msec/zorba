@@ -54,6 +54,8 @@ version 2.x
     xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
   * Optimization for count(collection()) expressions
+  * Caching of results for recursive functions with atomic parameter and return types.
+  * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)

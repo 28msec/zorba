@@ -1993,6 +1993,10 @@
       <value>"$1": index range-value probe has search keys with incompatible types</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0035" name="INDEX_GENERAL_INSERT">
+      <value>"$1": index inserting more than one key not allowed for general index</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
       <value>"$1": integrity constraint is not declared</value>
     </diagnostic>

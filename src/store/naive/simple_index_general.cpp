@@ -236,6 +236,20 @@ ulong GeneralIndex::size() const
 /******************************************************************************
 
 *******************************************************************************/
+bool GeneralIndex::insert(store::IndexKey*& key, store::Item_t& value)
+{
+  if (key->size() != 1)
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZDDY0035_INDEX_GENERAL_INSERT,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+  return insert((*key)[0], value);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 bool GeneralIndex::insert(store::Item_t& key, store::Item_t& node)
 {
   bool lossy = false;
