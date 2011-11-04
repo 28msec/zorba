@@ -795,6 +795,9 @@ void UpdPut::apply()
 {
   SimpleStore* store = &GET_STORE();
 
+  zstring targetUri;
+  theTargetUri->getStringValue2(targetUri);
+
   try
   {
     // Have to copy because addNode() will set the doc uri of target tree to
@@ -805,33 +808,32 @@ void UpdPut::apply()
     // a parent already.
     store::CopyMode copymode;
     copymode.set(true, true, true, true);
-    theTarget = theTarget->copy(NULL, copymode);
 
     if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
     {
-      XmlNode* target =  BASE_NODE(theTarget);
+      store::Item_t docItem;
+      GET_FACTORY().createDocumentNode(docItem, targetUri, targetUri);
 
-      DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
-      doc->setId(target->getTree(), NULL);
-      doc->insertChild(target, 0);
-      doc->getTree()->setRoot(doc);
+      theTarget = theTarget->copy(docItem.getp(), copymode);
 
-      store::Item_t docItem(doc);
-
-      theTarget = docItem;
+      theTarget.transfer(docItem);
+    }
+    else
+    {
+      theTarget = theTarget->copy(NULL, copymode);
     }
 
-    store->addNode(theTargetUri->getStringValue(), theTarget);
+    store->addNode(targetUri, theTarget);
   }
   catch(ZorbaException const& e)
   {
     if (e.diagnostic() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
-      theOldDocument = store->getDocument(theTargetUri->getStringValue());
+      theOldDocument = store->getDocument(targetUri);
 
-      store->deleteDocument(theTargetUri->getStringValue());
+      store->deleteDocument(targetUri);
 
-      store->addNode(theTargetUri->getStringValue(), theTarget);
+      store->addNode(targetUri, theTarget);
     }
     else
     {
@@ -1767,14 +1769,11 @@ void UpdInsertIntoHashMap::apply()
 
   if (!lMap)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
-  simplestore::IndexImpl* lImpl =
-    static_cast<simplestore::IndexImpl*>(lMap.getp());
+  ValueIndex* lImpl = static_cast<ValueIndex*>(lMap.getp());
 
   theValue->open();
   store::Item_t lValue;
@@ -1791,7 +1790,7 @@ void UpdInsertIntoHashMap::apply()
     }
 
     store::IndexKey* lKeyPtr = lKey.get();
-    if (!lImpl->insert(lKeyPtr, lValue, lKey->size() > 1))
+    if (!lImpl->insert(lKeyPtr, lValue))
     {
       // the index took the ownership over the key if the index
       // did _not_ already contain an entry with the same key

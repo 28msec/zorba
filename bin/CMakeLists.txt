@@ -115,3 +115,6 @@ ZORBA_ADD_TEST(bin/zorba_module_path_1 zorbacmd -f -q "${_testdir}/external1.xq"
   --module-path "${_libdir}${PATH_SEP}${_uridir}")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")
+
+# test compilation of the perf script
+ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
