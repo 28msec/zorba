@@ -40,8 +40,8 @@ move( T &t ) {
 template<typename T> inline
 typename enable_if<zorba::internal::is_movable<T>::value,
                    zorba::internal::rv<T>&>::type
-move( T &t ) {
-   return *static_cast<zorba::internal::rv<T>*>( &t );
+move( T const &t ) {
+   return *static_cast<zorba::internal::rv<T>*>( const_cast<T*>( &t ) );
 }
 
 template<typename T> inline
