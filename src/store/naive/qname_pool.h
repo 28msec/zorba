@@ -116,7 +116,7 @@ public:
         const zstring& ns,
         const zstring& pre,
         const zstring& ln,
-        bool                    sync = true);
+        bool sync = true);
 
   void remove(QNameItem* qn);
 
