@@ -62,8 +62,10 @@
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/util/flowctl_exception.h"
 
+#include "store/api/temp_seq.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
@@ -764,6 +766,38 @@ bool XQueryImpl::getExternalVariables(std::vector<Item>& aVars) const
   return true;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool XQueryImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
+{
+    var_expr* var = NULL;
+
+    store::Item_t qname;
+    GENV_ITEMFACTORY->createQName(qname, aNamespace.c_str(), zstring(), aLocalname.c_str());
+
+    std::map<short, static_context_t>& lMap = theCompilerCB->theSctxMap;
+    std::map<short, static_context_t>::const_iterator lIte = lMap.begin();
+    std::map<short, static_context_t>::const_iterator lEnd = lMap.end();
+
+    for(; lIte != lEnd; ++lIte)
+    {
+      var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+    
+      if(var)
+        break;
+    }
+
+    if(var->hasInitializer())
+      return true;
+    
+    ulong varId = var->get_unique_id();
+
+    if(theDynamicContext->is_set_variable(varId, var->get_name(), QueryLoc::null))
+      return true;
+
+  return false;
+}
 
 /*******************************************************************************
   Give to the caller read-only access to the static context of the query

@@ -286,6 +286,8 @@ public:
 
   bool getExternalVariables(std::vector<Item>& aVars) const;
 
+  bool isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
+
   bool isUpdating() const;
   
   bool isSequential() const;

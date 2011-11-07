@@ -185,6 +185,62 @@ cxx_api_changes_test4(Zorba* aZorba)
   return true;
 }
 
+bool
+cxx_api_changes_test5(Zorba* aZorba)
+{
+  try
+  {
+    
+    std::string lIn = "declare variable $a external; 1+1";
+
+    StaticContext_t lStaticContext = aZorba->createStaticContext();
+    std::vector<String> lModulePaths;
+    lModulePaths.push_back(zorba::CMAKE_BINARY_DIR+"/TEST_URI_PATH/");
+    lStaticContext->setModulePaths(lModulePaths);
+    
+    XQuery_t lQuery = aZorba->compileQuery(lIn, lStaticContext);
+
+    Zorba* lZorba = Zorba::getInstance(0);
+
+    std::vector<Item> lVars;
+    lQuery->getExternalVariables(lVars);
+
+    std::vector<Item>::const_iterator lIte = lVars.begin();
+    std::vector<Item>::const_iterator lEnd = lVars.end();
+
+    Item item = aZorba->getItemFactory()->createInt(4);
+
+    bool isBound1;
+    bool isBound2;
+
+    for(; lIte != lEnd; ++lIte)
+    {
+      Item qname = *lIte;
+      isBound1 = lQuery->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
+      Item value = aZorba->getItemFactory()->createString("foo");
+      lQuery->getDynamicContext()->setVariable(qname.getStringValue(), value);
+      isBound2 = lQuery->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
+    }
+
+    if (!isBound1 && isBound2)
+      return true;
+     
+  }
+  catch (XQueryException& qe)
+  {
+    std::cerr << qe << std::endl;
+    return false;
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+
 int
 cxx_api_changes (int argc, char* argv[])
 {
@@ -213,6 +269,12 @@ cxx_api_changes (int argc, char* argv[])
   if (!cxx_api_changes_test4(lZorba))
   {
     return 4;
+  }
+
+  std::cout << "executing cxx_api_changes_test5" << std::endl;
+  if (!cxx_api_changes_test5(lZorba))
+  {
+    return 5;
   }
 
   lZorba->shutdown();
