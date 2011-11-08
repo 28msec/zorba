@@ -11,7 +11,7 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
-    
+
 <zorba:header>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/schema_types.h</zorba:include>
@@ -181,7 +181,7 @@
       fn:substring
   </zorba:description>
 
-  <zorba:function>
+  <zorba:function specializable="true" generateCodegen="false">
     <zorba:signature localname="substring" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:double</zorba:param>

@@ -141,6 +141,11 @@ public:
 
 }
 
+  bool specializable() const { return true; }
+
+  function* specialize( static_context* sctx,
+                        const std::vector<xqtref_t>& argTypes) const;
+
   CODEGEN_DECL();
 };
 
