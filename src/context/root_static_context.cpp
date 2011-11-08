@@ -40,6 +40,17 @@ root_static_context::root_static_context() : static_context()
   theTypemgr = new RootTypeManager();
 }
 
+#ifdef WIN32
+static void append_to_path(std::vector<zstring>& aPath, zstring& zorba_root,
+                           zstring& relpath)
+{
+  ascii::replace_all(relpath, '/', '\\');
+  zstring full_path(zorba_root);
+  full_path.append(relpath);
+  full_path.append("\\");
+  aPath.push_back(full_path);
+}
+#endif
 
 void root_static_context::init() 
 {
@@ -108,9 +119,10 @@ void root_static_context::init()
 
   set_validation_mode(StaticContextConsts::lax_validation);
 
-  std::vector<zstring> lRootModulePaths;
+  std::vector<zstring> lRootURIPath;
+  std::vector<zstring> lRootLibPath;
 #ifdef WIN32
-  //add first the relative path to zorba_simplestore.dll (this dll)
+  // compute the relative path to zorba_simplestore.dll (this dll)
   WCHAR  wdll_path[1024];
   DWORD dll_path_size;
   dll_path_size = GetModuleFileNameW(NULL, wdll_path, sizeof(wdll_path)/sizeof(wdll_path[0]));
@@ -119,30 +131,34 @@ void root_static_context::init()
     wdll_path[dll_path_size] = 0;
     char  dll_path[1024];
     WideCharToMultiByte(CP_UTF8, 0, wdll_path, -1, dll_path, sizeof(dll_path), NULL, NULL);
-    char *last_slash;
-    last_slash = strrchr(dll_path, '\\');
+    char *last_slash = strrchr(dll_path, '\\');
     if(last_slash)
     {
       last_slash[1] = 0;
-      zstring moddir(ZORBA_MODULES_INSTALL_DIR);
-      ascii::replace_all(moddir, '/', '\\');
-      zstring fileURL;
-      fileURL = dll_path;
-	  fileURL = fileURL.append("..\\");
-      fileURL = fileURL.append(moddir);
-	  fileURL = fileURL.append("\\");
-      lRootModulePaths.push_back(fileURL);
+      zstring zorba_root_dir(dll_path);
+
+      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_CORE_URI_DIR));
+      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_NONCORE_URI_DIR));
+      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_CORE_LIB_DIR));
+      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_NONCORE_LIB_DIR));
     }
   }
 #endif
-  const char ** lPathsIter = get_builtin_module_paths();
-  for (; *lPathsIter != 0; ++lPathsIter) 
+  const char ** lURIPathIter = get_builtin_uri_path();
+  for (; *lURIPathIter != 0; ++lURIPathIter)
   {
-    lRootModulePaths.push_back(*lPathsIter);
+    lRootURIPath.push_back(*lURIPathIter);
   }
-  set_module_paths(lRootModulePaths);
+  set_uri_path(lRootURIPath);
 
-  // by default enabled features 
+  const char ** lLibPathIter = get_builtin_lib_path();
+  for (; *lLibPathIter != 0; ++lLibPathIter)
+  {
+    lRootLibPath.push_back(*lLibPathIter);
+  }
+  set_lib_path(lRootLibPath);
+
+  // by default enabled features
   set_feature( feature::ddl );
   set_feature( feature::scripting );
   set_feature( feature::trace );

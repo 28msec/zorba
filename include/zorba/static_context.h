@@ -442,12 +442,36 @@ namespace zorba {
       virtual void
       declareOption( const Item& aQName, const String& aOptionValue) = 0;
 
+      /**
+       * @brief Set the URI and library lookup paths (lists of filesystem
+       * directories) for this static context. Note that calling this method
+       * will override any values previously passed to \link setURIPath()
+       * and \link setLibPath().
+       * @deprecated Use \link setURIPath() and \link setLibPath().
+       *
+       * Convenience method which adds the listed directories to both the
+       * URI path and Library path for this static context.
+       */
       virtual void
       setModulePaths( const std::vector<String>& aModulePaths ) = 0;
 
+      /**
+       * @brief Return the union of the URI and library lookup paths (lists of
+       * filesystem directories) for this static context. @deprecated Use \link
+       * getURIPath() and \link getLibPath().
+       * @deprecated Use \link getURIPath() and \link getLibPath().
+       *
+       * Returns any values set by \link setLibPath() and/or \link setURIPath()
+       * on this static context.
+       */
       virtual void
       getModulePaths( std::vector<String>& aModulePaths ) const = 0;
 
+      /**
+       * @brief Return the union of the URI and library lookup paths (lists of
+       * filesystem directories) for this static context and all its parents.
+       * @deprecated Use \link getFullURIPath() and \link getFullLibPath().
+       */
       virtual void
       getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
 
@@ -567,6 +591,63 @@ namespace zorba {
         */
       virtual audit::Event*
       getAuditEvent() = 0;
+
+      /**
+       * @brief Set the URI lookup path (list of filesystem directories) for this
+       * static context.
+       *
+       * Queries which resolve URIs (for instance, importing modules or schemas)
+       * will look in these directories.
+       */
+      virtual void
+      setURIPath(const std::vector<String>& aURIPath) = 0;
+
+      /**
+       * @brief Return the URI lookup path (list of filesystem directories) for
+       * this static context.
+       *
+       * Returns any values set by \link setURIPath() on this static context.
+       * To return the full URI lookup path for this static context and
+       * all its parents (usually most useful), call \link getFullURIPath().
+       */
+      virtual void
+      getURIPath(std::vector<String>& aURIPath) const = 0;
+
+      /**
+       * @brief Return the URI lookup path (list of filesystem directories) for
+       * this static context and all its parents.
+       */
+      virtual void
+      getFullURIPath(std::vector<String>& aURIPath) const = 0;
+
+      /**
+       * @brief Set the library lookup path (list of filesystem directories) for
+       * this static context.
+       *
+       * Queries which import modules that have external function
+       * implementations will look for the implementation of those functions
+       * (shared libraries) in these directories.
+       */
+      virtual void
+      setLibPath(const std::vector<String>& aLibPath) = 0;
+
+      /**
+       * @brief Return the URI lookup path (list of filesystem directories) for
+       * this static context.
+       *
+       * Returns any values set by \link setLibPath() on this static context.
+       * To return the full library lookup path for this static context and
+       * all its parents (usually most useful), call \link getFullLibPath().
+       */
+      virtual void
+      getLibPath(std::vector<String>& aLibPath) const = 0;
+
+      /**
+       * @brief Return the URI lookup path (list of filesystem directories) for
+       * this static context and all its parents.
+       */
+      virtual void
+      getFullLibPath(std::vector<String>& aLibPath) const = 0;
 
 };
 } /* namespace zorba */

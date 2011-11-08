@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result><test1>OK: np:40</test1><test2>OK: np:68</test2><test3>OK: np:72</test3><test4>OK: np:72</test4><test5>OK: np:76</test5><test6>OK: np:68</test6><test7>OK: np:72</test7><test8>OK: np:72</test8><test9>OK: np:76</test9><test10>OK: np:62</test10><test11>OK: np:7080</test11><test12>OK: np:7080</test12><test13>OK: np:7480</test13></result>

@@ -935,29 +935,44 @@ void StaticContextImpl::loadProlog(
   theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
+static void
+toInternalPath(const std::vector<String>& aPublicStrings,
+               std::vector<zstring>& aInternalStrings)
+{
+  for (std::vector<String>::const_iterator lIter = aPublicStrings.begin();
+       lIter != aPublicStrings.end(); ++lIter)
+  {
+    if (lIter->length() != 0)
+    {
+      aInternalStrings.push_back(Unmarshaller::getInternalString(*lIter).c_str());
+      zstring& lPath = aInternalStrings.back();
+      if (lPath[lPath.length() - 1] != *filesystem_path::get_directory_separator())
+      {
+        lPath.append(filesystem_path::get_directory_separator());
+      }
+    }
+  }
+}
 
-void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
+static void
+toPublicPath(const std::vector<zstring>& aInternalStrings,
+             std::vector<String>& aPublicStrings)
+{
+  for (std::vector<zstring>::const_iterator lIter = aInternalStrings.begin();
+       lIter != aInternalStrings.end(); ++lIter)
+  {
+    aPublicStrings.push_back(lIter->c_str());
+  }
+}
+
+void
+StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
 {
   try
   {
-    std::vector<zstring> lModulePaths;
-
-    for (std::vector<String>::const_iterator lIter = aModulePaths.begin();
-         lIter != aModulePaths.end(); ++lIter)
-    {
-      if (lIter->length() != 0)
-      {
-        lModulePaths.push_back(Unmarshaller::getInternalString(*lIter).c_str());
-        zstring& lPath = lModulePaths.back();
-        if (lPath.rfind(filesystem_path::get_directory_separator()) != std::string::npos)
-        {
-          lPath.append(filesystem_path::get_directory_separator());
-        }
-      }
-
-    }
-
-    theCtx->set_module_paths(lModulePaths);
+    std::vector<zstring> lInternalURIPath;
+    toInternalPath(aURIPath, lInternalURIPath);
+    theCtx->set_uri_path(lInternalURIPath);
   }
   catch (ZorbaException const& e)
   {
@@ -965,20 +980,106 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
   }
 }
 
+void
+StaticContextImpl::getURIPath(std::vector<String> &aURIPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalURIPath;
+    theCtx->get_uri_path(lInternalURIPath);
+    toPublicPath(lInternalURIPath, aURIPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getFullURIPath(std::vector<String> &aURIPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalURIPath;
+    theCtx->get_full_uri_path(lInternalURIPath);
+    toPublicPath(lInternalURIPath, aURIPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::setLibPath(const std::vector<String> &aLibPath)
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    toInternalPath(aLibPath, lInternalLibPath);
+    theCtx->set_lib_path(lInternalLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getLibPath(std::vector<String> &aLibPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    theCtx->get_lib_path(lInternalLibPath);
+    toPublicPath(lInternalLibPath, aLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getFullLibPath(std::vector<String> &aLibPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    theCtx->get_full_lib_path(lInternalLibPath);
+    toPublicPath(lInternalLibPath, aLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
+{
+  try
+  {
+    std::vector<zstring> lInternalModulePath;
+    toInternalPath(aModulePaths, lInternalModulePath);
+    theCtx->set_lib_path(lInternalModulePath);
+    theCtx->set_uri_path(lInternalModulePath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
 
 void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
   try
   {
-    std::vector<zstring> lModulePaths;
-
-    theCtx->get_module_paths(lModulePaths);
-
-    for (std::vector<zstring>::const_iterator lIter = lModulePaths.begin();
-         lIter != lModulePaths.end(); ++lIter)
-    {
-      aModulePaths.push_back(lIter->c_str());
-    }
+    std::vector<zstring> lInternalModulePath;
+    theCtx->get_lib_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aModulePaths);
+    lInternalModulePath.clear();
+    theCtx->get_uri_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aModulePaths);
   }
   catch (ZorbaException const& e)
   {
@@ -992,15 +1093,12 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
 {
   try
   {
-    std::vector<zstring> lFullModulePaths;
-
-    theCtx->get_full_module_paths(lFullModulePaths);
-
-    for (std::vector<zstring>::const_iterator lIter = lFullModulePaths.begin();
-         lIter != lFullModulePaths.end(); ++lIter)
-    {
-      aFullModulePaths.push_back(lIter->c_str());
-    }
+    std::vector<zstring> lInternalModulePath;
+    theCtx->get_full_lib_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aFullModulePaths);
+    lInternalModulePath.clear();
+    theCtx->get_full_uri_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aFullModulePaths);
   }
   catch (ZorbaException const& e)
   {

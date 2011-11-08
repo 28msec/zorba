@@ -647,6 +647,7 @@ class InternalNode : public OrdPathNode
   friend class CommentNode;
   friend class UpdPut;
   friend class CollectionPul;
+  friend class SimpleStore;
 
 public:
   typedef std::vector<XmlNode*> NodeVector;
@@ -744,7 +745,7 @@ public:
   void finalizeNode();
 
 protected:
-  csize findChild(XmlNode* child) const;
+  csize findChild(const XmlNode* child) const;
 
   void insertChild(XmlNode* child, csize pos);
 
@@ -1251,6 +1252,10 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
+
+#ifndef TEXT_ORDPATH
+  void getOrdPath(OrdPath& ordPath) const;
+#endif
 
   bool isTyped() const;
 

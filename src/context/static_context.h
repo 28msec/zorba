@@ -446,6 +446,7 @@ public:
   static const zstring ZORBA_MATH_FN_NS;
   static const zstring ZORBA_BASE64_FN_NS;
   static const zstring ZORBA_NODEREF_FN_NS;
+  static const zstring ZORBA_NODEPOS_FN_NS;
   static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
   static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
   static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
@@ -497,7 +498,9 @@ protected:
 
   ztd::auto_vector<internal::URLResolver>     theURLResolvers;
 
-  checked_vector<zstring>                 theModulePaths;
+  checked_vector<zstring>                 theURIPath;
+
+  checked_vector<zstring>                 theLibPath;
 
   ExternalModuleMap                     * theExternalModulesMap;
 
@@ -687,12 +690,17 @@ public:
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
-  void set_module_paths(const std::vector<zstring>& aModulePaths);
+  void set_uri_path(const std::vector<zstring>& aURIPath);
 
-  void get_module_paths(std::vector<zstring>& aModulePaths) const;
+  void get_uri_path(std::vector<zstring>& oURIPath) const;
 
-  void get_full_module_paths(std::vector<zstring>& aFullModulePaths) const;
+  void get_full_uri_path(std::vector<zstring>& oURIPath) const;
 
+  void set_lib_path(const std::vector<zstring>& aLibPath);
+
+  void get_lib_path(std::vector<zstring>& oLibPath) const;
+
+  void get_full_lib_path(std::vector<zstring>& oLibPath) const;
 
   //
   // Validating Items
