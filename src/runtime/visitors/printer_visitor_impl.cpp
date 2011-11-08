@@ -57,6 +57,7 @@
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/collections/collections_impl.h"
+#include "runtime/strings/strings_impl.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -1392,5 +1393,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
 
   PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
+
+  PRINTER_VISITOR_DEFINITION(SubstringIntOptIterator);
 }
 /* vim:set et sw=2 ts=2: */

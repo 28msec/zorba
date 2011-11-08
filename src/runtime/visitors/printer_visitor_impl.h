@@ -309,4 +309,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(FlowCtlIterator);
 
   DECLARE_VISITOR(CountCollectionIterator);
+
+  DECLARE_VISITOR(SubstringIntOptIterator);
+
 /* vim:set et sw=2 ts=2: */
