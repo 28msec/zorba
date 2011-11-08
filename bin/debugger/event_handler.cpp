@@ -69,10 +69,8 @@ EventHandler::parseMessage(const std::string &aMessage)
     lIter->open();
     lIter->next(item);
     std::size_t lId;
-    {
-      std::stringstream stream(item.getStringValue().c_str());
-      stream >> lId;
-    }
+    std::stringstream lStream(item.getStringValue().c_str());
+    lStream >> lId;
 #ifndef NDEBUG
     lIter->next(item);
     std::cout << item.getStringValue() << std::endl;
