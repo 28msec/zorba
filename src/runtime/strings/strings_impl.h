@@ -18,6 +18,8 @@
 #ifndef ZORBA_RUNTIME_STRINGS_STRING_IMPL_H
 #define ZORBA_RUNTIME_STRINGS_STRING_IMPL_H
 
+#include "common/shared_types.h"
+
 #include "runtime/base/narybase.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbatypes/schema_types.h"
@@ -32,31 +34,34 @@ namespace zorba {
  *
  * Author: Zorba Team
  */
-class SubstringIntOptIterator: public NaryBaseIterator<SubstringIntOptIterator, PlanIterator>
+class SubstringIntOptIterator :
+    public NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>
 {
 public:
-    SERIALIZABLE_CLASS(SubstringIntOptIterator,
-      NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS(SubstringIntOptIterator);
 
-    void serialize( ::zorba::serialization::Archiver& ar)
-    {
-      serialize_baseclass(ar,
-      (NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>)*this);
-    }
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubstringIntOptIterator,
+    NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>);
 
-    SubstringIntOptIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& children)
-      :
-      NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>(sctx, loc, children)
-    {}
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>*)this);
+  }
 
-    virtual ~SubstringIterator();
+  SubstringIntOptIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    :
+    NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
-    void accept(PlanIterVisitor& v) const;
+  virtual ~SubstringIntOptIterator();
 
-    bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 }

@@ -678,10 +678,10 @@ const char* SubstringIntOptIterator::class_name_str = "SubstringIntOptIterator";
 SubstringIntOptIterator::class_factory<SubstringIntOptIterator>
 SubstringIntOptIterator::g_class_factory;
 
-const serialization::classVersion
+const serialization::ClassVersion
   SubstringIntOptIterator::class_versions[] = {{ 1, 0x00905, false}};
 
-const int SubstringIntOptIterator::class_version_count =
+const int SubstringIntOptIterator::class_versions_count =
   sizeof(SubstringIntOptIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
@@ -696,7 +696,7 @@ void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-SubstringIntOptIterator::~SubstringIterator() {}
+SubstringIntOptIterator::~SubstringIntOptIterator() {}
 
 /**
   *______________________________________________________________________

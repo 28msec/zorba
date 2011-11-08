@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // ******************************************
 // *                                        *
 // * THIS IS A GENERATED FILE. DO NOT EDIT! *
@@ -37,7 +37,7 @@ const char* CodepointsToStringIterator::class_name_str = "CodepointsToStringIter
 CodepointsToStringIterator::class_factory<CodepointsToStringIterator>
 CodepointsToStringIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 CodepointsToStringIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int CodepointsToStringIterator::class_versions_count =
@@ -65,7 +65,7 @@ const char* StringToCodepointsIterator::class_name_str = "StringToCodepointsIter
 StringToCodepointsIterator::class_factory<StringToCodepointsIterator>
 StringToCodepointsIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StringToCodepointsIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StringToCodepointsIterator::class_versions_count =
@@ -97,7 +97,7 @@ const char* CompareStrIterator::class_name_str = "CompareStrIterator";
 CompareStrIterator::class_factory<CompareStrIterator>
 CompareStrIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 CompareStrIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int CompareStrIterator::class_versions_count =
@@ -125,7 +125,7 @@ const char* CodepointEqualIterator::class_name_str = "CodepointEqualIterator";
 CodepointEqualIterator::class_factory<CodepointEqualIterator>
 CodepointEqualIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 CodepointEqualIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int CodepointEqualIterator::class_versions_count =
@@ -153,7 +153,7 @@ const char* ConcatStrIterator::class_name_str = "ConcatStrIterator";
 ConcatStrIterator::class_factory<ConcatStrIterator>
 ConcatStrIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 ConcatStrIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int ConcatStrIterator::class_versions_count =
@@ -181,7 +181,7 @@ const char* StringJoinIterator::class_name_str = "StringJoinIterator";
 StringJoinIterator::class_factory<StringJoinIterator>
 StringJoinIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StringJoinIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StringJoinIterator::class_versions_count =
@@ -209,7 +209,7 @@ const char* SubstringIterator::class_name_str = "SubstringIterator";
 SubstringIterator::class_factory<SubstringIterator>
 SubstringIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 SubstringIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int SubstringIterator::class_versions_count =
@@ -237,7 +237,7 @@ const char* StringLengthIterator::class_name_str = "StringLengthIterator";
 StringLengthIterator::class_factory<StringLengthIterator>
 StringLengthIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StringLengthIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StringLengthIterator::class_versions_count =
@@ -265,7 +265,7 @@ const char* NormalizeSpaceIterator::class_name_str = "NormalizeSpaceIterator";
 NormalizeSpaceIterator::class_factory<NormalizeSpaceIterator>
 NormalizeSpaceIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 NormalizeSpaceIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int NormalizeSpaceIterator::class_versions_count =
@@ -293,7 +293,7 @@ const char* NormalizeUnicodeIterator::class_name_str = "NormalizeUnicodeIterator
 NormalizeUnicodeIterator::class_factory<NormalizeUnicodeIterator>
 NormalizeUnicodeIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 NormalizeUnicodeIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int NormalizeUnicodeIterator::class_versions_count =
@@ -321,7 +321,7 @@ const char* UpperCaseIterator::class_name_str = "UpperCaseIterator";
 UpperCaseIterator::class_factory<UpperCaseIterator>
 UpperCaseIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 UpperCaseIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int UpperCaseIterator::class_versions_count =
@@ -349,7 +349,7 @@ const char* LowerCaseIterator::class_name_str = "LowerCaseIterator";
 LowerCaseIterator::class_factory<LowerCaseIterator>
 LowerCaseIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 LowerCaseIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int LowerCaseIterator::class_versions_count =
@@ -377,7 +377,7 @@ const char* TranslateIterator::class_name_str = "TranslateIterator";
 TranslateIterator::class_factory<TranslateIterator>
 TranslateIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 TranslateIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int TranslateIterator::class_versions_count =
@@ -405,7 +405,7 @@ const char* EncodeForUriIterator::class_name_str = "EncodeForUriIterator";
 EncodeForUriIterator::class_factory<EncodeForUriIterator>
 EncodeForUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 EncodeForUriIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int EncodeForUriIterator::class_versions_count =
@@ -433,7 +433,7 @@ const char* IriToUriIterator::class_name_str = "IriToUriIterator";
 IriToUriIterator::class_factory<IriToUriIterator>
 IriToUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 IriToUriIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int IriToUriIterator::class_versions_count =
@@ -461,7 +461,7 @@ const char* EscapeHtmlUriIterator::class_name_str = "EscapeHtmlUriIterator";
 EscapeHtmlUriIterator::class_factory<EscapeHtmlUriIterator>
 EscapeHtmlUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 EscapeHtmlUriIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int EscapeHtmlUriIterator::class_versions_count =
@@ -489,7 +489,7 @@ const char* ContainsIterator::class_name_str = "ContainsIterator";
 ContainsIterator::class_factory<ContainsIterator>
 ContainsIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 ContainsIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int ContainsIterator::class_versions_count =
@@ -517,7 +517,7 @@ const char* StartsWithIterator::class_name_str = "StartsWithIterator";
 StartsWithIterator::class_factory<StartsWithIterator>
 StartsWithIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StartsWithIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StartsWithIterator::class_versions_count =
@@ -545,7 +545,7 @@ const char* EndsWithIterator::class_name_str = "EndsWithIterator";
 EndsWithIterator::class_factory<EndsWithIterator>
 EndsWithIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 EndsWithIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int EndsWithIterator::class_versions_count =
@@ -573,7 +573,7 @@ const char* SubstringBeforeIterator::class_name_str = "SubstringBeforeIterator";
 SubstringBeforeIterator::class_factory<SubstringBeforeIterator>
 SubstringBeforeIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 SubstringBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int SubstringBeforeIterator::class_versions_count =
@@ -601,7 +601,7 @@ const char* SubstringAfterIterator::class_name_str = "SubstringAfterIterator";
 SubstringAfterIterator::class_factory<SubstringAfterIterator>
 SubstringAfterIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 SubstringAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int SubstringAfterIterator::class_versions_count =
@@ -629,7 +629,7 @@ const char* FnMatchesIterator::class_name_str = "FnMatchesIterator";
 FnMatchesIterator::class_factory<FnMatchesIterator>
 FnMatchesIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 FnMatchesIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int FnMatchesIterator::class_versions_count =
@@ -657,7 +657,7 @@ const char* FnReplaceIterator::class_name_str = "FnReplaceIterator";
 FnReplaceIterator::class_factory<FnReplaceIterator>
 FnReplaceIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 FnReplaceIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int FnReplaceIterator::class_versions_count =
@@ -685,7 +685,7 @@ const char* FnTokenizeIterator::class_name_str = "FnTokenizeIterator";
 FnTokenizeIterator::class_factory<FnTokenizeIterator>
 FnTokenizeIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 FnTokenizeIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int FnTokenizeIterator::class_versions_count =
@@ -723,7 +723,7 @@ const char* FnAnalyzeStringIterator::class_name_str = "FnAnalyzeStringIterator";
 FnAnalyzeStringIterator::class_factory<FnAnalyzeStringIterator>
 FnAnalyzeStringIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 FnAnalyzeStringIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int FnAnalyzeStringIterator::class_versions_count =
@@ -751,7 +751,7 @@ const char* StringMaterializeIterator::class_name_str = "StringMaterializeIterat
 StringMaterializeIterator::class_factory<StringMaterializeIterator>
 StringMaterializeIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StringMaterializeIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StringMaterializeIterator::class_versions_count =
@@ -779,7 +779,7 @@ const char* StringIsStreamableIterator::class_name_str = "StringIsStreamableIter
 StringIsStreamableIterator::class_factory<StringIsStreamableIterator>
 StringIsStreamableIterator::g_class_factory;
 
-const serialization::ClassVersion 
+const serialization::ClassVersion
 StringIsStreamableIterator::class_versions[] ={{ 1, 0x000905, false}};
 
 const int StringIsStreamableIterator::class_versions_count =
