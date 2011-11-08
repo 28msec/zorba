@@ -280,6 +280,9 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
+static_context::ZORBA_NODEPOS_FN_NS = NS_PRE + "modules/node-position";
+
+const zstring
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
   = NS_PRE + "modules/store/dynamic/collections/ddl";
 
@@ -373,6 +376,7 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
+            ns == ZORBA_NODEPOS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
@@ -475,7 +479,6 @@ static_context::static_context()
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(NULL),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -523,7 +526,6 @@ static_context::static_context(static_context* parent)
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -576,7 +578,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
@@ -651,9 +652,6 @@ static_context::~static_context()
 
     delete theFunctionArityMap;
   }
-
-  if (theAnnotationMap)
-    delete theAnnotationMap;
 
   if (theW3CCollectionMap)
     delete theW3CCollectionMap;
@@ -866,7 +864,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
-  ar & theModulePaths;
+  ar & theURIPath;
+  ar & theLibPath;
 
   // Options must be serialized BEFORE external modules
   ar & theOptionMap;
@@ -889,8 +888,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionMap;
   ar & theFunctionArityMap;
   ar.set_serialize_only_for_eval(false);
-
-  ar & theAnnotationMap;
 
   ar & theCollectionMap;
 
@@ -1519,6 +1516,13 @@ void static_context::apply_url_resolvers(
   for (std::vector<zstring>::iterator url = aUrls.begin();
        url != aUrls.end(); url++) 
   {
+    // if the http-client module is not available, we must not search
+    // for it by calling the http-client...
+    if (*url == "http://www.zorba-xquery.com/modules/http-client")
+    {
+      continue;
+    }
+
     // Iterate upwards through the static_context tree...
     for (static_context const* sctx = this;
          sctx != NULL; sctx = sctx->theParent)
@@ -1530,18 +1534,13 @@ void static_context::apply_url_resolvers(
       {
         try 
         {
-          // if the http-client module is not available, we must not search
-          // for it by calling the http-client...
-          if (*url != "http://www.zorba-xquery.com/modules/http-client") 
+          // Take ownership of returned Resource (if any)
+          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          if (oResource.get() != NULL)
           {
-            // Take ownership of returned Resource (if any)
-            oResource.reset((*resolver)->resolveURL(*url, aEntityData));
-            if (oResource.get() != NULL) 
-            {
-              // Populate the URL used to load this Resource
-              oResource->setUrl(*url);
-              return;
-            }
+            // Populate the URL used to load this Resource
+            oResource->setUrl(*url);
+            return;
           }
         }
         catch (const std::exception& e) 
@@ -1566,32 +1565,63 @@ void static_context::apply_url_resolvers(
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::set_module_paths(const std::vector<zstring>& paths)
+void static_context::set_uri_path(const std::vector<zstring>& path)
 {
-  theModulePaths = paths;
+  theURIPath = path;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_module_paths(std::vector<zstring>& paths) const
+void static_context::get_uri_path(std::vector<zstring>& path) const
 {
-  paths.insert(paths.end(), theModulePaths.begin(), theModulePaths.end());
+  path.insert(path.end(), theURIPath.begin(), theURIPath.end());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_full_module_paths(std::vector<zstring>& paths) const
+void static_context::get_full_uri_path(std::vector<zstring>& path) const
 {
   if (theParent != NULL)
   {
-    theParent->get_full_module_paths(paths);
+    theParent->get_full_uri_path(path);
   }
 
-  get_module_paths(paths);
+  get_uri_path(path);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::set_lib_path(const std::vector<zstring>& path)
+{
+  theLibPath = path;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_lib_path(std::vector<zstring>& path) const
+{
+  path.insert(path.end(), theLibPath.begin(), theLibPath.end());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_full_lib_path(std::vector<zstring>& path) const
+{
+  if (theParent != NULL)
+  {
+    theParent->get_full_lib_path(path);
+  }
+
+  get_lib_path(path);
 }
 
 
@@ -2616,49 +2646,6 @@ ExternalFunction* static_context::lookup_external_function(
   return lModule->getExternalFunction(aLocalName.str());
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Annotations                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-void
-static_context::add_ann(
-    StaticContextConsts::annotations_t aAnnotation,
-    const store::Item_t& aQName)
-{
-  if (!theAnnotationMap) {
-    theAnnotationMap = new AnnotationMap();
-  }
-  (*theAnnotationMap)[static_cast<uint64_t>(aAnnotation)] = aQName;
-}
-
-store::Item_t
-static_context::lookup_ann(StaticContextConsts::annotations_t aAnnotation) const
-{
-  std::map<uint64_t, store::Item_t>::const_iterator lIter;
-  if (!theAnnotationMap ||
-      (lIter = theAnnotationMap->find(static_cast<uint64_t>(aAnnotation))) == theAnnotationMap->end()) {
-    return theParent?theParent->lookup_ann(aAnnotation):NULL;
-  }
-  return lIter->second;
-}
-
-StaticContextConsts::annotations_t
-static_context::lookup_ann(const store::Item_t& aQName) const
-{
-  if ( theAnnotationMap )
-  {
-    std::map<uint64_t, store::Item_t>::const_iterator lIter;
-    for (lIter = theAnnotationMap->begin(); lIter != theAnnotationMap->end(); ++lIter)
-    {
-      if (aQName->equals(lIter->second))
-      {
-        return static_cast<StaticContextConsts::annotations_t>(lIter->first);
-      }
-    }
-  }
-  return theParent?theParent->lookup_ann(aQName):StaticContextConsts::zann_end;
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

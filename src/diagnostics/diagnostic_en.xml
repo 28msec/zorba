@@ -2046,6 +2046,10 @@
       <value>index multiple property values</value>
     </diagnostic>
 
+    <diagnostic code="ZDST0025" name="INDEX_BAD_UNIQUE_PROPERTY">
+      <value>"$1": index cannot be declared as unique</value>
+    </diagnostic>
+
     <diagnostic code="ZDST0026" name="INDEX_INVALID_PROPERTY_VALUE">
       <value>index invalid property value</value>
     </diagnostic>
@@ -2172,14 +2176,6 @@
 
     <diagnostic code="ZSTR0004" name="INDEX_PARTIAL_KEY_REMOVE">
       <value>"$1": partial key deletion from index "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZSTR0005" name="INDEX_PARTIAL_KEY_PROBE">
-      <value>"$1": partial key probe into index "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZSTR0006" name="INDEX_INVALID_BOX_PROBE">
-      <value>for index "$1": $2</value>
     </diagnostic>
 
     <diagnostic code="ZSTR0007" name="INDEX_UNSUPPORTED_PROBE_CONDITION">

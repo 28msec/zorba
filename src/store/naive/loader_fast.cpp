@@ -216,11 +216,9 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     if (stream.bad())
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
-        )
-      );
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                    ERROR_PARAMS(ZED(BadStreamState))));
     }
 
     return stream.gcount();
@@ -257,6 +255,8 @@ store::Item_t FastXmlLoader::loadXml(
 
   xmlSubstituteEntitiesDefault(1);
 
+  theBaseUri = baseUri;
+
   if (docUri.empty())
   {
     std::ostringstream uristream;
@@ -271,28 +271,23 @@ store::Item_t FastXmlLoader::loadXml(
 
   thePathStack.push(PathStepInfo(NULL, baseUri));
 
-  theTree->setDocUri(theDocUri);
-  theTree->setBaseUri(baseUri);
-
   try
   {
     std::streamsize numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE);
 
     if (numChars < 0)
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
-      );
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
       abortload();
       return NULL;
     }
     else if (numChars == 0)
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
-        )
-      );
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                    ERROR_PARAMS(ZED(NoInputData))));
       abortload();
       return NULL;
     }
@@ -305,8 +300,9 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      theXQueryDiagnostics->add_error(
-        NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( ParserInitFailed ) )));
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
+                                    ERROR_PARAMS(ZED(ParserInitFailed))));
       abortload();
 			return NULL;
     }
@@ -324,7 +320,9 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR ));
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
       abortload();
       return NULL;
     }
@@ -356,20 +354,14 @@ store::Item_t FastXmlLoader::loadXml(
     if (!theDocUri.empty())
     {
       theXQueryDiagnostics->add_error(
-        NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
-        )
-      );
+      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
+                          ERROR_PARAMS(ZED(BadXMLDocument_2o), theDocUri)));
     }
     else
     {
       theXQueryDiagnostics->add_error(
-        NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
-        )
-      );
+      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
+                          ERROR_PARAMS(ZED(BadXMLDocument_2o))));
     }
     abortload();
     return NULL;
@@ -397,7 +389,7 @@ void FastXmlLoader::startDocument(void * ctx)
 
   try
   {
-    XmlNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
+    DocumentNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
 
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
@@ -413,6 +405,8 @@ void FastXmlLoader::startDocument(void * ctx)
     }
 #endif
 
+    docNode->setBaseUri(loader.theBaseUri);
+    docNode->setDocUri(loader.theDocUri);
     docNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.pushChild();
 
@@ -424,9 +418,8 @@ void FastXmlLoader::startDocument(void * ctx)
   }
   catch (...)
   {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
+    loader.theXQueryDiagnostics->
+    add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR));
   }
 }
 

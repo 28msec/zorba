@@ -68,8 +68,8 @@ public:
 
   virtual DocumentNode* createDocumentNode(
         XmlTree* tree,
-        zstring& baseUri,
-        zstring& docUri);
+        const zstring& baseUri,
+        const zstring& docUri);
 
   virtual ElementNode* createElementNode(
         store::Item_t&  nodeName,
