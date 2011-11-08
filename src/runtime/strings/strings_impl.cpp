@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,7 @@ namespace zorba {
   *  fn:codepoints-to-string($arg as xs:integer*) as xs:string
   *_______________________________________________________________________*/
 bool
-CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   zstring resStr;
@@ -108,7 +108,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
  */
 bool StringToCodepointsIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   // TODO Optimization for large strings: large strings mean that a large
   // integer vector should be stored in the state that is not good.
@@ -118,19 +118,19 @@ bool StringToCodepointsIterator::nextImpl(
   StringToCodepointsIteratorState* state;
   DEFAULT_STACK_INIT(StringToCodepointsIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren [0].getp(), planState )) 
+  if (consumeNext(item, theChildren [0].getp(), planState ))
   {
     item->getStringValue2(inputStr);
 
     if (!inputStr.empty())
     {
       utf8::to_codepoints(inputStr, &state->theResult);
-  
+
       while (state->theIterator < state->theResult.size())
       {
-        GENV_ITEMFACTORY->createInteger( 
+        GENV_ITEMFACTORY->createInteger(
           result,
-          Integer(state->theResult[state->theIterator]) 
+          Integer(state->theResult[state->theIterator])
         );
 
         STACK_PUSH(true, state );
@@ -171,7 +171,7 @@ void StringToCodepointsIteratorState::reset(PlanState& planState)
   *_______________________________________________________________________*/
 bool CompareStrIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t n0;
   store::Item_t n1;
@@ -181,7 +181,7 @@ bool CompareStrIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(n0, theChildren[0].getp(), planState )) 
+  if (consumeNext(n0, theChildren[0].getp(), planState ))
   {
     if (consumeNext(n1, theChildren[1].getp(), planState ))
     {
@@ -199,7 +199,7 @@ bool CompareStrIterator::nextImpl(
       }
 
       res  = utf8::compare(n0->getStringValue(), n1->getStringValue(), coll);
-      
+
       res = (res < 0 ? -1 : (res > 0 ? 1 : 0));
 
       GENV_ITEMFACTORY->createInteger(result, Integer(res));
@@ -222,7 +222,7 @@ bool CompareStrIterator::nextImpl(
   *_______________________________________________________________________*/
 bool CodepointEqualIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -230,9 +230,9 @@ bool CodepointEqualIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item0, theChildren [0].getp(), planState )) 
+  if (consumeNext(item0, theChildren [0].getp(), planState ))
   {
-    if (consumeNext(item1, theChildren [1].getp(), planState )) 
+    if (consumeNext(item1, theChildren [1].getp(), planState ))
     {
       GENV_ITEMFACTORY->createBoolean(result,
                                       item0->getStringValue() == item1->getStringValue());
@@ -254,7 +254,7 @@ bool CodepointEqualIterator::nextImpl(
   *_______________________________________________________________________*/
 bool ConcatStrIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t lItem;
   std::stringstream lResStream;
@@ -456,7 +456,7 @@ bool SubstringIterator::nextImpl(
           bool lenItemExists = consumeNext(lenItem, theChildren[2], planState);
 
           ZORBA_ASSERT(lenItemExists);
-          
+
           len = lenItem->getDoubleValue();
 
           if (!len.isNaN())
@@ -476,7 +476,7 @@ bool SubstringIterator::nextImpl(
             {
               ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
             }
-    
+
             if( !(start + len).isNaN())
             {
               if (ilen >= 0)
@@ -518,6 +518,184 @@ bool SubstringIterator::nextImpl(
   STACK_END (state);
 }
 
+
+/**
+  *______________________________________________________________________
+  *
+  *  7.4.3.1  fn:substring optimized for int arguments
+  *
+  *fn:substring($sourceString   as xs:string?,
+  *             $startingLoc    as xs:integer) as xs:string
+  *fn:substring($sourceString as xs:string?,
+  *             $startingLoc  as xs:integer,
+  *             $length       as xs:integer)   as xs:string
+  *_______________________________________________________________________*/
+bool SubstringIntOptIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t stringItem;
+  store::Item_t startItem;
+  store::Item_t lenItem;
+  zstring strval;
+  zstring resStr;
+  xs_double start;
+  xs_double len;
+  xs_int istart;
+  xs_int ilen;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(stringItem, theChildren[0].getp(), planState ))
+  {
+    stringItem->getStringValue2(strval);
+
+    if (!strval.empty())
+    {
+      bool startExists = consumeNext(startItem, theChildren[1], planState);
+
+      ZORBA_ASSERT(startExists);
+
+      // note: The first character of a string is located at position 1,
+      // not position 0.
+
+      start = startItem->getDoubleValue();
+
+      if (!start.isNaN())
+      {
+        if (start.isFinite())
+        {
+          try
+          {
+            istart = to_xs_int(start.round());
+          }
+          catch ( std::range_error const& )
+          {
+            istart = (xs_int)utf8_string<zstring>(strval).length();
+          }
+        }
+        else
+        {
+          istart = (xs_int)utf8_string<zstring>(strval).length();
+        }
+
+        if( theChildren.size() == 2)
+        {
+          if (istart <= 0)
+          {
+            resStr = strval;
+          }
+          else
+          {
+            try
+            {
+              resStr = utf8_string<zstring>(strval).substr(istart-1);
+            }
+            catch (...)
+            {
+              zstring::size_type numChars = utf8_string<zstring>(strval).length();
+              if (static_cast<zstring::size_type>(istart) > numChars)
+              {
+                // result is the empty string
+              }
+              else
+              {
+                throw;
+              }
+            }
+          }
+        }
+        else
+        {
+          bool lenItemExists = consumeNext(lenItem, theChildren[2], planState);
+
+          ZORBA_ASSERT(lenItemExists);
+
+          len = lenItem->getDoubleValue();
+
+          if (!len.isNaN())
+          {
+            if (len.isFinite())
+            {
+              try
+              {
+                ilen = to_xs_int(len.round());
+              }
+              catch ( std::range_error const& )
+              {
+                ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
+              }
+            }
+            else
+            {
+              ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
+            }
+
+            if( !(start + len).isNaN())
+            {
+              if (ilen >= 0)
+              {
+                if (istart <= 0)
+                {
+                  if ((ilen + istart - 1) >= 0)
+                    resStr = utf8_string<zstring>(strval).substr(0,  istart - 1 + ilen);
+                }
+                else
+                {
+                  try
+                  {
+                    resStr = utf8_string<zstring>(strval).substr(istart-1, ilen);
+                  }
+                  catch (...)
+                  {
+                    zstring::size_type numChars = utf8_string<zstring>(strval).length();
+                    if (static_cast<zstring::size_type>(istart) > numChars)
+                    {
+                      // result is the empty string
+                    }
+                    else
+                    {
+                      throw;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } // non NaN start arg
+    } // non empty string arg
+  } // non NULL string arg
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+
+  STACK_END (state);
+}
+
+const char* SubstringIntOptIterator::class_name_str = "SubstringIntOptIterator";
+SubstringIntOptIterator::class_factory<SubstringIntOptIterator>
+SubstringIntOptIterator::g_class_factory;
+
+const serialization::classVersion
+  SubstringIntOptIterator::class_versions[] = {{ 1, 0x00905, false}};
+
+const int SubstringIntOptIterator::class_version_count =
+  sizeof(SubstringIntOptIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SubstringIntOptIterator::~SubstringIterator() {}
 
 /**
   *______________________________________________________________________
@@ -566,7 +744,7 @@ bool StringLengthIterator::nextImpl(
   *fn:normalize-space($arg as xs:string?) as xs:string
   *_______________________________________________________________________*/
 bool NormalizeSpaceIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t item;
@@ -668,7 +846,7 @@ bool NormalizeUnicodeIterator::nextImpl(
     // must push empty string due to return type of function
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
-  
+
   STACK_END (state);
 }
 
@@ -716,7 +894,7 @@ bool UpperCaseIterator::nextImpl(
   *_______________________________________________________________________*/
 bool LowerCaseIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring resStr;
@@ -751,7 +929,7 @@ bool LowerCaseIterator::nextImpl(
   *             $transString  as xs:string) as xs:string
   *_______________________________________________________________________*/
 bool TranslateIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t arg_item, map_item, trans_item;
@@ -812,7 +990,7 @@ bool TranslateIterator::nextImpl(
 
     res = GENV_ITEMFACTORY->createString(result, result_string);
   }
-  
+
   if (!res)
   {
     res = GENV_ITEMFACTORY->createString(result, result_string);
@@ -832,7 +1010,7 @@ bool TranslateIterator::nextImpl(
   *_______________________________________________________________________*/
 bool EncodeForUriIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring resStr;
@@ -841,7 +1019,7 @@ bool EncodeForUriIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren [0].getp(), planState)) 
+  if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(strval);
     uri::encode(strval, &resStr, true);
@@ -860,8 +1038,8 @@ bool EncodeForUriIterator::nextImpl(
   *fn:iri-to-uri($iri as xs:string?) as xs:string
   *_______________________________________________________________________*/
 bool IriToUriIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring lStrIri;
@@ -894,8 +1072,8 @@ bool IriToUriIterator::nextImpl(
   *fn:escape-html-uri($uri as xs:string?) as xs:string
   *_______________________________________________________________________*/
 bool EscapeHtmlUriIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
   zstring lStrUri;
@@ -932,8 +1110,8 @@ bool EscapeHtmlUriIterator::nextImpl(
   *             $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 bool ContainsIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -954,7 +1132,7 @@ bool ContainsIterator::nextImpl(
   {
     item1->getStringValue2(arg2);
   }
-    
+
   if (arg2.empty())
   {
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
@@ -979,7 +1157,7 @@ bool ContainsIterator::nextImpl(
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
   }
-  
+
   STACK_END (state);
 }
 /*end class ContainsIterator*/
@@ -997,7 +1175,7 @@ bool ContainsIterator::nextImpl(
   *_______________________________________________________________________*/
 bool StartsWithIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -1062,8 +1240,8 @@ bool StartsWithIterator::nextImpl(
   *             $collation  as xs:string)   as xs:boolean
   *_______________________________________________________________________*/
 bool EndsWithIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -1079,7 +1257,7 @@ bool EndsWithIterator::nextImpl(
   {
     item0->getStringValue2(arg1);
   }
-  
+
   if (consumeNext(item1, theChildren[1].getp(), planState ))
   {
     item1->getStringValue2(arg2);
@@ -1110,7 +1288,7 @@ bool EndsWithIterator::nextImpl(
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
   }
-  
+
   STACK_END (state);
 }
 
@@ -1127,8 +1305,8 @@ bool EndsWithIterator::nextImpl(
   *                     $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 bool SubstringBeforeIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -1195,8 +1373,8 @@ bool SubstringBeforeIterator::nextImpl(
   *                   $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 bool SubstringAfterIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const 
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
@@ -1270,7 +1448,7 @@ bool SubstringAfterIterator::nextImpl(
   *           $flags   as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 bool FnMatchesIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   zstring input;
@@ -1278,7 +1456,7 @@ bool FnMatchesIterator::nextImpl(
   zstring flags;
   store::Item_t item;
   bool res = false;
-  
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1290,7 +1468,7 @@ bool FnMatchesIterator::nextImpl(
 
   item->getStringValue2(xquery_pattern);
 
-  if(theChildren.size() == 3) 
+  if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
@@ -1298,20 +1476,20 @@ bool FnMatchesIterator::nextImpl(
     item->getStringValue2(flags);
   }
 
-  try 
+  try
   {
     zstring lib_pattern;
     convert_xquery_re( xquery_pattern, &lib_pattern, flags.c_str() );
     res = utf8::match_part(input, lib_pattern, flags.c_str());
   }
-  catch(XQueryException& ex) 
+  catch(XQueryException& ex)
   {
     set_source( ex, loc );
     throw;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state); 
-  
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
+
   STACK_END(state);
 }
 
@@ -1340,7 +1518,7 @@ bool FnReplaceIterator::nextImpl(
   zstring resStr;
   store::Item_t item;
   bool tmp;
-  
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1357,7 +1535,7 @@ bool FnReplaceIterator::nextImpl(
 
   item->getStringValue2(replacement);
 
-  if(theChildren.size() == 4) 
+  if(theChildren.size() == 4)
   {
     if (!consumeNext(item, theChildren[3].getp(), planState))
       ZORBA_ASSERT (false);
@@ -1365,16 +1543,16 @@ bool FnReplaceIterator::nextImpl(
     item->getStringValue2(flags);
   }
 
-  try 
+  try
   {
     tmp = utf8::match_part(zstring(), pattern, flags.c_str());
   }
-  catch(XQueryException& ex) 
+  catch(XQueryException& ex)
   {
     set_source( ex, loc );
     throw;
   }
-  
+
   if (tmp)
     throw XQUERY_EXCEPTION(
       err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
@@ -1448,20 +1626,20 @@ bool FnReplaceIterator::nextImpl(
       );
   } // local scope
 
-  try 
+  try
   {
     zstring lib_pattern;
     convert_xquery_re( pattern, &lib_pattern, flags.c_str() );
     utf8::replace_all(input, lib_pattern, flags.c_str(), replacement2, &resStr);
   }
-  catch(XQueryException& ex) 
+  catch(XQueryException& ex)
   {
     set_source( ex, loc );
     throw;
   }
-  
+
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
-  
+
   STACK_END (state);
 }
 
@@ -1514,7 +1692,7 @@ bool FnTokenizeIterator::nextImpl(
   item->getStringValue2(strval);
   state->thePattern = strval.str();
 
-  if(theChildren.size() == 3) 
+  if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
@@ -1543,7 +1721,7 @@ bool FnTokenizeIterator::nextImpl(
 
   while ((xs_unsignedInt)state->start_pos < state->theString.length ())
   {
-    try 
+    try
     {
       unicode::regex re;
       //
@@ -1558,7 +1736,7 @@ bool FnTokenizeIterator::nextImpl(
       if ( !got_next )
         break;
     }
-    catch(XQueryException& ex) 
+    catch(XQueryException& ex)
     {
       set_source( ex, loc );
       throw;
@@ -1588,7 +1766,7 @@ bool FnTokenizeIterator::nextImpl(
   *                   $flags   as xs:string) as element(fn:analyze-string-result)
   *_______________________________________________________________________*/
 
-static void copyUtf8Chars(const char *&sin, 
+static void copyUtf8Chars(const char *&sin,
                           int &utf8start,
                           unsigned int &bytestart,
                           int utf8end,
@@ -1605,10 +1783,10 @@ static void copyUtf8Chars(const char *&sin,
   }
 }
 
-static void addNonMatchElement(store::Item_t &parent, 
-                               int &match_end1, 
+static void addNonMatchElement(store::Item_t &parent,
+                               int &match_end1,
                                unsigned int &match_end1_bytes,
-                               int match_start2, 
+                               int match_start2,
                                const char *&strin)
 {
   store::Item_t non_match_elem;
@@ -1635,12 +1813,12 @@ static void addNonMatchElement(store::Item_t &parent,
   GENV_ITEMFACTORY->createTextNode(non_match_text_item, non_match_elem, non_match_str);
 }
 
-static void addGroupElement(store::Item_t &parent, 
+static void addGroupElement(store::Item_t &parent,
                             store::Item_t &untyped_type_name,
                             store::NsBindings   &ns_binding,
                             zstring &baseURI,
-                            int match_start2, 
-                            int match_end2, 
+                            int match_start2,
+                            int match_end2,
                             unsigned int &match_end1_bytes,
                             const char *&sin,
                             unicode::regex &rx,
@@ -1695,9 +1873,9 @@ static void addGroupElement(store::Item_t &parent,
     {
       if(group_parent[i+1] > gparent)
       {
-        addGroupElement(group_elem, untyped_type_name, ns_binding, baseURI, 
-                        match_startg, match_endg, match_end1_bytes, 
-                        sin, rx, 
+        addGroupElement(group_elem, untyped_type_name, ns_binding, baseURI,
+                        match_startg, match_endg, match_end1_bytes,
+                        sin, rx,
                         i, group_parent, nr_pattern_groups, i);
         continue;
       }
@@ -1719,8 +1897,8 @@ static void addGroupElement(store::Item_t &parent,
   }
 }
 
-static void addMatchElement(store::Item_t &parent, 
-                    int match_start2, 
+static void addMatchElement(store::Item_t &parent,
+                    int match_start2,
                     unsigned int &match_end1_bytes,
                     int match_end2,
                     //utf8_string<zstring_p>::const_iterator& utf8_it,
@@ -1776,7 +1954,7 @@ static void computePatternGroupsParents(zstring &xquery_pattern, std::vector<int
 }
 
 bool FnAnalyzeStringIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   bool is_input_stream = false;
@@ -1797,7 +1975,7 @@ bool FnAnalyzeStringIterator::nextImpl(
   zstring xquery_pattern;
   zstring flags;
   store::Item_t item;
-  
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1819,7 +1997,7 @@ bool FnAnalyzeStringIterator::nextImpl(
 
   item->getStringValue2(xquery_pattern);
 
-  if(theChildren.size() == 3) 
+  if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
@@ -1827,7 +2005,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     item->getStringValue2(flags);
   }
 
-  try 
+  try
   {
     zstring lib_pattern;
     convert_xquery_re( xquery_pattern, &lib_pattern, flags.c_str() );
@@ -2017,14 +2195,14 @@ bool FnAnalyzeStringIterator::nextImpl(
 
     }while(is_input_stream && !reachedEnd);
   }
-  catch(XQueryException& ex) 
+  catch(XQueryException& ex)
   {
     set_source( ex, loc );
     throw;
   }
 
-  STACK_PUSH(true, state); 
-  
+  STACK_PUSH(true, state);
+
   STACK_END(state);
 }
 
