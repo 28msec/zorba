@@ -21,13 +21,6 @@ import module namespace base64 = "http://www.zorba-xquery.com/modules/converters
 declare variable $dmh:endl as xs:string := '
 ';
 
-declare %private function dmh:has-to-stop($resp as element())
-{
-  fn:not(($resp/@command eq "stop" and $resp/@reason eq "ok")
-    or ($resp/@status eq "stopped")
-    or ($resp/@status eq "stopping"))
-};
-
 declare %private function dmh:status($resp as element())
 {
   fn:concat(
@@ -122,11 +115,9 @@ declare %private function dmh:eval($resp as element())
 declare %private function dmh:process-response($resp as element())
 {
   if ($resp/@command eq "") then
-    (fn:true(), $resp/fn:data(@transaction_id), dmh:status($resp))
+    ($resp/fn:data(@transaction_id), dmh:status($resp))
   else
     (
-      dmh:has-to-stop($resp),
-
       if (fn:exists($resp/@transaction_id)) then
         $resp/fn:data(@transaction_id)
       else
@@ -151,7 +142,6 @@ declare %private function dmh:process-response($resp as element())
 
 declare function dmh:process-init($init as element())
 {
-  fn:true(),
   0,
   fn:concat(fn:string-join(
   ('Established connection with', $init/@language, 'client', $init/@appid), ' '), '
@@ -165,7 +155,6 @@ declare function dmh:process($message as element())
   case "response"   return dmh:process-response($message)
   default return
     (
-      fn:true(),
       if (fn:exists($message/@transaction_id)) then
         $message/fn:data(@transaction_id)
       else

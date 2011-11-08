@@ -67,19 +67,6 @@ EventHandler::parseMessage(const std::string &aMessage)
     Iterator_t lIter = query->iterator();
     Item item;
     lIter->open();
-    bool doContinue = false;
-    lIter->next(item);
-    {
-      const std::string& continueString = item.getStringValue().str();
-      if (continueString == "true") {
-        doContinue = true;
-      } else if (continueString == "false") {
-        doContinue = false;
-      } else {
-        std::stringstream stream(continueString);
-        stream >> doContinue;
-      }
-    }
     lIter->next(item);
     std::size_t lId;
     {
@@ -90,7 +77,7 @@ EventHandler::parseMessage(const std::string &aMessage)
     lIter->next(item);
     std::cout << item.getStringValue() << std::endl;
 #endif
-    theContinueProducer.produce(doContinue);
+    theContinueProducer.produce(true);
     theIdQueue.produce(lId);
   } catch (ZorbaException& e) {
     std::cerr << "FATAL: could not execute query: " << std::endl;
