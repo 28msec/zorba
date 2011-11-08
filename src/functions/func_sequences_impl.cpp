@@ -71,13 +71,13 @@ xqtref_t op_concatenate::getReturnType(
 }
 
 
-BoolAnnotationValue op_concatenate::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_concatenate::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -86,13 +86,13 @@ BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input)
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_empty::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_empty::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -101,13 +101,13 @@ BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_exists::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_exists::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -126,7 +126,7 @@ xqtref_t fn_distinct_values::getReturnType(
 
 BoolAnnotationValue fn_distinct_values::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0)
     return fo->getIgnoresSortedNodes();
@@ -137,7 +137,7 @@ BoolAnnotationValue fn_distinct_values::ignoresSortedNodes(
 
 BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -151,7 +151,7 @@ BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
 ********************************************************************************/
 BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0 || input == 2)
     return fo->getIgnoresSortedNodes();
@@ -162,7 +162,7 @@ BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
 
 BoolAnnotationValue fn_insert_before::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0 || input == 2)
     return fo->getIgnoresSortedNodes();
@@ -184,7 +184,7 @@ xqtref_t fn_remove::getReturnType(
 
 BoolAnnotationValue fn_remove::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0)
     return ANNOTATION_FALSE;
@@ -195,7 +195,7 @@ BoolAnnotationValue fn_remove::ignoresSortedNodes(
 
 BoolAnnotationValue fn_remove::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   return ANNOTATION_FALSE;
 }
@@ -214,7 +214,7 @@ xqtref_t fn_reverse::getReturnType(
 
 BoolAnnotationValue fn_reverse::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
@@ -222,7 +222,7 @@ BoolAnnotationValue fn_reverse::ignoresSortedNodes(
 
 BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
@@ -513,13 +513,13 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -550,7 +550,7 @@ xqtref_t fn_zero_or_one::getReturnType(
 }
 
 
-BoolAnnotationValue fn_zero_or_one::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_zero_or_one::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -582,13 +582,13 @@ xqtref_t fn_one_or_more::getReturnType(
 }
 
 
-BoolAnnotationValue fn_one_or_more::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_one_or_more::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -680,7 +680,7 @@ PlanIter_t fn_except::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -689,7 +689,7 @@ BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_avg::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_avg::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -726,7 +726,7 @@ PlanIter_t fn_min::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_sum::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -784,7 +784,7 @@ function* fn_sum::specialize(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_sum_double::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_sum_double::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -793,7 +793,7 @@ BoolAnnotationValue op_sum_double::ignoresSortedNodes(expr* fo, ulong input) con
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_sum_float::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_sum_float::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -802,7 +802,7 @@ BoolAnnotationValue op_sum_float::ignoresSortedNodes(expr* fo, ulong input) cons
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_sum_decimal::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -811,7 +811,7 @@ BoolAnnotationValue op_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) co
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_sum_integer::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue op_sum_integer::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -820,13 +820,13 @@ BoolAnnotationValue op_sum_integer::ignoresSortedNodes(expr* fo, ulong input) co
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_id::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_id::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -840,7 +840,7 @@ BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const
 ********************************************************************************/
 BoolAnnotationValue fn_element_with_id::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -848,7 +848,7 @@ BoolAnnotationValue fn_element_with_id::ignoresSortedNodes(
 
 BoolAnnotationValue fn_element_with_id::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -860,13 +860,13 @@ BoolAnnotationValue fn_element_with_id::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_idref::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_idref::ignoresSortedNodes(expr* fo, csize input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;

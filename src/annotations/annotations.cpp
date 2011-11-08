@@ -73,8 +73,8 @@ void AnnotationInternal::createBuiltIn()
 
 #define ZANN(a, b)                                                     \
   GENV_ITEMFACTORY->createQName(qname, ZORBA_ANNOTATIONS_NS, "", #a);  \
-  id = zann_##b;                                                      \
-  theAnnotId2NameMap[id] = qname;                                     \
+  id = zann_##b;                                                       \
+  theAnnotId2NameMap[id] = qname;                                      \
   theAnnotName2IdMap.insert(qname, id);
 
 
@@ -92,6 +92,11 @@ void AnnotationInternal::createBuiltIn()
 
   ZANN(sequential, sequential);
   ZANN(nonsequential, nonsequential);
+
+  //
+  // Zorba annotations - optimizer
+  //
+  ZANN(propagates-input-nodes, propagates_input_nodes);
 
   //
   // Zorba annotations - misc
@@ -191,7 +196,7 @@ void AnnotationInternal::createBuiltIn()
 
 
 /*******************************************************************************
-  Static method, called from GlobalEnvironment::init()
+  Static method, called from GlobalEnvironment::destroy()
 ********************************************************************************/
 void AnnotationInternal::destroyBuiltIn()
 {
@@ -328,12 +333,38 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal* AnnotationList::getAnnotation(csize index) const
+AnnotationInternal* AnnotationList::get(csize index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index].getp();
   else
     return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationInternal* AnnotationList::get(AnnotationInternal::AnnotationId id) const
+{
+  for (ListConstIter_t ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
+  {
+    if ((*ite)->getId() == id)
+      return (*ite).getp();
+  }
+
+  return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
+{
+  return (get(id) != NULL);
 }
 
 
@@ -354,23 +385,6 @@ void AnnotationList::push_back(
   }
 
   theAnnotationList.push_back(new AnnotationInternal(qname, lLiterals));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
-{
-  for (ListConstIter_t ite = theAnnotationList.begin();
-       ite != theAnnotationList.end();
-       ++ite)
-  {
-    if ((*ite)->getId() == id)
-      return true;
-  }
-
-  return false;
 }
 
 

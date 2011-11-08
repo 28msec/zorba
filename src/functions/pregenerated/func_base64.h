@@ -43,9 +43,11 @@ class fn_zorba_base64_decode : public function
 {
 public:
   fn_zorba_base64_decode(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_zorba_base64_encode : public function
 {
 public:
   fn_zorba_base64_encode(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

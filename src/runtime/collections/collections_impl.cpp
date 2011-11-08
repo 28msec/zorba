@@ -580,7 +580,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     for (size_t i = 0; i < lDeclaredAnnotations->size(); ++i)
     {
       store::Annotation_t lAnn = new store::Annotation();
-      AnnotationInternal* lTmp = lDeclaredAnnotations->getAnnotation(i);
+      AnnotationInternal* lTmp = lDeclaredAnnotations->get(i);
 
       lAnn->theName = lTmp->getQName();
 

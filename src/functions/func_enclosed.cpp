@@ -44,12 +44,17 @@ public:
         const TypeManager* tm,
         const std::vector<xqtref_t>& arg_types) const;
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }

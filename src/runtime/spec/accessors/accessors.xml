@@ -32,13 +32,20 @@
     <zorba:description author="Zorba Team">fn:node-name</zorba:description>
     
     <zorba:function>
+
       <zorba:signature localname="node-name" prefix="fn" version="3.0">
         <zorba:output>xs:QName?</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="node-name" prefix="fn">
-            <zorba:param>node()?</zorba:param>
-            <zorba:output>xs:QName?</zorba:output>
-        </zorba:signature>
+        <zorba:param>node()?</zorba:param>
+        <zorba:output>xs:QName?</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:mustCopyInputNodes value="false"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -54,10 +61,16 @@
     <zorba:description author="Zorba Team">fn:nilled</zorba:description>
     
     <zorba:function>
-        <zorba:signature localname="nilled" prefix="fn">
-            <zorba:param>node()?</zorba:param>
-            <zorba:output>xs:boolean?</zorba:output>
-        </zorba:signature>
+
+      <zorba:signature localname="nilled" prefix="fn">
+        <zorba:param>node()?</zorba:param>
+        <zorba:output>xs:boolean?</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:mustCopyInputNodes value="false"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -74,6 +87,7 @@
   <zorba:description author="Zorba Team">fn:string</zorba:description>
 
   <zorba:function generateCodegen="false">
+
     <zorba:signature localname="string" prefix="fn">
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
@@ -82,6 +96,11 @@
       <zorba:param>item()?</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
   <zorba:state  generateInit="true" generateReset="true"
@@ -111,6 +130,7 @@
     <zorba:signature localname="data" prefix="fn" version="3.0">
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="data" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -121,6 +141,7 @@
       <zorba:isMap producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -149,6 +170,11 @@
       <zorba:param>node()?</zorba:param>
       <zorba:output>xs:anyURI?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -161,9 +187,9 @@
 -->
 <zorba:iterator name="DocumentUriIterator">
 
-    <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
+  <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
     
-    <zorba:function>
+  <zorba:function>
         <zorba:signature localname="document-uri" prefix="fn" version="3.0">
             <zorba:output>xs:anyURI?</zorba:output>
         </zorba:signature>
@@ -171,7 +197,12 @@
             <zorba:param>node()?</zorba:param>
             <zorba:output>xs:anyURI?</zorba:output>
         </zorba:signature>
-    </zorba:function>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
     
 </zorba:iterator>
 
@@ -202,6 +233,11 @@
       <zorba:param>node()?</zorba:param>
       <zorba:output>node()?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>

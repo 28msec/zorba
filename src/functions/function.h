@@ -168,21 +168,21 @@ public:
 
   virtual bool isMap(ulong input) const;
 
+  virtual bool propagatesInputNodes(expr* fo, csize input) const;
+
+  virtual bool mustCopyInputNodes(expr* fo, csize input) const;
+
+  virtual bool propagatesSortedNodes(csize input) const { return false; }
+
+  virtual bool propagatesDistinctNodes(csize input) const { return false; }
+
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
 
   virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
 
-  virtual bool propagatesSortedNodes(ulong input) const { return false; }
+  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  virtual bool propagatesDistinctNodes(ulong input) const { return false; }
-
-  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
-
-  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
-
-  virtual BoolAnnotationValue propagatesInputNodes(expr* fo, ulong input) const;
-
-  virtual BoolAnnotationValue mustCopyNodes(expr* fo, ulong input) const;
+  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   virtual bool isArithmeticFunction() const { return false; }
 

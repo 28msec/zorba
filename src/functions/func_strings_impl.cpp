@@ -28,7 +28,7 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_concat::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }
@@ -36,7 +36,7 @@ BoolAnnotationValue fn_concat::ignoresSortedNodes(
 
 BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }

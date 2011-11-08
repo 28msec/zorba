@@ -73,7 +73,7 @@ public:
 
   csize numSteps() const { return theSteps.size(); }
 
-	const expr_t& operator[](csize n) const { return theSteps[n]; }
+  expr* operator[](csize n) const { return theSteps[n].getp(); }
 
   std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
 

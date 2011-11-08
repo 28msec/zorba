@@ -281,9 +281,7 @@ bool user_function::accessesDynCtx() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::ignoresSortedNodes(
-    expr* fo,
-    ulong input) const
+BoolAnnotationValue user_function::ignoresSortedNodes(expr* fo, csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
@@ -297,7 +295,7 @@ BoolAnnotationValue user_function::ignoresSortedNodes(
 ********************************************************************************/
 BoolAnnotationValue user_function::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
@@ -309,7 +307,7 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::mustCopyNodes(expr* fo, ulong input) const
+BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
 {
   BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
   BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();

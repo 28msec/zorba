@@ -37,13 +37,27 @@ namespace zorba
 /*******************************************************************************
   
 ********************************************************************************/
-BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
+PlanIter_t fn_string::codegen(
+      CompilerCB* /*cb*/,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const
+{
+  return new FnStringIterator(sctx, loc, argv, true);
+}
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -103,16 +117,17 @@ xqtref_t fn_data::getReturnType(
                                         TypeConstants::QUANT_STAR);
 }
 
+
 /*******************************************************************************
   
 ********************************************************************************/
-BoolAnnotationValue fn_data_3_0::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_data_3_0::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_data_3_0::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_data_3_0::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -141,20 +156,6 @@ PlanIter_t fn_name_func::codegen(
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
   return new FnStringIterator(sctx, loc, lVec, true);
-}
-
-
-/*******************************************************************************
-  
-********************************************************************************/
-PlanIter_t fn_string::codegen(
-      CompilerCB* /*cb*/,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
-{
-  return new FnStringIterator(sctx, loc, argv, true);
 }
 
 

@@ -7452,8 +7452,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -7472,8 +7472,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else

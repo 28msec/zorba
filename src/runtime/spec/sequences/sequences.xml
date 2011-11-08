@@ -55,6 +55,7 @@
       <zorba:getReturnType/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -153,6 +154,7 @@
     <zorba:methods>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -180,6 +182,7 @@
     <zorba:methods>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
   </zorba:function>
 
@@ -266,6 +269,7 @@
     <zorba:methods>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -310,6 +314,7 @@
       <zorba:propagatesSortedNodes producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -350,6 +355,7 @@
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -397,6 +403,7 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
       <zorba:specializable/>
     </zorba:methods>
 
@@ -444,6 +451,7 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -484,6 +492,7 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -524,6 +533,7 @@
     <zorba:methods>
       <zorba:getReturnType/>
       <zorba:ignoresSortedNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
    </zorba:function>
@@ -561,6 +571,7 @@
       <zorba:propagatesSortedNodes producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -624,6 +635,7 @@
 
     <zorba:methods>
       <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -711,6 +723,7 @@
 
     <zorba:methods>
       <zorba:ignoresSortedNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -978,6 +991,7 @@
       <zorba:producesSortedNodes returnValue="YES"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
     </zorba:methods>
 
   </zorba:function>
@@ -1028,6 +1042,7 @@
       <zorba:producesSortedNodes returnValue="YES"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
     </zorba:methods>
 
   </zorba:function>
@@ -1070,6 +1085,7 @@
       <zorba:producesSortedNodes returnValue="YES"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
     </zorba:methods>
 
   </zorba:function>

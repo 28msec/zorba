@@ -27,6 +27,9 @@ SERIALIZABLE_CLASS_VERSIONS(external_function)
 END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 
+/*******************************************************************************
+
+********************************************************************************/
 external_function::external_function(
     const QueryLoc& loc,
     static_context* modSctx,
@@ -46,6 +49,9 @@ external_function::external_function(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void external_function::serialize(::zorba::serialization::Archiver& ar)
 {
   zorba::serialization::serialize_baseclass(ar, (function*)this);
@@ -92,12 +98,82 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool external_function::accessesDynCtx() const
 {
   return theImpl->isContextual();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+bool external_function::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  bool res = function::propagatesInputNodes(fo, input);
+
+  if (res == false)
+    return res;
+
+  AnnotationInternal* ann = 
+  theAnnotationList->get(AnnotationInternal::zann_propagates_input_nodes);
+
+  if (ann != NULL)
+  {
+    csize numLiterals = ann->getNumLiterals();
+
+    for (csize i = 0; i < numLiterals; ++i)
+    {
+      if (ann->getLiteral(i)->getLongValue() == input)
+        return true;
+    }
+
+    return false;
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool external_function::mustCopyInputNodes(
+    expr* fo,
+    csize input) const
+{
+  bool res = function::mustCopyInputNodes(fo, input);
+
+  if (res == false)
+    return res;
+
+  AnnotationInternal* ann = 
+  theAnnotationList->get(AnnotationInternal::zann_must_copy_input_nodes);
+
+  if (ann != NULL)
+  {
+    csize numLiterals = ann->getNumLiterals();
+
+    for (csize i = 0; i < numLiterals; ++i)
+    {
+      if (ann->getLiteral(i)->getLongValue() == input)
+        return true;
+    }
+
+    return false;
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t external_function::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,

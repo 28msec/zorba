@@ -43,11 +43,15 @@ class fn_error : public function
 {
 public:
   fn_error(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return VACUOUS_EXPR; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
   CODEGEN_DECL();
 };
@@ -58,19 +62,21 @@ class fn_trace : public function
 {
 public:
   fn_trace(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool isMap(ulong producer) const { return producer == 0; }
 
-  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+  bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+  bool propagatesSortedNodes(csize producer) const { return producer == 0; }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };

@@ -79,9 +79,16 @@ public:
     return arg_types[0]; 
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  bool propagatesInputNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  virtual bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return true;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   CODEGEN_DECL();
 };

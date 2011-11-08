@@ -48,6 +48,7 @@
 
       <zorba:methods>
         <zorba:getScriptingKind returnValue="VACUOUS_EXPR"/>
+        <zorba:mustCopyInputNodes producer="2"/>
       </zorba:methods>
 
     </zorba:function>

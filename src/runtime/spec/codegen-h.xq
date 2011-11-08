@@ -94,7 +94,11 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
       concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
              $gen:newline, $gen:indent,
              $gen:indent, ': ',
-             local:base-class($function), '(sig, kind) {&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;}'),
+             $gen:newline, $gen:indent, $gen:indent,
+             local:base-class($function), 
+             '(sig, kind)',
+             $gen:newline, $gen:indent,
+             '{&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;', $gen:indent, '}'),
   
   $gen:newline,
         
@@ -268,29 +272,53 @@ declare function local:add-methods($function) as xs:string*
       else if (name($meth) eq 'zorba:propagatesDistinctNodes')
       then
         string-join(($gen:newline, $gen:indent,
-                     'bool propagatesDistinctNodes(ulong producer) const ',
+                     'bool propagatesDistinctNodes(csize producer) const ',
                      '{ return producer == ', $meth/@producer, '; }',
                       $gen:newline),'')
 
       else if (name($meth) eq 'zorba:propagatesSortedNodes')
       then
         string-join(($gen:newline, $gen:indent,
-                     'bool propagatesSortedNodes(ulong producer) const ',
+                     'bool propagatesSortedNodes(csize producer) const ',
                      '{ return producer == ', $meth/@producer, '; }',
                       $gen:newline),'')
 
       else if (name($meth) eq 'zorba:ignoresSortedNodes')
       then
         string-join(($gen:newline, $gen:indent,
-                     'BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;',
+                     'BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;',
                       $gen:newline),'')
 
       else if (name($meth) eq 'zorba:ignoresDuplicateNodes')
       then
         string-join(($gen:newline, $gen:indent,
-                     'BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;',
+                     'BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;',
                       $gen:newline),'')
 
+      else if (name($meth) eq 'zorba:propagatesInputNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const;',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:mustCopyInputNodes')
+      then
+        if ($meth/@producer)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool mustCopyInputNodes(expr* fo, csize producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                     $gen:newline),'')
+        else if ($meth/@value)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool mustCopyInputNodes(expr* fo, csize producer) const ',
+                     '{ return ', $meth/@value, '; }',
+                     $gen:newline),'')
+        else
+        string-join(($gen:newline, $gen:indent,
+                     'bool mustCopyInputNodes(expr* fo, csize producer) const;',
+                     $gen:newline),'')
       else
         ()
   else

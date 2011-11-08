@@ -35,31 +35,40 @@ typedef std::map<var_expr *, ulong> VarIdMap;
 typedef std::vector<var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
+typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
+typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
+
+typedef std::map<user_function*, std::vector<expr*> > UdfSourcesMap;
+typedef std::pair<user_function*, std::vector<expr*> > UdfSourcesPair;
 
 /*******************************************************************************
 
-  theVarIdMap        : Maps a var_expr to its unique "prefix" id. The "prefix"
-                       id has the follwoing property: for 2 vars v1 and v2,
-                       v1 is defined before v2 if and only if prefix-id(v1) <
-                       prefix-id(v2). See index_flwor_vars() function in
-                       tools/expr_tools.cpp for more details.
+  theVarIdMap:
+  ------------
+  Maps a var_expr to its unique "prefix" id. The "prefix" id has the following
+  property: for 2 vars v1 and v2, v1 is defined before v2 if and only if 
+  prefix-id(v1) < prefix-id(v2). See index_flwor_vars() function in
+  tools/expr_tools.cpp for more details.
 
-  theIdVarMap        : This is the reverse mapping of theVarIdMap.
+  theIdVarMap:
+  ------------
+  This is the reverse mapping of theVarIdMap.
 
-  theExprVarsMap     : An entry into this map maps an expression to the variables
-                       that are referenced by that expr and/or its sub-exprs.
-                       (Note: given that the domain expr of a var $x is not
-                       considered a sub-expr of $x, if $x is referenced by an
-                       expr E and the domain expr of $x references another var
-                       $y, $y is NOT considered to be referenced by E). Only
-                       variables that have been assigned a prolog id (i.e., the
-                       ones that appear in theVarIdMap) are considered. The set
-                       of vars referenced by an expr is implemented by a bitset
-                       that is indexed by prolog var ids and whose size (in
-                       number of bits) is equal to the size of theVarIdMap.
+  theExprVarsMap:
+  ---------------
+  An entry into this map maps an expr to the variables that are referenced by
+  that expr and/or its sub-exprs. (Note: given that the domain expr of a var
+  $x is not considered a sub-expr of $x, if $x is referenced by an expr E and
+  the domain expr of $x references another var $y, $y is NOT considered to be
+  referenced by E). Only variables that have been assigned a prolog id (i.e.,
+  the ones that appear in theVarIdMap) are considered. The set of vars referenced
+  by an expr is implemented by a bitset that is indexed by prolog var ids and
+  whose size (in number of bits) is equal to the size of theVarIdMap.
 
-  theFlworStack      : The current "in-scope" flwor exprs, ie., flwor exprs that
-                       the rule has entered but not exited yet.
+  theFlworStack:
+  --------------
+  The current "in-scope" flwor exprs, ie., flwor exprs that the rule has 
+  entered but not exited yet.
 ********************************************************************************/
 class RewriterContext 
 {
@@ -81,6 +90,10 @@ public:
   ExprVarsMap                * theExprVarsMap;
   std::vector<expr_t>          theFlworStack;
   std::vector<bool>            theInReturnClause;
+
+  VarSourcesMap                theVarSourcesMap;
+  UdfSourcesMap                theUdfSourcesMap;
+  std::vector<fo_expr*>        theUdfCallPath;
 
 public:
   RewriterContext(

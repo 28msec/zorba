@@ -110,6 +110,11 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
   CODEGEN_DECL();
 };
 

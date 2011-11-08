@@ -153,8 +153,6 @@ typedef enum
   OP_NUMERIC_INTEGER_DIVIDE_2,
   OP_NUMERIC_MOD_2,
 
-  OP_NOTATION_EQUAL_2,
-
   OP_UNARY_PLUS_1,
   OP_UNARY_MINUS_1,
   OP_DOUBLE_UNARY_PLUS_1,
@@ -226,8 +224,6 @@ typedef enum
   OP_HOIST_1,
   OP_UNHOIST_1,
 
-  FN_FOP_1,
-
 #include "functions/function_enum.h"
 
   FN_MAX_FUNC
@@ -250,7 +246,9 @@ typedef enum
   isDeterministic = 4,
   isPrivate = 8,
   isBuiltin = 16,
-  isUDF = 32
+  isUDF = 32,
+  propagatesInputNodes = 64,
+  mustCopyInputNodes = 128
 } AnnotationFlags;
 
 };

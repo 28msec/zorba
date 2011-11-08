@@ -141,7 +141,8 @@ public:
     NON_DISCARDABLE         = 8,
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
-    MUST_COPY_NODES         = 14
+    PROPAGATES_INPUT_NODES  = 14,
+    MUST_COPY_NODES         = 16
   } Annotationkey;
 
   typedef enum
@@ -153,7 +154,8 @@ public:
     NON_DISCARDABLE_MASK          = 0x300,
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
-    MUST_COPY_NODES_MASK          = 0xC000
+    PROPAGATES_INPUT_NODES_MASK   = 0xC000,
+    MUST_COPY_NODES_MASK          = 0x30000
   } AnnotationMask;
 
 
@@ -252,6 +254,11 @@ public:
   void setProducesDistinctNodes(BoolAnnotationValue v);
 
   bool producesDistinctNodes() const;
+
+  // Annotation : propagatesInputNodes
+  BoolAnnotationValue getPropagatesInputNodes() const;
+
+  void setPropagatesInputNodes(BoolAnnotationValue v);
 
   // Annotation : ignores-sorted-nodes
   BoolAnnotationValue getIgnoresSortedNodes() const;

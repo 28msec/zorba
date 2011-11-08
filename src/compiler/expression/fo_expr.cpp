@@ -272,7 +272,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
 
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));
 
-  for (ulong i = 0; i < theArgs.size(); ++i)
+  for (csize i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));
 
   fo->theScriptingKind  = theScriptingKind;

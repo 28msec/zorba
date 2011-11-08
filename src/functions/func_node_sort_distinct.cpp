@@ -154,7 +154,7 @@ function* op_node_sort_distinct_base::optimize(const expr* self, expr* child) co
 ********************************************************************************/
 BoolAnnotationValue op_node_sort_distinct_base::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   const bool* myActions = action();
 
@@ -176,7 +176,7 @@ BoolAnnotationValue op_node_sort_distinct_base::ignoresSortedNodes(
 ********************************************************************************/
 BoolAnnotationValue op_node_sort_distinct_base::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   const bool* myActions = action();
 
@@ -190,6 +190,26 @@ BoolAnnotationValue op_node_sort_distinct_base::ignoresDuplicateNodes(
   {
     return fo->getIgnoresDuplicateNodes();
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool op_node_sort_distinct_base::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  const bool* myActions = action();
+
+  bool atomics = myActions[NOA];
+
+  if (atomics)
+  {
+    return function::propagatesInputNodes(fo, input);
+  }
+
+  return true;
 }
 
 
@@ -256,12 +276,17 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -287,7 +312,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -319,7 +344,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -352,7 +377,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -388,7 +413,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -421,7 +446,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -452,7 +477,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -485,7 +510,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }

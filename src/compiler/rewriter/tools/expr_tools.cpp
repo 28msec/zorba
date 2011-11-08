@@ -20,6 +20,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/ft_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -200,6 +201,13 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
     iter.next();
   }
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -531,6 +539,7 @@ static void set_bit(
 /////////////////////////////////////////////////////////////////////////////////
 
 
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -884,7 +893,7 @@ void computeMustCopyProperty(expr* inExpr)
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      set_must_copy(e->get_arg(i), func->mustCopyNodes(e, i));
+      set_must_copy(e->get_arg(i), func->mustCopyInputNodes(e, i));
     }
 
     break;
@@ -1000,6 +1009,8 @@ void computeMustCopyProperty(expr* inExpr)
   case eval_expr_kind:
   case debugger_expr_kind:
 
+#endif
+
   case wrapper_expr_kind:
   {
     wrapper_expr* e = static_cast<wrapper_expr*>(inExpr);
@@ -1025,8 +1036,6 @@ void computeMustCopyProperty(expr* inExpr)
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#endif
-
   case axis_step_expr_kind:
   case match_expr_kind:
   default:
@@ -1040,6 +1049,7 @@ void computeMustCopyProperty(expr* inExpr)
     iter.next();
   }
 }
+#endif
 
 
 }

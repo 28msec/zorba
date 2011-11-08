@@ -861,7 +861,7 @@ StaticContextImpl::getFunctionAnnotations(
   try
   {
     for (unsigned int i = 0; i < ann_list->size(); i++)
-      aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+      aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
   {
