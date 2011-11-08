@@ -47,6 +47,7 @@ DebuggerServer::DebuggerServer(
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
     theCommunicator, aHandler, aCallbackData);
+  theFileName = aQuery->getFileName().str();
 }
 
 
@@ -102,8 +103,17 @@ DebuggerServer::init()
   if (!getEnvVar("DBGP_SESSION", lSession)) {
     lSession = "";
   }
+  ThreadId tid = Runnable::self();
   std::stringstream lInitMsg;
-  lInitMsg << "<init appid=\"zorba\" idekey=\"" << lIdeKey << "\" session=\"" + lSession + "\" thread=\"6666\" parent=\"zorba\" language=\"xquery\" protocol_version=\"1.0\" fileuri=\"file://D:/mm.xq\"/>";
+  lInitMsg << "<init appid=\"zorba\" "
+    << "idekey=\"" << lIdeKey << "\" "
+    << "session=\"" + lSession + "\" "
+    << "thread=\"" << tid <<"\" "
+    << "parent=\"zorba\" "
+    << "language=\"XQuery\" "
+    << "protocol_version=\"1.0\" "
+    << "fileuri=\"" << URIHelper::encodeFileURI(theFileName).str() << "\"/>";
+  
   theCommunicator->send(lInitMsg.str());
 }
 
