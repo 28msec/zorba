@@ -462,19 +462,6 @@ void dynamic_context::get_variable(
 /*******************************************************************************
 
 ********************************************************************************/
-
-bool dynamic_context::is_set_variable(ulong varid, const store::Item_t& varname, const QueryLoc& loc) const
-{
-  if (varid >= theVarValues.size() ||
-      theVarValues[varid].theState == VarValue::undeclared)
-    return false;  
-
-  return true;
-}
-
-/*******************************************************************************
-
-********************************************************************************/
 bool dynamic_context::exists_variable(ulong varid)
 {
   if (varid >= theVarValues.size() ||

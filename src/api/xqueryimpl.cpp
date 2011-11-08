@@ -793,7 +793,7 @@ bool XQueryImpl::isBoundExternalVariable(const String& aNamespace, const String&
     
     ulong varId = var->get_unique_id();
 
-    if(theDynamicContext->is_set_variable(varId, var->get_name(), QueryLoc::null))
+    if(theDynamicContext->exists_variable(varId))
       return true;
 
   return false;
