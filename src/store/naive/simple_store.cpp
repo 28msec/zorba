@@ -513,10 +513,8 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (spec.theIsGeneral && spec.theIsSorted)
@@ -560,7 +558,7 @@ void SimpleStore::populateValueIndex(
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 
-  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+  ValueIndex* index = static_cast<ValueIndex*>(aIndex.getp());
 
   aSourceIter->open();
 
@@ -621,7 +619,6 @@ void SimpleStore::populateGeneralIndex(
   store::Item_t domainNode;
   store::Item_t firstKeyItem;
   store::Item_t keyItem;
-  store::IndexKey* key = NULL;
 
   GeneralIndex* index = static_cast<GeneralIndex*>(idx.getp());
 
@@ -634,67 +631,54 @@ void SimpleStore::populateGeneralIndex(
       bool more = true;
 
       assert(domainNode->isNode());
+      assert(keyItem == NULL);
 
+      // Compute the keys associated with the current domain node. Note: We
+      // must check whether the domain node has more than one key, before we
+      // do any insertions in the index.
       while (more)
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          throw ZORBA_EXCEPTION(
-            zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-            ERROR_PARAMS( index->getName()->getStringValue() )
-          );
+          RAISE_ERROR_NO_LOC(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          ERROR_PARAMS(index->getName()->getStringValue()));
         }
-
-        // Compute the keys of the current domain node. We must check whether
-        // the domain node has more than one key, before we do any insertions
-        // in the index.
-
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
 
         // Compute 1st key, or next domain node
         more = sourceIter->next(firstKeyItem);
 
+        // If current node has no keys, put it in the "null" entry and continue
+        // with the next domain node, if nay.
         if (!more || firstKeyItem->isNode())
         {
-          // Current node has no keys
-          (*key)[0] = NULL;
-          index->insert(key, domainNode, false);
+          index->insert(keyItem, domainNode);
 
-          if (more)
-            domainNode.transfer(firstKeyItem);
-
+          domainNode.transfer(firstKeyItem);
           continue;
         }
-
-        // Prepare to insert the 1st key. Note: we have to copy domainNode
-        // rchandle because index->insert() will transfer the given node.
-        store::Item_t node = domainNode;
-        (*key)[0].transfer(firstKeyItem);
 
         // Compute 2nd key, or next domain node
         more = sourceIter->next(keyItem);
 
+        // If current domain node has exactly 1 key, insert it in the index
+        // and continue with next domain node, if any.
         if (!more || keyItem->isNode())
         {
-          // Current domain node has exactly 1 key. So insert it in the
-          // index and continue with next domain node, if any.
-          index->insert(key, node, false);
+          index->insert(firstKeyItem, domainNode);
 
           domainNode.transfer(keyItem);
           continue;
         }
 
         // Current domain node has at least 2 keys. So insert them in the index.
-        index->insert(key, node, true);
+        // Note: we have to copy the domainNode rchandle because index->insert()
+        // will transfer the given node.
+        index->setMultiKey();
 
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
-
+        store::Item_t node = domainNode;
+        index->insert(firstKeyItem, node);
         node = domainNode;
-        (*key)[0].transfer(keyItem);
-
-        index->insert(key, node, true);
+        index->insert(keyItem, node);
 
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
@@ -705,29 +689,18 @@ void SimpleStore::populateGeneralIndex(
             break;
           }
 
-          if (key == NULL)
-            key = new store::IndexKey(numColumns);
-
-          (*key)[0].transfer(keyItem);
           node = domainNode;
-
-          index->insert(key, node);
+          index->insert(keyItem, node);
         }
       }
     }
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
-
     sourceIter->close();
 
     throw;
   }
-
-  if (key != NULL)
-    delete key;
 
   sourceIter->close();
 }
@@ -929,6 +902,7 @@ SimpleStore::getMap(const store::Item* aQName) const
   return lIndex.getp();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -936,6 +910,7 @@ store::Iterator_t SimpleStore::listMapNames()
 {
   return new NameIterator<IndexSet>(theHashMaps);
 }
+
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -964,10 +939,8 @@ store::Collection_t SimpleStore::createCollection(
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 
   return collection;
@@ -985,10 +958,8 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 }
 
@@ -1005,9 +976,12 @@ store::Collection_t SimpleStore::getCollection(
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) {
+  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  {
     return collection;
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -1026,10 +1000,8 @@ void SimpleStore::deleteCollection(
 
   if (!theCollections->remove(aName, aDynamicCollection))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-      ERROR_PARAMS( aName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
+    ERROR_PARAMS(aName->getStringValue()));
   }
 }
 
@@ -1120,27 +1092,16 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (node == NULL || !node->isNode())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
 
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  bool inserted = theDocuments.insert(urib, root);
+  bool inserted = theDocuments.insert(uri, root);
 
   if (!inserted && node.getp() != root.getp())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
-    );
-  }
-  else if (inserted)
-  {
-    root->setDocUri(uri);
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS(uri));
   }
 
   ZORBA_FATAL(node.getp() == root.getp(), "");
@@ -1155,21 +1116,19 @@ store::Iterator_t SimpleStore::getDocumentNames() const
   return new DocumentNameIterator<DocumentSet>(theDocuments);
 }
 
+
 /*******************************************************************************
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-store::Item_t SimpleStore::getDocument(const zstring& docUri)
+store::Item_t SimpleStore::getDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return NULL;
-
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
 
   XmlNode_t root;
 
-  bool found = theDocuments.get(urib, root);
+  bool found = theDocuments.get(uri, root);
 
   if (found)
     return root.getp();
@@ -1182,15 +1141,12 @@ store::Item_t SimpleStore::getDocument(const zstring& docUri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(const zstring& docUri)
+void SimpleStore::deleteDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return;
 
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
-
-  theDocuments.remove(urib);
+  theDocuments.erase(uri);
 }
 
 
@@ -1202,7 +1158,9 @@ void SimpleStore::deleteAllDocuments()
   theDocuments.clear();
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::createHashMap(
@@ -1343,6 +1301,48 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 
 
 /*******************************************************************************
+  Computes the Structural Reference for the given node.
+********************************************************************************/
+bool SimpleStore::getStructuralInformation(
+    store::Item_t& result, 
+    const store::Item* node)
+{
+#ifdef TEXT_ORDPATH
+  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+  return theItemFactory->createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
+#else
+  if (node->getNodeKind() == store::StoreConsts::textNode)
+  {
+    OrdPath ordPath;
+    const TextNode* n = static_cast<const TextNode*>(node);
+    n->getOrdPath(ordPath);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  store::StoreConsts::textNode,
+                                                  ordPath);
+  }
+  else
+  {
+    const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  n->getNodeKind(),
+                                                  n->getOrdPath());
+  }
+#endif
+}
+
+
+/*******************************************************************************
  Computes the reference of the given node.
  
  @param node XDM node
@@ -1440,7 +1440,9 @@ bool SimpleStore::unregisterNode(XmlNode* node)
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 
@@ -1463,12 +1465,14 @@ bool SimpleStore::getPathInfo(
   if (docRoot == NULL)
     return false;
 
+#ifdef DATAGUIDE
   GuideNode* guideRoot = docRoot->getDataGuide();
 
   if (!guideRoot)
     return false;
 
   guideRoot->getPathInfo(contextPath, relativePath, isAttrPath, found, unique);
+#endif
   return true;
 }
 

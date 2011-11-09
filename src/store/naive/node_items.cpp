@@ -68,7 +68,9 @@ XmlTree::XmlTree()
   thePos(0),
   theCollection(NULL),
   theRootNode(NULL),
+#ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
+#endif
   theIsValidated(false),
   theIsRecursive(false)
 #ifndef EMBEDED_TYPE
@@ -86,7 +88,9 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   thePos(0),
   theCollection(NULL),
   theRootNode(root),
+#ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
+#endif
   theIsValidated(false),
   theIsRecursive(false)
 #ifndef EMBEDED_TYPE
@@ -137,11 +141,13 @@ void XmlTree::free()
     theRootNode = NULL;
   }
 
+#ifdef DATAGUIDE
   if (theDataGuideRootNode != NULL)
   {
     theDataGuideRootNode->deleteTree();
     theDataGuideRootNode = NULL;
   }
+#endif
 
 #ifndef EMBEDED_TYPE
   if (theTypesMap)
@@ -739,9 +745,6 @@ OrdPathNode::OrdPathNode(
   if (parent == NULL)
   {
     theOrdPath.setAsRoot();
-
-    if (nodeKind != store::StoreConsts::documentNode)
-      theOrdPath.appendComp(1);
   }
   else
   {
@@ -1141,7 +1144,7 @@ const OrdPath* InternalNode::getFirstChildOrdPathBefore(csize pos) const
   Return the position of the given node among the children of "this". If the
   given node is not a child of "this", return the number of children of "this".
 ********************************************************************************/
-csize InternalNode::findChild(XmlNode* child) const
+csize InternalNode::findChild(const XmlNode* child) const
 {
   const_iterator begin = childrenBegin();
   const_iterator end = childrenEnd();
@@ -1331,16 +1334,13 @@ DocumentNode::DocumentNode()
 ********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree* tree,
-    zstring& baseUri,
-    zstring& docUri)
+    const zstring& baseUri,
+    const zstring& docUri)
   :
-  InternalNode(tree, NULL, false, 0, store::StoreConsts::documentNode)
+  InternalNode(tree, NULL, false, 0, store::StoreConsts::documentNode),
+  theBaseUri(baseUri),
+  theDocUri(docUri)
 {
-  if (!baseUri.empty())
-    tree->setBaseUri(baseUri);
-
-  tree->setDocUri(docUri);
-
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
@@ -1366,10 +1366,7 @@ XmlNode* DocumentNode::copyInternal(
   {
     tree = NodeFactory::instance().createXmlTree();
 
-    zstring baseuri = getBaseUri();
-    zstring docuri = getDocUri();
-
-    copyNode = NodeFactory::instance().createDocumentNode(tree, baseuri, docuri);
+    copyNode = NodeFactory::instance().createDocumentNode(tree, theBaseUri, theDocUri);
 
     const_iterator ite = childrenBegin();
     const_iterator end = childrenEnd();
@@ -1403,7 +1400,7 @@ XmlNode* DocumentNode::copyInternal(
 void DocumentNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   local = true;
-  uri = getBaseUri();
+  uri = theBaseUri;
 }
 
 
@@ -1507,8 +1504,8 @@ zstring DocumentNode::show() const
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
-  strStream << " baseUri = \"" << getBaseUri() << "\"";
-  strStream << " docUri = \"" << getDocUri();
+  strStream << " baseUri = \"" << theBaseUri << "\"";
+  strStream << " docUri = \"" << theDocUri;
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
@@ -3603,6 +3600,78 @@ XmlNode* TextNode::copyInternal(
   return copyNode;
 }
 
+
+#ifndef TEXT_ORDPATH
+/*******************************************************************************
+
+********************************************************************************/
+void TextNode::getOrdPath(OrdPath& ordPath) const
+{
+  InternalNode* parent = static_cast<InternalNode*>(getParent());
+
+  if (parent == NULL)
+  {
+    // The text node is the root
+    ordPath.setAsRoot();
+    return;
+  }
+
+  ZORBA_FATAL(parent->theOrdPath.isValid(),"Parent ordpath is invalid.");
+
+  csize pos = parent->findChild(this);
+  csize numChildren = parent->numChildren();
+  csize numAttrs = parent->numAttrs();
+
+  if (numChildren == 1 && numAttrs == 0)
+  {
+    // Parent has no other children and no attributes
+    ordPath = parent->theOrdPath;
+    ordPath.appendComp(1);
+  }
+  else 
+  {
+    // Parent has either children or attributes
+    
+    // The smallest Ordpath at the same level of the textNode which must
+    // be greater than the OrdPath of the textNode
+    const OrdPath* upperOrdPath = NULL;
+    
+    // The biggest Ordpath at the same level of the textNode which must 
+    // be smaller than the OrdPath of the textNode
+    const OrdPath* lowerOrdPath = NULL; 
+    
+    if (pos < numChildren-1) 
+    {
+      //There could be an upperOrdPath
+      upperOrdPath = parent->getFirstChildOrdPathAfter(pos);
+    }
+    
+    if (pos > 0)
+    {
+      //There could be a lowerOrdPath in the children
+      lowerOrdPath = parent->getFirstChildOrdPathBefore(pos-1);
+    }
+    
+    if (lowerOrdPath == NULL && numAttrs > 0) 
+    {
+      //There is a lowerOrdPath in the attributes
+      lowerOrdPath = &parent->getAttr(numAttrs-1)->theOrdPath;
+    }
+    
+    if (upperOrdPath != NULL && lowerOrdPath != NULL)
+      OrdPath::insertInto(parent->theOrdPath, *lowerOrdPath, *upperOrdPath, ordPath);
+
+    else if (upperOrdPath == NULL && lowerOrdPath != NULL)
+      OrdPath::insertAfter(parent->theOrdPath, *lowerOrdPath, ordPath);
+
+    else if (upperOrdPath != NULL && lowerOrdPath == NULL)
+      OrdPath::insertBefore(parent->theOrdPath, *upperOrdPath, ordPath);
+
+    else
+      ZORBA_FATAL(0,"Adjacent text nodes.");
+  }
+}
+#endif
 
 
 /*******************************************************************************

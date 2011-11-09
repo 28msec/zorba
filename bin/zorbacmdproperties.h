@@ -84,8 +84,14 @@ public:
   getSerializerParameters() const;
 
   void
-  getModulePaths(std::string&) const;
+  getModulePath(std::string&) const;
   
+  void
+  getURIPath(std::string&) const;
+
+  void
+  getLibPath(std::string&) const;
+
   bool isDebug(){ return theDebug; }
 
   bool hasNoLogo(){ return theNoLogo; }
