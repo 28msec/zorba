@@ -19,6 +19,9 @@
 #include <map>
 #include <string>
 
+#include <zorba/util/uri.h>
+#include <zorba/zorba_string.h>
+
 #include "compiler/parser/query_loc.h"
 #include "runtime/core/item_iterator.h"
 
@@ -71,7 +74,14 @@ class Breakable : public serialization::SerializeBaseClass {
     Breakable(QueryLoc aLocation)
       : theLocation(aLocation),
         theSet(false),
-        theEnabled(false) {};
+        theEnabled(false)
+    {
+      zorba::String lFileName(theLocation.getFilename().str());
+      zorba::String lPrefix = lFileName.substr(0, 7);
+      if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
+        theLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
+      }
+    };
 
     QueryLoc&
     getLocation() { return theLocation; };
