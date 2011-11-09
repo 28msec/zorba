@@ -72,6 +72,7 @@ else
     {
       for $test in $ctests/*:Site/*:Testing/*:Test
       let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+      order by $testname
       return
       <test-case       
         name="{$testname}"

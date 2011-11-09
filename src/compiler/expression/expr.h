@@ -557,6 +557,7 @@ class doc_expr : public expr
 
 protected:
   expr_t theContent;
+  bool   theCopyInputNodes;
 
 public:
   SERIALIZABLE_CLASS(doc_expr)
@@ -567,6 +568,8 @@ public:
   doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
 
   expr* getContent() const { return theContent.getp(); }
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
 
   void compute_scripting_kind();
 
@@ -613,7 +616,8 @@ protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
   expr_t theContent;
-  
+  bool   theCopyInputNodes;
+
 public:
   SERIALIZABLE_CLASS(elem_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, namespace_context_base_expr)
@@ -640,6 +644,8 @@ public:
   expr* getContent() const { return theContent.getp(); }
 
   expr* getAttrs() const { return theAttrs.getp(); }
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
 
   void compute_scripting_kind();
   

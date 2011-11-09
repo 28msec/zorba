@@ -723,7 +723,8 @@ doc_expr::doc_expr(
     expr_t aContent)
   :
   expr(sctx, loc, doc_expr_kind),
-  theContent(aContent)
+  theContent(aContent),
+  theCopyInputNodes(true)
 {
   compute_scripting_kind();
 }
@@ -733,6 +734,7 @@ void doc_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theContent;
+  ar & theCopyInputNodes;
 }
 
 
@@ -749,7 +751,10 @@ void doc_expr::compute_scripting_kind()
 
 expr_t doc_expr::clone(substitution_t& subst) const
 {
-  return new doc_expr(theSctx, get_loc(), CLONE(getContent(), subst));
+  doc_expr* clone = new doc_expr(theSctx, get_loc(), CLONE(getContent(), subst));
+
+  clone->theCopyInputNodes = theCopyInputNodes;
+  return clone;
 }
 
 
@@ -767,7 +772,8 @@ elem_expr::elem_expr(
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(aAttrs),
-  theContent(aContent)
+  theContent(aContent),
+  theCopyInputNodes(true)
 {
   compute_scripting_kind();
 
@@ -785,7 +791,8 @@ elem_expr::elem_expr(
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
-  theContent(aContent)
+  theContent(aContent),
+  theCopyInputNodes(true)
 {
   compute_scripting_kind();
 
@@ -800,6 +807,7 @@ void elem_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theAttrs;
   ar & theContent;
   ar & theNSCtx;
+  ar & theCopyInputNodes;
 }
 
 
@@ -831,12 +839,15 @@ void elem_expr::compute_scripting_kind()
 
 expr_t elem_expr::clone(substitution_t& subst) const
 {
-  return new elem_expr(theSctx,
-                       get_loc(),
-                       CLONE(getQNameExpr(), subst),
-                       CLONE(getAttrs(), subst),
-                       CLONE(getContent(), subst),
-                       getNSCtx());
+  elem_expr* clone =  new elem_expr(theSctx,
+                                    get_loc(),
+                                    CLONE(getQNameExpr(), subst),
+                                    CLONE(getAttrs(), subst),
+                                    CLONE(getContent(), subst),
+                                    getNSCtx());
+
+  clone->theCopyInputNodes = theCopyInputNodes;
+  return clone;
 }
 
 

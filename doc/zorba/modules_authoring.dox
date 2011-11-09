@@ -268,19 +268,18 @@ mymod:hello()
 and then execute Zorba as follows:
 
 \code
-% zorba --module-path /tmp/myproject/build/URI_PATH -f -q query.xq
+% zorba --uri-path /tmp/myproject/build/URI_PATH -f -q query.xq
 <?xml version="1.0" encoding="UTF-8"?>
 hello
 \endcode
 
-By providing this one <tt>--module-path</tt> argument, Zorba will
+By providing this one <tt>--uri-path</tt> argument, Zorba will
 automatically be able to load any of our modules or schemas by URI,
 rather than requiring explicit filesystem paths to them. This makes it
 much easier to develop larger XQuery applications, because the entire
 application can be moved around easily, and you won't need to edit all
 of your queries to change the paths to load your modules as you move
 from development to production.
-
 
 \ref modules_authoring_2
 

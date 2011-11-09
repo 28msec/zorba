@@ -64,6 +64,7 @@ else
     {
       for $test in $ctests/*:Site/*:Testing/*:Test
       let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+      order by $testname
       return
       if(fn:exists(fn:index-of(('revalidation-declaration-01-fail','revalidation-declaration-03-fail','revalidation-declaration-05-fail','revalidate-valtrans-ins-003'
       ,'fn-put-003-fail','fn-put-004-fail','fn-put-005-fail','fn-put-006-fail'),$testname))) then

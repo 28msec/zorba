@@ -15,6 +15,11 @@
  */
 #pragma once
 
+//
+// This file is included inside <BUILD_DIR>/src/runtime/visitors/printer_visitor.h.
+// That file defines the PrinterVisitor class as a subclass of PlanIterVisitor.
+//
+
 #define DECLARE_VISITOR(class)          \
   void beginVisit(const class& a);      \
   void endVisit(const class& );
@@ -226,7 +231,6 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (ElementIterator)
   DECLARE_VISITOR (AttributeIterator)
   DECLARE_VISITOR (DocumentIterator)
-  DECLARE_VISITOR (DocumentContentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
   DECLARE_VISITOR (EmptyIterator)

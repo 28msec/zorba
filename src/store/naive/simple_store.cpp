@@ -1301,6 +1301,48 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 
 
 /*******************************************************************************
+  Computes the Structural Reference for the given node.
+********************************************************************************/
+bool SimpleStore::getStructuralInformation(
+    store::Item_t& result, 
+    const store::Item* node)
+{
+#ifdef TEXT_ORDPATH
+  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+  return theItemFactory->createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
+#else
+  if (node->getNodeKind() == store::StoreConsts::textNode)
+  {
+    OrdPath ordPath;
+    const TextNode* n = static_cast<const TextNode*>(node);
+    n->getOrdPath(ordPath);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  store::StoreConsts::textNode,
+                                                  ordPath);
+  }
+  else
+  {
+    const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  n->getNodeKind(),
+                                                  n->getOrdPath());
+  }
+#endif
+}
+
+
+/*******************************************************************************
  Computes the reference of the given node.
  
  @param node XDM node

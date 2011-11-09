@@ -325,6 +325,7 @@ protected:
 
   std::stack<expr*>                          theConstructorsStack;
   std::stack<EnclosedExprContext>            theEnclosedContextStack;
+  std::stack<bool>                           theCopyNodesStack;
 
   ulong                                      theNextDynamicVarId;
 
@@ -2803,6 +2804,9 @@ bool begin_visit(doc_expr& v)
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
 
+  if (!v.copyInputNodes())
+    theCopyNodesStack.push(false);
+
   return true;
 }
 
@@ -2812,13 +2816,18 @@ void end_visit(doc_expr& v)
   CODEGEN_TRACE_OUT("");
 
   PlanIter_t lContent = pop_itstack();
-  PlanIter_t lContIter = new DocumentContentIterator(sctx, qloc, lContent);
-  PlanIter_t lDocIter = new DocumentIterator(sctx, qloc, lContIter);
+  PlanIter_t lDocIter = new DocumentIterator(sctx,
+                                             qloc,
+                                             lContent, 
+                                             theCopyNodesStack.empty());
   push_itstack(lDocIter);
 
   theEnclosedContextStack.pop();
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
+
+  if (!v.copyInputNodes())
+    theCopyNodesStack.pop();
 }
 
 
@@ -2828,6 +2837,9 @@ bool begin_visit(elem_expr& v)
 
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
+
+  if (!v.copyInputNodes())
+    theCopyNodesStack.push(false);
 
   return true;
 }
@@ -2854,9 +2866,9 @@ void end_visit(elem_expr& v)
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 
-  // Handling of the special case where the QName expression of a direct element constructor
-  // has in itself a direct constructor. In that case the QName expression should have
-  // isRoot set to true.
+  // Handling of the special case where the QName expression of a direct element
+  // constructor has in itself a direct constructor. In that case the QName 
+  // expression should have isRoot set to true.
   elem_expr* top_elem_expr = NULL;
   if (!theConstructorsStack.empty())
     top_elem_expr = dynamic_cast<elem_expr*>(theConstructorsStack.top());
@@ -2874,8 +2886,12 @@ void end_visit(elem_expr& v)
                                         lAttrsIter,
                                         lContentIter,
                                         v.getNSCtx(),
-                                        isRoot);
+                                        isRoot,
+                                        theCopyNodesStack.empty());
   push_itstack(iter);
+
+  if (!v.copyInputNodes())
+    theCopyNodesStack.pop();
 }
 
 
