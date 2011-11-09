@@ -25,6 +25,9 @@
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
 #include <zorba/streams.h>
+#include <zorba/locale.h>
+#include <zorba/internal/unique_ptr.h>
+#include <zorba/internal/ztd.h>
 
 /**
  * @file uri_resolvers.h
@@ -47,7 +50,19 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Resource
 {
 public:
+  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> > ptr;
+
   virtual ~Resource() = 0;
+
+  /**
+   * @brief Destroy/clean up this Resource.
+   *
+   * Zorba will call this method when it no longer needs the Resource. It
+   * is the responsibility of subclasses to clean up appropriate when
+   * this method is called, including calling "delete this" if the Resource
+   * was allocated with "new".
+   */
+  virtual void destroy() const = 0;
 };
 
 /**
@@ -90,9 +105,8 @@ public:
  * and URLResolvers when mapping/resolving a URI.
  *
  * This base class specifies the kind of entity for which this URI is being
- * resolved - for instance, a schema URI or a module URI. In the future,
- * there may be kind-specific subclasses containing additional information;
- * as yet however there are none.
+ * resolved - for instance, a schema URI or a module URI. Subclasses of
+ * this class will provide additional data for specific kinds of entities.
  */
 class ZORBA_DLL_PUBLIC EntityData
 {
@@ -254,6 +268,7 @@ public:
    * Constructor. Specify the Entity Kind you wish to map. Optionally,
    * specify whether this should be a CANDIDATE or COMPONENT mapper;
    * default is CANDIDATE.
+   * QQQ COMPONENT is no longer used; delete?
    */
   OneToOneURIMapper(EntityData::Kind aEntityKind,
                     URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);
