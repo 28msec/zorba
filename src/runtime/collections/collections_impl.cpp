@@ -161,7 +161,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
-      err::FODC0004,
+      err::FODC0002,
       ERROR_PARAMS( resolvedURIString, lErrorMessage ),
       ERROR_LOC( loc )
     );
