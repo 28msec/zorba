@@ -60,40 +60,46 @@ CommandPrompt::printHelp(UntypedCommand* aCommand)
 void
 CommandPrompt::execute()
 {
+  std::vector<std::string> lLastArgs;
+
   for (;;) {
     std::cout << "(xqdb) ";
     std::string lCommandLine;
     std::getline(std::cin, lCommandLine);
-    std::vector<std::string> args;
+    std::vector<std::string> lArgs;
 
     // split the command into arguments
-    parseLine(lCommandLine, args);
-    std::string::size_type lSize = args.size();
+    parseLine(lCommandLine, lArgs);
+    std::string::size_type lSize = lArgs.size();
 
     // empty command? do nothing!
     if (lSize == 0) {
-      continue;
+      lArgs = lLastArgs;
+      if (lArgs.size() == 0) {
+        continue;
+      }
     }
+    lLastArgs = lArgs;
 
     UntypedCommand* lCommand = NULL;
 
     // help is not a command but a hook here, so please do not add commands that have
     // "h" or "help" as prefix, or you will get the help instead of that command
-    if (args.at(0) == "h" || args.at(0) == "help") {
+    if (lArgs.at(0) == "h" || lArgs.at(0) == "help") {
       std::string lCmd = "";
 
       // if the user needs the help for a specific command
       if (lSize > 1) {
         // do nothing if we don't have a command starting with this prefix?
         // findCommand will print the appropriate errors
-        if (!findCommand(args[1], lCommand)) {
+        if (!findCommand(lArgs[1], lCommand)) {
           continue;
         }
       }
       printHelp(lCommand);
       continue;
     }
-    if (findCommand(args[0], lCommand) && lCommand->execute(args)) {
+    if (findCommand(lArgs[0], lCommand) && lCommand->execute(lArgs)) {
       return;
     }
     continue;
