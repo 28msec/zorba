@@ -798,7 +798,11 @@ bool XQueryImpl::isBoundExternalVariable(
       if(var)
         break;
     }
-  
+    
+    if(var == NULL)
+      throw XQUERY_EXCEPTION(err::XPST0008,
+            ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+
     if (var->hasInitializer())
       return true;
     
