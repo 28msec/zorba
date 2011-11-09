@@ -1357,18 +1357,21 @@ StaticContextImpl::getAuditEvent()
   return theCtx->get_audit_event();
 }
 
+
 bool
 StaticContextImpl::getExternalVariables(std::vector<Item>& aVars) const
 {
   std::vector<var_expr_t> lVars;
   theCtx->getVariables(lVars, true, false, true);
+
   std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
   std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
   
   for (; lIte != lEnd; ++lIte) 
   { 
     aVars.push_back(lIte->getp()->get_name());        
-  }    
+  }
+
   if(aVars.empty())
     return false;
 

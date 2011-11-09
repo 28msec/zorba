@@ -459,6 +459,28 @@ bool static_context::is_reserved_module(const zstring& ns)
 
 
 /***************************************************************************//**
+  Static method
+********************************************************************************/
+zstring static_context::var_name(const store::Item* aVarName)
+{
+  zstring lVarName = aVarName->getStringValue();
+  if (lVarName == static_context::DOT_POS_VAR_NAME)
+  {
+    lVarName = "context position";
+  } 
+  else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
+  {
+    lVarName = "context size";
+  }
+  else if (lVarName == static_context::DOT_VAR_NAME)
+  {
+    lVarName = "context item";
+  }
+  return lVarName;
+}
+
+
+/***************************************************************************//**
   Default Constructor.
 ********************************************************************************/
 static_context::static_context()
@@ -2107,26 +2129,6 @@ void static_context::getVariables(
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
-}
-
-/***************************************************************************//**
-
-********************************************************************************/
-zstring
-static_context::var_name(const store::Item* aVarName)
-{
-  zstring lVarName = aVarName->getStringValue();
-  if (lVarName == static_context::DOT_POS_VAR_NAME)
-  {
-    lVarName = "context position";
-  } else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
-  {
-    lVarName = "context size";
-  } else if (lVarName == static_context::DOT_VAR_NAME)
-  {
-    lVarName = "context item";
-  }
-  return lVarName;
 }
 
 

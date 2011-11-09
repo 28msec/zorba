@@ -766,38 +766,53 @@ bool XQueryImpl::getExternalVariables(std::vector<Item>& aVars) const
   return true;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-bool XQueryImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
+bool XQueryImpl::isBoundExternalVariable(
+    const String& aNamespace,
+    const String& aLocalname) const
 {
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
     var_expr* var = NULL;
 
-    store::Item_t qname;
-    GENV_ITEMFACTORY->createQName(qname, aNamespace.c_str(), zstring(), aLocalname.c_str());
+    zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
+    zstring& localName = Unmarshaller::getInternalString(aLocalname);
 
+    store::Item_t qname;
+    GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
+    
     std::map<short, static_context_t>& lMap = theCompilerCB->theSctxMap;
     std::map<short, static_context_t>::const_iterator lIte = lMap.begin();
     std::map<short, static_context_t>::const_iterator lEnd = lMap.end();
 
-    for(; lIte != lEnd; ++lIte)
+    for (; lIte != lEnd; ++lIte)
     {
       var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
-    
+      
       if(var)
         break;
     }
-
-    if(var->hasInitializer())
+  
+    if (var->hasInitializer())
       return true;
     
     ulong varId = var->get_unique_id();
 
-    if(theDynamicContext->exists_variable(varId))
+    if (theDynamicContext->is_set_variable(varId))
       return true;
 
-  return false;
+    return false;
+  }
+  QUERY_CATCH
+  return true;
 }
+
 
 /*******************************************************************************
   Give to the caller read-only access to the static context of the query

@@ -171,7 +171,9 @@ public:
         store::Item_t& itemValue,
         store::TempSeq_t& seqValue) const;
 
-  bool exists_variable(ulong varid);
+  bool is_set_variable(ulong varid) const;
+
+  bool exists_variable(ulong varid) const;
 
   ulong get_next_var_id() const;
 
