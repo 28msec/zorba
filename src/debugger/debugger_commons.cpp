@@ -233,14 +233,86 @@ unsigned int
 DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
 {
   BreakableIdMap::iterator lIter = theBreakableIDs.find(aLocation);
+  unsigned int lId;
 
   if (lIter == theBreakableIDs.end()) {
+    // be prepared to throw an exception
     std::stringstream lSs;
     lSs << "The breakpoint could not be set at line " << aLocation.getLineBegin()
-      << " in file: " << aLocation.getFilename();
-    throw lSs.str();
+      << " in file \"" << aLocation.getFilename() << "\"";
+
+    // let us then try some search before we fail, be good to the user and help him
+    zorba::String lFileName = aLocation.getFilename().str();
+
+    // 1. first we check if he sent a file URI; in this case, sorry!
+    if (lFileName.find("file://") == 0) {
+      throw lSs.str();
+    }
+
+    // now we have to normalize if we hope to find something
+    lFileName = URIHelper::encodeFileURI(lFileName).str();
+    // remove the added file schema prefix
+    // TODO: maybe there is a better way to do this encoding
+    lFileName = lFileName.substr(8);
+
+    // 2. secondly we hope he gave us a path suffix
+    lIter = theBreakableIDs.begin();
+    zorba::String::size_type lFileNameSize = lFileName.size();
+    std::vector<std::pair<QueryLoc, int> > lFoundBreakables;
+    zorba::String lFirstBreakablePath;
+    while (lIter != theBreakableIDs.end()) {
+      // for now, only valid if on the breakable is on the same line as requested
+      // TODO: this will have to consider asking for a line INSIDE a breakable
+      if (lIter->first.getLineBegin() == aLocation.getLineBegin()) {
+        zorba::String lBreakablePath = lIter->first.getFilename().str();
+
+        // is the name suffixed with the searched path?
+        if (lBreakablePath.find(lFileName) + lFileNameSize == lBreakablePath.size()) {
+          // we found the fist candidate path
+          if (lFirstBreakablePath == "") {
+            lFirstBreakablePath = lBreakablePath;
+          }
+          // but stop as soon as we are reaching a second different path (report ambiguity)
+          else if (lFirstBreakablePath != lBreakablePath){
+            lSs.str("");
+            lSs << "The file name \"" << aLocation.getFilename() << "\" is ambiguous. "
+              << "I already found two potential files to set a breakpoint in line " << aLocation.getLineBegin()
+              << ":" << std::endl << "  " << lFirstBreakablePath << std::endl << "  " << lBreakablePath;
+            throw lSs.str();
+          }
+
+          // Yes! We found one!
+          lFoundBreakables.push_back(std::pair<QueryLoc, int>(lIter->first, lIter->second));
+        }
+      }
+      lIter++;
+    }
+
+    // what should I say, not a very successful search :(
+    if (lFoundBreakables.size() == 0) {
+      throw lSs.str();
+    }
+
+    // TODO: The best solution would be for the debugger to enable all the
+    // matched breakables but the protocol can send back only one ID of the
+    // breakpoint set.
+
+    // so we have multiple breakables, get the first in line
+    // TODO: this does not catch multiple breakables starting in the same line
+    // so only one will be picked (depending how the translator generated them)
+    unsigned int lMinCol = lFoundBreakables.at(0).first.getColumnBegin();
+    lId = lFoundBreakables.at(0).second;
+    for (std::size_t i = 1; i < lFoundBreakables.size(); i++) {
+      if (lMinCol > lFoundBreakables.at(i).first.getColumnBegin()) {
+        lId = lFoundBreakables.at(i).second;
+      }
+    }
   }
-  unsigned int lId = lIter->second;
+  else {
+    lId = lIter->second;
+  }
+
+  // now we have a breakable, so set it accordingly
   theBreakables[lId].setSet(true);
   theBreakables[lId].setEnabled(aEnabled);
   return lId;

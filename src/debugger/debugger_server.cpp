@@ -181,10 +181,6 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
             lState = "enabled";
           }
 
-          if (lFileName.substr(0, 7) == "file://") {
-            lFileName = URIHelper::decodeFileURI(lFileName).str();
-          }
-
           QueryLoc lLocation;
           lLocation.setLineBegin(lLineNo);
           lLocation.setLineEnd(lLineNo);
