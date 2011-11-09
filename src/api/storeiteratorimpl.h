@@ -32,6 +32,8 @@ class StoreIteratorImpl : public Iterator
   friend class Unmarshaller;
   friend class Item;
   friend class DynamicContextImpl;
+  friend class StaticContextImpl;
+  friend class XQueryImpl;
 
 protected:
   store::Iterator_t  theIterator; 

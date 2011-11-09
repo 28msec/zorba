@@ -270,7 +270,7 @@ public:
   getAuditEvent();
 
   virtual bool
-  getExternalVariables(std::vector<Item>& aVars) const;  
+  getExternalVariables(Iterator_t& exVarIterator) const;  
 
 protected:
   String

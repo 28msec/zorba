@@ -27,6 +27,7 @@
 #include <zorba/empty_sequence.h>
 
 #include "store/api/item_factory.h"
+#include "store/api/temp_seq.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -35,6 +36,7 @@
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
 #include "api/staticcollectionmanagerimpl.h"
+#include "api/storeiteratorimpl.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -1359,21 +1361,32 @@ StaticContextImpl::getAuditEvent()
 
 
 bool
-StaticContextImpl::getExternalVariables(std::vector<Item>& aVars) const
+StaticContextImpl::getExternalVariables(Iterator_t& exVarIterator) const
 {
   std::vector<var_expr_t> lVars;
   theCtx->getVariables(lVars, true, false, true);
 
   std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
   std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
-  
+  std::vector<store::Item_t> lExVars;
+
   for (; lIte != lEnd; ++lIte) 
   { 
-    aVars.push_back(lIte->getp()->get_name());        
+    lExVars.push_back(lIte->getp()->get_name());        
   }
 
-  if(aVars.empty())
+  if(lExVars.empty())
     return false;
+
+  store::TempSeq_t tSeqExVars;
+  tSeqExVars = GENV_STORE.createTempSeq(lExVars);
+
+  if(tSeqExVars.isNull())
+    return false;
+
+  store::Iterator_t seqIter = tSeqExVars->getIterator();
+  Iterator_t lIt(new StoreIteratorImpl(seqIter, theDiagnosticHandler));
+  exVarIterator = lIt; 
 
   return true;
 }

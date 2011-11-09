@@ -46,6 +46,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
+#include "api/storeiteratorimpl.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -734,7 +735,7 @@ XQueryImpl::getStaticCollectionManager() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool XQueryImpl::getExternalVariables(std::vector<Item>& aVars) const
+bool XQueryImpl::getExternalVariables(Iterator_t& exVarIterator) const
 {
   try
   {
@@ -756,11 +757,26 @@ bool XQueryImpl::getExternalVariables(std::vector<Item>& aVars) const
     
     std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
     std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
-    
+    std::vector<store::Item_t> lExVars;
+   
     for(; lVarIte != lVarEnd; ++lVarIte)
     { 
-      aVars.push_back((*lVarIte)->get_name());
+      lExVars.push_back((*lVarIte)->get_name());
     } 
+
+    if(lExVars.empty())
+      return false;
+
+    store::TempSeq_t tSeqExVars;
+    tSeqExVars = GENV_STORE.createTempSeq(lExVars);
+
+    if(tSeqExVars.isNull())
+      return false;
+
+    store::Iterator_t seqIter = tSeqExVars->getIterator();
+    Iterator_t lIt(new StoreIteratorImpl(seqIter, theDiagnosticHandler));
+    exVarIterator = lIt; 
+    
   }
   QUERY_CATCH
   return true;
@@ -783,7 +799,7 @@ bool XQueryImpl::isBoundExternalVariable(
 
     zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
     zstring& localName = Unmarshaller::getInternalString(aLocalname);
-
+    
     store::Item_t qname;
     GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
     

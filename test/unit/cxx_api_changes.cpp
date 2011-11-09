@@ -101,8 +101,16 @@ cxx_api_changes_test3(Zorba* aZorba)
     assert(lIn.good());
 
     XQuery_t lQuery = aZorba->compileQuery(lIn);
+
     std::vector<Item> lVars;
-    lQuery->getStaticContext()->getExternalVariables(lVars);
+    Iterator_t varsIte;
+    lQuery->getExternalVariables(varsIte);
+
+    varsIte->open();
+    Item temp;
+    while(varsIte->next(temp))
+      lVars.push_back(temp);
+    varsIte->close();
 
     if (lVars.size() != 2)
       return false;
@@ -147,7 +155,14 @@ cxx_api_changes_test4(Zorba* aZorba)
     
     XQuery_t lQuery = aZorba->compileQuery(lIn, lStaticContext);
     std::vector<Item> lVars;
-    lQuery->getExternalVariables(lVars);
+    Iterator_t varsIte;
+    lQuery->getExternalVariables(varsIte);
+
+    varsIte->open();
+    Item temp;
+    while(varsIte->next(temp))
+      lVars.push_back(temp);
+    varsIte->close();
 
     if (lVars.size() != 3)
       return false;
@@ -203,7 +218,14 @@ cxx_api_changes_test5(Zorba* aZorba)
     Zorba* lZorba = Zorba::getInstance(0);
 
     std::vector<Item> lVars;
-    lQuery->getExternalVariables(lVars);
+    Iterator_t varsIte;
+    lQuery->getExternalVariables(varsIte);
+
+    varsIte->open();
+    Item temp;
+    while(varsIte->next(temp))
+      lVars.push_back(temp);
+    varsIte->close();
 
     std::vector<Item>::const_iterator lIte = lVars.begin();
     std::vector<Item>::const_iterator lEnd = lVars.end();

@@ -579,11 +579,11 @@ namespace zorba {
 	  /** \brief Returns the QName of all external variables within the
 	    *        static context
 	    *
-	    * @param aVars variable to store the results.
+	    * @param exVarIterator iterator to store the results.
 	    * @throw ZorbaException if an error occured.
 	    */
 	  virtual bool
-	  getExternalVariables(std::vector<Item>& aVars) const = 0;
+	  getExternalVariables(Iterator_t& exVarIterator) const = 0;
 };
 } /* namespace zorba */
 #endif

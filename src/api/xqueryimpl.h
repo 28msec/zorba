@@ -284,7 +284,7 @@ public:
 
   const StaticContext* getStaticContext() const;
 
-  bool getExternalVariables(std::vector<Item>& aVars) const;
+  bool getExternalVariables(Iterator_t& exVarIterator) const;
 
   bool isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
 
