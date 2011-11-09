@@ -100,6 +100,15 @@ PlanIter_t fn_string_join::codegen(
   return new StringJoinIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_substring::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new SubstringIterator(sctx, loc, argv);
+}
 
 PlanIter_t fn_string_length::codegen(
   CompilerCB*,

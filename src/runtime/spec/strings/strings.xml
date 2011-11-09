@@ -181,7 +181,7 @@
       fn:substring
   </zorba:description>
 
-  <zorba:function specializable="true" generateCodegen="false">
+  <zorba:function specializable="true">
     <zorba:signature localname="substring" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:double</zorba:param>

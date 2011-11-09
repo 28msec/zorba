@@ -15,7 +15,14 @@
  */
 #include "stdafx.h"
 
+#include "common/shared_types.h"
+#include "functions/function.h"
+#include "functions/function_impl.h"
+
 #include "functions/func_strings.h"
+#include "functions/func_strings_impl.h"
+
+#include "runtime/strings/strings_impl.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -28,19 +35,41 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_concat::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
 BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
-    expr* fo, 
-    ulong input) const 
+    expr* fo,
+    ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
+function* fn_substring::specialize( static_context* sctx,
+    const std::vector<xqtref_t>& argTypes) const
+{
+  return NULL;
+}
+
+
+function* fn_substring_intopt::specialize(static_context *sctx,
+    const std::vector<xqtref_t>& argTypes) const
+{
+  return NULL;
+}
+
+PlanIter_t fn_substring_intopt::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new SubstringIntOptIterator(sctx, loc, argv);
+}
 
 }
 
