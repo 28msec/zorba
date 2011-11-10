@@ -520,7 +520,7 @@ public:
       TokenizerProvider const&,
       Tokenizer::Numbers&,
       locale::iso639_1::type,
-      bool = false ) const;
+      bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
@@ -1146,7 +1146,8 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+                               locale::iso639_1::type,
+                               bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
