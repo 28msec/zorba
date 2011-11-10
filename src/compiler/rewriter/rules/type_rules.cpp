@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,7 @@
 #include "diagnostics/assert.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
@@ -51,14 +51,14 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
 
 #if 0
-RULE_REWRITE_POST(InferUDFTypes) 
+RULE_REWRITE_POST(InferUDFTypes)
 {
   if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
 
   fo_expr* fo = static_cast<fo_expr*>(node);
   user_function* udf = dynamic_cast<user_function*>(fo->get_func());
-  
+
   if (udf == NULL)
     return NULL;
 
@@ -93,11 +93,11 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (node->get_expr_kind() == fo_expr_kind) 
+  if (node->get_expr_kind() == fo_expr_kind)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
 
-    if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1) 
+    if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
@@ -107,7 +107,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-    if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1) 
+    if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
@@ -121,7 +121,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   cast_base_expr* pe;
 
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
+  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)
   {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->get_return_type();
@@ -143,7 +143,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         (node->get_expr_kind() != cast_expr_kind &&
          TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc())))
       return arg;
-    
+
     xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
 
@@ -166,7 +166,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       treat_expr* te = static_cast<treat_expr *> (pe);
 
-      if (te->get_check_prime() && 
+      if (te->get_check_prime() &&
           TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
       {
         te->set_check_prime(false);
@@ -205,7 +205,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
   static_context* sctx = node->get_sctx();
 
-  if (node->get_expr_kind() == fo_expr_kind) 
+  if (node->get_expr_kind() == fo_expr_kind)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     const function* fn = fo->get_func();
@@ -219,7 +219,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     {
       expr_t argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
-      std::vector<xqtref_t> argTypes;  
+      std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
 
       function* replacement = fn->specialize(sctx, argTypes);
@@ -236,7 +236,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                                                 argExpr->get_loc(),
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR);
-          
+
           fo->set_arg(0, promoteExpr);
         }
 
@@ -248,7 +248,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     {
       expr_t argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
-      std::vector<xqtref_t> argTypes;  
+      std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
 
       function* replacement = fn->specialize(sctx, argTypes);
@@ -259,7 +259,9 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
     }
     else if (fnKind == FunctionConsts::FN_SUBSEQUENCE_2 ||
-             fnKind == FunctionConsts::FN_SUBSEQUENCE_3)
+             fnKind == FunctionConsts::FN_SUBSEQUENCE_3 ||
+             fnKind == FunctionConsts::FN_SUBSTRING_2 ||
+             fnKind == FunctionConsts::FN_SUBSTRING_3)
     {
       expr_t posExpr = fo->get_arg(1);
       if (posExpr->get_expr_kind() == promote_expr_kind)
@@ -286,18 +288,24 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
             TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE, lenLoc))
         {
-          fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
+          if(fnKind == FunctionConsts::FN_SUBSTRING_3)
+            fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3));
+          else
+            fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
         }
       }
       else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc))
       {
-        fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
+        if(fnKind == FunctionConsts::FN_SUBSTRING_2)
+          fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2));
+        else
+          fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
         fo->set_arg(1, posExpr);
       }
     }
-    else if (fo->num_args() == 2) 
+    else if (fo->num_args() == 2)
     {
       expr* arg0 = fo->get_arg(0);
       expr* arg1 = fo->get_arg(1);
@@ -317,7 +325,7 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (specialize_numeric(fo, sctx) != NULL)
           return node;
       }
-      else if (props.specializeCmp() && fn->isComparisonFunction()) 
+      else if (props.specializeCmp() && fn->isComparisonFunction())
       {
         if (fn->isGeneralComparisonFunction())
         {
@@ -325,39 +333,39 @@ RULE_REWRITE_POST(SpecializeOperations)
           argTypes.push_back(t0);
           argTypes.push_back(t1);
           function* replacement = fn->specialize(sctx, argTypes);
-          if (replacement != NULL) 
+          if (replacement != NULL)
           {
             fo->set_func(replacement);
             return node;
           }
         }
-        else if (fn->isValueComparisonFunction()) 
+        else if (fn->isValueComparisonFunction())
         {
           xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
           bool string_cmp = true;
           expr_t nargs[2];
 
-          for (int i = 0; i < 2; ++i) 
+          for (int i = 0; i < 2; ++i)
           {
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
             const QueryLoc& loc = arg->get_loc();
 
-            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc)) 
+            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
             {
               nargs[i] = new cast_expr(arg->get_sctx(),
                                        arg->get_loc(),
                                        arg,
                                        string_type);
             }
-            else if (! TypeOps::is_subtype(tm, *type, *string_type, loc)) 
+            else if (! TypeOps::is_subtype(tm, *type, *string_type, loc))
             {
               string_cmp = false;
               break;
             }
           }
 
-          if (string_cmp) 
+          if (string_cmp)
           {
             for (int i = 0; i < 2; i++)
             {
@@ -369,13 +377,13 @@ RULE_REWRITE_POST(SpecializeOperations)
             argTypes.push_back(string_type);
             argTypes.push_back(string_type);
             function* replacement = fn->specialize(sctx, argTypes);
-            if (replacement != NULL) 
+            if (replacement != NULL)
             {
               fo->set_func(replacement);
               return node;
-            } 
+            }
           }
-          else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1)) 
+          else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
           {
             xqtref_t aType = specialize_numeric(fo, sctx);
             if (aType != NULL)
@@ -454,23 +462,23 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   xqtref_t t0 = arg0->get_return_type();
   xqtref_t t1 = arg1->get_return_type();
 
-  xqtref_t aType = 
+  xqtref_t aType =
   TypeOps::arithmetic_type(tm,
                            *t0,
                            *t1,
                            fn->arithmeticKind() == ArithmeticConsts::DIVISION);
-  
+
   if (!TypeOps::is_numeric(tm, *aType))
   {
     return NULL;
   }
 
-  std::vector<xqtref_t> argTypes;  
+  std::vector<xqtref_t> argTypes;
   argTypes.push_back(aType);
   argTypes.push_back(aType);
-  
+
   function* replacement = fn->specialize(sctx, argTypes);
-  if (replacement != NULL) 
+  if (replacement != NULL)
   {
     fo->set_func(replacement);
 
@@ -482,7 +490,7 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 
     if (newArg1 != NULL)
       fo->set_arg(1, newArg1);
- 
+
     return aType;
   }
 
@@ -490,7 +498,7 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 }
 
 
-static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t) 
+static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
 {
   TypeManager* tm = arg->get_type_manager();
 
@@ -512,7 +520,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
 }
 
 
-static function* flip_value_cmp(FunctionConsts::FunctionKind kind) 
+static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
 {
   FunctionConsts::FunctionKind newKind;
 
@@ -593,4 +601,5 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
 
 
 }
+/* vim:set et sw=2 ts=2: */
 /* vim:set et sw=2 ts=2: */
