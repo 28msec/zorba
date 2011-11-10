@@ -177,6 +177,16 @@ public:
   Numbers const& numbers() const;
 
   /**
+   * Tokenizes the given node.
+   *
+   * @param node      The node to tokenize.
+   * @param lang      The default language to use.
+   * @param callback  The Callback to call once per token.
+   */
+  virtual void tokenize_node( Item const &node, locale::iso639_1::type lang,
+                              Callback &callback );
+
+  /**
    * Tokenizes the given string.
    *
    * @param utf8_s    The UTF-8 string to tokenize.  It need not be
@@ -188,9 +198,9 @@ public:
    * @param callback  The Callback to call once per token.
    * @param payload   Optional user-defined data.
    */
-  virtual void tokenize( char const *utf8_s, size_type utf8_len,
-                         locale::iso639_1::type lang, bool wildcards,
-                         Callback &callback, void *payload = 0 ) = 0;
+  virtual void tokenize_string( char const *utf8_s, size_type utf8_len,
+                                locale::iso639_1::type lang, bool wildcards,
+                                Callback &callback, void *payload = 0 ) = 0;
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -212,6 +222,9 @@ protected:
 private:
   int trace_options_;
   Numbers *no_;
+
+  void tokenize_node_impl( Item const&, locale::iso639_1::type, Callback&,
+                           bool );
 };
 
 inline Tokenizer::Numbers& Tokenizer::numbers() {

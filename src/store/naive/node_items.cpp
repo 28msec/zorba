@@ -4384,7 +4384,7 @@ operator()( char const *utf8_s, size_type utf8_len, size_type pos,
 
 inline void XmlNodeTokenizerCallback::tokenize( char const *utf8_s,
                                                 size_t len ) {
-  tokenizer().tokenize(
+  tokenizer().tokenize_string(
     utf8_s, len, get_lang(), false, *this,
     element_stack_.empty() ? NULL : static_cast<void*>( get_element() )
   );

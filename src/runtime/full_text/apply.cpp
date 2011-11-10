@@ -1239,7 +1239,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   for ( zstring synonym; tresult->next( &synonym ); ) {
     synonyms.clear();
-    tokenizer->tokenize(
+    tokenizer->tokenize_string(
       synonym.data(), synonym.size(), qt0.lang(), false, cb
     );
     query_item_t const query_item( new FTTokenSeqIterator( synonyms ) );

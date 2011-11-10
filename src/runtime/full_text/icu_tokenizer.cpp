@@ -181,9 +181,9 @@ void ICU_Tokenizer::properties( Properties *p ) const {
 #define IS_WORD_BREAK(TYPE,STATUS) \
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
-void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
-                              iso639_1::type lang, bool wildcards,
-                              Callback &callback, void *payload ) {
+void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
+                                     iso639_1::type lang, bool wildcards,
+                                     Callback &callback, void *payload ) {
   ZORBA_ASSERT( lang == lang_ );
 
   unicode::char_type *utf16_buf;

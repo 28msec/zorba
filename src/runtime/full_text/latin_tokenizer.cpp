@@ -92,9 +92,9 @@ void LatinTokenizer::properties( Properties *p ) const {
     break;                            \
   }
 
-void LatinTokenizer::tokenize( char const *s, size_type s_len,
-                                 iso639_1::type lang, bool wildcards,
-                                 Callback &callback, void *payload ) {
+void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
+                                      iso639_1::type lang, bool wildcards,
+                                      Callback &callback, void *payload ) {
   bool got_backslash = false;
   bool in_wild = false;
   string_type token;

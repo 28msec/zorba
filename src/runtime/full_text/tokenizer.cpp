@@ -15,7 +15,13 @@
  */
 #include "stdafx.h"
 
+#include <zorba/item.h>
+#include <zorba/iterator.h>
+#include <zorba/store_consts.h>
 #include <zorba/tokenizer.h>
+#include <zorba/zorba_string.h>
+
+using namespace zorba::locale;
 
 namespace zorba {
 
@@ -33,6 +39,38 @@ Tokenizer::~Tokenizer() {
 
 void Tokenizer::element( Item const&, int ) {
   // do nothing
+}
+
+void Tokenizer::tokenize_node( Item const &item, iso639_1::type lang,
+                               Callback &callback ) {
+  tokenize_node_impl( item, lang, callback, true );
+}
+
+void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
+                                    Callback &callback, bool tokenize_acp ) {
+  if ( item.isNode() ) {
+    switch ( item.getNodeKind() ) {
+      case store::StoreConsts::documentNode:
+      case store::StoreConsts::elementNode: {
+        Iterator_t i( item.getChildren() );
+        i->open();
+        for ( Item child; i->next( child ); )
+          tokenize_node_impl( child, lang, callback, false );
+        i->close();
+        break;
+      }
+      case store::StoreConsts::attributeNode:
+      case store::StoreConsts::commentNode:
+      case store::StoreConsts::piNode:
+        if ( !tokenize_acp )
+          break;
+      case store::StoreConsts::textNode: {
+        String const s( item.getStringValue() );
+        tokenize_string( s.data(), s.size(), lang, false, callback );
+        break;
+      }
+    }
+  }
 }
 
 Tokenizer::Numbers::Numbers() {

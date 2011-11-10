@@ -2362,7 +2362,7 @@ public:
 
   void tokenize( char const *utf8_s, size_t len, bool wildcards = false ) 
   {
-    tokenizer_.tokenize( utf8_s, len, lang_, wildcards, *this );
+    tokenizer_.tokenize_string( utf8_s, len, lang_, wildcards, *this );
   }
 
 private:

@@ -65,8 +65,8 @@ public:
   void destroy() const;
   void element( Item const&, int );
   void properties( Properties* ) const;
-  void tokenize( char const*, size_type, iso639_1::type, bool, Callback&,
-                 void* );
+  void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
+                        void* );
 
 private:
   typedef std::string token_t;
@@ -182,9 +182,9 @@ void TestTokenizer::properties( Properties *p ) const {
     break;                            \
   }
 
-void TestTokenizer::tokenize( char const *s, size_type s_len,
-                              iso639_1::type lang, bool wildcards,
-                              Callback &callback, void *payload ) {
+void TestTokenizer::tokenize_string( char const *s, size_type s_len,
+                                     iso639_1::type lang, bool wildcards,
+                                     Callback &callback, void *payload ) {
   bool got_backslash = false;
   bool in_wild = false;
   token_t token;
