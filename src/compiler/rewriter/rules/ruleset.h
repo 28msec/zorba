@@ -32,8 +32,6 @@ PREPOST_RULE(EchoNodes);
 
 PREPOST_RULE(PlanPrinter);
 
-PREPOST_RULE(MarkProducerNodeProps);
-
 PREPOST_RULE(EliminateNodeOps);
 
 PREPOST_RULE(SpecializeOperations);
@@ -109,6 +107,22 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class MarkProducerNodeProps : public RewriteRule 
+{
+public:
+  MarkProducerNodeProps() 
+    :
+    RewriteRule(RewriteRule::MarkProducerNodeProps, "MarkProducerNodeProps")
+  {
+  }
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class HoistRule : public RewriteRule 
 {
 public:
@@ -129,9 +143,6 @@ public:
 
   expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
-
-
-#undef RULE
 
 
 }
