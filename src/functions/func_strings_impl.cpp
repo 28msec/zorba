@@ -16,13 +16,14 @@
 #include "stdafx.h"
 
 #include "common/shared_types.h"
+#include "types/typeops.h"
+
 #include "functions/function.h"
 #include "functions/function_impl.h"
 
 #include "functions/func_strings.h"
-#include "functions/func_strings_impl.h"
 
-#include "runtime/strings/strings_impl.h"
+#include "system/globalenv.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -51,24 +52,28 @@ BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
 function* fn_substring::specialize( static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
+  RootTypeManager &rtm = GENV_TYPESYSTEM;
+  TypeManager *tm = sctx->get_typemanager();
+  if(TypeOps::is_subtype(tm,
+                    *argTypes[0],
+                    *(rtm.INTEGER_TYPE_ONE)))
+  {
+    if(argTypes.size() > 1)
+    {
+      if(TypeOps::is_subtype(tm,
+                        *argTypes[1],
+                        *(rtm.INTEGER_TYPE_ONE)))
+        {
+          return new op_substring_int(theSignature, theKind);
+        }
+
+        return NULL;
+    }
+
+    return new op_substring_int(theSignature, theKind);
+  }
+
   return NULL;
-}
-
-
-function* fn_substring_intopt::specialize(static_context *sctx,
-    const std::vector<xqtref_t>& argTypes) const
-{
-  return NULL;
-}
-
-PlanIter_t fn_substring_intopt::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new SubstringIntOptIterator(sctx, loc, argv);
 }
 
 }

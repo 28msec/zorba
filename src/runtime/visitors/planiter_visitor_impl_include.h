@@ -179,8 +179,6 @@ class FlowCtlIterator;
 
 class CountCollectionIterator;
 
-class SubstringIntOptIterator;
-
 #define PLAN_ITER_VISITOR(class)                \
 virtual void beginVisit ( const class& ) = 0;  \
 virtual void endVisit ( const class& ) = 0

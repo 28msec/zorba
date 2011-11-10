@@ -358,5 +358,4 @@ PLAN_ITER_VISITOR(FlowCtlIterator);
 
 PLAN_ITER_VISITOR(CountCollectionIterator);
 
-PLAN_ITER_VISITOR(SubstringIntOptIterator);
 /* vim:set et sw=2 ts=2: */

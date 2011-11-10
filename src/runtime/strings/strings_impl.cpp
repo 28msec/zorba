@@ -32,7 +32,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/strings/strings.h"
-#include "runtime/strings/strings_impl.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item.h"
@@ -540,10 +539,8 @@ bool SubstringIntOptIterator::nextImpl(
   store::Item_t lenItem;
   zstring strval;
   zstring resStr;
-  xs_double start;
-  xs_double len;
-  xs_int istart;
-  xs_int ilen;
+  xs_int start;
+  xs_int len;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -561,42 +558,59 @@ bool SubstringIntOptIterator::nextImpl(
       // note: The first character of a string is located at position 1,
       // not position 0.
 
-      start = startItem->getDoubleValue();
+      start = startItem->getIntValue();
 
-      if (!start.isNaN())
+      if( theChildren.size() == 2)
       {
-        if (start.isFinite())
+        if (start <= 0)
         {
-          try
-          {
-            istart = to_xs_int(start.round());
-          }
-          catch ( std::range_error const& )
-          {
-            istart = (xs_int)utf8_string<zstring>(strval).length();
-          }
+          resStr = strval;
         }
         else
         {
-          istart = (xs_int)utf8_string<zstring>(strval).length();
-        }
-
-        if( theChildren.size() == 2)
-        {
-          if (istart <= 0)
+          try
           {
-            resStr = strval;
+            resStr = utf8_string<zstring>(strval).substr(start-1);
+          }
+          catch (...)
+          {
+            zstring::size_type numChars = utf8_string<zstring>(strval).length();
+            if (static_cast<zstring::size_type>(start) > numChars)
+            {
+              // result is the empty string
+            }
+            else
+            {
+              throw;
+            }
+          }
+        }
+      }
+      else
+      {
+        bool lenItemExists = consumeNext(lenItem, theChildren[2], planState);
+
+        ZORBA_ASSERT(lenItemExists);
+
+        len = lenItem->getIntValue();
+
+        if (len >= 0)
+        {
+          if (start <= 0)
+          {
+              if ((len + start - 1) >= 0)
+                resStr = utf8_string<zstring>(strval).substr(0,  start - 1 + len);
           }
           else
           {
             try
             {
-              resStr = utf8_string<zstring>(strval).substr(istart-1);
+              resStr = utf8_string<zstring>(strval).substr(start-1, len);
             }
             catch (...)
             {
               zstring::size_type numChars = utf8_string<zstring>(strval).length();
-              if (static_cast<zstring::size_type>(istart) > numChars)
+              if (static_cast<zstring::size_type>(start) > numChars)
               {
                 // result is the empty string
               }
@@ -607,96 +621,14 @@ bool SubstringIntOptIterator::nextImpl(
             }
           }
         }
-        else
-        {
-          bool lenItemExists = consumeNext(lenItem, theChildren[2], planState);
-
-          ZORBA_ASSERT(lenItemExists);
-
-          len = lenItem->getDoubleValue();
-
-          if (!len.isNaN())
-          {
-            if (len.isFinite())
-            {
-              try
-              {
-                ilen = to_xs_int(len.round());
-              }
-              catch ( std::range_error const& )
-              {
-                ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
-              }
-            }
-            else
-            {
-              ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
-            }
-
-            if( !(start + len).isNaN())
-            {
-              if (ilen >= 0)
-              {
-                if (istart <= 0)
-                {
-                  if ((ilen + istart - 1) >= 0)
-                    resStr = utf8_string<zstring>(strval).substr(0,  istart - 1 + ilen);
-                }
-                else
-                {
-                  try
-                  {
-                    resStr = utf8_string<zstring>(strval).substr(istart-1, ilen);
-                  }
-                  catch (...)
-                  {
-                    zstring::size_type numChars = utf8_string<zstring>(strval).length();
-                    if (static_cast<zstring::size_type>(istart) > numChars)
-                    {
-                      // result is the empty string
-                    }
-                    else
-                    {
-                      throw;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      } // non NaN start arg
+      }
     } // non empty string arg
   } // non NULL string arg
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
 
-  STACK_END (state);
+STACK_END (state);
 }
-
-const char* SubstringIntOptIterator::class_name_str = "SubstringIntOptIterator";
-SubstringIntOptIterator::class_factory<SubstringIntOptIterator>
-SubstringIntOptIterator::g_class_factory;
-
-const serialization::ClassVersion
-  SubstringIntOptIterator::class_versions[] = {{ 1, 0x00905, false}};
-
-const int SubstringIntOptIterator::class_versions_count =
-  sizeof(SubstringIntOptIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-SubstringIntOptIterator::~SubstringIntOptIterator() {}
 
 /**
   *______________________________________________________________________

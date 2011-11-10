@@ -197,6 +197,28 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="SubstringIntOptIterator">
+
+  <zorba:description author="Zorba Team">
+      fn:substring
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="substring_int" prefix="op">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="substring_int" prefix="op">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 
 <!--
 /*******************************************************************************
