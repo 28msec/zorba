@@ -59,7 +59,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
       ,
       theStopWordsMapper(zorba::EntityData::STOP_WORDS),
-      theThesaurusMapper(zorba::EntityData::THESAURUS, zorba::URIMapper::COMPONENT)
+      theThesaurusMapper(zorba::EntityData::THESAURUS)
 #endif /* ZORBA_NO_FULL_TEXT */
   {}
 

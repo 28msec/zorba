@@ -24,6 +24,7 @@
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
+#include <zorba/uri_resolvers.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
@@ -31,9 +32,23 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %Thesaurus is an abstract base class for thesaurus implementations.
+ * Contains additional data for URIMappers and URLResolvers
+ * when mapping/resolving a Thesaurus URI.
  */
-class ZORBA_DLL_PUBLIC Thesaurus {
+class ZORBA_DLL_PUBLIC ThesaurusEntityData : public EntityData {
+public:
+  /**
+   * Gets the language for which a thesaurus is being requested.
+   *
+   * @return said language.
+   */
+  virtual locale::iso639_1::type getLanguage() const = 0;
+};
+
+/**
+ * A %Thesaurus is-a Resource for thesaurus implementations.
+ */
+class ZORBA_DLL_PUBLIC Thesaurus : public Resource {
 public:
   typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
           ptr;
@@ -66,19 +81,18 @@ public:
     virtual bool next( String *synonym ) = 0;
 
   protected:
-    virtual ~iterator() {}
+    virtual ~iterator() { }
   };
 
   /**
    * Destroys this %Thesaurus.
    * This function is called by Zorba when the %Thesaurus is no longer needed.
    *
-   * If your ThesaurusProvider dynamically allocates %Thesaurus objects, then
-   * the implementation can simply be (and usually is) <code>delete
-   * this</code>.
+   * If your URLResolver dynamically allocates %Thesaurus objects, then the
+   * implementation can simply be (and usually is) <code>delete this</code>.
    *
-   * If your ThesaurusProvider returns a pointer to a static %Thesaurus object,
-   * then the implementation should do nothing.
+   * If your URLResolver returns a pointer to a static %Thesaurus object, then
+   * the implementation should do nothing.
    */
   virtual void destroy() const = 0;
 
@@ -101,25 +115,6 @@ public:
 
 protected:
   virtual ~Thesaurus();
-};
-
-/**
- * A %ThesaurusProvider, given an language, provies a thesaurus for it.
- */
-class ZORBA_DLL_PUBLIC ThesaurusProvider {
-public:
-  virtual ~ThesaurusProvider();
-
-  /**
-   * Gets a Thesaurus for the given language.
-   *
-   * @param uri The URI provided in the query for the thesaurus.
-   * @param lang The language to get a Thesaurus for.
-   * @return The relevant Thesaurus or \c NULL if no thesaurus for the given
-   * language is available.
-   */
-  virtual Thesaurus::ptr
-  getThesaurus( String const &uri, locale::iso639_1::type lang ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

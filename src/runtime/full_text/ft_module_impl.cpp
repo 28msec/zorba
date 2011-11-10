@@ -177,9 +177,11 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   vector<zstring> comp_uris;
+  zstring error_msg;
   store::Item_t item;
   iso639_1::type lang;
   ftmatch_options const *options;
+  auto_ptr<internal::Resource> rsrc;
   zstring uri = "##default";
   static_context const *static_ctx;
   zstring synonym;
@@ -218,16 +220,22 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
     }
   }
 
-  static_ctx->get_component_uris( uri, impl::EntityData::THESAURUS, comp_uris );
+  static_ctx->get_component_uris(
+    uri, internal::EntityData::THESAURUS, comp_uris
+  );
   if ( comp_uris.size() != 1 )
     throw XQUERY_EXCEPTION(
       err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
     );
 
-  state->thesaurus_ = std::move(
-    static_ctx->get_thesaurus( comp_uris.front(), lang )
+  rsrc = static_ctx->resolve_uri(
+    comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
+  );
+  state->thesaurus_.reset(
+    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
   );
   ZORBA_ASSERT( state->thesaurus_.get() );
+
   state->tresult_ = std::move(
     state->thesaurus_->lookup(
       state->phrase_, state->relationship_, state->at_least_, state->at_most_

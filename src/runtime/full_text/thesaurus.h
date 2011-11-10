@@ -20,6 +20,7 @@
 #include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
 
+#include "context/uri_resolver.h"
 #include "util/stl_util.h"
 #include "zorbatypes/zstring.h"
 
@@ -33,7 +34,7 @@ namespace internal {
 /**
  * A %Thesaurus is the abstract base class for thesaurus implementations.
  */
-class Thesaurus {
+class Thesaurus : public internal::Resource {
 public:
   typedef ft_int level_type;
   typedef std::unique_ptr<Thesaurus,ztd::destroy_delete<Thesaurus> > ptr;
@@ -94,32 +95,6 @@ private:
   // forbid these
   Thesaurus( Thesaurus const& );
   Thesaurus& operator=( Thesaurus const& );
-};
-
-/**
- * A %ThesaurusProvider provides a Thesaurus for a particular language.
- */
-class ThesaurusProvider {
-public:
-  virtual ~ThesaurusProvider();
-
-  /**
-   * Gets the default %ThesaurusProvider.
-   *
-   * @return Returns said %ThesaurusProvider.
-   */
-  static ThesaurusProvider const& get_default_provider();
-
-  /**
-   * Gets and instance of a %Thesaurus for the given language.
-   *
-   * @param uri The URI provided in the query for the thesaurus.
-   * @param lang The language of the thesaurus.
-   * @return Returns said Thesaurus or \c NULL if no thesaurus is available for
-   * the given language.
-   */
-  virtual Thesaurus::ptr get_thesaurus( zstring const &uri,
-                                        locale::iso639_1::type lang ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
