@@ -52,6 +52,23 @@ public:
   virtual void destroy() const = 0;
 
   /**
+   * Various properties of this %Stemmer.
+   */
+  struct Properties {
+    /**
+     * The URI that uniquely identifies this %Stemmer.
+     */
+    char const* uri;
+  };
+
+  /**
+   * Gets the Properties of this %Stemmer.
+   *
+   * @param result The Properties to populate.
+   */
+  virtual void properties( Properties *result ) const = 0;
+
+  /**
    * Stems the given word.
    *
    * @param word The word to stem.

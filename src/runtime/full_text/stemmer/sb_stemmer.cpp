@@ -70,6 +70,10 @@ void SnowballStemmer::destroy() const {
   // Do nothing since built-in stemmers are cached for re-use.
 }
 
+void SnowballStemmer::properties( Properties *p ) const {
+  p->uri = "http://www.zorba-xquery.com/full-text/stemmer/snowball";
+}
+
 void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
                             zstring *result ) const {
   //

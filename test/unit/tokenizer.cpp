@@ -173,6 +173,7 @@ inline char TestTokenizer::peek( char const *s, char const *end ) {
 void TestTokenizer::properties( Properties *p ) const {
   ::memset( p, 0, sizeof( Properties ) );
   p->elements_separate_tokens = true;
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/unit-test";
 }
 
 #define HANDLE_BACKSLASH()            \

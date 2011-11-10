@@ -42,6 +42,12 @@ void StemmerWrapper::destroy() const {
   api_stemmer_.release()->destroy();
 }
 
+void StemmerWrapper::properties( Properties *p ) const {
+  zorba::Stemmer::Properties api_p;
+  api_stemmer_->properties( &api_p );
+  p->uri = api_p.uri;
+}
+
 void StemmerWrapper::stem( zstring const &word, iso639_1::type lang,
                            zstring *result ) const {
   String const api_word( Unmarshaller::newString( word ) );

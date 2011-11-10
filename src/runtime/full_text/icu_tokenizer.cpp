@@ -162,6 +162,7 @@ void ICU_Tokenizer::destroy() const {
 void ICU_Tokenizer::properties( Properties *p ) const {
   ::memset( p, 0, sizeof( Properties ) );
   p->elements_separate_tokens = true;
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/icu";
 }
 
 #define HANDLE_BACKSLASH()            \

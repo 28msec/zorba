@@ -81,6 +81,11 @@ inline char LatinTokenizer::peek( char const *s, char const *end ) {
   return ++s < end ? *s : '\0';
 }
 
+void LatinTokenizer::properties( Properties *p ) const {
+  ::memset( p, 0, sizeof( Properties ) );
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/latin";
+}
+
 #define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
     got_backslash = in_wild = false;  \

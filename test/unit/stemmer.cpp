@@ -36,11 +36,16 @@ class TestStemmer : public Stemmer {
 public:
   // inherited
   void destroy() const;
+  void properties( Properties* ) const;
   void stem( String const &word, iso639_1::type lang, String *result ) const;
 };
 
 void TestStemmer::destroy() const {
   destroy_called = true;
+}
+
+void TestStemmer::properties( Properties *p ) const {
+  p->uri = "http://www.zorba-xquery.com/full-text/stemmer/unit-test";
 }
 
 void TestStemmer::stem( String const &word, iso639_1::type lang,

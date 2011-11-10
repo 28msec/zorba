@@ -41,9 +41,26 @@ public:
                           ztd::destroy_delete<Stemmer const> > ptr;
 
   /**
+   * Various properties of this %Stemmer.
+   */
+  struct Properties {
+    /**
+     * The URI that uniquely identifies this %Stemmer.
+     */
+    char const * uri;
+  };
+
+  /**
    * Destroys this %Stemmer.
    */
   virtual void destroy() const = 0;
+
+  /**
+   * Gets the Properties of this %Stemmer.
+   *
+   * @param result The Properties to populate.
+   */
+  virtual void properties( Properties *result ) const = 0;
 
   /**
    * Gets the stem of the given word.

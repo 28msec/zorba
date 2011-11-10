@@ -101,6 +101,11 @@ public:
      * If \c true, XML elements separate tokens.
      */
     bool elements_separate_tokens;
+
+    /**
+     * The URI that uniquely identifies this %Tokenizer.
+     */
+    char const* uri;
   };
 
   /**
