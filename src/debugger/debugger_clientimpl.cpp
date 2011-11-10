@@ -71,7 +71,7 @@ void
 DebuggerListener::finish()
 {
 }
-  
+
 void
 DebuggerListener::stopLooping()
 {

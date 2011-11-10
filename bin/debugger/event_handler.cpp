@@ -61,20 +61,27 @@ EventHandler::parseMessage(const std::string &aMessage)
 #ifndef NDEBUG
     std::cout << "Processing response: " << aMessage << std::endl;
 #endif
-    zorba::String queryString = "dmh:process(";
-    queryString += aMessage + ")";
-    XQuery_t query = theZorbaInstance->compileQuery(queryString, theStaticContext);
-    Iterator_t lIter = query->iterator();
-    Item item;
+    // the query to process the response
+    std::stringstream lQueryStream;
+    lQueryStream << "dmh:process(" << aMessage << ")";
+    XQuery_t lQuery = theZorbaInstance->compileQuery(lQueryStream.str(), theStaticContext);
+
+    // get the query result sequrence:
+    //   1. transaction id
+    Iterator_t lIter = lQuery->iterator();
+    Item lItem;
     lIter->open();
-    lIter->next(item);
+    lIter->next(lItem);
     std::size_t lId;
-    std::stringstream lStream(item.getStringValue().c_str());
+    std::stringstream lStream(lItem.getStringValue().c_str());
     lStream >> lId;
-#ifndef NDEBUG
-    lIter->next(item);
-    std::cout << item.getStringValue() << std::endl;
-#endif
+
+    //   2. A message
+    if (lIter->next(lItem)) {
+      std::cout << lItem.getStringValue() << std::endl;
+    }
+
+    // go and solve the event with this id
     theContinueProducer.produce(true);
     theIdQueue.produce(lId);
   } catch (ZorbaException& e) {

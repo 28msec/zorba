@@ -20,7 +20,6 @@ IF (ZORBA_WITH_DEBUGGER)
     debugger/main.cpp
     debugger/command_prompt.cpp
     debugger/command_line_handler.cpp
-    debugger/lock_free_queue.cpp
     debugger/event_handler.cpp
   )
   ZORBA_GENERATE_EXE ("xqdb" "${DEBUG_CLIENT_SRCS}" "" "xqdb" "bin")

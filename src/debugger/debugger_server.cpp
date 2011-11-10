@@ -296,6 +296,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           std::string lName = "";
           buildChildProperties(lName, lResults, lResponse);
 
+        } catch (std::string aMessage) {
+          return buildErrorResponse(lTransactionID, lCmdName, 206, aMessage);
         } catch (...) {
           return buildErrorResponse(lTransactionID, lCmdName, 206, "Error while evaluating expression.");
         }

@@ -18,24 +18,28 @@ module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-messag
 import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 
 
-declare variable $dmh:endl as xs:string := '
-';
+declare variable $dmh:endl as xs:string := "
+";
 
-declare %private function dmh:status($resp as element())
+(:~
+ : Set this variale to true if you want to have mode debug information when
+ : an error occurs.
+ :)
+declare variable $dmh:debug as xs:boolean := fn:true();
+
+
+declare %private function dmh:status($resp as element(response))
 {
   fn:concat(
-    "Status: ", $resp/@status, $dmh:endl,
-    "Reason: ", $resp/@reason, $dmh:endl,
-    let $msg := $resp/text()
-    return
-      if (fn:empty($msg) or $msg eq "") then
-        ""
-      else
-        fn:concat($msg, $dmh:endl)
+    $resp/@status,
+    if ($resp/@status eq "break" and $resp/@reason ne "ok") then
+      fn:concat(" (", $resp/@reason, ")")
+    else
+      ""
   )
 };
 
-declare %private function dmh:run($resp as element())
+declare %private function dmh:run($resp as element(response))
 {
   if ($resp/@status eq "starting") then
     "Starting query"
@@ -43,39 +47,49 @@ declare %private function dmh:run($resp as element())
     dmh:status($resp)
 };
 
-declare %private function dmh:stop($resp as element())
+declare %private function dmh:stop($resp as element(response))
 {
   dmh:status($resp)
 };
 
-declare %private function dmh:breakpoint-set($resp as element())
+declare %private function dmh:breakpoint-set($resp as element(response))
 {
-  if ($resp/error) then
-    fn:concat("Error when setting a breakpoint: ", if ($resp/error/message) then $resp/error/message/text() else concat(" errcode: ", data($resp/error/@code)))
-  else
-    fn:concat("set breakpoint with id ", data($resp/@id), " and state ", data($resp/@state))
+  fn:concat("set breakpoint with id ", data($resp/@id), " and state ", data($resp/@state))
 };
 
-declare %private function dmh:breakpoint-list($resp as element())
+declare %private function dmh:breakpoint-get($resp as element(response))
 {
-  string-join(
+  let $b := $resp/breakpoint
+  return
+    fn:concat(
+      "Breakpoint ", $b/@id, $dmh:endl,
+      "  type:  ", $b/@type, $dmh:endl,
+      "  file:  ", $b/@filename, $dmh:endl,
+      "  line:  ", $b/@lineno, $dmh:endl,
+      "  state: ", $b/@state
+    )
+};
+
+declare %private function dmh:breakpoint-list($resp as element(response))
+{
+  fn:string-join(
     for $b in $resp/breakpoint
     return concat("Breakpoint ", data($b/@id), " at ", data($b/@filename), ":", data($b/@lineno), " ", data($b/@state)),
     $dmh:endl
   )
 };
 
-declare %private function dmh:breakpoint-remove($resp as element())
+declare %private function dmh:breakpoint-remove($resp as element(response))
 {
   "Breakpoint removed"
 };
 
-declare %private function dmh:stack-depth($resp as element())
+declare %private function dmh:stack-depth($resp as element(response))
 {
   concat("Depth: ", data($resp/@depth))
 };
 
-declare %private function dmh:stack-get($resp as element())
+declare %private function dmh:stack-get($resp as element(response))
 {
   string-join(
     for $s in $resp/stack
@@ -85,7 +99,7 @@ declare %private function dmh:stack-get($resp as element())
 };
 
 
-declare %private function dmh:context-names($resp as element())
+declare %private function dmh:context-names($resp as element(response))
 {
   string-join(
     for $c in $resp/context
@@ -94,7 +108,7 @@ declare %private function dmh:context-names($resp as element())
   )
 };
 
-declare %private function dmh:context-get($resp as element())
+declare %private function dmh:context-get($resp as element(response))
 {
   string-join(
     for $p in $resp/property
@@ -104,61 +118,95 @@ declare %private function dmh:context-get($resp as element())
   )
 };
 
-declare %private function dmh:eval($resp as element())
+declare %private function dmh:eval($resp as element(response))
 {
   if ($resp/@success eq "1") then
     dmh:context-get($resp)
   else
-    concat("Eval failed", ":", $resp/error/message/text())
+    dmh:report-error("An unknown error occured while evaluating expression.")
 };
 
-declare %private function dmh:process-response($resp as element())
+declare %private function dmh:report-error(
+  $message as xs:string)
 {
-  if ($resp/@command eq "") then
-    ($resp/fn:data(@transaction_id), dmh:status($resp))
-  else
+  dmh:report-error($message, ())
+};
+
+declare %private function dmh:report-error(
+  $message as xs:string,
+  $debugMessage as xs:string*)
+{
+  fn:string-join(
     (
-      if (fn:exists($resp/@transaction_id)) then
-        $resp/fn:data(@transaction_id)
+      (: the error message :)
+      fn:concat("ERROR: ", $message),
+
+      (: the debug info :)
+      if ($dmh:debug and fn:string-length($debugMessage) gt 0) then
+        fn:concat("DEBUG: ", $debugMessage)
       else
-        0,
-
-      switch ($resp/@command)
-      case "eval"               return dmh:eval($resp)
-      case "context_get"        return dmh:context-get($resp)
-      case "context_names"      return dmh:context-names($resp)
-      case "stack_get"          return dmh:stack-get($resp)
-      case "stack_depth"        return dmh:stack-depth($resp)
-      case "breakpoint_remove"  return dmh:breakpoint-remove($resp)
-      case "breakpoint_list"    return dmh:breakpoint-list($resp)
-      case "breakpoint_set"     return dmh:breakpoint-set($resp)
-      case "run"                return dmh:run($resp)
-      case "stop"               return dmh:stop($resp)
-      case "status"             return dmh:status($resp)
-
-      default return fn:concat("ERROR: Command not implemented: ", $resp/@command)
-    )
+        ()
+    ),
+    $dmh:endl
+  )
 };
 
-declare function dmh:process-init($init as element())
+declare %private function dmh:process-response($resp as element(response))
 {
-  0,
-  fn:concat(fn:string-join(
-  ('Established connection with', $init/@language, 'client', $init/@appid), ' '), '
-')
+  switch ($resp/@command)
+  case "eval"               return dmh:eval($resp)
+  case "context_get"        return dmh:context-get($resp)
+  case "context_names"      return dmh:context-names($resp)
+  case "stack_get"          return dmh:stack-get($resp)
+  case "stack_depth"        return dmh:stack-depth($resp)
+  case "breakpoint_remove"  return dmh:breakpoint-remove($resp)
+  case "breakpoint_list"    return dmh:breakpoint-list($resp)
+  case "breakpoint_get"     return dmh:breakpoint-get($resp)
+  case "breakpoint_set"     return dmh:breakpoint-set($resp)
+  case "run"                return dmh:run($resp)
+  case "stop"               return dmh:stop($resp)
+  case "status"             return dmh:status($resp)
+
+  default
+    return dmh:report-error(fn:concat("Command not implemented: ", $resp/@command))
+};
+
+declare function dmh:process-init($init as element(init))
+{
+  fn:string-join(
+    ("Established connection with", $init/@language, "client", $init/@appid),
+    " "
+  )
 };
 
 declare function dmh:process($message as element())
 {
-  switch (fn:local-name($message))
-  case "init"       return dmh:process-init($message)
-  case "response"   return dmh:process-response($message)
-  default return
-    (
-      if (fn:exists($message/@transaction_id)) then
-        $message/fn:data(@transaction_id)
+  let $nodeName := fn:local-name($message)
+  let $id := fn:data($message/@transaction_id)
+  return
+    if ($nodeName eq "response") then
+      (: no transaction_id :)
+      if (fn:count($id) eq 0 or $id eq "") then
+        (0, dmh:report-error("Invalid response", "Missing or empty response transaction ID."))
+      (: wrong transaction_id :)
+      else if (xs:string(fn:number($id)) eq "NaN") then
+        (0, dmh:report-error("Invalid response", "Invalid value for response transaction ID."))
+      (: no or empty command :)
+      else if (fn:count($message/@command) eq 0 or $message/@command eq "") then
+        ($id, dmh:report-error("Invalid response", "Missing or empty response command attribute."))
+      (: error response :)
+      else if (fn:exists($message/error)) then
+        ($id, dmh:report-error(fn:data($message/error/message), fn:concat("Error code: ", fn:data($message/error/@code))))
       else
-        0,
-      fn:concat("ERROR: Unknown message node: ", fn:node-name($message))
-    )
+        ($id, dmh:process-response($message))
+    else if ($nodeName eq "init") then
+      (0, dmh:process-init($message))
+    else
+      (
+        if (fn:count($id) eq 0 or $id eq "" or xs:string(fn:number($id)) eq "NaN") then
+          0
+        else
+          $id,
+        dmh:report-error(fn:concat("Unknown message node: ", $nodeName))
+      )
 };

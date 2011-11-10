@@ -28,7 +28,7 @@
 
 
 namespace zorba { namespace debugger {
-  
+
   enum Commands {
     Status,
     Run,
@@ -88,7 +88,7 @@ class CommandLineHandler
       assert(false);
     }
 
-private:
+  private:
     LockFreeConsumer<std::size_t>&  theConsumer;
     LockFreeConsumer<bool>&         theContinueQueue;
     DebuggerClient*                 theClient;

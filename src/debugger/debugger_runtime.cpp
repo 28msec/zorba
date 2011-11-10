@@ -425,6 +425,13 @@ DebuggerRuntime::setNotSendTerminateEvent()
 std::list<std::pair<zstring, zstring> >
 DebuggerRuntime::eval(zstring& aExpr)
 {
+  // must check if we actually CAN eval (only while in "break" status)
+  if (theExecStatus != QUERY_SUSPENDED) {
+    std::string lMessage("I can only eval expressions if the execution is suspended.");
+    throw lMessage;
+  }
+  
+
   // disable the xml declaration for evals/variables
   Zorba_omit_xml_declaration_t lOldOpt = theSerializerOptions.omit_xml_declaration;
   theSerializerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
