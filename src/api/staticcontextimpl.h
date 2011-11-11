@@ -269,8 +269,8 @@ public:
   virtual audit::Event*
   getAuditEvent();
 
-  virtual bool
-  getExternalVariables(Iterator_t& exVarIterator) const;  
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const;  
 
 protected:
   String

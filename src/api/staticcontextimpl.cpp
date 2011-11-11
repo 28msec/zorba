@@ -36,7 +36,7 @@
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/storeiteratorimpl.h"
+#include "api/vectoriterator.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -1360,9 +1360,10 @@ StaticContextImpl::getAuditEvent()
 }
 
 
-bool
-StaticContextImpl::getExternalVariables(Iterator_t& exVarIterator) const
+void
+StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
+  ZORBA_TRY
   std::vector<var_expr_t> lVars;
   theCtx->getVariables(lVars, true, false, true);
 
@@ -1375,20 +1376,9 @@ StaticContextImpl::getExternalVariables(Iterator_t& exVarIterator) const
     lExVars.push_back(lIte->getp()->get_name());        
   }
 
-  if(lExVars.empty())
-    return false;
-
-  store::TempSeq_t tSeqExVars;
-  tSeqExVars = GENV_STORE.createTempSeq(lExVars);
-
-  if(tSeqExVars.isNull())
-    return false;
-
-  store::Iterator_t seqIter = tSeqExVars->getIterator();
-  Iterator_t lIt(new StoreIteratorImpl(seqIter, theDiagnosticHandler));
-  exVarIterator = lIt; 
-
-  return true;
+  Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+  aVarsIter = vIter; 
+  ZORBA_CATCH
 }
 
 } /* namespace zorba */

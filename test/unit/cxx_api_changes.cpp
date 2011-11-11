@@ -207,13 +207,8 @@ cxx_api_changes_test5(Zorba* aZorba)
   {
     
     std::string lIn = "declare variable $a external; 1+1";
-
-    StaticContext_t lStaticContext = aZorba->createStaticContext();
-    std::vector<String> lModulePaths;
-    lModulePaths.push_back(zorba::CMAKE_BINARY_DIR+"/TEST_URI_PATH/");
-    lStaticContext->setModulePaths(lModulePaths);
     
-    XQuery_t lQuery = aZorba->compileQuery(lIn, lStaticContext);
+    XQuery_t lQuery = aZorba->compileQuery(lIn);
 
     Zorba* lZorba = Zorba::getInstance(0);
 
@@ -231,6 +226,7 @@ cxx_api_changes_test5(Zorba* aZorba)
     std::vector<Item>::const_iterator lEnd = lVars.end();
 
     Item item = aZorba->getItemFactory()->createInt(4);
+
 
     bool isBound1;
     bool isBound2;

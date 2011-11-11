@@ -46,7 +46,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/storeiteratorimpl.h"
+#include "api/vectoriterator.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -735,7 +735,7 @@ XQueryImpl::getStaticCollectionManager() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool XQueryImpl::getExternalVariables(Iterator_t& exVarIterator) const
+void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
   try
   {
@@ -764,22 +764,12 @@ bool XQueryImpl::getExternalVariables(Iterator_t& exVarIterator) const
       lExVars.push_back((*lVarIte)->get_name());
     } 
 
-    if(lExVars.empty())
-      return false;
+   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
 
-    store::TempSeq_t tSeqExVars;
-    tSeqExVars = GENV_STORE.createTempSeq(lExVars);
-
-    if(tSeqExVars.isNull())
-      return false;
-
-    store::Iterator_t seqIter = tSeqExVars->getIterator();
-    Iterator_t lIt(new StoreIteratorImpl(seqIter, theDiagnosticHandler));
-    exVarIterator = lIt; 
+    aVarsIter = vIter; 
     
   }
   QUERY_CATCH
-  return true;
 }
 
 
@@ -816,7 +806,7 @@ bool XQueryImpl::isBoundExternalVariable(
     }
     
     if(var == NULL)
-      throw XQUERY_EXCEPTION(err::XPST0008,
+      throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
             ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
 
     if (var->hasInitializer())

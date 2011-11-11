@@ -544,11 +544,11 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
 
   /** \brief Returns the QName of all external variables 
    *
-   * @param exVarIterator iterator to store the results.
+   * @param aVarsIter iterator to store the results.
    * @throw ZorbaException if an error occured.
    */
-  virtual bool
-  getExternalVariables(Iterator_t& exVarIterator) const = 0;
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const = 0;
 
   /**
    *
