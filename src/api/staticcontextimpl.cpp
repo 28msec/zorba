@@ -749,34 +749,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
-
-#ifndef ZORBA_NO_FULL_TEXT
-/*******************************************************************************
-
-********************************************************************************/
-
-void StaticContextImpl::addThesaurusProvider( ThesaurusProvider const *p ) {
-  if ( !theThesaurusProviders[ p ] ) {
-    internal::ThesaurusProviderWrapper *const w =
-      new internal::ThesaurusProviderWrapper( p );
-    theThesaurusProviders[ p ] = w;
-    theCtx->add_thesaurus_provider( w );
-  }
-}
-
-void StaticContextImpl::removeThesaurusProvider( ThesaurusProvider const *p ) {
-  thesaurus_providers_t::iterator const i = theThesaurusProviders.find( p );
-  if ( i != theThesaurusProviders.end() ) {
-    internal::ThesaurusProviderWrapper const *const w = i->second;
-    theThesaurusProviders.erase( i );
-    theCtx->remove_thesaurus_provider( w );
-    delete w;
-  }
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
-
 /*******************************************************************************
 
 ********************************************************************************/

@@ -47,13 +47,13 @@ public:
 
   const XQPCollator* getCollator() const { return theCollator; }
 
-  uint32_t hash(const store::Item* key) const;
+  uint32_t hash(const store::Item_t& key) const;
 
-  bool equal(const store::Item* key1, const store::Item* key2) const;
+  bool equal(const store::Item_t& key1, const store::Item_t& key2) const;
 
-  long compare(const store::Item* key1, const store::Item* key2) const;
+  long compare(const store::Item_t& key1, const store::Item_t& key2) const;
 
-  bool operator()(const store::Item* key1, const store::Item* key2) const
+  bool operator()(const store::Item_t& key1, const store::Item_t& key2) const
   {
     return compare(key1, key2) < 0;
   }
@@ -129,7 +129,7 @@ class GeneralIndex : public IndexImpl
   friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralTreeIndexIterator;
 
-  typedef std::pair<const store::Item*, GeneralIndexValue*> IndexMapPair;
+  typedef std::pair<store::Item*, GeneralIndexValue*> IndexMapPair;
 
 private:
   static const int64_t        theMaxLong;
@@ -197,7 +197,7 @@ class GeneralHashIndex : public GeneralIndex
   friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralHashIndexIterator;
 
-  typedef HashMap<const store::Item*,
+  typedef HashMap<store::Item*,
                   GeneralIndexValue*,
                   GeneralIndexCompareFunction> IndexMap;
 
@@ -248,7 +248,7 @@ class GeneralTreeIndex : public GeneralIndex
   friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralTreeIndexIterator;
 
-  typedef std::map<const store::Item*,
+  typedef std::map<store::Item*,
                    GeneralIndexValue*,
                    GeneralIndexCompareFunction> IndexMap;
 
@@ -410,8 +410,8 @@ protected:
 
   void probeMap(
       const SchemaTypeCode targetMap,
-      const store::Item* lowerKey,
-      const store::Item* upperKey);
+      const AtomicItem_t& lowerKey,
+      const AtomicItem_t& upperKey);
 
   void checkStringKeyType(const AtomicItem* keyItem) const;
 
@@ -467,8 +467,8 @@ protected:
 
   void probeMap(
       const GeneralTreeIndex::IndexMap* targetMap,
-      const store::Item* lowerKey,
-      const store::Item* upperKey);
+      const AtomicItem_t& lowerKey,
+      const AtomicItem_t& upperKey);
 
 public:
   ProbeGeneralTreeIndexIterator(const store::Index_t& index);

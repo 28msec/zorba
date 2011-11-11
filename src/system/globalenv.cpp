@@ -97,7 +97,7 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_http_resolver = new impl::HTTPURLResolver();
+  m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
 }
 
 

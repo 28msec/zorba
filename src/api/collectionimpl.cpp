@@ -30,6 +30,7 @@
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 
+#include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/zorba_exception.h"
 
