@@ -62,6 +62,7 @@ version 2.x
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
 
 version 2.0.1
 
