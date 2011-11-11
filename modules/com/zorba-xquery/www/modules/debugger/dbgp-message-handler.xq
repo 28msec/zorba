@@ -73,10 +73,50 @@ declare %private function dmh:breakpoint-get($resp as element(response))
 declare %private function dmh:breakpoint-list($resp as element(response))
 {
   fn:string-join(
-    for $b in $resp/breakpoint
-    return concat("Breakpoint ", data($b/@id), " at ", data($b/@filename), ":", data($b/@lineno), " ", data($b/@state)),
-    $dmh:endl
+    let $bs := $resp/breakpoint
+    return
+      if (fn:exists($bs)) then
+        fn:concat(
+          "--------------------------------------", $dmh:endl,
+          "|   ID   |   State   |  Line  | File", $dmh:endl,
+          "|--------|-----------|--------|-------", $dmh:endl,
+          fn:string-join(
+            for $b in $bs
+            return
+              fn:concat(
+                "| ", dmh:lpottl($b/@id, 6, " "), " ",
+                "| ", if ($b/@state eq "enabled") then "enabled  " else "disabled ", " ",
+                "| ", dmh:lpottl($b/@lineno, 6, " "), " ",
+                "| ", $b/@filename, $dmh:endl),
+            ""
+          ),
+          "--------------------------------------", $dmh:endl
+        )
+      else
+        "No breakpoints set"
   )
+};
+
+(:~
+ : left-pad-or-trim-to-length
+ :)
+declare %private function dmh:lpottl($value as xs:string, $length as xs:integer, $padChar as xs:string)
+ as xs:string
+{
+  let $padChar := fn:substring($padChar, 1, 1)
+  let $len := fn:string-length($value)
+  return
+    if ($len < $length) then
+      let $pad :=
+        fn:string-join(
+          for $i in 1 to $length - $len
+          return $padChar,
+          ""
+        )
+      return
+        fn:concat($pad, $value)
+    else
+      fn:substring($value, $len - $length + 1)
 };
 
 declare %private function dmh:breakpoint-remove($resp as element(response))

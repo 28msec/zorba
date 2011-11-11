@@ -181,6 +181,13 @@ DebuggerRuntime::getBreakpoint(unsigned int aId)
   return lCommons->getBreakpoint(aId);
 }
 
+BreakableVector
+DebuggerRuntime::getBreakpoints()
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+  return getDebbugerCommons()->getBreakpoints();
+}
+
 void
 DebuggerRuntime::updateBreakpoint(
   unsigned int aId,

@@ -28,8 +28,8 @@
 #include "zorbaserialization/serialization_engine.h"
 #include "zorbatypes/zstring.h"
 
-#include "debugger/debugger_common.h"
-#include "debugger/query_locationimpl.h"
+#include "debugger_common.h"
+#include "query_locationimpl.h"
 
 
 struct Zorba_SerializerOptions;
@@ -259,6 +259,9 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
 
     Breakable
     getBreakpoint(unsigned int id);
+
+    BreakableVector
+    getBreakpoints();
 
     void
     updateBreakpoint(unsigned int id, bool enabled);

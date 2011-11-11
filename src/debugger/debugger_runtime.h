@@ -90,6 +90,9 @@ class DebuggerRuntime : public Runnable {
     Breakable
     getBreakpoint(unsigned int id);
 
+    BreakableVector
+    getBreakpoints();
+
     void
     updateBreakpoint(
       unsigned int id,

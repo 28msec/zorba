@@ -325,6 +325,12 @@ DebuggerCommons::getBreakpoint(unsigned int aId)
   return theBreakables[aId];
 }
 
+BreakableVector
+DebuggerCommons::getBreakpoints()
+{
+  return theBreakables;
+}
+
 void
 DebuggerCommons::checkBreakpoint(unsigned int aId)
 {

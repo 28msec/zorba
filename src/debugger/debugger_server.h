@@ -23,6 +23,7 @@
 #include "zorbatypes/zstring.h"
 
 #include "debugger_common.h"
+#include "debugger_commons.h"
 #include "debugger_protocol.h"
 
 
@@ -70,6 +71,12 @@ class DebuggerServer {
 
     std::string
     getVariableName(std::string& aFullName);
+
+    void
+    buildBreakpoint(
+      Breakable& breakpoint,
+      int& breakpointID,
+      std::ostream& atream);
 
     void
     buildProperty(

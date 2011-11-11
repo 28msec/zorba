@@ -142,32 +142,30 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           if (aCommand.getArg("d", lBID)) {
             try {
               Breakable lBkp = theRuntime->getBreakpoint(lBID);
-              std::string lFilename = lBkp.getLocation().getFilename().str();
-              lFilename = URIHelper::encodeFileURI(lFilename).str();
-
-              lResponse << "<breakpoint "
-                << "id=\"" << lBID << "\" "
-                << "type=\"line\" "
-                << "state=\"" << (lBkp.isEnabled() ? "enabled" : "disabled") << "\" "
-                << "filename=\"" << lFilename << "\" "
-                << "lineno=\"" << lBkp.getLocation().getLineBegin() << "\" "
-//              << "function=\"FUNCTION\" "
-//              << "exception=\"EXCEPTION\" "
-//              << "hit_value=\"HIT_VALUE\" "
-//              << "hit_condition=\"HIT_CONDITION\" "
-//              << "hit_count=\"HIT_COUNT\" "
-                << ">"
-//              << "<expression>EXPRESSION</expression>"
-              << "</breakpoint>";
-
+              buildBreakpoint(lBkp, lBID, lResponse);
             } catch (std::string& lErr) {
-              return buildErrorResponse(lTransactionID, lCmdName, 4, lErr);
+              return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
             }
           } else {
             // error
           }
         } else {
           // breakpoint_list
+          BreakableVector lBkps = theRuntime->getBreakpoints();
+
+          BreakableVector::iterator lIter = lBkps.begin();
+          int lId = -1;
+          while (lIter != lBkps.end()) {
+            Breakable lBkp = *(lIter++);
+            lId++;
+
+            // this is only a location without a breakpoint set by the user
+            if (!lBkp.isSet()) {
+              continue;
+            }
+
+            buildBreakpoint(lBkp, lId, lResponse);
+          }
         }
       } else {
         if (aCommand.getName() == "breakpoint_set") {
@@ -177,9 +175,12 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           std::string lFileName;
           aCommand.getArg("f", lFileName);
           std::string lState;
+          bool lEnabled = true;
           if (!aCommand.getArg("s", lState)) {
             lState = "enabled";
           }
+          lEnabled = (lState == "disabled" ? false : true);
+          lState = (lEnabled ? "enabled" : "disabled");
 
           QueryLoc lLocation;
           lLocation.setLineBegin(lLineNo);
@@ -187,9 +188,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           lLocation.setFilename(lFileName);
 
           try {
-            bool lEnabled = (lState == "disabled" ? false : true);
             unsigned int lBID = theRuntime->addBreakpoint(lLocation, lEnabled);
-            lResponse << "state=\"enabled\" id=\"" << lBID << "\" ";
+            lResponse << "state=\"" << lState << "\" id=\"" << lBID << "\" ";
           } catch (std::string lErr) {
             return buildErrorResponse(lTransactionID, lCmdName, 200, lErr);
           }
@@ -489,6 +489,28 @@ DebuggerServer::getVariableName(std::string& aFullName) {
   }
   return lName;
 }
+
+void
+DebuggerServer::buildBreakpoint(
+  Breakable& aBreakpoint,
+  int& aBID,
+  std::ostream& aStream)
+{
+  aStream << "<breakpoint "
+    << "id=\"" << aBID << "\" "
+    << "type=\"line\" "
+    << "state=\"" << (aBreakpoint.isEnabled() ? "enabled" : "disabled") << "\" "
+    << "filename=\"" << aBreakpoint.getLocation().getFilename().str() << "\" "
+    << "lineno=\"" << aBreakpoint.getLocation().getLineBegin() << "\" "
+//  << "function=\"FUNCTION\" "
+//  << "exception=\"EXCEPTION\" "
+//  << "hit_value=\"HIT_VALUE\" "
+//  << "hit_condition=\"HIT_CONDITION\" "
+//  << "hit_count=\"HIT_COUNT\" "
+    << ">"
+//  << "<expression>EXPRESSION</expression>"
+  << "</breakpoint>";
+};
 
 void
 DebuggerServer::buildProperty(
