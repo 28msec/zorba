@@ -558,7 +558,7 @@ bool SubstringIntOptIterator::nextImpl(
       // note: The first character of a string is located at position 1,
       // not position 0.
 
-      start = startItem->getIntValue();
+      start = to_xs_int(startItem->getIntegerValue());
 
       if( theChildren.size() == 2)
       {
@@ -592,7 +592,7 @@ bool SubstringIntOptIterator::nextImpl(
 
         ZORBA_ASSERT(lenItemExists);
 
-        len = lenItem->getIntValue();
+        len = to_xs_int(lenItem->getIntegerValue());
 
         if (len >= 0)
         {
