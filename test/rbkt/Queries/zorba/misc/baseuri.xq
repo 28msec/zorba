@@ -1,2 +1,2 @@
 
-doc("temp.xml")
+doc("baseuri.xml")
