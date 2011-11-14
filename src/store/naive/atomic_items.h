@@ -2347,28 +2347,15 @@ class AtomicItemTokenizerCallback : public Tokenizer::Callback
 public:
   typedef FTTokenStore::container_type container_type;
 
-  AtomicItemTokenizerCallback( 
-      Tokenizer &tokenizer,
-      locale::iso639_1::type lang,
-      container_type &tokens );
+  AtomicItemTokenizerCallback( container_type &tokens );
 
-  void operator()(
-      char const *utf8_s,
-      size_type utf8_len,
-      size_type token_no,
-      size_type sent_no,
-      size_type para_no,
-      void* = 0 );
-
-  void tokenize( char const *utf8_s, size_t len, bool wildcards = false ) 
-  {
-    tokenizer_.tokenize_string( utf8_s, len, lang_, wildcards, *this );
-  }
+  // inherited
+  void token( char const *utf8_s, size_type utf8_len, locale::iso639_1::type,
+              size_type token_no, size_type sent_no, size_type para_no,
+              void* = 0 );
 
 private:
-  Tokenizer                    & tokenizer_;
-  locale::iso639_1::type const   lang_;
-  container_type               & tokens_;
+  container_type &tokens_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

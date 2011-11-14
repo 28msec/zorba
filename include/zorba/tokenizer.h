@@ -77,18 +77,30 @@ public:
     virtual ~Callback();
 
     /**
+     * This member-function is called whenever an item that is being tokenized
+     * is entered or exited.
+     *
+     * @param item The item being entered or exited.
+     * @param entering If \c true, the item is being entered; if \c false, the
+     * item is being exited.
+     */
+    virtual void item( Item const &item, bool entering );
+
+    /**
      * This member-function is called once per token.
      *
      * @param utf8_s    The UTF-8 token string.  It is not null-terminated.
      * @param utf8_len  The number of bytes in the token string.
+     * @param lang      The language of the token.
      * @param token_no  The token number.  Token numbers start at 0.
      * @param sent_no   The sentence number.  Sentence numbers start at 1.
      * @param para_no   The paragraph number.  Paragraph numbers start at 1.
      * @param payload   Optional user-defined data.
      */
-    virtual void operator()( char const *utf8_s, size_type utf8_len,
-                             size_type token_no, size_type sent_no,
-                             size_type para_no, void *payload = 0 ) = 0;
+    virtual void token( char const *utf8_s, size_type utf8_len,
+                        locale::iso639_1::type lang,
+                        size_type token_no, size_type sent_no,
+                        size_type para_no, void *payload = 0 ) = 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -130,39 +142,6 @@ public:
   virtual void destroy() const = 0;
 
   /**
-   * Trace options for XML elements combined via bitwise-or.
-   */
-  enum ElementTraceOptions {
-    trace_none  = 0x0,  ///< Trace no elements.
-    trace_begin = 0x1,  ///< Trace the beginning of elements.
-    trace_end   = 0x2   ///< Trace the ending of elements.
-  };
-
-  /**
-   * Gets the trace options.  If the value is \c trace_none, then the paragraph
-   * number will be incremented upon entering an XML element; if the value is
-   * anything other than \c trace_none, then the tokenizer assumes
-   * responsibility for incrementing the paragraph number.
-   *
-   * @return Returns said options.
-   */
-  int trace_options() const {
-    return trace_options_;
-  }
-
-  /**
-   * This function is called whenever an XML element is entered during
-   * tokenization.  Note that this function is called only if \c
-   * trace_options() returns non-zero.
-   *
-   * @param qname The element's QName.
-   * @param trace_options The bitwise-or of the trace option(s) in effect for a
-   * particular call.
-   * @see trace_options()
-   */
-  virtual void element( Item const &qname, int trace_options );
-
-  /**
    * Gets this %Tokenizer's associated Numbers.
    *
    * @return Returns said Numbers.
@@ -183,8 +162,8 @@ public:
    * @param lang      The default language to use.
    * @param callback  The Callback to call once per token.
    */
-  virtual void tokenize_node( Item const &node, locale::iso639_1::type lang,
-                              Callback &callback );
+  void tokenize_node( Item const &node, locale::iso639_1::type lang,
+                      Callback &callback );
 
   /**
    * Tokenizes the given string.
@@ -209,22 +188,54 @@ protected:
    * Constructs a %Tokenizer.
    *
    * @param numbers the Numbers to use.
-   * @param trace_options The bitwise-or of the available trace options, if
-   * any.
    */
-  Tokenizer( Numbers &numbers, int trace_options = trace_none );
+  Tokenizer( Numbers &numbers );
 
   /**
    * Destroys a %Tokenizer.
    */
   virtual ~Tokenizer() = 0;
 
+  /**
+   * Given an element, finds its <code>xml:lang</code> attribute, if any, and
+   * gets its value.
+   *
+   * @param element The element to check.
+   * @param lang A pointer to where to put the found language, if any.
+   * @return Returns \c true only if an <code>xml:lang</code> attribute is
+   * found and the value is a known language.
+   */
+  bool find_lang_attribute( Item const &element, locale::iso639_1::type *lang );
+
+  /**
+   * This member-function is called whenever an item that is being tokenized is
+   * entered or exited.
+   *
+   * @param item      The item being entered or exited.
+   * @param entering  If \c true, the item is being entered; if \c false, the
+   *                  item is being exited.
+   */
+  virtual void item( Item const &item, bool entering );
+
+  /**
+   * Tokenizes the given node and all of its child nodes, if any.  For each
+   * node, it is required that this function call the item() member function of
+   * both this %Tokenizer and of the Callback twice: once each for entrance and
+   * exit.
+   *
+   * @param node          The node to tokenize.
+   * @param lang          The default language to use.
+   * @param callback      The Callback to call once per token.
+   * @param tokenize_acp  If \c true, additionally tokenize all attribute,
+   *                      comment, or processing-instruction nodes encountered;
+   *                      if \c false, skip them.
+   */
+  void tokenize_node_impl( Item const &node, locale::iso639_1::type lang,
+                           Callback &callback, bool tokenize_acp );
+
 private:
   int trace_options_;
   Numbers *no_;
-
-  void tokenize_node_impl( Item const&, locale::iso639_1::type, Callback&,
-                           bool );
 };
 
 inline Tokenizer::Numbers& Tokenizer::numbers() {
@@ -233,6 +244,12 @@ inline Tokenizer::Numbers& Tokenizer::numbers() {
 
 inline Tokenizer::Numbers const& Tokenizer::numbers() const {
   return *no_;
+}
+
+inline void Tokenizer::tokenize_node( Item const &item,
+                                      locale::iso639_1::type lang,
+                                      Callback &callback ) {
+  tokenize_node_impl( item, lang, callback, true );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

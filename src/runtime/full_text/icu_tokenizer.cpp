@@ -55,6 +55,8 @@ class temp_token {
 public:
   typedef Tokenizer::size_type size_type;
 
+  temp_token( iso639_1::type lang ) : lang_( lang ) { }
+
   void append( char const *s, size_type slen ) {
     value_.append( s, slen );
   }
@@ -72,7 +74,9 @@ public:
 #     if DEBUG_TOKENIZER
       cout << "TOKEN: \"" << value_ << "\"\n";
 #     endif
-      callback( value_.data(), value_.size(), pos_, sent_, para_, payload );
+      callback.token(
+        value_.data(), value_.size(), lang_, pos_, sent_, para_, payload
+      );
       clear();
     }
   }
@@ -88,6 +92,7 @@ public:
 
 private:
   string value_;
+  iso639_1::type const lang_;
   size_type pos_, sent_, para_;
 };
 
@@ -212,7 +217,7 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
   sent_->setText( utf16_s );
   int32_t sent_start = sent_->first(), sent_end = sent_->next();
 
-  temp_token t;
+  temp_token t( lang );
 
   // True only if the previous token was a backslash ('\').
   bool got_backslash = false;

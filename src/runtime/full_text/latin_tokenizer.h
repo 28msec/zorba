@@ -57,7 +57,8 @@ private:
   static bool is_word_begin_char( char );
   bool is_word_char( char );
   static char peek( char const *s, char const *end );
-  bool send_token( string_type const &token, Callback&, void* );
+  bool send_token( string_type const &token, locale::iso639_1::type, Callback&,
+                   void* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////

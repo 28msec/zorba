@@ -21,44 +21,77 @@
 #include <zorba/tokenizer.h>
 #include <zorba/zorba_string.h>
 
+#include "diagnostics/assert.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbautils/locale.h"
+
 using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::Tokenizer( Numbers &no, int trace_options ) :
-  trace_options_( trace_options ),
-  no_( &no )
-{
+Tokenizer::Tokenizer( Numbers &no ) : no_( &no ) {
 }
 
 Tokenizer::~Tokenizer() {
   // out-of-line since it's virtual
 }
 
-void Tokenizer::element( Item const&, int ) {
-  // do nothing
+bool Tokenizer::find_lang_attribute( Item const &item, iso639_1::type *lang ) {
+  bool found_lang = false;
+  if ( item.getNodeKind() == store::StoreConsts::elementNode ) {
+    Iterator_t i( item.getAttributes() );
+    i->open();
+    for ( Item attr; i->next( attr ); ) {
+      Item qname;
+      if ( attr.getNodeName( qname ) &&
+          qname.getLocalName() == "lang" && qname.getNamespace() == XML_NS ) {
+        *lang = locale::find_lang( attr.getStringValue().c_str() );
+        found_lang = true;
+        break;
+      }
+    }
+    i->close();
+  }
+  return found_lang;
 }
 
-void Tokenizer::tokenize_node( Item const &item, iso639_1::type lang,
-                               Callback &callback ) {
-  tokenize_node_impl( item, lang, callback, true );
+void Tokenizer::item( Item const &item, bool entering ) {
+  if ( entering && item.isNode() &&
+       item.getNodeKind() == store::StoreConsts::elementNode ) {
+    ++numbers().para;
+  }
 }
 
 void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
                                     Callback &callback, bool tokenize_acp ) {
   if ( item.isNode() ) {
+    Iterator_t i;
+    Tokenizer *t_raw = this;
+    Tokenizer::ptr t_ptr;
+
+    this->item( item, true );
+    callback.item( item, true );
     switch ( item.getNodeKind() ) {
+      case store::StoreConsts::elementNode:
+        if ( find_lang_attribute( item, &lang ) ) {
+          TokenizerProvider const &p = *GENV_STORE.getTokenizerProvider();
+          t_ptr = std::move( p.getTokenizer( lang, numbers() ) );
+          t_raw = t_ptr.get();
+        }
+        // no break;
+
       case store::StoreConsts::documentNode:
-      case store::StoreConsts::elementNode: {
-        Iterator_t i( item.getChildren() );
+        i = item.getChildren();
         i->open();
         for ( Item child; i->next( child ); )
-          tokenize_node_impl( child, lang, callback, false );
+          t_raw->tokenize_node_impl( child, lang, callback, false );
         i->close();
         break;
-      }
+
       case store::StoreConsts::attributeNode:
       case store::StoreConsts::commentNode:
       case store::StoreConsts::piNode:
@@ -69,13 +102,19 @@ void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
         tokenize_string( s.data(), s.size(), lang, false, callback );
         break;
       }
-    }
+    } // switch
+    this->item( item, false );
+    callback.item( item, false );
   }
 }
 
 Tokenizer::Numbers::Numbers() {
   token = para = 0;
   sent = 1;
+}
+
+void Tokenizer::Callback::item( Item const&, bool ) {
+  // out-of-line since it's virtual
 }
 
 Tokenizer::Callback::~Callback() {
