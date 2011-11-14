@@ -31,7 +31,7 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /******
  * http: (and https: and ftp:) URL resolver.
@@ -41,7 +41,7 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == impl::EntityData::COLLECTION)
+  if (aEntityData->getKind() == EntityData::COLLECTION)
     return NULL;
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
@@ -82,7 +82,7 @@ Resource*
 FileURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == impl::EntityData::COLLECTION)
+  if (aEntityData->getKind() == EntityData::COLLECTION)
     return NULL;
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
@@ -109,7 +109,7 @@ Resource*
 ZorbaCollectionURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() != impl::EntityData::COLLECTION)
+  if (aEntityData->getKind() != EntityData::COLLECTION)
     return NULL;
 
   store::Item_t lName;
@@ -122,7 +122,7 @@ ZorbaCollectionURLResolver::resolveURL
   }
 }
 
-} /* namespace zorba::impl */
+} /* namespace zorba::internal */
 
 } /* namespace zorba */
 

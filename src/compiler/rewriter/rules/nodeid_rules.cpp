@@ -483,19 +483,14 @@ expr_t MarkConsumerNodeProps::apply(
 /*******************************************************************************
   
 ********************************************************************************/
-RULE_REWRITE_PRE(MarkProducerNodeProps)
+expr_t MarkProducerNodeProps::apply(
+    RewriterContext& rCtx,
+    expr* node,
+    bool& modified)
 {
-  if (rCtx.getRoot().getp() == node) 
-  {
-    DataflowAnnotationsComputer computer;
-    computer.compute(node);
-  }
-  return NULL;
-}
-
-
-RULE_REWRITE_POST(MarkProducerNodeProps)
-{
+  DataflowAnnotationsComputer computer;
+  computer.compute(node);
+  modified = false;
   return NULL;
 }
 

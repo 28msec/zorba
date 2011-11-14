@@ -51,7 +51,7 @@ namespace zorba
 {
 
 // Forward reference
-namespace impl
+namespace internal
 {
   class StreamResource;
 }
@@ -103,7 +103,7 @@ public:
   void registerXSD(
         const char* xsdURL,
         static_context * aSctx,
-        impl::StreamResource* aStreamResource,
+        internal::StreamResource* aStreamResource,
         const QueryLoc& loc);
 
   void getSubstitutionHeadForElement(

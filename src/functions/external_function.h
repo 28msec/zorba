@@ -57,7 +57,7 @@ public:
         const zstring& ns,
         const signature& sig,
         short scriptingType,
-        ExternalFunction* impl);
+        ExternalFunction* internal);
 
   ~external_function() { }
 

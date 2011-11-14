@@ -71,7 +71,7 @@ GeneralIndexCompareFunction::~GeneralIndexCompareFunction()
 /******************************************************************************
 
 ********************************************************************************/
-uint32_t GeneralIndexCompareFunction::hash(const store::Item* key) const
+uint32_t GeneralIndexCompareFunction::hash(const store::Item_t& key) const
 {
   uint32_t hval = FNV_32_INIT;
 
@@ -86,8 +86,8 @@ uint32_t GeneralIndexCompareFunction::hash(const store::Item* key) const
 
 ********************************************************************************/
 bool GeneralIndexCompareFunction::equal(
-    const store::Item* key1,
-    const store::Item* key2) const
+    const store::Item_t& key1,
+    const store::Item_t& key2) const
 {
   if (key1 == NULL && key2 == NULL)
     return true;
@@ -95,7 +95,7 @@ bool GeneralIndexCompareFunction::equal(
   if (key1 == NULL || key2 == NULL)
     return false;
 
-  if (! key1->equals(key2, theTimezone, theCollator))
+  if (! key1->equals(key2.getp(), theTimezone, theCollator))
     return false;
   
   return true;
@@ -106,8 +106,8 @@ bool GeneralIndexCompareFunction::equal(
 
 ********************************************************************************/
 long GeneralIndexCompareFunction::compare(
-    const store::Item* key1,
-    const store::Item* key2) const
+    const store::Item_t& key1,
+    const store::Item_t& key2) const
 {
   long result;
 
@@ -669,7 +669,7 @@ GeneralHashIndex::~GeneralHashIndex()
       //std::cout << "Index Entry Delete [" << (*ite).first << "," 
       //          << (*ite).second << "]" << std::endl;
       
-      const_cast<store::Item*>((*ite).first)->removeReference();
+      (*ite).first->removeReference();
       delete (*ite).second;
     }
 
@@ -832,7 +832,7 @@ GeneralTreeIndex::~GeneralTreeIndex()
       //std::cout << "Index Entry Delete [" << (*ite).first << "," 
       //          << (*ite).second << "]" << std::endl;
       
-      const_cast<store::Item*>((*ite).first)->removeReference();
+      (*ite).first->removeReference();
       delete (*ite).second;
     }
 
@@ -1842,8 +1842,8 @@ void ProbeGeneralIndexIterator::probeMap(
 ********************************************************************************/
 void ProbeGeneralIndexIterator::probeMap(
     SchemaTypeCode targetMap,
-    const store::Item* lowerKey,
-    const store::Item* upperKey)
+    const AtomicItem_t& lowerKey,
+    const AtomicItem_t& upperKey)
 {
     static_cast<ProbeGeneralTreeIndexIterator*>(this)->
     probeMap(static_cast<GeneralTreeIndex*>(theIndex.getp())->theMaps[targetMap],
@@ -2095,8 +2095,8 @@ void ProbeGeneralTreeIndexIterator::probeMap(
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::probeMap(
     const GeneralTreeIndex::IndexMap* map,
-    const store::Item* lowerKey,
-    const store::Item* upperKey)
+    const AtomicItem_t& lowerKey,
+    const AtomicItem_t& upperKey)
 {
   if (map == NULL)
     return;
@@ -2125,9 +2125,9 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   if (haveLower)
   {
     if (lowerIncl)
-      theMapBegins.push_back(map->lower_bound(lowerKey));
+      theMapBegins.push_back(map->lower_bound(lowerKey.getp()));
     else
-      theMapBegins.push_back(map->upper_bound(lowerKey));
+      theMapBegins.push_back(map->upper_bound(lowerKey.getp()));
   }
   else
   {
@@ -2137,9 +2137,9 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   if (haveUpper)
   {
     if (upperIncl)
-      theMapEnds.push_back(map->upper_bound(upperKey));
+      theMapEnds.push_back(map->upper_bound(upperKey.getp()));
     else
-      theMapEnds.push_back(map->lower_bound(upperKey));
+      theMapEnds.push_back(map->lower_bound(upperKey.getp()));
   }
   else
   {

@@ -730,9 +730,8 @@ void FastXmlLoader::startElement(
   }
   catch (...)
   {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
+    loader.theXQueryDiagnostics->
+    add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR));
   }
 }
 
