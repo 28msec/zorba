@@ -1,4 +1,4 @@
-/*
+d/*
  * Copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -367,7 +367,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     case 'r':
 
       if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
         if (lStatus == QUERY_IDLE) {
           theRuntime->start();
         } else if (lStatus == QUERY_SUSPENDED) {
@@ -383,8 +383,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     case 's':
 
       if (aCommand.getName() == "stop") {
-
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
 
         lResponse << "reason=\"ok\" status=\"stopped\" ";
         lResponse << ">";
@@ -450,15 +449,15 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           << ">";
 
       } else if (aCommand.getName() == "step_into") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
         theRuntime->step(STEP_INTO);
         return "";
       } else if (aCommand.getName() == "step_over") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
         theRuntime->step(STEP_OVER);
         return "";
       } else if (aCommand.getName() == "step_out") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
         theRuntime->step(STEP_OUT);
         return "";
       }

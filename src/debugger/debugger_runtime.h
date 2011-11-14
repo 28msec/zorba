@@ -116,10 +116,7 @@ class DebuggerRuntime : public Runnable {
     // Other
 
     void
-    setTheLastContinuationTransactionID(int transactionID);
-
-    int
-    getTheLastContinuationTransactionID();
+    setLastContinuationCommand(int transactionID, std::string commandName);
 
     std::string
     listSource();
@@ -165,7 +162,7 @@ class DebuggerRuntime : public Runnable {
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
 
-    int                               theLastContinuationTransactionID;
+    std::pair<int, std::string>       theLastContinuationCommand;
   };
 }
 

@@ -70,7 +70,8 @@ DebuggerRuntime::DebuggerRuntime(
     thePlanIsOpen(false),
     theSerializer(0),
     theItemHandler(aHandler),
-    theCallbackData(aCallBackData)
+    theCallbackData(aCallBackData),
+    theLastContinuationCommand()
 {
 }
 
@@ -263,7 +264,9 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
   theExecStatus = QUERY_SUSPENDED;
 
   std::stringstream lResponse;
-  lResponse << "<response command=\"" << "" << "\" transaction_id=\"" << theLastContinuationTransactionID << "\" ";
+  lResponse << "<response "
+    << "command=\"" << theLastContinuationCommand.second << "\" "
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\" ";
   lResponse << "reason=\"ok\" status=\"break\" ";
   lResponse << "/>";
   theCommunicator->send(lResponse.str());
@@ -289,10 +292,10 @@ DebuggerRuntime::terminateRuntime()
   theExecStatus = QUERY_TERMINATED;
 
   std::stringstream lResult;
-  lResult << "<response command=\"stop\" "
+  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
     << "status=\"stopping\" "
     << "reason=\"ok\" "
-    << "transaction_id=\"" << theLastContinuationTransactionID << "\">"
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
     << "</response>";
   theCommunicator->send(lResult.str());
   // TODO: something more here?
@@ -498,17 +501,11 @@ DebuggerRuntime::listSource()
 
 
 void
-DebuggerRuntime::setTheLastContinuationTransactionID(int aTID)
+DebuggerRuntime::setLastContinuationCommand(int aTransactionID, std::string aCommandName)
 {
-  theLastContinuationTransactionID = aTID;
+  theLastContinuationCommand = std::pair<int, std::string>(aTransactionID, aCommandName);
 }
 
-
-int
-DebuggerRuntime::getTheLastContinuationTransactionID()
-{
-  return theLastContinuationTransactionID;
-}
 
 // ****************************************************************************
 // Private functions
