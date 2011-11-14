@@ -704,6 +704,9 @@ void FastXmlLoader::startElement(
           }
 
           elemNode->getBaseURI(baseUri);
+
+          ++i;
+          ++numAttributes;
         }
 
         loader.theOrdPath.nextChild();

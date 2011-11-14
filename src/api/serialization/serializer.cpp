@@ -679,9 +679,9 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
   store::NsBindings nsBindings;
   item->getNamespaceBindings(nsBindings);
 
-  ulong numBindings = (ulong)nsBindings.size();
+  csize numBindings = nsBindings.size();
 
-  for (ulong i = 0; i < numBindings; ++i)
+  for (csize i = 0; i < numBindings; ++i)
   {
     if (!haveBinding(nsBindings[i]))
     {
@@ -728,11 +728,11 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
 ********************************************************************************/
 bool serializer::emitter::haveBinding(std::pair<zstring, zstring>& nsBinding) const
 {
-  for (ulong i = 0; i < theBindings.size(); ++i)
+  for (csize i = 0; i < theBindings.size(); ++i)
   {
     const store::NsBindings& nsBindings = theBindings[i];
 
-    for (ulong j = 0; j < nsBindings.size(); ++j)
+    for (csize j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first == nsBinding.first &&
           nsBindings[j].second == nsBinding.second)

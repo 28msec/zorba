@@ -2678,7 +2678,7 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   for (; ite != end; ++ite)
   {
     AttributeNode* attr = static_cast<AttributeNode*>(*ite);
-    if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
+    if (attr != NULL && !attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
       throw XQUERY_EXCEPTION(
         err::XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
