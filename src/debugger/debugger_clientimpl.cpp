@@ -147,6 +147,16 @@ DebuggerClientImpl::status()
 }
   
 std::size_t
+DebuggerClientImpl::variables()
+{
+  // we hack the protocol to return all properties if the context ID is -1
+  std::size_t id = ++theLastId;
+  *theOutStream << "context_get -c -1 -i " << id << '\0';
+  theOutStream->flush();
+  return id;
+}
+  
+std::size_t
 DebuggerClientImpl::feature_get(std::string const& aFeatureName)
 {
   std::size_t id = ++theLastId;
@@ -358,9 +368,10 @@ std::size_t
 DebuggerClientImpl::stack_get(int depth)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "stack_depth";
-  if (depth > 0)
+  *theOutStream << "stack_get";
+  if (depth > 0) {
     *theOutStream << " -d " << depth;
+  }
   *theOutStream << " -i " << id << '\0';
   theOutStream->flush();
   return id;
@@ -371,27 +382,30 @@ DebuggerClientImpl::context_names(int depth)
 {
   std::size_t id = ++theLastId;
   *theOutStream << "context_names";
-  if (depth > 0)
+  if (depth > 0) {
     *theOutStream << " -d " << depth;
+  }
   *theOutStream << " -i " << id << '\0';
   theOutStream->flush();
   return id;
 }
-  
+
 std::size_t
 DebuggerClientImpl::context_get(int depth, int contextId)
 {
   std::size_t id = ++theLastId;
   *theOutStream << "context_get";
-  if (depth > 0)
+  if (depth > 0) {
     *theOutStream << " -d " << depth;
-  if (contextId > 0)
+  }
+  if (contextId > 0){
     *theOutStream << " -c " << contextId;
+  }
   *theOutStream << " -i " << id << '\0';
   theOutStream->flush();
   return id;
 }
-  
+
 std::size_t
 DebuggerClientImpl::typemap_get()
 {

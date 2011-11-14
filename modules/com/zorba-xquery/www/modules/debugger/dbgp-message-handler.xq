@@ -126,14 +126,15 @@ declare %private function dmh:breakpoint-remove($resp as element(response))
 
 declare %private function dmh:stack-depth($resp as element(response))
 {
-  concat("Depth: ", data($resp/@depth))
+  fn:concat("depth: ", $resp/@depth)
 };
 
 declare %private function dmh:stack-get($resp as element(response))
 {
-  string-join(
+  fn:string-join(
     for $s in $resp/stack
-    return concat("Level ", data($s/@level), " at ", data($s/@filename), ":", data($s/@lineno)),
+    return
+      fn:concat("level ", $s/@level, " at ", $s/@filename, ":", $s/@lineno),
     $dmh:endl
   )
 };
@@ -141,19 +142,25 @@ declare %private function dmh:stack-get($resp as element(response))
 
 declare %private function dmh:context-names($resp as element(response))
 {
-  string-join(
+  fn:string-join(
     for $c in $resp/context
-    return concat("Context: ", data($c/@name), " id: ", data($c/@id)),
+    return
+      fn:concat("context ", $c/@id, ": ", $c/@name),
     $dmh:endl
   )
 };
 
 declare %private function dmh:context-get($resp as element(response))
 {
-  string-join(
+  fn:string-join(
     for $p in $resp/property
-    return concat(data($p/@fullname), ": [", data($p/@type), "]",
-                  if ($p/text() ne "") then concat(": ", base64:decode($p/text())) else ""),
+    return
+      fn:concat($p/@fullname, " ", $p/@type,
+        if ($p/text() ne "") then
+          fn:concat(": ", base64:decode($p/text()))
+        else
+          ""
+      ),
     $dmh:endl
   )
 };

@@ -89,6 +89,13 @@ CommandLineHandler::handle<Status>(ZORBA_TR1_NS::tuple<> &t)
 
 template<>
 void
+CommandLineHandler::handle<Variables>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->variables();
+}
+
+template<>
+void
 CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
 {
   bool answered = false;
@@ -180,10 +187,13 @@ CommandLineHandler::handle<ContextNames>(tuple<>& aTuple)
 template<>
 void CommandLineHandler::handle<ContextGet>(tuple<bint> &aTuple)
 {
-  if (get<0>(aTuple).first)
-    theWaitFor = theClient->context_get(get<0>(aTuple).second);
-  else
+  // currently only the 2nd parameter is relevant (the context id)
+  // because for the stack depth only 0 is supported (top-most)
+  if (get<0>(aTuple).first) {
+    theWaitFor = theClient->context_get(-1, get<0>(aTuple).second);
+  } else {
     theWaitFor = theClient->context_get();
+  }
 }
   
 template<>
@@ -197,6 +207,8 @@ CommandLineHandler::addCommands()
 {
   theCommandLine << createCommand<Status>(tuple<>(), "status", *this,
                                           "Gets the status of the server");
+  theCommandLine << createCommand<Variables>(tuple<>(), "variables", *this,
+                                          "Gets the variables visible in the current scope");
   theCommandLine << createCommand<Quit>(tuple<>(), "quit", *this,
                                         "Stops debugging and quits the client");
   theCommandLine << createCommand<Run>(tuple<>(), "run", *this, "Run the Query");
@@ -240,7 +252,6 @@ CommandLineHandler::addCommands()
   {
     Command<CommandLineHandler, tuple<bint>, ContextGet>* lCommand
     = createCommand<ContextGet>(tuple<bint>(), "cget", *this, "Get a context");
-      
     lCommand->addArgument(0, "c", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "The id of the context", false);
       
     theCommandLine << lCommand;

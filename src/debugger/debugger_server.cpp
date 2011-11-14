@@ -1,4 +1,4 @@
-d/*
+/*
  * Copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -259,13 +259,30 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         if (!aCommand.getArg("c", lContextID)) {
           lContextID = 0;
         }
+        // we allow -1 to return the properties (variables) in all contexts
+        if (lContextID < -1 || lContextID > 1) {
+          std::stringstream lErrMsg;
+          lErrMsg << "Context invalid (" << lContextID << ") invalid. Check the context list for a correct ID.";
+          return buildErrorResponse(lTransactionID, lCmdName, 302, lErrMsg.str());
+        }
 
         // currently we only support contexts for the topmost stack frame
         if (lContextDepth == 0) {
 
-          // get the variables either local or global depenging on the context ID
-          std::vector<std::pair<std::string, std::string> > lVariables =
-            theRuntime->getVariables(lContextID == 0 ? true : false);
+          // get the variables depenging on the context ID (all, local, global)
+          std::vector<std::pair<std::string, std::string> > lVariables;
+          switch (lContextID) {
+          case -1: 
+            lVariables = theRuntime->getVariables();
+            break;
+          case 0: 
+            lVariables = theRuntime->getVariables(true);
+            break;
+          case 1: 
+            lVariables = theRuntime->getVariables(false);
+            break;
+          }
+
           std::vector<std::pair<std::string, std::string> >::iterator lIter =
             lVariables.begin();
 
@@ -275,7 +292,17 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
             std::string lName = getVariableName(lFullName);
             buildProperty(lFullName, lName, lIter->second, lResponse);
           }
+        } else {
+          std::stringstream lErrMsg;
+          if (lContextDepth < 0) {
+            lErrMsg << "Stack depth (" << lContextDepth << ") invalid.";
+            return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
+          } else if (lContextDepth > 0) {
+            lErrMsg << "Stack depth (" << lContextDepth << ") invalid." << "Currently we only support data commands for the topmost stack frame.";
+            return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
+          }
         }
+
       }
 
       break;

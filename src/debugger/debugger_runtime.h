@@ -122,6 +122,9 @@ class DebuggerRuntime : public Runnable {
     listSource();
 
     std::vector<std::pair<std::string, std::string> >
+    getVariables();
+
+    std::vector<std::pair<std::string, std::string> >
     getVariables(bool locals);
 
     std::list<std::pair<zstring, zstring> >

@@ -49,6 +49,7 @@ namespace zorba {
   public: // API
     virtual void accept();
     virtual std::size_t status();
+    virtual std::size_t variables();
     virtual std::size_t feature_get(const std::string& aFeatureName);
     virtual std::size_t feature_set(const std::string& aFeatureName,
                                     const std::string& aValue);

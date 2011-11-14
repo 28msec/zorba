@@ -162,6 +162,13 @@ namespace zorba {
      * @return The id of the request.
      */
     virtual std::size_t status() = 0;
+
+    /**
+     * @brief Get the variables in all the contexts in the topmost stack frame.
+     *
+     * @return The id of the request.
+     */
+    virtual std::size_t variables() = 0;
     
     /**
      * @brief Query the debug engine for supported features.

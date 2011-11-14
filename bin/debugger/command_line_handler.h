@@ -31,6 +31,7 @@ namespace zorba { namespace debugger {
 
   enum Commands {
     Status,
+    Variables,
     Run,
     BreakpointSet,
     BreakpointGet,

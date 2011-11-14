@@ -312,6 +312,30 @@ DebuggerRuntime::detachRuntime()
 
 
 std::vector<std::pair<std::string, std::string> >
+DebuggerRuntime::getVariables()
+{
+  std::vector<std::pair<std::string, std::string> > lVarResult;
+
+  std::vector<std::pair<std::string, std::string> > lVarTmp;
+  std::vector<std::pair<std::string, std::string> >::iterator lIter;
+
+  // get the locals and add them to result
+  lVarTmp = getVariables(true);
+  for (lIter = lVarTmp.begin(); lIter != lVarTmp.end(); lIter++) {
+    lVarResult.push_back(*lIter);
+  }
+
+  // get the globals and add them to result
+  lVarTmp = getVariables(false);
+  for (lIter = lVarTmp.begin(); lIter != lVarTmp.end(); lIter++) {
+    lVarResult.push_back(*lIter);
+  }
+
+  return lVarResult;
+};
+
+
+std::vector<std::pair<std::string, std::string> >
 DebuggerRuntime::getVariables(bool aLocals)
 {
   DebuggerCommons* lCommons = getDebbugerCommons();
