@@ -463,6 +463,28 @@ bool static_context::is_reserved_module(const zstring& ns)
 
 
 /***************************************************************************//**
+  Static method
+********************************************************************************/
+zstring static_context::var_name(const store::Item* aVarName)
+{
+  zstring lVarName = aVarName->getStringValue();
+  if (lVarName == static_context::DOT_POS_VAR_NAME)
+  {
+    lVarName = "context position";
+  } 
+  else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
+  {
+    lVarName = "context size";
+  }
+  else if (lVarName == static_context::DOT_VAR_NAME)
+  {
+    lVarName = "context item";
+  }
+  return lVarName;
+}
+
+
+/***************************************************************************//**
   Default Constructor.
 ********************************************************************************/
 static_context::static_context()
@@ -2040,9 +2062,10 @@ var_expr* static_context::lookup_var(
   This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-  std::vector<var_expr_t>& vars,
-  bool aLocalsOnly,
-  bool returnPrivateVars) const
+    std::vector<var_expr_t>& vars,
+    bool aLocalsOnly,
+    bool returnPrivateVars,
+    bool externalVarsOnly) const
 {
   const static_context* sctx = this;
 
@@ -2055,8 +2078,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2064,7 +2087,17 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if (externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+          {
+            vars.push_back((*ite).second);
+          }
+        }
       }
     }
     
@@ -2075,8 +2108,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2084,7 +2117,15 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if(externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+            vars.push_back((*ite).second);
+        }
       }
     }
 
@@ -2104,26 +2145,6 @@ void static_context::getVariables(
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
-}
-
-/***************************************************************************//**
-
-********************************************************************************/
-zstring
-static_context::var_name(const store::Item* aVarName)
-{
-  zstring lVarName = aVarName->getStringValue();
-  if (lVarName == static_context::DOT_POS_VAR_NAME)
-  {
-    lVarName = "context position";
-  } else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
-  {
-    lVarName = "context size";
-  } else if (lVarName == static_context::DOT_VAR_NAME)
-  {
-    lVarName = "context item";
-  }
-  return lVarName;
 }
 
 

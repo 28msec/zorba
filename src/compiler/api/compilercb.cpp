@@ -114,6 +114,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
+  theIsSequential(false),
   theTimeout(timeout),
   theTempIndexCounter(0)
 {

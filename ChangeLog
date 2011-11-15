@@ -2,6 +2,8 @@ Zorba - The XQuery Processor
 
 version 2.x
 
+  * Modified C++ API to add isSequential, getExternalVariables, and 
+    isBoundExternalVariable Functions
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
   * Fixed bug #3401971 (node-by-reference on dynamic collections)
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
