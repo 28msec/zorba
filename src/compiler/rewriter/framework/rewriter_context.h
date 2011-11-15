@@ -41,7 +41,13 @@ typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
 typedef std::map<user_function*, std::vector<expr*> > UdfSourcesMap;
 typedef std::pair<user_function*, std::vector<expr*> > UdfSourcesPair;
 
+typedef std::set<fo_expr*> UdfCalls;
+
 /*******************************************************************************
+
+  theRoot:
+  --------
+  The root node of the expr DAG that is going to be optimized using this context.
 
   theVarIdMap:
   ------------
@@ -95,13 +101,15 @@ public:
   UdfSourcesMap                theUdfSourcesMap;
   std::vector<fo_expr*>        theUdfCallPath;
 
+  UdfCalls                     theProcessedUDFCalls;
+
 public:
   RewriterContext(
-        CompilerCB* cb,
-        const expr_t& root,
-        user_function* udf,
-        const zstring& msg,
-        bool orderedMode);
+      CompilerCB* cb,
+      const expr_t& root,
+      user_function* udf,
+      const zstring& msg,
+      bool orderedMode);
 
   ~RewriterContext();
 
@@ -112,10 +120,30 @@ public:
   void setRoot(expr_t root);
 
   rchandle<var_expr> createTempVar(
-        static_context* sctx,
-        const QueryLoc& loc,
-        var_expr::var_kind kind);
+      static_context* sctx,
+      const QueryLoc& loc,
+      var_expr::var_kind kind);
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+struct UDFCallChain
+{
+  fo_expr      * theFo;
+  UDFCallChain * thePrev;
+
+  UDFCallChain() : theFo(NULL), thePrev(NULL) {}
+
+  UDFCallChain(fo_expr* caller, UDFCallChain* prevCaller)
+    :
+    theFo(caller),
+    thePrev(prevCaller) 
+  {
+  }
+};
+
 
 }
 

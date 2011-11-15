@@ -83,7 +83,7 @@ void block_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void block_expr::add_at(ulong pos, const expr_t& arg)
+void block_expr::add_at(csize pos, const expr_t& arg)
 {
 #ifndef NDEBUG
   if (arg->get_expr_kind() == fo_expr_kind)
@@ -113,9 +113,9 @@ void block_expr::compute_scripting_kind2(
 
   theScriptingKind = VACUOUS_EXPR;
 
-  ulong numChildren = (ulong)theArgs.size();
+  csize numChildren = theArgs.size();
 
-  for (ulong i = 0; i < numChildren; ++i)
+  for (csize i = 0; i < numChildren; ++i)
   {
     short kind = theArgs[i]->get_scripting_detail();
 

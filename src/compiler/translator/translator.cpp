@@ -3551,7 +3551,11 @@ void end_visit(const Param& v, void* /*visit_state*/)
   var_expr_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
   var_expr_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
+  const user_function* udf = 
+  static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
+
   arg_var->set_param_pos(flwor->num_clauses());
+  arg_var->set_udf(udf);
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
@@ -10381,6 +10385,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (!fn->isUdf())
   {
+    user_function* udf = new user_function(loc,
+                                           fn->getSignature(),
+                                           NULL, // no body for now
+                                           fn->getScriptingKind());
+
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
 
@@ -10389,6 +10398,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
       var_expr_t argVar = create_temp_var(loc, var_expr::arg_var);
 
       argVar->set_param_pos(i);
+      argVar->set_udf(udf);
 
       udfArgs[i] = argVar;
       foArgs[i] = argVar.getp();
@@ -10396,11 +10406,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
     expr_t body = new fo_expr(theRootSctx, loc, fn, foArgs);
 
-    user_function* udf = new user_function(loc,
-                                           fn->getSignature(),
-                                           body,
-                                           fn->getScriptingKind());
     udf->setArgVars(udfArgs);
+    udf->setBody(body);
 
     fn = udf;
   }

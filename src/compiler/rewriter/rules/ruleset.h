@@ -123,6 +123,27 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class MarkNodeCopyProps : public RewriteRule 
+{
+public:
+  MarkNodeCopyProps() 
+    :
+    RewriteRule(RewriteRule::MarkNodeCopyProps, "MarkNodeCopyProps")
+  {
+  }
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+
+protected:
+  void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
+
+  void markSources(const std::vector<expr*>& sources);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class HoistRule : public RewriteRule 
 {
 public:

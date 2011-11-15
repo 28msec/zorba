@@ -135,13 +135,13 @@ public:
       std::vector<expr_t>& seq,
       std::vector<var_expr*>* assignedVars);
 
-  void add_at(ulong pos, const expr_t& arg);
+  void add_at(csize pos, const expr_t& arg);
 
-  ulong size() const { return (ulong)theArgs.size(); }
+  csize size() const { return theArgs.size(); }
 
-  const expr_t& operator[](ulong i) const { return theArgs[i]; }
+  const expr* operator[](csize i) const { return theArgs[i]; }
 
-  expr_t& operator[](ulong i) { return theArgs[i]; }
+  expr* operator[](csize i) { return theArgs[i]; }
 
   expr_t clone(substitution_t& s) const;
 

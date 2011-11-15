@@ -22,6 +22,10 @@
 namespace zorba 
 {
 
+class UDFCallChain;
+
+
+
 class DataflowAnnotationsComputer 
 {
 public:
@@ -63,6 +67,12 @@ private:
   bool generic_compute(expr* e);
 };
 
+
+void findNodeSources(
+    RewriterContext& rCtx,
+    expr* inExpr,
+    UDFCallChain* udfChain,
+    std::vector<expr*>& sources);
 }
 
 #endif /* ZORBA_DATAFLOW_ANNOTATIONS_H */

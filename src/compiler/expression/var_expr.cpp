@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include "functions/udf.h"
+
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
@@ -84,6 +86,7 @@ var_expr::var_expr(
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(0),
+  theUDF(NULL),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true)
@@ -107,6 +110,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theFlworClause;
   ar & theCopyClause;
   ar & theParamPos;
+  ar & theUDF;
   ar & theIsPrivate;
   ar & theIsExternal;
   ar & theIsMutable;

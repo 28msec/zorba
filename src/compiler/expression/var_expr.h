@@ -91,15 +91,21 @@ typedef rchandle<var_expr> var_expr_t;
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
   
+  theUDF:
+  -------
+  For arg vars, the corresponding UDF.
+
   theIsExternal:
   --------------
+  Whether this is an external variable or not (for prolog vars only).
 
   theIsPrivate:
   -------------
+  Whether this is a private variable or not (for prolog vars only).
 
   theIsMutable:
   -------------
-
+  Whether this is a mutable variable or not (for prolog and local vars).
 *******************************************************************************/
 class var_expr : public expr
 {
@@ -137,25 +143,27 @@ public:
   };
 
 protected:
-  ulong          theUniqueId;
+  ulong                 theUniqueId;
 
-  var_kind       theKind;
+  var_kind              theKind;
 
-  store::Item_t  theName;
+  store::Item_t         theName;
 
-  xqtref_t       theDeclaredType;
+  xqtref_t              theDeclaredType;
 
-  flwor_clause * theFlworClause;
+  flwor_clause        * theFlworClause;
 
-  copy_clause  * theCopyClause;
+  copy_clause         * theCopyClause;
 
-  csize          theParamPos;
+  csize                 theParamPos;
 
-  bool           theIsExternal;
+  user_function       * theUDF;
 
-  bool           theIsPrivate; 
+  bool                  theIsExternal;
 
-  bool           theIsMutable;
+  bool                  theIsPrivate; 
+
+  bool                  theIsMutable;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -217,6 +225,10 @@ public:
   csize get_param_pos() const { return theParamPos; }
 
   void set_param_pos(csize pos) { theParamPos = pos; }
+
+  user_function* get_udf() const { return theUDF; }
+
+  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
 
   bool is_context_item() const;
 

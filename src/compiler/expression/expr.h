@@ -565,11 +565,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
+  doc_expr(static_context* sctx, const QueryLoc&, expr_t content);
 
   expr* getContent() const { return theContent.getp(); }
 
   bool copyInputNodes() const { return theCopyInputNodes; }
+
+  void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
 
@@ -627,17 +629,17 @@ public:
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t aQNameExpr,
-        expr_t aAttrs,
-        expr_t aContent,
-        const namespace_context* aNSCtx);
+        expr_t qnameExpr,
+        expr_t attrs,
+        expr_t content,
+        const namespace_context* nsCtx);
   
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t aQNameExpr,
-        expr_t aContent,
-        const namespace_context* aNSCtx);
+        expr_t qnameExpr,
+        expr_t content,
+        const namespace_context* nsCtx);
   
   expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
@@ -646,6 +648,8 @@ public:
   expr* getAttrs() const { return theAttrs.getp(); }
 
   bool copyInputNodes() const { return theCopyInputNodes; }
+
+  void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
   

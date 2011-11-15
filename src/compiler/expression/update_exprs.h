@@ -262,7 +262,7 @@ public:
 	std::vector<copy_clause_t>::const_iterator end() const
   { return theCopyClauses.end(); }
 
-	size_t size() const { return theCopyClauses.size(); }
+	csize size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
 

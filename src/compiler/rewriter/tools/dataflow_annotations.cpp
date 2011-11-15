@@ -38,6 +38,7 @@
 namespace zorba 
 {
 
+
 #define SORTED_NODES(e) \
 e->setProducesSortedNodes(ANNOTATION_TRUE)
 
@@ -749,25 +750,84 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+static void findNodeSourcesRec(
+    RewriterContext& rCtx,
+    expr* node,
+    std::vector<expr*>& sources,
+    user_function* currentUdf);
+
+
 /*******************************************************************************
   If the result of the given expr may contain costructed nodes, find the node-
   constructor exprs where such nodes may come from. 
+
+  If "node" is inside a UDF, "inFo" is the expr that invoked that UDF.
 ********************************************************************************/
 void findNodeSources(
-    RewriterContext* rCtx,
-    expr* inExpr,
+    RewriterContext& rCtx,
+    expr* node,
+    UDFCallChain* udfChain,
+    std::vector<expr*>& sources)
+{
+  findNodeSourcesRec(rCtx, node, sources, NULL);
+
+  std::vector<expr*>::iterator ite = sources.begin();
+  std::vector<expr*>::iterator end = sources.end();
+  for (; ite != end; ++ite)
+  {
+    expr* source = (*ite);
+
+    if (source->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* varExpr = static_cast<var_expr*>(source);
+
+      ZORBA_ASSERT(udfChain != NULL);
+      ZORBA_ASSERT(varExpr->get_kind() == var_expr::arg_var);
+      ZORBA_ASSERT(varExpr->get_udf() == udfChain->theFo->get_func());
+
+      ite = sources.erase(ite);
+      --ite;
+      end = sources.end();
+
+      fo_expr* foExpr = udfChain->theFo;
+      expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
+      std::vector<expr*> argSources;
+      findNodeSources(rCtx, foArg, udfChain->thePrev, argSources);
+
+      sources.insert(sources.end(), argSources.begin(), argSources.end());
+      end = sources.end();
+    }
+    else
+    {
+      ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
+                   source->get_expr_kind() == elem_expr_kind);
+    }
+  }
+}
+
+
+void findNodeSourcesRec(
+    RewriterContext& rCtx,
+    expr* node,
     std::vector<expr*>& sources,
     user_function* currentUdf)
 {
-  TypeManager* tm = inExpr->get_type_manager();
+  TypeManager* tm = node->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t retType = inExpr->get_return_type();
+  xqtref_t retType = node->get_return_type();
 
   if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
     return;
 
-  switch(inExpr->get_expr_kind()) 
+  switch(node->get_expr_kind()) 
   {
   case const_expr_kind:
   {
@@ -776,7 +836,7 @@ void findNodeSources(
 
   case var_expr_kind:
   {
-    var_expr* e = static_cast<var_expr*>(inExpr);
+    var_expr* e = static_cast<var_expr*>(node);
 
     switch (e->get_kind())
     {
@@ -788,14 +848,14 @@ void findNodeSources(
     case var_expr::groupby_var:
     case var_expr::non_groupby_var:
     {
-      VarSourcesMap::iterator ite = rCtx->theVarSourcesMap.find(e);
+      VarSourcesMap::iterator ite = rCtx.theVarSourcesMap.find(e);
 
-      if (ite == rCtx->theVarSourcesMap.end())
+      if (ite == rCtx.theVarSourcesMap.end())
       {
         std::vector<expr*> varSources;
-        findNodeSources(rCtx, e->get_domain_expr(), varSources, currentUdf);
+        findNodeSourcesRec(rCtx, e->get_domain_expr(), varSources, currentUdf);
 
-        ite = (rCtx->theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
+        ite = (rCtx.theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
       }
 
       sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
@@ -821,7 +881,7 @@ void findNodeSources(
 
     case var_expr::arg_var:
     {
-      sources.push_back(inExpr);
+      sources.push_back(node);
       return;
     }
 
@@ -830,9 +890,9 @@ void findNodeSources(
     {
       // Assumption: all the assingment exprs on this var that may be executed
       // before e, have been encountered and processed already. 
-      VarSourcesMap::iterator ite = rCtx->theVarSourcesMap.find(e);
+      VarSourcesMap::iterator ite = rCtx.theVarSourcesMap.find(e);
 
-      if (ite != rCtx->theVarSourcesMap.end())
+      if (ite != rCtx.theVarSourcesMap.end())
         sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
 
       return;
@@ -862,21 +922,21 @@ void findNodeSources(
   case text_expr_kind:
   case pi_expr_kind:
   {
-    sources.push_back(inExpr);
+    sources.push_back(node);
     return;
   }
 
   case relpath_expr_kind:
   {
-    relpath_expr* e = static_cast<relpath_expr *>(inExpr);
-    findNodeSources(rCtx, (*e)[0], sources, currentUdf);
+    relpath_expr* e = static_cast<relpath_expr *>(node);
+    findNodeSourcesRec(rCtx, (*e)[0], sources, currentUdf);
     return;
   }
 
   case gflwor_expr_kind:
   case flwor_expr_kind:
   {
-    flwor_expr* e = static_cast<flwor_expr *>(inExpr);
+    flwor_expr* e = static_cast<flwor_expr *>(node);
 
     if (e->has_sequential_clauses())
     {
@@ -888,7 +948,7 @@ void findNodeSources(
     {
       // We don't need to drill down to the domain exprs of variables that
       // are not referenced in the return clause.
-      findNodeSources(rCtx, e->get_return_expr(), sources, currentUdf);
+      findNodeSourcesRec(rCtx, e->get_return_expr(), sources, currentUdf);
       return;
     }
     break;
@@ -896,9 +956,9 @@ void findNodeSources(
 
   case if_expr_kind:
   {
-    if_expr* e = static_cast<if_expr *>(inExpr);
-    findNodeSources(rCtx, e->get_then_expr(), sources, currentUdf);
-    findNodeSources(rCtx, e->get_else_expr(), sources, currentUdf);
+    if_expr* e = static_cast<if_expr *>(node);
+    findNodeSourcesRec(rCtx, e->get_then_expr(), sources, currentUdf);
+    findNodeSourcesRec(rCtx, e->get_else_expr(), sources, currentUdf);
     return;
   }
 
@@ -909,7 +969,7 @@ void findNodeSources(
 
   case fo_expr_kind:
   {
-    fo_expr* e = static_cast<fo_expr *>(inExpr);
+    fo_expr* e = static_cast<fo_expr *>(node);
     function* f = e->get_func();
 
     if (f->isUdf())
@@ -918,23 +978,23 @@ void findNodeSources(
  
       bool recursive = currentUdf->isMutuallyRecursiveWith(udf);
 
-      UdfSourcesMap::iterator ite = rCtx->theUdfSourcesMap.find(udf);
+      UdfSourcesMap::iterator ite = rCtx.theUdfSourcesMap.find(udf);
 
-      if (ite == rCtx->theUdfSourcesMap.end() ||
+      if (ite == rCtx.theUdfSourcesMap.end() ||
           (recursive &&
-           std::find(rCtx->theUdfCallPath.begin(), rCtx->theUdfCallPath.end(), e) ==
-           rCtx->theUdfCallPath.end()))
+           std::find(rCtx.theUdfCallPath.begin(), rCtx.theUdfCallPath.end(), e) ==
+           rCtx.theUdfCallPath.end()))
       {
         if (recursive)
-          rCtx->theUdfCallPath.push_back(e);
+          rCtx.theUdfCallPath.push_back(e);
 
         std::vector<expr*> udfSources;
-        ite = (rCtx->theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources))).first;
+        ite = (rCtx.theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources))).first;
 
-        findNodeSources(rCtx, udf->getBody(), (*ite).second, udf);
+        findNodeSourcesRec(rCtx, udf->getBody(), (*ite).second, udf);
 
         if (recursive)
-          rCtx->theUdfCallPath.pop_back();
+          rCtx.theUdfCallPath.pop_back();
       }
 
       std::vector<expr*>& udfSources = (*ite).second;
@@ -957,7 +1017,7 @@ void findNodeSources(
 
           if (!TypeOps::is_subtype(tm, *argType, *rtm.ANY_ATOMIC_TYPE_STAR))
           {
-            findNodeSources(rCtx, argExpr, sources, currentUdf);
+            findNodeSourcesRec(rCtx, argExpr, sources, currentUdf);
           }
         }
         else
@@ -973,7 +1033,7 @@ void findNodeSources(
       {
         if (f->propagatesInputNodes(e, i))
         {
-          findNodeSources(rCtx, e->get_arg(i), sources, currentUdf);
+          findNodeSourcesRec(rCtx, e->get_arg(i), sources, currentUdf);
         }
       }
     }
@@ -993,7 +1053,7 @@ void findNodeSources(
 
   case var_decl_expr_kind:
   {
-    var_decl_expr* e = static_cast<var_decl_expr*>(inExpr);
+    var_decl_expr* e = static_cast<var_decl_expr*>(node);
 
     var_expr* varExpr = e->get_var_expr();
     expr* initExpr = e->get_init_expr();
@@ -1001,13 +1061,13 @@ void findNodeSources(
     if (initExpr == NULL)
       return;
 
-    assert(rCtx->theVarSourcesMap.find(varExpr) == rCtx->theVarSourcesMap.end());
+    assert(rCtx.theVarSourcesMap.find(varExpr) == rCtx.theVarSourcesMap.end());
 
     VarSourcesMap::iterator ite;
     std::vector<expr*> varSources;
-    ite = (rCtx->theVarSourcesMap.insert(VarSourcesPair(varExpr, varSources))).first;
+    ite = (rCtx.theVarSourcesMap.insert(VarSourcesPair(varExpr, varSources))).first;
 
-    findNodeSources(rCtx, initExpr, (*ite).second, currentUdf);
+    findNodeSourcesRec(rCtx, initExpr, (*ite).second, currentUdf);
     
     return;
   }
@@ -1020,53 +1080,31 @@ void findNodeSources(
   case apply_expr_kind:
   {
     apply_expr* exp = static_cast<apply_expr *>(e);
-
-    if (exp->discardsXDM())
-    {
-      SORTED_NODES(exp);
-      DISTINCT_NODES(exp);
-    }
-    else
-    {
-      default_walk(e);
-      PROPOGATE_SORTED_NODES(exp->get_expr(), exp);
-      PROPOGATE_DISTINCT_NODES(exp->get_expr(), exp);
-    }
-
     break;
   }
 
   case exit_catcher_expr_kind: 
   {
-    default_walk(e);
-    generic_compute(e);
     break;
   }
 
   case exit_expr_kind:
   {
-    default_walk(e);
-    SORTED_NODES(e);
-    DISTINCT_NODES(e);
     break;
   }
 
-  case flowctl_expr_kind:       // TODO
-  case while_expr_kind:         // TODO
+  case flowctl_expr_kind:
     break;
 
   case validate_expr_kind:
     compute_validate_expr(static_cast<validate_expr *>(e));
     break;
 
-  case dynamic_function_invocation_expr_kind: // TODO
-  case function_item_expr_kind: // TODO
-  case transform_expr_kind:     // TODO
-#ifndef ZORBA_NO_FULL_TEXT
-  case ft_expr_kind:            // TODO
-#endif
-  case eval_expr_kind:          // TODO
-  case debugger_expr_kind:      // TODO
+  case dynamic_function_invocation_expr_kind:
+  case function_item_expr_kind:
+  case transform_expr_kind:
+  case eval_expr_kind:
+  case debugger_expr_kind:
     break;
 #endif
     
@@ -1080,17 +1118,21 @@ void findNodeSources(
   case insert_expr_kind:
   case rename_expr_kind:
   case replace_expr_kind:
+  case while_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind:
+#endif
   default:
     ZORBA_ASSERT(false);
   }
 
-  ExprIterator iter(inExpr);
+  ExprIterator iter(node);
   while(!iter.done()) 
   {
     expr* child = (*iter).getp();
     if (child != NULL) 
     {
-      findNodeSources(rCtx, child, sources, currentUdf);
+      findNodeSourcesRec(rCtx, child, sources, currentUdf);
     }
     iter.next();
   }

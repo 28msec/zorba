@@ -21,6 +21,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "functions/func_errors_and_diagnostics.h"

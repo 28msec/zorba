@@ -724,7 +724,7 @@ doc_expr::doc_expr(
   :
   expr(sctx, loc, doc_expr_kind),
   theContent(aContent),
-  theCopyInputNodes(true)
+  theCopyInputNodes(false)
 {
   compute_scripting_kind();
 }
@@ -773,7 +773,7 @@ elem_expr::elem_expr(
   theQNameExpr(aQNameExpr),
   theAttrs(aAttrs),
   theContent(aContent),
-  theCopyInputNodes(true)
+  theCopyInputNodes(false)
 {
   compute_scripting_kind();
 
@@ -792,7 +792,7 @@ elem_expr::elem_expr(
   theQNameExpr(aQNameExpr),
   theAttrs(0),
   theContent(aContent),
-  theCopyInputNodes(true)
+  theCopyInputNodes(false)
 {
   compute_scripting_kind();
 
