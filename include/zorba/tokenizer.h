@@ -220,12 +220,12 @@ protected:
   /**
    * Tokenizes the given node and all of its child nodes, if any.  For each
    * node, it is required that this function call the item() member function of
-   * both this %Tokenizer and of the Callback twice: once each for entrance and
+   * both this %Tokenizer and of the Callback twice, once each for entrance and
    * exit.
    *
    * @param node          The node to tokenize.
    * @param lang          The default language to use.
-   * @param callback      The Callback to call once per token.
+   * @param callback      The Callback to call per token.
    * @param tokenize_acp  If \c true, additionally tokenize all attribute,
    *                      comment, or processing-instruction nodes encountered;
    *                      if \c false, skip them.
