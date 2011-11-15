@@ -234,16 +234,18 @@ protected:
                            Callback &callback, bool tokenize_acp );
 
 private:
-  int trace_options_;
-  Numbers *no_;
+  Numbers *numbers_;
 };
 
+inline Tokenizer::Tokenizer( Numbers &numbers ) : numbers_( &numbers ) {
+}
+
 inline Tokenizer::Numbers& Tokenizer::numbers() {
-  return *no_;
+  return *numbers_;
 }
 
 inline Tokenizer::Numbers const& Tokenizer::numbers() const {
-  return *no_;
+  return *numbers_;
 }
 
 inline void Tokenizer::tokenize_node( Item const &item,

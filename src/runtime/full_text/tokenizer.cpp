@@ -33,9 +33,6 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::Tokenizer( Numbers &no ) : no_( &no ) {
-}
-
 Tokenizer::~Tokenizer() {
   // out-of-line since it's virtual
 }
@@ -75,6 +72,7 @@ void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
 
     this->item( item, true );
     callback.item( item, true );
+
     switch ( item.getNodeKind() ) {
       case store::StoreConsts::elementNode:
         if ( find_lang_attribute( item, &lang ) ) {
@@ -103,6 +101,7 @@ void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
         break;
       }
     } // switch
+
     this->item( item, false );
     callback.item( item, false );
   }
@@ -113,11 +112,11 @@ Tokenizer::Numbers::Numbers() {
   sent = 1;
 }
 
-void Tokenizer::Callback::item( Item const&, bool ) {
+Tokenizer::Callback::~Callback() {
   // out-of-line since it's virtual
 }
 
-Tokenizer::Callback::~Callback() {
+void Tokenizer::Callback::item( Item const&, bool ) {
   // out-of-line since it's virtual
 }
 
