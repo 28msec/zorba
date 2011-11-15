@@ -100,7 +100,7 @@ public:
     virtual void token( char const *utf8_s, size_type utf8_len,
                         locale::iso639_1::type lang,
                         size_type token_no, size_type sent_no,
-                        size_type para_no, Item const *item = 0 ) = 0;
+                        size_type para_no, Item const *item ) = 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
