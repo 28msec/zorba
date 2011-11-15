@@ -37,7 +37,7 @@
 
 namespace zorba {
 
-class URIMapperWrapper : public zorba::impl::URIMapper
+class URIMapperWrapper : public zorba::internal::URIMapper
 {
   public:
 
@@ -46,18 +46,18 @@ class URIMapperWrapper : public zorba::impl::URIMapper
   virtual ~URIMapperWrapper();
 
   virtual void mapURI(const zstring& aUri,
-    zorba::impl::EntityData const* aEntityData,
+    zorba::internal::EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris);
 
-  virtual zorba::impl::URIMapper::Kind mapperKind();
+  virtual zorba::internal::URIMapper::Kind mapperKind();
 
   private:
 
   zorba::URIMapper& theUserMapper;
 };
 
-class URLResolverWrapper : public zorba::impl::URLResolver
+class URLResolverWrapper : public zorba::internal::URLResolver
 {
   public:
 
@@ -65,8 +65,8 @@ class URLResolverWrapper : public zorba::impl::URLResolver
 
   virtual ~URLResolverWrapper();
 
-  virtual zorba::impl::Resource* resolveURL(const zstring& aUrl,
-    zorba::impl::EntityData const* aEntityData);
+  virtual zorba::internal::Resource* resolveURL(const zstring& aUrl,
+    zorba::internal::EntityData const* aEntityData);
 
   private:
 

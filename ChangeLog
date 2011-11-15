@@ -2,7 +2,9 @@ Zorba - The XQuery Processor
 
 version 2.x
 
-  * Custom Full-text thesaurus.
+  * Modified C++ API to add isSequential, getExternalVariables, and 
+    isBoundExternalVariable Functions
+  * Custom Full-text thesaurus using Zorba URI resolver mechanism.
   * Fixed bug #3401971 (node-by-reference on dynamic collections)
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
   sequence of integers)
@@ -63,6 +65,7 @@ version 2.x
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
 
 version 2.0.1
 
