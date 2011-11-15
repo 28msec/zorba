@@ -598,8 +598,8 @@ bool SubstringIntOptIterator::nextImpl(
         {
           if (start <= 0)
           {
-              if ((len + start - 1) >= 0)
-                resStr = utf8_string<zstring>(strval).substr(0,  start - 1 + len);
+            if ((len + start - 1) >= 0)
+              resStr = utf8_string<zstring>(strval).substr(0,  start - 1 + len);
           }
           else
           {
@@ -630,6 +630,7 @@ STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
 STACK_END (state);
 }
 
+
 /**
   *______________________________________________________________________
   *
@@ -652,12 +653,8 @@ bool StringLengthIterator::nextImpl(
   {
     item->getStringValue2(strval);
 
-    STACK_PUSH(
-      GENV_ITEMFACTORY->createInteger(
-        result, Integer( utf8::length( strval ) )
-      ),
-      state
-    );
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(utf8::length(strval))),
+               state);
   }
   else
   {
