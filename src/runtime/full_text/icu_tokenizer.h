@@ -50,7 +50,7 @@ public:
   void destroy() const;
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, locale::iso639_1::type, bool,
-                        Callback&, void* );
+                        Callback&, Item const* );
 
 private:
   typedef std::unique_ptr<RuleBasedBreakIterator> rbbi_ptr;

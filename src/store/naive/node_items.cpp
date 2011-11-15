@@ -2661,9 +2661,7 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    throw XQUERY_EXCEPTION_VAR(
-      ecode, ERROR_PARAMS( qname->show(), prefix, ns2 )
-    );
+    throw XQUERY_EXCEPTION_VAR(ecode, ERROR_PARAMS(qname->show(), prefix, ns2));
   }
 }
 
@@ -2679,11 +2677,9 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   for (; ite != end; ++ite)
   {
     AttributeNode* attr = static_cast<AttributeNode*>(*ite);
-    if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
+    if (attr != NULL && !attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
-      );
+      throw XQUERY_EXCEPTION(err::XQDY0025, ERROR_PARAMS(attrName->getStringValue()));
     }
   }
 }
@@ -2714,9 +2710,7 @@ void ElementNode::checkUniqueAttrs() const
 
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
-        throw XQUERY_EXCEPTION(
-          err::XUDY0021, ERROR_PARAMS( attrName->getStringValue() )
-        );
+        throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(attrName->getStringValue()));
       }
     }
   }
@@ -4336,26 +4330,28 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
 
 
 void XmlNodeTokenizerCallback::item( Item const &api_item, bool entering ) {
-  store::Item const *const item = Unmarshaller::getInternalItem( api_item );
-  if ( entering ) {
-    push_item( item );
-    range_stack_.push( token_store_->getDocumentTokens().size() );
-  } else {
-    pop_item();
-    token_store_->putRange(
-      item,
-      ztd::pop_stack( range_stack_ ),
-      token_store_->getDocumentTokens().size()
-    );
+  if ( token_store_ ) {
+    store::Item const *const item = Unmarshaller::getInternalItem( api_item );
+    if ( entering ) {
+      push_item( item );
+      range_stack_.push( token_store_->getDocumentTokens().size() );
+    } else {
+      pop_item();
+      token_store_->putRange(
+        item,
+        ztd::pop_stack( range_stack_ ),
+        token_store_->getDocumentTokens().size()
+      );
+    }
   }
 }
 
 
 void XmlNodeTokenizerCallback::
 token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
-       size_type pos, size_type sent, size_type para, void *payload )
+       size_type pos, size_type sent, size_type para, Item const *api_item )
 {
-  store::Item const *const item = static_cast<store::Item*>( payload );
+  store::Item const *const item = Unmarshaller::getInternalItem( *api_item );
   FTToken t( utf8_s, utf8_len, pos, sent, para, item, lang );
   tokens_.push_back( t );
 }

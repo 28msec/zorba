@@ -1542,7 +1542,7 @@ public:
   // inherited
   void item( Item const&, bool );
   void token( char const *utf8_s, size_type utf8_len, locale::iso639_1::type,
-              size_type pos, size_type sent, size_type para, void* );
+              size_type pos, size_type sent, size_type para, Item const* );
 private:
   typedef std::stack<store::Item const*> item_stack_t;
   typedef std::stack<FTTokenStore::size_type> range_begin_stack_t;

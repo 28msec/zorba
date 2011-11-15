@@ -94,7 +94,7 @@ void LatinTokenizer::properties( Properties *p ) const {
 
 void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
                                       iso639_1::type lang, bool wildcards,
-                                      Callback &callback, void *payload ) {
+                                      Callback &callback, Item const *item ) {
   bool got_backslash = false;
   bool in_wild = false;
   string_type token;
@@ -171,7 +171,7 @@ void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
     } else {
       if ( is_word_char( *s ) )
         token += *s;
-      else if ( send_token( token, lang, callback, payload ) ) {
+      else if ( send_token( token, lang, callback, item ) ) {
         token.clear();
         t_type_ = t_generic;
       }
@@ -207,13 +207,13 @@ void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
       }
   } // for
 
-  send_token( token, lang, callback, payload );
+  send_token( token, lang, callback, item );
 }
 
 #define PRINT_TOKENS 0
 
 bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
-                                 Callback &callback, void *payload ) {
+                                 Callback &callback, Item const *item ) {
   if ( !token.empty() ) {
 #if PRINT_TOKENS
     cout <<   "t=" << setw(2) << numbers().token
@@ -224,7 +224,7 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
 
     callback(
       token.data(), token.size(), lang,
-      numbers().token, numbers().sent, numbers().para, payload
+      numbers().token, numbers().sent, numbers().para, item
     );
     ++numbers().token;
     return true;

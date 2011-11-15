@@ -69,13 +69,13 @@ public:
     return value_.empty();
   }
 
-  void send( void *payload, Tokenizer::Callback &callback ) {
+  void send( Item const *item, Tokenizer::Callback &callback ) {
     if ( !empty() ) {
 #     if DEBUG_TOKENIZER
       cout << "TOKEN: \"" << value_ << "\"\n";
 #     endif
       callback.token(
-        value_.data(), value_.size(), lang_, pos_, sent_, para_, payload
+        value_.data(), value_.size(), lang_, pos_, sent_, para_, item
       );
       clear();
     }
@@ -188,7 +188,7 @@ void ICU_Tokenizer::properties( Properties *p ) const {
 
 void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
                                      iso639_1::type lang, bool wildcards,
-                                     Callback &callback, void *payload ) {
+                                     Callback &callback, Item const *item ) {
   ZORBA_ASSERT( lang == lang_ );
 
   unicode::char_type *utf16_buf;
@@ -359,7 +359,7 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
     }
 
     if ( !in_wild && !got_backslash )
-      t.send( payload, callback );
+      t.send( item, callback );
 
 set_token:
     if ( !is_junk ) {
@@ -386,7 +386,7 @@ next:
     throw XQUERY_EXCEPTION(
       err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar_3 ), '}' )
     );
-  t.send( payload, callback );
+  t.send( item, callback );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

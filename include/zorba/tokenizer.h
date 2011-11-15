@@ -95,12 +95,12 @@ public:
      * @param token_no  The token number.  Token numbers start at 0.
      * @param sent_no   The sentence number.  Sentence numbers start at 1.
      * @param para_no   The paragraph number.  Paragraph numbers start at 1.
-     * @param payload   Optional user-defined data.
+     * @param item      The Item this token is from, if any.
      */
     virtual void token( char const *utf8_s, size_type utf8_len,
                         locale::iso639_1::type lang,
                         size_type token_no, size_type sent_no,
-                        size_type para_no, void *payload = 0 ) = 0;
+                        size_type para_no, Item const *item = 0 ) = 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -175,11 +175,11 @@ public:
    * @param wildcards If \c true, allows XQuery wildcard syntax characters to
    *                  be part of tokens.
    * @param callback  The Callback to call once per token.
-   * @param payload   Optional user-defined data.
+   * @param item      The Item this string is from, if any.
    */
   virtual void tokenize_string( char const *utf8_s, size_type utf8_len,
                                 locale::iso639_1::type lang, bool wildcards,
-                                Callback &callback, void *payload = 0 ) = 0;
+                                Callback &callback, Item const *item = 0 ) = 0;
 
   /////////////////////////////////////////////////////////////////////////////
 

@@ -1188,7 +1188,7 @@ public:
   }
 
   void token( char const *utf8_s, size_type utf8_len, iso639_1::type,
-              size_type, size_type, size_type, void* ) {
+              size_type, size_type, size_type, Item const* ) {
     FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
     tokens_.push_back( t );
   }

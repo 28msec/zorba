@@ -36,6 +36,7 @@ version 2.x
   * Fixed bug #859522 (Fatal error if a PUL contains two delete document primitives)
   * Fixed bug #859968 (Using put on an attribute produces an invalid XDM instance and may cause segmentation faults)
   * Fixed bug #855314 (should not fold a constant expr that returns an error item)
+  * Fixed bug when parsing a document with a base-uri attribute.
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
   * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
@@ -62,6 +63,7 @@ version 2.x
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
 
 version 2.0.1
 

@@ -99,7 +99,7 @@ void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
           break;
       case store::StoreConsts::textNode: {
         String const s( item.getStringValue() );
-        tokenize_string( s.data(), s.size(), lang, false, callback );
+        tokenize_string( s.data(), s.size(), lang, false, callback, &item );
         break;
       }
     } // switch

@@ -704,6 +704,9 @@ void FastXmlLoader::startElement(
           }
 
           elemNode->getBaseURI(baseUri);
+
+          ++i;
+          ++numAttributes;
         }
 
         loader.theOrdPath.nextChild();
@@ -727,9 +730,8 @@ void FastXmlLoader::startElement(
   }
   catch (...)
   {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
+    loader.theXQueryDiagnostics->
+    add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR));
   }
 }
 

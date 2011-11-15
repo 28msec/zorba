@@ -3259,7 +3259,7 @@ void AtomicItemTokenizerCallback::token(
   size_type token_no, 
   size_type sent_no,
   size_type para_no,
-  void*
+  Item const*
 ) {
   FTToken const t( utf8_s, utf8_len, token_no, lang );
   tokens_.push_back( t );

@@ -40,7 +40,7 @@ public:
   void destroy() const;
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
-                        void* );
+                        Item const* );
 
 private:
   typedef zstring string_type;
@@ -58,7 +58,7 @@ private:
   bool is_word_char( char );
   static char peek( char const *s, char const *end );
   bool send_token( string_type const &token, locale::iso639_1::type, Callback&,
-                   void* );
+                   Item const* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
