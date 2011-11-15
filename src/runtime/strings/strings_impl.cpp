@@ -539,8 +539,10 @@ bool SubstringIntOptIterator::nextImpl(
   store::Item_t lenItem;
   zstring strval;
   zstring resStr;
-  xs_int start;
-  xs_int len;
+  xs_integer start;
+  xs_integer len;
+  xs_int istart;
+  xs_int ilen;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -558,11 +560,12 @@ bool SubstringIntOptIterator::nextImpl(
       // note: The first character of a string is located at position 1,
       // not position 0.
 
-      start = to_xs_int(startItem->getIntegerValue());
+      start = startItem->getIntegerValue();
+      istart = to_xs_int(start);
 
       if( theChildren.size() == 2)
       {
-        if (start <= 0)
+        if (istart <= 0)
         {
           resStr = strval;
         }
@@ -570,12 +573,12 @@ bool SubstringIntOptIterator::nextImpl(
         {
           try
           {
-            resStr = utf8_string<zstring>(strval).substr(start-1);
+            resStr = utf8_string<zstring>(strval).substr(istart-1);
           }
           catch (...)
           {
             zstring::size_type numChars = utf8_string<zstring>(strval).length();
-            if (static_cast<zstring::size_type>(start) > numChars)
+            if (static_cast<zstring::size_type>(istart) > numChars)
             {
               // result is the empty string
             }
@@ -592,25 +595,26 @@ bool SubstringIntOptIterator::nextImpl(
 
         ZORBA_ASSERT(lenItemExists);
 
-        len = to_xs_int(lenItem->getIntegerValue());
+        len = lenItem->getIntegerValue();
+        ilen = to_xs_int(len);
 
-        if (len >= 0)
+        if (ilen >= 0)
         {
-          if (start <= 0)
+          if (istart <= 0)
           {
-            if ((len + start - 1) >= 0)
-              resStr = utf8_string<zstring>(strval).substr(0,  start - 1 + len);
+            if ((ilen + istart - 1) >= 0)
+              resStr = utf8_string<zstring>(strval).substr(0,  istart - 1 + ilen);
           }
           else
           {
             try
             {
-              resStr = utf8_string<zstring>(strval).substr(start-1, len);
+              resStr = utf8_string<zstring>(strval).substr(istart-1, ilen);
             }
             catch (...)
             {
               zstring::size_type numChars = utf8_string<zstring>(strval).length();
-              if (static_cast<zstring::size_type>(start) > numChars)
+              if (static_cast<zstring::size_type>(istart) > numChars)
               {
                 // result is the empty string
               }
