@@ -34,13 +34,14 @@
 #include <util/auto_vector.h>
 #include <store/api/shared_types.h>
 #include <zorba/streams.h>
+#include <zorba/locale.h>
 
 namespace zorba {
 
 // Forward declaration
 class static_context;
 
-namespace impl {
+namespace internal {
 
 /**
  * @brief The class representing the result of URL resolution.
@@ -156,9 +157,8 @@ class CollectionResource : public Resource
  * and URLResolvers when mapping/resolving a URI.
  *
  * This base class specifies the kind of entity for which this URI is being
- * resolved - for instance, a schema URI or a module URI. In the future,
- * there may be kind-specific subclasses containing additional information;
- * as yet however there are none.
+ * resolved - for instance, a schema URI or a module URI. Subclasses of
+ * this class will provide additional data for specific kinds of entities.
  */
 class EntityData
 {
@@ -178,12 +178,34 @@ public:
     SOME_CONTENT
   };
 
+  EntityData(Kind aKind);
+
   /**
    * @brief Return the Kind of Entity for which this URI is being resolved.
    */
-  virtual Kind getKind() const = 0;
+  virtual Kind getKind() const;
 
-  virtual ~EntityData() = 0;
+  virtual ~EntityData();
+
+private:
+  Kind const theKind;
+};
+
+/**
+ * @brief The class containing additional data for URIMappers and URLResolvers
+ * when mapping/resolving a Thesaurus URI.
+ */
+class ThesaurusEntityData : public EntityData
+{
+public:
+  ThesaurusEntityData(locale::iso639_1::type aLang);
+  /**
+   * @brief Return the language for which a thesaurus is being requested.
+   */
+  virtual locale::iso639_1::type getLanguage() const;
+
+private:
+  locale::iso639_1::type const theLang;
 };
 
 /**

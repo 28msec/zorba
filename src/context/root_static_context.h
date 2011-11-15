@@ -26,8 +26,9 @@ class root_static_context : public static_context
   friend class GlobalEnvironment;
   friend class static_context;
 
-protected:
-  static const char* theBuiltInModulePaths[];
+private:
+  static const char* theBuiltinURIPath[];
+  static const char* theBuiltinLibPath[];
 
 protected:
   zstring theImplementationBaseUri;
@@ -39,7 +40,8 @@ private:
 
   void init();
 
-  const char** get_builtin_module_paths() const { return theBuiltInModulePaths; }
+  const char** get_builtin_uri_path() const { return theBuiltinURIPath; }
+  const char** get_builtin_lib_path() const { return theBuiltinLibPath; }
 };
 
 }
