@@ -9686,34 +9686,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
-      {
-        std::reverse(arguments.begin(), arguments.end());
-
-        xqtref_t posType = arguments[1]->get_return_type();
-
-        if (numArgs == 2)
-        {
-          if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
-          {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
-          }
-        }
-        else
-        {
-          xqtref_t lenType = arguments[2]->get_return_type();
-
-          if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
-              TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
-          {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
-          }
-        }
-
-        fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
-        normalize_fo(foExpr);
-        push_nodestack(foExpr.getp());
-        return;
-      }
       case FunctionConsts::FN_SUBSTRING_2:
       case FunctionConsts::FN_SUBSTRING_3:
       {
@@ -9725,7 +9697,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -9735,7 +9710,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
               TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 

@@ -52,28 +52,7 @@ BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
 function* fn_substring::specialize( static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  RootTypeManager &rtm = GENV_TYPESYSTEM;
-  TypeManager *tm = sctx->get_typemanager();
-  if(TypeOps::is_subtype(tm,
-                    *argTypes[0],
-                    *(rtm.INTEGER_TYPE_ONE)))
-  {
-    if(argTypes.size() > 1)
-    {
-      if(TypeOps::is_subtype(tm,
-                        *argTypes[1],
-                        *(rtm.INTEGER_TYPE_ONE)))
-        {
-          return new op_substring_int(theSignature, theKind);
-        }
-
-        return NULL;
-    }
-
-    return new op_substring_int(theSignature, theKind);
-  }
-
-  return NULL;
+    return NULL;
 }
 
 }
