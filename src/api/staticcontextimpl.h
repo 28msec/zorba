@@ -244,9 +244,12 @@ public:
 
   virtual void
   setAuditEvent(audit::Event* anEvent);
-
+  
   virtual audit::Event*
   getAuditEvent();
+
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const;  
 
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
