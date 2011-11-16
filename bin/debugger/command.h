@@ -243,7 +243,7 @@ Command<Func, Tuple, CommandIdx>::addArgument(
          i != aCommandArgs.end(); ++i)
     {
       if (i->second->isRequired() && !i->second->isSet(theTuple)) {
-        std::cerr << "Error: Argument " << i->second->getName() << " not set" << std::endl;
+        std::cerr << "Error: Argument -" << i->second->getName() << " not set" << std::endl;
         allSet = false;
       }
     }
