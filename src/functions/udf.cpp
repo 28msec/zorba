@@ -61,7 +61,8 @@ user_function::user_function(
   theIsOptimized(false),
   thePlanStateSize(0),
   theCache(0),
-  theCacheResults(false)
+  theCacheResults(false),
+  theCacheComputed(false)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
@@ -408,21 +409,62 @@ bool user_function::cacheResults() const
 ********************************************************************************/
 void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 {
+  if (theCacheComputed)
+  {
+    return; 
+  }
+
+  struct OnExit {
+  private:
+    bool& theResult;
+    bool& theCacheComputed;
+
+  public:
+    OnExit(bool& aResult, bool& aCacheComputed)
+      : theResult(aResult),
+        theCacheComputed(aCacheComputed) {}
+
+    void cache() { theResult = true; }
+
+    ~OnExit()
+    {
+      theCacheComputed = true;
+    }
+  };
+
+  // will be destroyed when the function is exited
+  // set caching to true if cache() is called
+  OnExit lExit(theCacheResults, theCacheComputed);
+
   // check necessary conditions
   // %ann:cache or not %ann:no-cache
-  if (theAnnotationList)
+  if (theAnnotationList && theAnnotationList->contains(AnnotationInternal::zann_nocache))
   {
-    if (theAnnotationList->contains(AnnotationInternal::zann_nocache))
-    {
-      theCacheResults = false;
-      return;
-    }
+    return;
   }
 
   // was the %ann:cache annotation given explicitly by the user
   bool lExplicitCacheRequest = theAnnotationList
     ?theAnnotationList->contains(AnnotationInternal::zann_cache)
     :false;
+
+  if (isVariadic())
+  {
+    if (lExplicitCacheRequest)
+    {
+      diag->add_warning(
+        NEW_XQUERY_WARNING(
+          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+          WARN_PARAMS(
+            getName()->getStringValue(),
+            ZED( ZWST0005_VARIADIC )
+          ),
+          WARN_LOC(theLoc)
+        )
+      );
+    }
+    return;
+  }
 
   // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
@@ -447,7 +489,6 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
         )
       );
     }
-    theCacheResults = false;
     return;
   }
 
@@ -475,7 +516,6 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
           )
         );
       }
-      theCacheResults = false;
       return;
     }
   }
@@ -496,7 +536,6 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
         )
       );
     }
-    theCacheResults = false;
     return;
   }
 
@@ -518,20 +557,16 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
         );
       }
     }
-    theCacheResults = true;
+    lExit.cache();
     return;
   }
 
-  if (!lExplicitCacheRequest)
+  if (!lExplicitCacheRequest && !isRecursive())
   {
-    if (!isRecursive())
-    {
-      theCacheResults = false;
-      return;
-    }
+    return;
   }
 
-  theCacheResults = true;
+  lExit.cache();
 }
 
 /*******************************************************************************

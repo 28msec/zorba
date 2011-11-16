@@ -230,7 +230,7 @@ void UDFunctionCallIterator::createCache(
     lSpec.theIsUnique = true;
     for (csize i = 0; i < numArgs; ++i)
     {
-      lSpec.theKeyTypes[i] = sig[i]->get_qname().getp();
+      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
     }
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
     theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
@@ -260,7 +260,10 @@ bool UDFunctionCallIterator::probeCache(
   {
     store::Iterator_t& argWrapper = (*lIter);
     store::Item_t lArg;
-    argWrapper->next(lArg); // guaranteed to have exactly one result
+    if (argWrapper) // might be 0 if argument is not used
+    {
+      argWrapper->next(lArg); // guaranteed to have exactly one result
+    }
     aKey.push_back(lArg);
     lCond->pushItem(lArg);
   }
@@ -428,6 +431,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;
     }
+    std::cout << "nextImpl " << theUDF->getName()->getStringValue() << std::endl;
 
     // check if there is a cache and the result is already in the cache
     lCacheHit = probeCache(planState, state, result, lKey);

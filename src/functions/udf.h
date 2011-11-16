@@ -110,6 +110,7 @@ private:
 
   mutable store::Index_t      theCache;
   mutable bool                theCacheResults;
+  mutable bool                theCacheComputed;
 
 public:
   SERIALIZABLE_CLASS(user_function)

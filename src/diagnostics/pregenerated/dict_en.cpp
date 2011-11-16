@@ -668,6 +668,7 @@ extern entry const dict_en[] = {
   { "~ZWST0005_PARAM_TYPE", "type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType" },
   { "~ZWST0005_RETURN_TYPE", "return type ($3) is not subtype of xs:anyAtomicType" },
   { "~ZWST0005_UPDATING", "function is updating" },
+  { "~ZWST0005_VARIADIC", "function is variadic" },
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },

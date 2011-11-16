@@ -2324,6 +2324,9 @@
       <entry key="UPDATING">
         <value>function is updating</value>
       </entry>
+      <entry key="VARIADIC">
+        <value>function is variadic</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
