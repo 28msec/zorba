@@ -19,27 +19,20 @@
 
 <!--
 /*******************************************************************************
- * 14.9.1 fn:parse-xml-fragment
+ * 14.9.1 parse-xml:parse-xml
 ********************************************************************************/
 -->
   <zorba:iterator name="FnParseXmlFragmentIterator">
       
-    <zorba:description author="Zorba Team">fn-zorba-xml:parse-xml-fragment</zorba:description>
+    <zorba:description author="Zorba Team">fn-zorba-xml:parse-xml</zorba:description>
     
     <zorba:function>
-      <zorba:signature localname="parse-xml-fragment" prefix="fn-zorba-xml">
-        <zorba:param>xs:string?</zorba:param> <!-- string to parse -->
-        <zorba:param>xs:string</zorba:param>  <!-- parse-xml options -->
+      <zorba:signature localname="parse-xml" prefix="fn-zorba-xml">
+        <zorba:param>xs:string?</zorba:param>  <!-- string to parse -->
+        <zorba:param>element()?</zorba:param>  <!-- parse-xml options -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="parse-xml-fragment" prefix="fn-zorba-xml">
-        <zorba:param>xs:string?</zorba:param> <!-- string to parse -->
-        <zorba:param>xs:string</zorba:param>  <!-- baseURI -->
-        <zorba:param>xs:string</zorba:param>  <!-- parse-xml options -->
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-                     
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>

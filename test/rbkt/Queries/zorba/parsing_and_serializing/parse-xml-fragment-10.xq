@@ -1,6 +1,6 @@
 import module namespace x = "http://www.zorba-xquery.com/modules/xml";
 
-x:parse-xml-fragment("<?xml version='1.0'?>
+x:parse-xml("<?xml version='1.0'?>
 <root>
   <from1>Jani</from1>
   
@@ -8,4 +8,4 @@ x:parse-xml-fragment("<?xml version='1.0'?>
   
   <from3>Jani</from3>
 </root>", 
-"")
+() )

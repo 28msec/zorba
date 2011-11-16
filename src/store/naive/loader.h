@@ -21,6 +21,7 @@
 #include <libxml/xmlstring.h>
 
 #include "store/api/item.h"
+#include "store/api/load_properties.h"
 
 #include "store/naive/ordpath.h"
 
@@ -74,6 +75,8 @@ protected:
   static const ulong INPUT_CHUNK_SIZE = 8192;
 
 protected:
+  const store::LoadProperties    & theLoadProperties;
+
   xmlParserCtxtPtr                 ctxt;
 
   xmlSAXHandler                    theSaxHandler;
@@ -89,12 +92,19 @@ protected:
 
   bool                             theBuildDataGuide;
 
+
+protected:
+  void applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt);
+
+
 public:
   XmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
         bool dataguide)
     :
+    theLoadProperties(loadProperties),
     ctxt(NULL),
     theFactory(factory),
     theXQueryDiagnostics(xqueryDiagnostics),
@@ -156,6 +166,7 @@ public:
   FastXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
         bool dataguide);
 
   ~FastXmlLoader();
@@ -245,6 +256,7 @@ public:
   FragmentXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
         bool dataguide);
 
   ~FragmentXmlLoader();
@@ -336,8 +348,6 @@ protected:
   zorba::Stack<PathStepInfo>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  bool                             theParseExtParsedEntity;
-
 #ifdef DATAGUIDE
   zorba::Stack<ElementGuideNode*>  theGuideStack;
 #endif
@@ -346,8 +356,8 @@ public:
   DtdXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide,
-        bool parseExtParsedEntity);
+        const store::LoadProperties& loadProperties,
+        bool dataguide);
 
   ~DtdXmlLoader();
 

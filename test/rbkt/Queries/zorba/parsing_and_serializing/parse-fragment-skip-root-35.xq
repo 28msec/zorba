@@ -1,6 +1,7 @@
 import module namespace z = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-z:parse-xml-fragment("<?xml version='1.0'?>
+z:parse-xml("<?xml version='1.0'?>
 level0 text
 <level1>
   level1 text start
@@ -58,4 +59,7 @@ level0 text
   level1 text end
 </level1>
 level0 text",
-"er4")
+  <opt:options>
+    <opt:parseExternalParsedEntity opt:skipRootNodes="4"/>
+  </opt:options>
+)

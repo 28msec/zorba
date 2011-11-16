@@ -1,7 +1,7 @@
-import module namespace p = "http://www.zorba-xquery.com/modules/xml";
-import module namespace f = "http://expath.org/ns/file";
+import module namespace z = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-p:parse-xml-fragment("<doc>
+z:parse-xml("<doc>
   <foo>0</foo>
   <foo>1</foo>
   <foo>2</foo>
@@ -14,4 +14,7 @@ p:parse-xml-fragment("<doc>
   <foo>9</foo>
   <foo>10</foo>
 </doc>", 
-"er1")
+  <opt:options>
+    <opt:parseExternalParsedEntity opt:skipRootNodes="1"/>
+  </opt:options>
+)

@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2010 The FLWOR Foundation.
@@ -36,6 +36,8 @@ xquery version "1.0";
  :
  :)
 module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+
+import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
@@ -116,6 +118,8 @@ declare option ver:module-version "2.0";
  : </li>
  : </ul>
  :
+ : @param $base-uri The baseURI that will be used as the baseURI for every
+ :                    node returned by this function.
  : @param $xml-string The string that holds the XML to be parsed. If empty,
  :                    the function will return an empty sequence
  : @param $options The options for the parsing
@@ -134,39 +138,8 @@ declare option ver:module-version "2.0";
  :                     and the input document has not passed it.
  :
  :)
-declare function parse-xml:parse-xml-fragment(
+ 
+declare function parse-xml:parse-xml(
   $xml-string as xs:string?,
-  $options as xs:string) as node()* external;
+  $options as element()?) as node()* external;
 
-
-(:~
- : A function to parse XML files and fragments. The behavior is the
- : same as the parse-xml-fragment with two arguments.
- :
- : @param $xml-string The string that holds the XML to be parsed. If empty,
- :                    the function will return an empty sequence
- : @param $base-uri The baseURI that will be used as the baseURI for every
- :                    node returned by this function.
- : @param $options The options for the parsing (see parse-xml-fragment#2)
- : @return The parsed XML as a document node or a list of nodes, or an empty
- :         sequence.
- :
- : @error zerr:ZXQD0003 The error will be raised if the options to the function
- :                     are inconsistent.
- :
- : @error err:FODC0006 The error will be raised if the input string is not a
- :                     valid XML document or fragment (external general parsed
- :                     entity) or if DTD validation was enabled and the 
- :                     document has not passed it.
- :
- : @error err:XQDY0027 The error will be raised if schema validation was enabled
- :                     and the input document has not passed it.
- :
- : @error err:FODC0007 This error will be raised if $base-uri parameter passed
- :                     to the function is not a valid absolute URI.
- :
- :)
-declare function parse-xml:parse-xml-fragment(
-  $xml-string as xs:string?,
-  $base-uri as xs:string,
-  $options as xs:string) as node()* external;

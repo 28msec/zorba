@@ -76,9 +76,10 @@ namespace simplestore {
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
     bool dataguide)
   :
-  XmlLoader(factory, xqueryDiagnostics, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, loadProperties, dataguide),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -297,6 +298,9 @@ store::Item_t FastXmlLoader::loadXml(
                                    theBuffer,
                                    static_cast<int>(numChars),
                                    docUri.c_str());
+
+    // Apply loader options
+    applyLoadOptions(theLoadProperties, ctxt);
 
     if (ctxt == NULL)
     {

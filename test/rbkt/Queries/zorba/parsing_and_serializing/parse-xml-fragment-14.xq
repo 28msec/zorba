@@ -1,6 +1,7 @@
 import module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-x:parse-xml-fragment("<?xml version='1.0' encoding='UTF-8'?>
+x:parse-xml("<?xml version='1.0' encoding='UTF-8'?>
 <!-- Comment-1 -->
 <?a-pi pi-1?>
 <!-- Comment-2 -->
@@ -37,4 +38,7 @@ x:parse-xml-fragment("<?xml version='1.0' encoding='UTF-8'?>
 <?a-pi pi-6?>
 <!-- Comment-7 -->
 ",
-"e")
+  <opt:options>
+    <opt:parseExternalParsedEntity/>
+  </opt:options>
+)

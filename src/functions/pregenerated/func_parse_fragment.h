@@ -38,11 +38,11 @@ void populate_context_parse_fragment(static_context* sctx);
 
 
 
-//fn-zorba-xml:parse-xml-fragment
-class fn_zorba_xml_parse_xml_fragment : public function
+//fn-zorba-xml:parse-xml
+class fn_zorba_xml_parse_xml : public function
 {
 public:
-  fn_zorba_xml_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xml_parse_xml(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

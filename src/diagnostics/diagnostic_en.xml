@@ -1689,7 +1689,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQD0003" name="INCONSISTENT_PARSE_FRAGMENT_OPTIONS">
-      <value>inconsistent options to the parse-xml-fragment() function: $1</value>
+      <value>inconsistent options to the parse-xml() function: $1</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0004" name="INVALID_PARAMETER">

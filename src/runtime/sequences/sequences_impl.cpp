@@ -464,13 +464,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   state->theIsChildReset = false;
 
   CONSUME(startPosItem, 1);
-  startPos = 
+  startPos =
   static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining = 
+    state->theRemaining =
     static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
   }
 
@@ -1016,7 +1016,7 @@ static bool DeepEqual(
 }
 
 bool FnDeepEqualIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   PlanIteratorState* state;
@@ -1044,7 +1044,7 @@ bool FnDeepEqualIterator::nextImpl(
       break;
     }
 
-    if (arg1->isFunction() || arg2->isFunction()) 
+    if (arg1->isFunction() || arg2->isFunction())
     {
 			throw XQUERY_EXCEPTION(
           err::FOTY0015,
@@ -1144,12 +1144,12 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
 
-  for (;;) 
+  for (;;)
   {
     // load items
-    for (i = 0; i < 2; i++) 
+    for (i = 0; i < 2; i++)
     {
-      if (item [i] == NULL) 
+      if (item [i] == NULL)
       {
         if (!CONSUME (item[i], i))
         {
@@ -1161,7 +1161,7 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     // advance, output
     order = GENV_STORE.compareNodes(item[0].getp(), item[1].getp());
-    if ( order == 0 ) 
+    if ( order == 0 )
     {
       result = item[0];
       STACK_PUSH (true, state);
@@ -1721,7 +1721,7 @@ static void fillTime (
   planState.theGlobalDynCtx->theDocLoadingUserTime +=
     zorbatm::get_cputime_elapsed(t0user, t1user);
 
-  planState.theGlobalDynCtx->theDocLoadingTime += 
+  planState.theGlobalDynCtx->theDocLoadingTime +=
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
@@ -1815,7 +1815,7 @@ static void loadDocument(
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
-  lLoadProperties.setEnableDtd( aSctx->is_feature_set( feature::dtd ) );
+  lLoadProperties.setDTDValidate( aSctx->is_feature_set( feature::dtd ) );
 
   // Resolve URI to a stream
   zstring lErrorMessage;

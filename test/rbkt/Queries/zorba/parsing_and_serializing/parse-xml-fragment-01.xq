@@ -1,6 +1,7 @@
 import module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-x:parse-xml-fragment("<?xml version='1.0'?>
+x:parse-xml("<?xml version='1.0'?>
 <!DOCTYPE note [
 <!ELEMENT note (to,from,heading,body)>
 <!ELEMENT to (#PCDATA)>
@@ -15,4 +16,7 @@ x:parse-xml-fragment("<?xml version='1.0'?>
 <body>Don't forget me this weekend</body>
 </note>
 ", 
-"d")
+  <opt:options>
+    <opt:DTDValidate/>
+  </opt:options>
+)

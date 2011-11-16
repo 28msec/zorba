@@ -360,7 +360,7 @@ extern entry const dict_en[] = {
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
-  { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
+  { "ZXQD0003", "inconsistent options to the parse-xml() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
   { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
   { "ZXQP0000", "no error" },

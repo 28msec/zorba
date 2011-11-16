@@ -1,5 +1,9 @@
 import module namespace z = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options"; 
 
-z:parse-xml-fragment("<?xml version='1.0'?>
+z:parse-xml("<?xml version='1.0'?>
 <root><from1>Jani1</from1></root>", 
-"er1")
+  <opt:options>
+    <opt:parseExternalParsedEntity opt:skipRootNodes="1"/>
+  </opt:options>
+)

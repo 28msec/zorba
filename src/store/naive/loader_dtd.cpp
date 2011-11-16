@@ -79,6 +79,43 @@ static void setupInput(FragmentIStream* theFragmentStream)
   theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base + theFragmentStream->current_offset;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void XmlLoader::applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt)
+{
+  int options = 0;
+
+  if (props.getStripWhitespace())
+    options |= XML_PARSE_NOBLANKS;
+
+  if (props.getDTDValidate())
+    options |= XML_PARSE_DTDVALID;
+
+  if (props.getDTDLoad())
+    options |= XML_PARSE_DTDLOAD;
+
+  if (props.getDefaultDTDAttributes())
+    options |= XML_PARSE_DTDATTR;
+
+  if (props.getSubstituteEntities())
+    options |= XML_PARSE_NOENT;
+
+  if (props.getXincludeSubstitutions())
+    options |= XML_PARSE_XINCLUDE;
+
+  if (props.getRemoveRedundantNS())
+    options |= XML_PARSE_NSCLEAN;
+
+  if (props.getNoCDATA())
+    options |= XML_PARSE_NOCDATA;
+
+  if (props.getNoXIncludeNodes())
+    options |= XML_PARSE_NOXINCNODE;
+
+  xmlCtxtUseOptions(ctxt, options);
+}
+
 
 /*******************************************************************************
 
@@ -86,9 +123,10 @@ static void setupInput(FragmentIStream* theFragmentStream)
 FragmentXmlLoader::FragmentXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
     bool dataguide)
   :
-  FastXmlLoader(factory, xqueryDiagnostics, dataguide)
+  FastXmlLoader(factory, xqueryDiagnostics, loadProperties, dataguide)
 {
   theOrdPath.init();
 
@@ -170,29 +208,32 @@ store::Item_t FragmentXmlLoader::loadXml(
         return NULL;
       }
 
-    // Create the LibXml parser context
+      // Create the LibXml parser context
       theFragmentStream->ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, NULL, 0, 0);
       if (theFragmentStream->ctxt == NULL)
-    {
+      {
         theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserInitFailed ) )));
-      abortload();
-      return NULL;
-    }
+        abortload();
+        return NULL;
+      }
 
-    // Delete the initial empty input stream
+      // Apply parser options
+      applyLoadOptions(theLoadProperties, theFragmentStream->ctxt);
+
+      // Delete the initial empty input stream
       xmlFreeInputStream(inputPop(theFragmentStream->ctxt));
 
-    // Create the LibXml parser input
+      // Create the LibXml parser input
       xmlParserInputPtr input = xmlNewInputStream(theFragmentStream->ctxt);
-    if (input == NULL)
-    {
+      if (input == NULL)
+      {
         theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserInitFailed ) )));
-      abortload();
-      return NULL;
-    }
+        abortload();
+        return NULL;
+      }
 
       // Initialize the parser input (buffer length and end)
-    input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
+      input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
       xmlPushInput(theFragmentStream->ctxt, input);
       theFragmentStream->ctxt->input->length = theFragmentStream->buffer_size;
       theFragmentStream->ctxt->input->end = (xmlChar*)(theFragmentStream->theBuffer) + theFragmentStream->buffer_size;
@@ -358,28 +399,9 @@ void FragmentXmlLoader::startElement(
     {
       nsTab = loader.theFragmentStream->ctxt->nsTab;
       nb_namespaces = loader.theFragmentStream->ctxt->nsNr/2;
-}
+    }
 
     FastXmlLoader::startElement(ctx, localname, prefix, URI, nb_namespaces, nsTab, nb_attributes, nb_defaulted, attributes);
-
-    /*
-    std::cerr << "\n--> End element: " << localname << ", depth: " << loader.theFragmentStream->current_element_depth
-              << ", nb_namespaces: " << nb_namespaces << std::endl;
-    std::cerr << "         nameNr: " << loader.theFragmentStream->ctxt->nameNr << std::endl;
-    for (int i=0; i < loader.theFragmentStream->ctxt->nameNr; i++)
-    {
-      std::cerr << "--> pushTab prefix: " << (char*)loader.theFragmentStream->ctxt->pushTab[i*3]
-                             << ", uri: " << (char*)loader.theFragmentStream->ctxt->pushTab[i*3+1]
-                             << ", nsNr: " << (long) loader.theFragmentStream->ctxt->pushTab[i*3+2] << std::endl;
-    }
-
-    std::cerr << "--> nsNr: " << loader.theFragmentStream->ctxt->nsNr;
-    for (int i=0; i< loader.theFragmentStream->ctxt->nsNr; i++)
-    {
-      std::cerr << ", " << loader.theFragmentStream->ctxt->nsTab[i];
-    }
-    std::cerr << std::endl;
-    */
   }
 }
 
@@ -454,14 +476,13 @@ void FragmentXmlLoader::processingInstruction(
 DtdXmlLoader::DtdXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
-    bool dataguide,
-    bool parseExtParsedEntity)
+    const store::LoadProperties& loadProperties,
+    bool dataguide)
   :
-  XmlLoader(factory, xqueryDiagnostics, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, loadProperties, dataguide),
   theTree(NULL),
   theRootNode(NULL),
-  theNodeStack(2048),
-  theParseExtParsedEntity(parseExtParsedEntity)
+  theNodeStack(2048)
 {
   theOrdPath.init();
 
@@ -693,16 +714,21 @@ store::Item_t DtdXmlLoader::loadXml(
     }
 
     // Set the LibXml DTD validation options
+    /*
     int options = XML_PARSE_COMPACT;
     options |= XML_PARSE_DTDVALID;
     options |= XML_PARSE_DTDLOAD;
+    */
     //options |= XML_PARSE_SAX1;
     //xmlSAXDefaultVersion(1);
+
+    // xmlCtxtUseOptions(ctxt, options);
 
     xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
     xmlLoadExtDtdDefaultValue |= XML_COMPLETE_ATTRS;
 
-    xmlCtxtUseOptions(ctxt, options);
+    // Apply loader options
+    applyLoadOptions(theLoadProperties, ctxt);
 
     if ( xmlParseDocument(ctxt)==-1 )
     {

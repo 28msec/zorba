@@ -25,11 +25,13 @@
 #include "store/api/store.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/load_properties.h"
 
 #include "system/globalenv.h"
 
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
+
 
 namespace zorba
 {
@@ -38,121 +40,113 @@ namespace zorba
   14.9.1 fn-zorba-xml:parse-xml-fragment
 ********************************************************************************/
 
-class ParseXmlFragmentOptions
+store::Item_t getFirstAttribute(store::Item_t node)
 {
-public:
-  // all options are false by default, except for enableFatelErrorProcessing which is true
-  bool enableExternalEntitiesProcessing;
-  bool enableRootNodesSkipping;
-  unsigned int rootNodesToSkip;
-  bool enableDTDValidation;
-  bool enableStrictSchemaValidation;
-  bool enableLaxSchemaValidation;
-  bool enableWhitespaceStripping;
-  bool enableFatelErrorProcessing;
+  store::Item_t attr;
+  store::Iterator_t attributes = node->getAttributes();
+  attributes->open();
+  attributes->next(attr);
+  attributes->close();
+  return attr;
+}
 
-public:
-  ParseXmlFragmentOptions() :
-    enableExternalEntitiesProcessing(false),
-    enableRootNodesSkipping(false),
-    rootNodesToSkip(0),
-    enableDTDValidation(false),
-    enableStrictSchemaValidation(false),
-    enableLaxSchemaValidation(false),
-    enableWhitespaceStripping(false),
-    enableFatelErrorProcessing(true)   // only enableFatelErrorProcessing is set to true
+void processOptions(store::Item_t item, store::LoadProperties& props, static_context* theSctx, const QueryLoc& loc)
+{
+  URI lValidatedBaseUri;
+  store::Item_t child, tempItem;
+
+  if (item.getp() == NULL)
+    return;
+
+  tempItem = NULL; // used as the effectiveValidationValue()'s typeName
+  Validator::effectiveValidationValue(
+      item,
+      item,
+      tempItem,
+      theSctx->get_typemanager(),
+      ParseConstants::val_strict,
+      theSctx,
+      loc);
+
+  store::Iterator_t children = item->getChildren();
+  children->open();
+
+  while (children->next(child))
   {
-  }
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
 
-  void reset()
-  {
-    enableExternalEntitiesProcessing = false;
-    enableRootNodesSkipping = false;
-    rootNodesToSkip = 0;
-    enableDTDValidation = false;
-    enableStrictSchemaValidation = false;
-    enableLaxSchemaValidation = false;
-    enableWhitespaceStripping = false;
-    enableFatelErrorProcessing = true;    // only enableFatelErrorProcessing is set to true
-  }
-
-  static ParseXmlFragmentOptions parseOptions(const zstring& options, const QueryLoc& loc)
-  {
-    ParseXmlFragmentOptions opt;
-
-    if (options.find("e") != zstring::npos && options.find("E") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "e", "E"), ERROR_LOC( loc ));
-
-    if (options.find("d") != zstring::npos && options.find("D") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "d", "D"), ERROR_LOC( loc ));
-
-    if (options.find("s") != zstring::npos && options.find("S") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "s", "S"), ERROR_LOC( loc ));
-
-    if (options.find("l") != zstring::npos && options.find("L") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "l", "L"), ERROR_LOC( loc ));
-
-    if (options.find("w") != zstring::npos && options.find("W") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "w", "W"), ERROR_LOC( loc ));
-
-    if (options.find("f") != zstring::npos && options.find("F") != zstring::npos)
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "f", "F"), ERROR_LOC( loc ));
-
-    if (options.find("e") != zstring::npos)
-      opt.enableExternalEntitiesProcessing = true;
-    if (options.find("d") != zstring::npos)
-      opt.enableDTDValidation = true;
-    if (options.find("s") != zstring::npos)
-      opt.enableStrictSchemaValidation = true;
-    if (options.find("l") != zstring::npos)
-      opt.enableLaxSchemaValidation = true;
-    if (options.find("w") != zstring::npos)
-      opt.enableWhitespaceStripping = true;
-    if (options.find("f") != zstring::npos)
-      opt.enableFatelErrorProcessing = true;
-
-    if (options.find("E") != zstring::npos)
-      opt.enableExternalEntitiesProcessing = false;
-    if (options.find("D") != zstring::npos)
-      opt.enableDTDValidation = false;
-    if (options.find("S") != zstring::npos)
-      opt.enableStrictSchemaValidation = false;
-    if (options.find("L") != zstring::npos)
-      opt.enableLaxSchemaValidation = false;
-    if (options.find("W") != zstring::npos)
-      opt.enableWhitespaceStripping = false;
-    if (options.find("F") != zstring::npos)
-      opt.enableFatelErrorProcessing = false;
-
-    if (options.find("r") != zstring::npos)
+    if (child->getNodeName()->getLocalName() == "base-uri")
     {
-      opt.enableRootNodesSkipping = true;
-      int pos = options.find("r") + 1;
+      store::Item_t attr = getFirstAttribute(child);
 
-      // TODO: catch range exception and add test for it
-      opt.rootNodesToSkip = ztd::aton<unsigned int>(options.c_str() + pos);
+      try {
+        lValidatedBaseUri = URI(attr->getStringValue());
+      } catch (ZorbaException const& /* e */) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( attr->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if (!lValidatedBaseUri.is_absolute()) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( lValidatedBaseUri.toString() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      props.setBaseUri(attr->getStringValue());
     }
-
-    // TODO: check that "r" option is enabled only if "e" is enabled
-
-    if (opt.enableExternalEntitiesProcessing
-        &&
-        (opt.enableDTDValidation || opt.enableStrictSchemaValidation || opt.enableLaxSchemaValidation))
+    else if (child->getNodeName()->getLocalName() == "noError")
+      props.setNoError(true);
+    else if (child->getNodeName()->getLocalName() == "stripWhitespace")
+      props.setStripWhitespace(true);
+    else if (child->getNodeName()->getLocalName() == "schemaValidate")
     {
-      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
-                ERROR_PARAMS(ZED(ParseFragmentOptionDSLNotAllowed)), ERROR_LOC( loc ));
+      store::Item_t attr = getFirstAttribute(child);
+      if (attr->getStringValue() == "strict")
+        props.setSchemaStrictValidate(true);
+      else
+        props.setSchemaLaxValidate(true);
     }
-
-    return opt;
+    else if (child->getNodeName()->getLocalName() == "DTDValidate")
+      props.setDTDValidate(true);
+    else if (child->getNodeName()->getLocalName() == "DTDLoad")
+      props.setDTDLoad(true);
+    else if (child->getNodeName()->getLocalName() == "defaultDTDAttributes")
+      props.setDefaultDTDAttributes(true);
+    else if (child->getNodeName()->getLocalName() == "parseExternalParsedEntity")
+    {
+      props.setParseExternalParsedEntity(true);
+      store::Item_t attr;
+      store::Iterator_t attribs = child->getAttributes();
+      attribs->open();
+      while (attribs->next(attr))
+      {
+        if (attr->getNodeName()->getLocalName() == "skipRootNodes")
+          props.setSkipRootNodes(ztd::aton<xs_int>(attr->getStringValue().c_str()));
+        else if (attr->getNodeName()->getLocalName() == "skipTopLevelTextNodes")
+          props.setSkipTopLevelTextNodes(true);
+      }
+      attribs->close();
+    }
+    else if (child->getNodeName()->getLocalName() == "substituteEntities")
+      props.setSubstituteEntities(true);
+    else if (child->getNodeName()->getLocalName() == "xincludeSubstitutions")
+      props.setXincludeSubstitutions(true);
+    else if (child->getNodeName()->getLocalName() == "removeRedundantNS")
+      props.setRemoveRedundantNS(true);
+    else if (child->getNodeName()->getLocalName() == "noCDATA")
+      props.setNoCDATA(true);
+    else if (child->getNodeName()->getLocalName() == "noXIncludeNodes")
+      props.setNoXIncludeNodes(true);
   }
-};
 
+  children->close();
+}
 
 /*******************************************************************************
 
@@ -162,8 +156,7 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theFragmentStream.reset();
-  theProperties.setEnableDtd(false);
-  theProperties.setEnableExtParsedEntity(false);
+  theProperties.reset();
   theProperties.setStoreDocument(false);
   baseUri = "";
   docUri = "";
@@ -178,9 +171,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
 {
   store::Store& lStore = GENV.getStore();
   zstring docString;
-  URI lValidatedBaseUri;
   store::Item_t tempItem;
-  ParseXmlFragmentOptions parseOptions;
   bool validated = true;
 
   FnParseXmlFragmentIteratorState* state;
@@ -199,62 +190,25 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       state->theFragmentStream.theStream = state->theFragmentStream.theIss;
     }
 
-    // optional base URI argument
-    if (theChildren.size() == 3)
-    {
-      consumeNext(result, theChildren[1].getp(), planState);
-      ZORBA_ASSERT(result);
-
-      try {
-        lValidatedBaseUri = URI(result->getStringValue());
-      } catch (ZorbaException const& /* e */) {
-        throw XQUERY_EXCEPTION(
-          err::FODC0007,
-          ERROR_PARAMS( result->getStringValue() ),
-          ERROR_LOC( loc )
-        );
-      }
-
-      if (!lValidatedBaseUri.is_absolute()) {
-        throw XQUERY_EXCEPTION(
-          err::FODC0007,
-          ERROR_PARAMS( lValidatedBaseUri.toString() ),
-          ERROR_LOC( loc )
-        );
-      }
-
-      result->getStringValue2(state->baseUri);
-
-      // read options
-      consumeNext(tempItem, theChildren[2].getp(), planState);
-      parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
-
-    } else {
-      // read options
-      consumeNext(tempItem, theChildren[1].getp(), planState);
-      parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
-
-      state->baseUri = theSctx->get_base_uri();
-    }
+    // read options
+    consumeNext(tempItem, theChildren[1].getp(), planState);
+    state->theProperties.setBaseUri(theSctx->get_base_uri());
+    state->theProperties.setStoreDocument(false);
+    processOptions(tempItem, state->theProperties, theSctx, loc);
 
     // baseURI serves both as the base URI used by the XML parser
     // to resolve relative entity references within the document,
     // and as the base URI of the document node that is returned.
-    state->docUri = state->baseUri;
+    state->baseUri = state->theProperties.getBaseUri();
+    state->docUri = state->theProperties.getBaseUri();
 
-    // The DTD and ExternalEntitiesProcessing options/props cannot both be true at the same time
-    if (parseOptions.enableDTDValidation)
-      state->theProperties.setEnableDtd(true);
-    if (parseOptions.enableExternalEntitiesProcessing)
-      state->theProperties.setEnableExtParsedEntity(true);
-    state->theProperties.setStoreDocument(false);
 
     ////////////////////////////////////////////////////////////////////////
     // External parsed entity processing
     ////////////////////////////////////////////////////////////////////////
-    if (state->theProperties.getEnableExtParsedEntity())
+    if (state->theProperties.getParseExternalParsedEntity())
     {
-      state->theFragmentStream.root_elements_to_skip = parseOptions.rootNodesToSkip;
+      state->theFragmentStream.root_elements_to_skip = state->theProperties.getSkipRootNodes();
 
       while (state->theFragmentStream.theBuffer == NULL
              ||
@@ -263,8 +217,8 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         try {
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
         } catch (ZorbaException const& e) {
-          if (parseOptions.enableFatelErrorProcessing)
-            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml-fragment()", e.what()), ERROR_LOC( loc ));
+          if ( ! state->theProperties.getNoError())
+            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml()", e.what()), ERROR_LOC( loc ));
           else
             result = NULL;
         }
@@ -276,7 +230,10 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         state->theFragmentStream.children = result->getChildren();
         while (state->theFragmentStream.children->next(result) && result != NULL)
         {
-            STACK_PUSH(true, state);
+          if (state->theProperties.getSkipTopLevelTextNodes() && result->getNodeKind() == store::StoreConsts::textNode)
+            continue;
+
+          STACK_PUSH(true, state);
         }
       }
     }
@@ -288,8 +245,8 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       try {
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       } catch (ZorbaException const& e) {
-        if (parseOptions.enableFatelErrorProcessing)
-          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml-fragment()", e.what()), ERROR_LOC( loc ));
+        if ( ! state->theProperties.getNoError())
+          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml()", e.what()), ERROR_LOC( loc ));
         else
           result = NULL;
       }
@@ -297,7 +254,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       if (result != NULL)
       {
 #ifndef ZORBA_NO_XMLSCHEMA
-        if (parseOptions.enableStrictSchemaValidation || parseOptions.enableLaxSchemaValidation)
+        if (state->theProperties.getSchemaLaxValidate() || state->theProperties.getSchemaStrictValidate())
         {
           try
           {
@@ -307,13 +264,13 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
                           result,
                           tempItem,
                           theSctx->get_typemanager(),
-                          parseOptions.enableLaxSchemaValidation ? ParseConstants::val_lax : ParseConstants::val_strict,
+                          state->theProperties.getSchemaLaxValidate() ? ParseConstants::val_lax : ParseConstants::val_strict,
                           theSctx,
                           this->loc);
           }
           catch (ZorbaException& /*e*/)
           {
-            if (parseOptions.enableFatelErrorProcessing)
+            if ( ! state->theProperties.getNoError())
               throw;
             else
             {
@@ -324,11 +281,6 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         }
 #endif
         // Ignore the schema validation options if Zorba is built without schema support
-
-        if (result != NULL && validated && parseOptions.enableWhitespaceStripping)
-        {
-          // TODO: whitespace stripping
-        }
 
         STACK_PUSH(validated, state);
       } // if (result != NULL)
