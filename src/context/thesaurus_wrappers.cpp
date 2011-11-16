@@ -87,27 +87,6 @@ ThesaurusWrapper::lookup( zstring const &phrase, zstring const &relationship,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ThesaurusProviderWrapper::
-ThesaurusProviderWrapper( zorba::ThesaurusProvider const *p ) :
-  api_thesaurus_provider_( p )
-{
-  ZORBA_ASSERT( api_thesaurus_provider_ );
-}
-
-Thesaurus::ptr ThesaurusProviderWrapper::
-get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
-  String const api_uri( Unmarshaller::newString( uri ) );
-  zorba::Thesaurus::ptr t(
-    api_thesaurus_provider_->getThesaurus( api_uri, lang )
-  );
-  Thesaurus::ptr result(
-    t.get() ? new ThesaurusWrapper( std::move( t ) ) : nullptr
-  );
-  return std::move( result );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 } // namespace internal
 } // namespace zorba
 

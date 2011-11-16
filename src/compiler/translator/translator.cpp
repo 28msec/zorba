@@ -2011,16 +2011,16 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<impl::Resource> lSchema;
-    impl::StreamResource* lStream = NULL;
+    std::auto_ptr<internal::Resource> lSchema;
+    internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      lSchema = theSctx->resolve_uri(*lIter, impl::EntityData::SCHEMA,
+      lSchema = theSctx->resolve_uri(*lIter, internal::EntityData::SCHEMA,
                                      lErrorMessage);
-      lStream = dynamic_cast<impl::StreamResource*>(lSchema.get());
+      lStream = dynamic_cast<internal::StreamResource*>(lSchema.get());
       if (lStream != NULL)
       {
         break;
@@ -2824,7 +2824,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
     theSctx->get_component_uris(modVer.versioned_uri(),
-                                impl::EntityData::MODULE, compURIs);
+                                internal::EntityData::MODULE, compURIs);
   }
   else
   {
@@ -2898,13 +2898,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
-      std::auto_ptr<impl::Resource> lResource =
+      std::auto_ptr<internal::Resource> lResource =
       theSctx->resolve_uri(compModVer.versioned_uri(),
-                           impl::EntityData::MODULE,
+                           internal::EntityData::MODULE,
                            lErrorMessage);
 
-      impl::StreamResource* lStreamResource =
-      dynamic_cast<impl::StreamResource*> (lResource.get());
+      internal::StreamResource* lStreamResource =
+      dynamic_cast<internal::StreamResource*> (lResource.get());
 
       if (lStreamResource != NULL)
       {
@@ -3715,18 +3715,21 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure the initExpr is a simple expr.
     if (initExpr != NULL)
+    {
       expr::checkSimpleExpr(initExpr);
+      ve->setHasInitializer(true);
+    }
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
-      QueryLoc lExpandedLocation = expandQueryLoc(
-        v.get_name()->get_location(),
-        initExpr->get_loc());
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    {
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                  initExpr->get_loc());
+
       wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
     }
 #endif
@@ -5196,6 +5199,11 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
   if (program->is_updating())
   {
     theModulesInfo->theCCB->setIsUpdating(true);
+  }
+
+  if(program->is_sequential())
+  {
+    theModulesInfo->theCCB->setIsSequential(true);
   }
 
   if (program->is_updating() && !theCCB->theIsEval)

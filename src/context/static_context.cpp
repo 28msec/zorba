@@ -463,6 +463,28 @@ bool static_context::is_reserved_module(const zstring& ns)
 
 
 /***************************************************************************//**
+  Static method
+********************************************************************************/
+zstring static_context::var_name(const store::Item* aVarName)
+{
+  zstring lVarName = aVarName->getStringValue();
+  if (lVarName == static_context::DOT_POS_VAR_NAME)
+  {
+    lVarName = "context position";
+  } 
+  else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
+  {
+    lVarName = "context size";
+  }
+  else if (lVarName == static_context::DOT_VAR_NAME)
+  {
+    lVarName = "context item";
+  }
+  return lVarName;
+}
+
+
+/***************************************************************************//**
   Default Constructor.
 ********************************************************************************/
 static_context::static_context()
@@ -1364,71 +1386,57 @@ zstring static_context::resolve_relative_uri(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_uri_mapper(impl::URIMapper* aMapper)
+void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
+  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_url_resolver(impl::URLResolver* aResolver)
+void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
+  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
 }
 
 
 /***************************************************************************//**
-  Helper class for resolve_uri()
-********************************************************************************/
-class SimpleEntityData : public impl::EntityData
-{
-public:
-  SimpleEntityData(impl::EntityData::Kind aKind) : theKind(aKind)
-  {
-  }
-
-  virtual impl::EntityData::Kind getKind() const
-  {
-    return theKind;
-  }
-
-private:
-  impl::EntityData::Kind const theKind;
-};
-
-
-/***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<impl::Resource> static_context::resolve_uri(
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri, 
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  SimpleEntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
+  return this->resolve_uri(aUri, lData, oErrorMessage);
+}
 
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
+    zstring const& aUri,
+    internal::EntityData const& aEntityData,
+    zstring& oErrorMessage) const
+{
   std::vector<zstring> lUris;
-  apply_uri_mappers(aUri, &lData, impl::URIMapper::CANDIDATE, lUris);
+  apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<impl::Resource> lRetval;
-  apply_url_resolvers(lUris, &lData, lRetval, oErrorMessage);
+  std::auto_ptr<internal::Resource> lRetval;
+  apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
   return lRetval;
 }
 
-
 void static_context::get_component_uris(
     zstring const& aUri,
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  SimpleEntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
 
-  apply_uri_mappers(aUri, &lData, impl::URIMapper::COMPONENT, oComponents);
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::COMPONENT, oComponents);
   if (oComponents.size() == 0) 
   {
     oComponents.push_back(aUri);
@@ -1441,8 +1449,8 @@ void static_context::get_component_uris(
 ********************************************************************************/
 void static_context::apply_uri_mappers(
     zstring const& aUri, 
-    impl::EntityData const* aEntityData,
-    impl::URIMapper::Kind aMapperKind, 
+    internal::EntityData const* aEntityData,
+    internal::URIMapper::Kind aMapperKind, 
     std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
@@ -1453,7 +1461,7 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<impl::URIMapper>::const_iterator mapper =
+    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
@@ -1485,7 +1493,7 @@ void static_context::apply_uri_mappers(
           // Check the new entries for DENY_ACCESS.
           for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) 
           {
-            if (lResultUris.at(i) == impl::URIMapper::DENY_ACCESS) {
+            if (lResultUris.at(i) == internal::URIMapper::DENY_ACCESS) {
               throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
                                      ERROR_PARAMS(aUri));
             }
@@ -1506,8 +1514,8 @@ void static_context::apply_uri_mappers(
 ********************************************************************************/
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
-    impl::EntityData const* aEntityData,
-    std::auto_ptr<impl::Resource>& oResource, 
+    internal::EntityData const* aEntityData,
+    std::auto_ptr<internal::Resource>& oResource, 
     zstring& oErrorMessage) const
 {
   oErrorMessage = "";
@@ -1528,7 +1536,7 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<impl::URLResolver>::const_iterator resolver =
+      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
@@ -2054,9 +2062,10 @@ var_expr* static_context::lookup_var(
   This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-  std::vector<var_expr_t>& vars,
-  bool aLocalsOnly,
-  bool returnPrivateVars) const
+    std::vector<var_expr_t>& vars,
+    bool aLocalsOnly,
+    bool returnPrivateVars,
+    bool externalVarsOnly) const
 {
   const static_context* sctx = this;
 
@@ -2069,8 +2078,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2078,7 +2087,17 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if (externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+          {
+            vars.push_back((*ite).second);
+          }
+        }
       }
     }
     
@@ -2089,8 +2108,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2098,7 +2117,15 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if(externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+            vars.push_back((*ite).second);
+        }
       }
     }
 
@@ -2118,26 +2145,6 @@ void static_context::getVariables(
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
-}
-
-/***************************************************************************//**
-
-********************************************************************************/
-zstring
-static_context::var_name(const store::Item* aVarName)
-{
-  zstring lVarName = aVarName->getStringValue();
-  if (lVarName == static_context::DOT_POS_VAR_NAME)
-  {
-    lVarName = "context position";
-  } else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
-  {
-    lVarName = "context size";
-  } else if (lVarName == static_context::DOT_VAR_NAME)
-  {
-    lVarName = "context item";
-  }
-  return lVarName;
 }
 
 
@@ -4000,33 +4007,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     }
   }
 }
-
-
-#ifndef ZORBA_NO_FULL_TEXT
-
-internal::Thesaurus::ptr
-static_context::get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
-  FOR_EACH( thesaurus_providers_t, p, theThesaurusProviders ) {
-    internal::Thesaurus::ptr t( (*p)->get_thesaurus( uri, lang ) );
-    if ( t.get() )
-      return std::move( t );
-  }
-  return theParent ?
-    theParent->get_thesaurus( uri, lang ) :
-    internal::ThesaurusProvider::get_default_provider()
-      .get_thesaurus( uri, lang );
-}
-
-void static_context::remove_thesaurus_provider(
-    internal::ThesaurusProvider const *p ) {
-  ztd::erase_1st_if(
-    theThesaurusProviders,
-    std::bind2nd( std::equal_to<internal::ThesaurusProvider const*>(), p )
-  );
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
