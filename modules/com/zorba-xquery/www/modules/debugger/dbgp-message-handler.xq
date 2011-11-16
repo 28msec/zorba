@@ -134,7 +134,7 @@ declare %private function dmh:stack-get($resp as element(response))
   fn:string-join(
     for $s in $resp/stack
     return
-      fn:concat("level ", $s/@level, " at ", $s/@filename, ":", $s/@lineno),
+      fn:concat("#", $s/@level, " at ", $s/@filename, ":", $s/@lineno),
     $dmh:endl
   )
 };
