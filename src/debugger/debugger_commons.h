@@ -74,14 +74,7 @@ class Breakable : public serialization::SerializeBaseClass {
     Breakable(QueryLoc aLocation)
       : theLocation(aLocation),
         theSet(false),
-        theEnabled(false)
-    {
-      zorba::String lFileName(theLocation.getFilename().str());
-      zorba::String lPrefix = lFileName.substr(0, 7);
-      if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
-        theLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
-      }
-    };
+        theEnabled(false) {};
 
     QueryLoc&
     getLocation() { return theLocation; };

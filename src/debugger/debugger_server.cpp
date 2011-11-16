@@ -429,25 +429,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         std::vector<StackFrameImpl>::reverse_iterator lRevIter;
         int i = 0;
         for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
-          String lFileName(lRevIter->getLocation().getFileName());
-          lFileName = URIHelper::encodeFileURI(lFileName);
-          unsigned int lLB = lRevIter->getLocation().getLineBegin();
-          unsigned int lLE = lRevIter->getLocation().getLineEnd();
-
-          // for the client, the column numbers are 1-based
-          unsigned int lCB = lRevIter->getLocation().getColumnBegin() - 1;
-          // moreover, the column end points to the last character to be selected
-          unsigned int lCE = lRevIter->getLocation().getColumnEnd() - 2;
-
-          lResponse << "<stack "
-            << "level=\"" << i << "\" "
-            << "type=\"" << "file" << "\" "
-            << "filename=\"" << lFileName << "\" "
-            << "lineno=\"" << lLB << "\" "
-            << "where=\"" << lRevIter->getSignature() << "\" "
-            << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
-            << "cmdend=\"" << lLE << ":" << lCE << "\" "
-            << "/>";
+          buildStackFrame(*lRevIter, i, lResponse);
         }
 
       } else if (aCommand.getName() == "status") {
@@ -517,16 +499,48 @@ DebuggerServer::getVariableName(std::string& aFullName) {
 }
 
 void
-DebuggerServer::buildBreakpoint(
-  Breakable& aBreakpoint,
-  int& aBID,
+DebuggerServer::buildStackFrame(
+  StackFrame& aFrame,
+  int aSNo,
   std::ostream& aStream)
 {
+  String lFileName(aFrame.getLocation().getFileName().str());
+  lFileName = URIHelper::encodeFileURI(lFileName);
+  unsigned int lLB = aFrame.getLocation().getLineBegin();
+  unsigned int lLE = aFrame.getLocation().getLineEnd();
+
+  // for the client, the column numbers are 1-based
+  unsigned int lCB = aFrame.getLocation().getColumnBegin() - 1;
+  // moreover, the column end points to the last character to be selected
+  unsigned int lCE = aFrame.getLocation().getColumnEnd() - 2;
+
+  aStream << "<stack "
+    << "level=\"" << aSNo << "\" "
+    << "type=\"" << "file" << "\" "
+    << "filename=\"" << lFileName << "\" "
+    << "lineno=\"" << lLB << "\" "
+    << "where=\"" << aFrame.getSignature() << "\" "
+    << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
+    << "cmdend=\"" << lLE << ":" << lCE << "\" "
+    << "/>";
+};
+
+void
+DebuggerServer::buildBreakpoint(
+  Breakable& aBreakpoint,
+  int aBID,
+  std::ostream& aStream)
+{
+  String lFileName(aBreakpoint.getLocation().getFilename().str());
+  if (lFileName.substr(0, 7) == "file://") {
+    lFileName = URIHelper::decodeFileURI(lFileName);
+  }
+
   aStream << "<breakpoint "
     << "id=\"" << aBID << "\" "
     << "type=\"line\" "
     << "state=\"" << (aBreakpoint.isEnabled() ? "enabled" : "disabled") << "\" "
-    << "filename=\"" << aBreakpoint.getLocation().getFilename().str() << "\" "
+    << "filename=\"" << lFileName << "\" "
     << "lineno=\"" << aBreakpoint.getLocation().getLineBegin() << "\" "
 //  << "function=\"FUNCTION\" "
 //  << "exception=\"EXCEPTION\" "

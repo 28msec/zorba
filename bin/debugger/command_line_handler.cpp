@@ -214,7 +214,7 @@ CommandLineHandler::addCommands()
   theCommandLine << createCommand<Run>(tuple<>(), "run", *this, "Run the Query");
   {
     Command<CommandLineHandler, tuple<bstring, bstring, bint>, BreakpointSet>* lCommand =
-    createCommand<BreakpointSet>(tuple<bstring, bstring, bint>(), "break", *this, "Set a breakpoint");
+    createCommand<BreakpointSet>(tuple<bstring, bstring, bint>(), "bset", *this, "Set a breakpoint");
     lCommand->addArgument(0, "s", createArgType<tuple<bstring, bstring, bint>, std::string, 0>(tuple<bstring, bstring, bint>()),
                 "breakpoint state (enabled or disabled - default: enabled)", false);
     lCommand->addArgument(1, "f", createArgType<tuple<bstring, bstring, bint>, std::string, 1>(tuple<bstring, bstring, bint>()),
@@ -226,7 +226,7 @@ CommandLineHandler::addCommands()
   }
   {
     Command<CommandLineHandler, tuple<bint>, BreakpointGet>* lCommand
-    = createCommand<BreakpointGet>(tuple<bint>(), "binfo", *this, 
+    = createCommand<BreakpointGet>(tuple<bint>(), "bget", *this, 
                                   "Get information about a given breakpoint");
     lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()),
                 "The id of the breakpoint", true);
@@ -235,7 +235,7 @@ CommandLineHandler::addCommands()
   }
   {
     Command<CommandLineHandler, tuple<bint>, BreakpointDel>* lCommand
-    = createCommand<BreakpointDel>(tuple<bint>(), "bdel", *this, "Delete a breakpoint with a given id");
+    = createCommand<BreakpointDel>(tuple<bint>(), "bremove", *this, "Delete a breakpoint with a given id");
     lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "The id of the breakpoint", true);
       
     theCommandLine << lCommand;

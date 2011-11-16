@@ -619,11 +619,24 @@ DebuggerCommons::getStackFrames() const
 void
 DebuggerCommons::adjustLocationFilePath(QueryLoc& aLocation)
 {
-  if (aLocation.getFilename().substr(0, 7) == "file://") {
-    // adjust the file paths by removing the schema and encoding
-    zstring lOldFilename(aLocation.getFilename());
+  zstring lOldFilename(aLocation.getFilename());
+  zstring lPrefix = lOldFilename.substr(0, 7);
+
+  if (lPrefix == "file://") {
+#ifdef WIN32
+    // decode and encode back to solve the driver column encoding: C:, D:, etc.
     const String lNewFilename = URIHelper::decodeFileURI(lOldFilename.str());
-    aLocation.setFilename(lNewFilename.str());
+    const String lNewURI = URIHelper::encodeFileURI(lNewFilename);
+    aLocation.setFilename(lNewURI.str());
+#endif
+    return;
+  }
+
+  // just encode and assume file for non-URI locations
+  if (lPrefix != "http://" && lPrefix != "https:/") {
+    const String lNewURI = URIHelper::encodeFileURI(lOldFilename.str());
+    aLocation.setFilename(lNewURI.str());
+    return;
   }
 }
 
