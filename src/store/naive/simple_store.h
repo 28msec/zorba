@@ -270,18 +270,6 @@ public:
         const zstring& baseUri,
         const zstring& docUri,
         std::istream& stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream* stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& stream,
         const store::LoadProperties& loadProperties);
 
   store::Item_t loadDocument(
