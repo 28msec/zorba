@@ -29,7 +29,11 @@
 #include "store/api/index.h" // for index spec obj
 #include "store/api/ic.h" // for index spec obj
 
-namespace zorba { namespace simplestore {
+namespace zorba {
+
+class QueryLoc;
+  
+namespace simplestore {
 
 
 class PULImpl;
