@@ -49,7 +49,8 @@ class CommandPrompt
     parseLine(const std::string& line, std::vector<std::string>& vector);
 
   private:
-    std::map<std::string, UntypedCommand*> theCommands;
+    std::map<std::string, UntypedCommand*>  theCommands;
+    std::vector<std::string>                theLastArgs;
 };  
 
   

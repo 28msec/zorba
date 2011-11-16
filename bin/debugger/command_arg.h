@@ -109,14 +109,29 @@ class CommandArgType
                                              const CommandArg<Tuple>* arg)
     {
       T aValue;
-      std::stringstream stream(str);
-      stream >> aValue;
-      if (stream.fail()) {
-        std::cerr << "Error: Could not parse value \"" << str << "\" as type "
-          << typeid(T).name()
-          << std::endl;
-        return 0;
+
+      // special treatment for strings
+      // this is a double hack:
+      // - we check the type name if this starts with: class std::basic_string
+      // - we use void* in readEntireString to workaround the template type T
+      //   which would otherwise complain during compilation if types and
+      //   operators do not match
+      // TOSO: probably someone can find a more elegant solution
+      std::string lTypeName(typeid(T).name());
+      if (lTypeName.find("class std::basic_string") == 0) {
+        readEntireString(str, &aValue);
+      } else {
+        std::stringstream stream(str);
+        std::stringstream out;
+        stream >> aValue;
+        if (stream.fail()) {
+          std::cerr << "Error: Could not parse value \"" << str << "\" as type "
+            << typeid(T).name()
+            << std::endl;
+          return 0;
+        }
       }
+
       return new TypedCommandArgInstance<T, Idx, Tuple>(aValue, arg);
     }
     virtual bool isVoid() const { return theIsVoid; }
@@ -125,6 +140,11 @@ class CommandArgType
       return ZORBA_TR1_NS::get<Idx>(t).first;
     }
   private:
+    void readEntireString(std::string aIn, void* aValue)
+    {
+      *((std::string*)aValue) = aIn;
+    }
+
     TypedCommandArgType<T, Idx, Tuple>() {}
     T theDefault;
     bool theIsVoid;

@@ -60,8 +60,6 @@ CommandPrompt::printHelp(UntypedCommand* aCommand)
 void
 CommandPrompt::execute()
 {
-  std::vector<std::string> lLastArgs;
-
   for (;;) {
     std::cout << "(xqdb) ";
     std::string lCommandLine;
@@ -74,12 +72,12 @@ CommandPrompt::execute()
 
     // empty command? do nothing!
     if (lSize == 0) {
-      lArgs = lLastArgs;
+      lArgs = theLastArgs;
       if (lArgs.size() == 0) {
         continue;
       }
     }
-    lLastArgs = lArgs;
+    theLastArgs = lArgs;
 
     UntypedCommand* lCommand = NULL;
 
