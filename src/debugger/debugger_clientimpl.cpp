@@ -269,7 +269,7 @@ DebuggerClientImpl::breakpoint_set(
   if (!aEnabled)
     *theOutStream << " -s disabled";
   if (aFilename != "") {
-    *theOutStream << " -f " << aFilename;
+    *theOutStream << " -f \"" << aFilename << "\"";
   }
   if (aLinenumber != -1)
     *theOutStream << " -n " << aLinenumber;
@@ -499,7 +499,7 @@ DebuggerClientImpl::source(
   unsigned int aEndLine)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "source -i " << id << " -f " << aFile;
+  *theOutStream << "source -i " << id << " -f \"" << aFile << "\"";
   if (aBeginLine)
     *theOutStream << " -b " << aBeginLine;
   if (aEndLine)

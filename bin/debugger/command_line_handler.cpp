@@ -259,7 +259,10 @@ CommandLineHandler::addCommands()
   {
     Command<CommandLineHandler, tuple<bstring>, Eval>* lCommand
     = createCommand<Eval>(tuple<bstring>(), "eval", *this, "Evaluate a function");
-      
+    // TODO: this argument should not be here at all. Eval has the form: eval -i transaction_id -- {DATA}
+    // Eval should be called with a command like: eval 1 + 3
+    // - no need for an argument name
+    // - everything following the fist contiguous set of whitespaces are sent as string
     lCommand->addArgument(0, "c", createArgType<tuple<bstring>, std::string, 0>(tuple<bstring>()), "The command to evaluate", true);
       
     theCommandLine << lCommand;
