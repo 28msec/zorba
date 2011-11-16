@@ -41,6 +41,7 @@ namespace zorba { namespace debugger {
     StackGet,
     ContextNames,
     ContextGet,
+    Source,
     Eval,
     Quit
   };
@@ -69,10 +70,19 @@ class CommandLineHandler
   public: // Handlers
 
     template<int>
-    void handle(ZORBA_TR1_NS::tuple<>& aTuple) { assert(false); }
+    void handle(ZORBA_TR1_NS::tuple<>& aTuple)
+    {
+      assert(false);
+    }
     
     template<int>
     void handle(ZORBA_TR1_NS::tuple<bstring, bstring, bint>& t)
+    {
+      assert(false);
+    }
+    
+    template<int>
+    void handle(ZORBA_TR1_NS::tuple<bint, bint, bstring>& t)
     {
       assert(false);
     }
@@ -135,6 +145,9 @@ void CommandLineHandler::handle<ContextNames>(ZORBA_TR1_NS::tuple<> &aTuple);
   
 template<>
 void CommandLineHandler::handle<ContextGet>(ZORBA_TR1_NS::tuple<bint> &aTuple);
+  
+template<>
+void CommandLineHandler::handle<Source>(ZORBA_TR1_NS::tuple<bint, bint, bstring> &aTuple);
   
 template<>
 void CommandLineHandler::handle<Eval>(ZORBA_TR1_NS::tuple<bstring>& aTuple);

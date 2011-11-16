@@ -123,19 +123,19 @@ CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
   
 template<>
 void
-CommandLineHandler::handle<BreakpointSet>(std::tr1::tuple<bstring, bstring, bint> &t)
+CommandLineHandler::handle<BreakpointSet>(std::tr1::tuple<bstring, bstring, bint> &aTuple)
 {
   DebuggerClient::BreakpointType lType = DebuggerClient::Line;
   bool lEnabled = true;
-  if (get<0>(t).first) {
-    if (get<0>(t).second == "disabled") {
+  if (get<0>(aTuple).first) {
+    if (get<0>(aTuple).second == "disabled") {
       lEnabled = false;
     }
   }
   theWaitFor = theClient->breakpoint_set(lType,
                                           lEnabled,
-                                          get<1>(t).second,
-                                          get<2>(t).second);
+                                          get<1>(aTuple).second,
+                                          get<2>(aTuple).second);
 }
   
 template<>
@@ -154,14 +154,14 @@ CommandLineHandler::handle<BreakpointDel>(tuple<bint> &aTuple)
   
 template<>
 void
-CommandLineHandler::handle<BreakpointList>(tuple<> &t)
+CommandLineHandler::handle<BreakpointList>(tuple<> &aTuple)
 {
   theWaitFor = theClient->breakpoint_list();
 }
   
 template<>
 void
-CommandLineHandler::handle<StackDepth>(tuple<> &t)
+CommandLineHandler::handle<StackDepth>(tuple<> &aTuple)
 {
   theWaitFor = theClient->stack_depth();
 }
@@ -195,6 +195,15 @@ void CommandLineHandler::handle<ContextGet>(tuple<bint> &aTuple)
     theWaitFor = theClient->context_get();
   }
 }
+
+template<>
+void CommandLineHandler::handle<Source>(tuple<bint, bint, bstring> &aTuple)
+{
+  theWaitFor = theClient->source(
+    get<2>(aTuple).second,
+    get<0>(aTuple).second,
+    get<1>(aTuple).second);
+}
   
 template<>
 void CommandLineHandler::handle<Eval>(tuple<bstring>& aTuple)
@@ -218,9 +227,9 @@ CommandLineHandler::addCommands()
     lCommand->addArgument(0, "s", createArgType<tuple<bstring, bstring, bint>, std::string, 0>(tuple<bstring, bstring, bint>()),
                 "breakpoint state (enabled or disabled - default: enabled)", false);
     lCommand->addArgument(1, "f", createArgType<tuple<bstring, bstring, bint>, std::string, 1>(tuple<bstring, bstring, bint>()),
-                "The name of the file where to stop", true);
+                "name of the file where to stop", true);
     lCommand->addArgument(2, "l", createArgType<tuple<bstring, bstring, bint>, int, 2>(tuple<bstring, bstring, bint>()),
-                "The line number", true);
+                "line number", true);
       
     theCommandLine << lCommand;
   }
@@ -229,14 +238,14 @@ CommandLineHandler::addCommands()
     = createCommand<BreakpointGet>(tuple<bint>(), "bget", *this, 
                                   "Get information about a given breakpoint");
     lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()),
-                "The id of the breakpoint", true);
+                "id of the breakpoint", true);
       
     theCommandLine << lCommand;
   }
   {
     Command<CommandLineHandler, tuple<bint>, BreakpointDel>* lCommand
     = createCommand<BreakpointDel>(tuple<bint>(), "bremove", *this, "Delete a breakpoint with a given id");
-    lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "The id of the breakpoint", true);
+    lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "id of the breakpoint", true);
       
     theCommandLine << lCommand;
   }
@@ -245,14 +254,26 @@ CommandLineHandler::addCommands()
   {
     Command<CommandLineHandler, tuple<bint>, StackGet>* lCommand
     = createCommand<StackGet>(tuple<bint>(), "sget", *this, "Get information about one or all stack frames");
-    lCommand->addArgument(0, "d", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "The stack entry two show (show all if not provided)", false);
+    lCommand->addArgument(0, "d", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "stack entry two show (show all if not provided)", false);
     theCommandLine << lCommand;
   }
   theCommandLine << createCommand<ContextNames>(tuple<>(), "cnames", *this, "Get the names of the avilable contexts");
   {
     Command<CommandLineHandler, tuple<bint>, ContextGet>* lCommand
     = createCommand<ContextGet>(tuple<bint>(), "cget", *this, "Get a context");
-    lCommand->addArgument(0, "c", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "The id of the context", false);
+    lCommand->addArgument(0, "c", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "id of the context", false);
+      
+    theCommandLine << lCommand;
+  }
+  {
+    Command<CommandLineHandler, tuple<bint, bint, bstring>, Source>* lCommand =
+      createCommand<Source>(tuple<bint, bint, bstring>(), "source", *this, "List source code");
+    lCommand->addArgument(0, "b", createArgType<tuple<bint, bint, bstring>, int, 0>(tuple<bint, bint, bstring>()),
+                "begin line", false);
+    lCommand->addArgument(1, "e", createArgType<tuple<bint, bint, bstring>, int, 1>(tuple<bint, bint, bstring>()),
+                "end line", false);
+    lCommand->addArgument(2, "f", createArgType<tuple<bint, bint, bstring>, std::string, 2>(tuple<bint, bint, bstring>()),
+                "file URI", false);
       
     theCommandLine << lCommand;
   }
@@ -263,7 +284,7 @@ CommandLineHandler::addCommands()
     // Eval should be called with a command like: eval 1 + 3
     // - no need for an argument name
     // - everything following the fist contiguous set of whitespaces are sent as string
-    lCommand->addArgument(0, "c", createArgType<tuple<bstring>, std::string, 0>(tuple<bstring>()), "The command to evaluate", true);
+    lCommand->addArgument(0, "c", createArgType<tuple<bstring>, std::string, 0>(tuple<bstring>()), "command to evaluate", true);
       
     theCommandLine << lCommand;
   }

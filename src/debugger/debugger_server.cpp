@@ -409,7 +409,29 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     // stack_depth, stack_get, status, stop, step_into, step_over, step_out
     case 's':
 
-      if (aCommand.getName() == "stop") {
+      if (aCommand.getName() == "source") {
+        lResponse << "success=\"1\" ";
+        lResponse << ">";
+
+        int lBeginLine;
+        if (!aCommand.getArg("b", lBeginLine)) {
+          lBeginLine = 0;
+        }
+        int lEndLine;
+        if (!aCommand.getArg("e", lEndLine)) {
+          lEndLine = 0;
+        }
+        std::string lTmp;
+        if (!aCommand.getArg("f", lTmp)) {
+          lTmp = "";
+        }
+        String lFileName(lTmp);
+
+        lResponse << "<![CDATA[";
+        lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine) << std::endl;
+        lResponse << "]]>";
+
+      } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
 
         lResponse << "reason=\"ok\" status=\"stopped\" ";
@@ -423,15 +445,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stack_get") {
 
-        lResponse << ">";
-        std::vector<StackFrameImpl> lFrames = theRuntime->getStackFrames();
+        try {
+          lResponse << ">";
+          std::vector<StackFrameImpl> lFrames = theRuntime->getStackFrames();
 
-        std::vector<StackFrameImpl>::reverse_iterator lRevIter;
-        int i = 0;
-        for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
-          buildStackFrame(*lRevIter, i, lResponse);
+          std::vector<StackFrameImpl>::reverse_iterator lRevIter;
+          int i = 0;
+          for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
+            buildStackFrame(*lRevIter, i, lResponse);
+          }
+        } catch (std::string& lErr) {
+          return buildErrorResponse(lTransactionID, lCmdName, 303, lErr);
         }
-
       } else if (aCommand.getName() == "status") {
 
         ExecutionStatus lStatus = theRuntime->getExecutionStatus();

@@ -227,6 +227,12 @@ DebuggerRuntime::getStackDepth()
 std::vector<StackFrameImpl>
 DebuggerRuntime::getStackFrames()
 {
+  // this is only working while execution is suspended
+  if (theExecStatus != QUERY_SUSPENDED) {
+    std::string lMessage("I can only show a stack if the execution is suspended.");
+    throw lMessage;
+  }
+
   std::vector<StackFrameImpl> lFrames;
 
   DebuggerCommons* lCommons = getDebbugerCommons();
@@ -487,40 +493,42 @@ DebuggerRuntime::eval(zstring& aExpr)
 
 
 std::string
-DebuggerRuntime::listSource()
+DebuggerRuntime::listSource(String& lFileName, unsigned int aBeginLine, unsigned int aEndLine)
 {
-  //ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
-  //ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
-  //std::string lFile;
-  //lFile = theWrapper->thePlanState->theDebuggerCommons->getFilepathOfURI(
-  //  lCommand->getFilename());
+  // for unspecified files determine the file
+  if (lFileName == "") {
+    // if not started, than it's the main module
+    if (theExecStatus != QUERY_SUSPENDED) {
+      lFileName = theQuery->getFileName();
+    }
+    // else, the file pointed by the top-most stack frame
+    else {
+      DebuggerCommons* lCommons = getDebbugerCommons();
+      std::vector<StackFrameImpl> lRawFrames = getStackFrames();
+      lFileName = lRawFrames.at(lRawFrames.size() - 1).getLocation().getFileName();
+      if (lFileName.substr(0, 7) == "file://") {
+        lFileName = URIHelper::decodeFileURI(lFileName);
+      }
+    }
+  }
 
-  //std::string lCurrLine;
-  ////std::string::iterator lSIter;
-  ////for (lSIter = lFile.begin(); lSIter != lFile.end(); ++lSIter) {
-  ////  if (*lSIter == '\\' && *(lSIter+1) == '\\') {
-  ////    lFile.erase(lSIter);
-  ////    ++lSIter;
-  ////  }
-  ////}
-  //std::ifstream lStream(lFile.c_str());
-  //for (unsigned long i = 1; i < lCommand->getFirstline() && lStream.good(); ++i)
-  //{
-  //  std::getline(lStream, lCurrLine);
-  //}
-  //std::stringstream lOut;
-  //for (unsigned long i = lCommand->getFirstline();
-  //  i <= lCommand->getLastline() && lStream.good(); ++i) {
-  //  std::getline(lStream, lCurrLine);
-  //  lOut << lCurrLine;
-  //  if (lStream.good()) {
-  //    lOut << std::endl;
-  //  }
-  //}
-  //return new ListReply(
-  //  theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
+  // go to first wanted line
+  std::ifstream lStream(lFileName.c_str());
+  std::string lCurrLine;
+  for (unsigned int i = 1; i < aBeginLine && lStream.good(); ++i) {
+    std::getline(lStream, lCurrLine);
+  }
 
-  return "";
+  // read up to the last wanted line
+  std::stringstream lOut;
+  for (unsigned int i = aBeginLine; (i <= aEndLine || aEndLine == 0) && lStream.good(); ++i) {
+    std::getline(lStream, lCurrLine);
+    lOut << lCurrLine;
+    if (lStream.good()) {
+      lOut << std::endl;
+    }
+  }
+  return lOut.str();
 }
 
 

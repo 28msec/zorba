@@ -52,6 +52,11 @@ declare %private function dmh:stop($resp as element(response))
   dmh:status($resp)
 };
 
+declare %private function dmh:source($resp as element(response))
+{
+  $resp/text()
+};
+
 declare %private function dmh:breakpoint-set($resp as element(response))
 {
   fn:concat("set breakpoint with id ", data($resp/@id), " and state ", data($resp/@state))
@@ -134,7 +139,7 @@ declare %private function dmh:stack-get($resp as element(response))
   fn:string-join(
     for $s in $resp/stack
     return
-      fn:concat("#", $s/@level, " at ", $s/@filename, ":", $s/@lineno),
+      fn:concat("#", $s/@level, " in ", $s/@where, " at ", $s/@filename, ":", $s/@lineno),
     $dmh:endl
   )
 };
@@ -211,6 +216,7 @@ declare %private function dmh:process-response($resp as element(response))
   case "breakpoint_get"     return dmh:breakpoint-get($resp)
   case "breakpoint_set"     return dmh:breakpoint-set($resp)
   case "run"                return dmh:run($resp)
+  case "source"             return dmh:source($resp)
   case "stop"               return dmh:stop($resp)
   case "status"             return dmh:status($resp)
 

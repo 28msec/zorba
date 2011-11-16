@@ -119,7 +119,7 @@ class DebuggerRuntime : public Runnable {
     setLastContinuationCommand(int transactionID, std::string commandName);
 
     std::string
-    listSource();
+    listSource(String& lFileName, unsigned int aBeginLine, unsigned int aEndLine);
 
     std::vector<std::pair<std::string, std::string> >
     getVariables();
