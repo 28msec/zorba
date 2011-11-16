@@ -558,7 +558,19 @@ bool SubstringIntOptIterator::nextImpl(
       // note: The first character of a string is located at position 1,
       // not position 0.
 
-      start = to_xs_int(startItem->getIntegerValue());
+      try
+      {
+        start = to_xs_int(startItem->getIntegerValue());
+      }
+      catch(std::range_error range_err)
+      {
+        throw XQUERY_EXCEPTION(
+          zerr::ZXQD0004_INVALID_PARAMETER,
+          ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                      lenItem->getIntegerValue()),
+          ERROR_LOC( loc )
+        );
+      }
 
       if( theChildren.size() == 2)
       {
@@ -592,7 +604,19 @@ bool SubstringIntOptIterator::nextImpl(
 
         ZORBA_ASSERT(lenItemExists);
 
-        len = to_xs_int(lenItem->getIntegerValue());
+        try
+        {
+          len = to_xs_int(lenItem->getIntegerValue());
+        }
+        catch(std::range_error range_err)
+        {
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0004_INVALID_PARAMETER,
+            ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                        lenItem->getIntegerValue()),
+            ERROR_LOC( loc )
+          );
+        }
 
         if (len >= 0)
         {
