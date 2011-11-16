@@ -539,10 +539,8 @@ bool SubstringIntOptIterator::nextImpl(
   store::Item_t lenItem;
   zstring strval;
   zstring resStr;
-  xs_integer start;
-  xs_integer len;
-  xs_int istart;
-  xs_int ilen;
+  xs_long start;
+  xs_long len;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -560,12 +558,11 @@ bool SubstringIntOptIterator::nextImpl(
       // note: The first character of a string is located at position 1,
       // not position 0.
 
-      start = startItem->getIntegerValue();
-      istart = to_xs_int(start);
+      start = to_xs_long(startItem->getIntegerValue());
 
       if( theChildren.size() == 2)
       {
-        if (istart <= 0)
+        if (start <= 0)
         {
           resStr = strval;
         }
@@ -573,12 +570,12 @@ bool SubstringIntOptIterator::nextImpl(
         {
           try
           {
-            resStr = utf8_string<zstring>(strval).substr(istart-1);
+            resStr = utf8_string<zstring>(strval).substr(start - 1);
           }
           catch (...)
           {
             zstring::size_type numChars = utf8_string<zstring>(strval).length();
-            if (static_cast<zstring::size_type>(istart) > numChars)
+            if (start > numChars)
             {
               // result is the empty string
             }
@@ -595,26 +592,25 @@ bool SubstringIntOptIterator::nextImpl(
 
         ZORBA_ASSERT(lenItemExists);
 
-        len = lenItem->getIntegerValue();
-        ilen = to_xs_int(len);
+        len = to_xs_long(lenItem->getIntegerValue());
 
-        if (ilen >= 0)
+        if (len >= 0)
         {
-          if (istart <= 0)
+          if (start <= 0)
           {
-            if ((ilen + istart - 1) >= 0)
-              resStr = utf8_string<zstring>(strval).substr(0,  istart - 1 + ilen);
+            if ((len + start - 1) >= 0)
+              resStr = utf8_string<zstring>(strval).substr(0,  start - 1 + len);
           }
           else
           {
             try
             {
-              resStr = utf8_string<zstring>(strval).substr(istart-1, ilen);
+              resStr = utf8_string<zstring>(strval).substr(start-1, len);
             }
             catch (...)
             {
               zstring::size_type numChars = utf8_string<zstring>(strval).length();
-              if (static_cast<zstring::size_type>(istart) > numChars)
+              if (static_cast<zstring::size_type>(start) > numChars)
               {
                 // result is the empty string
               }
@@ -629,9 +625,9 @@ bool SubstringIntOptIterator::nextImpl(
     } // non empty string arg
   } // non NULL string arg
 
-STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
 
-STACK_END (state);
+  STACK_END (state);
 }
 
 
