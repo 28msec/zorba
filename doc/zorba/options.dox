@@ -281,7 +281,7 @@ Otherwise, the error zerr:ZSTR0055 is raised.
 \paragraph caching_annotation Caching Results of Functions
 Caching of function results might improve the performance if computational expensive functions are invoked multiple times with the same arguments.
 
-Zorba automatically caches results of recursive, deterministic, and non-sequential functions whose parameter and return types are subtypes of xs:anyAtomicType.
+Zorba automatically caches results of recursive, deterministic, and non-sequential functions whose parameter and return types are subtypes of xs:anyAtomicType if at least optimization level O1 is used.
 Specifically, if such a function is called twice with the same arguments, the result of the second call will return the same value without re-evaluating the function.
 
 For example, in the following recursive function computing a fibonacci number, each result is automatically cached and, hence, dramatically improves the performance.

@@ -561,7 +561,8 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     return;
   }
 
-  if (!lExplicitCacheRequest && !isRecursive())
+  // optimization is prerequisite before invoking isRecursive
+  if (!lExplicitCacheRequest && isOptimized() && !isRecursive())
   {
     return;
   }

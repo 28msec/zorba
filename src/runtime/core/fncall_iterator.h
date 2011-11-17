@@ -69,6 +69,19 @@ class StaticContextImpl;
   the body. So, it is never the case that the arg expr will have more than one 
   consumers, and as a result we can bind all those V references to the same arg
   wrapper.
+
+  theCache:
+  ---------
+  Is an Index which is set in the state if caching for the invoked function
+  should be done. The cache is owned by the UDF itself and shared across
+  all function invocations.
+
+  theCacheHits:
+  -------------
+  If caching is used, this vector contains the results of all arguments
+  of the function evaluation. It's used to bind the variables if the
+  cache didn't give a result in order to avoid duplicate evaluation of
+  the arguments.
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
@@ -80,6 +93,7 @@ public:
   bool                           thePlanOpen;
   std::vector<store::Iterator_t> theArgWrappers;
   store::Index                 * theCache;
+  std::vector<store::TempSeq_t>  theCacheHits;
 
   UDFunctionCallIteratorState();
 

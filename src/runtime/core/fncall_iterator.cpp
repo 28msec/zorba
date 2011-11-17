@@ -51,6 +51,7 @@
 #include "store/api/index.h"
 #include "store/api/store.h"
 #include "store/api/iterator_factory.h"
+#include "store/api/temp_seq.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -158,6 +159,7 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(*thePlanState);
   }
+  theCacheHits.clear();
 }
 
 
@@ -234,6 +236,7 @@ void UDFunctionCallIterator::createCache(
     }
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
     theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
+    state->theCacheHits.reserve(theChildren.size());
   }
   state->theCache = lIndex.getp();
 }
@@ -271,16 +274,7 @@ bool UDFunctionCallIterator::probeCache(
     GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
   lCacheHit->init(lCond);
   lCacheHit->open();
-  if (lCacheHit->next(result))
-  {
-    return true;
-  }
-  else
-  {
-    // reset the arguments for evaluating the function if not cached
-    resetImpl(planState);
-    return false;
-  }
+  return lCacheHit->next(result);
 }
 
 
@@ -431,7 +425,6 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;
     }
-    std::cout << "nextImpl " << theUDF->getName()->getStringValue() << std::endl;
 
     // check if there is a cache and the result is already in the cache
     lCacheHit = probeCache(planState, state, result, lKey);
@@ -440,14 +433,22 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     if (!lCacheHit)
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-      std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
-      std::vector<ArgVarRefs>::const_iterator argsRefsEnd = argsRefs.end();
-
-      std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
-      for (; argsRefsIte != argsRefsEnd; ++argsRefsIte, ++argWrapsIte)
+      const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
+      for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        store::Iterator_t& argWrapper = (*argWrapsIte);
-        const ArgVarRefs& argVarRefs = (*argsRefsIte);
+        const ArgVarRefs& argVarRefs = argsRefs[i];
+        store::Iterator_t argWrapper;
+        if (state->theCache)
+        {
+          std::vector<store::Item_t> lParam(1, lKey[i]);
+          state->theCacheHits.push_back(GENV_STORE.createTempSeq(lParam));
+          argWrapper = state->theCacheHits.back()->getIterator();
+          argWrapper->open();
+        }
+        else
+        {
+          argWrapper = argWraps[i];
+        }
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
         ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
 
