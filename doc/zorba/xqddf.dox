@@ -1375,6 +1375,14 @@ receive an error.
   AtomicType ::= QName
 
   IndexKeyCollation ::= 'collation' UriLiteral
+
+  Note: the following annotations are accepted within the context of an index declaration:
+
+     %ann:unique, %ann:nonunique,
+     %ann:value-range, %ann:value-equality, 
+     %ann:general-range, %ann:general-equality,
+     %ann:manual or %ann:automatic
+
 \endcode
 
 Syntactically, each index is defined by an <a href="#index_declaration">
@@ -1385,8 +1393,8 @@ The IndexDecl syntax shown above is common to both
 value indexes and general indexes. Whether an index is a value or a general 
 index is determined by the value of the usage property, which is explained below.
 
-Index declarations (for both value and general indexes) must be placed inside module prologs.
-The Prolog syntax is extended accordingly, as shown above. 
+Index declarations (for both value and general indexes) must be placed inside 
+module prologs. The Prolog syntax is extended accordingly, as shown above. 
 An additional constraint (not expressible syntactically) is that only library 
 modules may contain index declarations  [<a href="#ERRZDST0023">zerr:ZDST0023</a>]. 
 The reasons for this rule are the same as those for collections (see \ref 
@@ -1424,7 +1432,10 @@ relationship is one-to-one, that is, each index entry associates a key value
 (or key tuple in the case of value indexs) with exactly one domain node. 
 Otherwise, if the index is '%ann:nonunique', multiple domain nodes may have the 
 same key value, and as a result, each index entry associates a key with a 
-set of domain nodes.
+set of domain nodes. In the current implementation, it is not allowed to declare
+an index as unique if it is a general index whose IndexKeyTypeDecl is either absent
+or specifies xs:anyAtomicType or xs:untypedAtomic as its atomic type 
+[<a href="#ERRZDST0025">zerr:ZDST0025</a>].
 
 The usage property specifies the kind of the index based on the query expressions 
 that may be optimized by using the index. A <strong>value equality index</strong> 
@@ -1529,16 +1540,17 @@ declaring module is used.
 \subsection index_creation Index Creation
 
 
-As explained already, indexes are just sets of index entries, mapping key items
-or key tuples to domain nodes. In terms of the XQuery language, these sets 
-"live" in the dynamic context. In particular, XQDDF extends the dynamic context 
-with a component called the <strong>available indexes</strong>. This is a map 
-whose entries associate the expanded QName of an index with the entry set of the
-index. If an entry for an index appears in the available indexes of a module,
-the index is said to be available to that module.
+As explained already, indexes are just sets of index entries, where an index 
+entry maps a key item or a key tuple to a set of domain nodes (to be more
+precise, an index entry contains some kind of "pointers" to nodes, not the 
+nodes themselves). In terms of the XQuery language, indexes "live" in the 
+dynamic context. In particular, XQDDF extends the dynamic context with a 
+component called the <strong>available indexes</strong>. This is a map whose 
+entries associate the expanded QName of an index with the entry set for that 
+index. 
 
 In practice, the available indexes component is implemented by Zorba's storage
-system. To begin with, each index entry set is implemented by some appropriate
+system. To begin with, each index is implemented by some appropriate
 data structure that acts as an index entry container. The description of
 potential data structures is beyond the scope of this document, but the typical
 choices are either some sort of hash table(s) (for equality indexes) or some kind
@@ -1595,9 +1607,7 @@ nodes, then for value indexes, the duplicate nodes are removed, but for general
 indexes, an error is raised [<a href="#ERRZDDY0028">zerr:ZDDY0028</a>]. The result
 of the domain expression after duplicate elimination is called the <strong>domain
 sequence</strong>. If the domain sequence contains a node that does not belong to 
-a collection, an error is raised [<a href="#ERRZDDY0020">zerr:ZDDY0020</a>] (the 
-purpose of this rule is to prevent nodes constructed by node construction 
-expression to appear as domain nodes).</li>
+a collection, an error is raised [<a href="#ERRZDDY0020">zerr:ZDDY0020</a>].</li>
 
 <li>
 For each node D in the domain sequence, the IndexKeySpecs are evaluated in some 
@@ -1619,8 +1629,8 @@ implementation dependent order. An IndexKeySpec is evaluated as follows:
   </li>
 
   <li>
-  Duplicate values, which may arise in the case of general indexes only, are 
-  eliminated from the key sequence.
+  Duplicate values (which may arise in the case of general indexes only) are 
+  eliminated from the atomized sequence.
   </li>
   </ul>
 
@@ -1630,12 +1640,12 @@ If the index is a value index:
 
   <ul>
   <li>
-  The result of each IndexKeySpec is a single atomic item. We call this 
-  item a <strong>key item</strong>.
+  The result of each IndexKeySpec is a single atomic item or the empty sequence.
+  We call this result a <strong>key value</strong>.
   </li>
 
   <li>
-  Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item
+  Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key value
   computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of
   the IndexKeySpecs is done using their order of appearance in the index
   declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ...,
@@ -1650,16 +1660,14 @@ If the index is a value index:
   tuples and domain nodes is one-to-one. In this case, if the index already
   contains an entry whose key tuple is equal to K<sub>i</sub>, an error is 
   raised [<a href="#ERRZDDY0024">zerr:ZDDY0024</a>]. Otherwise, the entry 
-  [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container (to be very
-  precise, the entry contains a "pointer" to the node, not the node itself).
+  [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.
   </li>
 
   <li>
-  If the index is non-unique, it maps key tuples to sets of domain nodes. In 
-  this case, if the index already contains an entry whose key is equal to
-  K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>.
-  Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the
-  index.
+  If the index is non-unique, then if it already contains an entry whose key 
+  tuple is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated
+  with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] 
+  is inserted in the index.
   </li>
   </ul>
 
@@ -1673,7 +1681,7 @@ If the index is a general index:
   to value indexes, the result of this IndexKeySpec may be a sequence of any
   number of atomic items, and the items may have different data types. We call 
   this sequence a <strong>key sequence</strong>, and each atomic item in it a 
-  <strong>key item</strong>.
+  <strong>key item</strong> (the key sequence may also be the empty sequence).
   </li>
 
   <li>
@@ -1694,17 +1702,6 @@ If the index is a general index:
   into K<sub>i</sub>.
   </li>
 
-  <li> 
-  If any item in the expanded key sequence has a data type that is not a 
-  primitive builtin type, this data type is changed to the nearest base type 
-  that is a primitive builtin type. For example, xs:token is changed to 
-  xs:string, and xs:long is changed to xs:decimal. (Note: this is a conceptual 
-  description of the index creation process. The actual implementation may 
-  differ from this description as long as the results of 
-  <a href="#index_probing">probe functions</a> are always the same as those 
-  implied by this conceptual description.)
-  </li>
-
   <li>
   The next step is to insert in the index a mapping from K<sub>ij</sub> to 
   D<sub>i</sub>, for each key item K<sub>ij</sub> in the expanded key sequence
@@ -1714,32 +1711,25 @@ If the index is a general index:
   </li>
 
   <li>
-  If the index is declared as unique, the relationship between between key
-  items and domain nodes is one-to-one. In this case, if the index already
-  contains an entry whose key item has the same type as K<sub>ij</sub> and
-  its value is equal to K<sub>ij</sub>, an error is raised 
+  If the index is declared as unique, the relationship between key items and 
+  domain nodes is one-to-one. In this case, if the index already contains an 
+  entry whose key item is equal to K<sub>ij</sub>, an error is raised 
   [<a href="#ERRZDDY0024">zerr:ZDDY0024</a>]. Otherwise, the entry 
   [K<sub>ij</sub>, D<sub>i</sub>] is inserted in the index container.
-  <li>
-
-  <li>
-  If the index is non-unique, it maps key items to sets of domain nodes. In 
-  this case, if the index already contains an entry whose key K has the same
-  type as K<sub>ij</sub> and its value is equal to K<sub>ij</sub>, D<sub>i</sub>
-  is added to the set associated with K. Otherwise, the entry [K<sub>ij</sub>, 
-  { D<sub>i</sub> }] is inserted into the index.  
   </li>
 
   <li>
-  In addition to its entry set, each general index entry stores 2 extra flags: 
-  The <strong>multi-key flag</strong> is set to true if there is any domain
-  node whose unexpanded key sequence contained more than 1 items; otherwise the 
-  flag is false. The <strong>untyped flag</strong> is set to true if during the 
-  expansion of a key sequence, an untyped key was successfully cast to an item
-  with a type other than xs:string or xs:anyURI.; otherwise the flag is false. 
-  As we will see later, these flags are needed during <a href="#index_probing">
-  index probing</a>.
+  If the index is non-unique, then if it already contains an entry whose key
+  K is equal to K<sub>ij</sub>, D<sub>i</sub> is added to the node set 
+  associated with K. Otherwise, the entry [K<sub>ij</sub>, { D<sub>i</sub> }] 
+  is inserted into the index.  
   </li>
+
+  <li>
+  The index maintains a "special" entry for all domain nodes whose key sequence
+  is empty. All such nodes are inserted in the node set associated with this entry.
+  </li>
+
   </ul>
 
 <li>
@@ -1764,35 +1754,39 @@ function itself and its associated update primitive are described below.
 
 The delete function is evaluated as follows:
 
-  <ul>
-  <li>If the given expanded QName does not identify an index among the
-statically known indexes in the static context of the invoking module, an error
-is raised [<a href="#ERRZDDY0021">zerr:ZDDY0021</a>].</li>
-  <li>If the given expanded QName does not identify an index among the available
+<ul>
+<li>
+If the given expanded QName does not identify an index among the statically 
+known indexes in the static context of the invoking module, an error is
+raised [<a href="#ERRZDDY0021">zerr:ZDDY0021</a>].
+</li>
+<li>
+If the given expanded QName does not identify an index among the available
 indexes in the dynamic context of the invoking module, an error is raised [<a
-href="#ERRZDDY0023" title="zerr:ZDDY0023">zerr:ZDDY0023</a>].</li>
-  <li>The result of the function is an empty XDM instance and a pending update
-list that consists of a single update primitive:
-upd:deleteIndex($indexName).</li>
-  </ul>
+href="#ERRZDDY0023">zerr:ZDDY0023</a>].
+</li>
+<li>
+The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive: upd:deleteIndex($indexName).
+</li>
+</ul>
 
 The update primitive is applied as follows:
 
-  <ul>
-  <li>The index entry container for the index is found via the indexes
-table.</li>
-  <li>All entries in the container are destroyed.</li>
-  <li>The container itself is destroyed.</li>
-  <li>The entry mapping the index name to the index entry container is removed
+<ul>
+<li>The index entry container for the index is found via the indexes table.</li>
+<li>All entries in the container are destroyed.</li>
+<li>The container itself is destroyed.</li>
+<li>The entry mapping the index name to the index entry container is removed
 from the indexes table.</li>
-  </ul>
+</ul>
 
 
 \subsection index_probing Index Probing
 
 
 Probing an index means retrieving the domain nodes associated with a particular
-search condition Probing can be done via the xqddf functions 
+search condition. Probing can be done via the xqddf functions 
 idml:probe-index-point-value, idml:probe-index-point-general, 
 idml:probe-index-range-value, or idml:probe-index-range-general.
 For each of these functions, the first argument is a QName identifying an index.
@@ -1803,71 +1797,96 @@ or <a href="#ERRZDDY0023">zerr:ZDDY0023</a> is raised,
 respectively. All of the functions return their result sorted in document order 
 and without duplicate nodes.
 
+
 <strong>idml:probe-index-point-value</strong>
+
 
 <a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
   idml:probe-index-point-value($indexUri as xs:QName,
-                                $key1     as xs:anyAtomicType?,
-                                ...,
-                                $keyM     as xs:anyAtomicType?) as node()*
+                               $key1     as xs:anyAtomicType?,
+                               ...,
+                               $keyM     as xs:anyAtomicType?) as node()*
 \endcode
 
-For the probe-index-point-value function, the search condition is specified as a
-number of <strong>search keys</strong> comprising a <strong>search 
-tuple</strong>. A search key is either an atomic item or the empty sequence.
-The number of search keys must be equal to the number of IndexKeySpecs found 
-in the index declaration [<a href="#ERRZDDY0025"> zerr:ZDDY0025</a>]. (Remember 
-that for general indexes, there can be only one IndexKeySpec, and as a result, 
-for general indexes, the probe-index-point-value function takes only one search 
-value as input). Furthermore, for each search key that is not the empty sequence, 
-its type must match the sequence type specified in the corresponding IndexKeyTypeDecl;
-otherwise, a type error is raised [err:XPTY0004].
-
-The result of this function is either an error or the set of domain nodes for which 
-the following xquery condition returns true:
+The probe-index-point-value function retrieves the domain nodes associated by 
+value equality with a given <strong>search tuple</strong>. The search tuple 
+consists of a number of <strong>search keys</strong>, where each search key 
+is either an atomic item or the empty sequence. The result of this function 
+is either an error or the set of domain nodes for which the following xquery 
+expression returns true:
 
 \code
-$key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
+$key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprN
 \endcode
 
-where keyExpr<sub>i</sub> is the expression specified in the i-th keyspec 
-of the index. Notice that this definition implies that if any of search keys
-is the empty sequence, the result of the probe is also the empty sequence.
+where keyExpr-i is the expression specified in the i<sup>th</sup> keyspec 
+of the index and N is the number of keyspecs for the index. Notice that this 
+definition implies that if any of search keys is the empty sequence, the
+result of the probe is also the empty sequence.
 
-In addition to the error conditions described already, the function raises
-a type error [err:XPTY0004] if the index is general and (a) the multi-key flag
-of the index is true, or (b) the untyped flag of the index is true and the type of
-any non-empty search key is something other than xs:untypedAtomic, xs:string, or 
-xs:anyURI (or subtype of these).
+In addition to the errors that may be raised by the above expression, the
+probe-index-point-value function may raise the following errors:
+
+<ul>
+<li>
+ <a href="#ERRZDDY0021">zerr:ZDDY0021</a> or <a href="#ERRZDDY0023">zerr:ZDDY0023</a>,
+if the index is not among the statically known indexes or the available indexes.
+</li>
+<li>
+[<a href="#ERRZDDY0025">zerr:ZDDY0025</a>], if the number of search keys is not
+equal to the number of keyspecs found in the index declaration.
+</li>
+<li>
+[err:XPTY0004], if a non-empty seach key is given, whose type does not match 
+the sequence type specified in the corresponding keyspec.
+</li>
+</ul>
 
 
 <strong>idml:probe-index-point-general</strong>
 
+
 <a name="probe_index_point_general" id="probe_index_point_general"></a>
 \code
   idml:probe-index-point-general($indexUri as xs:QName,
-                                  $keys     as xs:anyAtomicType*) as node()*
+                                 $keys     as xs:anyAtomicType*) as node()*
 \endcode
 
-This method is supported by general indexes only [<a href="#ERRZDDY0029">
-zerr:ZDDY0029</a>]. The search condition is specified as a <strong>search 
-sequence</strong> consisting of an arbitrary number of <strong>search keys
-</strong>, where each search key is an atomic item. If the search sequence 
-is non-empty, the type of each search key must match the atomic type specified 
-by the IndexKeyTypeDecl of the index; otherwise, a type error is raised [err:XPTY0004]. 
-
-The result of this function is either an error or the set of domain nodes for which 
-the following xquery condition returns true:
+The probe-index-point-general function retrieves the domain nodes associated by 
+general equality with a given <strong>search sequence</strong>. The search
+sequence consists of an arbitrary number of <strong>search keys</strong>, where 
+each search key is an atomic item. The function is supported by general indexes
+only [<a href="#ERRZDDY0029">zerr:ZDDY0029</a>]. Its result is either an error 
+or the set of domain nodes for which the following xquery expression returns true:
 
 \code
 $keys = $node/keyExpr
 \endcode
 
-where keyExpr is the expression specified in the keyspec of the index.
+where keyExpr is the expression specified in the keyspec of the index (remember
+that for general indexes, there can be only one keyspec).
+
+In addition to the errors that may be raised by the above expression, the
+probe-index-point-value function may raise the following errors:
+
+<ul>
+<li>
+ <a href="#ERRZDDY0021">zerr:ZDDY0021</a> or <a href="#ERRZDDY0023">zerr:ZDDY0023</a>,
+if the index is not among the statically known indexes or the available indexes.
+</li>
+<li>
+[<a href="#ERRZDDY0029">zerr:ZDDY0029</a>], if the index is not general.
+</li>
+<li>
+[err:XPTY0004], if the search sequence contains a search key, whose type does 
+not match the sequence type specified in the keyspec of the index.
+</li>
+</ul>
 
 
 <strong>idml:probe-index-range-value</strong>
+
 
 <a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code
@@ -1887,22 +1906,22 @@ where keyExpr is the expression specified in the keyspec of the index.
                           $upperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
-The probe-index-range-value function can be invoked on range indices only 
-(value or general) [<a href="#ERRZDDY0026">zerr:ZDDY0026</a>]. The search 
-condition is specified as a number M of <strong>rangespecs</strong>, where
-each rangespec consists of six values. The number M must be greater than 
-0 and less than or equal to the number N of keyspecs found in the declaration 
-of the given index [<a href="#ERRZDDY0025">zerr:ZDDY0025</a>]. If M is less 
+The probe-index-range-value function retrieves the domain nodes associated by 
+value order-comparison (operators le, lt, ge, gt) with a given <strong>search 
+box</strong>. The search box is specified as a number M of <strong>rangespecs
+</strong>, where each rangespec consists of six values. The number M must be 
+greater than 0 and less than or equal to the number N of keyspecs found in the 
+index declaration [<a href="#ERRZDDY0025">zerr:ZDDY0025</a>]. If M is less 
 than N, then the "missing" rangespecs are assumed to have the following 
 value: [(), (), false, false, false, false]. As a result, from now on, we
 can assume that M is equal to N (Remember that for general indexes, there 
 can be only one IndexKeySpec, and as a result, for general indexes, M = N = 1).
 
 The i<sup>th</sup> rangespec corresponds to the i<sup>th</sup> keyspec, and 
-specifies a condition on the key values that are produced by evaluating that
-keyspec for every domain node. Specifically, we define the i<sup>th</sup>
+specifies a search condition on the key values that are produced by evaluating
+that keyspec for every domain node. Specifically, we define the i<sup>th</sup>
 <strong>rangespec result</strong> as the set of domain nodes for which the 
-following xquery condition returns true:
+following xquery expression returns true:
 
 \code
 if ($haveLowerBound-i and $haveUpperBound-i) then
@@ -1920,25 +1939,39 @@ of the index, lop is either the le or the lt operator depending on whether
 $lowerBoundsIncluded-i is true or false, and uop is either the le or the 
 lt operator depending on whether $upperBoundsIncluded-i is true or false.
 
-In computing the i<sup>th</sup> rangespec result, a type error [err:XPTY0004]
-is raised in the following cases: (a) $haveLowerBound-i is true and
-$lowerBound-i is an atomic item whose type does not match the atomic
-type specified by i<sup>th</sup> keyspec, or (b) $haveUpperBound-i is 
-true and $upperBound-i is an atomic item whose type does not match 
-the atomic type specified by i<sup>th</sup> keyspec, or (c) the index is general
-and its multi-key flag is true, or (d) the index is general, its untyped flag
-is true, $haveLowerBound-i is true, and $lowerBound-i is
-an atomic item whose type is something other than xs:untypedAtomic, xs:string, 
-or xs:anyURI (or subtype of these), or (e) the index is general, its untyped flag
-is true, $haveUpperBound-i is true, and $upperBound-i is
-an atomic item whose type is something other than xs:untypedAtomic, xs:string, 
-or xs:anyURI (or subtype of these).
+The result of the probe-index-range-value function is either an error, or the
+intersection of all the rangespec results. In addition to the errors that may 
+be raised by a rangespec expression, the function may raise the following errors:
 
-The result of the probe-index-range-value is either one of the errors described
-above, or the intersection of all the rangespec results.
+<ul>
+<li>
+ <a href="#ERRZDDY0021">zerr:ZDDY0021</a> or <a href="#ERRZDDY0023">zerr:ZDDY0023</a>,
+if the index is not among the statically known indexes or the available indexes.
+</li>
+<li>
+[<a href="#ERRZDDY0026">zerr:ZDDY0026</a>], if the index is not a range index.
+</li>
+<li>
+[<a href="#ERRZDDY0025">zerr:ZDDY0025</a>], if the number of rangespecs passed 
+as arguments is zero or greater than the number of keys declared for the index.
+</li>
+<li>
+[err:XPTY0004], if $haveLowerBound-i is true and $lowerBound-i is an atomic 
+item whose type does not match the sequence type specified by the i<sup>th</sup> 
+keyspec, or $haveUpperBound-i is true and $upperBound-i is an atomic item 
+whose type does not match the sequence type specified by the i<sup>th</sup> keyspec.
+</li>
+<li>
+[<a href="#ERRZDDY0034">zerr:ZDDY0034</a>], if (a) the index is general (in which 
+case there is only one rangespac), (b) the index is untyped, (c) there is both a
+lower and an upper bound, and (d) if T1 and T2 are the types of the lower and 
+upper bound, neither T1 is a subtype of T2 nor T2 is a subtype of T1.   
+</li>
+</ul>
 
 
 <strong>idml:probe-index-range-general</strong>
+
 
 <a name="probe_index_range_general" id="probe_index_range_general"></a>
 \code
@@ -1951,15 +1984,13 @@ above, or the intersection of all the rangespec results.
                             $upperBoundIncluded  as xs:boolean) as node()*
 \endcode
 
-This method is supported by general range indexes only [<a href="#ERRZDDY0030">
-zerr:ZDDY0030</a>]. The search condition is specified as two sequences of atomic
-search key items and four boolean values. If any of the search sequences is
-non-empty, the type of each atomic item in it must match the atomic type specified 
-by the IndexKeyTypeDecl of the index; otherwise, a type error is raised 
-[zerr:XPTY0004]. 
-
-The result of this function is either an error or the set of domain nodes for 
-which the following xquery expression returns true:
+The probe-index-range-general function retrieves the domain nodes associated
+by general order-comparison (operators <=, <, >=, >) with one or two
+<strong>search sequences</strong>. Each search sequence consists of an 
+arbitrary number of <strong>search keys</strong>, where each search key is 
+an atomic item. This method is supported by general range indexes only 
+[<a href="#ERRZDDY0030">zerr:ZDDY0030</a>]. Its result is either an error or
+the set of domain nodes for which the following xquery expression returns true:
 
 \code
 if ($haveLowerBound and $haveUpperBound) then
@@ -1972,10 +2003,29 @@ else
   fn:true()
 \endcode
 
-where keyExpr is the expression specified in the keySpec of the index,
+where keyExpr is the expression specified in the keyspec of the index,
 lop is either the <= or the < operator depending on whether $lowerBoundsIncluded
 is true or false, and uop is either the <= or the < operator depending on whether
 $upperBoundsIncluded is true or false.
+
+In addition to the errors that may be raised by the above expression, the
+probe-index-point-value function may raise the following errors:
+
+<ul>
+<li>
+ <a href="#ERRZDDY0021">zerr:ZDDY0021</a> or <a href="#ERRZDDY0023">zerr:ZDDY0023</a>,
+if the index is not among the statically known indexes or the available indexes.
+</li>
+<li>
+[<a href="#ERRZDDY0030">zerr:ZDDY0030</a>], if the index is not a general range index.
+</li>
+<li>
+[err:XPTY0004], if $haveLowerBound is true and $lowerBoundKeys constains an
+atomic item whose type does not match the sequence type specified by the index 
+keyspec, or $haveUpperBound is true and $upperBoundKeys contains an atomic item 
+whose type does not match the sequence type specified by the index keyspec.
+</li>
+</ul>
 
 
 \subsection index_maintenance Index Maintenance
@@ -2293,8 +2343,8 @@ cannot appear in a main module.
   <a name="ERRZDST0024" id="ERRZDST0024"></a>zerr:ZDST0024, The declaration for
 index specifies multiple values for the same property.
 
-  <a name="ERRZDST0025" id="ERRZDST0025"></a>zerr:ZDST0025, The declaration for
-index specifies conflicting property values.
+  <a name="ERRZDST0025" id="ERRZDST0025"></a>zerr:ZDST0025, The index cannot be
+declared as unique.
 
   <a name="ERRZDST0026" id="ERRZDST0026"></a>zerr:ZDST0026, The declaration for
 index contains an invalid property value.
@@ -2447,6 +2497,9 @@ constraint with URI is not declared.
 
   <a name="ERRZDDY0033" id="ERRZDDY0033"></a>zerr:ZDDY0033, Conditions for
 integrity constraint were not met on collection.
+
+  <a name="ERRZDDY0034" id="ERRZDDY0034"></a>zerr:ZDDY0034, Index range-value
+ probe has search keys with incompatible types
 </strong>
 
 */

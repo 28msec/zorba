@@ -56,9 +56,9 @@ locations. It does so in two steps:
 the algorithm listed below.
 
 <li>Second, Zorba attempts to load the relative path within every
-directory listed on its <i>module path</i>. (Note: the terminology
-here is a misnomer; the same mechanism is used for all URIs, not just
-modules.)
+directory listed on its <i>URI path</i>. (Through this documentation,
+a "path" is defines as "an ordered list of directories in the
+filesystem.)
 
 </ol>
 
@@ -71,7 +71,7 @@ rewritten by the following steps:
 <ol>
 
 <li>The domain (authority) component of the URI is reversed, and then
-transformed into a path notation separated by forward slashes:
+transformed into a relative filename separated by forward slashes:
 <code>www.example.com</code> => <code>com/example/www</code>
 
 <li>The path component of the URI is appended:
@@ -100,35 +100,35 @@ So, the final relative path in our example would be
 
 </ul>
 
-\subsection modulepath The "Module Path"
+\subsection uripath Zorba's URI Path
 
 Zorba will now attempt to find the named file relative to each
-directory in the "module path". By default, the only entry on the
-module path is the directory
-<code>/usr/share/zorba-2.0.0/modules/</code> (on Unix and MacOS X) or
+directory in the <i>URI Path</i>. By default, the only entry on the
+URI path is the directory
+<code>/usr/share/zorba/uris/</code> (on Unix and MacOS X) or
 <code>C:\\Program Files\\Zorba
-2.0.0\\share\\zorba-2.0.0\\modules</code> (on Windows). So, to
+2.1.0\\share\\zorba\\uris</code> (on Windows). So, to
 complete this example, assuming Zorba is installed on a Unix system in
 the default location, Zorba will attempt to resolve the module
 namespace URI <code>http://www.example.com/modules/utils</code> to the
 file
 
 \code
-   /usr/share/zorba-2.0.0/modules/com/example/www/modules/utils.xq
+   /usr/share/zorba/modules/com/example/www/modules/utils.xq
 \endcode
 
-If you have modules installed in other locations on your system, you
-may provide additional search paths either by passing the
-<code>--module-path</code> command-line argument to Zorba, or by
-setting the <code>ZORBA_MODULE_PATH</code> environment variable. In
-both cases, the value is an ordered list of filesystem paths separated
-by ":" (on Unix/MacOS X) or ";" (on Windows). Zorba will search each
-path on the module path in the order specified, and the first match
-found will be used. So, for example, if you invoke Zorba as follows
-(example is for a Unix system):
+If you have modules or schemas installed in other locations on your
+system, you may provide additional search directories either by
+passing the <code>--uri-path</code> command-line argument to Zorba, or
+by setting the <code>ZORBA_URI_PATH</code> environment variable. In
+both cases, the value is an ordered list of filesystem directories
+separated by ":" (on Unix/MacOS X) or ";" (on Windows). Zorba will
+search each directory on the URI path in the order specified, and the
+first match found will be used. So, for example, if you invoke Zorba
+as follows (example is for a Unix system):
 
 \code
-   zorba --module-path '/home/foo/xquery/modules:/opt/share/xquery/modules'
+   zorba --uri-path '/home/foo/xquery/uris:/opt/share/xquery/uris'
      -q 'import module namespace utils="http://www.example.com/modules/utils"; 1'
 \endcode
 
@@ -136,31 +136,108 @@ Zorba will attempt to load the module from the following locations, in
 order:
 
 \code
-   /home/foo/xquery/modules/com/example/www/modules/utils.xq
-   /opt/share/xquery/modules/com/example/www/modules/utils.xq
-   /usr/share/zorba-2.0.0/modules/com/example/www/modules/utils.xq
+   /home/foo/xquery/uris/com/example/www/modules/utils.xq
+   /opt/share/xquery/uris/com/example/www/modules/utils.xq
+   /usr/share/zorba/uris/com/example/www/modules/utils.xq
 \endcode
 
-If, after searching all module path directories, no match is found for
+If, after searching all URI path directories, no match is found for
 a given URI, Zorba will by default fall back to interpretting the URI
-as a URL and loading the resource via HTTP (at least, assuming the URI
+as a URL and loading the resource via HTTP (assuming the URI
 has the http: scheme).
+
+\section libpath Zorba's Library Path
+
+The above URI path mechanism is used for all URIs that are resolved by
+Zorba - most especially module and schema imports, but also full-text
+thesaurus and stop-word lists, documents, and so on.
+
+When considering modules in particular, however, there is another
+important path: the Library Path. Zorba will look on this path when it
+needs to load dynamic libraries containing the implementation of
+external functions for a module (ie, those functions implemented in
+C++; see \ref mod_author_cpp). This path is separate from the URI
+path because on certain systems - most notably Fedora, but also other
+Linux distributions - it is important that platform-dependent binary
+files (such as dynamic libraries) be installed in a separate directory
+structure from platform-independent files (such as <code>.xq</code>
+module files and <code>.xsd</code> schema files).
+
+The Library Path mechanism is exactly parallel to the URI Path
+mechanism.  The default, built-in entry on this path is
+<code>/usr/lib/zorba</code> (on Unix and MacOS X) and
+<code>C:\\Program Files\\Zorba 2.1.0\\lib\\zorba</code> (on
+Windows). You can add directories to this path using the
+<code>--lib-path</code> command-line argument, or by setting the
+<code>ZORBA_LIB_PATH</code> environment variable.
+
+\section internalpaths Internal (Core) Paths
+
+There is actually one additional built-in directory on Zorba's URI
+Path, and one additional built-in directory on Zorba's Library Path,
+in addition to the default values mentioned above. These directories
+hold Zorba's built-in "core" modules (see \ref core_modules). The
+directories are subdirectories of the default directory named
+"core/ZORBA_VERSION". So for example, for Zorba 2.1.0 on Unix, the
+default internal URI directory is
+<code>/usr/share/zorba/uris/core/2.1.0</code> and the default internal
+library directory is <code>/usr/lib/zorba/core/2.1.0</code>.
+
+These directories are separate to make it easier to upgrade Zorba, or
+support multiple installed versions of Zorba, while allowing non-core
+modules to be installed and versioned indepedently of the Zorba
+version. Normally you should not modify the contents of these
+directories.
+
+\section configurepaths Changing the Default Paths
+
+All four paths mentioned above - the core and non-core URI Path, and
+the core and non-core Library Path - have compiled-in default values
+as discussed. All four of these default values can be modified at
+Zorba build time to meet your environment's requirements. You can do
+this by specifying alternate values for the following CMake variables:
+
+\code
+ZORBA_NONCORE_URI_DIR
+ZORBA_CORE_URI_DIR
+ZORBA_NONCORE_LIB_DIR
+ZORBA_CORE_LIB_DIR
+\endcode
+
+Note that these are <i>relative</i> directories, and will be resolved
+relative to <code>CMAKE_INSTALL_PREFIX</code>.
+
+\section modulepath Zorba's "Module Path"
+
+Earlier versions of Zorba had a single path for specifying where both
+platform-dependent library files and platform-independent module and
+schema files were located. This was somewhat inaccurately named the
+"module path". For backwards compatibility, Zorba still supports a
+<code>--module-path</code> command-line argument and a
+<code>ZORBA_MODULE_PATH</code> environment variable (and the C++ API
+has a <code>StaticContext::setModulePaths()</code> method).
+Specifying a set of directories as the "module path" using any of
+these mechanisms is exactly the same as specifying that set of
+directories as both the URI path and library path.
+
+The Module Path is deprecated, and these mechanisms may be removed in
+a future major version of Zorba. There is no "default module path".
 
 \section cplusplus C++ API for URI Resolving
 
-\subsection extmodulepath Modifying the Module Path programmatically
+\subsection cppuripath Modifying the URI Path programmatically
 
 The simplest modification to Zorba's default behavior is setting the
-module-path programmatically. This allows you to have different module
+URI path programmatically. This allows you to have different URI
 paths per static context, if you wish.
 
 The <code>StaticContext</code> C++ API class provides the
-<code>setModulePaths()</code> method for this purpose. It is passed a
+<code>setURIPath()</code> method for this purpose. It is passed a
 vector of <code>zorba::String</code> values, each being an absolute
-path to add to the module path.
+directory to add to the URI path.
 
 For example, the following code snippet creates a
-<code>StaticContext</code> object; adds two module paths to the module
+<code>StaticContext</code> object; adds two directories to the URI
 path component of this static context; and compiles and executes a
 query given the information that is present in this static context
 (passed as the second parameter to the <code>compileQuery()</code>
@@ -170,12 +247,12 @@ method).
    // Create a new static context
    zorba::StaticContext_t staticCtx = zorba->createStaticContext();
    
-   // Set the module paths
-   std::vector<zorba::String> modulePaths(2);
-   modulePaths[0] = "/home/foo/xquery/modules";
-   modulePaths[1] = "/opt/share/xquery/modules";
+   // Set the URI Path
+   std::vector<zorba::String> uriPath(2);
+   uriPath[0] = "/home/foo/xquery/uris";
+   uriPath[1] = "/opt/share/xquery/uris";
    
-   staticCtx->setModulePaths(modulePaths);
+   staticCtx->setURIPath(uriPath);
    
    // Compile a query using the static context created above
    zorba::XQuery_t query = zorba->compileQuery(
@@ -185,6 +262,12 @@ method).
    // execute the compiled query printing the result to standard out
    std::cout << query << std::endl;
 \endcode
+
+\subsection cpplibpath Modifying the Library Path programmatically
+
+Similarly, <code>StaticContext</code> has a method named
+<code>setLibPath()</code> for specifying the Library Path to use.  In
+operation it behaves exactly like <code>setURIPath()</code>.
 
 \subsection mapresolve URI Mappers and URL Resolvers
 
@@ -228,9 +311,8 @@ Zorba will raise an appropriate "resource not found" error.
 \subsubsection urimappers URI Mappers
 
 Zorba includes a few built-in URI Mappers. For instance, the mechanism
-which iterates through the module path and produces a set of
-filesystem paths where the URI might be located is implemented as a
-URI Mapper.
+which iterates through the URI path and produces a set of filesystem
+files where the URI might be located is implemented as a URI Mapper.
 
 To implement your own URI Mapper, subclass the C++ API class
 <code>URIMapper</code> and implement the <code>mapURI()</code> method:
