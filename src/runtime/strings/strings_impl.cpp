@@ -562,14 +562,9 @@ bool SubstringIntOptIterator::nextImpl(
       {
         start = to_xs_int(startItem->getIntegerValue());
       }
-      catch(std::range_error range_err)
+      catch(std::range_error)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZXQD0004_INVALID_PARAMETER,
-          ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
-                      lenItem->getIntegerValue()),
-          ERROR_LOC( loc )
-        );
+        start = (xs_int)utf8_string<zstring>(strval).length();
       }
 
       if( theChildren.size() == 2)
@@ -608,14 +603,9 @@ bool SubstringIntOptIterator::nextImpl(
         {
           len = to_xs_int(lenItem->getIntegerValue());
         }
-        catch(std::range_error range_err)
+        catch(std::range_error)
         {
-          throw XQUERY_EXCEPTION(
-            zerr::ZXQD0004_INVALID_PARAMETER,
-            ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
-                        lenItem->getIntegerValue()),
-            ERROR_LOC( loc )
-          );
+          len = (xs_int)(utf8_string<zstring>(strval).length() - start + 1);
         }
 
         if (len >= 0)
