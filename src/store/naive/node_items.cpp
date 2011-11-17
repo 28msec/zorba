@@ -745,9 +745,6 @@ OrdPathNode::OrdPathNode(
   if (parent == NULL)
   {
     theOrdPath.setAsRoot();
-
-    if (nodeKind != store::StoreConsts::documentNode)
-      theOrdPath.appendComp(1);
   }
   else
   {
@@ -1147,7 +1144,7 @@ const OrdPath* InternalNode::getFirstChildOrdPathBefore(csize pos) const
   Return the position of the given node among the children of "this". If the
   given node is not a child of "this", return the number of children of "this".
 ********************************************************************************/
-csize InternalNode::findChild(XmlNode* child) const
+csize InternalNode::findChild(const XmlNode* child) const
 {
   const_iterator begin = childrenBegin();
   const_iterator end = childrenEnd();
@@ -2663,9 +2660,7 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    throw XQUERY_EXCEPTION_VAR(
-      ecode, ERROR_PARAMS( qname->show(), prefix, ns2 )
-    );
+    throw XQUERY_EXCEPTION_VAR(ecode, ERROR_PARAMS(qname->show(), prefix, ns2));
   }
 }
 
@@ -2681,11 +2676,9 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   for (; ite != end; ++ite)
   {
     AttributeNode* attr = static_cast<AttributeNode*>(*ite);
-    if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
+    if (attr != NULL && !attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
-      );
+      throw XQUERY_EXCEPTION(err::XQDY0025, ERROR_PARAMS(attrName->getStringValue()));
     }
   }
 }
@@ -2716,9 +2709,7 @@ void ElementNode::checkUniqueAttrs() const
 
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
-        throw XQUERY_EXCEPTION(
-          err::XUDY0021, ERROR_PARAMS( attrName->getStringValue() )
-        );
+        throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(attrName->getStringValue()));
       }
     }
   }
@@ -3603,6 +3594,78 @@ XmlNode* TextNode::copyInternal(
   return copyNode;
 }
 
+
+#ifndef TEXT_ORDPATH
+/*******************************************************************************
+
+********************************************************************************/
+void TextNode::getOrdPath(OrdPath& ordPath) const
+{
+  InternalNode* parent = static_cast<InternalNode*>(getParent());
+
+  if (parent == NULL)
+  {
+    // The text node is the root
+    ordPath.setAsRoot();
+    return;
+  }
+
+  ZORBA_FATAL(parent->theOrdPath.isValid(),"Parent ordpath is invalid.");
+
+  csize pos = parent->findChild(this);
+  csize numChildren = parent->numChildren();
+  csize numAttrs = parent->numAttrs();
+
+  if (numChildren == 1 && numAttrs == 0)
+  {
+    // Parent has no other children and no attributes
+    ordPath = parent->theOrdPath;
+    ordPath.appendComp(1);
+  }
+  else 
+  {
+    // Parent has either children or attributes
+    
+    // The smallest Ordpath at the same level of the textNode which must
+    // be greater than the OrdPath of the textNode
+    const OrdPath* upperOrdPath = NULL;
+    
+    // The biggest Ordpath at the same level of the textNode which must 
+    // be smaller than the OrdPath of the textNode
+    const OrdPath* lowerOrdPath = NULL; 
+    
+    if (pos < numChildren-1) 
+    {
+      //There could be an upperOrdPath
+      upperOrdPath = parent->getFirstChildOrdPathAfter(pos);
+    }
+    
+    if (pos > 0)
+    {
+      //There could be a lowerOrdPath in the children
+      lowerOrdPath = parent->getFirstChildOrdPathBefore(pos-1);
+    }
+    
+    if (lowerOrdPath == NULL && numAttrs > 0) 
+    {
+      //There is a lowerOrdPath in the attributes
+      lowerOrdPath = &parent->getAttr(numAttrs-1)->theOrdPath;
+    }
+    
+    if (upperOrdPath != NULL && lowerOrdPath != NULL)
+      OrdPath::insertInto(parent->theOrdPath, *lowerOrdPath, *upperOrdPath, ordPath);
+
+    else if (upperOrdPath == NULL && lowerOrdPath != NULL)
+      OrdPath::insertAfter(parent->theOrdPath, *lowerOrdPath, ordPath);
+
+    else if (upperOrdPath != NULL && lowerOrdPath == NULL)
+      OrdPath::insertBefore(parent->theOrdPath, *upperOrdPath, ordPath);
+
+    else
+      ZORBA_FATAL(0,"Adjacent text nodes.");
+  }
+}
+#endif
 
 
 /*******************************************************************************

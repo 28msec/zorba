@@ -52,8 +52,8 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring strval;
   std::string uriStr;
   static_context* lSctx;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::StreamResource* lStream;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::StreamResource* lStream;
   std::istream* lFile;
   zstring lErrorMessage;
 
@@ -78,8 +78,8 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lSctx = theSctx;
   lItem->getStringValue2(strval);
   lURI = lSctx->resolve_relative_uri(strval);
-  lResource = lSctx->resolve_uri(lURI, impl::EntityData::MODULE, lErrorMessage);
-  lStream = static_cast<impl::StreamResource*>(lResource.get());
+  lResource = lSctx->resolve_uri(lURI, internal::EntityData::MODULE, lErrorMessage);
+  lStream = static_cast<internal::StreamResource*>(lResource.get());
   if ( ! lStream )
   {
     throw XQUERY_EXCEPTION(

@@ -121,6 +121,7 @@ protected:
 
   bool           theIsPrivate; 
   bool           theIsMutable;
+  bool           theHasInitializer;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -154,6 +155,10 @@ public:
   bool is_external() const { return theIsExternal; }
 
   void set_external(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
 
   bool is_mutable() const { return theIsMutable; }
 

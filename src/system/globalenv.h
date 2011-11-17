@@ -28,10 +28,13 @@ class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
 
-namespace impl {
+namespace internal {
 class HTTPURLResolver;
 class FileURLResolver;
 class AutoFSURIMapper;
+#ifndef ZORBA_NO_FULL_TEXT
+class ThesaurusURLResolver;
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 namespace store {
@@ -57,9 +60,12 @@ private:
   XQueryXConvertor            * xqueryx_convertor;
 #endif
 
-  impl::HTTPURLResolver  * m_http_resolver;
-  impl::FileURLResolver  * m_file_resolver;
-  impl::AutoFSURIMapper  * m_autofs_mapper;
+  internal::HTTPURLResolver       * m_http_resolver;
+  internal::FileURLResolver       * m_file_resolver;
+  internal::AutoFSURIMapper       * m_autofs_mapper;
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::ThesaurusURLResolver  * m_thesaurus_resolver;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 public:
 
@@ -92,11 +98,15 @@ public:
 
   store::IteratorFactory* getIteratorFactory();
 
-  impl::HTTPURLResolver* getHTTPURLResolver() const { return m_http_resolver; }
+  internal::HTTPURLResolver* getHTTPURLResolver() const { return m_http_resolver; }
 
-  impl::FileURLResolver* getFileURLResolver() const { return m_file_resolver; }
+  internal::FileURLResolver* getFileURLResolver() const { return m_file_resolver; }
 
-  impl::AutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
+  internal::AutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::ThesaurusURLResolver* getThesaurusURLResolver() const { return m_thesaurus_resolver; }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();

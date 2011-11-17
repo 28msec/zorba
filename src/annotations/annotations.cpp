@@ -387,8 +387,7 @@ bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
 void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
 {
   // make sure we don't have more annotations then max 64 bit
-  assert( static_cast<uint64_t>(AnnotationInternal::zann_end) <
-          std::numeric_limits<uint64_t>::max() );
+  assert(AnnotationInternal::zann_end < 64);
 
   RuleBitSet lCurrAnn;
 

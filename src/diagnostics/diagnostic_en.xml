@@ -1739,7 +1739,11 @@
     <diagnostic code="ZAPI0009" name="XQUERY_NOT_COMPILED_IN_DEBUG_MODE">
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
-
+     
+     <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
+       <value>"$1": undefined $2</value>
+     </diagnostic>
+     
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
     </diagnostic>

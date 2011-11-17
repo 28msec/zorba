@@ -114,8 +114,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
@@ -153,15 +153,15 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
 
   lResource = theSctx->resolve_uri(resolvedURIString,
-                                   impl::EntityData::COLLECTION,
+                                   internal::EntityData::COLLECTION,
                                    lErrorMessage);
 
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
-      err::FODC0004,
+      err::FODC0002,
       ERROR_PARAMS( resolvedURIString, lErrorMessage ),
       ERROR_LOC( loc )
     );
@@ -236,8 +236,8 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 {
   store::Item_t lURI;
   store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
@@ -274,10 +274,10 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 
 
   lResource = theSctx->resolve_uri(resolvedURIString, 
-                                   impl::EntityData::COLLECTION,
+                                   internal::EntityData::COLLECTION,
                                    lErrorMessage);
 
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {

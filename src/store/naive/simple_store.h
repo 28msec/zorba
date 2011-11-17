@@ -270,18 +270,6 @@ public:
         const zstring& baseUri,
         const zstring& docUri,
         std::istream& stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream* stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& stream,
         const store::LoadProperties& loadProperties);
 
   store::Item_t loadDocument(
@@ -330,6 +318,8 @@ public:
   store::Iterator_t distinctNodes(store::Iterator* input, bool aAllowAtomics);
 
   store::Iterator_t checkDistinctNodes(store::Iterator* input);
+
+  bool getStructuralInformation(store::Item_t& result, const store::Item* node);
 
   bool getPathInfo(
         const store::Item* docUri,
