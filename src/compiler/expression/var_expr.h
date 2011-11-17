@@ -106,6 +106,10 @@ typedef rchandle<var_expr> var_expr_t;
   theIsMutable:
   -------------
   Whether this is a mutable variable or not (for prolog and local vars).
+
+  theHasInitializer:
+  ------------------
+   Whether the variable has an initializing expr or not (for prolog vars only).
 *******************************************************************************/
 class var_expr : public expr
 {
@@ -165,6 +169,8 @@ protected:
 
   bool                  theIsMutable;
 
+  bool                  theHasInitializer;
+
 public:
   SERIALIZABLE_CLASS(var_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(var_expr, expr,theFlworClause,theCopyClause)
@@ -197,6 +203,10 @@ public:
   bool is_external() const { return theIsExternal; }
 
   void set_external(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
 
   bool is_mutable() const { return theIsMutable; }
 

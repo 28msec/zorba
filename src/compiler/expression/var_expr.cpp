@@ -89,7 +89,8 @@ var_expr::var_expr(
   theUDF(NULL),
   theIsExternal(false),
   theIsPrivate(false),
-  theIsMutable(true)
+  theIsMutable(true),
+  theHasInitializer(false)
 {
   compute_scripting_kind();
 
@@ -114,6 +115,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsPrivate;
   ar & theIsExternal;
   ar & theIsMutable;
+  ar & theHasInitializer;
 }
 
 

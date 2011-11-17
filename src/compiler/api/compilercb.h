@@ -159,6 +159,8 @@ public:
 
   bool                      theIsUpdating;
 
+  bool                      theIsSequential;
+
   long                      theTimeout;
 
   ulong                     theTempIndexCounter;
@@ -184,6 +186,10 @@ public:
   void setIsUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
 
   bool isUpdating() const { return theIsUpdating; }
+
+  void setIsSequential(bool aIsSequential) {theIsSequential = aIsSequential;}
+
+  bool isSequential() const { return theIsSequential;}
 
   static_context* getStaticContext(short id);
 };
