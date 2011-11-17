@@ -35,31 +35,40 @@ class StaticContextImpl;
 
 
 /*******************************************************************************
-  thePlan          : The runtime plan for the function body. This is created
-                     during UDFunctionCallIterator::openImpl(), if it has not
-                     not been created already (during the openImpl() method of
-                     another UDFunctionCallIterator on the same udf). A pointer
-                     to this plan is also stored in the udf obj itself, and
-                     that's how we know if it has been created already or not.
-  thePlanState     : The plan state to run thePlan with. The PlanState obj is
-                     created during UDFunctionCallIterator::openImpl(), but the
-                     actual state block is created an initialized the 1st time
-                     that UDFunctionCallIterator::nextImpl() is called (at that
-                     time open() is invoked on thePlan).
-  thePlanStateSize : The size of the plan state block.
-  thePlanOpen      : Whether thePlan has been opened already or not.
-  theArgWrappers   : For each argument of this function call, theArgWrappers 
-                     stores a plan iterator wrapper over the sub plan that 
-                     computes the arg expr. This wrapping is needed because
-                     the body plan and the arg sub plans operate in different
-                     plan states. Note: Withinh the function body, there may 
-                     exist more than one references to an arg var V, but these 
-                     references are "mutually exclusive", ie, at most one of 
-                     the references will actually be reached during each 
-                     particular execution of the body. So, it is never the case 
-                     that the arg expr will have more than one consumers, and as
-                     a result we can bind all those V references to the same
-                     arg wrapper.
+  thePlan:
+  --------
+  The runtime plan for the function body. This is created during 
+  UDFunctionCallIterator::openImpl(), if it has not not been created already 
+  (during the openImpl() method of another UDFunctionCallIterator on the same
+  udf). A pointer to this plan is also stored in the udf obj itself, and that's
+  how we know if it has been created already or not.
+
+  thePlanState:
+  -------------
+  The plan state to run thePlan with. The PlanState obj is created during 
+  UDFunctionCallIterator::openImpl(), but the actual state block is created an
+  initialized the 1st time that UDFunctionCallIterator::nextImpl() is called 
+  (at that time open() is invoked on thePlan).
+
+  thePlanStateSize:
+  -----------------
+  The size of the plan state block.
+
+  thePlanOpen:
+  ------------
+  Whether thePlan has been opened already or not.
+
+  theArgWrappers:
+  ---------------
+  For each argument of this function call, theArgWrappers stores a plan iterator
+  wrapper over the sub plan that computes the arg expr. This wrapping is needed 
+  because the body plan and the arg sub plans operate in different plan states. 
+  Note: Withinh the function body, there may exist more than one references to 
+  an arg var V, but these references are "mutually exclusive", ie, at most one
+  of the references will actually be reached during each particular execution of
+  the body. So, it is never the case that the arg expr will have more than one 
+  consumers, and as a result we can bind all those V references to the same arg
+  wrapper.
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
@@ -67,6 +76,7 @@ public:
   PlanIterator                 * thePlan;
   PlanState                    * thePlanState;
   uint32_t                       thePlanStateSize;
+  dynamic_context              * theLocalDCtx;
   bool                           thePlanOpen;
   std::vector<store::Iterator_t> theArgWrappers;
 
@@ -81,8 +91,13 @@ public:
 
 
 /*******************************************************************************
-  theUDF       : Pointer to the udf object.
-  theIsDynamic :
+  theUDF: 
+  -------
+  Pointer to the udf object.
+
+  theIsDynamic:
+  -------------
+
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 

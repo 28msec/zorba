@@ -166,11 +166,20 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 }
 
 
-void ZorbaCMDProperties::getModulePaths(std::string& aPaths) const
+void ZorbaCMDProperties::getModulePath(std::string& aPath) const
 {
-  aPaths = theModulePath;
+  aPath = theModulePath;
 }
 
+void ZorbaCMDProperties::getURIPath(std::string& aPath) const
+{
+  aPath = theUriPath;
+}
+
+void ZorbaCMDProperties::getLibPath(std::string& aPath) const
+{
+  aPath = theLibPath;
+}
 
 std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() const
 {

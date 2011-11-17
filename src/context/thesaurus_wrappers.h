@@ -54,16 +54,6 @@ private:
   zorba::Thesaurus::ptr api_thesaurus_;
 };
 
-class ThesaurusProviderWrapper : public ThesaurusProvider {
-public:
-  ThesaurusProviderWrapper( zorba::ThesaurusProvider const *p );
-
-  Thesaurus::ptr get_thesaurus( zstring const &uri,
-                                locale::iso639_1::type lang ) const;
-private:
-  zorba::ThesaurusProvider const *const api_thesaurus_provider_;
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace internal

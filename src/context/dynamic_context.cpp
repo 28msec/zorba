@@ -120,6 +120,7 @@ dynamic_context::VarValue::VarValue(const VarValue& other)
 dynamic_context::dynamic_context(dynamic_context* parent)
   :
   theParent(NULL),
+  keymap(NULL),
   theAvailableIndices(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
@@ -144,13 +145,20 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 ********************************************************************************/
 dynamic_context::~dynamic_context()
 {
-  for (uint32_t i = 0; i < keymap.size(); ++i)
+  if (keymap)
   {
-    dctx_value_t lValue = keymap.getentryVal(i);
-    if (lValue.type == dctx_value_t::ext_func_param_typed && lValue.func_param)
+    for (ValueMap::iterator lIter = keymap->begin();
+         lIter != keymap->end();
+         ++lIter)
     {
-      static_cast<ExternalFunctionParameter*>(lValue.func_param)->destroy();
+      dctx_value_t lValue = lIter.getValue();
+      if (lValue.type == dctx_value_t::ext_func_param_typed &&
+          lValue.func_param)
+      {
+        static_cast<ExternalFunctionParameter*>(lValue.func_param)->destroy();
+      }
     }
+    delete keymap;
   }
 
   if (theAvailableIndices)
@@ -167,30 +175,45 @@ store::Item_t dynamic_context::get_default_collection() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
   theDefaultCollectionUri = default_collection_uri;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
   theTimezone = tzone_seconds;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 long dynamic_context::get_implicit_timezone() const
 {
   return theTimezone;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
   this->theCurrentDateTime = aDateTimeItem;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::reset_current_date_time()
 {
   int lTimeShift = 0;
@@ -224,6 +247,9 @@ void dynamic_context::reset_current_date_time()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t dynamic_context::get_current_date_time() const
 {
   return theCurrentDateTime;
@@ -455,12 +481,28 @@ void dynamic_context::get_variable(
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::exists_variable(ulong varid)
+bool dynamic_context::is_set_variable(ulong varid) const
+{
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared ||
+      theVarValues[varid].theState == VarValue::declared)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool dynamic_context::exists_variable(ulong varid) const
 {
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    return false; // variable not found
+    return false;
   }
 
   return true;
@@ -572,7 +614,20 @@ bool dynamic_context::addExternalFunctionParam(
   val.type = dynamic_context::dctx_value_t::ext_func_param;
   val.func_param = aValue;
 
-  return keymap.put ( aName, val);
+  if (!keymap)
+  {
+    keymap = new ValueMap(8, false);
+  }
+
+  if (!keymap->insert(aName, val))
+  {
+    keymap->update(aName, val);
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 
@@ -583,17 +638,32 @@ bool dynamic_context::getExternalFunctionParam(
   const std::string& aName,
   void*& aValue) const
 {
+  if (!keymap)
+  {
+    if (theParent)
+    {
+      return theParent->getExternalFunctionParam(aName, aValue);
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::no_val;
   val.func_param = 0;
 
-  if ( !keymap.get(aName, val) ) 
+  ValueMap::iterator lIter = keymap->find(aName);
+  if ( lIter == keymap->end() )
   {
     if (theParent)
       return theParent->getExternalFunctionParam(aName, aValue);
     else
       return false;
   }
+
+  val = lIter.getValue();
 
   if (val.type == dynamic_context::dctx_value_t::ext_func_param)
   {
@@ -615,6 +685,11 @@ bool dynamic_context::addExternalFunctionParameter(
    const std::string& aName,
    ExternalFunctionParameter* aValue)
 {
+  if (!keymap)
+  {
+    keymap = new ValueMap(8, false);
+  }
+
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::ext_func_param_typed;
   val.func_param = aValue;
@@ -624,8 +699,15 @@ bool dynamic_context::addExternalFunctionParameter(
   {
     // destroy the object if it's already contained in the map
     lValue->destroy();
+    keymap->erase(aName);
+    keymap->insert(aName, val);
+    return false;
   }
-  return keymap.put ( aName, val);
+  else
+  {
+    keymap->insert(aName, val);
+    return true;
+  }
 }
 
 
@@ -635,11 +717,24 @@ bool dynamic_context::addExternalFunctionParameter(
 ExternalFunctionParameter*
 dynamic_context::getExternalFunctionParameter(const std::string& aName) const
 {
+  if (!keymap)
+  {
+    if (theParent)
+    {
+      return theParent->getExternalFunctionParameter(aName);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::no_val;
   val.func_param = 0;
 
-  if ( !keymap.get(aName, val) ) 
+  ValueMap::iterator lIter = keymap->find(aName);
+  if (lIter == keymap->end())
   {
     if (theParent)
       return theParent->getExternalFunctionParameter(aName);
@@ -647,27 +742,13 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
       return 0;
   }
 
+  val = lIter.getValue();
+
   ExternalFunctionParameter* lRes = 
   static_cast<ExternalFunctionParameter*>(val.func_param);
 
   return lRes;
 }
-
-/*
-std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
-{
-  std::auto_ptr<std::vector<zstring> > keys;
-  if (theParent != NULL)
-    keys.reset(theParent->get_all_keymap_keys());
-  else
-    keys.reset(new std::vector<zstring>);
-
-  for (unsigned int i=0; i<keymap.size(); i++)
-    keys->push_back(keymap.getentryKey(i));
-
-  return keys.release();
-}
-*/
 
 
 } // namespace zorba

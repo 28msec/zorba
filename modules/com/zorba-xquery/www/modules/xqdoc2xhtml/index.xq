@@ -1154,7 +1154,7 @@ declare %private function xqdoc2html:description($comment) {
  : @return the XHTML for the module annotations.
  :)
 declare %private function xqdoc2html:annotations-module($comment) {
-  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "library", "project", "custom")))]
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "project", "custom")))]
   return
     for $annotation in $annotations
     let $annName := local-name($annotation)
@@ -1195,7 +1195,7 @@ declare %private %ann:nondeterministic function xqdoc2html:module-resources(
 declare %private function xqdoc2html:module-dependencies(
     $xqdoc) {
   if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0 or
-      fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
+      fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]) > 0) then
     (<div class="section"><span id="module_dependencies">Module Dependencies</span></div>,
     xqdoc2html:imports($xqdoc))
   else
@@ -1238,10 +1238,10 @@ declare %private function xqdoc2html:imports(
     }
     </ul></p>
   else (),
-  if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
+  if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]) > 0) then
     <p>External C++ library dependencies:<ul>
       {
-      for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]
+      for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]
         return
          <li>{$library/node()}</li>
       }
@@ -1364,7 +1364,7 @@ declare %private function xqdoc2html:module-function-summary($functions)
                                fn:concat(fn:substring-before($description,"."),".") else ""
       order by $name, $param-number
       return
-        let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"\%",""),
+        let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"%",""),
             $isExternal := ends-with($signature, "external"),
             $paramsAndReturn := substring-after($signature,concat(':',$name)),
             $external := if(ends-with($signature,"external")) then "external" else ""

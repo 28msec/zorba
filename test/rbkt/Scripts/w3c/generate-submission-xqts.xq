@@ -64,6 +64,7 @@ else
     {
       for $test in $ctests/*:Site/*:Testing/*:Test
       let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+      order by $testname
       return
       if (fn:contains(fn:data($test),'StaticTyping')) then
         <test-case
@@ -82,12 +83,6 @@ else
           name="{$testname}"
           result="pass"
           comment="Opened W3C bug #11584."
-        />
-      else if($testname = 'fn-collection-2')then
-      <test-case
-          name="{$testname}"
-          result="pass"
-          comment="Opened W3C bug #12542."
         />
       else
         <test-case

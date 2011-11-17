@@ -30,6 +30,7 @@
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 
+#include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/zorba_exception.h"
 
@@ -45,6 +46,7 @@
 
 #include "context/static_context.h"
 
+#include "types/typeimpl.h"
 #include "types/typeops.h"
 
 #include "compiler/xqddf/collection_decl.h"
@@ -444,17 +446,10 @@ CollectionImpl::getAnnotations(std::vector<Annotation_t>& aAnnotations) const
     {
       store::Annotation_t lSAnn = *lIter;
 
-      std::vector<AnnotationLiteral_t> lILiterals;
-      std::vector<store::Item_t>::const_iterator lLiteral;
-      for (lLiteral = lSAnn->theLiterals.begin();
-           lLiteral != lSAnn->theLiterals.end();
-           ++lLiteral)
-      {
-        lILiterals.push_back(new AnnotationLiteral(*lLiteral));
-      }
+      std::vector<store::Item_t> lLiterals = lSAnn->theLiterals;
 
       aAnnotations.push_back(
-      new AnnotationImpl(new AnnotationInternal(lSAnn->theName, lILiterals)));
+      new AnnotationImpl(new AnnotationInternal(lSAnn->theName, lLiterals)));
     }
   }
   ZORBA_DM_CATCH

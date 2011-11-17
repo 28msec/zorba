@@ -1,9 +1,10 @@
 Zorba - The XQuery Processor
 
-version 2.x
+version 2.1
 
-  * Custom Full-text thesaurus.
-  * Fixed bug #3401971 (node-by-reference on dynamic collections)
+  * Modified C++ API to add isSequential, getExternalVariables, and 
+    isBoundExternalVariable Functions
+  * Custom Full-text thesaurus using Zorba URI resolver mechanism.
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
   sequence of integers)
   * documentation improvements
@@ -15,7 +16,6 @@ version 2.x
   * Fixed bug #3404689 (assignment problem in flwor)
   * Fix for bug #3404450 (testdriver_mt problem: caching and validation of docs)
   * Fixed installation bug to not install the .so for test modules
-  * Fix for running ctest on Windows
   * Fixed bug #3390410 (Adding a node to a collection causes out of bound in vector)
   * Fixed bug #3406200 (node types were not being moved to new tree during node detach)
   * Fixed bug #3406191 (Namespace bindings lost after update due to bug in node detach)
@@ -36,11 +36,12 @@ version 2.x
   * Fixed bug #859522 (Fatal error if a PUL contains two delete document primitives)
   * Fixed bug #859968 (Using put on an attribute produces an invalid XDM instance and may cause segmentation faults)
   * Fixed bug #855314 (should not fold a constant expr that returns an error item)
+  * Fixed bug when parsing a document with a base-uri attribute.
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
   * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
-  * Fixed bug #867662 ("nullptr" warning)
+  * Removed ZSTR0005 and ZSTR0006 error codes
   * Fixed bug #868258 (Assertion failure with two delete collection)
   * Fixed bug #871623 and #871629 (assertion failures with insertions in dynamic collections)
   * Fixed bug #867262 (allow reuse of iterator over ExtFuncArgItemSequence)
@@ -49,10 +50,33 @@ version 2.x
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
+  * General index cannot be declared as unique if the type of its key is
+    xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
+  * Optimization for count(collection()) expressions
+  * Fixed bug #867133 (SWIG PHP build failure on Mac OSX)
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
   * Fixed bug #872850  (Serialization of Tumbling Window For fails)
+  * Fixed bug #855715 (Invalid escaped characters in regex not caught)
+  * Fixed bug #862089 (Split binary/xq install directories for modules) by
+	splitting "module path" into separate URI and Library paths
+  * New node-position module. This module allows to obtain a representation of a node position, which
+    can be used to assess structural relationships with other nodes.   
+  * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
+
+version 2.0.3
+  * Fixed bug #867662 ("nullptr" warning)
+  * documentation improvements
+
+version 2.0.2
+  * Fixed bug #3401971 (node-by-reference on dynamic collections)
+  * documentation improvements
+  * installer improvements
+  * Fixed bug #3403291 (build for Fedora 15)
+  * Don't install the .so for test modules
+  * Fix for running ctest on Windows
 
 version 2.0.1
 

@@ -641,26 +641,26 @@ group_clause::group_clause(
   theNonGroupVars(ngvars),
   theCollations(collations)
 {
-  ulong numGVars = (ulong)theGroupVars.size();
-  ulong numNGVars = (ulong)theNonGroupVars.size();
+  csize numGVars = theGroupVars.size();
+  csize numNGVars = theNonGroupVars.size();
 
-  for (ulong i = 0; i < numGVars; ++i)
+  for (csize i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(this);
 
-  for (ulong i = 0; i < numNGVars; ++i)
+  for (csize i = 0; i < numNGVars; ++i)
     theNonGroupVars[i].second->set_flwor_clause(this);
 }
 
 
 group_clause::~group_clause()
 {
-  ulong numGVars = (ulong)theGroupVars.size();
-  ulong numNGVars = (ulong)theNonGroupVars.size();
+  csize numGVars = theGroupVars.size();
+  csize numNGVars = theNonGroupVars.size();
 
-  for (ulong i = 0; i < numGVars; ++i)
+  for (csize i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(NULL);
 
-  for (ulong i = 0; i < numNGVars; ++i)
+  for (csize i = 0; i < numNGVars; ++i)
     theNonGroupVars[i].second->set_flwor_clause(NULL);
 }
 
@@ -676,8 +676,8 @@ void group_clause::serialize(::zorba::serialization::Archiver& ar)
 
 expr* group_clause::get_input_for_group_var(const var_expr* var)
 {
-  ulong numVars = (ulong)theGroupVars.size();
-  for (ulong i = 0; i < numVars; ++i)
+  csize numVars = theGroupVars.size();
+  for (csize i = 0; i < numVars; ++i)
   {
     if (theGroupVars[i].second.getp() == var)
       return theGroupVars[i].first.getp();
@@ -689,8 +689,8 @@ expr* group_clause::get_input_for_group_var(const var_expr* var)
 
 expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 {
-  ulong numVars = (ulong)theNonGroupVars.size();
-  for (ulong i = 0; i < numVars; ++i)
+  csize numVars = theNonGroupVars.size();
+  for (csize i = 0; i < numVars; ++i)
   {
     if (theNonGroupVars[i].second.getp() == var)
       return theNonGroupVars[i].first.getp();
@@ -702,20 +702,20 @@ expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 
 flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
 {
-  ulong numGroupVars = (ulong)theGroupVars.size();
-  ulong numNonGroupVars = (ulong)theNonGroupVars.size();
+  csize numGroupVars = theGroupVars.size();
+  csize numNonGroupVars = theNonGroupVars.size();
 
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
 
-  for (ulong i = 0; i < numGroupVars; ++i)
+  for (csize i = 0; i < numGroupVars; ++i)
   {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
     cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
     subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
   }
 
-  for (ulong i = 0; i < numNonGroupVars; ++i)
+  for (csize i = 0; i < numNonGroupVars; ++i)
   {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
     cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
