@@ -134,7 +134,7 @@ Command<Func, Tuple, CommandIdx>::printHelp() const
 {
   std::cout << "Purpose: " << getDescription() << std::endl;
 
-  std::map<std::string, CommandArg<Tuple>*>::const_iterator lIter = theArgs.begin();
+  typename std::map<std::string, CommandArg<Tuple>*>::const_iterator lIter = theArgs.begin();
   if (lIter == theArgs.end()) {
     std::cout << "This command has no arguments." << std::endl;
     std::cout << std::endl;
