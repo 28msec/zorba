@@ -72,6 +72,8 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
+  bool accessesDynCtx() const { return true; }
+
   CODEGEN_DECL();
 };
 

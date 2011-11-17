@@ -340,6 +340,11 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       break;
     }
+    case FunctionConsts::FN_TRACE_2:
+    {
+      newType = e->theArgs[0]->get_return_type();
+      break;
+    }
     default:
       break;
     }
