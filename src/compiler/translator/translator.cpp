@@ -1838,17 +1838,17 @@ void collect_flwor_vars (
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. var_dec_expr(varExpr, initExpr)
+  1. var_decl_expr(varExpr, initExpr)
 
-  2. var_dec_expr(varExpr, initExpr)
+  2. var_decl_expr(varExpr, initExpr)
 
-     In this case, the var_dec_expr will be a NOOP if a value has been assigned
+     In this case, the var_decl_expr will be a NOOP if a value has been assigned
      to the external var via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. var_dec_expr(varExpr)
+  3. var_decl_expr(varExpr)
 
-  4. var_dec_expr(varExpr)
+  4. var_decl_expr(varExpr)
 
      In this case, the variable must be initialized via the c++ api before the
      query is executed, and it is this external intialization that will declare
@@ -5456,11 +5456,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   if (varType != NULL)
     valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
 
-  push_nodestack(new fo_expr(theRootSctx,
-                             loc,
-                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
-                             ve,
-                             valueExpr));
+  push_nodestack(new var_set_expr(theRootSctx, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve.getp());
 }
