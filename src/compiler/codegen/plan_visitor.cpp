@@ -2026,13 +2026,13 @@ void end_visit(eval_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numVars = v.var_count();
+  csize numVars = v.var_count();
 
   checked_vector<PlanIter_t> args(numVars+1);
   checked_vector<store::Item_t> varnames(numVars);
   checked_vector<xqtref_t> vartypes(numVars);
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();

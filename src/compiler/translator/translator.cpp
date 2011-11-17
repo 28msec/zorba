@@ -10072,9 +10072,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
@@ -10084,7 +10084,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           var_expr::eval_var,
                                           inscopeVars[i]->get_return_type());
 
-          // At this point, the domain expr of an eval var is always another var.
+          // At thgis point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
           expr_t valueExpr = inscopeVars[i].getp();

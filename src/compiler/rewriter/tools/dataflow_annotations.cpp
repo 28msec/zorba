@@ -1072,16 +1072,15 @@ void findNodeSourcesRec(
     return;
   }
 
+  case apply_expr_kind:
+  {
+    break;
+  }
+
 #if 0
   case block_expr_kind:
     compute_block_expr(static_cast<block_expr *>(e));
     break;
-
-  case apply_expr_kind:
-  {
-    apply_expr* exp = static_cast<apply_expr *>(e);
-    break;
-  }
 
   case exit_catcher_expr_kind: 
   {
@@ -1093,6 +1092,7 @@ void findNodeSourcesRec(
     break;
   }
 
+  case var_set_expr_kind:
   case flowctl_expr_kind:
     break;
 

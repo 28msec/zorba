@@ -556,8 +556,17 @@ expr_t MarkNodeCopyProps::apply(
     bool& modified)
 {
   modified = false;
-  UDFCallChain dummyUdfCall;
-  applyInternal(rCtx, node, dummyUdfCall);
+
+  if (rCtx.theCCB->theConfig.for_serialization_only)
+  {
+    std::vector<expr*> sources;
+    UDFCallChain dummyUdfCaller;
+    findNodeSources(rCtx, rCtx.theRoot, &dummyUdfCaller, sources);
+    markSources(sources);
+  }
+
+  UDFCallChain dummyUdfCaller;
+  applyInternal(rCtx, node, dummyUdfCaller);
   return NULL;
 }
 
@@ -808,6 +817,22 @@ void MarkNodeCopyProps::applyInternal(
     break;
   }
 
+  case eval_expr_kind:
+  {
+    eval_expr* e = static_cast<eval_expr*>(node);
+
+    csize numVars = e->var_count();
+
+    for (csize i = 0; i < numVars; ++i)
+    {
+      std::vector<expr*> sources;
+      findNodeSources(rCtx, e->get_arg_expr(), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    break;
+  }
+
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {
@@ -835,7 +860,6 @@ void MarkNodeCopyProps::applyInternal(
   case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
 
-  case eval_expr_kind:
   case debugger_expr_kind:
     break;
 #endif

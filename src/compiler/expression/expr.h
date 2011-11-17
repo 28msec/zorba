@@ -1178,11 +1178,11 @@ public:
 
   expr* get_expr() const { return theExpr.getp(); }
 
-  expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
+  expr* get_arg_expr(csize i) { return theArgs[i].getp(); }
 
-  ulong var_count() const { return (ulong)theVars.size(); }
+  csize var_count() const { return theVars.size(); }
 
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
+  const var_expr* get_var(csize i) const { return theVars[i]; }
 
   void add_var(const var_expr_t& var, const expr_t& arg) 
   {

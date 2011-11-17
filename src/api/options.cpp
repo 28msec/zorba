@@ -19,12 +19,17 @@
 #include <zorba/options.h>
 
 Zorba_CompilerHints::Zorba_CompilerHints()
-: opt_level(ZORBA_OPT_LEVEL_O1),
-  lib_module(false)
-{}
+  :
+  opt_level(ZORBA_OPT_LEVEL_O1),
+  lib_module(false),
+  for_serialization_only(false)
+{
+}
+
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
-: ser_method(ZORBA_SERIALIZATION_METHOD_XML),
+  :
+  ser_method(ZORBA_SERIALIZATION_METHOD_XML),
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
@@ -34,9 +39,13 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   standalone(ZORBA_STANDALONE_OMIT),
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
   encoding(ZORBA_ENCODING_UTF8)
-{}
+{
+}
 
-void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const char* value)
+
+void Zorba_SerializerOptions::SetSerializerOption(
+    const char* parameter,
+    const char* value)
 {
   if (parameter == NULL || value == NULL)
     return;
