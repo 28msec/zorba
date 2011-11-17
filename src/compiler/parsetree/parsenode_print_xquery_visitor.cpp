@@ -1904,17 +1904,22 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsTimes);
   DEFAULT_VISIT (FTWordsValue);
 
+  /* JSON-related */
+  DEFAULT_VISIT (JSON_ArrayConstructor);
+  DEFAULT_VISIT (JSON_ObjectConstructor);
+  DEFAULT_VISIT (JSON_PairConstructor);
+
   DEFAULT_VISIT (AssignExpr);
   DEFAULT_VISIT (ExitExpr);
   DEFAULT_VISIT (WhileExpr);
   DEFAULT_VISIT (FlowCtlStatement);
 
-    DEFAULT_VISIT (LiteralFunctionItem);
-    DEFAULT_VISIT (InlineFunction);
-    DEFAULT_VISIT (AnyFunctionTest);
-    DEFAULT_VISIT (TypeList);
-    DEFAULT_VISIT (TypedFunctionTest);
-    DEFAULT_VISIT (DynamicFunctionInvocation);
+  DEFAULT_VISIT (LiteralFunctionItem);
+  DEFAULT_VISIT (InlineFunction);
+  DEFAULT_VISIT (AnyFunctionTest);
+  DEFAULT_VISIT (TypeList);
+  DEFAULT_VISIT (TypedFunctionTest);
+  DEFAULT_VISIT (DynamicFunctionInvocation);
 
   DEFAULT_VISIT (ParseErrorNode);
 };

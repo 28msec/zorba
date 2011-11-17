@@ -535,6 +535,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token FOREIGN                          "'foreign'"
 %token KEYS                             "'keys'"
 
+/* JSON */
+/* ---- */
+%token ARRAY                            "'array'"
+%token ARRAY_PAIR                       "'array-pair'"
+%token JSON_ITEM                        "'json-item'"
+%token OBJECT                           "'object'"
+%token OBJECT_PAIR                      "'object-pair'"
+%token PAIR                             "'pair'"
 
 /* Byte Order Marks                  */
 /* --------------------------------- */
@@ -852,6 +860,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FTWords
 %type <node> FTWordsValue
 
+/* JSON-related */
+/* ------------ */
+/*
+%type <node> opt_Expr
+%type <node> JSONConstructor
+%type <node> ArrayConstructor
+%type <node> ObjectConstructor
+%type <node> PairConstructor
+*/
+
 %type <fnsig> FunctionSig
 %type <varnametype> VarNameAndType
 %type <strlist> STRING_LITERAL_list;
@@ -889,6 +907,11 @@ template<typename T> inline void release_hack( T *ref ) {
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
+
+/*
+// parsenodes: JSON
+%destructor { release_hack( $$ ); } JSONConstructor ArrayConstructor ObjectConstructor PairConstructor
+*/
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -4178,6 +4201,12 @@ PrimaryExpr :
         {
           $$ = $1;
         }
+/*
+    |   JSONConstructor
+        {
+          $$ = $1;
+        }
+*/
     ;
 
 // [84]
@@ -6247,6 +6276,78 @@ FTIgnoreOption :
             $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
         }
     ;
+
+/********** JSON *************************************************************/
+
+/*
+JSONConstructor
+    :   ArrayConstructor
+        {
+            $$ = $1;
+        }
+    |   ObjectConstructor
+        {
+            $$ = $1;
+        }
+    |   PairConstructor
+        {
+            $$ = $1;
+        }
+    ;
+
+ArrayConstructor
+    :   LBRACK opt_Expr RBRACK
+        {
+            $$ = new JSON_ArrayConstructor( LOC( @$ ), $2 );
+        }
+    ;
+
+ObjectConstructor
+    :   LBRACE opt_Expr RBRACE
+        {
+            $$ = new JSON_ObjectConstructor( LOC( @$ ), $2 );
+        }
+    ;
+
+PairConstructor
+    :   ExprSingle COLON ExprSingle
+        {
+            $$ = new JSON_PairConstructor( LOC( @$ ), $1, $3 );
+        }
+    ;
+*/
+
+/*
+opt_Expr
+    :*/   /* empty */
+/*
+        {
+            $$ = NULL;
+        }
+    |   Expr
+        {
+            $$ = $1;
+        }
+    ;
+*/
+
+/*
+JSONTest
+    :   JSONItemTest
+    |   JSONObjectTest
+    |   JSONArrayTest
+    |   JSONPairTest
+    |   JSONObjectPairTest
+    |   JSONArrayPairTest
+    ;
+
+JSONItemTest : JSON_ITEM LPAR RPAR ;
+JSONObjectTest : OBJECT LPAR RPAR ;
+JSONArrayTest : ARRAY LPAR RPAR ;
+JSONPairTest : PAIR LPAR RPAR ;
+JSONObjectPairTest : OBJECT_PAIR LPAR RPAR ;
+JSONArrayPairTest : ARRAY_PAIR LPAR RPAR ;
+*/
 
 
 /*_______________________________________________________________________

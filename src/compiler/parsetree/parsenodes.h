@@ -245,6 +245,9 @@ class CopyVarList;
 class Wildcard;
 class DecimalFormatNode;
 
+class JSON_ArrayConstructor;
+class JSON_ObjectConstructor;
+class JSON_PairConstructor;
 
 
 /*******************************************************************************
@@ -6420,9 +6423,75 @@ private:
   FTUnit const *const unit_;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//  JSON productions                                                         //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+class JSON_Constructor : public parsenode {
+protected:
+  JSON_Constructor( QueryLoc const &loc ) : parsenode( loc ) { }
+};
+
+class JSON_ArrayConstructor : public JSON_Constructor {
+public:
+  JSON_ArrayConstructor(
+    QueryLoc const&,
+    exprnode const*
+  );
+  ~JSON_ArrayConstructor();
+
+  exprnode const* get_expr() const { return expr_; }
+
+  // inherited
+  void accept( parsenode_visitor& ) const;
+
+private:
+  exprnode const *const expr_;
+};
+
+class JSON_ObjectConstructor : public JSON_Constructor {
+public:
+  JSON_ObjectConstructor(
+    QueryLoc const&,
+    exprnode const*
+  );
+  ~JSON_ObjectConstructor();
+
+  exprnode const* get_expr() const { return expr_; }
+
+  // inherited
+  void accept( parsenode_visitor& ) const;
+
+private:
+  exprnode const *const expr_;
+};
+
+class JSON_PairConstructor : public JSON_Constructor {
+public:
+  JSON_PairConstructor(
+    QueryLoc const&,
+    exprnode const*,
+    exprnode const*
+  );
+  ~JSON_PairConstructor();
+
+  exprnode const* get_expr1() const { return expr1_; }
+  exprnode const* get_expr2() const { return expr2_; }
+
+  // inherited
+  void accept( parsenode_visitor& ) const;
+
+private:
+  exprnode const *const expr1_;
+  exprnode const *const expr2_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /*  ZORBA_PARSENODES_H */
+#endif  /* ZORBA_PARSENODES_H */
 
 /*
  * Local variables:

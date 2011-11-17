@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,8 +35,8 @@
 
 /* First part of user declarations.  */
 
-/* Line 311 of lalr1.cc  */
-#line 87 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 293 of lalr1.cc  */
+#line 87 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -74,16 +72,16 @@ using namespace zorba;
 
 
 
-/* Line 311 of lalr1.cc  */
-#line 79 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+/* Line 293 of lalr1.cc  */
+#line 77 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 
 
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
 
-/* Line 317 of lalr1.cc  */
-#line 876 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 299 of lalr1.cc  */
+#line 894 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
@@ -94,8 +92,8 @@ template<typename T> inline void release_hack( T *ref ) {
     }
 }
 
-/* Line 317 of lalr1.cc  */
-#line 976 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 299 of lalr1.cc  */
+#line 999 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_scanner.h"
 
@@ -104,11 +102,11 @@ template<typename T> inline void release_hack( T *ref ) {
 
 
 
-/* Line 317 of lalr1.cc  */
-#line 109 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+/* Line 299 of lalr1.cc  */
+#line 107 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -117,6 +115,26 @@ template<typename T> inline void release_hack( T *ref ) {
 # ifndef YY_
 #  define YY_(msgid) msgid
 # endif
+#endif
+
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
+#ifndef YYLLOC_DEFAULT
+# define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+ do                                                                    \
+   if (N)                                                              \
+     {                                                                 \
+       (Current).begin = YYRHSLOC (Rhs, 1).begin;                      \
+       (Current).end   = YYRHSLOC (Rhs, N).end;                        \
+     }                                                                 \
+   else                                                                \
+     {                                                                 \
+       (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;        \
+     }                                                                 \
+ while (false)
 #endif
 
 /* Suppress unused-variable warnings by "using" E.  */
@@ -168,14 +186,10 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
-/* Line 380 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace zorba {
 
-/* Line 380 of lalr1.cc  */
-#line 178 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
-#if YYERROR_VERBOSE
+/* Line 382 of lalr1.cc  */
+#line 193 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -214,7 +228,6 @@ namespace zorba {
     return yystr;
   }
 
-#endif
 
   /// Build a parser object.
   xquery_parser::xquery_parser (xquery_driver& driver_yyarg)
@@ -277,2414 +290,2414 @@ namespace zorba {
         case 109: /* "\"'DECIMAL'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 874 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 892 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->decval); };
 
 /* Line 480 of lalr1.cc  */
-#line 285 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 298 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 123: /* "\"'DOUBLE'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 873 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 891 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->dval); };
 
 /* Line 480 of lalr1.cc  */
-#line 294 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 307 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 148: /* "\"'INTEGER'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 872 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 890 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->ival); };
 
 /* Line 480 of lalr1.cc  */
-#line 303 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 316 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 326: /* "VersionDecl" */
+      case 332: /* "VersionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 312 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 325 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 327: /* "MainModule" */
+      case 333: /* "MainModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 321 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 334 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 328: /* "LibraryModule" */
+      case 334: /* "LibraryModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 330 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 343 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 329: /* "ModuleDecl" */
+      case 335: /* "ModuleDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 339 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 352 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 330: /* "SIND_DeclList" */
+      case 336: /* "SIND_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 348 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 361 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 331: /* "SIND_Decl" */
+      case 337: /* "SIND_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 357 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 370 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 332: /* "Setter" */
+      case 338: /* "Setter" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 366 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 379 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 333: /* "BoundarySpaceDecl" */
+      case 339: /* "BoundarySpaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 375 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 388 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 334: /* "DefaultCollationDecl" */
+      case 340: /* "DefaultCollationDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 384 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 397 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 335: /* "BaseURIDecl" */
+      case 341: /* "BaseURIDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 393 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 406 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 336: /* "ConstructionDecl" */
+      case 342: /* "ConstructionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 402 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 415 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 337: /* "OrderingModeDecl" */
+      case 343: /* "OrderingModeDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 411 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 424 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 338: /* "EmptyOrderDecl" */
+      case 344: /* "EmptyOrderDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 420 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 433 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 339: /* "CopyNamespacesDecl" */
+      case 345: /* "CopyNamespacesDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 429 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 442 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 340: /* "Import" */
+      case 346: /* "Import" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 438 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 451 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 341: /* "SchemaImport" */
+      case 347: /* "SchemaImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 447 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 460 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 342: /* "URILiteralList" */
+      case 348: /* "URILiteralList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 456 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 469 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 343: /* "SchemaPrefix" */
+      case 349: /* "SchemaPrefix" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 465 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 478 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 344: /* "ModuleImport" */
+      case 350: /* "ModuleImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 474 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 487 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 345: /* "NamespaceDecl" */
+      case 351: /* "NamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 483 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 496 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 346: /* "DefaultNamespaceDecl" */
+      case 352: /* "DefaultNamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 492 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 505 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 347: /* "VFO_DeclList" */
+      case 353: /* "VFO_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 501 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 514 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 348: /* "VFO_Decl" */
+      case 354: /* "VFO_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 510 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 523 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 349: /* "DecimalFormatDecl" */
+      case 355: /* "DecimalFormatDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 519 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 532 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 350: /* "DecimalFormatParamList" */
+      case 356: /* "DecimalFormatParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 920 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->vstrpair); };
 
 /* Line 480 of lalr1.cc  */
-#line 528 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 541 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 351: /* "DecimalFormatParam" */
+      case 357: /* "DecimalFormatParam" */
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 920 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->strpair); };
 
 /* Line 480 of lalr1.cc  */
-#line 537 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 550 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 353: /* "OptionDecl" */
+      case 359: /* "OptionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 546 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 559 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 354: /* "FTOptionDecl" */
+      case 360: /* "FTOptionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 555 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 568 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 355: /* "CtxItemDecl" */
+      case 361: /* "CtxItemDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 564 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 577 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 356: /* "CtxItemDecl2" */
+      case 362: /* "CtxItemDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 573 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 586 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 357: /* "CtxItemDecl3" */
+      case 363: /* "CtxItemDecl3" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 582 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 595 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 358: /* "CtxItemDecl4" */
+      case 364: /* "CtxItemDecl4" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 591 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 604 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 359: /* "VarDecl" */
+      case 365: /* "VarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 600 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 613 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 360: /* "VarNameAndType" */
+      case 366: /* "VarNameAndType" */
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 920 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->varnametype); };
 
 /* Line 480 of lalr1.cc  */
-#line 609 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 622 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 361: /* "AnnotationList" */
+      case 367: /* "AnnotationList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 618 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 631 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 362: /* "Annotation" */
+      case 368: /* "Annotation" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 627 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 640 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 363: /* "AnnotationLiteralList" */
+      case 369: /* "AnnotationLiteralList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 636 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 649 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 364: /* "FunctionDecl" */
+      case 370: /* "FunctionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 645 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 658 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 365: /* "FunctionDecl2" */
+      case 371: /* "FunctionDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 654 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 667 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 366: /* "FunctionDeclSimple" */
+      case 372: /* "FunctionDeclSimple" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 663 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 676 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 367: /* "FunctionDeclUpdating" */
+      case 373: /* "FunctionDeclUpdating" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 672 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 685 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 368: /* "FunctionSig" */
+      case 374: /* "FunctionSig" */
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 920 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->fnsig); };
 
 /* Line 480 of lalr1.cc  */
-#line 681 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 694 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 369: /* "ParamList" */
+      case 375: /* "ParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 690 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 703 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 370: /* "Param" */
+      case 376: /* "Param" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 699 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 712 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 371: /* "CollectionDecl" */
+      case 377: /* "CollectionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 708 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 721 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 373: /* "IndexDecl" */
+      case 379: /* "IndexDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 717 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 730 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 374: /* "IndexKeyList" */
+      case 380: /* "IndexKeyList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 726 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 739 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 375: /* "IndexKeySpec" */
+      case 381: /* "IndexKeySpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 735 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 748 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 376: /* "IntegrityConstraintDecl" */
+      case 382: /* "IntegrityConstraintDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 744 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 757 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 377: /* "QueryBody" */
+      case 383: /* "QueryBody" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 753 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 766 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 378: /* "StatementsAndOptionalExprTop" */
+      case 384: /* "StatementsAndOptionalExprTop" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 775 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 379: /* "StatementsAndOptionalExpr" */
+      case 385: /* "StatementsAndOptionalExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 771 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 784 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 380: /* "StatementsAndExpr" */
+      case 386: /* "StatementsAndExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 780 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 793 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 381: /* "Statements" */
+      case 387: /* "Statements" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 789 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 802 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 382: /* "Statement" */
+      case 388: /* "Statement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 798 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 811 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 383: /* "BlockStatement" */
+      case 389: /* "BlockStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 820 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 384: /* "BlockExpr" */
+      case 390: /* "BlockExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 829 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 385: /* "EnclosedStatementsAndOptionalExpr" */
+      case 391: /* "EnclosedStatementsAndOptionalExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 825 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 838 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 386: /* "VarDeclStatement" */
+      case 392: /* "VarDeclStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 834 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 847 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 389: /* "AssignStatement" */
+      case 395: /* "AssignStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 843 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 856 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 390: /* "ApplyStatement" */
+      case 396: /* "ApplyStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 852 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 865 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 391: /* "ExitStatement" */
+      case 397: /* "ExitStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 861 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 874 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 392: /* "WhileStatement" */
+      case 398: /* "WhileStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 870 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 883 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 393: /* "FlowCtlStatement" */
+      case 399: /* "FlowCtlStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 879 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 892 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 394: /* "FLWORStatement" */
+      case 400: /* "FLWORStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 901 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 395: /* "ReturnStatement" */
+      case 401: /* "ReturnStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 910 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 396: /* "IfStatement" */
+      case 402: /* "IfStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 906 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 919 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 397: /* "TryStatement" */
+      case 403: /* "TryStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 915 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 928 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 398: /* "CatchListStatement" */
+      case 404: /* "CatchListStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 924 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 937 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 399: /* "CatchStatement" */
+      case 405: /* "CatchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 933 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 946 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 400: /* "Expr" */
+      case 406: /* "Expr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 942 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 955 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 401: /* "ExprSingle" */
+      case 407: /* "ExprSingle" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 951 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 964 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 402: /* "ExprSimple" */
+      case 408: /* "ExprSimple" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 960 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 973 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 403: /* "FLWORExpr" */
+      case 409: /* "FLWORExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 969 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 982 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 404: /* "ReturnExpr" */
+      case 410: /* "ReturnExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 978 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 991 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 407: /* "FLWORWinCond" */
+      case 413: /* "FLWORWinCond" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 987 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1000 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 408: /* "WindowClause" */
+      case 414: /* "WindowClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 996 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1009 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 409: /* "CountClause" */
+      case 415: /* "CountClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1005 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1018 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 410: /* "ForLetWinClause" */
+      case 416: /* "ForLetWinClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1014 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1027 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 412: /* "FLWORClauseList" */
+      case 418: /* "FLWORClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1023 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1036 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 413: /* "ForClause" */
+      case 419: /* "ForClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1032 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1045 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 414: /* "VarInDeclList" */
+      case 420: /* "VarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1041 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1054 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 415: /* "VarInDecl" */
+      case 421: /* "VarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1050 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1063 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 416: /* "PositionalVar" */
+      case 422: /* "PositionalVar" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1059 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1072 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 417: /* "FTScoreVar" */
+      case 423: /* "FTScoreVar" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1068 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1081 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 418: /* "LetClause" */
+      case 424: /* "LetClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1077 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1090 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 419: /* "VarGetsDeclList" */
+      case 425: /* "VarGetsDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1086 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1099 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 420: /* "VarGetsDecl" */
+      case 426: /* "VarGetsDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1095 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1108 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 421: /* "WindowVarDecl" */
+      case 427: /* "WindowVarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1104 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1117 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 422: /* "WindowVars" */
+      case 428: /* "WindowVars" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1113 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1126 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 423: /* "WindowVars3" */
+      case 429: /* "WindowVars3" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1122 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1135 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 424: /* "WindowVars2" */
+      case 430: /* "WindowVars2" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1131 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1144 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 425: /* "WhereClause" */
+      case 431: /* "WhereClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1140 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1153 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 426: /* "GroupByClause" */
+      case 432: /* "GroupByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1149 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1162 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 427: /* "GroupSpecList" */
+      case 433: /* "GroupSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1158 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1171 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 428: /* "GroupSpec" */
+      case 434: /* "GroupSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1167 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1180 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 429: /* "GroupCollationSpec" */
+      case 435: /* "GroupCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1176 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1189 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 430: /* "OrderByClause" */
+      case 436: /* "OrderByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1185 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1198 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 431: /* "OrderSpecList" */
+      case 437: /* "OrderSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1194 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1207 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 432: /* "OrderSpec" */
+      case 438: /* "OrderSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1203 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1216 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 433: /* "OrderModifier" */
+      case 439: /* "OrderModifier" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1212 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1225 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 434: /* "OrderDirSpec" */
+      case 440: /* "OrderDirSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1221 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1234 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 435: /* "OrderEmptySpec" */
+      case 441: /* "OrderEmptySpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1230 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1243 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 436: /* "OrderCollationSpec" */
+      case 442: /* "OrderCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1239 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1252 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 437: /* "QuantifiedExpr" */
+      case 443: /* "QuantifiedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1248 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1261 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 438: /* "QVarInDeclList" */
+      case 444: /* "QVarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1257 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1270 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 439: /* "QVarInDecl" */
+      case 445: /* "QVarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1266 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1279 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 440: /* "SwitchExpr" */
+      case 446: /* "SwitchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1275 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1288 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 441: /* "SwitchCaseClauseList" */
+      case 447: /* "SwitchCaseClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1284 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1297 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 442: /* "SwitchCaseClause" */
+      case 448: /* "SwitchCaseClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1293 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1306 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 443: /* "SwitchCaseOperandList" */
+      case 449: /* "SwitchCaseOperandList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1302 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1315 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 444: /* "SwitchStatement" */
+      case 450: /* "SwitchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1311 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1324 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 447: /* "TypeswitchExpr" */
+      case 453: /* "TypeswitchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1320 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1333 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 448: /* "TypeswitchStatement" */
+      case 454: /* "TypeswitchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1329 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1342 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 449: /* "CaseClauseList" */
+      case 455: /* "CaseClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1338 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1351 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 450: /* "CaseClause" */
+      case 456: /* "CaseClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1347 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1360 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 453: /* "IfExpr" */
+      case 459: /* "IfExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1356 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1369 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 454: /* "OrExpr" */
+      case 460: /* "OrExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1365 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1378 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 455: /* "AndExpr" */
+      case 461: /* "AndExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1374 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1387 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 456: /* "ComparisonExpr" */
+      case 462: /* "ComparisonExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1383 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1396 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 458: /* "FTContainsExpr" */
+      case 464: /* "FTContainsExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1392 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1405 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 459: /* "opt_FTIgnoreOption" */
+      case 465: /* "opt_FTIgnoreOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1401 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1414 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 460: /* "RangeExpr" */
+      case 466: /* "RangeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1410 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1423 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 461: /* "AdditiveExpr" */
+      case 467: /* "AdditiveExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1419 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1432 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 462: /* "MultiplicativeExpr" */
+      case 468: /* "MultiplicativeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1428 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1441 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 463: /* "UnionExpr" */
+      case 469: /* "UnionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1437 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1450 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 464: /* "IntersectExceptExpr" */
+      case 470: /* "IntersectExceptExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1446 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1459 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 465: /* "InstanceofExpr" */
+      case 471: /* "InstanceofExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1455 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1468 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 466: /* "TreatExpr" */
+      case 472: /* "TreatExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1464 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1477 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 467: /* "CastableExpr" */
+      case 473: /* "CastableExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1473 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1486 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 468: /* "CastExpr" */
+      case 474: /* "CastExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1482 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1495 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 469: /* "UnaryExpr" */
+      case 475: /* "UnaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1491 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1504 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 470: /* "SignList" */
+      case 476: /* "SignList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1500 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1513 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 471: /* "ValueExpr" */
+      case 477: /* "ValueExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1509 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1522 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 472: /* "ValueComp" */
+      case 478: /* "ValueComp" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1518 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1531 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 473: /* "NodeComp" */
+      case 479: /* "NodeComp" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1527 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1540 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 474: /* "ValidateExpr" */
+      case 480: /* "ValidateExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1536 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1549 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 475: /* "ExtensionExpr" */
+      case 481: /* "ExtensionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1545 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1558 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 476: /* "Pragma_list" */
+      case 482: /* "Pragma_list" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1554 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1567 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 477: /* "Pragma" */
+      case 483: /* "Pragma" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1563 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1576 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 478: /* "PathExpr" */
+      case 484: /* "PathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1572 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1585 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 480: /* "RelativePathExpr" */
+      case 486: /* "RelativePathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1581 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1594 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 481: /* "StepExpr" */
+      case 487: /* "StepExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1590 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1603 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 482: /* "AxisStep" */
+      case 488: /* "AxisStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1599 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1612 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 483: /* "ForwardStep" */
+      case 489: /* "ForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1608 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1621 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 484: /* "ForwardAxis" */
+      case 490: /* "ForwardAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1617 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1630 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 485: /* "AbbrevForwardStep" */
+      case 491: /* "AbbrevForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1626 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1639 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 486: /* "ReverseStep" */
+      case 492: /* "ReverseStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1635 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1648 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 487: /* "ReverseAxis" */
+      case 493: /* "ReverseAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1644 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1657 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 488: /* "NodeTest" */
+      case 494: /* "NodeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1653 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1666 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 489: /* "NameTest" */
+      case 495: /* "NameTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1662 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1675 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 490: /* "Wildcard" */
+      case 496: /* "Wildcard" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1671 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1684 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 491: /* "FilterExpr" */
+      case 497: /* "FilterExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1680 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1693 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 492: /* "PredicateList" */
+      case 498: /* "PredicateList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1689 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1702 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 493: /* "Predicate" */
+      case 499: /* "Predicate" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1698 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1711 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 494: /* "PrimaryExpr" */
+      case 500: /* "PrimaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1707 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1720 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 495: /* "Literal" */
+      case 501: /* "Literal" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1716 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1729 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 496: /* "NumericLiteral" */
+      case 502: /* "NumericLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1725 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1738 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 497: /* "VarRef" */
+      case 503: /* "VarRef" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1734 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1747 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 498: /* "ParenthesizedExpr" */
+      case 504: /* "ParenthesizedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1743 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1756 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 499: /* "ContextItemExpr" */
+      case 505: /* "ContextItemExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1752 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1765 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 500: /* "OrderedExpr" */
+      case 506: /* "OrderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1761 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1774 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 501: /* "UnorderedExpr" */
+      case 507: /* "UnorderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1770 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1783 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 502: /* "FunctionCall" */
+      case 508: /* "FunctionCall" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1779 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1792 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 503: /* "ArgList" */
+      case 509: /* "ArgList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1788 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1801 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 504: /* "Constructor" */
+      case 510: /* "Constructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1797 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1810 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 505: /* "DirectConstructor" */
+      case 511: /* "DirectConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1806 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1819 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 506: /* "DirElemConstructor" */
+      case 512: /* "DirElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1815 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1828 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 507: /* "DirElemContentList" */
+      case 513: /* "DirElemContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1824 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1837 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 508: /* "DirAttributeList" */
+      case 514: /* "DirAttributeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1833 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1846 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 509: /* "DirAttr" */
+      case 515: /* "DirAttr" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1842 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1855 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 511: /* "DirAttributeValue" */
+      case 517: /* "DirAttributeValue" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1851 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1864 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 512: /* "opt_QuoteAttrContentList" */
+      case 518: /* "opt_QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1860 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1873 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 513: /* "QuoteAttrContentList" */
+      case 519: /* "QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1869 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1882 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 514: /* "opt_AposAttrContentList" */
+      case 520: /* "opt_AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1878 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1891 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 515: /* "AposAttrContentList" */
+      case 521: /* "AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1887 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1900 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 516: /* "QuoteAttrValueContent" */
+      case 522: /* "QuoteAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1896 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 517: /* "AposAttrValueContent" */
+      case 523: /* "AposAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1905 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1918 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 518: /* "DirElemContent" */
+      case 524: /* "DirElemContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1914 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1927 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 519: /* "CommonContent" */
+      case 525: /* "CommonContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1923 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1936 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 520: /* "DirCommentConstructor" */
+      case 526: /* "DirCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1932 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1945 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 521: /* "DirPIConstructor" */
+      case 527: /* "DirPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1941 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1954 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 522: /* "CDataSection" */
+      case 528: /* "CDataSection" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1950 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1963 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 523: /* "ComputedConstructor" */
+      case 529: /* "ComputedConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1959 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1972 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 524: /* "CompDocConstructor" */
+      case 530: /* "CompDocConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1968 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1981 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 525: /* "CompElemConstructor" */
+      case 531: /* "CompElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1977 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1990 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 526: /* "CompAttrConstructor" */
+      case 532: /* "CompAttrConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1986 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 1999 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 527: /* "CompTextConstructor" */
+      case 533: /* "CompTextConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 1995 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2008 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 528: /* "CompCommentConstructor" */
+      case 534: /* "CompCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2004 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2017 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 529: /* "CompPIConstructor" */
+      case 535: /* "CompPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2013 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2026 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 530: /* "SingleType" */
+      case 536: /* "SingleType" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2022 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2035 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 531: /* "TypeDeclaration" */
+      case 537: /* "TypeDeclaration" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2031 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2044 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 532: /* "SequenceType" */
+      case 538: /* "SequenceType" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2040 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2053 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 533: /* "OccurrenceIndicator" */
+      case 539: /* "OccurrenceIndicator" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2049 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2062 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 534: /* "ItemType" */
+      case 540: /* "ItemType" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2058 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2071 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 535: /* "TypeList" */
+      case 541: /* "TypeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2067 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2080 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 536: /* "AtomicType" */
+      case 542: /* "AtomicType" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2076 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2089 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 537: /* "KindTest" */
+      case 543: /* "KindTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2085 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2098 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 538: /* "AnyKindTest" */
+      case 544: /* "AnyKindTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2094 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2107 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 539: /* "DocumentTest" */
+      case 545: /* "DocumentTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2103 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2116 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 540: /* "TextTest" */
+      case 546: /* "TextTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2112 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2125 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 541: /* "CommentTest" */
+      case 547: /* "CommentTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2121 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2134 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 542: /* "PITest" */
+      case 548: /* "PITest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2130 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2143 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 543: /* "AttributeTest" */
+      case 549: /* "AttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2139 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2152 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 544: /* "SchemaAttributeTest" */
+      case 550: /* "SchemaAttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2148 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2161 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 545: /* "ElementTest" */
+      case 551: /* "ElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2157 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2170 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 546: /* "SchemaElementTest" */
+      case 552: /* "SchemaElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2166 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2179 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 547: /* "TypeName" */
+      case 553: /* "TypeName" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2175 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2188 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 548: /* "TypeName_WITH_HOOK" */
+      case 554: /* "TypeName_WITH_HOOK" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2184 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2197 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 549: /* "StringLiteral" */
+      case 555: /* "StringLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2193 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2206 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 554: /* "AnyFunctionTest" */
+      case 560: /* "AnyFunctionTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2202 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2215 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 555: /* "TypedFunctionTest" */
+      case 561: /* "TypedFunctionTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 906 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2211 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2224 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 558: /* "InsertExpr" */
+      case 564: /* "InsertExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2220 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2233 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 559: /* "DeleteExpr" */
+      case 565: /* "DeleteExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2229 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2242 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 560: /* "ReplaceExpr" */
+      case 566: /* "ReplaceExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2238 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2251 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 561: /* "RenameExpr" */
+      case 567: /* "RenameExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2247 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2260 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 562: /* "TransformExpr" */
+      case 568: /* "TransformExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2256 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2269 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 563: /* "VarNameList" */
+      case 569: /* "VarNameList" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2265 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2278 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 564: /* "VarNameDecl" */
+      case 570: /* "VarNameDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2274 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2287 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 565: /* "TryExpr" */
+      case 571: /* "TryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2283 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2296 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 566: /* "CatchListExpr" */
+      case 572: /* "CatchListExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2292 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2305 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 567: /* "CatchExpr" */
+      case 573: /* "CatchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2301 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2314 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 568: /* "BracedExpr" */
+      case 574: /* "BracedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2310 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2323 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 569: /* "NameTestList" */
+      case 575: /* "NameTestList" */
 
 /* Line 480 of lalr1.cc  */
-#line 897 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 920 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->name_test_list); };
 
 /* Line 480 of lalr1.cc  */
-#line 2319 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2332 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 570: /* "FTSelection" */
+      case 576: /* "FTSelection" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2328 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2341 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 573: /* "FTOr" */
+      case 579: /* "FTOr" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2337 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2350 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 574: /* "FTAnd" */
+      case 580: /* "FTAnd" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2346 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2359 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 575: /* "FTMildNot" */
+      case 581: /* "FTMildNot" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2355 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2368 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 576: /* "FTUnaryNot" */
+      case 582: /* "FTUnaryNot" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2364 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2377 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 577: /* "FTPrimaryWithOptions" */
+      case 583: /* "FTPrimaryWithOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2373 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2386 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 578: /* "opt_FTMatchOptions" */
+      case 584: /* "opt_FTMatchOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2382 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2395 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 580: /* "FTWeight" */
+      case 586: /* "FTWeight" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2391 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2404 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 581: /* "FTPrimary" */
+      case 587: /* "FTPrimary" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2400 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2413 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 582: /* "opt_FTTimes" */
+      case 588: /* "opt_FTTimes" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2409 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2422 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 583: /* "FTExtensionSelection" */
+      case 589: /* "FTExtensionSelection" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2418 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2431 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 585: /* "FTWords" */
+      case 591: /* "FTWords" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2427 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2440 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 586: /* "FTWordsValue" */
+      case 592: /* "FTWordsValue" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2436 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2449 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 588: /* "FTAnyallOption" */
+      case 594: /* "FTAnyallOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2445 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2458 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 591: /* "FTPosFilter" */
+      case 597: /* "FTPosFilter" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2454 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2467 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 592: /* "FTOrder" */
+      case 598: /* "FTOrder" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2463 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2476 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 593: /* "FTWindow" */
+      case 599: /* "FTWindow" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2472 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2485 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 594: /* "FTDistance" */
+      case 600: /* "FTDistance" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2481 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2494 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 595: /* "FTUnit" */
+      case 601: /* "FTUnit" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2490 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2503 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 596: /* "FTMatchOptions" */
+      case 602: /* "FTMatchOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2499 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2512 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 597: /* "FTMatchOption" */
+      case 603: /* "FTMatchOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2508 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2521 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 598: /* "FTCaseOption" */
+      case 604: /* "FTCaseOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2517 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2530 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 599: /* "FTDiacriticsOption" */
+      case 605: /* "FTDiacriticsOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2526 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2539 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 600: /* "FTExtensionOption" */
+      case 606: /* "FTExtensionOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2535 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2548 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 601: /* "FTStemOption" */
+      case 607: /* "FTStemOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2544 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2557 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 602: /* "FTThesaurusOption" */
+      case 608: /* "FTThesaurusOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2553 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2566 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 606: /* "FTThesaurusID" */
+      case 612: /* "FTThesaurusID" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2562 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2575 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 609: /* "FTStopWordOption" */
+      case 615: /* "FTStopWordOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2571 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2584 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 610: /* "FTStopWords" */
+      case 616: /* "FTStopWords" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2580 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2593 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 614: /* "FTStopWordsInclExcl" */
+      case 620: /* "FTStopWordsInclExcl" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2589 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2602 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 615: /* "FTLanguageOption" */
+      case 621: /* "FTLanguageOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2598 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2611 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 616: /* "FTWildCardOption" */
+      case 622: /* "FTWildCardOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2607 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2620 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 617: /* "FTContent" */
+      case 623: /* "FTContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2616 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2629 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 618: /* "FTTimes" */
+      case 624: /* "FTTimes" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2625 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2638 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 619: /* "FTRange" */
+      case 625: /* "FTRange" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2634 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2647 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 620: /* "FTScope" */
+      case 626: /* "FTScope" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2643 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2656 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 621: /* "FTBigUnit" */
+      case 627: /* "FTBigUnit" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2652 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2665 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 622: /* "FTIgnoreOption" */
+      case 628: /* "FTIgnoreOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 891 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2661 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2674 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 625: /* "QNAME" */
+      case 631: /* "QNAME" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2670 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2683 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 626: /* "FUNCTION_NAME" */
+      case 632: /* "FUNCTION_NAME" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2679 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2692 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 627: /* "EQNAME" */
+      case 633: /* "EQNAME" */
 
 /* Line 480 of lalr1.cc  */
-#line 894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+#line 917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2688 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+#line 2701 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	break;
 
 	default:
@@ -2727,6 +2740,18 @@ namespace zorba {
   }
 #endif
 
+  inline bool
+  xquery_parser::yy_pact_value_is_default_ (int yyvalue)
+  {
+    return yyvalue == yypact_ninf_;
+  }
+
+  inline bool
+  xquery_parser::yy_table_value_is_error_ (int yyvalue)
+  {
+    return yyvalue == yytable_ninf_;
+  }
+
   int
   xquery_parser::parse ()
   {
@@ -2748,7 +2773,7 @@ namespace zorba {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -2762,14 +2787,14 @@ namespace zorba {
 
     /* User initialization code.  */
     
-/* Line 553 of lalr1.cc  */
-#line 140 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 565 of lalr1.cc  */
+#line 140 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 {
     yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename2);
 }
 
-/* Line 553 of lalr1.cc  */
-#line 2773 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+/* Line 565 of lalr1.cc  */
+#line 2798 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
@@ -2797,7 +2822,7 @@ namespace zorba {
 
     /* Try to take a decision without lookahead.  */
     yyn = yypact_[yystate];
-    if (yyn == yypact_ninf_)
+    if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     /* Read a lookahead token.  */
@@ -2830,8 +2855,8 @@ namespace zorba {
     yyn = yytable_[yyn];
     if (yyn <= 0)
       {
-	if (yyn == 0 || yyn == yytable_ninf_)
-	goto yyerrlab;
+	if (yy_table_value_is_error_ (yyn))
+	  goto yyerrlab;
 	yyn = -yyn;
 	goto yyreduce;
       }
@@ -2887,8 +2912,8 @@ namespace zorba {
       {
 	  case 3:
 
-/* Line 678 of lalr1.cc  */
-#line 994 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1017 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       }
@@ -2896,8 +2921,8 @@ namespace zorba {
 
   case 4:
 
-/* Line 678 of lalr1.cc  */
-#line 1003 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1026 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
         (yyval.node) = NULL; YYABORT;
       }
@@ -2905,8 +2930,8 @@ namespace zorba {
 
   case 5:
 
-/* Line 678 of lalr1.cc  */
-#line 1012 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1035 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
       driver.set_expr( (yyval.node) );
@@ -2915,8 +2940,8 @@ namespace zorba {
 
   case 6:
 
-/* Line 678 of lalr1.cc  */
-#line 1018 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1041 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       MainModule* mm = dynamic_cast<MainModule*>((yysemantic_stack_[(2) - (2)].node));
       mm->set_version_decl( static_cast<VersionDecl*>((yysemantic_stack_[(2) - (1)].node)) );
@@ -2927,8 +2952,8 @@ namespace zorba {
 
   case 7:
 
-/* Line 678 of lalr1.cc  */
-#line 1026 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1049 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
       driver.set_expr( (yyval.node) );
@@ -2937,8 +2962,8 @@ namespace zorba {
 
   case 8:
 
-/* Line 678 of lalr1.cc  */
-#line 1032 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1055 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       LibraryModule* lm = dynamic_cast<LibraryModule*>((yysemantic_stack_[(2) - (2)].node));
       lm->set_version_decl( static_cast<VersionDecl*>((yysemantic_stack_[(2) - (1)].node)) );
@@ -2949,8 +2974,8 @@ namespace zorba {
 
   case 9:
 
-/* Line 678 of lalr1.cc  */
-#line 1043 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1066 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), "utf-8" );
     }
@@ -2958,8 +2983,8 @@ namespace zorba {
 
   case 10:
 
-/* Line 678 of lalr1.cc  */
-#line 1048 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1071 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (3)].sval)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)) );
     }
@@ -2967,8 +2992,8 @@ namespace zorba {
 
   case 11:
 
-/* Line 678 of lalr1.cc  */
-#line 1056 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1079 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node)), NULL);
 
@@ -2978,8 +3003,8 @@ namespace zorba {
 
   case 12:
 
-/* Line 678 of lalr1.cc  */
-#line 1063 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1086 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node)));
 
@@ -2989,8 +3014,8 @@ namespace zorba {
 
   case 13:
 
-/* Line 678 of lalr1.cc  */
-#line 1070 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1093 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
                                   static_cast<SIND_DeclList*>((yysemantic_stack_[(5) - (1)].node)),
@@ -3002,8 +3027,8 @@ namespace zorba {
 
   case 14:
 
-/* Line 678 of lalr1.cc  */
-#line 1079 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1102 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new MainModule( LOC((yyloc)), static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)), NULL );
     }
@@ -3011,8 +3036,8 @@ namespace zorba {
 
   case 15:
 
-/* Line 678 of lalr1.cc  */
-#line 1086 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1109 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr); // to prevent the Bison warning
       (yylocation_stack_[(3) - (1)]).step();
@@ -3023,8 +3048,8 @@ namespace zorba {
 
   case 16:
 
-/* Line 678 of lalr1.cc  */
-#line 1094 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1117 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr); // to prevent the Bison warning
       (yylocation_stack_[(3) - (1)]).step();
@@ -3035,8 +3060,8 @@ namespace zorba {
 
   case 17:
 
-/* Line 678 of lalr1.cc  */
-#line 1102 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1125 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr); // to prevent the Bison warning
       (yylocation_stack_[(5) - (3)]).step();
@@ -3047,8 +3072,8 @@ namespace zorba {
 
   case 18:
 
-/* Line 678 of lalr1.cc  */
-#line 1110 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1133 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr); // to prevent the Bison warning
       (yylocation_stack_[(5) - (1)]).step();
@@ -3059,8 +3084,8 @@ namespace zorba {
 
   case 19:
 
-/* Line 678 of lalr1.cc  */
-#line 1121 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1144 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new LibraryModule(LOC((yyloc)), static_cast<ModuleDecl*>((yysemantic_stack_[(1) - (1)].node)), NULL);
     }
@@ -3068,8 +3093,8 @@ namespace zorba {
 
   case 20:
 
-/* Line 678 of lalr1.cc  */
-#line 1126 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1149 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (2)].node)), NULL);
 
@@ -3079,8 +3104,8 @@ namespace zorba {
 
   case 21:
 
-/* Line 678 of lalr1.cc  */
-#line 1133 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1156 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (2)].node)));
 
@@ -3090,8 +3115,8 @@ namespace zorba {
 
   case 22:
 
-/* Line 678 of lalr1.cc  */
-#line 1140 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1163 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
                                   static_cast<SIND_DeclList*>((yysemantic_stack_[(5) - (2)].node)),
@@ -3103,8 +3128,8 @@ namespace zorba {
 
   case 23:
 
-/* Line 678 of lalr1.cc  */
-#line 1152 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1175 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ModuleDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (3)].sval)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)) );
 
@@ -3114,8 +3139,8 @@ namespace zorba {
 
   case 24:
 
-/* Line 678 of lalr1.cc  */
-#line 1162 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1185 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SIND_DeclList *sdl = new SIND_DeclList( LOC((yyloc)) );
       sdl->push_back( (yysemantic_stack_[(1) - (1)].node) );
@@ -3125,8 +3150,8 @@ namespace zorba {
 
   case 25:
 
-/* Line 678 of lalr1.cc  */
-#line 1169 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1192 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       ((SIND_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3135,8 +3160,8 @@ namespace zorba {
 
   case 26:
 
-/* Line 678 of lalr1.cc  */
-#line 1176 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1199 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       // error
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node); // to prevent the Bison warning
@@ -3148,8 +3173,8 @@ namespace zorba {
 
   case 40:
 
-/* Line 678 of lalr1.cc  */
-#line 1211 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1234 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::preserve_space);
     }
@@ -3157,8 +3182,8 @@ namespace zorba {
 
   case 41:
 
-/* Line 678 of lalr1.cc  */
-#line 1216 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1239 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::strip_space);
     }
@@ -3166,8 +3191,8 @@ namespace zorba {
 
   case 42:
 
-/* Line 678 of lalr1.cc  */
-#line 1224 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1247 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DefaultCollationDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)) );
     }
@@ -3175,8 +3200,8 @@ namespace zorba {
 
   case 43:
 
-/* Line 678 of lalr1.cc  */
-#line 1232 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1255 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new BaseURIDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
     }
@@ -3184,8 +3209,8 @@ namespace zorba {
 
   case 44:
 
-/* Line 678 of lalr1.cc  */
-#line 1240 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1263 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_preserve);
     }
@@ -3193,8 +3218,8 @@ namespace zorba {
 
   case 45:
 
-/* Line 678 of lalr1.cc  */
-#line 1245 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1268 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_strip);
     }
@@ -3202,8 +3227,8 @@ namespace zorba {
 
   case 46:
 
-/* Line 678 of lalr1.cc  */
-#line 1253 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1276 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::ordered);
     }
@@ -3211,8 +3236,8 @@ namespace zorba {
 
   case 47:
 
-/* Line 678 of lalr1.cc  */
-#line 1258 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1281 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::unordered);
     }
@@ -3220,8 +3245,8 @@ namespace zorba {
 
   case 48:
 
-/* Line 678 of lalr1.cc  */
-#line 1266 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1289 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_greatest);
     }
@@ -3229,8 +3254,8 @@ namespace zorba {
 
   case 49:
 
-/* Line 678 of lalr1.cc  */
-#line 1271 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1294 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_least);
     }
@@ -3238,8 +3263,8 @@ namespace zorba {
 
   case 50:
 
-/* Line 678 of lalr1.cc  */
-#line 1279 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1302 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)),
                                   StaticContextConsts::preserve_ns,
@@ -3249,8 +3274,8 @@ namespace zorba {
 
   case 51:
 
-/* Line 678 of lalr1.cc  */
-#line 1286 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1309 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)),
                                   StaticContextConsts::preserve_ns,
@@ -3260,8 +3285,8 @@ namespace zorba {
 
   case 52:
 
-/* Line 678 of lalr1.cc  */
-#line 1293 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1316 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)),
                                   StaticContextConsts::no_preserve_ns,
@@ -3271,8 +3296,8 @@ namespace zorba {
 
   case 53:
 
-/* Line 678 of lalr1.cc  */
-#line 1300 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1323 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)),
                                   StaticContextConsts::no_preserve_ns,
@@ -3282,8 +3307,8 @@ namespace zorba {
 
   case 56:
 
-/* Line 678 of lalr1.cc  */
-#line 1315 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1338 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yyval.node); // to prevent the Bison warning
       error((yylocation_stack_[(3) - (2)]), "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
@@ -3293,8 +3318,8 @@ namespace zorba {
 
   case 57:
 
-/* Line 678 of lalr1.cc  */
-#line 1325 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1348 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaImport( LOC((yyloc)), NULL, SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL );
     }
@@ -3302,8 +3327,8 @@ namespace zorba {
 
   case 58:
 
-/* Line 678 of lalr1.cc  */
-#line 1330 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1353 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(4) - (3)].node)),
@@ -3314,8 +3339,8 @@ namespace zorba {
 
   case 59:
 
-/* Line 678 of lalr1.cc  */
-#line 1338 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1361 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             NULL,
@@ -3326,8 +3351,8 @@ namespace zorba {
 
   case 60:
 
-/* Line 678 of lalr1.cc  */
-#line 1346 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1369 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(6) - (3)].node)),
@@ -3338,8 +3363,8 @@ namespace zorba {
 
   case 61:
 
-/* Line 678 of lalr1.cc  */
-#line 1357 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1380 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       URILiteralList *ull = new URILiteralList( LOC((yyloc)));
       ull->push_back( SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
@@ -3349,8 +3374,8 @@ namespace zorba {
 
   case 62:
 
-/* Line 678 of lalr1.cc  */
-#line 1364 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1387 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       if ( URILiteralList *ull = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node)) )
         ull->push_back( SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -3361,8 +3386,8 @@ namespace zorba {
 
   case 63:
 
-/* Line 678 of lalr1.cc  */
-#line 1375 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1398 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaPrefix( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)) );
     }
@@ -3370,8 +3395,8 @@ namespace zorba {
 
   case 64:
 
-/* Line 678 of lalr1.cc  */
-#line 1380 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1403 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SchemaPrefix( LOC((yyloc)), true );
     }
@@ -3379,8 +3404,8 @@ namespace zorba {
 
   case 65:
 
-/* Line 678 of lalr1.cc  */
-#line 1388 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1411 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL);
 
@@ -3390,8 +3415,8 @@ namespace zorba {
 
   case 66:
 
-/* Line 678 of lalr1.cc  */
-#line 1395 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1418 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (4)].sval)), SYMTAB((yysemantic_stack_[(6) - (6)].sval)), NULL);
 
@@ -3401,8 +3426,8 @@ namespace zorba {
 
   case 67:
 
-/* Line 678 of lalr1.cc  */
-#line 1402 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1425 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)),
                             SYMTAB((yysemantic_stack_[(5) - (3)].sval)),
@@ -3414,8 +3439,8 @@ namespace zorba {
 
   case 68:
 
-/* Line 678 of lalr1.cc  */
-#line 1411 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1434 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)),
                             SYMTAB((yysemantic_stack_[(8) - (4)].sval)),
@@ -3428,8 +3453,8 @@ namespace zorba {
 
   case 69:
 
-/* Line 678 of lalr1.cc  */
-#line 1424 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1447 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new NamespaceDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(5) - (3)].sval)), SYMTAB((yysemantic_stack_[(5) - (5)].sval)) );
     }
@@ -3437,8 +3462,8 @@ namespace zorba {
 
   case 70:
 
-/* Line 678 of lalr1.cc  */
-#line 1432 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1455 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
                                     ParseConstants::ns_element_default,
@@ -3448,8 +3473,8 @@ namespace zorba {
 
   case 71:
 
-/* Line 678 of lalr1.cc  */
-#line 1439 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1462 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
                                     ParseConstants::ns_function_default,
@@ -3459,8 +3484,8 @@ namespace zorba {
 
   case 72:
 
-/* Line 678 of lalr1.cc  */
-#line 1449 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1472 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vdl = new VFO_DeclList( LOC((yyloc)));
       vdl->push_back( (yysemantic_stack_[(1) - (1)].node) );
@@ -3470,8 +3495,8 @@ namespace zorba {
 
   case 73:
 
-/* Line 678 of lalr1.cc  */
-#line 1456 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1479 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       ((VFO_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3480,8 +3505,8 @@ namespace zorba {
 
   case 74:
 
-/* Line 678 of lalr1.cc  */
-#line 1463 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1486 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node); // to prevent the Bison warning
       (yylocation_stack_[(3) - (1)]).step();
@@ -3492,8 +3517,8 @@ namespace zorba {
 
   case 83:
 
-/* Line 678 of lalr1.cc  */
-#line 1486 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1509 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].vstrpair));
       delete (yysemantic_stack_[(4) - (4)].vstrpair);
@@ -3502,8 +3527,8 @@ namespace zorba {
 
   case 84:
 
-/* Line 678 of lalr1.cc  */
-#line 1492 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1515 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), (yysemantic_stack_[(4) - (4)].vstrpair));
       delete (yysemantic_stack_[(4) - (4)].vstrpair);
@@ -3512,8 +3537,8 @@ namespace zorba {
 
   case 85:
 
-/* Line 678 of lalr1.cc  */
-#line 1501 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1524 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.vstrpair) = new vector<string_pair_t>();
       (yyval.vstrpair)->push_back( *(yysemantic_stack_[(1) - (1)].strpair) );
@@ -3523,8 +3548,8 @@ namespace zorba {
 
   case 86:
 
-/* Line 678 of lalr1.cc  */
-#line 1508 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1531 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yysemantic_stack_[(2) - (1)].vstrpair)->push_back( *(yysemantic_stack_[(2) - (2)].strpair) );
       delete (yysemantic_stack_[(2) - (2)].strpair);
@@ -3534,8 +3559,8 @@ namespace zorba {
 
   case 87:
 
-/* Line 678 of lalr1.cc  */
-#line 1518 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1541 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       StringLiteral *sl = static_cast<StringLiteral*>((yysemantic_stack_[(3) - (3)].expr));
       (yyval.strpair) = new string_pair_t( (yysemantic_stack_[(3) - (1)].strval), sl->get_strval().str() );
@@ -3545,78 +3570,78 @@ namespace zorba {
 
   case 88:
 
-/* Line 678 of lalr1.cc  */
-#line 1527 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1550 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "decimal-separator"; }
     break;
 
   case 89:
 
-/* Line 678 of lalr1.cc  */
-#line 1528 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1551 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "digit"; }
     break;
 
   case 90:
 
-/* Line 678 of lalr1.cc  */
-#line 1529 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1552 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "grouping-separator"; }
     break;
 
   case 91:
 
-/* Line 678 of lalr1.cc  */
-#line 1530 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1553 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "infinty"; }
     break;
 
   case 92:
 
-/* Line 678 of lalr1.cc  */
-#line 1531 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1554 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "minus-sign"; }
     break;
 
   case 93:
 
-/* Line 678 of lalr1.cc  */
-#line 1532 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1555 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "NaN"; }
     break;
 
   case 94:
 
-/* Line 678 of lalr1.cc  */
-#line 1533 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1556 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "pattern-separator"; }
     break;
 
   case 95:
 
-/* Line 678 of lalr1.cc  */
-#line 1534 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1557 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "percent"; }
     break;
 
   case 96:
 
-/* Line 678 of lalr1.cc  */
-#line 1535 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1558 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "per-mille"; }
     break;
 
   case 97:
 
-/* Line 678 of lalr1.cc  */
-#line 1536 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1559 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "zero-digit"; }
     break;
 
   case 98:
 
-/* Line 678 of lalr1.cc  */
-#line 1542 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1565 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new OptionDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)));
     }
@@ -3624,8 +3649,8 @@ namespace zorba {
 
   case 99:
 
-/* Line 678 of lalr1.cc  */
-#line 1550 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1573 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTOptionDecl( LOC((yyloc)), dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (3)].node)) );
     }
@@ -3633,8 +3658,8 @@ namespace zorba {
 
   case 100:
 
-/* Line 678 of lalr1.cc  */
-#line 1558 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1581 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(4) - (4)].node);
     }
@@ -3642,8 +3667,8 @@ namespace zorba {
 
   case 101:
 
-/* Line 678 of lalr1.cc  */
-#line 1566 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1589 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(3) - (3)].node));
       d->theType = (yysemantic_stack_[(3) - (2)].node);
@@ -3653,8 +3678,8 @@ namespace zorba {
 
   case 102:
 
-/* Line 678 of lalr1.cc  */
-#line 1573 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1596 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -3662,8 +3687,8 @@ namespace zorba {
 
   case 103:
 
-/* Line 678 of lalr1.cc  */
-#line 1581 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1604 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(1) - (1)].node));
       d->theIsExternal = false;
@@ -3673,8 +3698,8 @@ namespace zorba {
 
   case 104:
 
-/* Line 678 of lalr1.cc  */
-#line 1588 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1611 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), NULL);
     }
@@ -3682,8 +3707,8 @@ namespace zorba {
 
   case 105:
 
-/* Line 678 of lalr1.cc  */
-#line 1593 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1616 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
@@ -3691,8 +3716,8 @@ namespace zorba {
 
   case 106:
 
-/* Line 678 of lalr1.cc  */
-#line 1601 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1624 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
@@ -3700,8 +3725,8 @@ namespace zorba {
 
   case 107:
 
-/* Line 678 of lalr1.cc  */
-#line 1609 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1632 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
 
@@ -3719,8 +3744,8 @@ namespace zorba {
 
   case 108:
 
-/* Line 678 of lalr1.cc  */
-#line 1624 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1647 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
 
@@ -3738,8 +3763,8 @@ namespace zorba {
 
   case 109:
 
-/* Line 678 of lalr1.cc  */
-#line 1639 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1662 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
 
@@ -3757,8 +3782,8 @@ namespace zorba {
 
   case 110:
 
-/* Line 678 of lalr1.cc  */
-#line 1657 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1680 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL, NULL);
     }
@@ -3766,8 +3791,8 @@ namespace zorba {
 
   case 111:
 
-/* Line 678 of lalr1.cc  */
-#line 1662 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1685 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)),
@@ -3778,8 +3803,8 @@ namespace zorba {
 
   case 112:
 
-/* Line 678 of lalr1.cc  */
-#line 1670 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1693 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(4) - (4)].expr)),
@@ -3790,8 +3815,8 @@ namespace zorba {
 
   case 113:
 
-/* Line 678 of lalr1.cc  */
-#line 1678 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1701 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(5) - (4)].expr)),
@@ -3802,8 +3827,8 @@ namespace zorba {
 
   case 114:
 
-/* Line 678 of lalr1.cc  */
-#line 1689 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1712 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationListParsenode(LOC((yyloc)), static_cast<AnnotationParsenode*>((yysemantic_stack_[(1) - (1)].node)));
     }
@@ -3811,8 +3836,8 @@ namespace zorba {
 
   case 115:
 
-/* Line 678 of lalr1.cc  */
-#line 1694 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1717 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       static_cast<AnnotationListParsenode*>((yysemantic_stack_[(2) - (1)].node))->push_back(static_cast<AnnotationParsenode*>((yysemantic_stack_[(2) - (2)].node)));
       (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -3821,8 +3846,8 @@ namespace zorba {
 
   case 116:
 
-/* Line 678 of lalr1.cc  */
-#line 1703 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1726 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))), NULL);
     }
@@ -3830,8 +3855,8 @@ namespace zorba {
 
   case 117:
 
-/* Line 678 of lalr1.cc  */
-#line 1708 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1731 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
                                    new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval))),
@@ -3841,8 +3866,8 @@ namespace zorba {
 
   case 118:
 
-/* Line 678 of lalr1.cc  */
-#line 1715 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1738 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true), NULL);
     }
@@ -3850,8 +3875,8 @@ namespace zorba {
 
   case 119:
 
-/* Line 678 of lalr1.cc  */
-#line 1720 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1743 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
                                    new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval)), true),
@@ -3861,8 +3886,8 @@ namespace zorba {
 
   case 120:
 
-/* Line 678 of lalr1.cc  */
-#line 1730 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1753 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnnotationLiteralListParsenode(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
     }
@@ -3870,8 +3895,8 @@ namespace zorba {
 
   case 121:
 
-/* Line 678 of lalr1.cc  */
-#line 1735 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1758 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       static_cast<AnnotationLiteralListParsenode*>((yysemantic_stack_[(3) - (1)].node))->push_back((yysemantic_stack_[(3) - (3)].expr));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3880,8 +3905,8 @@ namespace zorba {
 
   case 122:
 
-/* Line 678 of lalr1.cc  */
-#line 1744 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1767 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       static_cast<FunctionDecl*>((yysemantic_stack_[(2) - (2)].node))->setComment( SYMTAB((yysemantic_stack_[(2) - (1)].sval)) );
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -3890,8 +3915,8 @@ namespace zorba {
 
   case 123:
 
-/* Line 678 of lalr1.cc  */
-#line 1750 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1773 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl* fdecl = static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node));
 
@@ -3904,8 +3929,8 @@ namespace zorba {
 
   case 124:
 
-/* Line 678 of lalr1.cc  */
-#line 1763 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1786 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -3913,8 +3938,8 @@ namespace zorba {
 
   case 125:
 
-/* Line 678 of lalr1.cc  */
-#line 1768 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1791 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -3922,8 +3947,8 @@ namespace zorba {
 
   case 126:
 
-/* Line 678 of lalr1.cc  */
-#line 1776 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1799 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -3938,8 +3963,8 @@ namespace zorba {
 
   case 127:
 
-/* Line 678 of lalr1.cc  */
-#line 1787 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1810 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC ((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -3954,8 +3979,8 @@ namespace zorba {
 
   case 128:
 
-/* Line 678 of lalr1.cc  */
-#line 1802 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1825 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC ((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -3970,8 +3995,8 @@ namespace zorba {
 
   case 129:
 
-/* Line 678 of lalr1.cc  */
-#line 1814 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1837 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -3986,8 +4011,8 @@ namespace zorba {
 
   case 130:
 
-/* Line 678 of lalr1.cc  */
-#line 1829 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1852 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL);
     }
@@ -3995,8 +4020,8 @@ namespace zorba {
 
   case 131:
 
-/* Line 678 of lalr1.cc  */
-#line 1834 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1857 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (2)].node)));
     }
@@ -4004,8 +4029,8 @@ namespace zorba {
 
   case 132:
 
-/* Line 678 of lalr1.cc  */
-#line 1839 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1862 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL, dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node)));
     }
@@ -4013,8 +4038,8 @@ namespace zorba {
 
   case 133:
 
-/* Line 678 of lalr1.cc  */
-#line 1844 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1867 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType*>((yysemantic_stack_[(5) - (5)].node)));
     }
@@ -4022,8 +4047,8 @@ namespace zorba {
 
   case 134:
 
-/* Line 678 of lalr1.cc  */
-#line 1852 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1875 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       ParamList *pl = new ParamList( LOC((yyloc)) );
       pl->push_back( dynamic_cast<Param*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4033,8 +4058,8 @@ namespace zorba {
 
   case 135:
 
-/* Line 678 of lalr1.cc  */
-#line 1859 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1882 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       if ( ParamList *pl = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node)) )
         pl->push_back( dynamic_cast<Param*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -4045,8 +4070,8 @@ namespace zorba {
 
   case 136:
 
-/* Line 678 of lalr1.cc  */
-#line 1870 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1893 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL);
     }
@@ -4054,8 +4079,8 @@ namespace zorba {
 
   case 137:
 
-/* Line 678 of lalr1.cc  */
-#line 1875 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1898 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)),
                      static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -4065,8 +4090,8 @@ namespace zorba {
 
   case 138:
 
-/* Line 678 of lalr1.cc  */
-#line 1885 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1908 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)),
@@ -4077,8 +4102,8 @@ namespace zorba {
 
   case 139:
 
-/* Line 678 of lalr1.cc  */
-#line 1892 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1915 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -4089,8 +4114,8 @@ namespace zorba {
 
   case 140:
 
-/* Line 678 of lalr1.cc  */
-#line 1899 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1922 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                                static_cast<QName*>((yysemantic_stack_[(4) - (4)].expr)),
@@ -4101,8 +4126,8 @@ namespace zorba {
 
   case 141:
 
-/* Line 678 of lalr1.cc  */
-#line 1906 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1929 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                                static_cast<QName*>((yysemantic_stack_[(6) - (4)].expr)),
@@ -4113,8 +4138,8 @@ namespace zorba {
 
   case 142:
 
-/* Line 678 of lalr1.cc  */
-#line 1916 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1939 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL));
     }
@@ -4122,8 +4147,8 @@ namespace zorba {
 
   case 143:
 
-/* Line 678 of lalr1.cc  */
-#line 1920 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1943 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)),
                                                     (yysemantic_stack_[(2) - (1)].node),
@@ -4133,8 +4158,8 @@ namespace zorba {
 
   case 144:
 
-/* Line 678 of lalr1.cc  */
-#line 1930 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1953 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(8) - (3)].expr)),
@@ -4146,8 +4171,8 @@ namespace zorba {
 
   case 145:
 
-/* Line 678 of lalr1.cc  */
-#line 1938 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1961 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(9) - (4)].expr)),
@@ -4159,8 +4184,8 @@ namespace zorba {
 
   case 146:
 
-/* Line 678 of lalr1.cc  */
-#line 1949 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1972 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       IndexKeyList* keyList = new IndexKeyList(LOC((yyloc)));
       keyList->addKeySpec(dynamic_cast<IndexKeySpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4170,8 +4195,8 @@ namespace zorba {
 
   case 147:
 
-/* Line 678 of lalr1.cc  */
-#line 1955 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1978 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexKeyList*>((yysemantic_stack_[(3) - (1)].node))->addKeySpec(dynamic_cast<IndexKeySpec*>((yysemantic_stack_[(3) - (3)].node)));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -4180,8 +4205,8 @@ namespace zorba {
 
   case 148:
 
-/* Line 678 of lalr1.cc  */
-#line 1964 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1987 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL, NULL);
     }
@@ -4189,8 +4214,8 @@ namespace zorba {
 
   case 149:
 
-/* Line 678 of lalr1.cc  */
-#line 1969 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1992 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(2) - (1)].expr),
@@ -4201,8 +4226,8 @@ namespace zorba {
 
   case 150:
 
-/* Line 678 of lalr1.cc  */
-#line 1976 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 1999 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(2) - (1)].expr),
@@ -4213,8 +4238,8 @@ namespace zorba {
 
   case 151:
 
-/* Line 678 of lalr1.cc  */
-#line 1983 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2006 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(3) - (1)].expr),
@@ -4225,8 +4250,8 @@ namespace zorba {
 
   case 152:
 
-/* Line 678 of lalr1.cc  */
-#line 1995 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2018 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ICCollSimpleCheck(LOC((yyloc)),
                                  static_cast<QName*>((yysemantic_stack_[(11) - (4)].expr)),
@@ -4238,8 +4263,8 @@ namespace zorba {
 
   case 153:
 
-/* Line 678 of lalr1.cc  */
-#line 2005 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2028 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ICCollUniqueKeyCheck(LOC((yyloc)),
                                     static_cast<QName*>((yysemantic_stack_[(14) - (4)].expr)),
@@ -4251,8 +4276,8 @@ namespace zorba {
 
   case 154:
 
-/* Line 678 of lalr1.cc  */
-#line 2015 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2038 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ICCollForeachNode(LOC((yyloc)),
                                  static_cast<QName*>((yysemantic_stack_[(13) - (4)].expr)),
@@ -4264,8 +4289,8 @@ namespace zorba {
 
   case 155:
 
-/* Line 678 of lalr1.cc  */
-#line 2026 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2049 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ICForeignKey( LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(22) - (4)].expr)),
@@ -4280,8 +4305,8 @@ namespace zorba {
 
   case 156:
 
-/* Line 678 of lalr1.cc  */
-#line 2042 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2065 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       if ((yysemantic_stack_[(1) - (1)].expr) == NULL)
       {
@@ -4301,8 +4326,8 @@ namespace zorba {
 
   case 157:
 
-/* Line 678 of lalr1.cc  */
-#line 2062 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2085 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4310,8 +4335,8 @@ namespace zorba {
 
   case 158:
 
-/* Line 678 of lalr1.cc  */
-#line 2067 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2090 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4319,8 +4344,8 @@ namespace zorba {
 
   case 159:
 
-/* Line 678 of lalr1.cc  */
-#line 2071 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2094 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) =  NULL;
     }
@@ -4328,8 +4353,8 @@ namespace zorba {
 
   case 160:
 
-/* Line 678 of lalr1.cc  */
-#line 2079 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2102 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4337,8 +4362,8 @@ namespace zorba {
 
   case 161:
 
-/* Line 678 of lalr1.cc  */
-#line 2084 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2107 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4346,8 +4371,8 @@ namespace zorba {
 
   case 162:
 
-/* Line 678 of lalr1.cc  */
-#line 2088 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2111 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) =  new BlockBody(LOC((yyloc)));
     }
@@ -4355,8 +4380,8 @@ namespace zorba {
 
   case 163:
 
-/* Line 678 of lalr1.cc  */
-#line 2096 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2119 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4364,8 +4389,8 @@ namespace zorba {
 
   case 164:
 
-/* Line 678 of lalr1.cc  */
-#line 2101 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2124 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
 
@@ -4377,8 +4402,8 @@ namespace zorba {
 
   case 165:
 
-/* Line 678 of lalr1.cc  */
-#line 2113 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2136 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       BlockBody* blk = new BlockBody(LOC((yyloc)));
       blk->add((yysemantic_stack_[(1) - (1)].expr));
@@ -4388,8 +4413,8 @@ namespace zorba {
 
   case 166:
 
-/* Line 678 of lalr1.cc  */
-#line 2120 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2143 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
 
@@ -4401,8 +4426,8 @@ namespace zorba {
 
   case 179:
 
-/* Line 678 of lalr1.cc  */
-#line 2149 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2172 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -4410,8 +4435,8 @@ namespace zorba {
 
   case 180:
 
-/* Line 678 of lalr1.cc  */
-#line 2154 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2177 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new BlockBody(LOC((yyloc)));
     }
@@ -4419,8 +4444,8 @@ namespace zorba {
 
   case 181:
 
-/* Line 678 of lalr1.cc  */
-#line 2162 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2185 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       if (dynamic_cast<BlockBody*>((yysemantic_stack_[(3) - (2)].expr)) == NULL)
       {
@@ -4437,8 +4462,8 @@ namespace zorba {
 
   case 182:
 
-/* Line 678 of lalr1.cc  */
-#line 2179 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2202 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -4446,8 +4471,8 @@ namespace zorba {
 
   case 183:
 
-/* Line 678 of lalr1.cc  */
-#line 2187 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2210 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(2) - (1)].expr);
     }
@@ -4455,8 +4480,8 @@ namespace zorba {
 
   case 184:
 
-/* Line 678 of lalr1.cc  */
-#line 2195 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2218 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDeclStmt* vdecl = static_cast<VarDeclStmt*>((yysemantic_stack_[(3) - (1)].expr));
       vdecl->add((yysemantic_stack_[(3) - (3)].node));
@@ -4466,8 +4491,8 @@ namespace zorba {
 
   case 185:
 
-/* Line 678 of lalr1.cc  */
-#line 2202 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2225 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)), NULL);
       vdecl->add((yysemantic_stack_[(2) - (2)].node));
@@ -4477,8 +4502,8 @@ namespace zorba {
 
   case 186:
 
-/* Line 678 of lalr1.cc  */
-#line 2209 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2232 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)), static_cast<AnnotationListParsenode*>((yysemantic_stack_[(3) - (1)].node)));
       vdecl->add((yysemantic_stack_[(3) - (3)].node));
@@ -4488,8 +4513,8 @@ namespace zorba {
 
   case 187:
 
-/* Line 678 of lalr1.cc  */
-#line 2219 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2242 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDecl* vd = new VarDecl(LOC((yyloc)),
                                 static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)),
@@ -4505,8 +4530,8 @@ namespace zorba {
 
   case 188:
 
-/* Line 678 of lalr1.cc  */
-#line 2231 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2254 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDecl* vd = new VarDecl(LOC((yyloc)),
                                 static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -4523,8 +4548,8 @@ namespace zorba {
 
   case 189:
 
-/* Line 678 of lalr1.cc  */
-#line 2244 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2267 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDecl* vd = new VarDecl(LOC((yyloc)),
                                 static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4540,8 +4565,8 @@ namespace zorba {
 
   case 190:
 
-/* Line 678 of lalr1.cc  */
-#line 2256 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2279 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarDecl* vd = new VarDecl(LOC((yyloc)),
                                 static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -4557,8 +4582,8 @@ namespace zorba {
 
   case 191:
 
-/* Line 678 of lalr1.cc  */
-#line 2272 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2295 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new AssignExpr(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)), (yysemantic_stack_[(5) - (4)].expr));
     }
@@ -4566,8 +4591,8 @@ namespace zorba {
 
   case 192:
 
-/* Line 678 of lalr1.cc  */
-#line 2280 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2303 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ApplyExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr));
     }
@@ -4575,8 +4600,8 @@ namespace zorba {
 
   case 193:
 
-/* Line 678 of lalr1.cc  */
-#line 2288 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2311 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ExitExpr(LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
     }
@@ -4584,8 +4609,8 @@ namespace zorba {
 
   case 194:
 
-/* Line 678 of lalr1.cc  */
-#line 2296 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2319 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       BlockBody* bb = dynamic_cast<BlockBody *>((yysemantic_stack_[(5) - (5)].expr));
       if (bb == NULL)
@@ -4600,8 +4625,8 @@ namespace zorba {
 
   case 195:
 
-/* Line 678 of lalr1.cc  */
-#line 2311 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2334 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement(LOC((yyloc)), FlowCtlStatement::BREAK);
     }
@@ -4609,8 +4634,8 @@ namespace zorba {
 
   case 196:
 
-/* Line 678 of lalr1.cc  */
-#line 2316 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2339 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement( LOC((yyloc)), FlowCtlStatement::CONTINUE );
     }
@@ -4618,8 +4643,8 @@ namespace zorba {
 
   case 197:
 
-/* Line 678 of lalr1.cc  */
-#line 2324 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2347 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       ReturnExpr* re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr(LOC((yyloc)),
@@ -4633,8 +4658,8 @@ namespace zorba {
 
   case 198:
 
-/* Line 678 of lalr1.cc  */
-#line 2338 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2361 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       exprnode* retExpr = (yysemantic_stack_[(2) - (2)].expr);
 
@@ -4651,8 +4676,8 @@ namespace zorba {
 
   case 199:
 
-/* Line 678 of lalr1.cc  */
-#line 2355 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2378 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       exprnode* thenExpr = (yysemantic_stack_[(8) - (6)].expr);
       exprnode* elseExpr = (yysemantic_stack_[(8) - (8)].expr);
@@ -4677,8 +4702,8 @@ namespace zorba {
 
   case 200:
 
-/* Line 678 of lalr1.cc  */
-#line 2380 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2403 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new TryExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -4686,8 +4711,8 @@ namespace zorba {
 
   case 201:
 
-/* Line 678 of lalr1.cc  */
-#line 2388 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2411 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr* cle = new CatchListExpr( LOC((yyloc)) );
       cle->push_back( static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -4697,8 +4722,8 @@ namespace zorba {
 
   case 202:
 
-/* Line 678 of lalr1.cc  */
-#line 2395 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2418 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if ( cle )
@@ -4709,8 +4734,8 @@ namespace zorba {
 
   case 203:
 
-/* Line 678 of lalr1.cc  */
-#line 2406 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2429 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
        delete (yysemantic_stack_[(3) - (2)].name_test_list);
@@ -4719,8 +4744,8 @@ namespace zorba {
 
   case 204:
 
-/* Line 678 of lalr1.cc  */
-#line 2416 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2439 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4728,8 +4753,8 @@ namespace zorba {
 
   case 205:
 
-/* Line 678 of lalr1.cc  */
-#line 2421 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2444 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       Expr* expr = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
       if ( !expr )
@@ -4744,8 +4769,8 @@ namespace zorba {
 
   case 219:
 
-/* Line 678 of lalr1.cc  */
-#line 2459 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2482 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       ReturnExpr *re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr(LOC((yyloc)),
@@ -4759,8 +4784,8 @@ namespace zorba {
 
   case 220:
 
-/* Line 678 of lalr1.cc  */
-#line 2473 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2496 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ReturnExpr( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr) );
     }
@@ -4768,8 +4793,8 @@ namespace zorba {
 
   case 221:
 
-/* Line 678 of lalr1.cc  */
-#line 2481 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2504 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_sliding;
     }
@@ -4777,8 +4802,8 @@ namespace zorba {
 
   case 222:
 
-/* Line 678 of lalr1.cc  */
-#line 2486 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2509 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_tumbling;
     }
@@ -4786,8 +4811,8 @@ namespace zorba {
 
   case 223:
 
-/* Line 678 of lalr1.cc  */
-#line 2494 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2517 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_start;
     }
@@ -4795,8 +4820,8 @@ namespace zorba {
 
   case 224:
 
-/* Line 678 of lalr1.cc  */
-#line 2499 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2522 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_end;
     }
@@ -4804,8 +4829,8 @@ namespace zorba {
 
   case 225:
 
-/* Line 678 of lalr1.cc  */
-#line 2504 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2527 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
     (yyval.strval) = parser::the_only_end;
   }
@@ -4813,8 +4838,8 @@ namespace zorba {
 
   case 226:
 
-/* Line 678 of lalr1.cc  */
-#line 2512 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2535 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             dynamic_cast<WindowVars*>((yysemantic_stack_[(4) - (2)].node)),
@@ -4826,8 +4851,8 @@ namespace zorba {
 
   case 227:
 
-/* Line 678 of lalr1.cc  */
-#line 2521 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2544 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             NULL,
@@ -4839,8 +4864,8 @@ namespace zorba {
 
   case 228:
 
-/* Line 678 of lalr1.cc  */
-#line 2533 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2556 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling ?
@@ -4854,8 +4879,8 @@ namespace zorba {
 
   case 229:
 
-/* Line 678 of lalr1.cc  */
-#line 2543 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2566 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling ?
@@ -4868,8 +4893,8 @@ namespace zorba {
 
   case 230:
 
-/* Line 678 of lalr1.cc  */
-#line 2556 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2579 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CountClause(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -4877,8 +4902,8 @@ namespace zorba {
 
   case 239:
 
-/* Line 678 of lalr1.cc  */
-#line 2580 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2603 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *fcl = new FLWORClauseList( LOC((yyloc)) );
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4888,8 +4913,8 @@ namespace zorba {
 
   case 240:
 
-/* Line 678 of lalr1.cc  */
-#line 2587 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2610 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *fcl = dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node));
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -4899,8 +4924,8 @@ namespace zorba {
 
   case 241:
 
-/* Line 678 of lalr1.cc  */
-#line 2597 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2620 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new ForClause(LOC((yyloc)), dynamic_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node)));
     }
@@ -4908,8 +4933,8 @@ namespace zorba {
 
   case 242:
 
-/* Line 678 of lalr1.cc  */
-#line 2605 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2628 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       VarInDeclList *vdl = new VarInDeclList( LOC((yyloc)) );
       vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4919,8 +4944,8 @@ namespace zorba {
 
   case 243:
 
-/* Line 678 of lalr1.cc  */
-#line 2612 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2635 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node)) )
         vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -4930,8 +4955,8 @@ namespace zorba {
 
   case 244:
 
-/* Line 678 of lalr1.cc  */
-#line 2622 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2645 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)),
@@ -4945,8 +4970,8 @@ namespace zorba {
 
   case 245:
 
-/* Line 678 of lalr1.cc  */
-#line 2632 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2655 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -4960,8 +4985,8 @@ namespace zorba {
 
   case 246:
 
-/* Line 678 of lalr1.cc  */
-#line 2642 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2665 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -4975,8 +5000,8 @@ namespace zorba {
 
   case 247:
 
-/* Line 678 of lalr1.cc  */
-#line 2652 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2675 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -4990,8 +5015,8 @@ namespace zorba {
 
   case 248:
 
-/* Line 678 of lalr1.cc  */
-#line 2662 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2685 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5005,8 +5030,8 @@ namespace zorba {
 
   case 249:
 
-/* Line 678 of lalr1.cc  */
-#line 2672 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2695 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -5020,8 +5045,8 @@ namespace zorba {
 
   case 250:
 
-/* Line 678 of lalr1.cc  */
-#line 2682 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2705 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5035,8 +5060,8 @@ namespace zorba {
 
   case 251:
 
-/* Line 678 of lalr1.cc  */
-#line 2692 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2715 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(7) - (1)].expr)),
@@ -5050,8 +5075,8 @@ namespace zorba {
 
   case 252:
 
-/* Line 678 of lalr1.cc  */
-#line 2703 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2726 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5064,8 +5089,8 @@ namespace zorba {
 
   case 253:
 
-/* Line 678 of lalr1.cc  */
-#line 2712 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2735 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5079,8 +5104,8 @@ namespace zorba {
 
   case 254:
 
-/* Line 678 of lalr1.cc  */
-#line 2722 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2745 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5094,8 +5119,8 @@ namespace zorba {
 
   case 255:
 
-/* Line 678 of lalr1.cc  */
-#line 2732 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2755 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -5109,8 +5134,8 @@ namespace zorba {
 
   case 256:
 
-/* Line 678 of lalr1.cc  */
-#line 2748 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2771 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new PositionalVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5118,8 +5143,8 @@ namespace zorba {
 
   case 257:
 
-/* Line 678 of lalr1.cc  */
-#line 2757 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2780 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTScoreVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5127,8 +5152,8 @@ namespace zorba {
 
   case 258:
 
-/* Line 678 of lalr1.cc  */
-#line 2766 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2789 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new LetClause( LOC((yyloc)), dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)) );
         }
@@ -5136,8 +5161,8 @@ namespace zorba {
 
   case 259:
 
-/* Line 678 of lalr1.cc  */
-#line 2774 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2797 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             VarGetsDeclList *vgdl = new VarGetsDeclList( LOC((yyloc)) );
             vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5147,8 +5172,8 @@ namespace zorba {
 
   case 260:
 
-/* Line 678 of lalr1.cc  */
-#line 2780 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2803 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if( VarGetsDeclList *vgdl = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (1)].node)) )
                 vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -5158,8 +5183,8 @@ namespace zorba {
 
   case 261:
 
-/* Line 678 of lalr1.cc  */
-#line 2792 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2815 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -5171,8 +5196,8 @@ namespace zorba {
 
   case 262:
 
-/* Line 678 of lalr1.cc  */
-#line 2800 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2823 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5184,8 +5209,8 @@ namespace zorba {
 
   case 263:
 
-/* Line 678 of lalr1.cc  */
-#line 2810 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2833 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            dynamic_cast<FTScoreVar*>((yysemantic_stack_[(3) - (1)].node))->get_var_name(),
@@ -5197,8 +5222,8 @@ namespace zorba {
 
   case 264:
 
-/* Line 678 of lalr1.cc  */
-#line 2818 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2841 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -5210,8 +5235,8 @@ namespace zorba {
 
   case 265:
 
-/* Line 678 of lalr1.cc  */
-#line 2830 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2853 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -5221,8 +5246,8 @@ namespace zorba {
 
   case 266:
 
-/* Line 678 of lalr1.cc  */
-#line 2836 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2859 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5233,8 +5258,8 @@ namespace zorba {
 
   case 268:
 
-/* Line 678 of lalr1.cc  */
-#line 2849 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2872 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL, NULL);
     }
@@ -5242,8 +5267,8 @@ namespace zorba {
 
   case 269:
 
-/* Line 678 of lalr1.cc  */
-#line 2853 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2876 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_curr(static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)));
@@ -5252,8 +5277,8 @@ namespace zorba {
 
   case 270:
 
-/* Line 678 of lalr1.cc  */
-#line 2861 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2884 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), dynamic_cast<PositionalVar*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL, NULL);
     }
@@ -5261,8 +5286,8 @@ namespace zorba {
 
   case 271:
 
-/* Line 678 of lalr1.cc  */
-#line 2865 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2888 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_posvar(dynamic_cast<PositionalVar*>((yysemantic_stack_[(2) - (1)].node)));
@@ -5271,8 +5296,8 @@ namespace zorba {
 
   case 273:
 
-/* Line 678 of lalr1.cc  */
-#line 2874 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2897 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), static_cast<QName*>((yysemantic_stack_[(6) - (6)].expr)));
     }
@@ -5280,8 +5305,8 @@ namespace zorba {
 
   case 274:
 
-/* Line 678 of lalr1.cc  */
-#line 2878 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2901 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5289,8 +5314,8 @@ namespace zorba {
 
   case 275:
 
-/* Line 678 of lalr1.cc  */
-#line 2882 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2905 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL);
     }
@@ -5298,8 +5323,8 @@ namespace zorba {
 
   case 276:
 
-/* Line 678 of lalr1.cc  */
-#line 2892 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2915 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WhereClause(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
@@ -5307,8 +5332,8 @@ namespace zorba {
 
   case 277:
 
-/* Line 678 of lalr1.cc  */
-#line 2900 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2923 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)), dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)));
     }
@@ -5316,8 +5341,8 @@ namespace zorba {
 
   case 278:
 
-/* Line 678 of lalr1.cc  */
-#line 2907 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2930 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             GroupSpecList *gsl = new GroupSpecList( LOC((yyloc)) );
             gsl->push_back( dynamic_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5327,8 +5352,8 @@ namespace zorba {
 
   case 279:
 
-/* Line 678 of lalr1.cc  */
-#line 2913 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2936 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             GroupSpecList *gsl = dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
             if ( gsl )
@@ -5339,8 +5364,8 @@ namespace zorba {
 
   case 280:
 
-/* Line 678 of lalr1.cc  */
-#line 2924 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2947 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL);
     }
@@ -5348,8 +5373,8 @@ namespace zorba {
 
   case 281:
 
-/* Line 678 of lalr1.cc  */
-#line 2928 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2951 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -5359,8 +5384,8 @@ namespace zorba {
 
   case 282:
 
-/* Line 678 of lalr1.cc  */
-#line 2937 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2960 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new GroupCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
@@ -5368,8 +5393,8 @@ namespace zorba {
 
   case 283:
 
-/* Line 678 of lalr1.cc  */
-#line 2945 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2968 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node))
@@ -5379,8 +5404,8 @@ namespace zorba {
 
   case 284:
 
-/* Line 678 of lalr1.cc  */
-#line 2951 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2974 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)), true
@@ -5390,8 +5415,8 @@ namespace zorba {
 
   case 285:
 
-/* Line 678 of lalr1.cc  */
-#line 2961 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2984 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             OrderSpecList *osl = new OrderSpecList( LOC((yyloc)) );
             osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5401,8 +5426,8 @@ namespace zorba {
 
   case 286:
 
-/* Line 678 of lalr1.cc  */
-#line 2967 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 2990 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( OrderSpecList* osl = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node)) )
                 osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -5412,8 +5437,8 @@ namespace zorba {
 
   case 287:
 
-/* Line 678 of lalr1.cc  */
-#line 2977 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3000 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderSpec( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL );
         }
@@ -5421,8 +5446,8 @@ namespace zorba {
 
   case 288:
 
-/* Line 678 of lalr1.cc  */
-#line 2981 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3004 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderSpec(
                 LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<OrderModifierPN*>((yysemantic_stack_[(2) - (2)].node))
@@ -5432,8 +5457,8 @@ namespace zorba {
 
   case 289:
 
-/* Line 678 of lalr1.cc  */
-#line 2991 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3014 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL
@@ -5443,8 +5468,8 @@ namespace zorba {
 
   case 290:
 
-/* Line 678 of lalr1.cc  */
-#line 2997 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3020 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -5454,8 +5479,8 @@ namespace zorba {
 
   case 291:
 
-/* Line 678 of lalr1.cc  */
-#line 3003 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3026 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, NULL, dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(1) - (1)].node))
@@ -5465,8 +5490,8 @@ namespace zorba {
 
   case 292:
 
-/* Line 678 of lalr1.cc  */
-#line 3009 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3032 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5479,8 +5504,8 @@ namespace zorba {
 
   case 293:
 
-/* Line 678 of lalr1.cc  */
-#line 3018 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3041 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5493,8 +5518,8 @@ namespace zorba {
 
   case 294:
 
-/* Line 678 of lalr1.cc  */
-#line 3027 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3050 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5507,8 +5532,8 @@ namespace zorba {
 
   case 295:
 
-/* Line 678 of lalr1.cc  */
-#line 3036 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3059 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5521,8 +5546,8 @@ namespace zorba {
 
   case 296:
 
-/* Line 678 of lalr1.cc  */
-#line 3049 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3072 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_ascending );
         }
@@ -5530,8 +5555,8 @@ namespace zorba {
 
   case 297:
 
-/* Line 678 of lalr1.cc  */
-#line 3053 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3076 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_descending );
         }
@@ -5539,8 +5564,8 @@ namespace zorba {
 
   case 298:
 
-/* Line 678 of lalr1.cc  */
-#line 3061 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3084 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_greatest
@@ -5550,8 +5575,8 @@ namespace zorba {
 
   case 299:
 
-/* Line 678 of lalr1.cc  */
-#line 3067 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3090 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_least
@@ -5561,8 +5586,8 @@ namespace zorba {
 
   case 300:
 
-/* Line 678 of lalr1.cc  */
-#line 3077 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3100 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OrderCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
@@ -5570,8 +5595,8 @@ namespace zorba {
 
   case 301:
 
-/* Line 678 of lalr1.cc  */
-#line 3085 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3108 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5584,8 +5609,8 @@ namespace zorba {
 
   case 302:
 
-/* Line 678 of lalr1.cc  */
-#line 3094 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3117 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5598,8 +5623,8 @@ namespace zorba {
 
   case 303:
 
-/* Line 678 of lalr1.cc  */
-#line 3107 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3130 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       QVarInDeclList *qvidl = new QVarInDeclList( LOC((yyloc)) );
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5610,8 +5635,8 @@ namespace zorba {
 
   case 304:
 
-/* Line 678 of lalr1.cc  */
-#line 3114 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3137 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       QVarInDeclList *qvidl = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -5621,8 +5646,8 @@ namespace zorba {
 
   case 305:
 
-/* Line 678 of lalr1.cc  */
-#line 3126 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3149 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -5630,8 +5655,8 @@ namespace zorba {
 
   case 306:
 
-/* Line 678 of lalr1.cc  */
-#line 3130 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3153 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5642,8 +5667,8 @@ namespace zorba {
 
   case 307:
 
-/* Line 678 of lalr1.cc  */
-#line 3142 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3165 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -5651,8 +5676,8 @@ namespace zorba {
 
   case 308:
 
-/* Line 678 of lalr1.cc  */
-#line 3149 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3172 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5662,8 +5687,8 @@ namespace zorba {
 
   case 309:
 
-/* Line 678 of lalr1.cc  */
-#line 3155 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3178 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5673,8 +5698,8 @@ namespace zorba {
 
   case 310:
 
-/* Line 678 of lalr1.cc  */
-#line 3164 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3187 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -5682,8 +5707,8 @@ namespace zorba {
 
   case 311:
 
-/* Line 678 of lalr1.cc  */
-#line 3171 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3194 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = new SwitchCaseOperandList(LOC((yyloc)));
       sco_list_p->push_back((yysemantic_stack_[(2) - (2)].expr));
@@ -5693,8 +5718,8 @@ namespace zorba {
 
   case 312:
 
-/* Line 678 of lalr1.cc  */
-#line 3177 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3200 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = static_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node));
       sco_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -5704,8 +5729,8 @@ namespace zorba {
 
   case 313:
 
-/* Line 678 of lalr1.cc  */
-#line 3188 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3211 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -5713,8 +5738,8 @@ namespace zorba {
 
   case 314:
 
-/* Line 678 of lalr1.cc  */
-#line 3195 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3218 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5724,8 +5749,8 @@ namespace zorba {
 
   case 315:
 
-/* Line 678 of lalr1.cc  */
-#line 3201 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3224 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5735,8 +5760,8 @@ namespace zorba {
 
   case 316:
 
-/* Line 678 of lalr1.cc  */
-#line 3210 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3233 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -5744,8 +5769,8 @@ namespace zorba {
 
   case 317:
 
-/* Line 678 of lalr1.cc  */
-#line 3219 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3242 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -5756,8 +5781,8 @@ namespace zorba {
 
   case 318:
 
-/* Line 678 of lalr1.cc  */
-#line 3226 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3249 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -5769,8 +5794,8 @@ namespace zorba {
 
   case 319:
 
-/* Line 678 of lalr1.cc  */
-#line 3237 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3260 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -5781,8 +5806,8 @@ namespace zorba {
 
   case 320:
 
-/* Line 678 of lalr1.cc  */
-#line 3244 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3267 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -5794,8 +5819,8 @@ namespace zorba {
 
   case 321:
 
-/* Line 678 of lalr1.cc  */
-#line 3256 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3279 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5805,8 +5830,8 @@ namespace zorba {
 
   case 322:
 
-/* Line 678 of lalr1.cc  */
-#line 3262 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3285 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5816,8 +5841,8 @@ namespace zorba {
 
   case 323:
 
-/* Line 678 of lalr1.cc  */
-#line 3274 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3297 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -5827,8 +5852,8 @@ namespace zorba {
 
   case 324:
 
-/* Line 678 of lalr1.cc  */
-#line 3280 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3303 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -5839,8 +5864,8 @@ namespace zorba {
 
   case 325:
 
-/* Line 678 of lalr1.cc  */
-#line 3291 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3314 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5850,8 +5875,8 @@ namespace zorba {
 
   case 326:
 
-/* Line 678 of lalr1.cc  */
-#line 3297 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3320 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5861,8 +5886,8 @@ namespace zorba {
 
   case 327:
 
-/* Line 678 of lalr1.cc  */
-#line 3308 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3331 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -5872,8 +5897,8 @@ namespace zorba {
 
   case 328:
 
-/* Line 678 of lalr1.cc  */
-#line 3314 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3337 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -5884,8 +5909,8 @@ namespace zorba {
 
   case 329:
 
-/* Line 678 of lalr1.cc  */
-#line 3325 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3348 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new IfExpr(LOC ((yyloc)), (yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -5893,8 +5918,8 @@ namespace zorba {
 
   case 330:
 
-/* Line 678 of lalr1.cc  */
-#line 3334 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3357 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -5902,8 +5927,8 @@ namespace zorba {
 
   case 331:
 
-/* Line 678 of lalr1.cc  */
-#line 3338 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3361 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new OrExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
     }
@@ -5911,8 +5936,8 @@ namespace zorba {
 
   case 332:
 
-/* Line 678 of lalr1.cc  */
-#line 3347 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3370 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -5920,8 +5945,8 @@ namespace zorba {
 
   case 333:
 
-/* Line 678 of lalr1.cc  */
-#line 3351 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3374 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AndExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -5929,8 +5954,8 @@ namespace zorba {
 
   case 334:
 
-/* Line 678 of lalr1.cc  */
-#line 3359 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3382 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -5938,8 +5963,8 @@ namespace zorba {
 
   case 335:
 
-/* Line 678 of lalr1.cc  */
-#line 3363 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3386 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             /*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
             (yyval.expr) = new ComparisonExpr(
@@ -5953,8 +5978,8 @@ namespace zorba {
 
   case 336:
 
-/* Line 678 of lalr1.cc  */
-#line 3373 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3396 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             /*  ::=  "is" | "<<" | ">>" */
             (yyval.expr) = new ComparisonExpr(
@@ -5965,8 +5990,8 @@ namespace zorba {
 
   case 337:
 
-/* Line 678 of lalr1.cc  */
-#line 3380 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3403 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5979,8 +6004,8 @@ namespace zorba {
 
   case 338:
 
-/* Line 678 of lalr1.cc  */
-#line 3389 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3412 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5993,8 +6018,8 @@ namespace zorba {
 
   case 339:
 
-/* Line 678 of lalr1.cc  */
-#line 3398 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3421 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             /* this call is needed */
             driver.lexer->interpretAsLessThan();
@@ -6003,8 +6028,8 @@ namespace zorba {
 
   case 340:
 
-/* Line 678 of lalr1.cc  */
-#line 3403 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3426 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -6017,8 +6042,8 @@ namespace zorba {
 
   case 341:
 
-/* Line 678 of lalr1.cc  */
-#line 3412 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3435 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -6031,8 +6056,8 @@ namespace zorba {
 
   case 342:
 
-/* Line 678 of lalr1.cc  */
-#line 3421 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3444 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -6045,8 +6070,8 @@ namespace zorba {
 
   case 343:
 
-/* Line 678 of lalr1.cc  */
-#line 3430 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3453 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -6059,8 +6084,8 @@ namespace zorba {
 
   case 344:
 
-/* Line 678 of lalr1.cc  */
-#line 3443 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3466 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6068,8 +6093,8 @@ namespace zorba {
 
   case 345:
 
-/* Line 678 of lalr1.cc  */
-#line 3447 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3470 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new FTContainsExpr(
                 LOC((yyloc)),
@@ -6082,8 +6107,8 @@ namespace zorba {
 
   case 346:
 
-/* Line 678 of lalr1.cc  */
-#line 3459 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3482 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -6091,8 +6116,8 @@ namespace zorba {
 
   case 347:
 
-/* Line 678 of lalr1.cc  */
-#line 3463 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3486 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -6100,8 +6125,8 @@ namespace zorba {
 
   case 348:
 
-/* Line 678 of lalr1.cc  */
-#line 3470 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3493 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6109,8 +6134,8 @@ namespace zorba {
 
   case 349:
 
-/* Line 678 of lalr1.cc  */
-#line 3474 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3497 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new RangeExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6118,8 +6143,8 @@ namespace zorba {
 
   case 350:
 
-/* Line 678 of lalr1.cc  */
-#line 3483 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3506 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6127,8 +6152,8 @@ namespace zorba {
 
   case 351:
 
-/* Line 678 of lalr1.cc  */
-#line 3487 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3510 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6136,8 +6161,8 @@ namespace zorba {
 
   case 352:
 
-/* Line 678 of lalr1.cc  */
-#line 3491 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3514 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6145,8 +6170,8 @@ namespace zorba {
 
   case 353:
 
-/* Line 678 of lalr1.cc  */
-#line 3500 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3523 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6154,8 +6179,8 @@ namespace zorba {
 
   case 354:
 
-/* Line 678 of lalr1.cc  */
-#line 3504 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3527 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6165,8 +6190,8 @@ namespace zorba {
 
   case 355:
 
-/* Line 678 of lalr1.cc  */
-#line 3510 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3533 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6176,8 +6201,8 @@ namespace zorba {
 
   case 356:
 
-/* Line 678 of lalr1.cc  */
-#line 3516 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3539 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6187,8 +6212,8 @@ namespace zorba {
 
   case 357:
 
-/* Line 678 of lalr1.cc  */
-#line 3522 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3545 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6198,8 +6223,8 @@ namespace zorba {
 
   case 358:
 
-/* Line 678 of lalr1.cc  */
-#line 3533 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3556 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6207,8 +6232,8 @@ namespace zorba {
 
   case 359:
 
-/* Line 678 of lalr1.cc  */
-#line 3537 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3560 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6216,8 +6241,8 @@ namespace zorba {
 
   case 360:
 
-/* Line 678 of lalr1.cc  */
-#line 3541 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3564 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6225,8 +6250,8 @@ namespace zorba {
 
   case 361:
 
-/* Line 678 of lalr1.cc  */
-#line 3549 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3572 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6234,8 +6259,8 @@ namespace zorba {
 
   case 362:
 
-/* Line 678 of lalr1.cc  */
-#line 3553 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3576 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6245,8 +6270,8 @@ namespace zorba {
 
   case 363:
 
-/* Line 678 of lalr1.cc  */
-#line 3559 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3582 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6256,8 +6281,8 @@ namespace zorba {
 
   case 364:
 
-/* Line 678 of lalr1.cc  */
-#line 3569 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3592 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6265,8 +6290,8 @@ namespace zorba {
 
   case 365:
 
-/* Line 678 of lalr1.cc  */
-#line 3573 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3596 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InstanceofExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6276,8 +6301,8 @@ namespace zorba {
 
   case 366:
 
-/* Line 678 of lalr1.cc  */
-#line 3583 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3606 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6285,8 +6310,8 @@ namespace zorba {
 
   case 367:
 
-/* Line 678 of lalr1.cc  */
-#line 3587 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3610 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new TreatExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6296,8 +6321,8 @@ namespace zorba {
 
   case 368:
 
-/* Line 678 of lalr1.cc  */
-#line 3597 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3620 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6305,8 +6330,8 @@ namespace zorba {
 
   case 369:
 
-/* Line 678 of lalr1.cc  */
-#line 3601 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3624 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CastableExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6316,8 +6341,8 @@ namespace zorba {
 
   case 370:
 
-/* Line 678 of lalr1.cc  */
-#line 3611 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3634 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6325,8 +6350,8 @@ namespace zorba {
 
   case 371:
 
-/* Line 678 of lalr1.cc  */
-#line 3615 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3638 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CastExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6336,8 +6361,8 @@ namespace zorba {
 
   case 372:
 
-/* Line 678 of lalr1.cc  */
-#line 3625 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3648 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6345,8 +6370,8 @@ namespace zorba {
 
   case 373:
 
-/* Line 678 of lalr1.cc  */
-#line 3629 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3652 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new UnaryExpr( LOC((yyloc)), dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].expr) );
         }
@@ -6354,8 +6379,8 @@ namespace zorba {
 
   case 374:
 
-/* Line 678 of lalr1.cc  */
-#line 3637 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3660 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), true );
         }
@@ -6363,8 +6388,8 @@ namespace zorba {
 
   case 375:
 
-/* Line 678 of lalr1.cc  */
-#line 3641 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3664 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), false );
         }
@@ -6372,8 +6397,8 @@ namespace zorba {
 
   case 376:
 
-/* Line 678 of lalr1.cc  */
-#line 3645 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3668 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
@@ -6381,8 +6406,8 @@ namespace zorba {
 
   case 377:
 
-/* Line 678 of lalr1.cc  */
-#line 3649 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3672 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( SignList *sl = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)) )
                 sl->negate();
@@ -6392,8 +6417,8 @@ namespace zorba {
 
   case 378:
 
-/* Line 678 of lalr1.cc  */
-#line 3659 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3682 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6401,8 +6426,8 @@ namespace zorba {
 
   case 379:
 
-/* Line 678 of lalr1.cc  */
-#line 3663 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3686 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6410,8 +6435,8 @@ namespace zorba {
 
   case 380:
 
-/* Line 678 of lalr1.cc  */
-#line 3667 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3690 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6419,8 +6444,8 @@ namespace zorba {
 
   case 381:
 
-/* Line 678 of lalr1.cc  */
-#line 3675 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3698 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_eq );
         }
@@ -6428,8 +6453,8 @@ namespace zorba {
 
   case 382:
 
-/* Line 678 of lalr1.cc  */
-#line 3679 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3702 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ne );
         }
@@ -6437,8 +6462,8 @@ namespace zorba {
 
   case 383:
 
-/* Line 678 of lalr1.cc  */
-#line 3683 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3706 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_lt );
         }
@@ -6446,8 +6471,8 @@ namespace zorba {
 
   case 384:
 
-/* Line 678 of lalr1.cc  */
-#line 3687 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3710 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_le );
         }
@@ -6455,8 +6480,8 @@ namespace zorba {
 
   case 385:
 
-/* Line 678 of lalr1.cc  */
-#line 3691 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3714 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_gt );
         }
@@ -6464,8 +6489,8 @@ namespace zorba {
 
   case 386:
 
-/* Line 678 of lalr1.cc  */
-#line 3695 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3718 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ge );
         }
@@ -6473,8 +6498,8 @@ namespace zorba {
 
   case 387:
 
-/* Line 678 of lalr1.cc  */
-#line 3703 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3726 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_is );
         }
@@ -6482,8 +6507,8 @@ namespace zorba {
 
   case 388:
 
-/* Line 678 of lalr1.cc  */
-#line 3707 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3730 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_precedes );
         }
@@ -6491,8 +6516,8 @@ namespace zorba {
 
   case 389:
 
-/* Line 678 of lalr1.cc  */
-#line 3711 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3734 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_follows );
         }
@@ -6500,8 +6525,8 @@ namespace zorba {
 
   case 390:
 
-/* Line 678 of lalr1.cc  */
-#line 3719 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3742 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -6509,8 +6534,8 @@ namespace zorba {
 
   case 391:
 
-/* Line 678 of lalr1.cc  */
-#line 3723 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3746 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr) );
         }
@@ -6518,8 +6543,8 @@ namespace zorba {
 
   case 392:
 
-/* Line 678 of lalr1.cc  */
-#line 3727 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3750 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr) );
         }
@@ -6527,8 +6552,8 @@ namespace zorba {
 
   case 393:
 
-/* Line 678 of lalr1.cc  */
-#line 3731 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3754 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ValidateExpr(
                 LOC((yyloc)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (3)].node))->get_name(), (yysemantic_stack_[(6) - (5)].expr)
@@ -6539,8 +6564,8 @@ namespace zorba {
 
   case 394:
 
-/* Line 678 of lalr1.cc  */
-#line 3742 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3765 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ExtensionExpr(
                 LOC((yyloc)), dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)), NULL
@@ -6550,8 +6575,8 @@ namespace zorba {
 
   case 395:
 
-/* Line 678 of lalr1.cc  */
-#line 3748 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3771 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ExtensionExpr(
                 LOC((yyloc)), dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)), (yysemantic_stack_[(4) - (3)].expr)
@@ -6561,8 +6586,8 @@ namespace zorba {
 
   case 396:
 
-/* Line 678 of lalr1.cc  */
-#line 3758 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3781 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             PragmaList *pl = new PragmaList( LOC((yyloc)) );
             pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -6572,8 +6597,8 @@ namespace zorba {
 
   case 397:
 
-/* Line 678 of lalr1.cc  */
-#line 3764 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3787 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( PragmaList *pl = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node)) )
                 pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -6583,8 +6608,8 @@ namespace zorba {
 
   case 398:
 
-/* Line 678 of lalr1.cc  */
-#line 3774 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3797 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
         }
@@ -6592,8 +6617,8 @@ namespace zorba {
 
   case 399:
 
-/* Line 678 of lalr1.cc  */
-#line 3778 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3801 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) ), "" );
         }
@@ -6601,8 +6626,8 @@ namespace zorba {
 
   case 400:
 
-/* Line 678 of lalr1.cc  */
-#line 3782 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3805 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), true ), "" );
         }
@@ -6610,8 +6635,8 @@ namespace zorba {
 
   case 401:
 
-/* Line 678 of lalr1.cc  */
-#line 3820 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3843 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new PathExpr(LOC((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
     }
@@ -6619,8 +6644,8 @@ namespace zorba {
 
   case 402:
 
-/* Line 678 of lalr1.cc  */
-#line 3824 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3847 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       RelativePathExpr* rpe;
 
@@ -6634,8 +6659,8 @@ namespace zorba {
 
   case 403:
 
-/* Line 678 of lalr1.cc  */
-#line 3834 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3857 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       RelativePathExpr* rpe;
 
@@ -6649,8 +6674,8 @@ namespace zorba {
 
   case 404:
 
-/* Line 678 of lalr1.cc  */
-#line 3844 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3867 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = (!rpe ?
@@ -6661,8 +6686,8 @@ namespace zorba {
 
   case 405:
 
-/* Line 678 of lalr1.cc  */
-#line 3857 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3880 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = NULL;
     }
@@ -6670,8 +6695,8 @@ namespace zorba {
 
   case 406:
 
-/* Line 678 of lalr1.cc  */
-#line 3866 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3889 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       AxisStep* as = dynamic_cast<AxisStep*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = (as ?
@@ -6685,8 +6710,8 @@ namespace zorba {
 
   case 407:
 
-/* Line 678 of lalr1.cc  */
-#line 3876 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3899 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -6694,8 +6719,8 @@ namespace zorba {
 
   case 408:
 
-/* Line 678 of lalr1.cc  */
-#line 3880 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3903 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -6703,8 +6728,8 @@ namespace zorba {
 
   case 409:
 
-/* Line 678 of lalr1.cc  */
-#line 3889 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3912 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -6712,8 +6737,8 @@ namespace zorba {
 
   case 410:
 
-/* Line 678 of lalr1.cc  */
-#line 3893 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3916 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -6721,8 +6746,8 @@ namespace zorba {
 
   case 411:
 
-/* Line 678 of lalr1.cc  */
-#line 3902 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3925 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -6732,8 +6757,8 @@ namespace zorba {
 
   case 412:
 
-/* Line 678 of lalr1.cc  */
-#line 3908 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3931 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -6745,8 +6770,8 @@ namespace zorba {
 
   case 413:
 
-/* Line 678 of lalr1.cc  */
-#line 3916 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3939 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -6756,8 +6781,8 @@ namespace zorba {
 
   case 414:
 
-/* Line 678 of lalr1.cc  */
-#line 3922 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3945 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -6769,8 +6794,8 @@ namespace zorba {
 
   case 415:
 
-/* Line 678 of lalr1.cc  */
-#line 3934 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3957 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node)
@@ -6780,8 +6805,8 @@ namespace zorba {
 
   case 416:
 
-/* Line 678 of lalr1.cc  */
-#line 3940 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3963 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node))
@@ -6791,8 +6816,8 @@ namespace zorba {
 
   case 417:
 
-/* Line 678 of lalr1.cc  */
-#line 3950 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3973 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_child );
         }
@@ -6800,8 +6825,8 @@ namespace zorba {
 
   case 418:
 
-/* Line 678 of lalr1.cc  */
-#line 3954 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3977 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_descendant);
         }
@@ -6809,8 +6834,8 @@ namespace zorba {
 
   case 419:
 
-/* Line 678 of lalr1.cc  */
-#line 3958 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3981 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_attribute );
         }
@@ -6818,8 +6843,8 @@ namespace zorba {
 
   case 420:
 
-/* Line 678 of lalr1.cc  */
-#line 3962 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3985 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_self );
         }
@@ -6827,8 +6852,8 @@ namespace zorba {
 
   case 421:
 
-/* Line 678 of lalr1.cc  */
-#line 3966 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3989 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_descendant_or_self
@@ -6838,8 +6863,8 @@ namespace zorba {
 
   case 422:
 
-/* Line 678 of lalr1.cc  */
-#line 3972 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 3995 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_following_sibling
@@ -6849,8 +6874,8 @@ namespace zorba {
 
   case 423:
 
-/* Line 678 of lalr1.cc  */
-#line 3978 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4001 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_following );
         }
@@ -6858,8 +6883,8 @@ namespace zorba {
 
   case 424:
 
-/* Line 678 of lalr1.cc  */
-#line 3986 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4009 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), false );
         }
@@ -6867,8 +6892,8 @@ namespace zorba {
 
   case 425:
 
-/* Line 678 of lalr1.cc  */
-#line 3990 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4013 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].node), true );
         }
@@ -6876,8 +6901,8 @@ namespace zorba {
 
   case 426:
 
-/* Line 678 of lalr1.cc  */
-#line 3998 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4021 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseStep( LOC((yyloc)), dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node) );
         }
@@ -6885,8 +6910,8 @@ namespace zorba {
 
   case 427:
 
-/* Line 678 of lalr1.cc  */
-#line 4002 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4025 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             ReverseAxis *ra = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_parent
@@ -6897,8 +6922,8 @@ namespace zorba {
 
   case 428:
 
-/* Line 678 of lalr1.cc  */
-#line 4013 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4036 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_parent );
         }
@@ -6906,8 +6931,8 @@ namespace zorba {
 
   case 429:
 
-/* Line 678 of lalr1.cc  */
-#line 4017 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4040 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_ancestor );
         }
@@ -6915,8 +6940,8 @@ namespace zorba {
 
   case 430:
 
-/* Line 678 of lalr1.cc  */
-#line 4021 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4044 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_preceding_sibling
@@ -6926,8 +6951,8 @@ namespace zorba {
 
   case 431:
 
-/* Line 678 of lalr1.cc  */
-#line 4027 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4050 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_preceding );
         }
@@ -6935,8 +6960,8 @@ namespace zorba {
 
   case 432:
 
-/* Line 678 of lalr1.cc  */
-#line 4031 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4054 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_ancestor_or_self
@@ -6946,8 +6971,8 @@ namespace zorba {
 
   case 433:
 
-/* Line 678 of lalr1.cc  */
-#line 4045 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4068 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -6955,8 +6980,8 @@ namespace zorba {
 
   case 434:
 
-/* Line 678 of lalr1.cc  */
-#line 4049 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4072 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -6964,8 +6989,8 @@ namespace zorba {
 
   case 435:
 
-/* Line 678 of lalr1.cc  */
-#line 4057 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4080 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
@@ -6973,8 +6998,8 @@ namespace zorba {
 
   case 436:
 
-/* Line 678 of lalr1.cc  */
-#line 4061 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4084 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)) );
         }
@@ -6982,8 +7007,8 @@ namespace zorba {
 
   case 437:
 
-/* Line 678 of lalr1.cc  */
-#line 4071 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4094 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", "", ParseConstants::wild_all, false);
     }
@@ -6991,8 +7016,8 @@ namespace zorba {
 
   case 438:
 
-/* Line 678 of lalr1.cc  */
-#line 4075 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4098 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, false);
     }
@@ -7000,8 +7025,8 @@ namespace zorba {
 
   case 439:
 
-/* Line 678 of lalr1.cc  */
-#line 4079 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4102 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, true);
     }
@@ -7009,8 +7034,8 @@ namespace zorba {
 
   case 440:
 
-/* Line 678 of lalr1.cc  */
-#line 4083 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4106 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", SYMTAB((yysemantic_stack_[(1) - (1)].sval)), ParseConstants::wild_prefix, false);
     }
@@ -7018,8 +7043,8 @@ namespace zorba {
 
   case 441:
 
-/* Line 678 of lalr1.cc  */
-#line 4092 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4115 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
      }
@@ -7027,8 +7052,8 @@ namespace zorba {
 
   case 442:
 
-/* Line 678 of lalr1.cc  */
-#line 4096 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4119 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new FilterExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
      }
@@ -7036,8 +7061,8 @@ namespace zorba {
 
   case 443:
 
-/* Line 678 of lalr1.cc  */
-#line 4100 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4123 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC ((yyloc)), (yysemantic_stack_[(3) - (1)].expr));
      }
@@ -7045,8 +7070,8 @@ namespace zorba {
 
   case 444:
 
-/* Line 678 of lalr1.cc  */
-#line 4104 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4127 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC ((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node)));
      }
@@ -7054,8 +7079,8 @@ namespace zorba {
 
   case 445:
 
-/* Line 678 of lalr1.cc  */
-#line 4112 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4135 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             PredicateList *pl = new PredicateList( LOC((yyloc)) );
             pl->push_back( dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -7065,8 +7090,8 @@ namespace zorba {
 
   case 446:
 
-/* Line 678 of lalr1.cc  */
-#line 4118 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4141 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( PredicateList *pl = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node)) )
                 pl->push_back( dynamic_cast<exprnode*>((yysemantic_stack_[(2) - (2)].expr)) );
@@ -7076,8 +7101,8 @@ namespace zorba {
 
   case 447:
 
-/* Line 678 of lalr1.cc  */
-#line 4128 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4151 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
         }
@@ -7085,8 +7110,8 @@ namespace zorba {
 
   case 448:
 
-/* Line 678 of lalr1.cc  */
-#line 4136 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4159 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7094,8 +7119,8 @@ namespace zorba {
 
   case 449:
 
-/* Line 678 of lalr1.cc  */
-#line 4140 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4163 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7103,8 +7128,8 @@ namespace zorba {
 
   case 450:
 
-/* Line 678 of lalr1.cc  */
-#line 4144 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4167 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7112,8 +7137,8 @@ namespace zorba {
 
   case 451:
 
-/* Line 678 of lalr1.cc  */
-#line 4148 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4171 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7121,8 +7146,8 @@ namespace zorba {
 
   case 452:
 
-/* Line 678 of lalr1.cc  */
-#line 4152 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4175 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7130,8 +7155,8 @@ namespace zorba {
 
   case 453:
 
-/* Line 678 of lalr1.cc  */
-#line 4156 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4179 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7139,8 +7164,8 @@ namespace zorba {
 
   case 454:
 
-/* Line 678 of lalr1.cc  */
-#line 4160 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4183 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7148,8 +7173,8 @@ namespace zorba {
 
   case 455:
 
-/* Line 678 of lalr1.cc  */
-#line 4164 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4187 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7157,8 +7182,8 @@ namespace zorba {
 
   case 456:
 
-/* Line 678 of lalr1.cc  */
-#line 4168 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4191 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7166,8 +7191,8 @@ namespace zorba {
 
   case 457:
 
-/* Line 678 of lalr1.cc  */
-#line 4178 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4201 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7175,8 +7200,8 @@ namespace zorba {
 
   case 458:
 
-/* Line 678 of lalr1.cc  */
-#line 4186 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4215 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7184,8 +7209,8 @@ namespace zorba {
 
   case 459:
 
-/* Line 678 of lalr1.cc  */
-#line 4190 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4219 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7193,8 +7218,8 @@ namespace zorba {
 
   case 460:
 
-/* Line 678 of lalr1.cc  */
-#line 4198 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4227 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval)
@@ -7205,8 +7230,8 @@ namespace zorba {
 
   case 461:
 
-/* Line 678 of lalr1.cc  */
-#line 4205 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4234 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival)
@@ -7217,8 +7242,8 @@ namespace zorba {
 
   case 462:
 
-/* Line 678 of lalr1.cc  */
-#line 4212 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4241 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval)
@@ -7229,8 +7254,8 @@ namespace zorba {
 
   case 463:
 
-/* Line 678 of lalr1.cc  */
-#line 4223 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4252 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new VarRef(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)));
         }
@@ -7238,8 +7263,8 @@ namespace zorba {
 
   case 464:
 
-/* Line 678 of lalr1.cc  */
-#line 4231 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4260 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), NULL);
         }
@@ -7247,8 +7272,8 @@ namespace zorba {
 
   case 465:
 
-/* Line 678 of lalr1.cc  */
-#line 4235 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4264 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr) );
         }
@@ -7256,8 +7281,8 @@ namespace zorba {
 
   case 466:
 
-/* Line 678 of lalr1.cc  */
-#line 4243 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4272 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ContextItemExpr( LOC((yyloc)) );
         }
@@ -7265,8 +7290,8 @@ namespace zorba {
 
   case 467:
 
-/* Line 678 of lalr1.cc  */
-#line 4251 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4280 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new OrderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7274,8 +7299,8 @@ namespace zorba {
 
   case 468:
 
-/* Line 678 of lalr1.cc  */
-#line 4259 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4288 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new UnorderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7283,8 +7308,8 @@ namespace zorba {
 
   case 469:
 
-/* Line 678 of lalr1.cc  */
-#line 4313 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4342 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new FunctionCall( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), NULL );
         }
@@ -7292,8 +7317,8 @@ namespace zorba {
 
   case 470:
 
-/* Line 678 of lalr1.cc  */
-#line 4317 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4346 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new FunctionCall(
                 LOC((yyloc)),
@@ -7305,8 +7330,8 @@ namespace zorba {
 
   case 471:
 
-/* Line 678 of lalr1.cc  */
-#line 4330 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4359 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             ArgList *al = new ArgList( LOC((yyloc)) );
             al->push_back( (yysemantic_stack_[(1) - (1)].expr) );
@@ -7316,8 +7341,8 @@ namespace zorba {
 
   case 472:
 
-/* Line 678 of lalr1.cc  */
-#line 4336 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4365 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( ArgList *al = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node)) )
                 al->push_back( (yysemantic_stack_[(3) - (3)].expr) );
@@ -7327,8 +7352,8 @@ namespace zorba {
 
   case 473:
 
-/* Line 678 of lalr1.cc  */
-#line 4346 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4375 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7336,8 +7361,8 @@ namespace zorba {
 
   case 474:
 
-/* Line 678 of lalr1.cc  */
-#line 4350 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4379 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7345,8 +7370,8 @@ namespace zorba {
 
   case 475:
 
-/* Line 678 of lalr1.cc  */
-#line 4358 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4387 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7354,8 +7379,8 @@ namespace zorba {
 
   case 476:
 
-/* Line 678 of lalr1.cc  */
-#line 4362 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4391 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7363,8 +7388,8 @@ namespace zorba {
 
   case 477:
 
-/* Line 678 of lalr1.cc  */
-#line 4366 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4395 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7372,8 +7397,8 @@ namespace zorba {
 
   case 478:
 
-/* Line 678 of lalr1.cc  */
-#line 4374 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4403 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7387,8 +7412,8 @@ namespace zorba {
 
   case 479:
 
-/* Line 678 of lalr1.cc  */
-#line 4384 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4413 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7402,8 +7427,8 @@ namespace zorba {
 
   case 480:
 
-/* Line 678 of lalr1.cc  */
-#line 4394 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4423 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7417,8 +7442,8 @@ namespace zorba {
 
   case 481:
 
-/* Line 678 of lalr1.cc  */
-#line 4404 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4433 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7432,8 +7457,8 @@ namespace zorba {
 
   case 482:
 
-/* Line 678 of lalr1.cc  */
-#line 4414 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4443 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7447,8 +7472,8 @@ namespace zorba {
 
   case 483:
 
-/* Line 678 of lalr1.cc  */
-#line 4424 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4453 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemConstructor(
                 LOC((yyloc)),
@@ -7462,8 +7487,8 @@ namespace zorba {
 
   case 484:
 
-/* Line 678 of lalr1.cc  */
-#line 4439 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4468 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             DirElemContentList *decl = new DirElemContentList( LOC((yyloc)) );
             decl->push_back( dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -7473,8 +7498,8 @@ namespace zorba {
 
   case 485:
 
-/* Line 678 of lalr1.cc  */
-#line 4445 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4474 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             DirElemContentList *decl = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
             if ( decl )
@@ -7485,8 +7510,8 @@ namespace zorba {
 
   case 486:
 
-/* Line 678 of lalr1.cc  */
-#line 4456 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4485 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             DirAttributeList *dal = new DirAttributeList( LOC((yyloc)) );
             dal->push_back( dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7496,8 +7521,8 @@ namespace zorba {
 
   case 487:
 
-/* Line 678 of lalr1.cc  */
-#line 4462 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4491 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             DirAttributeList *dal = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
             if ( dal )
@@ -7508,8 +7533,8 @@ namespace zorba {
 
   case 488:
 
-/* Line 678 of lalr1.cc  */
-#line 4473 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4502 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DirAttr(
                 LOC((yyloc)),
@@ -7521,8 +7546,8 @@ namespace zorba {
 
   case 491:
 
-/* Line 678 of lalr1.cc  */
-#line 4490 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4519 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DirAttributeValue( LOC((yyloc)),
                                 dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -7531,8 +7556,8 @@ namespace zorba {
 
   case 492:
 
-/* Line 678 of lalr1.cc  */
-#line 4495 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4524 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DirAttributeValue( LOC((yyloc)),
                                 dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -7541,8 +7566,8 @@ namespace zorba {
 
   case 493:
 
-/* Line 678 of lalr1.cc  */
-#line 4504 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4533 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new QuoteAttrContentList( LOC((yyloc)) );
         }
@@ -7550,8 +7575,8 @@ namespace zorba {
 
   case 494:
 
-/* Line 678 of lalr1.cc  */
-#line 4508 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4537 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -7559,8 +7584,8 @@ namespace zorba {
 
   case 495:
 
-/* Line 678 of lalr1.cc  */
-#line 4515 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4544 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
             qacl->push_back( new QuoteAttrValueContent( LOC((yyloc)), "\"" ) );
@@ -7570,8 +7595,8 @@ namespace zorba {
 
   case 496:
 
-/* Line 678 of lalr1.cc  */
-#line 4521 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4550 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
             qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7581,8 +7606,8 @@ namespace zorba {
 
   case 497:
 
-/* Line 678 of lalr1.cc  */
-#line 4527 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4556 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             QuoteAttrContentList *qacl =
                 dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -7594,8 +7619,8 @@ namespace zorba {
 
   case 498:
 
-/* Line 678 of lalr1.cc  */
-#line 4535 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4564 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             QuoteAttrContentList *qacl =
                 dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -7607,8 +7632,8 @@ namespace zorba {
 
   case 499:
 
-/* Line 678 of lalr1.cc  */
-#line 4547 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4576 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AposAttrContentList( LOC((yyloc)) );
         }
@@ -7616,8 +7641,8 @@ namespace zorba {
 
   case 500:
 
-/* Line 678 of lalr1.cc  */
-#line 4551 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4580 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -7625,8 +7650,8 @@ namespace zorba {
 
   case 501:
 
-/* Line 678 of lalr1.cc  */
-#line 4558 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4587 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
             aacl->push_back( new AposAttrValueContent( LOC((yyloc)),"'") );
@@ -7636,8 +7661,8 @@ namespace zorba {
 
   case 502:
 
-/* Line 678 of lalr1.cc  */
-#line 4564 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4593 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
             aacl->push_back( dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7647,8 +7672,8 @@ namespace zorba {
 
   case 503:
 
-/* Line 678 of lalr1.cc  */
-#line 4570 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4599 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
             if (aacl)
@@ -7659,8 +7684,8 @@ namespace zorba {
 
   case 504:
 
-/* Line 678 of lalr1.cc  */
-#line 4577 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4606 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
             if ( aacl )
@@ -7671,8 +7696,8 @@ namespace zorba {
 
   case 505:
 
-/* Line 678 of lalr1.cc  */
-#line 4588 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4617 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new QuoteAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
@@ -7680,8 +7705,8 @@ namespace zorba {
 
   case 506:
 
-/* Line 678 of lalr1.cc  */
-#line 4592 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4621 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new QuoteAttrValueContent(
                 LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr))
@@ -7691,8 +7716,8 @@ namespace zorba {
 
   case 507:
 
-/* Line 678 of lalr1.cc  */
-#line 4602 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4631 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AposAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
@@ -7700,8 +7725,8 @@ namespace zorba {
 
   case 508:
 
-/* Line 678 of lalr1.cc  */
-#line 4606 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4635 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AposAttrValueContent(
                 LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr))
@@ -7711,8 +7736,8 @@ namespace zorba {
 
   case 509:
 
-/* Line 678 of lalr1.cc  */
-#line 4616 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4645 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemContent( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr) );
         }
@@ -7720,8 +7745,8 @@ namespace zorba {
 
   case 510:
 
-/* Line 678 of lalr1.cc  */
-#line 4620 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4649 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DirElemContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
@@ -7729,8 +7754,8 @@ namespace zorba {
 
   case 511:
 
-/* Line 678 of lalr1.cc  */
-#line 4624 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4653 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
             (yyval.expr) = new DirElemContent( LOC((yyloc)), cdata_h );
@@ -7739,8 +7764,8 @@ namespace zorba {
 
   case 512:
 
-/* Line 678 of lalr1.cc  */
-#line 4629 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4658 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
             (yyval.expr) = new DirElemContent( LOC((yyloc)), cont_h );
@@ -7749,8 +7774,8 @@ namespace zorba {
 
   case 513:
 
-/* Line 678 of lalr1.cc  */
-#line 4638 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4667 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CommonContent(
                 LOC((yyloc)), ParseConstants::cont_charref, SYMTAB((yysemantic_stack_[(1) - (1)].sval))
@@ -7760,8 +7785,8 @@ namespace zorba {
 
   case 514:
 
-/* Line 678 of lalr1.cc  */
-#line 4644 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4673 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CommonContent(
                 LOC((yyloc)), ParseConstants::cont_escape_lbrace
@@ -7771,8 +7796,8 @@ namespace zorba {
 
   case 515:
 
-/* Line 678 of lalr1.cc  */
-#line 4650 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4679 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CommonContent(
                 LOC((yyloc)), ParseConstants::cont_escape_rbrace
@@ -7782,8 +7807,8 @@ namespace zorba {
 
   case 516:
 
-/* Line 678 of lalr1.cc  */
-#line 4656 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4685 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CommonContent(LOC((yyloc)), new EnclosedExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr)));
         }
@@ -7791,8 +7816,8 @@ namespace zorba {
 
   case 517:
 
-/* Line 678 of lalr1.cc  */
-#line 4664 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4693 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)) );
     }
@@ -7800,8 +7825,8 @@ namespace zorba {
 
   case 518:
 
-/* Line 678 of lalr1.cc  */
-#line 4669 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4698 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), "" );
     }
@@ -7809,8 +7834,8 @@ namespace zorba {
 
   case 519:
 
-/* Line 678 of lalr1.cc  */
-#line 4677 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4706 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirPIConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)) );
     }
@@ -7818,8 +7843,8 @@ namespace zorba {
 
   case 520:
 
-/* Line 678 of lalr1.cc  */
-#line 4682 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4711 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirPIConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
     }
@@ -7827,8 +7852,8 @@ namespace zorba {
 
   case 521:
 
-/* Line 678 of lalr1.cc  */
-#line 4690 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4719 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new CDataSection( LOC((yyloc)),SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
     }
@@ -7836,8 +7861,8 @@ namespace zorba {
 
   case 522:
 
-/* Line 678 of lalr1.cc  */
-#line 4698 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4727 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7845,8 +7870,8 @@ namespace zorba {
 
   case 523:
 
-/* Line 678 of lalr1.cc  */
-#line 4703 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4732 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7854,8 +7879,8 @@ namespace zorba {
 
   case 524:
 
-/* Line 678 of lalr1.cc  */
-#line 4708 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4737 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7863,8 +7888,8 @@ namespace zorba {
 
   case 525:
 
-/* Line 678 of lalr1.cc  */
-#line 4713 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4742 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7872,8 +7897,8 @@ namespace zorba {
 
   case 526:
 
-/* Line 678 of lalr1.cc  */
-#line 4718 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4747 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7881,8 +7906,8 @@ namespace zorba {
 
   case 527:
 
-/* Line 678 of lalr1.cc  */
-#line 4723 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4752 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7890,8 +7915,8 @@ namespace zorba {
 
   case 528:
 
-/* Line 678 of lalr1.cc  */
-#line 4732 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4761 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompDocConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7899,8 +7924,8 @@ namespace zorba {
 
   case 529:
 
-/* Line 678 of lalr1.cc  */
-#line 4740 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4769 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompElemConstructor(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr));
         }
@@ -7908,8 +7933,8 @@ namespace zorba {
 
   case 530:
 
-/* Line 678 of lalr1.cc  */
-#line 4744 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4773 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompElemConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
         }
@@ -7917,8 +7942,8 @@ namespace zorba {
 
   case 531:
 
-/* Line 678 of lalr1.cc  */
-#line 4761 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4790 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr) );
         }
@@ -7926,8 +7951,8 @@ namespace zorba {
 
   case 532:
 
-/* Line 678 of lalr1.cc  */
-#line 4765 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4794 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
         }
@@ -7935,8 +7960,8 @@ namespace zorba {
 
   case 533:
 
-/* Line 678 of lalr1.cc  */
-#line 4773 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4802 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompTextConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7944,8 +7969,8 @@ namespace zorba {
 
   case 534:
 
-/* Line 678 of lalr1.cc  */
-#line 4781 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4810 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompCommentConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7953,8 +7978,8 @@ namespace zorba {
 
   case 535:
 
-/* Line 678 of lalr1.cc  */
-#line 4789 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4818 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompPIConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (2)].expr) );
         }
@@ -7962,8 +7987,8 @@ namespace zorba {
 
   case 536:
 
-/* Line 678 of lalr1.cc  */
-#line 4793 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4822 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new CompPIConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
         }
@@ -7971,8 +7996,8 @@ namespace zorba {
 
   case 537:
 
-/* Line 678 of lalr1.cc  */
-#line 4801 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4830 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SingleType(
                 LOC((yyloc)), dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)), false
@@ -7982,8 +8007,8 @@ namespace zorba {
 
   case 538:
 
-/* Line 678 of lalr1.cc  */
-#line 4807 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4836 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SingleType(
                 LOC((yyloc)), dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)), true
@@ -7993,8 +8018,8 @@ namespace zorba {
 
   case 539:
 
-/* Line 678 of lalr1.cc  */
-#line 4817 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4846 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
         }
@@ -8002,8 +8027,8 @@ namespace zorba {
 
   case 540:
 
-/* Line 678 of lalr1.cc  */
-#line 4825 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4854 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SequenceType( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL );
         }
@@ -8011,8 +8036,8 @@ namespace zorba {
 
   case 541:
 
-/* Line 678 of lalr1.cc  */
-#line 4829 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4858 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SequenceType(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
         }
@@ -8020,8 +8045,8 @@ namespace zorba {
 
   case 542:
 
-/* Line 678 of lalr1.cc  */
-#line 4833 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4862 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SequenceType( LOC((yyloc)), NULL, NULL );
         }
@@ -8029,8 +8054,8 @@ namespace zorba {
 
   case 543:
 
-/* Line 678 of lalr1.cc  */
-#line 4868 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4897 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_optionally
@@ -8040,8 +8065,8 @@ namespace zorba {
 
   case 544:
 
-/* Line 678 of lalr1.cc  */
-#line 4874 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4903 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_zero_or_more
@@ -8051,8 +8076,8 @@ namespace zorba {
 
   case 545:
 
-/* Line 678 of lalr1.cc  */
-#line 4880 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_one_or_more
@@ -8062,8 +8087,8 @@ namespace zorba {
 
   case 546:
 
-/* Line 678 of lalr1.cc  */
-#line 4890 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4919 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8071,8 +8096,8 @@ namespace zorba {
 
   case 547:
 
-/* Line 678 of lalr1.cc  */
-#line 4894 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4923 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8080,8 +8105,8 @@ namespace zorba {
 
   case 548:
 
-/* Line 678 of lalr1.cc  */
-#line 4898 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4927 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ItemType( LOC((yyloc)),true );
         }
@@ -8089,8 +8114,8 @@ namespace zorba {
 
   case 549:
 
-/* Line 678 of lalr1.cc  */
-#line 4902 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4931 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8098,8 +8123,8 @@ namespace zorba {
 
   case 550:
 
-/* Line 678 of lalr1.cc  */
-#line 4906 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4935 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8107,8 +8132,8 @@ namespace zorba {
 
   case 551:
 
-/* Line 678 of lalr1.cc  */
-#line 4913 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4942 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           TypeList* aTypeList = new TypeList(LOC ((yyloc)));
           aTypeList->push_back(dynamic_cast<SequenceType *>((yysemantic_stack_[(1) - (1)].node)));
@@ -8118,8 +8143,8 @@ namespace zorba {
 
   case 552:
 
-/* Line 678 of lalr1.cc  */
-#line 4919 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4948 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           TypeList* aTypeList = dynamic_cast<TypeList *>((yysemantic_stack_[(3) - (1)].node));
           aTypeList->push_back(dynamic_cast<SequenceType *>((yysemantic_stack_[(3) - (3)].node)));
@@ -8129,8 +8154,8 @@ namespace zorba {
 
   case 553:
 
-/* Line 678 of lalr1.cc  */
-#line 4929 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4958 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AtomicType( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
@@ -8138,8 +8163,8 @@ namespace zorba {
 
   case 554:
 
-/* Line 678 of lalr1.cc  */
-#line 4937 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4966 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8147,8 +8172,8 @@ namespace zorba {
 
   case 555:
 
-/* Line 678 of lalr1.cc  */
-#line 4941 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4970 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8156,8 +8181,8 @@ namespace zorba {
 
   case 556:
 
-/* Line 678 of lalr1.cc  */
-#line 4945 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4974 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8165,8 +8190,8 @@ namespace zorba {
 
   case 557:
 
-/* Line 678 of lalr1.cc  */
-#line 4949 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4978 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8174,8 +8199,8 @@ namespace zorba {
 
   case 558:
 
-/* Line 678 of lalr1.cc  */
-#line 4953 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4982 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8183,8 +8208,8 @@ namespace zorba {
 
   case 559:
 
-/* Line 678 of lalr1.cc  */
-#line 4957 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4986 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8192,8 +8217,8 @@ namespace zorba {
 
   case 560:
 
-/* Line 678 of lalr1.cc  */
-#line 4961 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4990 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8201,8 +8226,8 @@ namespace zorba {
 
   case 561:
 
-/* Line 678 of lalr1.cc  */
-#line 4965 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4994 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8210,8 +8235,8 @@ namespace zorba {
 
   case 562:
 
-/* Line 678 of lalr1.cc  */
-#line 4969 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 4998 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8219,8 +8244,8 @@ namespace zorba {
 
   case 563:
 
-/* Line 678 of lalr1.cc  */
-#line 4977 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5006 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AnyKindTest( LOC((yyloc)) );
         }
@@ -8228,8 +8253,8 @@ namespace zorba {
 
   case 564:
 
-/* Line 678 of lalr1.cc  */
-#line 4985 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5014 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DocumentTest( LOC((yyloc)) );
         }
@@ -8237,8 +8262,8 @@ namespace zorba {
 
   case 565:
 
-/* Line 678 of lalr1.cc  */
-#line 4989 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5018 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DocumentTest( LOC((yyloc)), dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)) );
         }
@@ -8246,8 +8271,8 @@ namespace zorba {
 
   case 566:
 
-/* Line 678 of lalr1.cc  */
-#line 4993 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5022 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new DocumentTest(
                 LOC((yyloc)), dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node))
@@ -8257,8 +8282,8 @@ namespace zorba {
 
   case 567:
 
-/* Line 678 of lalr1.cc  */
-#line 5003 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5032 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new TextTest( LOC((yyloc)) );
         }
@@ -8266,8 +8291,8 @@ namespace zorba {
 
   case 568:
 
-/* Line 678 of lalr1.cc  */
-#line 5011 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5040 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new CommentTest( LOC((yyloc)));
         }
@@ -8275,8 +8300,8 @@ namespace zorba {
 
   case 569:
 
-/* Line 678 of lalr1.cc  */
-#line 5019 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5048 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), "" );
         }
@@ -8284,8 +8309,8 @@ namespace zorba {
 
   case 570:
 
-/* Line 678 of lalr1.cc  */
-#line 5023 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5052 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)) );
         }
@@ -8293,8 +8318,8 @@ namespace zorba {
 
   case 571:
 
-/* Line 678 of lalr1.cc  */
-#line 5027 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5056 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)) );
         }
@@ -8302,8 +8327,8 @@ namespace zorba {
 
   case 572:
 
-/* Line 678 of lalr1.cc  */
-#line 5035 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5064 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
@@ -8311,8 +8336,8 @@ namespace zorba {
 
   case 573:
 
-/* Line 678 of lalr1.cc  */
-#line 5039 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5068 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL
@@ -8322,8 +8347,8 @@ namespace zorba {
 
   case 574:
 
-/* Line 678 of lalr1.cc  */
-#line 5045 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5074 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -8333,8 +8358,8 @@ namespace zorba {
 
   case 575:
 
-/* Line 678 of lalr1.cc  */
-#line 5051 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5080 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
@@ -8342,8 +8367,8 @@ namespace zorba {
 
   case 576:
 
-/* Line 678 of lalr1.cc  */
-#line 5055 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5084 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -8353,8 +8378,8 @@ namespace zorba {
 
   case 577:
 
-/* Line 678 of lalr1.cc  */
-#line 5065 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5094 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SchemaAttributeTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -8362,8 +8387,8 @@ namespace zorba {
 
   case 578:
 
-/* Line 678 of lalr1.cc  */
-#line 5073 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5102 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest( LOC((yyloc)), NULL, NULL, true );
         }
@@ -8371,8 +8396,8 @@ namespace zorba {
 
   case 579:
 
-/* Line 678 of lalr1.cc  */
-#line 5077 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5106 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL, true
@@ -8382,8 +8407,8 @@ namespace zorba {
 
   case 580:
 
-/* Line 678 of lalr1.cc  */
-#line 5083 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5112 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8396,8 +8421,8 @@ namespace zorba {
 
   case 581:
 
-/* Line 678 of lalr1.cc  */
-#line 5092 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5121 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8410,8 +8435,8 @@ namespace zorba {
 
   case 582:
 
-/* Line 678 of lalr1.cc  */
-#line 5101 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5130 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, NULL, true
@@ -8421,8 +8446,8 @@ namespace zorba {
 
   case 583:
 
-/* Line 678 of lalr1.cc  */
-#line 5107 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5136 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), false
@@ -8432,8 +8457,8 @@ namespace zorba {
 
   case 584:
 
-/* Line 678 of lalr1.cc  */
-#line 5113 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5142 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), true
@@ -8443,8 +8468,8 @@ namespace zorba {
 
   case 585:
 
-/* Line 678 of lalr1.cc  */
-#line 5123 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5152 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new SchemaElementTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -8452,8 +8477,8 @@ namespace zorba {
 
   case 586:
 
-/* Line 678 of lalr1.cc  */
-#line 5140 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5169 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
@@ -8461,8 +8486,8 @@ namespace zorba {
 
   case 587:
 
-/* Line 678 of lalr1.cc  */
-#line 5147 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5176 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (1)].expr)), true );
         }
@@ -8470,8 +8495,8 @@ namespace zorba {
 
   case 588:
 
-/* Line 678 of lalr1.cc  */
-#line 5162 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5191 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new StringLiteral( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
@@ -8479,8 +8504,8 @@ namespace zorba {
 
   case 589:
 
-/* Line 678 of lalr1.cc  */
-#line 5198 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5227 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8488,8 +8513,8 @@ namespace zorba {
 
   case 590:
 
-/* Line 678 of lalr1.cc  */
-#line 5202 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5231 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8497,8 +8522,8 @@ namespace zorba {
 
   case 591:
 
-/* Line 678 of lalr1.cc  */
-#line 5210 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5239 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new LiteralFunctionItem(LOC ((yyloc)), dynamic_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].ival));
     }
@@ -8506,8 +8531,8 @@ namespace zorba {
 
   case 592:
 
-/* Line 678 of lalr1.cc  */
-#line 5218 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5247 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new InlineFunction(LOC((yyloc)),
                               &*(yysemantic_stack_[(3) - (2)].fnsig)->theParams,
@@ -8519,8 +8544,8 @@ namespace zorba {
 
   case 593:
 
-/* Line 678 of lalr1.cc  */
-#line 5230 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5259 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8528,8 +8553,8 @@ namespace zorba {
 
   case 594:
 
-/* Line 678 of lalr1.cc  */
-#line 5234 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5263 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8537,8 +8562,8 @@ namespace zorba {
 
   case 595:
 
-/* Line 678 of lalr1.cc  */
-#line 5242 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5271 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new AnyFunctionTest(LOC((yyloc)));
     }
@@ -8546,8 +8571,8 @@ namespace zorba {
 
   case 596:
 
-/* Line 678 of lalr1.cc  */
-#line 5250 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5279 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)), dynamic_cast<SequenceType *>((yysemantic_stack_[(5) - (5)].node)));
         }
@@ -8555,8 +8580,8 @@ namespace zorba {
 
   case 597:
 
-/* Line 678 of lalr1.cc  */
-#line 5254 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5283 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)),
               dynamic_cast<TypeList *>((yysemantic_stack_[(6) - (3)].node)),
@@ -8566,8 +8591,8 @@ namespace zorba {
 
   case 598:
 
-/* Line 678 of lalr1.cc  */
-#line 5265 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5294 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
            (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
@@ -8575,8 +8600,8 @@ namespace zorba {
 
   case 599:
 
-/* Line 678 of lalr1.cc  */
-#line 5282 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5311 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::strict_validation
@@ -8586,8 +8611,8 @@ namespace zorba {
 
   case 600:
 
-/* Line 678 of lalr1.cc  */
-#line 5288 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5317 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::lax_validation
@@ -8597,8 +8622,8 @@ namespace zorba {
 
   case 601:
 
-/* Line 678 of lalr1.cc  */
-#line 5294 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5323 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::skip_validation
@@ -8608,8 +8633,8 @@ namespace zorba {
 
   case 602:
 
-/* Line 678 of lalr1.cc  */
-#line 5304 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5333 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -8617,8 +8642,8 @@ namespace zorba {
 
   case 603:
 
-/* Line 678 of lalr1.cc  */
-#line 5308 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5337 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8628,8 +8653,8 @@ namespace zorba {
 
   case 604:
 
-/* Line 678 of lalr1.cc  */
-#line 5314 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5343 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8639,8 +8664,8 @@ namespace zorba {
 
   case 605:
 
-/* Line 678 of lalr1.cc  */
-#line 5320 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5349 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -8648,8 +8673,8 @@ namespace zorba {
 
   case 606:
 
-/* Line 678 of lalr1.cc  */
-#line 5324 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5353 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8659,8 +8684,8 @@ namespace zorba {
 
   case 607:
 
-/* Line 678 of lalr1.cc  */
-#line 5330 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5359 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -8668,8 +8693,8 @@ namespace zorba {
 
   case 608:
 
-/* Line 678 of lalr1.cc  */
-#line 5334 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5363 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8679,8 +8704,8 @@ namespace zorba {
 
   case 609:
 
-/* Line 678 of lalr1.cc  */
-#line 5340 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5369 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                   LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8690,8 +8715,8 @@ namespace zorba {
 
   case 610:
 
-/* Line 678 of lalr1.cc  */
-#line 5346 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5375 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)),
@@ -8702,8 +8727,8 @@ namespace zorba {
 
   case 611:
 
-/* Line 678 of lalr1.cc  */
-#line 5353 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5382 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8713,8 +8738,8 @@ namespace zorba {
 
   case 612:
 
-/* Line 678 of lalr1.cc  */
-#line 5363 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5392 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -8722,8 +8747,8 @@ namespace zorba {
 
   case 613:
 
-/* Line 678 of lalr1.cc  */
-#line 5368 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5397 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -8731,8 +8756,8 @@ namespace zorba {
 
   case 614:
 
-/* Line 678 of lalr1.cc  */
-#line 5376 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5405 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::NODE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8742,8 +8767,8 @@ namespace zorba {
 
   case 615:
 
-/* Line 678 of lalr1.cc  */
-#line 5382 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5411 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::VALUE_OF_NODE, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8753,8 +8778,8 @@ namespace zorba {
 
   case 616:
 
-/* Line 678 of lalr1.cc  */
-#line 5392 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5421 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new RenameExpr( LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -8762,8 +8787,8 @@ namespace zorba {
 
   case 617:
 
-/* Line 678 of lalr1.cc  */
-#line 5414 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5443 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr( LOC((yyloc)), cvl, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr) );
@@ -8772,8 +8797,8 @@ namespace zorba {
 
   case 618:
 
-/* Line 678 of lalr1.cc  */
-#line 5423 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5452 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CopyVarList* lList = new CopyVarList(LOC((yyloc)));
       lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -8783,8 +8808,8 @@ namespace zorba {
 
   case 619:
 
-/* Line 678 of lalr1.cc  */
-#line 5429 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5458 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yysemantic_stack_[(4) - (1)].expr));
       VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -8795,8 +8820,8 @@ namespace zorba {
 
   case 620:
 
-/* Line 678 of lalr1.cc  */
-#line 5442 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5471 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -8804,8 +8829,8 @@ namespace zorba {
 
   case 621:
 
-/* Line 678 of lalr1.cc  */
-#line 5456 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5485 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.expr) = new TryExpr( LOC((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -8813,8 +8838,8 @@ namespace zorba {
 
   case 622:
 
-/* Line 678 of lalr1.cc  */
-#line 5463 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5492 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             CatchListExpr *cle = new CatchListExpr( LOC((yyloc)) );
             cle->push_back( static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -8824,8 +8849,8 @@ namespace zorba {
 
   case 623:
 
-/* Line 678 of lalr1.cc  */
-#line 5469 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5498 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
             if ( cle )
@@ -8836,8 +8861,8 @@ namespace zorba {
 
   case 624:
 
-/* Line 678 of lalr1.cc  */
-#line 5479 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5508 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
        delete (yysemantic_stack_[(3) - (2)].name_test_list);
@@ -8846,8 +8871,8 @@ namespace zorba {
 
   case 625:
 
-/* Line 678 of lalr1.cc  */
-#line 5488 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5517 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -8855,8 +8880,8 @@ namespace zorba {
 
   case 626:
 
-/* Line 678 of lalr1.cc  */
-#line 5496 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5525 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             CatchExpr::NameTestList *ntl = new CatchExpr::NameTestList;
             ntl->push_back( static_cast<NameTest*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8866,8 +8891,8 @@ namespace zorba {
 
   case 627:
 
-/* Line 678 of lalr1.cc  */
-#line 5502 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5531 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>((yysemantic_stack_[(3) - (1)].name_test_list));
@@ -8878,8 +8903,8 @@ namespace zorba {
 
   case 628:
 
-/* Line 678 of lalr1.cc  */
-#line 5520 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5549 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTSelection( LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), (yysemantic_stack_[(2) - (2)].pos_filter_list) );
             delete (yysemantic_stack_[(2) - (2)].pos_filter_list);
@@ -8888,8 +8913,8 @@ namespace zorba {
 
   case 629:
 
-/* Line 678 of lalr1.cc  */
-#line 5528 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5557 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.pos_filter_list) = NULL;
         }
@@ -8897,8 +8922,8 @@ namespace zorba {
 
   case 630:
 
-/* Line 678 of lalr1.cc  */
-#line 5532 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5561 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.pos_filter_list) = (yysemantic_stack_[(1) - (1)].pos_filter_list);
         }
@@ -8906,8 +8931,8 @@ namespace zorba {
 
   case 631:
 
-/* Line 678 of lalr1.cc  */
-#line 5539 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5568 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.pos_filter_list) = new FTSelection::pos_filter_list_t;
             (yyval.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8916,8 +8941,8 @@ namespace zorba {
 
   case 632:
 
-/* Line 678 of lalr1.cc  */
-#line 5544 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5573 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yysemantic_stack_[(2) - (1)].pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(2) - (2)].node)) );
             (yyval.pos_filter_list) = (yysemantic_stack_[(2) - (1)].pos_filter_list);
@@ -8926,8 +8951,8 @@ namespace zorba {
 
   case 633:
 
-/* Line 678 of lalr1.cc  */
-#line 5552 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5581 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8935,8 +8960,8 @@ namespace zorba {
 
   case 634:
 
-/* Line 678 of lalr1.cc  */
-#line 5556 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5585 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTOr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
@@ -8944,8 +8969,8 @@ namespace zorba {
 
   case 635:
 
-/* Line 678 of lalr1.cc  */
-#line 5563 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5592 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8953,8 +8978,8 @@ namespace zorba {
 
   case 636:
 
-/* Line 678 of lalr1.cc  */
-#line 5567 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5596 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTAnd( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
@@ -8962,8 +8987,8 @@ namespace zorba {
 
   case 637:
 
-/* Line 678 of lalr1.cc  */
-#line 5574 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5603 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8971,8 +8996,8 @@ namespace zorba {
 
   case 638:
 
-/* Line 678 of lalr1.cc  */
-#line 5578 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5607 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTMildNot( LOC((yyloc)), (yysemantic_stack_[(4) - (1)].node), (yysemantic_stack_[(4) - (4)].node) );
         }
@@ -8980,8 +9005,8 @@ namespace zorba {
 
   case 639:
 
-/* Line 678 of lalr1.cc  */
-#line 5585 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5614 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8989,8 +9014,8 @@ namespace zorba {
 
   case 640:
 
-/* Line 678 of lalr1.cc  */
-#line 5589 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5618 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTUnaryNot(
                 LOC((yyloc)), dynamic_cast<FTPrimaryWithOptions*>((yysemantic_stack_[(2) - (2)].node))
@@ -9000,8 +9025,8 @@ namespace zorba {
 
   case 641:
 
-/* Line 678 of lalr1.cc  */
-#line 5598 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5627 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTPrimaryWithOptions(
                 LOC((yyloc)),
@@ -9014,8 +9039,8 @@ namespace zorba {
 
   case 642:
 
-/* Line 678 of lalr1.cc  */
-#line 5610 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5639 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9023,8 +9048,8 @@ namespace zorba {
 
   case 643:
 
-/* Line 678 of lalr1.cc  */
-#line 5614 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5643 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9032,8 +9057,8 @@ namespace zorba {
 
   case 644:
 
-/* Line 678 of lalr1.cc  */
-#line 5621 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5650 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9041,8 +9066,8 @@ namespace zorba {
 
   case 645:
 
-/* Line 678 of lalr1.cc  */
-#line 5625 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5654 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9050,8 +9075,8 @@ namespace zorba {
 
   case 646:
 
-/* Line 678 of lalr1.cc  */
-#line 5633 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5662 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWeight( LOC((yyloc)), dynamic_cast<exprnode*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -9059,8 +9084,8 @@ namespace zorba {
 
   case 647:
 
-/* Line 678 of lalr1.cc  */
-#line 5641 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5670 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWordsTimes(
                 LOC((yyloc)),
@@ -9072,8 +9097,8 @@ namespace zorba {
 
   case 648:
 
-/* Line 678 of lalr1.cc  */
-#line 5649 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5678 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
@@ -9081,8 +9106,8 @@ namespace zorba {
 
   case 649:
 
-/* Line 678 of lalr1.cc  */
-#line 5653 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5682 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9090,8 +9115,8 @@ namespace zorba {
 
   case 650:
 
-/* Line 678 of lalr1.cc  */
-#line 5660 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5689 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9099,8 +9124,8 @@ namespace zorba {
 
   case 651:
 
-/* Line 678 of lalr1.cc  */
-#line 5664 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5693 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9108,8 +9133,8 @@ namespace zorba {
 
   case 652:
 
-/* Line 678 of lalr1.cc  */
-#line 5672 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5701 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTExtensionSelection(
                 LOC((yyloc)),
@@ -9121,8 +9146,8 @@ namespace zorba {
 
   case 653:
 
-/* Line 678 of lalr1.cc  */
-#line 5683 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5712 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9130,8 +9155,8 @@ namespace zorba {
 
   case 654:
 
-/* Line 678 of lalr1.cc  */
-#line 5687 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5716 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9139,8 +9164,8 @@ namespace zorba {
 
   case 655:
 
-/* Line 678 of lalr1.cc  */
-#line 5695 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5724 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWords(
                 LOC((yyloc)),
@@ -9152,8 +9177,8 @@ namespace zorba {
 
   case 656:
 
-/* Line 678 of lalr1.cc  */
-#line 5707 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5736 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), static_cast<StringLiteral*>((yysemantic_stack_[(1) - (1)].expr)), NULL
@@ -9163,8 +9188,8 @@ namespace zorba {
 
   case 657:
 
-/* Line 678 of lalr1.cc  */
-#line 5713 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5742 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), NULL, dynamic_cast<exprnode*>((yysemantic_stack_[(3) - (2)].expr))
@@ -9174,8 +9199,8 @@ namespace zorba {
 
   case 658:
 
-/* Line 678 of lalr1.cc  */
-#line 5722 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5751 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::any );
         }
@@ -9183,8 +9208,8 @@ namespace zorba {
 
   case 659:
 
-/* Line 678 of lalr1.cc  */
-#line 5726 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5755 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9192,8 +9217,8 @@ namespace zorba {
 
   case 660:
 
-/* Line 678 of lalr1.cc  */
-#line 5734 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5763 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
@@ -9201,8 +9226,8 @@ namespace zorba {
 
   case 661:
 
-/* Line 678 of lalr1.cc  */
-#line 5738 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5767 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
@@ -9210,8 +9235,8 @@ namespace zorba {
 
   case 662:
 
-/* Line 678 of lalr1.cc  */
-#line 5742 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5771 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::phrase );
         }
@@ -9219,8 +9244,8 @@ namespace zorba {
 
   case 663:
 
-/* Line 678 of lalr1.cc  */
-#line 5749 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5778 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any;
         }
@@ -9228,8 +9253,8 @@ namespace zorba {
 
   case 664:
 
-/* Line 678 of lalr1.cc  */
-#line 5753 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5782 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any_word;
         }
@@ -9237,8 +9262,8 @@ namespace zorba {
 
   case 665:
 
-/* Line 678 of lalr1.cc  */
-#line 5760 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5789 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all;
         }
@@ -9246,8 +9271,8 @@ namespace zorba {
 
   case 666:
 
-/* Line 678 of lalr1.cc  */
-#line 5764 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5793 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all_words;
         }
@@ -9255,8 +9280,8 @@ namespace zorba {
 
   case 667:
 
-/* Line 678 of lalr1.cc  */
-#line 5772 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5801 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9264,8 +9289,8 @@ namespace zorba {
 
   case 668:
 
-/* Line 678 of lalr1.cc  */
-#line 5776 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5805 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9273,8 +9298,8 @@ namespace zorba {
 
   case 669:
 
-/* Line 678 of lalr1.cc  */
-#line 5780 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5809 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9282,8 +9307,8 @@ namespace zorba {
 
   case 670:
 
-/* Line 678 of lalr1.cc  */
-#line 5784 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5813 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9291,8 +9316,8 @@ namespace zorba {
 
   case 671:
 
-/* Line 678 of lalr1.cc  */
-#line 5788 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5817 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9300,8 +9325,8 @@ namespace zorba {
 
   case 672:
 
-/* Line 678 of lalr1.cc  */
-#line 5796 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5825 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTOrder( LOC((yyloc)) );
         }
@@ -9309,8 +9334,8 @@ namespace zorba {
 
   case 673:
 
-/* Line 678 of lalr1.cc  */
-#line 5804 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5833 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWindow(
                 LOC((yyloc)),
@@ -9322,8 +9347,8 @@ namespace zorba {
 
   case 674:
 
-/* Line 678 of lalr1.cc  */
-#line 5816 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5845 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTDistance(
                 LOC((yyloc)),
@@ -9335,8 +9360,8 @@ namespace zorba {
 
   case 675:
 
-/* Line 678 of lalr1.cc  */
-#line 5828 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5857 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::words );
         }
@@ -9344,8 +9369,8 @@ namespace zorba {
 
   case 676:
 
-/* Line 678 of lalr1.cc  */
-#line 5832 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5861 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::sentences );
         }
@@ -9353,8 +9378,8 @@ namespace zorba {
 
   case 677:
 
-/* Line 678 of lalr1.cc  */
-#line 5836 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5865 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::paragraphs );
         }
@@ -9362,8 +9387,8 @@ namespace zorba {
 
   case 678:
 
-/* Line 678 of lalr1.cc  */
-#line 5844 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5873 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             FTMatchOptions *mo = new FTMatchOptions( LOC((yyloc)) );
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -9373,8 +9398,8 @@ namespace zorba {
 
   case 679:
 
-/* Line 678 of lalr1.cc  */
-#line 5850 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5879 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (1)].node));
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -9384,8 +9409,8 @@ namespace zorba {
 
   case 680:
 
-/* Line 678 of lalr1.cc  */
-#line 5860 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5889 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9393,8 +9418,8 @@ namespace zorba {
 
   case 681:
 
-/* Line 678 of lalr1.cc  */
-#line 5864 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5893 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9402,8 +9427,8 @@ namespace zorba {
 
   case 682:
 
-/* Line 678 of lalr1.cc  */
-#line 5868 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5897 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9411,8 +9436,8 @@ namespace zorba {
 
   case 683:
 
-/* Line 678 of lalr1.cc  */
-#line 5872 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5901 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9420,8 +9445,8 @@ namespace zorba {
 
   case 684:
 
-/* Line 678 of lalr1.cc  */
-#line 5876 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5905 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9429,8 +9454,8 @@ namespace zorba {
 
   case 685:
 
-/* Line 678 of lalr1.cc  */
-#line 5880 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5909 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9438,8 +9463,8 @@ namespace zorba {
 
   case 686:
 
-/* Line 678 of lalr1.cc  */
-#line 5884 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5913 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9447,8 +9472,8 @@ namespace zorba {
 
   case 687:
 
-/* Line 678 of lalr1.cc  */
-#line 5888 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5917 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9456,8 +9481,8 @@ namespace zorba {
 
   case 688:
 
-/* Line 678 of lalr1.cc  */
-#line 5896 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5925 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::sensitive );
         }
@@ -9465,8 +9490,8 @@ namespace zorba {
 
   case 689:
 
-/* Line 678 of lalr1.cc  */
-#line 5900 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5929 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::insensitive );
         }
@@ -9474,8 +9499,8 @@ namespace zorba {
 
   case 690:
 
-/* Line 678 of lalr1.cc  */
-#line 5904 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5933 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::lower );
         }
@@ -9483,8 +9508,8 @@ namespace zorba {
 
   case 691:
 
-/* Line 678 of lalr1.cc  */
-#line 5908 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5937 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::upper );
         }
@@ -9492,8 +9517,8 @@ namespace zorba {
 
   case 692:
 
-/* Line 678 of lalr1.cc  */
-#line 5916 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5945 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::sensitive
@@ -9503,8 +9528,8 @@ namespace zorba {
 
   case 693:
 
-/* Line 678 of lalr1.cc  */
-#line 5922 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5951 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::insensitive
@@ -9514,8 +9539,8 @@ namespace zorba {
 
   case 694:
 
-/* Line 678 of lalr1.cc  */
-#line 5932 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5961 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTExtensionOption(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval))
@@ -9525,8 +9550,8 @@ namespace zorba {
 
   case 695:
 
-/* Line 678 of lalr1.cc  */
-#line 5942 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5971 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::with );
         }
@@ -9534,8 +9559,8 @@ namespace zorba {
 
   case 696:
 
-/* Line 678 of lalr1.cc  */
-#line 5946 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5975 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::without );
         }
@@ -9543,8 +9568,8 @@ namespace zorba {
 
   case 697:
 
-/* Line 678 of lalr1.cc  */
-#line 5954 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5983 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
             if ( (yysemantic_stack_[(2) - (2)].node) ) {
@@ -9558,8 +9583,8 @@ namespace zorba {
 
   case 698:
 
-/* Line 678 of lalr1.cc  */
-#line 5964 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 5993 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = (yysemantic_stack_[(5) - (4)].thesaurus_id_list);
             if ( (yysemantic_stack_[(5) - (3)].node) ) {
@@ -9574,8 +9599,8 @@ namespace zorba {
 
   case 699:
 
-/* Line 678 of lalr1.cc  */
-#line 5975 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6004 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTThesaurusOption( LOC((yyloc)), NULL, false, true );
         }
@@ -9583,8 +9608,8 @@ namespace zorba {
 
   case 700:
 
-/* Line 678 of lalr1.cc  */
-#line 5982 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6011 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9592,8 +9617,8 @@ namespace zorba {
 
   case 701:
 
-/* Line 678 of lalr1.cc  */
-#line 5986 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6015 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9601,8 +9626,8 @@ namespace zorba {
 
   case 702:
 
-/* Line 678 of lalr1.cc  */
-#line 5993 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6022 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.thesaurus_id_list) = NULL;
         }
@@ -9610,8 +9635,8 @@ namespace zorba {
 
   case 703:
 
-/* Line 678 of lalr1.cc  */
-#line 5997 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6026 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(2) - (2)].thesaurus_id_list);
         }
@@ -9619,8 +9644,8 @@ namespace zorba {
 
   case 704:
 
-/* Line 678 of lalr1.cc  */
-#line 6004 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6033 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.thesaurus_id_list) = new FTThesaurusOption::thesaurus_id_list_t;
             (yyval.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9629,8 +9654,8 @@ namespace zorba {
 
   case 705:
 
-/* Line 678 of lalr1.cc  */
-#line 6009 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6038 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yysemantic_stack_[(3) - (1)].thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(3) - (3)].node)) );
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(3) - (1)].thesaurus_id_list);
@@ -9639,8 +9664,8 @@ namespace zorba {
 
   case 706:
 
-/* Line 678 of lalr1.cc  */
-#line 6018 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6047 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTThesaurusID(
                 LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (2)].sval)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), dynamic_cast<FTRange*>((yysemantic_stack_[(4) - (4)].node))
@@ -9650,8 +9675,8 @@ namespace zorba {
 
   case 707:
 
-/* Line 678 of lalr1.cc  */
-#line 6027 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6056 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.sval) = NULL;
         }
@@ -9659,8 +9684,8 @@ namespace zorba {
 
   case 708:
 
-/* Line 678 of lalr1.cc  */
-#line 6031 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6060 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.sval) = (yysemantic_stack_[(2) - (2)].sval);
         }
@@ -9668,8 +9693,8 @@ namespace zorba {
 
   case 709:
 
-/* Line 678 of lalr1.cc  */
-#line 6038 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6067 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9677,8 +9702,8 @@ namespace zorba {
 
   case 710:
 
-/* Line 678 of lalr1.cc  */
-#line 6042 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6071 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
@@ -9686,8 +9711,8 @@ namespace zorba {
 
   case 711:
 
-/* Line 678 of lalr1.cc  */
-#line 6050 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6079 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)),
@@ -9700,8 +9725,8 @@ namespace zorba {
 
   case 712:
 
-/* Line 678 of lalr1.cc  */
-#line 6059 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6088 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, (yysemantic_stack_[(4) - (4)].incl_excl_list), ft_stop_words_mode::with_default
@@ -9712,8 +9737,8 @@ namespace zorba {
 
   case 713:
 
-/* Line 678 of lalr1.cc  */
-#line 6066 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6095 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, NULL, ft_stop_words_mode::without
@@ -9723,8 +9748,8 @@ namespace zorba {
 
   case 714:
 
-/* Line 678 of lalr1.cc  */
-#line 6076 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6105 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), NULL );
         }
@@ -9732,8 +9757,8 @@ namespace zorba {
 
   case 715:
 
-/* Line 678 of lalr1.cc  */
-#line 6080 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6109 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), "", (yysemantic_stack_[(3) - (2)].strlist) );
         }
@@ -9741,8 +9766,8 @@ namespace zorba {
 
   case 716:
 
-/* Line 678 of lalr1.cc  */
-#line 6087 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6116 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             string_list_t *sl = new string_list_t;
             sl->push_back( SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
@@ -9752,8 +9777,8 @@ namespace zorba {
 
   case 717:
 
-/* Line 678 of lalr1.cc  */
-#line 6093 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6122 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             if ( (yysemantic_stack_[(3) - (1)].strlist) )
                 (yysemantic_stack_[(3) - (1)].strlist)->push_back( SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -9763,8 +9788,8 @@ namespace zorba {
 
   case 718:
 
-/* Line 678 of lalr1.cc  */
-#line 6102 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6131 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.incl_excl_list) = NULL;
         }
@@ -9772,8 +9797,8 @@ namespace zorba {
 
   case 719:
 
-/* Line 678 of lalr1.cc  */
-#line 6106 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6135 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.incl_excl_list) = (yysemantic_stack_[(1) - (1)].incl_excl_list);
         }
@@ -9781,8 +9806,8 @@ namespace zorba {
 
   case 720:
 
-/* Line 678 of lalr1.cc  */
-#line 6113 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6142 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.incl_excl_list) = new FTStopWordOption::incl_excl_list_t;
             (yyval.incl_excl_list)->push_back( dynamic_cast<FTStopWordsInclExcl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9791,8 +9816,8 @@ namespace zorba {
 
   case 721:
 
-/* Line 678 of lalr1.cc  */
-#line 6118 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6147 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             FTStopWordOption::incl_excl_list_t *iel = (yysemantic_stack_[(2) - (1)].incl_excl_list);
             if ( !iel )
@@ -9804,8 +9829,8 @@ namespace zorba {
 
   case 722:
 
-/* Line 678 of lalr1.cc  */
-#line 6130 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6159 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -9817,8 +9842,8 @@ namespace zorba {
 
   case 723:
 
-/* Line 678 of lalr1.cc  */
-#line 6138 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6167 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -9830,8 +9855,8 @@ namespace zorba {
 
   case 724:
 
-/* Line 678 of lalr1.cc  */
-#line 6150 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6179 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTLanguageOption( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
@@ -9839,8 +9864,8 @@ namespace zorba {
 
   case 725:
 
-/* Line 678 of lalr1.cc  */
-#line 6158 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6187 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::with );
         }
@@ -9848,8 +9873,8 @@ namespace zorba {
 
   case 726:
 
-/* Line 678 of lalr1.cc  */
-#line 6162 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6191 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::without );
         }
@@ -9857,8 +9882,8 @@ namespace zorba {
 
   case 727:
 
-/* Line 678 of lalr1.cc  */
-#line 6170 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6199 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_start );
         }
@@ -9866,8 +9891,8 @@ namespace zorba {
 
   case 728:
 
-/* Line 678 of lalr1.cc  */
-#line 6174 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6203 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_end );
         }
@@ -9875,8 +9900,8 @@ namespace zorba {
 
   case 729:
 
-/* Line 678 of lalr1.cc  */
-#line 6178 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6207 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::entire );
         }
@@ -9884,8 +9909,8 @@ namespace zorba {
 
   case 730:
 
-/* Line 678 of lalr1.cc  */
-#line 6186 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6215 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTTimes( LOC((yyloc)), dynamic_cast<FTRange*>((yysemantic_stack_[(3) - (2)].node)) );
         }
@@ -9893,8 +9918,8 @@ namespace zorba {
 
   case 731:
 
-/* Line 678 of lalr1.cc  */
-#line 6194 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6223 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::exactly, (yysemantic_stack_[(2) - (2)].expr) );
         }
@@ -9902,8 +9927,8 @@ namespace zorba {
 
   case 732:
 
-/* Line 678 of lalr1.cc  */
-#line 6198 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6227 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_least, (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -9911,8 +9936,8 @@ namespace zorba {
 
   case 733:
 
-/* Line 678 of lalr1.cc  */
-#line 6202 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6231 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_most, (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -9920,8 +9945,8 @@ namespace zorba {
 
   case 734:
 
-/* Line 678 of lalr1.cc  */
-#line 6206 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6235 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr) );
         }
@@ -9929,8 +9954,8 @@ namespace zorba {
 
   case 735:
 
-/* Line 678 of lalr1.cc  */
-#line 6214 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6243 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -9942,8 +9967,8 @@ namespace zorba {
 
   case 736:
 
-/* Line 678 of lalr1.cc  */
-#line 6222 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6251 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -9955,8 +9980,8 @@ namespace zorba {
 
   case 737:
 
-/* Line 678 of lalr1.cc  */
-#line 6234 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6263 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::sentence );
         }
@@ -9964,8 +9989,8 @@ namespace zorba {
 
   case 738:
 
-/* Line 678 of lalr1.cc  */
-#line 6238 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6267 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::paragraph );
         }
@@ -9973,8 +9998,8 @@ namespace zorba {
 
   case 739:
 
-/* Line 678 of lalr1.cc  */
-#line 6246 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6275 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTIgnoreOption( LOC((yyloc)), static_cast<UnionExpr*>((yysemantic_stack_[(3) - (3)].expr)) );
         }
@@ -9982,8 +10007,8 @@ namespace zorba {
 
   case 742:
 
-/* Line 678 of lalr1.cc  */
-#line 6264 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6365 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           auto_ptr<QName> lQName( static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
           zstring const &tmp = lQName->get_qname();
@@ -9997,1499 +10022,1499 @@ namespace zorba {
 
   case 744:
 
-/* Line 678 of lalr1.cc  */
-#line 6277 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6378 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("attribute"))); }
     break;
 
   case 745:
 
-/* Line 678 of lalr1.cc  */
-#line 6278 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6379 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("comment"))); }
     break;
 
   case 746:
 
-/* Line 678 of lalr1.cc  */
-#line 6279 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6380 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document-node"))); }
     break;
 
   case 747:
 
-/* Line 678 of lalr1.cc  */
-#line 6280 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6381 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("element"))); }
     break;
 
   case 748:
 
-/* Line 678 of lalr1.cc  */
-#line 6281 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6382 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("item"))); }
     break;
 
   case 749:
 
-/* Line 678 of lalr1.cc  */
-#line 6282 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6383 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("if"))); }
     break;
 
   case 750:
 
-/* Line 678 of lalr1.cc  */
-#line 6283 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6384 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("node"))); }
     break;
 
   case 751:
 
-/* Line 678 of lalr1.cc  */
-#line 6284 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6385 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
     break;
 
   case 752:
 
-/* Line 678 of lalr1.cc  */
-#line 6285 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6386 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
     break;
 
   case 753:
 
-/* Line 678 of lalr1.cc  */
-#line 6286 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6387 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-element"))); }
     break;
 
   case 754:
 
-/* Line 678 of lalr1.cc  */
-#line 6287 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6388 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("text"))); }
     break;
 
   case 755:
 
-/* Line 678 of lalr1.cc  */
-#line 6288 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6389 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("typeswitch"))); }
     break;
 
   case 756:
 
-/* Line 678 of lalr1.cc  */
-#line 6289 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6390 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("switch"))); }
     break;
 
   case 757:
 
-/* Line 678 of lalr1.cc  */
-#line 6290 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6391 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     break;
 
   case 758:
 
-/* Line 678 of lalr1.cc  */
-#line 6291 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6392 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("while"))); }
     break;
 
   case 760:
 
-/* Line 678 of lalr1.cc  */
-#line 6296 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6397 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 761:
 
-/* Line 678 of lalr1.cc  */
-#line 6297 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6398 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("xquery"))); }
     break;
 
   case 762:
 
-/* Line 678 of lalr1.cc  */
-#line 6298 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6399 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty"))); }
     break;
 
   case 763:
 
-/* Line 678 of lalr1.cc  */
-#line 6299 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6400 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("boundary-space"))); }
     break;
 
   case 764:
 
-/* Line 678 of lalr1.cc  */
-#line 6300 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6401 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ft-option"))); }
     break;
 
   case 765:
 
-/* Line 678 of lalr1.cc  */
-#line 6301 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6402 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("base-uri"))); }
     break;
 
   case 766:
 
-/* Line 678 of lalr1.cc  */
-#line 6302 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6403 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lax"))); }
     break;
 
   case 767:
 
-/* Line 678 of lalr1.cc  */
-#line 6303 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6404 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strict"))); }
     break;
 
   case 768:
 
-/* Line 678 of lalr1.cc  */
-#line 6304 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6405 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("idiv"))); }
     break;
 
   case 769:
 
-/* Line 678 of lalr1.cc  */
-#line 6305 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6406 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document"))); }
     break;
 
   case 770:
 
-/* Line 678 of lalr1.cc  */
-#line 6306 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6407 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ftnot"))); }
     break;
 
   case 771:
 
-/* Line 678 of lalr1.cc  */
-#line 6307 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6408 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("not"))); }
     break;
 
   case 772:
 
-/* Line 678 of lalr1.cc  */
-#line 6308 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6409 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sensitive"))); }
     break;
 
   case 773:
 
-/* Line 678 of lalr1.cc  */
-#line 6309 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6410 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insensitive"))); }
     break;
 
   case 774:
 
-/* Line 678 of lalr1.cc  */
-#line 6310 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6411 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("diacritics"))); }
     break;
 
   case 775:
 
-/* Line 678 of lalr1.cc  */
-#line 6311 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6412 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("without"))); }
     break;
 
   case 776:
 
-/* Line 678 of lalr1.cc  */
-#line 6312 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6413 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stemming"))); }
     break;
 
   case 777:
 
-/* Line 678 of lalr1.cc  */
-#line 6313 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6414 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("thesaurus"))); }
     break;
 
   case 778:
 
-/* Line 678 of lalr1.cc  */
-#line 6314 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6415 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stop"))); }
     break;
 
   case 779:
 
-/* Line 678 of lalr1.cc  */
-#line 6315 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6416 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("wildcards"))); }
     break;
 
   case 780:
 
-/* Line 678 of lalr1.cc  */
-#line 6316 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6417 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("entire"))); }
     break;
 
   case 781:
 
-/* Line 678 of lalr1.cc  */
-#line 6317 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6418 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("content"))); }
     break;
 
   case 782:
 
-/* Line 678 of lalr1.cc  */
-#line 6318 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6419 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("word"))); }
     break;
 
   case 783:
 
-/* Line 678 of lalr1.cc  */
-#line 6319 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6420 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("start"))); }
     break;
 
   case 784:
 
-/* Line 678 of lalr1.cc  */
-#line 6320 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6421 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("end"))); }
     break;
 
   case 785:
 
-/* Line 678 of lalr1.cc  */
-#line 6321 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6422 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("most"))); }
     break;
 
   case 786:
 
-/* Line 678 of lalr1.cc  */
-#line 6322 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6423 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("skip"))); }
     break;
 
   case 787:
 
-/* Line 678 of lalr1.cc  */
-#line 6323 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6424 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy"))); }
     break;
 
   case 788:
 
-/* Line 678 of lalr1.cc  */
-#line 6324 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6425 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("general"))); }
     break;
 
   case 789:
 
-/* Line 678 of lalr1.cc  */
-#line 6325 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6426 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("value"))); }
     break;
 
   case 790:
 
-/* Line 678 of lalr1.cc  */
-#line 6326 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6427 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("eq"))); }
     break;
 
   case 791:
 
-/* Line 678 of lalr1.cc  */
-#line 6327 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6428 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ne"))); }
     break;
 
   case 792:
 
-/* Line 678 of lalr1.cc  */
-#line 6328 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6429 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lt"))); }
     break;
 
   case 793:
 
-/* Line 678 of lalr1.cc  */
-#line 6329 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6430 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("le"))); }
     break;
 
   case 794:
 
-/* Line 678 of lalr1.cc  */
-#line 6330 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6431 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("gt"))); }
     break;
 
   case 795:
 
-/* Line 678 of lalr1.cc  */
-#line 6331 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6432 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ge"))); }
     break;
 
   case 796:
 
-/* Line 678 of lalr1.cc  */
-#line 6332 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6433 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("at"))); }
     break;
 
   case 797:
 
-/* Line 678 of lalr1.cc  */
-#line 6333 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6434 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("context"))); }
     break;
 
   case 798:
 
-/* Line 678 of lalr1.cc  */
-#line 6334 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6435 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("variable"))); }
     break;
 
   case 799:
 
-/* Line 678 of lalr1.cc  */
-#line 6335 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6436 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("return"))); }
     break;
 
   case 800:
 
-/* Line 678 of lalr1.cc  */
-#line 6336 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6437 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("for"))); }
     break;
 
   case 801:
 
-/* Line 678 of lalr1.cc  */
-#line 6337 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6438 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("allowing"))); }
     break;
 
   case 802:
 
-/* Line 678 of lalr1.cc  */
-#line 6338 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6439 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sliding"))); }
     break;
 
   case 803:
 
-/* Line 678 of lalr1.cc  */
-#line 6339 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6440 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("tumbling"))); }
     break;
 
   case 804:
 
-/* Line 678 of lalr1.cc  */
-#line 6340 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6441 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("previous"))); }
     break;
 
   case 805:
 
-/* Line 678 of lalr1.cc  */
-#line 6341 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6442 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("next"))); }
     break;
 
   case 806:
 
-/* Line 678 of lalr1.cc  */
-#line 6342 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6443 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("only"))); }
     break;
 
   case 807:
 
-/* Line 678 of lalr1.cc  */
-#line 6343 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6444 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("when"))); }
     break;
 
   case 808:
 
-/* Line 678 of lalr1.cc  */
-#line 6344 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6445 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("count"))); }
     break;
 
   case 809:
 
-/* Line 678 of lalr1.cc  */
-#line 6345 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6446 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("in"))); }
     break;
 
   case 810:
 
-/* Line 678 of lalr1.cc  */
-#line 6346 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6447 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("let"))); }
     break;
 
   case 811:
 
-/* Line 678 of lalr1.cc  */
-#line 6347 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6448 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("where"))); }
     break;
 
   case 812:
 
-/* Line 678 of lalr1.cc  */
-#line 6348 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6449 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("by"))); }
     break;
 
   case 813:
 
-/* Line 678 of lalr1.cc  */
-#line 6349 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6450 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("group"))); }
     break;
 
   case 814:
 
-/* Line 678 of lalr1.cc  */
-#line 6350 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6451 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("order"))); }
     break;
 
   case 815:
 
-/* Line 678 of lalr1.cc  */
-#line 6351 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6452 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stable"))); }
     break;
 
   case 816:
 
-/* Line 678 of lalr1.cc  */
-#line 6352 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6453 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ascending"))); }
     break;
 
   case 817:
 
-/* Line 678 of lalr1.cc  */
-#line 6353 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6454 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descending"))); }
     break;
 
   case 818:
 
-/* Line 678 of lalr1.cc  */
-#line 6354 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6455 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("greatest"))); }
     break;
 
   case 819:
 
-/* Line 678 of lalr1.cc  */
-#line 6355 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6456 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("least"))); }
     break;
 
   case 820:
 
-/* Line 678 of lalr1.cc  */
-#line 6356 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6457 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collation"))); }
     break;
 
   case 821:
 
-/* Line 678 of lalr1.cc  */
-#line 6357 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6458 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("some"))); }
     break;
 
   case 822:
 
-/* Line 678 of lalr1.cc  */
-#line 6358 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6459 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("every"))); }
     break;
 
   case 823:
 
-/* Line 678 of lalr1.cc  */
-#line 6359 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6460 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("satisfies"))); }
     break;
 
   case 824:
 
-/* Line 678 of lalr1.cc  */
-#line 6360 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6461 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("case"))); }
     break;
 
   case 825:
 
-/* Line 678 of lalr1.cc  */
-#line 6361 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6462 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("as"))); }
     break;
 
   case 826:
 
-/* Line 678 of lalr1.cc  */
-#line 6362 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6463 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("then"))); }
     break;
 
   case 827:
 
-/* Line 678 of lalr1.cc  */
-#line 6363 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6464 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("else"))); }
     break;
 
   case 828:
 
-/* Line 678 of lalr1.cc  */
-#line 6364 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6465 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("or"))); }
     break;
 
   case 829:
 
-/* Line 678 of lalr1.cc  */
-#line 6365 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6466 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("and"))); }
     break;
 
   case 830:
 
-/* Line 678 of lalr1.cc  */
-#line 6366 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6467 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("instance"))); }
     break;
 
   case 831:
 
-/* Line 678 of lalr1.cc  */
-#line 6367 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6468 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("of"))); }
     break;
 
   case 832:
 
-/* Line 678 of lalr1.cc  */
-#line 6368 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6469 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("castable"))); }
     break;
 
   case 833:
 
-/* Line 678 of lalr1.cc  */
-#line 6369 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6470 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("to"))); }
     break;
 
   case 834:
 
-/* Line 678 of lalr1.cc  */
-#line 6370 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6471 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("div"))); }
     break;
 
   case 835:
 
-/* Line 678 of lalr1.cc  */
-#line 6371 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6472 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mod"))); }
     break;
 
   case 836:
 
-/* Line 678 of lalr1.cc  */
-#line 6372 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6473 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("union"))); }
     break;
 
   case 837:
 
-/* Line 678 of lalr1.cc  */
-#line 6373 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6474 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("intersect"))); }
     break;
 
   case 838:
 
-/* Line 678 of lalr1.cc  */
-#line 6374 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6475 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("except"))); }
     break;
 
   case 839:
 
-/* Line 678 of lalr1.cc  */
-#line 6375 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6476 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("validate"))); }
     break;
 
   case 840:
 
-/* Line 678 of lalr1.cc  */
-#line 6376 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6477 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("type"))); }
     break;
 
   case 841:
 
-/* Line 678 of lalr1.cc  */
-#line 6377 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6478 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("cast"))); }
     break;
 
   case 842:
 
-/* Line 678 of lalr1.cc  */
-#line 6378 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6479 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("treat"))); }
     break;
 
   case 843:
 
-/* Line 678 of lalr1.cc  */
-#line 6379 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6480 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("is"))); }
     break;
 
   case 844:
 
-/* Line 678 of lalr1.cc  */
-#line 6380 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6481 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preserve"))); }
     break;
 
   case 845:
 
-/* Line 678 of lalr1.cc  */
-#line 6381 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6482 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strip"))); }
     break;
 
   case 846:
 
-/* Line 678 of lalr1.cc  */
-#line 6382 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6483 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace"))); }
     break;
 
   case 847:
 
-/* Line 678 of lalr1.cc  */
-#line 6383 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6484 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("external"))); }
     break;
 
   case 848:
 
-/* Line 678 of lalr1.cc  */
-#line 6384 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6485 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("encoding"))); }
     break;
 
   case 849:
 
-/* Line 678 of lalr1.cc  */
-#line 6385 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6486 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-preserve"))); }
     break;
 
   case 850:
 
-/* Line 678 of lalr1.cc  */
-#line 6386 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6487 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("inherit"))); }
     break;
 
   case 851:
 
-/* Line 678 of lalr1.cc  */
-#line 6387 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6488 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-inherit"))); }
     break;
 
   case 852:
 
-/* Line 678 of lalr1.cc  */
-#line 6388 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6489 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("declare"))); }
     break;
 
   case 853:
 
-/* Line 678 of lalr1.cc  */
-#line 6389 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6490 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("construction"))); }
     break;
 
   case 854:
 
-/* Line 678 of lalr1.cc  */
-#line 6390 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6491 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordering"))); }
     break;
 
   case 855:
 
-/* Line 678 of lalr1.cc  */
-#line 6391 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6492 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("default"))); }
     break;
 
   case 856:
 
-/* Line 678 of lalr1.cc  */
-#line 6392 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6493 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
     break;
 
   case 857:
 
-/* Line 678 of lalr1.cc  */
-#line 6393 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6494 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("option"))); }
     break;
 
   case 858:
 
-/* Line 678 of lalr1.cc  */
-#line 6394 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6495 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("version"))); }
     break;
 
   case 859:
 
-/* Line 678 of lalr1.cc  */
-#line 6395 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6496 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("import"))); }
     break;
 
   case 860:
 
-/* Line 678 of lalr1.cc  */
-#line 6396 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6497 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema"))); }
     break;
 
   case 861:
 
-/* Line 678 of lalr1.cc  */
-#line 6397 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6498 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("module"))); }
     break;
 
   case 862:
 
-/* Line 678 of lalr1.cc  */
-#line 6398 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6499 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("function"))); }
     break;
 
   case 863:
 
-/* Line 678 of lalr1.cc  */
-#line 6399 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6500 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("score"))); }
     break;
 
   case 864:
 
-/* Line 678 of lalr1.cc  */
-#line 6400 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6501 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("contains"))); }
     break;
 
   case 865:
 
-/* Line 678 of lalr1.cc  */
-#line 6401 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6502 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("weight"))); }
     break;
 
   case 866:
 
-/* Line 678 of lalr1.cc  */
-#line 6402 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6503 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("window"))); }
     break;
 
   case 867:
 
-/* Line 678 of lalr1.cc  */
-#line 6403 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6504 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("distance"))); }
     break;
 
   case 868:
 
-/* Line 678 of lalr1.cc  */
-#line 6404 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6505 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("occurs"))); }
     break;
 
   case 869:
 
-/* Line 678 of lalr1.cc  */
-#line 6405 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6506 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("times"))); }
     break;
 
   case 870:
 
-/* Line 678 of lalr1.cc  */
-#line 6406 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6507 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("same"))); }
     break;
 
   case 871:
 
-/* Line 678 of lalr1.cc  */
-#line 6407 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6508 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("different"))); }
     break;
 
   case 872:
 
-/* Line 678 of lalr1.cc  */
-#line 6408 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6509 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lowercase"))); }
     break;
 
   case 873:
 
-/* Line 678 of lalr1.cc  */
-#line 6409 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6510 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("uppercase"))); }
     break;
 
   case 874:
 
-/* Line 678 of lalr1.cc  */
-#line 6410 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6511 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("relationship"))); }
     break;
 
   case 875:
 
-/* Line 678 of lalr1.cc  */
-#line 6411 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6512 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("levels"))); }
     break;
 
   case 876:
 
-/* Line 678 of lalr1.cc  */
-#line 6412 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6513 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("language"))); }
     break;
 
   case 877:
 
-/* Line 678 of lalr1.cc  */
-#line 6413 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6514 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("any"))); }
     break;
 
   case 878:
 
-/* Line 678 of lalr1.cc  */
-#line 6414 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6515 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("all"))); }
     break;
 
   case 879:
 
-/* Line 678 of lalr1.cc  */
-#line 6415 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6516 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exactly"))); }
     break;
 
   case 880:
 
-/* Line 678 of lalr1.cc  */
-#line 6416 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6517 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("from"))); }
     break;
 
   case 881:
 
-/* Line 678 of lalr1.cc  */
-#line 6417 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6518 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("words"))); }
     break;
 
   case 882:
 
-/* Line 678 of lalr1.cc  */
-#line 6418 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6519 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentences"))); }
     break;
 
   case 883:
 
-/* Line 678 of lalr1.cc  */
-#line 6419 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6520 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentence"))); }
     break;
 
   case 884:
 
-/* Line 678 of lalr1.cc  */
-#line 6420 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6521 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("phrase"))); }
     break;
 
   case 885:
 
-/* Line 678 of lalr1.cc  */
-#line 6421 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6522 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraph"))); }
     break;
 
   case 886:
 
-/* Line 678 of lalr1.cc  */
-#line 6422 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6523 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraphs"))); }
     break;
 
   case 887:
 
-/* Line 678 of lalr1.cc  */
-#line 6423 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6524 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("replace"))); }
     break;
 
   case 888:
 
-/* Line 678 of lalr1.cc  */
-#line 6424 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6525 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("modify"))); }
     break;
 
   case 889:
 
-/* Line 678 of lalr1.cc  */
-#line 6425 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6526 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("first"))); }
     break;
 
   case 890:
 
-/* Line 678 of lalr1.cc  */
-#line 6426 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6527 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insert"))); }
     break;
 
   case 891:
 
-/* Line 678 of lalr1.cc  */
-#line 6427 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6528 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("before"))); }
     break;
 
   case 892:
 
-/* Line 678 of lalr1.cc  */
-#line 6428 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6529 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("after"))); }
     break;
 
   case 893:
 
-/* Line 678 of lalr1.cc  */
-#line 6429 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6530 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("revalidation"))); }
     break;
 
   case 894:
 
-/* Line 678 of lalr1.cc  */
-#line 6430 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6531 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("with"))); }
     break;
 
   case 895:
 
-/* Line 678 of lalr1.cc  */
-#line 6431 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6532 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("nodes"))); }
     break;
 
   case 896:
 
-/* Line 678 of lalr1.cc  */
-#line 6432 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6533 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("rename"))); }
     break;
 
   case 897:
 
-/* Line 678 of lalr1.cc  */
-#line 6433 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6534 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("last"))); }
     break;
 
   case 898:
 
-/* Line 678 of lalr1.cc  */
-#line 6434 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6535 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("delete"))); }
     break;
 
   case 899:
 
-/* Line 678 of lalr1.cc  */
-#line 6435 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6536 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("into"))); }
     break;
 
   case 900:
 
-/* Line 678 of lalr1.cc  */
-#line 6436 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6537 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("simple"))); }
     break;
 
   case 901:
 
-/* Line 678 of lalr1.cc  */
-#line 6437 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6538 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sequential"))); }
     break;
 
   case 902:
 
-/* Line 678 of lalr1.cc  */
-#line 6438 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6539 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("updating"))); }
     break;
 
   case 903:
 
-/* Line 678 of lalr1.cc  */
-#line 6439 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6540 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordered"))); }
     break;
 
   case 904:
 
-/* Line 678 of lalr1.cc  */
-#line 6440 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6541 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unordered"))); }
     break;
 
   case 905:
 
-/* Line 678 of lalr1.cc  */
-#line 6441 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6542 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("returning"))); }
     break;
 
   case 906:
 
-/* Line 678 of lalr1.cc  */
-#line 6442 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6543 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exit"))); }
     break;
 
   case 907:
 
-/* Line 678 of lalr1.cc  */
-#line 6443 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6544 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("loop"))); }
     break;
 
   case 908:
 
-/* Line 678 of lalr1.cc  */
-#line 6444 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6545 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("break"))); }
     break;
 
   case 909:
 
-/* Line 678 of lalr1.cc  */
-#line 6445 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6546 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("continue"))); }
     break;
 
   case 910:
 
-/* Line 678 of lalr1.cc  */
-#line 6446 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6547 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("try"))); }
     break;
 
   case 911:
 
-/* Line 678 of lalr1.cc  */
-#line 6447 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6548 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("catch"))); }
     break;
 
   case 912:
 
-/* Line 678 of lalr1.cc  */
-#line 6448 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6549 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("using"))); }
     break;
 
   case 913:
 
-/* Line 678 of lalr1.cc  */
-#line 6449 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6550 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("set"))); }
     break;
 
   case 914:
 
-/* Line 678 of lalr1.cc  */
-#line 6450 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6551 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("index"))); }
     break;
 
   case 915:
 
-/* Line 678 of lalr1.cc  */
-#line 6451 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6552 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unique"))); }
     break;
 
   case 916:
 
-/* Line 678 of lalr1.cc  */
-#line 6452 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6553 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("non"))); }
     break;
 
   case 917:
 
-/* Line 678 of lalr1.cc  */
-#line 6453 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6554 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("on"))); }
     break;
 
   case 918:
 
-/* Line 678 of lalr1.cc  */
-#line 6454 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6555 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("range"))); }
     break;
 
   case 919:
 
-/* Line 678 of lalr1.cc  */
-#line 6455 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6556 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("equality"))); }
     break;
 
   case 920:
 
-/* Line 678 of lalr1.cc  */
-#line 6456 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6557 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("manually"))); }
     break;
 
   case 921:
 
-/* Line 678 of lalr1.cc  */
-#line 6457 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6558 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("automatically"))); }
     break;
 
   case 922:
 
-/* Line 678 of lalr1.cc  */
-#line 6458 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6559 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("maintained"))); }
     break;
 
   case 923:
 
-/* Line 678 of lalr1.cc  */
-#line 6459 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6560 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-format"))); }
     break;
 
   case 924:
 
-/* Line 678 of lalr1.cc  */
-#line 6460 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6561 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
     break;
 
   case 925:
 
-/* Line 678 of lalr1.cc  */
-#line 6461 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6562 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
     break;
 
   case 926:
 
-/* Line 678 of lalr1.cc  */
-#line 6462 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6563 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("infinity"))); }
     break;
 
   case 927:
 
-/* Line 678 of lalr1.cc  */
-#line 6463 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6564 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("minus-sign"))); }
     break;
 
   case 928:
 
-/* Line 678 of lalr1.cc  */
-#line 6464 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6565 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("NaN"))); }
     break;
 
   case 929:
 
-/* Line 678 of lalr1.cc  */
-#line 6465 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6566 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("percent"))); }
     break;
 
   case 930:
 
-/* Line 678 of lalr1.cc  */
-#line 6466 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6567 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("per-mille"))); }
     break;
 
   case 931:
 
-/* Line 678 of lalr1.cc  */
-#line 6467 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6568 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("zero-digit"))); }
     break;
 
   case 932:
 
-/* Line 678 of lalr1.cc  */
-#line 6468 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6569 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("digit"))); }
     break;
 
   case 933:
 
-/* Line 678 of lalr1.cc  */
-#line 6469 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6570 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
     break;
 
   case 934:
 
-/* Line 678 of lalr1.cc  */
-#line 6470 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6571 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collection"))); }
     break;
 
   case 935:
 
-/* Line 678 of lalr1.cc  */
-#line 6471 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6572 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("const"))); }
     break;
 
   case 936:
 
-/* Line 678 of lalr1.cc  */
-#line 6472 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6573 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append-only"))); }
     break;
 
   case 937:
 
-/* Line 678 of lalr1.cc  */
-#line 6473 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6574 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("queue"))); }
     break;
 
   case 938:
 
-/* Line 678 of lalr1.cc  */
-#line 6474 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6575 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mutable"))); }
     break;
 
   case 939:
 
-/* Line 678 of lalr1.cc  */
-#line 6475 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6576 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("read-only"))); }
     break;
 
   case 940:
 
-/* Line 678 of lalr1.cc  */
-#line 6476 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6577 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("integrity"))); }
     break;
 
   case 941:
 
-/* Line 678 of lalr1.cc  */
-#line 6477 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6578 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("constraint"))); }
     break;
 
   case 942:
 
-/* Line 678 of lalr1.cc  */
-#line 6478 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6579 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("check"))); }
     break;
 
   case 943:
 
-/* Line 678 of lalr1.cc  */
-#line 6479 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6580 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("key"))); }
     break;
 
   case 944:
 
-/* Line 678 of lalr1.cc  */
-#line 6480 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6581 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreach"))); }
     break;
 
   case 945:
 
-/* Line 678 of lalr1.cc  */
-#line 6481 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6582 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreign"))); }
     break;
 
   case 946:
 
-/* Line 678 of lalr1.cc  */
-#line 6482 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6583 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("keys"))); }
     break;
 
   case 947:
 
-/* Line 678 of lalr1.cc  */
-#line 6483 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6584 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor"))); }
     break;
 
   case 948:
 
-/* Line 678 of lalr1.cc  */
-#line 6484 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6585 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("child"))); }
     break;
 
   case 949:
 
-/* Line 678 of lalr1.cc  */
-#line 6485 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6586 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant"))); }
     break;
 
   case 950:
 
-/* Line 678 of lalr1.cc  */
-#line 6486 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6587 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("parent"))); }
     break;
 
   case 951:
 
-/* Line 678 of lalr1.cc  */
-#line 6487 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6588 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding"))); }
     break;
 
   case 952:
 
-/* Line 678 of lalr1.cc  */
-#line 6488 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6589 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("self"))); }
     break;
 
   case 953:
 
-/* Line 678 of lalr1.cc  */
-#line 6489 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6590 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following"))); }
     break;
 
   case 954:
 
-/* Line 678 of lalr1.cc  */
-#line 6490 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6591 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
     break;
 
   case 955:
 
-/* Line 678 of lalr1.cc  */
-#line 6491 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6592 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     break;
 
   case 956:
 
-/* Line 678 of lalr1.cc  */
-#line 6492 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6593 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     break;
 
   case 957:
 
-/* Line 678 of lalr1.cc  */
-#line 6493 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6594 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     break;
 
   case 958:
 
-/* Line 678 of lalr1.cc  */
-#line 6499 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6600 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     {
           // EQName's namespace URI value is whitespace normalized according to the rules for the xs:anyURI type
           std::string uri = "\"" + SYMTAB((yysemantic_stack_[(3) - (1)].sval)) + "\"";
@@ -11500,18 +11525,29 @@ namespace zorba {
 
   case 959:
 
-/* Line 678 of lalr1.cc  */
-#line 6505 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 690 of lalr1.cc  */
+#line 6606 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true); }
     break;
 
 
 
-/* Line 678 of lalr1.cc  */
-#line 11512 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+/* Line 690 of lalr1.cc  */
+#line 11537 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 	default:
           break;
       }
+    /* User semantic actions sometimes alter yychar, and that requires
+       that yytoken be updated with the new translation.  We take the
+       approach of translating immediately before every use of yytoken.
+       One alternative is translating here after every semantic action,
+       but that translation would be missed if the semantic action
+       invokes YYABORT, YYACCEPT, or YYERROR immediately after altering
+       yychar.  In the case of YYABORT or YYACCEPT, an incorrect
+       destructor might then be invoked immediately.  In the case of
+       YYERROR, subsequent parser actions might lead to an incorrect
+       destructor call or verbose syntax error message before the
+       lookahead is translated.  */
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
 
     yypop_ (yylen);
@@ -11535,14 +11571,20 @@ namespace zorba {
   | yyerrlab -- here on detecting error |
   `------------------------------------*/
   yyerrlab:
+    /* Make sure we have latest lookahead translation.  See comments at
+       user semantic actions for why this is necessary.  */
+    yytoken = yytranslate_ (yychar);
+
     /* If not already recovering from an error, report this error.  */
     if (!yyerrstatus_)
       {
 	++yynerrs_;
+	if (yychar == yyempty_)
+	  yytoken = yyempty_;
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -11577,7 +11619,7 @@ namespace zorba {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -11594,7 +11636,7 @@ namespace zorba {
     for (;;)
       {
 	yyn = yypact_[yystate];
-	if (yyn != yypact_ninf_)
+	if (!yy_pact_value_is_default_ (yyn))
 	{
 	  yyn += yyterror_;
 	  if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
@@ -11609,7 +11651,7 @@ namespace zorba {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -11618,10 +11660,10 @@ namespace zorba {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -11644,7 +11686,13 @@ namespace zorba {
 
   yyreturn:
     if (yychar != yyempty_)
-      yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
+      {
+        /* Make sure we have latest lookahead translation.  See comments
+           at user semantic actions for why this is necessary.  */
+        yytoken = yytranslate_ (yychar);
+        yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval,
+                     &yylloc);
+      }
 
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
@@ -11663,51 +11711,97 @@ namespace zorba {
 
   // Generate an error message.
   std::string
-  xquery_parser::yysyntax_error_ (int yystate, int tok)
+  xquery_parser::yysyntax_error_ (int yystate, int yytoken)
   {
-    std::string res;
-    YYUSE (yystate);
-#if YYERROR_VERBOSE
-    int yyn = yypact_[yystate];
-    if (yypact_ninf_ < yyn && yyn <= yylast_)
+    std::string yyres;
+    // Number of reported tokens (one for the "unexpected", one per
+    // "expected").
+    size_t yycount = 0;
+    // Its maximum.
+    enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+    // Arguments of yyformat.
+    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yytoken) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yychar.
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state
+         merging (from LALR or IELR) and default reductions corrupt the
+         expected token list.  However, the list is correct for
+         canonical LR with one exception: it will still contain any
+         token that will not be accepted due to an error action in a
+         later state.
+    */
+    if (yytoken != yyempty_)
       {
-	/* Start YYX at -YYN if negative to avoid negative indexes in
-	   YYCHECK.  */
-	int yyxbegin = yyn < 0 ? -yyn : 0;
-
-	/* Stay within bounds of both yycheck and yytname.  */
-	int yychecklim = yylast_ - yyn + 1;
-	int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-	int count = 0;
-	for (int x = yyxbegin; x < yyxend; ++x)
-	  if (yycheck_[x + yyn] == x && x != yyterror_)
-	    ++count;
-
-	// FIXME: This method of building the message is not compatible
-	// with internationalization.  It should work like yacc.c does it.
-	// That is, first build a string that looks like this:
-	// "syntax error, unexpected %s or %s or %s"
-	// Then, invoke YY_ on this string.
-	// Finally, use the string as a format to output
-	// yytname_[tok], etc.
-	// Until this gets fixed, this message appears in English only.
-	res = "syntax error, unexpected ";
-	res += yytnamerr_ (yytname_[tok]);
-	if (count < 5)
-	  {
-	    count = 0;
-	    for (int x = yyxbegin; x < yyxend; ++x)
-	      if (yycheck_[x + yyn] == x && x != yyterror_)
-		{
-		  res += (!count++) ? ", expecting " : " or ";
-		  res += yytnamerr_ (yytname_[x]);
-		}
-	  }
+        yyarg[yycount++] = yytname_[yytoken];
+        int yyn = yypact_[yystate];
+        if (!yy_pact_value_is_default_ (yyn))
+          {
+            /* Start YYX at -YYN if negative to avoid negative indexes in
+               YYCHECK.  In other words, skip the first -YYN actions for
+               this state because they are default actions.  */
+            int yyxbegin = yyn < 0 ? -yyn : 0;
+            /* Stay within bounds of both yycheck and yytname.  */
+            int yychecklim = yylast_ - yyn + 1;
+            int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
+            for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
+                  && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+                {
+                  if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+                    {
+                      yycount = 1;
+                      break;
+                    }
+                  else
+                    yyarg[yycount++] = yytname_[yyx];
+                }
+          }
       }
-    else
-#endif
-      res = YY_("syntax error");
-    return res;
+
+    char const* yyformat = 0;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+        YYCASE_(0, YY_("syntax error"));
+        YYCASE_(1, YY_("syntax error, unexpected %s"));
+        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    // Argument number.
+    size_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += yytnamerr_ (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
   }
 
 
@@ -11717,20 +11811,20 @@ namespace zorba {
   const short int
   xquery_parser::yypact_[] =
   {
-      2898, -1394, -1394, -1394,  4384,  4384,  4384, -1394, -1394,   198,
+      2898, -1394, -1394, -1394,  4383,  4383,  4383, -1394, -1394,   198,
      260,   200,    30,   410, -1394, -1394, -1394,   594, -1394, -1394,
    -1394,   386,   439,   612,   556,   476,   558,   328, -1394,   -32,
    -1394, -1394, -1394, -1394, -1394, -1394,   696, -1394,   573,   587,
    -1394, -1394, -1394, -1394,   662, -1394,   734, -1394,   644,   679,
    -1394,    15, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394,   748,   755, -1394, -1394,
-   -1394, -1394,   543,  8839, -1394, -1394, -1394,   759, -1394, -1394,
-   -1394,   700, -1394,   771,   783, -1394, -1394, 12566, -1394, -1394,
+   -1394, -1394,   543,  8838, -1394, -1394, -1394,   759, -1394, -1394,
+   -1394,   700, -1394,   771,   783, -1394, -1394, 12565, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394,   793, -1394, -1394,   794,
-     806, -1394, -1394, -1394, -1394, -1394, -1394, -1394,  3196,  6166,
-   12566, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   781, -1394,
-   -1394,   816,  9720, -1394, 10010,   820,   821, -1394, -1394, -1394,
-     835, -1394,  8542, -1394, -1394, -1394, -1394, -1394, -1394,   805,
+     806, -1394, -1394, -1394, -1394, -1394, -1394, -1394,  3195,  6165,
+   12565, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   781, -1394,
+   -1394,   816,  9719, -1394, 10009,   820,   821, -1394, -1394, -1394,
+     835, -1394,  8541, -1394, -1394, -1394, -1394, -1394, -1394,   805,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,    39,   745,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   668,   807,
      675, -1394,   737,   593, -1394, -1394, -1394, -1394, -1394, -1394,
@@ -11741,158 +11835,158 @@ namespace zorba {
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
-   -1394, -1394,  4681,   968, -1394,  4978, -1394, -1394,   120,    77,
+   -1394, -1394,  4680,   968, -1394,  4977, -1394, -1394,   120,    77,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394,    79, -1394, -1394, -1394, -1394, -1394,
    -1394,   311, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
-    4384, -1394, -1394, -1394, -1394,    27, -1394, -1394, -1394, -1394,
+    4383, -1394, -1394, -1394, -1394,    27, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394,   864, -1394,   782, -1394, -1394, -1394,
      501, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   808,
      880, -1394,   870,   728,   475,   259,   -20,   516, -1394,   923,
-     778,   877,   879,  7354, -1394, -1394, -1394,   447, -1394, -1394,
-    8542, -1394,   650, -1394,   825,  8839, -1394,   825,  8839, -1394,
+     778,   877,   879,  7353, -1394, -1394, -1394,   447, -1394, -1394,
+    8541, -1394,   650, -1394,   825,  8838, -1394,   825,  8838, -1394,
    -1394, -1394,   742, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394,   861,   838,   829, -1394, -1394,
-   -1394, -1394, -1394,   802, -1394,  4384,   803,   813,   322,   322,
-     959,   -16,   224,   169, 12850, 12566,   286,   942, 12566,   839,
-     874,   269,  9720,   699,   753, 12566, 12566,   697,   682,    47,
-   -1394, -1394, -1394,  9720,  4384,   814,  4384,   118,  7651, 10578,
-     721,   722, 12566,   885,    -3,   853,  7651,  1006,   125,    78,
-   12566,   891,   872,   908, -1394,  7651,  9428, 12566, 12566, 12566,
-    4384,   831,  7651,  7651, 12566,  4384,   863,   867, -1394, -1394,
-   -1394,  7651, 10862, -1394,   868, -1394,   878, -1394, -1394, -1394,
+   -1394, -1394, -1394,   802, -1394,  4383,   803,   813,   322,   322,
+     959,   -16,   224,   169, 12849, 12565,   286,   942, 12565,   839,
+     874,   269,  9719,   699,   753, 12565, 12565,   697,   682,    47,
+   -1394, -1394, -1394,  9719,  4383,   814,  4383,   118,  7650, 10577,
+     721,   722, 12565,   885,    -3,   853,  7650,  1006,   125,    78,
+   12565,   891,   872,   908, -1394,  7650,  9427, 12565, 12565, 12565,
+    4383,   831,  7650,  7650, 12565,  4383,   863,   867, -1394, -1394,
+   -1394,  7650, 10861, -1394,   868, -1394,   878, -1394, -1394, -1394,
    -1394,   881, -1394,   882, -1394, -1394, -1394, -1394, -1394,   883,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
-   -1394, -1394, -1394, -1394, -1394, -1394, -1394, 12566, -1394, -1394,
+   -1394, -1394, -1394, -1394, -1394, -1394, -1394, 12565, -1394, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
-     884, 12566, -1394, -1394, -1394,   846,  3493,   890,   892,   898,
-   12566,  4384, -1394,   869,   197, -1394,   507,   987,  7651, -1394,
+     884, 12565, -1394, -1394, -1394,   846,  3492,   890,   892,   898,
+   12565,  4383, -1394,   869,   197, -1394,   507,   987,  7650, -1394,
    -1394,    73, -1394, -1394, -1394,  1015, -1394, -1394, -1394, -1394,
-    7651,   822, -1394,  1011,  7651,  7651,   871,  7651,  7651,  7651,
-    7651,   826, 12566,   865,   873,  7651,  7651,  3196,   815, -1394,
-   -1394, -1394, -1394,    30,   328,    83,    87,  1053,  5275,  5275,
-    5572,  5572,   700, -1394, -1394,   864,   700, -1394,  7651, -1394,
-     943,   556,   -32,   894,   895,   896,  4384,  7651, -1394, -1394,
-   -1394, -1394, -1394, -1394, -1394, -1394,  7948,  7948,  7948, -1394,
-    7948,  7948, -1394,  7948, -1394,  7948, -1394, -1394, -1394, -1394,
-   -1394, -1394, -1394,  7948,  7948,   989,  7948,  7948,  7948,  7948,
-    7948,  7948,  7948,  7948,  7948,  7948,  7948,   834,   972,   973,
-     974, -1394, -1394, -1394,  6463, -1394, -1394,  8542,  8542,  7651,
-     825, -1394, -1394,   825, -1394,  6760,   825,  9720,   921,  7057,
+    7650,   822, -1394,  1011,  7650,  7650,   871,  7650,  7650,  7650,
+    7650,   826, 12565,   865,   873,  7650,  7650,  3195,   815, -1394,
+   -1394, -1394, -1394,    30,   328,    83,    87,  1053,  5274,  5274,
+    5571,  5571,   700, -1394, -1394,   864,   700, -1394,  7650, -1394,
+     943,   556,   -32,   894,   895,   896,  4383,  7650, -1394, -1394,
+   -1394, -1394, -1394, -1394, -1394, -1394,  7947,  7947,  7947, -1394,
+    7947,  7947, -1394,  7947, -1394,  7947, -1394, -1394, -1394, -1394,
+   -1394, -1394, -1394,  7947,  7947,   989,  7947,  7947,  7947,  7947,
+    7947,  7947,  7947,  7947,  7947,  7947,  7947,   834,   972,   973,
+     974, -1394, -1394, -1394,  6462, -1394, -1394,  8541,  8541,  7650,
+     825, -1394, -1394,   825, -1394,  6759,   825,  9719,   921,  7056,
    -1394, -1394, -1394, -1394,   199, -1394,   239, -1394, -1394, -1394,
-   -1394, -1394,   964,   971,   476,  1050, -1394, -1394, 12850,   866,
-     372, 12566,   922,   924,   866,   959,   954,   953, -1394, -1394,
-   -1394,   165,   841,   992,   790, 12566,   947,  7651,   975, 12566,
-   12566, -1394,   958,   907,  4384, -1394,   911,   878,   587, -1394,
+   -1394, -1394,   964,   971,   476,  1050, -1394, -1394, 12849,   866,
+     372, 12565,   922,   924,   866,   959,   954,   953, -1394, -1394,
+   -1394,   165,   841,   992,   790, 12565,   947,  7650,   975, 12565,
+   12565, -1394,   958,   907,  4383, -1394,   911,   878,   587, -1394,
      905,   909,    32, -1394,   249,   267, -1394, -1394,   990, -1394,
-      24, 12566,    10, 12566,  1003,   288, -1394,  4384, -1394,   296,
-   -1394,  9720,  1002,  1055,  9720,   959,  1005,    41, 12566,  7651,
+      24, 12565,    10, 12565,  1003,   288, -1394,  4383, -1394,   296,
+   -1394,  9719,  1002,  1055,  9719,   959,  1005,    41, 12565,  7650,
      -32,   412,   917, -1394,   918,   919,   920,     9, -1394,   264,
-     925, -1394,   301,   310,   955, -1394,   926,  4384,  4384,   423,
-   -1394,   317,   341,   431,  7651,    43, -1394, -1394,  7651,  7651,
-    7651, -1394,  7651, -1394,  7651, 12566,   987, -1394,    22,   429,
+     925, -1394,   301,   310,   955, -1394,   926,  4383,  4383,   423,
+   -1394,   317,   341,   431,  7650,    43, -1394, -1394,  7650,  7650,
+    7650, -1394,  7650, -1394,  7650, 12565,   987, -1394,    22,   429,
    -1394, -1394, -1394,   442, -1394,    18, -1394, -1394, -1394,   110,
      112,  1016,   876,   889,    13, -1394,   976, -1394, -1394,   927,
-     342,  3790,   451,  9136,   815, -1394,   120,   657,  1080,  1080,
+     342,  3789,   451,  9135,   815, -1394,   120,   657,  1080,  1080,
    -1394, -1394,    88, -1394, -1394,    92, -1394,    16, -1394, -1394,
-   -1394, -1394, -1394, -1394, -1394, 12566,   945,  7651,   998, -1394,
-   -1394, -1394,   880, -1394, -1394, -1394, -1394, -1394,  7948, -1394,
+   -1394, -1394, -1394, -1394, -1394, 12565,   945,  7650,   998, -1394,
+   -1394, -1394,   880, -1394, -1394, -1394, -1394, -1394,  7947, -1394,
    -1394, -1394,    50,   259,   259,   546,   -20,   -20,   -20,   -20,
-     516,   516, -1394, -1394, 11998, 11998, 12566, 12566, -1394,   471,
+     516,   516, -1394, -1394, 11997, 11997, 12565, 12565, -1394,   471,
    -1394, -1394,    11, -1394, -1394, -1394,   365, -1394, -1394, -1394,
      398,   322, -1394, -1394,    21,   550,   586, -1394,   476, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   866,
-   -1394,   988, 12282,   977,  7651, -1394, -1394, -1394,  1026,   959,
-     959,   866, -1394,   733,   959,   590, 12566,  -115,   524,  1092,
+   -1394,   988, 12281,   977,  7650, -1394, -1394, -1394,  1026,   959,
+     959,   866, -1394,   733,   959,   590, 12565,  -115,   524,  1092,
    -1394, -1394,   840,   523, -1394, -1394, -1394, -1394, -1394, -1394,
-   -1394, -1394, -1394, -1394, -1394,   165,   274,   897,   529,  7651,
-   -1394, 12566,  1031,   830,   959, -1394, -1394, -1394, -1394,   978,
-   12566, -1394, 12566, -1394,  1009,  1007, 11998,  1012,  7651,   -33,
-     982,    26,   326,   886, -1394, -1394,   643,    10,  1026, 11998,
+   -1394, -1394, -1394, -1394, -1394,   165,   274,   897,   529,  7650,
+   -1394, 12565,  1031,   830,   959, -1394, -1394, -1394, -1394,   978,
+   12565, -1394, 12565, -1394,  1009,  1007, 11997,  1012,  7650,   -33,
+     982,    26,   326,   886, -1394, -1394,   643,    10,  1026, 11997,
     1014,  1038,   951,   939,  1008,   959,   981,  1010,  1040,   959,
-    7651,    19, -1394, -1394, -1394,   985, -1394, -1394, -1394, -1394,
-    1025,  7651,  7651,   997, -1394,  1046,  1047,  4384, -1394,   967,
-     970,   995, 12566, -1394, 12566, -1394,  7651,  1013,   962,  7651,
+    7650,    19, -1394, -1394, -1394,   985, -1394, -1394, -1394, -1394,
+    1025,  7650,  7650,   997, -1394,  1046,  1047,  4383, -1394,   967,
+     970,   995, 12565, -1394, 12565, -1394,  7650,  1013,   962,  7650,
      404,   405,   406,  1120, -1394,   217, -1394,   514, -1394, -1394,
-    1127, -1394,   681,  7651,  7651,  7651,   684,  7651,  7651,  7651,
-    7651,  7651,  7651,  1041,  7651,  7651, -1394,  5869,  1004,  1017,
+    1127, -1394,   681,  7650,  7650,  7650,   684,  7650,  7650,  7650,
+    7650,  7650,  7650,  1041,  7650,  7650, -1394,  5868,  1004,  1017,
     1018,  1022,   782,   559,   914, -1394,   -22, -1394,    96,   171,
-      16,  5572,  5572,  5572,  1081, -1394,  7651,   677,  1056, -1394,
-   12566,  1057, -1394, -1394,  7651,    50,   245,   491, -1394,   887,
+      16,  5571,  5571,  5571,  1081, -1394,  7650,   677,  1056, -1394,
+   12565,  1057, -1394, -1394,  7650,    50,   245,   491, -1394,   887,
      126,   912,   903, -1394, -1394,   753, -1394,   902,   509,  1020,
-    1021, 12282,  1023, -1394,   428, -1394, -1394, -1394, -1394, -1394,
-   -1394, -1394, -1394, -1394,  1034, -1394, -1394, -1394,  7651, -1394,
+    1021, 12281,  1023, -1394,   428, -1394, -1394, -1394, -1394, -1394,
+   -1394, -1394, -1394, -1394,  1034, -1394, -1394, -1394,  7650, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,   598, -1394,
     1140,   695, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
    -1394,   899, -1394, -1394,  1151, -1394, -1394, -1394, -1394, -1394,
      588,  1152, -1394,   693, -1394, -1394, -1394,   868,   439,   881,
-     573,   882,   883,   807, -1394,   428,  8245,   900,   888, -1394,
-    1026,   274,   957,   999,  4384,  1000,  1024,  1048,  1027,  1029,
-   12566,   347, -1394, 12566, -1394,  7651,  1043,  7651,  1058,  7651,
-      29,  1051,  7651,  1054, -1394,  1076,  1077,  7651, 12566,   789,
-    1119, -1394, -1394, -1394, -1394, -1394, -1394, 11998, -1394,  4384,
-     959,  1093, -1394, -1394, -1394,   959,  1093, -1394,  7651,  1060,
-    4384, 12566, -1394, -1394,  7651,  7651,   625, -1394,    51,   672,
-   -1394, 11146,   694, -1394,   698, -1394,  1028, -1394, -1394,  4384,
-    1030,  1032, -1394,  7651, -1394, -1394,  1035,  1046,  1104, -1394,
-    1073, -1394,   639, -1394, -1394,  1199, -1394, -1394,  4384, 12566,
+     573,   882,   883,   807, -1394,   428,  8244,   900,   888, -1394,
+    1026,   274,   957,   999,  4383,  1000,  1024,  1048,  1027,  1029,
+   12565,   347, -1394, 12565, -1394,  7650,  1043,  7650,  1058,  7650,
+      29,  1051,  7650,  1054, -1394,  1076,  1077,  7650, 12565,   789,
+    1119, -1394, -1394, -1394, -1394, -1394, -1394, 11997, -1394,  4383,
+     959,  1093, -1394, -1394, -1394,   959,  1093, -1394,  7650,  1060,
+    4383, 12565, -1394, -1394,  7650,  7650,   625, -1394,    51,   672,
+   -1394, 11145,   694, -1394,   698, -1394,  1028, -1394, -1394,  4383,
+    1030,  1032, -1394,  7650, -1394, -1394,  1035,  1046,  1104, -1394,
+    1073, -1394,   639, -1394, -1394,  1199, -1394, -1394,  4383, 12565,
    -1394,   646, -1394, -1394, -1394,  1019,   991,   993, -1394, -1394,
-   -1394,   994,   996, -1394, -1394, -1394, -1394, -1394,   984, 12566,
-    1036, -1394, -1394,  7651,  7651,  7651,  4087,  5869,  9136,   914,
-   -1394,  9136, -1394,  1080,   154, -1394, -1394, -1394,  1056, -1394,
-     959, -1394,   757, -1394,    66,  1102, -1394,  7651,  1107,   998,
+   -1394,   994,   996, -1394, -1394, -1394, -1394, -1394,   984, 12565,
+    1036, -1394, -1394,  7650,  7650,  7650,  4086,  5868,  9135,   914,
+   -1394,  9135, -1394,  1080,   154, -1394, -1394, -1394,  1056, -1394,
+     959, -1394,   757, -1394,    66,  1102, -1394,  7650,  1107,   998,
      502,  1037, -1394,    50,   986, -1394, -1394,   -68, -1394,   236,
-      70,  1001,    50,   236,  7948, -1394,   131, -1394, -1394, -1394,
+      70,  1001,    50,   236,  7947, -1394,   131, -1394, -1394, -1394,
    -1394, -1394, -1394,    50,  1084,   946,   841,    70, -1394, -1394,
-     948,  1155, -1394, -1394, -1394, 10294,  1049,  1052,  1059, -1394,
+     948,  1155, -1394, -1394, -1394, 10293,  1049,  1052,  1059, -1394,
    -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394, -1394,
-   -1394,  1208,   -12,  1211,   -12,   979,  1136, -1394,  1078, 12566,
-    1033, -1394, -1394,  8245, -1394,  1063, -1394, -1394, -1394, -1394,
-   -1394, -1394,  7651,  1105, -1394, -1394,  7651, -1394,   562, -1394,
-    7651,  1106,  7651, -1394,  7651, 12566, 12566, -1394,   678, -1394,
-    7651, -1394,  1129,  1130,  1162,   959,  1093, -1394,  7651,  1079,
-   -1394, -1394, -1394,  1074, -1394,    56,  7651,  4384,  1075,   101,
-   -1394, 12566,  1082, 11430,    35, -1394, 11714,  1083, -1394, -1394,
-    1086, -1394, -1394, -1394,  7651,   708,  1120, 12566,   706, -1394,
-    1087,  1120, 12566, -1394, -1394,  7651,  7651,  7651,  7651,  7651,
-   -1394,  7651,   414,   416,   427,   -15, -1394, -1394, -1394, -1394,
+   -1394,  1208,   -12,  1211,   -12,   979,  1136, -1394,  1078, 12565,
+    1033, -1394, -1394,  8244, -1394,  1063, -1394, -1394, -1394, -1394,
+   -1394, -1394,  7650,  1105, -1394, -1394,  7650, -1394,   562, -1394,
+    7650,  1106,  7650, -1394,  7650, 12565, 12565, -1394,   678, -1394,
+    7650, -1394,  1129,  1130,  1162,   959,  1093, -1394,  7650,  1079,
+   -1394, -1394, -1394,  1074, -1394,    56,  7650,  4383,  1075,   101,
+   -1394, 12565,  1082, 11429,    35, -1394, 11713,  1083, -1394, -1394,
+    1086, -1394, -1394, -1394,  7650,   708,  1120, 12565,   706, -1394,
+    1087,  1120, 12565, -1394, -1394,  7650,  7650,  7650,  7650,  7650,
+   -1394,  7650,   414,   416,   427,   -15, -1394, -1394, -1394, -1394,
    -1394,  1102, -1394, -1394, -1394,   959, -1394, -1394, -1394, -1394,
-   -1394,  1088,  7948, -1394, -1394, -1394, -1394, -1394,   250,  7948,
-    7948,   520, -1394,   912, -1394,   379, -1394,   903,    50,  1109,
+   -1394,  1088,  7947, -1394, -1394, -1394, -1394, -1394,   250,  7947,
+    7947,   520, -1394,   912, -1394,   379, -1394,   903,    50,  1109,
    -1394, -1394,  1039, -1394, -1394, -1394, -1394,  1169,  1089, -1394,
      438, -1394, -1394, -1394, -1394,   214,   214, -1394,   -12, -1394,
-   -1394,   459, -1394,  1243,    70,  1177,  1090,  8245,   -42,  1042,
-    1110, -1394, -1394,  7651, -1394,  7651,  1128, -1394,  7651, -1394,
-   -1394, -1394,  1229, -1394, -1394,  5869,  7651,   959, -1394, -1394,
-   -1394,  7651,  7651, -1394, -1394, -1394,  5869,  5869,  1189,  4384,
-   12566,  1099, 12566,  7651, 12566,  1101,  5869, -1394,   195,    31,
-    1120, 12566, -1394,  1094,  1120, -1394, -1394, -1394, -1394, -1394,
-   -1394,  1095,  1046,  1047,  7651, -1394, -1394, -1394, -1394,   -20,
-    7948,  7948,   546,   548, -1394, -1394, -1394, -1394, -1394, -1394,
-    7651, -1394, 11998, -1394, 11998,  1196, -1394, -1394, -1394,  1263,
+   -1394,   459, -1394,  1243,    70,  1177,  1090,  8244,   -42,  1042,
+    1110, -1394, -1394,  7650, -1394,  7650,  1128, -1394,  7650, -1394,
+   -1394, -1394,  1229, -1394, -1394,  5868,  7650,   959, -1394, -1394,
+   -1394,  7650,  7650, -1394, -1394, -1394,  5868,  5868,  1189,  4383,
+   12565,  1099, 12565,  7650, 12565,  1101,  5868, -1394,   195,    31,
+    1120, 12565, -1394,  1094,  1120, -1394, -1394, -1394, -1394, -1394,
+   -1394,  1095,  1046,  1047,  7650, -1394, -1394, -1394, -1394,   -20,
+    7947,  7947,   546,   548, -1394, -1394, -1394, -1394, -1394, -1394,
+    7650, -1394, 11997, -1394, 11997,  1196, -1394, -1394, -1394,  1263,
    -1394, -1394, -1394,  1044,  1187, -1394, -1394,  1188, -1394,   720,
-   12566,  1178,  1085, 12566,  8245, -1394, -1394,  7651, -1394,  1180,
-   -1394, -1394,  1093, -1394, -1394, 11998, -1394, -1394,  1204,  7651,
-    1114, -1394,  1206,  5869, -1394, 12566,   287,   750, -1394,  1108,
-    1120, -1394,  1111,  5869,   712,   505,   546,   546,  7948,   511,
-   -1394, -1394, 11998, -1394, -1394,  1177,  8245, -1394,  1102,  1045,
-   12566,  1185,  1096,  1188, -1394, 12566,  1124, 11998,  4384, 11998,
+   12565,  1178,  1085, 12565,  8244, -1394, -1394,  7650, -1394,  1180,
+   -1394, -1394,  1093, -1394, -1394, 11997, -1394, -1394,  1204,  7650,
+    1114, -1394,  1206,  5868, -1394, 12565,   287,   750, -1394,  1108,
+    1120, -1394,  1111,  5868,   712,   505,   546,   546,  7947,   511,
+   -1394, -1394, 11997, -1394, -1394,  1177,  8244, -1394,  1102,  1045,
+   12565,  1185,  1096,  1188, -1394, 12565,  1124, 11997,  4383, 11997,
     1131, -1394, -1394,  1212,   537, -1394, -1394, -1394, -1394,  1138,
      772, -1394, -1394, -1394,  1117, -1394,  1207, -1394,   546, -1394,
-   -1394, -1394, -1394, -1394,  7651,  1062, 12566,  1209, -1394,  4384,
-    1143, -1394, -1394,  1145,  7651, -1394, -1394, -1394, -1394, -1394,
-   -1394, -1394, 12566, -1394,  1065,  1066, 12566, -1394, -1394,  7651,
-    5869,  1146,  1067,  7651,  1068,  5869,  8245, -1394,  8245, -1394,
-    1135,  1064, 12566,  1113,  1216, 12566,  1069,  8245, -1394
+   -1394, -1394, -1394, -1394,  7650,  1062, 12565,  1209, -1394,  4383,
+    1143, -1394, -1394,  1145,  7650, -1394, -1394, -1394, -1394, -1394,
+   -1394, -1394, 12565, -1394,  1065,  1066, 12565, -1394, -1394,  7650,
+    5868,  1146,  1067,  7650,  1068,  5868,  8244, -1394,  8244, -1394,
+    1135,  1064, 12565,  1113,  1216, 12565,  1069,  8244, -1394
   };
 
-  /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
-     doesn't specify something else to do.  Zero means the default is an
-     error.  */
+  /* YYDEFACT[S] -- default reduction number in state S.  Performed when
+     YYTABLE doesn't specify something else to do.  Zero means the
+     default is an error.  */
   const unsigned short int
   xquery_parser::yydefact_[] =
   {
@@ -12145,7 +12239,7 @@ namespace zorba {
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule which
-     number is the opposite.  If zero, do what YYDEFACT says.  */
+     number is the opposite.  If YYTABLE_NINF_, syntax error.  */
   const short int xquery_parser::yytable_ninf_ = -741;
   const short int
   xquery_parser::yytable_[] =
@@ -12470,219 +12564,11 @@ namespace zorba {
      206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
      216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
      226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,     1,     2,     0,
-       0,     0,     0,     0,     0,     0,     3,     4,     5,     6,
-       7,     8,     9,    10,     0,    11,     0,     0,     0,   389,
-     390,     0,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,   391,    28,    29,    30,    31,
-       0,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,     0,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,     0,
-      69,    70,    71,    72,    73,    74,    75,    76,     0,     0,
-      77,    78,     0,     0,     0,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,     0,     0,     0,    90,
-       0,    91,    92,    93,    94,     0,    95,     0,     0,     0,
-      96,    97,    98,    99,   100,     0,     0,     0,     0,     0,
-       0,   101,   102,   103,   104,   105,   106,   107,   108,     0,
-       0,   109,   110,   111,   112,   113,     0,     0,     0,     0,
-     114,   115,   116,   117,   118,   119,   120,   121,     0,   122,
-       0,   123,   124,     0,     0,   125,   126,   127,     0,   524,
-       0,   128,     0,   129,   130,     0,   131,   132,   133,     0,
-     134,     0,   135,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,     0,     0,   146,   147,   148,     0,   392,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,     0,   192,   193,   194,     0,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,     1,     2,     0,     0,     0,     0,
-       0,     0,     0,     3,     4,     5,     6,     7,     8,     9,
-      10,     0,    11,     0,     0,     0,   389,   390,     0,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,   391,    28,    29,    30,    31,     0,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,     0,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
-      72,    73,    74,    75,    76,     0,     0,    77,    78,     0,
-       0,     0,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,     0,     0,     0,    90,     0,    91,    92,
-      93,    94,     0,    95,     0,     0,     0,    96,    97,    98,
-      99,   100,     0,     0,     0,     0,     0,     0,   101,   102,
-     103,   104,   105,   106,   107,   108,     0,     0,   109,   110,
-     111,   112,   113,     0,     0,     0,     0,   114,   115,   116,
-     117,   118,   119,   120,   121,     0,   122,     0,   123,   124,
-       0,     0,   125,   126,   127,     0,   767,     0,   128,     0,
-     129,   130,     0,   131,   132,   133,     0,   134,     0,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-       0,     0,   146,   147,   148,     0,   392,   150,   151,   152,
-     153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
-     173,   174,   175,   176,   177,   178,   179,   180,   181,   182,
-     183,   184,   185,   186,   187,   188,   189,   190,   191,     0,
-     192,   193,   194,     0,   195,   196,   197,   198,   199,   200,
-     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
-     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
-     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
-     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,     1,     2,     0,     0,     0,     0,     0,     0,     0,
-       3,     4,     5,     6,     7,     8,     9,    10,     0,    11,
-       0,     0,     0,   389,   390,     0,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,  1028,   391,
-      28,    29,    30,    31,     0,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,     0,    45,
-      46,    47,  1029,  1030,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,     0,    69,    70,    71,    72,    73,    74,
-      75,    76,     0,     0,    77,    78,     0,     0,     0,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-       0,     0,     0,    90,     0,    91,    92,    93,    94,     0,
-      95,     0,     0,     0,    96,    97,    98,    99,   100,     0,
-       0,     0,     0,     0,     0,   101,   102,   103,   104,   105,
-     106,   107,   108,     0,     0,   109,   110,   111,   112,   113,
-       0,     0,     0,     0,   114,   115,   116,   117,   118,   119,
-     120,   121,     0,   122,     0,   123,   124,     0,     0,   125,
-     126,   127,     0,   767,     0,   128,     0,   129,   130,     0,
-     131,   132,   133,     0,   134,     0,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,     0,     0,   146,
-     147,   148,     0,   392,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,  1031,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
-       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,     1,     2,
-       0,     0,     0,     0,     0,     0,     0,     3,     4,     5,
-       6,     7,     8,     9,    10,     0,    11,     0,     0,     0,
-     389,   390,     0,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,  1028,   391,    28,    29,    30,
-      31,     0,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,     0,    45,    46,    47,  1029,
-    1030,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-       0,    69,    70,    71,    72,    73,    74,    75,    76,     0,
-       0,    77,    78,     0,     0,     0,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,     0,     0,     0,
-      90,     0,    91,    92,    93,    94,     0,    95,     0,     0,
-       0,    96,    97,    98,    99,   100,     0,     0,     0,     0,
-       0,     0,   101,   102,   103,   104,   105,   106,   107,   108,
-       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   117,   118,   119,   120,   121,     0,
-     122,     0,   123,   124,     0,     0,   125,   126,   127,     0,
-     524,     0,   128,     0,   129,   130,     0,   131,   132,   133,
-       0,   134,     0,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,     0,     0,   146,   147,   148,     0,
-     392,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,  1031,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,     1,     2,     0,     0,     0,
-       0,     0,     0,     0,     3,     4,     5,     6,     7,     8,
-       9,    10,     0,    11,     0,     0,     0,   389,   390,     0,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,   391,    28,    29,    30,    31,     0,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,     0,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,     0,    69,    70,
-      71,    72,    73,    74,    75,    76,     0,     0,    77,    78,
-       0,     0,     0,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,     0,     0,     0,    90,     0,    91,
-      92,    93,    94,     0,    95,     0,     0,     0,    96,    97,
-      98,    99,   100,     0,     0,     0,     0,     0,     0,   101,
-     102,   103,   104,   105,   106,   107,   108,     0,     0,   109,
-     110,   111,   112,   113,     0,     0,     0,     0,   114,   115,
-     116,   117,   118,   119,   120,   121,     0,   122,     0,   123,
-     124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
-       0,   129,   130,     0,   131,   132,   133,     0,   134,     0,
-     135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,     0,     0,   146,   147,   148,     0,   392,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-       0,   192,   193,   194,     0,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,     1,     2,     0,     0,     0,     0,     0,     0,
-       0,     3,     4,     5,     6,     7,     8,     9,    10,     0,
-      11,     0,     0,     0,    12,    13,     0,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,     0,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,     0,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    67,    68,     0,    69,    70,    71,    72,    73,
-      74,    75,    76,     0,     0,    77,    78,     0,     0,     0,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,     0,     0,     0,    90,     0,    91,    92,    93,    94,
-       0,    95,     0,     0,     0,    96,    97,    98,    99,   100,
-       0,     0,     0,     0,     0,     0,   101,   102,   103,   104,
-     105,   106,   107,   108,     0,     0,   109,   110,   111,   112,
-     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
-     119,   120,   121,     0,   122,     0,   123,   124,     0,     0,
-     125,   126,   127,     0,     0,     0,   128,     0,   129,   130,
-       0,   131,   132,   133,     0,   134,     0,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,     0,     0,
-     146,   147,   148,     0,   149,   150,   151,   152,   153,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,   189,   190,   191,     0,   192,   193,
-     194,     0,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
-     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
-     233,   234,   235,   236,   237,   238,   239,   240,   241,     1,
-       2,     0,     0,     0,     0,     0,     0,     0,     3,     4,
-       5,     6,     7,     8,     9,    10,     0,    11,     0,     0,
-       0,    12,    13,     0,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,     0,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,     0,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,     0,    69,    70,    71,    72,    73,    74,    75,    76,
-       0,     0,    77,    78,     0,     0,     0,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,     0,     0,
-       0,    90,     0,    91,    92,    93,    94,     0,    95,     0,
-       0,     0,    96,    97,    98,    99,   100,     0,     0,     0,
-       0,     0,     0,   101,   102,   103,   104,   105,   106,   107,
-     108,     0,     0,   109,   110,   111,   112,   113,     0,     0,
-       0,     0,   114,   115,   116,   117,   118,   119,   120,   121,
-       0,   122,     0,   123,   124,     0,     0,   125,   126,   127,
-       0,     0,     0,   128,     0,   129,   130,     0,   131,   132,
-     133,     0,   134,     0,   135,   136,   137,   138,   139,   140,
-     141,   142,   143,   144,   145,     0,     0,   146,   147,   148,
-       0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,     0,   192,   193,   194,     0,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
      236,   237,   238,   239,   240,   241,     1,     2,     0,     0,
-       0,     0,     0,     0,     0,     3,     4,     5,     6,     7,
-       8,     9,    10,     0,    11,     0,     0,     0,    12,   390,
+       0,     0,   242,     0,     0,     3,     4,     5,     6,     7,
+       8,     9,    10,     0,    11,     0,     0,     0,   389,   390,
        0,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    31,     0,
+      23,    24,    25,    26,   391,    28,    29,    30,    31,     0,
       32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
       42,    43,    44,     0,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
@@ -12695,7 +12581,7 @@ namespace zorba {
      101,   102,   103,   104,   105,   106,   107,   108,     0,     0,
      109,   110,   111,   112,   113,     0,     0,     0,     0,   114,
      115,   116,   117,   118,   119,   120,   121,     0,   122,     0,
-     123,   124,     0,     0,   125,   126,   127,     0,     0,     0,
+     123,   124,     0,     0,   125,   126,   127,     0,   524,     0,
      128,     0,   129,   130,     0,   131,   132,   133,     0,   134,
        0,   135,   136,   137,   138,   139,   140,   141,   142,   143,
      144,   145,     0,     0,   146,   147,   148,     0,   392,   150,
@@ -12710,7 +12596,7 @@ namespace zorba {
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,     1,     2,     0,     0,     0,     0,     0,
        0,     0,     3,     4,     5,     6,     7,     8,     9,    10,
-       0,    11,     0,     0,     0,   817,   390,     0,    14,    15,
+       0,    11,     0,     0,     0,   389,   390,     0,    14,    15,
       16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
       26,   391,    28,    29,    30,    31,     0,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
@@ -12725,7 +12611,7 @@ namespace zorba {
      104,   105,   106,   107,   108,     0,     0,   109,   110,   111,
      112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
      118,   119,   120,   121,     0,   122,     0,   123,   124,     0,
-       0,   125,   126,   127,     0,     0,     0,   128,     0,   129,
+       0,   125,   126,   127,     0,   767,     0,   128,     0,   129,
      130,     0,   131,   132,   133,     0,   134,     0,   135,   136,
      137,   138,   139,   140,   141,   142,   143,   144,   145,     0,
        0,   146,   147,   148,     0,   392,   150,   151,   152,   153,
@@ -12755,13 +12641,310 @@ namespace zorba {
      107,   108,     0,     0,   109,   110,   111,   112,   113,     0,
        0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
      121,     0,   122,     0,   123,   124,     0,     0,   125,   126,
-     127,     0,     0,     0,   128,     0,   129,   130,     0,   131,
+     127,     0,   767,     0,   128,     0,   129,   130,     0,   131,
      132,   133,     0,   134,     0,   135,   136,   137,   138,   139,
      140,   141,   142,   143,   144,   145,     0,     0,   146,   147,
      148,     0,   392,   150,   151,   152,   153,   154,   155,   156,
      157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
      167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
      177,  1031,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190,   191,     0,   192,   193,   194,     0,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,     1,     2,     0,
+       0,     0,     0,     0,     0,     0,     3,     4,     5,     6,
+       7,     8,     9,    10,     0,    11,     0,     0,     0,   389,
+     390,     0,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,  1028,   391,    28,    29,    30,    31,
+       0,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,     0,    45,    46,    47,  1029,  1030,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65,    66,    67,    68,     0,
+      69,    70,    71,    72,    73,    74,    75,    76,     0,     0,
+      77,    78,     0,     0,     0,    79,    80,    81,    82,    83,
+      84,    85,    86,    87,    88,    89,     0,     0,     0,    90,
+       0,    91,    92,    93,    94,     0,    95,     0,     0,     0,
+      96,    97,    98,    99,   100,     0,     0,     0,     0,     0,
+       0,   101,   102,   103,   104,   105,   106,   107,   108,     0,
+       0,   109,   110,   111,   112,   113,     0,     0,     0,     0,
+     114,   115,   116,   117,   118,   119,   120,   121,     0,   122,
+       0,   123,   124,     0,     0,   125,   126,   127,     0,   524,
+       0,   128,     0,   129,   130,     0,   131,   132,   133,     0,
+     134,     0,   135,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,     0,     0,   146,   147,   148,     0,   392,
+     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
+     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
+     170,   171,   172,   173,   174,   175,   176,   177,  1031,   179,
+     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
+     190,   191,     0,   192,   193,   194,     0,   195,   196,   197,
+     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
+     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
+     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
+     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
+     238,   239,   240,   241,     1,     2,     0,     0,     0,     0,
+       0,     0,     0,     3,     4,     5,     6,     7,     8,     9,
+      10,     0,    11,     0,     0,     0,   389,   390,     0,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,   391,    28,    29,    30,    31,     0,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,     0,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
+      72,    73,    74,    75,    76,     0,     0,    77,    78,     0,
+       0,     0,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,     0,     0,     0,    90,     0,    91,    92,
+      93,    94,     0,    95,     0,     0,     0,    96,    97,    98,
+      99,   100,     0,     0,     0,     0,     0,     0,   101,   102,
+     103,   104,   105,   106,   107,   108,     0,     0,   109,   110,
+     111,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     117,   118,   119,   120,   121,     0,   122,     0,   123,   124,
+       0,     0,   125,   126,   127,     0,     0,     0,   128,     0,
+     129,   130,     0,   131,   132,   133,     0,   134,     0,   135,
+     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
+       0,     0,   146,   147,   148,     0,   392,   150,   151,   152,
+     153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
+     173,   174,   175,   176,   177,   178,   179,   180,   181,   182,
+     183,   184,   185,   186,   187,   188,   189,   190,   191,     0,
+     192,   193,   194,     0,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,     1,     2,     0,     0,     0,     0,     0,     0,     0,
+       3,     4,     5,     6,     7,     8,     9,    10,     0,    11,
+       0,     0,     0,    12,    13,     0,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,    30,    31,     0,    32,    33,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,     0,    45,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
+      66,    67,    68,     0,    69,    70,    71,    72,    73,    74,
+      75,    76,     0,     0,    77,    78,     0,     0,     0,    79,
+      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
+       0,     0,     0,    90,     0,    91,    92,    93,    94,     0,
+      95,     0,     0,     0,    96,    97,    98,    99,   100,     0,
+       0,     0,     0,     0,     0,   101,   102,   103,   104,   105,
+     106,   107,   108,     0,     0,   109,   110,   111,   112,   113,
+       0,     0,     0,     0,   114,   115,   116,   117,   118,   119,
+     120,   121,     0,   122,     0,   123,   124,     0,     0,   125,
+     126,   127,     0,     0,     0,   128,     0,   129,   130,     0,
+     131,   132,   133,     0,   134,     0,   135,   136,   137,   138,
+     139,   140,   141,   142,   143,   144,   145,     0,     0,   146,
+     147,   148,     0,   149,   150,   151,   152,   153,   154,   155,
+     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
+     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
+       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
+     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
+     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
+     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
+     234,   235,   236,   237,   238,   239,   240,   241,     1,     2,
+       0,     0,     0,     0,     0,     0,     0,     3,     4,     5,
+       6,     7,     8,     9,    10,     0,    11,     0,     0,     0,
+      12,    13,     0,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,     0,    32,    33,    34,    35,    36,    37,    38,    39,
+      40,    41,    42,    43,    44,     0,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
+       0,    69,    70,    71,    72,    73,    74,    75,    76,     0,
+       0,    77,    78,     0,     0,     0,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,     0,     0,     0,
+      90,     0,    91,    92,    93,    94,     0,    95,     0,     0,
+       0,    96,    97,    98,    99,   100,     0,     0,     0,     0,
+       0,     0,   101,   102,   103,   104,   105,   106,   107,   108,
+       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   118,   119,   120,   121,     0,
+     122,     0,   123,   124,     0,     0,   125,   126,   127,     0,
+       0,     0,   128,     0,   129,   130,     0,   131,   132,   133,
+       0,   134,     0,   135,   136,   137,   138,   139,   140,   141,
+     142,   143,   144,   145,     0,     0,   146,   147,   148,     0,
+     392,   150,   151,   152,   153,   154,   155,   156,   157,   158,
+     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,     1,     2,     0,     0,     0,
+       0,     0,     0,     0,     3,     4,     5,     6,     7,     8,
+       9,    10,     0,    11,     0,     0,     0,    12,   390,     0,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,     0,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,     0,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
+      62,    63,    64,    65,    66,    67,    68,     0,    69,    70,
+      71,    72,    73,    74,    75,    76,     0,     0,    77,    78,
+       0,     0,     0,    79,    80,    81,    82,    83,    84,    85,
+      86,    87,    88,    89,     0,     0,     0,    90,     0,    91,
+      92,    93,    94,     0,    95,     0,     0,     0,    96,    97,
+      98,    99,   100,     0,     0,     0,     0,     0,     0,   101,
+     102,   103,   104,   105,   106,   107,   108,     0,     0,   109,
+     110,   111,   112,   113,     0,     0,     0,     0,   114,   115,
+     116,   117,   118,   119,   120,   121,     0,   122,     0,   123,
+     124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
+       0,   129,   130,     0,   131,   132,   133,     0,   134,     0,
+     135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
+     145,     0,     0,   146,   147,   148,     0,   392,   150,   151,
+     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
+     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
+     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
+     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
+       0,   192,   193,   194,     0,   195,   196,   197,   198,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
+     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
+     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
+     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
+     240,   241,     1,     2,     0,     0,     0,     0,     0,     0,
+       0,     3,     4,     5,     6,     7,     8,     9,    10,     0,
+      11,     0,     0,     0,   817,   390,     0,    14,    15,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+     391,    28,    29,    30,    31,     0,    32,    33,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,    44,     0,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    68,     0,    69,    70,    71,    72,    73,
+      74,    75,    76,     0,     0,    77,    78,     0,     0,     0,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,     0,     0,     0,    90,     0,    91,    92,    93,    94,
+       0,    95,     0,     0,     0,    96,    97,    98,    99,   100,
+       0,     0,     0,     0,     0,     0,   101,   102,   103,   104,
+     105,   106,   107,   108,     0,     0,   109,   110,   111,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
+     119,   120,   121,     0,   122,     0,   123,   124,     0,     0,
+     125,   126,   127,     0,     0,     0,   128,     0,   129,   130,
+       0,   131,   132,   133,     0,   134,     0,   135,   136,   137,
+     138,   139,   140,   141,   142,   143,   144,   145,     0,     0,
+     146,   147,   148,     0,   392,   150,   151,   152,   153,   154,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,   189,   190,   191,     0,   192,   193,
+     194,     0,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,     1,
+       2,     0,     0,     0,     0,     0,     0,     0,     3,     4,
+       5,     6,     7,     8,     9,    10,     0,    11,     0,     0,
+       0,   389,   390,     0,    14,    15,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,  1028,   391,    28,    29,
+      30,    31,     0,    32,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,     0,    45,    46,    47,
+    1029,  1030,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      68,     0,    69,    70,    71,    72,    73,    74,    75,    76,
+       0,     0,    77,    78,     0,     0,     0,    79,    80,    81,
+      82,    83,    84,    85,    86,    87,    88,    89,     0,     0,
+       0,    90,     0,    91,    92,    93,    94,     0,    95,     0,
+       0,     0,    96,    97,    98,    99,   100,     0,     0,     0,
+       0,     0,     0,   101,   102,   103,   104,   105,   106,   107,
+     108,     0,     0,   109,   110,   111,   112,   113,     0,     0,
+       0,     0,   114,   115,   116,   117,   118,   119,   120,   121,
+       0,   122,     0,   123,   124,     0,     0,   125,   126,   127,
+       0,     0,     0,   128,     0,   129,   130,     0,   131,   132,
+     133,     0,   134,     0,   135,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   145,     0,     0,   146,   147,   148,
+       0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
+     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
+     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
+    1031,   179,   180,   181,   182,   183,   184,   185,   186,   187,
+     188,   189,   190,   191,     0,   192,   193,   194,     0,   195,
+     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
+     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
+     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
+     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
+     236,   237,   238,   239,   240,   241,     1,     2,     0,     0,
+       0,     0,     0,     0,     0,     3,     4,     5,     6,     7,
+       8,     0,     0,     0,    11,     0,     0,     0,   389,   390,
+       0,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,   527,   391,    28,    29,    30,    31,     0,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,     0,    45,    46,    47,   528,   529,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,     0,    69,
+      70,    71,    72,    73,    74,    75,    76,     0,     0,    77,
+      78,     0,     0,     0,    79,    80,   481,    82,    83,    84,
+      85,    86,   530,    88,    89,     0,     0,     0,    90,     0,
+      91,    92,    93,    94,     0,    95,     0,     0,     0,    96,
+      97,    98,    99,   100,     0,     0,     0,     0,     0,     0,
+     101,   102,   103,   104,   105,   106,   107,   531,     0,     0,
+     109,   110,   111,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   117,   118,   119,   120,   121,     0,   122,     0,
+     123,   124,     0,     0,   125,   126,   127,     0,     0,     0,
+     128,   532,   129,   130,     0,   131,   132,   133,     0,   134,
+       0,   135,   136,   137,   138,   139,   140,   141,   142,   143,
+     144,   145,     0,     0,   146,   147,   148,     0,   392,   150,
+     151,   152,   153,   154,   155,   156,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+     171,   498,   499,   500,   175,   176,   501,   533,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
+     191,     0,   192,   193,   194,     0,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,     1,     2,     0,     0,     0,     0,     0,
+       0,     0,     3,     4,     5,     6,     7,     8,     0,     0,
+       0,    11,     0,     0,     0,   389,   390,     0,    14,    15,
+      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+     527,   391,    28,    29,    30,    31,     0,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+       0,    45,    46,    47,   528,   529,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
+      64,    65,    66,    67,    68,     0,    69,    70,    71,    72,
+      73,    74,    75,    76,     0,     0,    77,    78,     0,     0,
+       0,    79,    80,   481,    82,    83,    84,    85,    86,   530,
+      88,    89,     0,     0,     0,    90,     0,    91,    92,    93,
+      94,     0,    95,     0,     0,     0,    96,    97,    98,    99,
+     100,     0,     0,     0,     0,     0,     0,   101,   102,   103,
+     104,   105,   106,   107,   531,     0,     0,   109,   110,   111,
+     112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
+     118,   119,   120,   121,     0,   122,     0,   123,   124,     0,
+       0,   125,   126,   127,     0,   858,     0,   128,     0,   129,
+     130,     0,   131,   132,   133,     0,   134,     0,   135,   136,
+     137,   138,   139,   140,   141,   142,   143,   144,   145,     0,
+       0,   146,   147,   148,     0,   392,   150,   151,   152,   153,
+     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
+     164,   165,   166,   167,   168,   169,   170,   171,   498,   499,
+     500,   175,   176,   501,   533,   179,   180,   181,   182,   183,
+     184,   185,   186,   187,   188,   189,   190,   191,     0,   192,
+     193,   194,     0,   195,   196,   197,   198,   199,   200,   201,
+     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
+     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
+     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
+     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
+       1,     2,     0,     0,     0,     0,     0,     0,     0,     3,
+       4,     5,     6,     7,     8,     0,     0,     0,    11,     0,
+       0,     0,   389,   390,     0,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,   527,   391,    28,
+      29,    30,    31,     0,    32,    33,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,     0,    45,    46,
+      47,   528,   529,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
+      76,     0,     0,    77,    78,     0,     0,     0,    79,    80,
+     481,    82,    83,    84,    85,    86,   530,    88,    89,     0,
+       0,     0,    90,     0,    91,    92,    93,    94,     0,    95,
+       0,     0,     0,    96,    97,    98,    99,   100,     0,     0,
+       0,     0,     0,     0,   101,   102,   103,   104,   105,   106,
+     107,   531,     0,     0,   109,   110,   111,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
+     121,     0,   122,     0,   123,   124,     0,     0,   125,   126,
+     127,     0,     0,     0,   128,   864,   129,   130,     0,   131,
+     132,   133,     0,   134,     0,   135,   136,   137,   138,   139,
+     140,   141,   142,   143,   144,   145,     0,     0,   146,   147,
+     148,     0,   392,   150,   151,   152,   153,   154,   155,   156,
+     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,   171,   498,   499,   500,   175,   176,
+     501,   533,   179,   180,   181,   182,   183,   184,   185,   186,
      187,   188,   189,   190,   191,     0,   192,   193,   194,     0,
      195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
      205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
@@ -12785,7 +12968,7 @@ namespace zorba {
        0,   109,   110,   111,   112,   113,     0,     0,     0,     0,
      114,   115,   116,   117,   118,   119,   120,   121,     0,   122,
        0,   123,   124,     0,     0,   125,   126,   127,     0,     0,
-       0,   128,   532,   129,   130,     0,   131,   132,   133,     0,
+       0,   128,   869,   129,   130,     0,   131,   132,   133,     0,
      134,     0,   135,   136,   137,   138,   139,   140,   141,   142,
      143,   144,   145,     0,     0,   146,   147,   148,     0,   392,
      150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
@@ -12800,27 +12983,27 @@ namespace zorba {
      238,   239,   240,   241,     1,     2,     0,     0,     0,     0,
        0,     0,     0,     3,     4,     5,     6,     7,     8,     0,
        0,     0,    11,     0,     0,     0,   389,   390,     0,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,   527,   391,    28,    29,    30,    31,     0,    32,    33,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,   467,
+      25,   469,   391,    28,   470,    30,    31,     0,    32,    33,
       34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,     0,    45,    46,    47,   528,   529,    50,    51,    52,
+     472,     0,    45,    46,    47,   474,   475,    50,    51,    52,
       53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
       63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
       72,    73,    74,    75,    76,     0,     0,    77,    78,     0,
        0,     0,    79,    80,   481,    82,    83,    84,    85,    86,
      530,    88,    89,     0,     0,     0,    90,     0,    91,    92,
-      93,    94,     0,    95,     0,     0,     0,    96,    97,    98,
+      93,    94,     0,    95,     0,     0,     0,   484,    97,    98,
       99,   100,     0,     0,     0,     0,     0,     0,   101,   102,
      103,   104,   105,   106,   107,   531,     0,     0,   109,   110,
-     111,   112,   113,     0,     0,     0,     0,   114,   115,   116,
-     117,   118,   119,   120,   121,     0,   122,     0,   123,   124,
-       0,     0,   125,   126,   127,     0,   858,     0,   128,     0,
+     641,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     117,   118,   119,   120,   121,     0,   122,     0,   642,   124,
+       0,     0,   125,   126,   127,     0,     0,     0,   128,     0,
      129,   130,     0,   131,   132,   133,     0,   134,     0,   135,
      136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
        0,     0,   146,   147,   148,     0,   392,   150,   151,   152,
-     153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,   169,   170,   171,   498,
-     499,   500,   175,   176,   501,   533,   179,   180,   181,   182,
+     153,   154,   155,   156,   157,   493,   159,   494,   161,   495,
+     496,   164,   165,   166,   167,   168,   169,   497,   171,   498,
+     499,   500,   175,   176,   501,   502,   179,   180,   181,   182,
      183,   184,   185,   186,   187,   188,   189,   190,   191,     0,
      192,   193,   194,     0,   195,   196,   197,   198,   199,   200,
      201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
@@ -12844,7 +13027,7 @@ namespace zorba {
      106,   107,   531,     0,     0,   109,   110,   111,   112,   113,
        0,     0,     0,     0,   114,   115,   116,   117,   118,   119,
      120,   121,     0,   122,     0,   123,   124,     0,     0,   125,
-     126,   127,     0,     0,     0,   128,   864,   129,   130,     0,
+     126,   127,     0,     0,     0,   128,     0,   129,   130,     0,
      131,   132,   133,     0,   134,     0,   135,   136,   137,   138,
      139,   140,   141,   142,   143,   144,   145,     0,     0,   146,
      147,   148,     0,   392,   150,   151,   152,   153,   154,   155,
@@ -12860,26 +13043,26 @@ namespace zorba {
        0,     0,     0,     0,     0,     0,     0,     3,     4,     5,
        6,     7,     8,     0,     0,     0,    11,     0,     0,     0,
      389,   390,     0,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,   527,   391,    28,    29,    30,
+      21,    22,    23,   467,    25,   469,   391,    28,   470,    30,
       31,     0,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,     0,    45,    46,    47,   528,
-     529,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      40,    41,    42,    43,   472,     0,    45,    46,    47,   474,
+     475,    50,    51,    52,    53,    54,    55,    56,    57,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
        0,    69,    70,    71,    72,    73,    74,    75,    76,     0,
        0,    77,    78,     0,     0,     0,    79,    80,   481,    82,
       83,    84,    85,    86,   530,    88,    89,     0,     0,     0,
       90,     0,    91,    92,    93,    94,     0,    95,     0,     0,
-       0,    96,    97,    98,    99,   100,     0,     0,     0,     0,
+       0,   484,    97,    98,    99,   100,     0,     0,     0,     0,
        0,     0,   101,   102,   103,   104,   105,   106,   107,   531,
        0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
        0,   114,   115,   116,   117,   118,   119,   120,   121,     0,
      122,     0,   123,   124,     0,     0,   125,   126,   127,     0,
-       0,     0,   128,   869,   129,   130,     0,   131,   132,   133,
+       0,     0,   128,     0,   129,   130,     0,   131,   132,   133,
        0,   134,     0,   135,   136,   137,   138,   139,   140,   141,
      142,   143,   144,   145,     0,     0,   146,   147,   148,     0,
-     392,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   498,   499,   500,   175,   176,   501,   533,
+     392,   150,   151,   152,   153,   154,   155,   156,   157,   493,
+     159,   494,   161,   495,   496,   164,   165,   166,   167,   168,
+     169,   497,   171,   498,   499,   500,   175,   176,   501,   502,
      179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
      189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
      197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
@@ -12892,7 +13075,7 @@ namespace zorba {
       14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
      467,    25,   469,   391,    28,   470,    30,    31,     0,    32,
       33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,   472,     0,    45,    46,    47,   474,   475,    50,    51,
+      43,   472,     0,    45,    46,    47,   474,   475,    50,   476,
       52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
       62,    63,    64,    65,    66,    67,    68,     0,    69,    70,
       71,    72,    73,    74,    75,    76,     0,     0,    77,    78,
@@ -12901,9 +13084,9 @@ namespace zorba {
       92,    93,    94,     0,    95,     0,     0,     0,   484,    97,
       98,    99,   100,     0,     0,     0,     0,     0,     0,   101,
      102,   103,   104,   105,   106,   107,   531,     0,     0,   109,
-     110,   641,   112,   113,     0,     0,     0,     0,   114,   115,
-     116,   117,   118,   119,   120,   121,     0,   122,     0,   642,
-     124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
+     110,     0,   112,   113,     0,     0,     0,     0,   114,   115,
+     116,   117,   118,   119,   120,   121,     0,   122,     0,     0,
+       0,     0,     0,   125,   126,   127,     0,     0,     0,   128,
        0,   129,   130,     0,   131,   132,   133,     0,   134,     0,
      135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
      145,     0,     0,   146,   147,   148,     0,   392,   150,   151,
@@ -12919,53 +13102,53 @@ namespace zorba {
      240,   241,     1,     2,     0,     0,     0,     0,     0,     0,
        0,     3,     4,     5,     6,     7,     8,     0,     0,     0,
       11,     0,     0,     0,   389,   390,     0,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,   527,
-     391,    28,    29,    30,    31,     0,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,     0,
-      45,    46,    47,   528,   529,    50,    51,    52,    53,    54,
+      17,    18,    19,    20,    21,    22,    23,   467,    25,   469,
+     391,    28,   470,    30,    31,     0,    32,    33,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,   472,     0,
+      45,    46,    47,   474,   475,    50,   476,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,     0,    69,    70,    71,    72,    73,
       74,    75,    76,     0,     0,    77,    78,     0,     0,     0,
       79,    80,   481,    82,    83,    84,    85,    86,   530,    88,
       89,     0,     0,     0,    90,     0,    91,    92,    93,    94,
-       0,    95,     0,     0,     0,    96,    97,    98,    99,   100,
+       0,    95,     0,     0,     0,   484,    97,    98,    99,   100,
        0,     0,     0,     0,     0,     0,   101,   102,   103,   104,
-     105,   106,   107,   531,     0,     0,   109,   110,   111,   112,
+     105,   106,   107,   531,     0,     0,   109,   110,     0,   112,
      113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
-     119,   120,   121,     0,   122,     0,   123,   124,     0,     0,
+     119,   120,   121,     0,   122,     0,     0,     0,     0,     0,
      125,   126,   127,     0,     0,     0,   128,     0,   129,   130,
-       0,   131,   132,   133,     0,   134,     0,   135,   136,   137,
+       0,     0,     0,   133,     0,   134,     0,   135,   136,   137,
      138,   139,   140,   141,   142,   143,   144,   145,     0,     0,
      146,   147,   148,     0,   392,   150,   151,   152,   153,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   498,   499,   500,
-     175,   176,   501,   533,   179,   180,   181,   182,   183,   184,
+     155,   156,   157,   493,   159,   494,   161,   495,   496,   164,
+     165,   166,   167,   168,   169,   497,   171,   498,   499,   500,
+     175,   176,   501,   502,   179,   180,   181,   182,   183,   184,
      185,   186,   187,   188,   189,   190,   191,     0,   192,   193,
      194,     0,   195,   196,   197,   198,   199,   200,   201,   202,
      203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
      213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
      223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
      233,   234,   235,   236,   237,   238,   239,   240,   241,     1,
-       2,     0,     0,     0,     0,     0,     0,     0,     3,     4,
-       5,     6,     7,     8,     0,     0,     0,    11,     0,     0,
-       0,   389,   390,     0,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,   467,    25,   469,   391,    28,   470,
-      30,    31,     0,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,   472,     0,    45,    46,    47,
-     474,   475,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,     0,    69,    70,    71,    72,    73,    74,    75,    76,
-       0,     0,    77,    78,     0,     0,     0,    79,    80,   481,
-      82,    83,    84,    85,    86,   530,    88,    89,     0,     0,
-       0,    90,     0,    91,    92,    93,    94,     0,    95,     0,
-       0,     0,   484,    97,    98,    99,   100,     0,     0,     0,
-       0,     0,     0,   101,   102,   103,   104,   105,   106,   107,
-     531,     0,     0,   109,   110,   111,   112,   113,     0,     0,
-       0,     0,   114,   115,   116,   117,   118,   119,   120,   121,
-       0,   122,     0,   123,   124,     0,     0,   125,   126,   127,
-       0,     0,     0,   128,     0,   129,   130,     0,   131,   132,
-     133,     0,   134,     0,   135,   136,   137,   138,   139,   140,
-     141,   142,   143,   144,   145,     0,     0,   146,   147,   148,
+       2,     0,     0,     0,     0,     0,     0,     0,     3,     0,
+       0,     0,     7,     8,     0,     0,     0,   463,     0,     0,
+       0,   389,   390,     0,    14,    15,    16,   464,    18,    19,
+      20,   465,    22,   466,   467,   468,   469,   391,    28,   470,
+      30,    31,     0,    32,    33,    34,    35,   471,    37,    38,
+      39,    40,    41,    42,    43,   472,     0,    45,   473,    47,
+     474,   475,    50,   476,    52,    53,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,   477,   478,
+      68,     0,    69,    70,    71,   479,     0,    74,    75,    76,
+       0,     0,   480,    78,     0,     0,     0,     0,    80,   481,
+      82,   482,   483,    85,    86,     0,     0,     0,     0,     0,
+       0,     0,     0,    91,    92,    93,    94,     0,    95,     0,
+       0,     0,   484,    97,    98,   485,   486,     0,     0,     0,
+       0,     0,     0,   101,   102,   103,     0,   105,   106,   107,
+       0,     0,     0,     0,     0,     0,   112,   113,     0,     0,
+       0,     0,   114,   115,   116,   117,   487,   119,   120,   488,
+       0,     0,     0,     0,     0,     0,     0,   489,   490,   127,
+       0,     0,     0,   128,     0,   129,   491,     0,     0,     0,
+     133,     0,   134,     0,   135,   136,   137,   138,   492,   140,
+     141,   142,   143,   144,   145,     0,     0,   146,   147,     0,
        0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
      493,   159,   494,   161,   495,   496,   164,   165,   166,   167,
      168,   169,   497,   171,   498,   499,   500,   175,   176,   501,
@@ -12976,27 +13159,27 @@ namespace zorba {
      216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
      226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
      236,   237,   238,   239,   240,   241,     1,     2,     0,     0,
-       0,     0,     0,     0,     0,     3,     4,     5,     6,     7,
-       8,     0,     0,     0,    11,     0,     0,     0,   389,   390,
-       0,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,   467,    25,   469,   391,    28,   470,    30,    31,     0,
-      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,   472,     0,    45,    46,    47,   474,   475,    50,
+       0,     0,     0,     0,     0,     3,     0,     0,     0,     7,
+       8,     0,     0,     0,   463,     0,     0,     0,   389,   390,
+       0,    14,    15,    16,   511,    18,    19,    20,   465,   512,
+     513,   467,   468,   469,   391,    28,   470,    30,    31,     0,
+      32,    33,    34,    35,   514,    37,   515,   516,    40,    41,
+      42,    43,   472,     0,    45,   517,    47,   474,   475,    50,
      476,    52,    53,    54,    55,    56,    57,    58,    59,    60,
-      61,    62,    63,    64,    65,    66,    67,    68,     0,    69,
-      70,    71,    72,    73,    74,    75,    76,     0,     0,    77,
-      78,     0,     0,     0,    79,    80,   481,    82,    83,    84,
-      85,    86,   530,    88,    89,     0,     0,     0,    90,     0,
+      61,    62,    63,    64,    65,   477,   478,    68,     0,    69,
+      70,    71,   518,     0,    74,    75,    76,     0,     0,   480,
+      78,     0,     0,     0,     0,    80,   481,    82,   482,   483,
+      85,    86,     0,     0,     0,     0,     0,     0,     0,     0,
       91,    92,    93,    94,     0,    95,     0,     0,     0,   484,
-      97,    98,    99,   100,     0,     0,     0,     0,     0,     0,
-     101,   102,   103,   104,   105,   106,   107,   531,     0,     0,
-     109,   110,     0,   112,   113,     0,     0,     0,     0,   114,
-     115,   116,   117,   118,   119,   120,   121,     0,   122,     0,
-       0,     0,     0,     0,   125,   126,   127,     0,     0,     0,
-     128,     0,   129,   130,     0,   131,   132,   133,     0,   134,
-       0,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,     0,     0,   146,   147,   148,     0,   392,   150,
-     151,   152,   153,   154,   155,   156,   157,   493,   159,   494,
+      97,    98,   485,   486,     0,     0,     0,     0,     0,     0,
+     101,   102,   103,     0,   105,   106,   107,     0,     0,     0,
+       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   117,   487,   119,   120,   488,     0,     0,     0,
+       0,     0,     0,     0,   489,   490,   127,     0,     0,     0,
+     128,     0,   129,   491,     0,     0,     0,   133,     0,   134,
+       0,   135,   136,   137,   138,   492,   140,   141,   142,   143,
+     144,   145,     0,     0,   146,   147,     0,     0,   392,   150,
+     151,   152,   153,   154,   155,   156,   157,   493,   519,   494,
      161,   495,   496,   164,   165,   166,   167,   168,   169,   497,
      171,   498,   499,   500,   175,   176,   501,   502,   179,   180,
      181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
@@ -13005,45 +13188,44 @@ namespace zorba {
      209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,     1,     2,     0,     0,     0,     0,     0,
-       0,     0,     3,     4,     5,     6,     7,     8,     0,     0,
-       0,    11,     0,     0,     0,   389,   390,     0,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,   467,    25,
-     469,   391,    28,   470,    30,    31,     0,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41,    42,    43,   472,
-       0,    45,    46,    47,   474,   475,    50,   476,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,     0,    69,    70,    71,    72,
-      73,    74,    75,    76,     0,     0,    77,    78,     0,     0,
-       0,    79,    80,   481,    82,    83,    84,    85,    86,   530,
-      88,    89,     0,     0,     0,    90,     0,    91,    92,    93,
-      94,     0,    95,     0,     0,     0,   484,    97,    98,    99,
-     100,     0,     0,     0,     0,     0,     0,   101,   102,   103,
-     104,   105,   106,   107,   531,     0,     0,   109,   110,     0,
-     112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
-     118,   119,   120,   121,     0,   122,     0,     0,     0,     0,
-       0,   125,   126,   127,     0,     0,     0,   128,     0,   129,
-     130,     0,     0,     0,   133,     0,   134,     0,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,     0,
-       0,   146,   147,   148,     0,   392,   150,   151,   152,   153,
-     154,   155,   156,   157,   493,   159,   494,   161,   495,   496,
-     164,   165,   166,   167,   168,   169,   497,   171,   498,   499,
-     500,   175,   176,   501,   502,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,     0,   192,
-     193,   194,     0,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-       1,     2,     0,     0,     0,     0,     0,     0,     0,     3,
+     239,   240,   241,   540,     0,     0,     0,     0,     0,     0,
+       0,     7,     8,     0,     0,     0,   742,     0,     0,     0,
+     389,   390,     0,    14,    15,    16,   511,    18,    19,    20,
+     465,   512,   513,   467,   468,   469,   391,    28,   470,    30,
+      31,     0,    32,    33,    34,    35,   514,    37,   515,   516,
+      40,    41,    42,    43,   472,     0,    45,   517,    47,   474,
+     475,    50,   476,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,   477,   478,    68,
+       0,    69,    70,    71,   518,     0,    74,    75,    76,     0,
+       0,   480,    78,     0,     0,     0,     0,    80,   481,    82,
+     482,   483,    85,    86,     0,     0,     0,     0,     0,     0,
+       0,     0,    91,    92,    93,    94,     0,    95,     0,     0,
+       0,   484,    97,    98,   485,   486,     0,     0,     0,     0,
+       0,     0,   101,   102,   103,     0,   105,   106,   107,     0,
+       0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   487,   119,   120,   488,     0,
+       0,     0,     0,     0,     0,     0,   489,   490,   127,     0,
+       0,     0,   128,   743,   129,   491,     0,     0,     0,     0,
+       0,   134,     0,   135,   136,   137,   138,   492,   140,   141,
+     142,   143,   144,   145,     0,     0,   146,   147,     0,     0,
+     392,   150,   151,   152,   153,   154,   155,   156,   157,   493,
+     519,   494,   161,   495,   496,   164,   165,   166,   167,   168,
+     169,   497,   171,   498,   499,   500,   175,   176,   501,   502,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   540,     0,     0,     0,     0,
        0,     0,     0,     7,     8,     0,     0,     0,   463,     0,
-       0,     0,   389,   390,     0,    14,    15,    16,   464,    18,
-      19,    20,   465,    22,   466,   467,   468,   469,   391,    28,
-     470,    30,    31,     0,    32,    33,    34,    35,   471,    37,
-      38,    39,    40,    41,    42,    43,   472,     0,    45,   473,
+       0,     0,   389,   390,     0,    14,    15,    16,   511,    18,
+      19,    20,   465,   512,   513,   467,   468,   469,   391,    28,
+     470,    30,    31,     0,    32,    33,    34,    35,   514,    37,
+     515,   516,    40,    41,    42,    43,   472,     0,    45,   517,
       47,   474,   475,    50,   476,    52,    53,    54,    55,    56,
       57,    58,    59,    60,    61,    62,    63,    64,    65,   477,
-     478,    68,     0,    69,    70,    71,   479,     0,    74,    75,
+     478,    68,     0,    69,    70,    71,   518,     0,    74,    75,
       76,     0,     0,   480,    78,     0,     0,     0,     0,    80,
      481,    82,   482,   483,    85,    86,     0,     0,     0,     0,
        0,     0,     0,     0,    91,    92,    93,    94,     0,    95,
@@ -13053,8 +13235,179 @@ namespace zorba {
        0,     0,     0,   114,   115,   116,   117,   487,   119,   120,
      488,     0,     0,     0,     0,     0,     0,     0,   489,   490,
      127,     0,     0,     0,   128,     0,   129,   491,     0,     0,
-       0,   133,     0,   134,     0,   135,   136,   137,   138,   492,
+       0,     0,     0,   134,     0,   135,   136,   137,   138,   492,
      140,   141,   142,   143,   144,   145,     0,     0,   146,   147,
+       0,     0,   392,   150,   151,   152,   153,   154,   155,   156,
+     157,   493,   519,   494,   161,   495,   496,   164,   165,   166,
+     167,   168,   169,   497,   171,   498,   499,   500,   175,   176,
+     501,   502,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190,   191,     0,   192,   193,   194,     0,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   543,   544,     0,
+       0,     0,     0,     7,     8,     0,     0,     0,   463,     0,
+       0,     0,   389,   390,     0,    14,    15,    16,   511,    18,
+      19,    20,   465,   512,   513,   467,   468,   469,   391,    28,
+     470,    30,    31,     0,    32,    33,    34,    35,   514,    37,
+     515,   516,    40,    41,    42,    43,   472,     0,    45,   517,
+      47,   474,   475,    50,   476,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,   477,
+     478,    68,     0,    69,    70,    71,   518,     0,    74,    75,
+      76,     0,     0,   480,    78,     0,     0,     0,     0,    80,
+     481,    82,   482,   483,    85,    86,     0,     0,     0,     0,
+       0,     0,     0,     0,    91,    92,    93,    94,     0,    95,
+       0,     0,     0,   484,    97,    98,   485,   486,     0,     0,
+       0,     0,     0,     0,   101,   102,   103,     0,   105,   106,
+     107,     0,     0,     0,     0,     0,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   117,   487,   119,   120,
+     488,     0,     0,     0,     0,     0,     0,     0,   489,   490,
+     127,     0,     0,     0,   128,     0,   129,   491,     0,     0,
+       0,     0,     0,   134,     0,   135,   136,   137,   138,   492,
+     140,   141,   142,   143,   144,   145,     0,     0,   146,   147,
+       0,     0,   392,   150,   151,   152,   153,   154,   155,   156,
+     157,   493,   519,   494,   161,   495,   496,   164,   165,   166,
+     167,   168,   169,   497,   171,   498,   499,   500,   175,   176,
+     501,   502,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190,   191,     0,   192,   193,   194,     0,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,     7,     8,     0,
+       0,     0,   463,     0,     0,     0,   389,   390,     0,    14,
+      15,    16,   464,    18,    19,    20,   465,    22,   466,   467,
+    1069,   469,   391,    28,   470,    30,    31,     0,    32,    33,
+      34,    35,   471,    37,    38,    39,    40,    41,    42,    43,
+     472,     0,    45,   473,    47,   474,   475,    50,   476,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,   477,   478,    68,     0,    69,    70,    71,
+     479,     0,    74,    75,    76,     0,     0,   480,    78,     0,
+       0,     0,     0,    80,   481,    82,   482,   483,    85,    86,
+       0,     0,     0,     0,     0,     0,     0,     0,    91,    92,
+      93,    94,     0,    95,     0,     0,     0,   484,    97,    98,
+     485,   486,     0,     0,     0,     0,     0,     0,   101,   102,
+     103,     0,   105,   106,  1070,     0,     0,     0,  1071,     0,
+       0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     117,   487,   119,   120,   488,     0,     0,     0,     0,     0,
+       0,     0,   489,   490,   127,     0,     0,     0,   128,  1467,
+     129,   491,     0,     0,     0,  1468,     0,   134,     0,   135,
+     136,   137,   138,   492,   140,   141,   142,   143,   144,   145,
+       0,     0,  1072,   147,     0,     0,   392,   150,   151,   152,
+     153,   154,   155,   156,   157,   493,   159,   494,   161,   495,
+     496,   164,   165,   166,   167,   168,   169,   497,   171,   498,
+     499,   500,   175,   176,   501,   502,   179,   180,   181,   182,
+     183,   184,   185,   186,   187,   188,   189,   190,   191,     0,
+     192,   193,   194,     0,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,     7,     8,     0,     0,     0,   463,     0,     0,     0,
+     389,   390,     0,    14,    15,    16,   511,    18,    19,    20,
+     465,   512,   513,   467,   468,   469,   391,    28,   470,    30,
+      31,     0,    32,    33,    34,    35,   514,    37,   515,   516,
+      40,    41,    42,    43,   472,     0,    45,   517,    47,   474,
+     475,    50,   476,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,   477,   478,    68,
+       0,    69,    70,    71,   518,     0,    74,    75,    76,     0,
+       0,   480,    78,     0,     0,     0,     0,    80,   481,    82,
+     482,   483,    85,    86,     0,     0,     0,     0,     0,     0,
+       0,     0,    91,    92,    93,    94,     0,    95,     0,     0,
+       0,   484,    97,    98,   485,   486,     0,     0,     0,     0,
+       0,     0,   101,   102,   103,     0,   105,   106,   107,     0,
+       0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   487,   119,   120,   488,     0,
+       0,     0,     0,     0,     0,     0,   489,   490,   127,     0,
+       0,     0,   128,   713,   129,   491,     0,     0,     0,   714,
+       0,   134,     0,   135,   136,   137,   138,   492,   140,   141,
+     142,   143,   144,   145,     0,     0,   146,   147,     0,     0,
+     392,   150,   151,   152,   153,   154,   155,   156,   157,   493,
+     519,   494,   161,   495,   496,   164,   165,   166,   167,   168,
+     169,   497,   171,   498,   499,   500,   175,   176,   501,   502,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,     7,     8,     0,     0,     0,
+     463,     0,     0,     0,   389,   390,     0,    14,    15,    16,
+     511,    18,    19,    20,   465,   512,   513,   467,   468,   469,
+     391,    28,   470,    30,    31,     0,    32,    33,    34,    35,
+     514,    37,   515,   516,    40,    41,    42,    43,   472,     0,
+      45,   517,    47,   474,   475,    50,   476,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,   477,   478,    68,     0,    69,    70,    71,   518,     0,
+      74,    75,    76,     0,     0,   480,    78,     0,     0,     0,
+       0,    80,   481,    82,   482,   483,    85,    86,     0,     0,
+       0,     0,     0,     0,     0,     0,    91,    92,    93,    94,
+       0,    95,     0,     0,     0,   484,    97,    98,   485,   486,
+       0,     0,     0,     0,     0,     0,   101,   102,   103,     0,
+     105,   106,   107,     0,     0,     0,     0,     0,     0,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   487,
+     119,   120,   488,     0,     0,     0,     0,     0,     0,     0,
+     489,   490,   127,     0,     0,     0,   128,   760,   129,   491,
+       0,     0,     0,   761,     0,   134,     0,   135,   136,   137,
+     138,   492,   140,   141,   142,   143,   144,   145,     0,     0,
+     146,   147,     0,     0,   392,   150,   151,   152,   153,   154,
+     155,   156,   157,   493,   519,   494,   161,   495,   496,   164,
+     165,   166,   167,   168,   169,   497,   171,   498,   499,   500,
+     175,   176,   501,   502,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,   189,   190,   191,     0,   192,   193,
+     194,     0,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,     7,
+       8,     0,     0,     0,   463,     0,     0,     0,   389,   390,
+       0,    14,    15,    16,   464,    18,    19,    20,   465,    22,
+     466,   467,  1069,   469,   391,    28,   470,    30,    31,     0,
+      32,    33,    34,    35,   471,    37,    38,    39,    40,    41,
+      42,    43,   472,     0,    45,   473,    47,   474,   475,    50,
+     476,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,   477,   478,    68,     0,    69,
+      70,    71,   479,     0,    74,    75,    76,     0,     0,   480,
+      78,     0,     0,     0,     0,    80,   481,    82,   482,   483,
+      85,    86,  1391,     0,     0,     0,     0,     0,     0,     0,
+      91,    92,    93,    94,     0,    95,     0,     0,     0,   484,
+      97,    98,   485,   486,     0,     0,     0,     0,     0,     0,
+     101,   102,   103,     0,   105,   106,  1070,     0,     0,     0,
+    1071,     0,     0,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   117,   487,   119,   120,   488,     0,     0,     0,
+       0,     0,     0,     0,   489,   490,   127,     0,     0,     0,
+     128,     0,   129,   491,     0,     0,     0,     0,     0,   134,
+       0,   135,   136,   137,   138,   492,   140,   141,   142,   143,
+     144,   145,     0,     0,  1072,   147,     0,     0,   392,   150,
+     151,   152,   153,   154,   155,   156,   157,   493,   159,   494,
+     161,   495,   496,   164,   165,   166,   167,   168,   169,   497,
+     171,   498,   499,   500,   175,   176,   501,   502,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
+     191,     0,   192,   193,   194,     0,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,     7,     8,     0,     0,     0,   463,     0,
+       0,     0,   389,   390,     0,    14,    15,    16,   464,    18,
+      19,    20,   465,    22,   466,   467,  1069,   469,   391,    28,
+     470,    30,    31,     0,    32,    33,    34,    35,   471,    37,
+      38,    39,    40,    41,    42,    43,   472,     0,    45,   473,
+      47,   474,   475,    50,   476,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,   477,
+     478,    68,     0,    69,    70,    71,   479,     0,    74,    75,
+      76,     0,     0,   480,    78,     0,     0,     0,     0,    80,
+     481,    82,   482,   483,    85,    86,  1520,     0,     0,     0,
+       0,     0,     0,     0,    91,    92,    93,    94,     0,    95,
+       0,     0,     0,   484,    97,    98,   485,   486,     0,     0,
+       0,     0,     0,     0,   101,   102,   103,     0,   105,   106,
+    1070,     0,     0,     0,  1071,     0,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   117,   487,   119,   120,
+     488,     0,     0,     0,     0,     0,     0,     0,   489,   490,
+     127,     0,     0,     0,   128,     0,   129,   491,     0,     0,
+       0,     0,     0,   134,     0,   135,   136,   137,   138,   492,
+     140,   141,   142,   143,   144,   145,     0,     0,  1072,   147,
        0,     0,   392,   150,   151,   152,   153,   154,   155,   156,
      157,   493,   159,   494,   161,   495,   496,   164,   165,   166,
      167,   168,   169,   497,   171,   498,   499,   500,   175,   176,
@@ -13064,408 +13417,149 @@ namespace zorba {
      205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
-     235,   236,   237,   238,   239,   240,   241,     1,     2,     0,
-       0,     0,     0,     0,     0,     0,     3,     0,     0,     0,
-       7,     8,     0,     0,     0,   463,     0,     0,     0,   389,
-     390,     0,    14,    15,    16,   511,    18,    19,    20,   465,
-     512,   513,   467,   468,   469,   391,    28,   470,    30,    31,
-       0,    32,    33,    34,    35,   514,    37,   515,   516,    40,
-      41,    42,    43,   472,     0,    45,   517,    47,   474,   475,
-      50,   476,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,   477,   478,    68,     0,
-      69,    70,    71,   518,     0,    74,    75,    76,     0,     0,
-     480,    78,     0,     0,     0,     0,    80,   481,    82,   482,
-     483,    85,    86,     0,     0,     0,     0,     0,     0,     0,
-       0,    91,    92,    93,    94,     0,    95,     0,     0,     0,
-     484,    97,    98,   485,   486,     0,     0,     0,     0,     0,
-       0,   101,   102,   103,     0,   105,   106,   107,     0,     0,
-       0,     0,     0,     0,   112,   113,     0,     0,     0,     0,
-     114,   115,   116,   117,   487,   119,   120,   488,     0,     0,
-       0,     0,     0,     0,     0,   489,   490,   127,     0,     0,
-       0,   128,     0,   129,   491,     0,     0,     0,   133,     0,
-     134,     0,   135,   136,   137,   138,   492,   140,   141,   142,
-     143,   144,   145,     0,     0,   146,   147,     0,     0,   392,
-     150,   151,   152,   153,   154,   155,   156,   157,   493,   519,
-     494,   161,   495,   496,   164,   165,   166,   167,   168,   169,
-     497,   171,   498,   499,   500,   175,   176,   501,   502,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,     0,   192,   193,   194,     0,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   540,     0,     0,     0,     0,     0,
-       0,     0,     7,     8,     0,     0,     0,   742,     0,     0,
-       0,   389,   390,     0,    14,    15,    16,   511,    18,    19,
-      20,   465,   512,   513,   467,   468,   469,   391,    28,   470,
-      30,    31,     0,    32,    33,    34,    35,   514,    37,   515,
-     516,    40,    41,    42,    43,   472,     0,    45,   517,    47,
-     474,   475,    50,   476,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,   477,   478,
-      68,     0,    69,    70,    71,   518,     0,    74,    75,    76,
-       0,     0,   480,    78,     0,     0,     0,     0,    80,   481,
-      82,   482,   483,    85,    86,     0,     0,     0,     0,     0,
-       0,     0,     0,    91,    92,    93,    94,     0,    95,     0,
-       0,     0,   484,    97,    98,   485,   486,     0,     0,     0,
-       0,     0,     0,   101,   102,   103,     0,   105,   106,   107,
-       0,     0,     0,     0,     0,     0,   112,   113,     0,     0,
-       0,     0,   114,   115,   116,   117,   487,   119,   120,   488,
-       0,     0,     0,     0,     0,     0,     0,   489,   490,   127,
-       0,     0,     0,   128,   743,   129,   491,     0,     0,     0,
-       0,     0,   134,     0,   135,   136,   137,   138,   492,   140,
-     141,   142,   143,   144,   145,     0,     0,   146,   147,     0,
-       0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
-     493,   519,   494,   161,   495,   496,   164,   165,   166,   167,
-     168,   169,   497,   171,   498,   499,   500,   175,   176,   501,
-     502,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,     0,   192,   193,   194,     0,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   540,     0,     0,     0,
-       0,     0,     0,     0,     7,     8,     0,     0,     0,   463,
-       0,     0,     0,   389,   390,     0,    14,    15,    16,   511,
-      18,    19,    20,   465,   512,   513,   467,   468,   469,   391,
-      28,   470,    30,    31,     0,    32,    33,    34,    35,   514,
-      37,   515,   516,    40,    41,    42,    43,   472,     0,    45,
-     517,    47,   474,   475,    50,   476,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-     477,   478,    68,     0,    69,    70,    71,   518,     0,    74,
-      75,    76,     0,     0,   480,    78,     0,     0,     0,     0,
-      80,   481,    82,   482,   483,    85,    86,     0,     0,     0,
-       0,     0,     0,     0,     0,    91,    92,    93,    94,     0,
-      95,     0,     0,     0,   484,    97,    98,   485,   486,     0,
-       0,     0,     0,     0,     0,   101,   102,   103,     0,   105,
-     106,   107,     0,     0,     0,     0,     0,     0,   112,   113,
-       0,     0,     0,     0,   114,   115,   116,   117,   487,   119,
-     120,   488,     0,     0,     0,     0,     0,     0,     0,   489,
-     490,   127,     0,     0,     0,   128,     0,   129,   491,     0,
-       0,     0,     0,     0,   134,     0,   135,   136,   137,   138,
-     492,   140,   141,   142,   143,   144,   145,     0,     0,   146,
-     147,     0,     0,   392,   150,   151,   152,   153,   154,   155,
-     156,   157,   493,   519,   494,   161,   495,   496,   164,   165,
-     166,   167,   168,   169,   497,   171,   498,   499,   500,   175,
-     176,   501,   502,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
-       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   543,   544,
-       0,     0,     0,     0,     7,     8,     0,     0,     0,   463,
-       0,     0,     0,   389,   390,     0,    14,    15,    16,   511,
-      18,    19,    20,   465,   512,   513,   467,   468,   469,   391,
-      28,   470,    30,    31,     0,    32,    33,    34,    35,   514,
-      37,   515,   516,    40,    41,    42,    43,   472,     0,    45,
-     517,    47,   474,   475,    50,   476,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-     477,   478,    68,     0,    69,    70,    71,   518,     0,    74,
-      75,    76,     0,     0,   480,    78,     0,     0,     0,     0,
-      80,   481,    82,   482,   483,    85,    86,     0,     0,     0,
-       0,     0,     0,     0,     0,    91,    92,    93,    94,     0,
-      95,     0,     0,     0,   484,    97,    98,   485,   486,     0,
-       0,     0,     0,     0,     0,   101,   102,   103,     0,   105,
-     106,   107,     0,     0,     0,     0,     0,     0,   112,   113,
-       0,     0,     0,     0,   114,   115,   116,   117,   487,   119,
-     120,   488,     0,     0,     0,     0,     0,     0,     0,   489,
-     490,   127,     0,     0,     0,   128,     0,   129,   491,     0,
-       0,     0,     0,     0,   134,     0,   135,   136,   137,   138,
-     492,   140,   141,   142,   143,   144,   145,     0,     0,   146,
-     147,     0,     0,   392,   150,   151,   152,   153,   154,   155,
-     156,   157,   493,   519,   494,   161,   495,   496,   164,   165,
-     166,   167,   168,   169,   497,   171,   498,   499,   500,   175,
-     176,   501,   502,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
-       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,     7,     8,
-       0,     0,     0,   463,     0,     0,     0,   389,   390,     0,
-      14,    15,    16,   464,    18,    19,    20,   465,    22,   466,
-     467,  1069,   469,   391,    28,   470,    30,    31,     0,    32,
-      33,    34,    35,   471,    37,    38,    39,    40,    41,    42,
-      43,   472,     0,    45,   473,    47,   474,   475,    50,   476,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,   477,   478,    68,     0,    69,    70,
-      71,   479,     0,    74,    75,    76,     0,     0,   480,    78,
-       0,     0,     0,     0,    80,   481,    82,   482,   483,    85,
-      86,     0,     0,     0,     0,     0,     0,     0,     0,    91,
-      92,    93,    94,     0,    95,     0,     0,     0,   484,    97,
-      98,   485,   486,     0,     0,     0,     0,     0,     0,   101,
-     102,   103,     0,   105,   106,  1070,     0,     0,     0,  1071,
-       0,     0,   112,   113,     0,     0,     0,     0,   114,   115,
-     116,   117,   487,   119,   120,   488,     0,     0,     0,     0,
-       0,     0,     0,   489,   490,   127,     0,     0,     0,   128,
-    1467,   129,   491,     0,     0,     0,  1468,     0,   134,     0,
-     135,   136,   137,   138,   492,   140,   141,   142,   143,   144,
-     145,     0,     0,  1072,   147,     0,     0,   392,   150,   151,
-     152,   153,   154,   155,   156,   157,   493,   159,   494,   161,
-     495,   496,   164,   165,   166,   167,   168,   169,   497,   171,
-     498,   499,   500,   175,   176,   501,   502,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-       0,   192,   193,   194,     0,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,     7,     8,     0,     0,     0,   463,     0,     0,
-       0,   389,   390,     0,    14,    15,    16,   511,    18,    19,
-      20,   465,   512,   513,   467,   468,   469,   391,    28,   470,
-      30,    31,     0,    32,    33,    34,    35,   514,    37,   515,
-     516,    40,    41,    42,    43,   472,     0,    45,   517,    47,
-     474,   475,    50,   476,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,   477,   478,
-      68,     0,    69,    70,    71,   518,     0,    74,    75,    76,
-       0,     0,   480,    78,     0,     0,     0,     0,    80,   481,
-      82,   482,   483,    85,    86,     0,     0,     0,     0,     0,
-       0,     0,     0,    91,    92,    93,    94,     0,    95,     0,
-       0,     0,   484,    97,    98,   485,   486,     0,     0,     0,
-       0,     0,     0,   101,   102,   103,     0,   105,   106,   107,
-       0,     0,     0,     0,     0,     0,   112,   113,     0,     0,
-       0,     0,   114,   115,   116,   117,   487,   119,   120,   488,
-       0,     0,     0,     0,     0,     0,     0,   489,   490,   127,
-       0,     0,     0,   128,   713,   129,   491,     0,     0,     0,
-     714,     0,   134,     0,   135,   136,   137,   138,   492,   140,
-     141,   142,   143,   144,   145,     0,     0,   146,   147,     0,
-       0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
-     493,   519,   494,   161,   495,   496,   164,   165,   166,   167,
-     168,   169,   497,   171,   498,   499,   500,   175,   176,   501,
-     502,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,     0,   192,   193,   194,     0,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,     7,     8,     0,     0,
-       0,   463,     0,     0,     0,   389,   390,     0,    14,    15,
-      16,   511,    18,    19,    20,   465,   512,   513,   467,   468,
-     469,   391,    28,   470,    30,    31,     0,    32,    33,    34,
-      35,   514,    37,   515,   516,    40,    41,    42,    43,   472,
-       0,    45,   517,    47,   474,   475,    50,   476,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,   477,   478,    68,     0,    69,    70,    71,   518,
-       0,    74,    75,    76,     0,     0,   480,    78,     0,     0,
-       0,     0,    80,   481,    82,   482,   483,    85,    86,     0,
-       0,     0,     0,     0,     0,     0,     0,    91,    92,    93,
-      94,     0,    95,     0,     0,     0,   484,    97,    98,   485,
-     486,     0,     0,     0,     0,     0,     0,   101,   102,   103,
-       0,   105,   106,   107,     0,     0,     0,     0,     0,     0,
-     112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
-     487,   119,   120,   488,     0,     0,     0,     0,     0,     0,
-       0,   489,   490,   127,     0,     0,     0,   128,   760,   129,
-     491,     0,     0,     0,   761,     0,   134,     0,   135,   136,
-     137,   138,   492,   140,   141,   142,   143,   144,   145,     0,
-       0,   146,   147,     0,     0,   392,   150,   151,   152,   153,
-     154,   155,   156,   157,   493,   519,   494,   161,   495,   496,
-     164,   165,   166,   167,   168,   169,   497,   171,   498,   499,
-     500,   175,   176,   501,   502,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,     0,   192,
-     193,   194,     0,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-       7,     8,     0,     0,     0,   463,     0,     0,     0,   389,
-     390,     0,    14,    15,    16,   464,    18,    19,    20,   465,
-      22,   466,   467,  1069,   469,   391,    28,   470,    30,    31,
-       0,    32,    33,    34,    35,   471,    37,    38,    39,    40,
-      41,    42,    43,   472,     0,    45,   473,    47,   474,   475,
-      50,   476,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,   477,   478,    68,     0,
-      69,    70,    71,   479,     0,    74,    75,    76,     0,     0,
-     480,    78,     0,     0,     0,     0,    80,   481,    82,   482,
-     483,    85,    86,  1391,     0,     0,     0,     0,     0,     0,
-       0,    91,    92,    93,    94,     0,    95,     0,     0,     0,
-     484,    97,    98,   485,   486,     0,     0,     0,     0,     0,
-       0,   101,   102,   103,     0,   105,   106,  1070,     0,     0,
-       0,  1071,     0,     0,   112,   113,     0,     0,     0,     0,
-     114,   115,   116,   117,   487,   119,   120,   488,     0,     0,
-       0,     0,     0,     0,     0,   489,   490,   127,     0,     0,
-       0,   128,     0,   129,   491,     0,     0,     0,     0,     0,
-     134,     0,   135,   136,   137,   138,   492,   140,   141,   142,
-     143,   144,   145,     0,     0,  1072,   147,     0,     0,   392,
-     150,   151,   152,   153,   154,   155,   156,   157,   493,   159,
-     494,   161,   495,   496,   164,   165,   166,   167,   168,   169,
-     497,   171,   498,   499,   500,   175,   176,   501,   502,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,     0,   192,   193,   194,     0,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,     7,     8,     0,     0,     0,   463,
-       0,     0,     0,   389,   390,     0,    14,    15,    16,   464,
-      18,    19,    20,   465,    22,   466,   467,  1069,   469,   391,
-      28,   470,    30,    31,     0,    32,    33,    34,    35,   471,
-      37,    38,    39,    40,    41,    42,    43,   472,     0,    45,
-     473,    47,   474,   475,    50,   476,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-     477,   478,    68,     0,    69,    70,    71,   479,     0,    74,
-      75,    76,     0,     0,   480,    78,     0,     0,     0,     0,
-      80,   481,    82,   482,   483,    85,    86,  1520,     0,     0,
-       0,     0,     0,     0,     0,    91,    92,    93,    94,     0,
-      95,     0,     0,     0,   484,    97,    98,   485,   486,     0,
-       0,     0,     0,     0,     0,   101,   102,   103,     0,   105,
-     106,  1070,     0,     0,     0,  1071,     0,     0,   112,   113,
-       0,     0,     0,     0,   114,   115,   116,   117,   487,   119,
-     120,   488,     0,     0,     0,     0,     0,     0,     0,   489,
-     490,   127,     0,     0,     0,   128,     0,   129,   491,     0,
-       0,     0,     0,     0,   134,     0,   135,   136,   137,   138,
-     492,   140,   141,   142,   143,   144,   145,     0,     0,  1072,
-     147,     0,     0,   392,   150,   151,   152,   153,   154,   155,
-     156,   157,   493,   159,   494,   161,   495,   496,   164,   165,
-     166,   167,   168,   169,   497,   171,   498,   499,   500,   175,
-     176,   501,   502,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
-       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,     7,     8,
-       0,     0,     0,   463,     0,     0,     0,   389,   390,     0,
-      14,    15,    16,   464,    18,    19,    20,   465,    22,   466,
-     467,  1069,   469,   391,    28,   470,    30,    31,     0,    32,
-      33,    34,    35,   471,    37,    38,    39,    40,    41,    42,
-      43,   472,     0,    45,   473,    47,   474,   475,    50,   476,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,   477,   478,    68,     0,    69,    70,
-      71,   479,     0,    74,    75,    76,     0,     0,   480,    78,
-       0,     0,     0,     0,    80,   481,    82,   482,   483,    85,
-      86,  1524,     0,     0,     0,     0,     0,     0,     0,    91,
-      92,    93,    94,     0,    95,     0,     0,     0,   484,    97,
-      98,   485,   486,     0,     0,     0,     0,     0,     0,   101,
-     102,   103,     0,   105,   106,  1070,     0,     0,     0,  1071,
-       0,     0,   112,   113,     0,     0,     0,     0,   114,   115,
-     116,   117,   487,   119,   120,   488,     0,     0,     0,     0,
-       0,     0,     0,   489,   490,   127,     0,     0,     0,   128,
-       0,   129,   491,     0,     0,     0,     0,     0,   134,     0,
-     135,   136,   137,   138,   492,   140,   141,   142,   143,   144,
-     145,     0,     0,  1072,   147,     0,     0,   392,   150,   151,
-     152,   153,   154,   155,   156,   157,   493,   159,   494,   161,
-     495,   496,   164,   165,   166,   167,   168,   169,   497,   171,
-     498,   499,   500,   175,   176,   501,   502,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-       0,   192,   193,   194,     0,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,     7,     8,     0,     0,     0,   463,     0,     0,
-       0,   389,   390,     0,    14,    15,    16,   464,    18,    19,
-      20,   465,    22,   466,   467,  1069,   469,   391,    28,   470,
-      30,    31,     0,    32,    33,    34,    35,   471,    37,    38,
-      39,    40,    41,    42,    43,   472,     0,    45,   473,    47,
-     474,   475,    50,   476,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,   477,   478,
-      68,     0,    69,    70,    71,   479,     0,    74,    75,    76,
-       0,     0,   480,    78,     0,     0,     0,     0,    80,   481,
-      82,   482,   483,    85,    86,     0,     0,     0,     0,     0,
-       0,     0,     0,    91,    92,    93,    94,     0,    95,     0,
-       0,     0,   484,    97,    98,   485,   486,     0,     0,     0,
-       0,     0,     0,   101,   102,   103,     0,   105,   106,  1070,
-       0,     0,     0,  1071,     0,     0,   112,   113,     0,     0,
-       0,     0,   114,   115,   116,   117,   487,   119,   120,   488,
-       0,     0,     0,     0,     0,     0,     0,   489,   490,   127,
-       0,     0,     0,   128,     0,   129,   491,     0,     0,     0,
-       0,     0,   134,     0,   135,   136,   137,   138,   492,   140,
-     141,   142,   143,   144,   145,     0,     0,  1072,   147,     0,
-       0,   392,   150,   151,   152,   153,   154,   155,   156,   157,
-     493,   159,   494,   161,   495,   496,   164,   165,   166,   167,
-     168,   169,   497,   171,   498,   499,   500,   175,   176,   501,
-     502,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,     0,   192,   193,   194,     0,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,     7,     8,     0,     0,
-       0,   463,     0,     0,     0,   389,   390,     0,    14,    15,
-      16,   464,    18,    19,    20,   465,    22,   466,   467,  1069,
-     469,   391,    28,   470,    30,    31,     0,    32,    33,    34,
-      35,   471,    37,    38,    39,    40,    41,    42,    43,   472,
-       0,    45,   473,    47,   474,   475,    50,   476,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,   477,   478,    68,     0,    69,    70,    71,   479,
-       0,    74,    75,    76,     0,     0,   480,    78,     0,     0,
-       0,     0,    80,   481,    82,   482,   483,    85,    86,     0,
-       0,     0,     0,     0,     0,     0,     0,    91,    92,    93,
-      94,     0,    95,     0,     0,     0,   484,    97,    98,   485,
-     486,     0,     0,     0,     0,     0,     0,   101,   102,   103,
-       0,   105,   106,  1070,     0,     0,     0,  1071,     0,     0,
-     112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
-     487,   119,   120,   488,     0,     0,     0,     0,     0,     0,
-       0,   489,   490,   127,     0,     0,     0,   128,     0,   129,
-     491,     0,     0,     0,     0,     0,   134,     0,   135,   136,
-     137,   138,   492,   140,   141,   142,   143,   144,   145,     0,
-       0,   146,   147,     0,     0,   392,   150,   151,   152,   153,
-     154,   155,   156,   157,   493,   159,   494,   161,   495,   496,
-     164,   165,   166,   167,   168,   169,   497,   171,   498,   499,
-     500,   175,   176,   501,   502,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,     0,   192,
-     193,   194,     0,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-       7,     8,     0,     0,     0,   463,     0,     0,     0,   389,
-     390,     0,    14,    15,    16,   511,    18,    19,    20,   465,
-     512,   513,   467,   468,   469,   391,    28,   470,    30,    31,
-       0,    32,    33,    34,    35,   514,    37,   515,   516,    40,
-      41,    42,    43,   472,     0,    45,   517,    47,   474,   475,
-      50,   476,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,   477,   478,    68,     0,
-      69,    70,    71,   518,     0,    74,    75,    76,     0,     0,
-     480,    78,     0,     0,     0,     0,    80,   481,    82,   482,
-     483,    85,    86,     0,     0,     0,     0,     0,     0,     0,
-       0,    91,    92,    93,    94,     0,    95,     0,     0,     0,
-     484,    97,    98,   485,   486,     0,     0,     0,     0,     0,
-       0,   101,   102,   103,     0,   105,   106,   107,     0,     0,
-       0,     0,     0,     0,   112,   113,     0,     0,     0,     0,
-     114,   115,   116,   117,   487,   119,   120,   488,     0,     0,
-       0,     0,     0,     0,     0,   489,   490,   127,     0,     0,
-       0,   128,     0,   129,   491,     0,     0,     0,     0,     0,
-     134,     0,   135,   136,   137,   138,   492,   140,   141,   142,
-     143,   144,   145,     0,     0,   146,   147,     0,     0,   392,
-     150,   151,   152,   153,   154,   155,   156,   157,   493,   519,
-     494,   161,   495,   496,   164,   165,   166,   167,   168,   169,
-     497,   171,   498,   499,   500,   175,   176,   501,   502,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,     0,   192,   193,   194,     0,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,     7,     8,     0,     0,     0,   463,
-       0,     0,     0,   389,   390,     0,    14,    15,    16,     0,
-      18,    19,    20,   465,     0,     0,   467,   468,     0,   391,
-      28,   470,    30,    31,     0,    32,    33,    34,    35,     0,
-      37,     0,     0,    40,    41,    42,    43,   472,     0,    45,
-       0,    47,     0,     0,    50,   476,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-     477,   478,    68,     0,    69,    70,    71,     0,     0,    74,
-      75,    76,     0,     0,   480,    78,     0,     0,     0,     0,
-      80,   481,    82,   482,   483,    85,    86,     0,     0,     0,
-       0,     0,     0,     0,     0,    91,    92,    93,    94,     0,
-      95,     0,     0,     0,   484,    97,    98,   485,   486,     0,
-       0,     0,     0,     0,     0,   101,   102,   103,     0,   105,
-     106,     0,     0,     0,     0,     0,     0,     0,   112,   113,
-       0,     0,     0,     0,   114,   115,   116,   117,   487,   119,
-     120,   488,     0,     0,     0,     0,     0,     0,     0,   489,
-     490,   127,     0,     0,     0,   128,     0,   129,   491,     0,
-       0,     0,     0,     0,   134,     0,   135,   136,   137,   138,
-     492,   140,   141,   142,   143,   144,   145,     0,     0,     0,
-     147,     0,     0,   392,   150,   151,   152,   153,   154,   155,
-     156,   157,   493,     0,   494,   161,   495,   496,   164,   165,
-     166,   167,   168,   169,   497,   171,   498,   499,   500,   175,
-     176,     0,   502,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,     0,   192,   193,   194,
-       0,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241
+     235,   236,   237,   238,   239,   240,   241,     7,     8,     0,
+       0,     0,   463,     0,     0,     0,   389,   390,     0,    14,
+      15,    16,   464,    18,    19,    20,   465,    22,   466,   467,
+    1069,   469,   391,    28,   470,    30,    31,     0,    32,    33,
+      34,    35,   471,    37,    38,    39,    40,    41,    42,    43,
+     472,     0,    45,   473,    47,   474,   475,    50,   476,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,   477,   478,    68,     0,    69,    70,    71,
+     479,     0,    74,    75,    76,     0,     0,   480,    78,     0,
+       0,     0,     0,    80,   481,    82,   482,   483,    85,    86,
+    1524,     0,     0,     0,     0,     0,     0,     0,    91,    92,
+      93,    94,     0,    95,     0,     0,     0,   484,    97,    98,
+     485,   486,     0,     0,     0,     0,     0,     0,   101,   102,
+     103,     0,   105,   106,  1070,     0,     0,     0,  1071,     0,
+       0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     117,   487,   119,   120,   488,     0,     0,     0,     0,     0,
+       0,     0,   489,   490,   127,     0,     0,     0,   128,     0,
+     129,   491,     0,     0,     0,     0,     0,   134,     0,   135,
+     136,   137,   138,   492,   140,   141,   142,   143,   144,   145,
+       0,     0,  1072,   147,     0,     0,   392,   150,   151,   152,
+     153,   154,   155,   156,   157,   493,   159,   494,   161,   495,
+     496,   164,   165,   166,   167,   168,   169,   497,   171,   498,
+     499,   500,   175,   176,   501,   502,   179,   180,   181,   182,
+     183,   184,   185,   186,   187,   188,   189,   190,   191,     0,
+     192,   193,   194,     0,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,     7,     8,     0,     0,     0,   463,     0,     0,     0,
+     389,   390,     0,    14,    15,    16,   464,    18,    19,    20,
+     465,    22,   466,   467,  1069,   469,   391,    28,   470,    30,
+      31,     0,    32,    33,    34,    35,   471,    37,    38,    39,
+      40,    41,    42,    43,   472,     0,    45,   473,    47,   474,
+     475,    50,   476,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,   477,   478,    68,
+       0,    69,    70,    71,   479,     0,    74,    75,    76,     0,
+       0,   480,    78,     0,     0,     0,     0,    80,   481,    82,
+     482,   483,    85,    86,     0,     0,     0,     0,     0,     0,
+       0,     0,    91,    92,    93,    94,     0,    95,     0,     0,
+       0,   484,    97,    98,   485,   486,     0,     0,     0,     0,
+       0,     0,   101,   102,   103,     0,   105,   106,  1070,     0,
+       0,     0,  1071,     0,     0,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   487,   119,   120,   488,     0,
+       0,     0,     0,     0,     0,     0,   489,   490,   127,     0,
+       0,     0,   128,     0,   129,   491,     0,     0,     0,     0,
+       0,   134,     0,   135,   136,   137,   138,   492,   140,   141,
+     142,   143,   144,   145,     0,     0,  1072,   147,     0,     0,
+     392,   150,   151,   152,   153,   154,   155,   156,   157,   493,
+     159,   494,   161,   495,   496,   164,   165,   166,   167,   168,
+     169,   497,   171,   498,   499,   500,   175,   176,   501,   502,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,     0,   192,   193,   194,     0,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,     7,     8,     0,     0,     0,
+     463,     0,     0,     0,   389,   390,     0,    14,    15,    16,
+     464,    18,    19,    20,   465,    22,   466,   467,  1069,   469,
+     391,    28,   470,    30,    31,     0,    32,    33,    34,    35,
+     471,    37,    38,    39,    40,    41,    42,    43,   472,     0,
+      45,   473,    47,   474,   475,    50,   476,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,   477,   478,    68,     0,    69,    70,    71,   479,     0,
+      74,    75,    76,     0,     0,   480,    78,     0,     0,     0,
+       0,    80,   481,    82,   482,   483,    85,    86,     0,     0,
+       0,     0,     0,     0,     0,     0,    91,    92,    93,    94,
+       0,    95,     0,     0,     0,   484,    97,    98,   485,   486,
+       0,     0,     0,     0,     0,     0,   101,   102,   103,     0,
+     105,   106,  1070,     0,     0,     0,  1071,     0,     0,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   487,
+     119,   120,   488,     0,     0,     0,     0,     0,     0,     0,
+     489,   490,   127,     0,     0,     0,   128,     0,   129,   491,
+       0,     0,     0,     0,     0,   134,     0,   135,   136,   137,
+     138,   492,   140,   141,   142,   143,   144,   145,     0,     0,
+     146,   147,     0,     0,   392,   150,   151,   152,   153,   154,
+     155,   156,   157,   493,   159,   494,   161,   495,   496,   164,
+     165,   166,   167,   168,   169,   497,   171,   498,   499,   500,
+     175,   176,   501,   502,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,   189,   190,   191,     0,   192,   193,
+     194,     0,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,     7,
+       8,     0,     0,     0,   463,     0,     0,     0,   389,   390,
+       0,    14,    15,    16,   511,    18,    19,    20,   465,   512,
+     513,   467,   468,   469,   391,    28,   470,    30,    31,     0,
+      32,    33,    34,    35,   514,    37,   515,   516,    40,    41,
+      42,    43,   472,     0,    45,   517,    47,   474,   475,    50,
+     476,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,   477,   478,    68,     0,    69,
+      70,    71,   518,     0,    74,    75,    76,     0,     0,   480,
+      78,     0,     0,     0,     0,    80,   481,    82,   482,   483,
+      85,    86,     0,     0,     0,     0,     0,     0,     0,     0,
+      91,    92,    93,    94,     0,    95,     0,     0,     0,   484,
+      97,    98,   485,   486,     0,     0,     0,     0,     0,     0,
+     101,   102,   103,     0,   105,   106,   107,     0,     0,     0,
+       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   117,   487,   119,   120,   488,     0,     0,     0,
+       0,     0,     0,     0,   489,   490,   127,     0,     0,     0,
+     128,     0,   129,   491,     0,     0,     0,     0,     0,   134,
+       0,   135,   136,   137,   138,   492,   140,   141,   142,   143,
+     144,   145,     0,     0,   146,   147,     0,     0,   392,   150,
+     151,   152,   153,   154,   155,   156,   157,   493,   519,   494,
+     161,   495,   496,   164,   165,   166,   167,   168,   169,   497,
+     171,   498,   499,   500,   175,   176,   501,   502,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
+     191,     0,   192,   193,   194,     0,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,     7,     8,     0,     0,     0,   463,     0,
+       0,     0,   389,   390,     0,    14,    15,    16,     0,    18,
+      19,    20,   465,     0,     0,   467,   468,     0,   391,    28,
+     470,    30,    31,     0,    32,    33,    34,    35,     0,    37,
+       0,     0,    40,    41,    42,    43,   472,     0,    45,     0,
+      47,     0,     0,    50,   476,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,   477,
+     478,    68,     0,    69,    70,    71,     0,     0,    74,    75,
+      76,     0,     0,   480,    78,     0,     0,     0,     0,    80,
+     481,    82,   482,   483,    85,    86,     0,     0,     0,     0,
+       0,     0,     0,     0,    91,    92,    93,    94,     0,    95,
+       0,     0,     0,   484,    97,    98,   485,   486,     0,     0,
+       0,     0,     0,     0,   101,   102,   103,     0,   105,   106,
+       0,     0,     0,     0,     0,     0,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   117,   487,   119,   120,
+     488,     0,     0,     0,     0,     0,     0,     0,   489,   490,
+     127,     0,     0,     0,   128,     0,   129,   491,     0,     0,
+       0,     0,     0,   134,     0,   135,   136,   137,   138,   492,
+     140,   141,   142,   143,   144,   145,     0,     0,     0,   147,
+       0,     0,   392,   150,   151,   152,   153,   154,   155,   156,
+     157,   493,     0,   494,   161,   495,   496,   164,   165,   166,
+     167,   168,   169,   497,   171,   498,   499,   500,   175,   176,
+       0,   502,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190,   191,     0,   192,   193,   194,     0,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241
   };
 
   /* YYCHECK.  */
@@ -13792,7 +13886,96 @@ namespace zorba {
      272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
      282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
      292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
-     302,   303,   304,   305,   306,   307,   308,    11,    12,    -1,
+     302,   303,   304,   305,   306,   307,    11,    12,    -1,    -1,
+      -1,    -1,   314,    -1,    -1,    20,    21,    22,    23,    24,
+      25,    26,    27,    -1,    29,    -1,    -1,    -1,    33,    34,
+      -1,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    -1,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    -1,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    98,    99,   100,   101,    -1,    -1,   104,
+     105,    -1,    -1,    -1,   109,   110,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,    -1,    -1,    -1,   123,    -1,
+     125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,
+     135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,
+     145,   146,   147,   148,   149,   150,   151,   152,    -1,    -1,
+     155,   156,   157,   158,   159,    -1,    -1,    -1,    -1,   164,
+     165,   166,   167,   168,   169,   170,   171,    -1,   173,    -1,
+     175,   176,    -1,    -1,   179,   180,   181,    -1,   183,    -1,
+     185,    -1,   187,   188,    -1,   190,   191,   192,    -1,   194,
+      -1,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,    -1,    -1,   209,   210,   211,    -1,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,    -1,   257,   258,   259,    -1,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,    11,    12,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    20,    21,    22,    23,    24,    25,    26,    27,
+      -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    -1,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      -1,    69,    70,    71,    72,    73,    74,    75,    76,    77,
+      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
+      88,    89,    90,    91,    92,    -1,    94,    95,    96,    97,
+      98,    99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,
+      -1,   109,   110,   111,   112,   113,   114,   115,   116,   117,
+     118,   119,    -1,    -1,    -1,   123,    -1,   125,   126,   127,
+     128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,
+     138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,
+     148,   149,   150,   151,   152,    -1,    -1,   155,   156,   157,
+     158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,
+     168,   169,   170,   171,    -1,   173,    -1,   175,   176,    -1,
+      -1,   179,   180,   181,    -1,   183,    -1,   185,    -1,   187,
+     188,    -1,   190,   191,   192,    -1,   194,    -1,   196,   197,
+     198,   199,   200,   201,   202,   203,   204,   205,   206,    -1,
+      -1,   209,   210,   211,    -1,   213,   214,   215,   216,   217,
+     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
+     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
+     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
+     248,   249,   250,   251,   252,   253,   254,   255,    -1,   257,
+     258,   259,    -1,   261,   262,   263,   264,   265,   266,   267,
+     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
+     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
+     288,   289,   290,   291,   292,   293,   294,   295,   296,   297,
+     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
+      11,    12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,
+      21,    22,    23,    24,    25,    26,    27,    -1,    29,    -1,
+      -1,    -1,    33,    34,    -1,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    -1,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    -1,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    -1,    94,    95,    96,    97,    98,    99,   100,
+     101,    -1,    -1,   104,   105,    -1,    -1,    -1,   109,   110,
+     111,   112,   113,   114,   115,   116,   117,   118,   119,    -1,
+      -1,    -1,   123,    -1,   125,   126,   127,   128,    -1,   130,
+      -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,
+      -1,    -1,    -1,    -1,   145,   146,   147,   148,   149,   150,
+     151,   152,    -1,    -1,   155,   156,   157,   158,   159,    -1,
+      -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
+     171,    -1,   173,    -1,   175,   176,    -1,    -1,   179,   180,
+     181,    -1,   183,    -1,   185,    -1,   187,   188,    -1,   190,
+     191,   192,    -1,   194,    -1,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,    -1,    -1,   209,   210,
+     211,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,    -1,   257,   258,   259,    -1,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
+     291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,    11,    12,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    20,    21,    22,    23,
       24,    25,    26,    27,    -1,    29,    -1,    -1,    -1,    33,
       34,    -1,    36,    37,    38,    39,    40,    41,    42,    43,
@@ -13839,7 +14022,7 @@ namespace zorba {
      147,   148,   149,   150,   151,   152,    -1,    -1,   155,   156,
      157,   158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,
      167,   168,   169,   170,   171,    -1,   173,    -1,   175,   176,
-      -1,    -1,   179,   180,   181,    -1,   183,    -1,   185,    -1,
+      -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,
      187,   188,    -1,   190,   191,   192,    -1,   194,    -1,   196,
      197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
       -1,    -1,   209,   210,   211,    -1,   213,   214,   215,   216,
@@ -13869,7 +14052,7 @@ namespace zorba {
      150,   151,   152,    -1,    -1,   155,   156,   157,   158,   159,
       -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
      170,   171,    -1,   173,    -1,   175,   176,    -1,    -1,   179,
-     180,   181,    -1,   183,    -1,   185,    -1,   187,   188,    -1,
+     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
      190,   191,   192,    -1,   194,    -1,   196,   197,   198,   199,
      200,   201,   202,   203,   204,   205,   206,    -1,    -1,   209,
      210,   211,    -1,   213,   214,   215,   216,   217,   218,   219,
@@ -13899,7 +14082,7 @@ namespace zorba {
       -1,    -1,   155,   156,   157,   158,   159,    -1,    -1,    -1,
       -1,   164,   165,   166,   167,   168,   169,   170,   171,    -1,
      173,    -1,   175,   176,    -1,    -1,   179,   180,   181,    -1,
-     183,    -1,   185,    -1,   187,   188,    -1,   190,   191,   192,
+      -1,    -1,   185,    -1,   187,   188,    -1,   190,   191,   192,
       -1,   194,    -1,   196,   197,   198,   199,   200,   201,   202,
      203,   204,   205,   206,    -1,    -1,   209,   210,   211,    -1,
      213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
@@ -14002,7 +14185,7 @@ namespace zorba {
      292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
      302,   303,   304,   305,   306,   307,    11,    12,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    20,    21,    22,    23,    24,
-      25,    26,    27,    -1,    29,    -1,    -1,    -1,    33,    34,
+      25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,
       -1,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    -1,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
@@ -14018,7 +14201,7 @@ namespace zorba {
      155,   156,   157,   158,   159,    -1,    -1,    -1,    -1,   164,
      165,   166,   167,   168,   169,   170,   171,    -1,   173,    -1,
      175,   176,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,
-     185,    -1,   187,   188,    -1,   190,   191,   192,    -1,   194,
+     185,   186,   187,   188,    -1,   190,   191,   192,    -1,   194,
       -1,   196,   197,   198,   199,   200,   201,   202,   203,   204,
      205,   206,    -1,    -1,   209,   210,   211,    -1,   213,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
@@ -14031,7 +14214,7 @@ namespace zorba {
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
      305,   306,   307,    11,    12,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    20,    21,    22,    23,    24,    25,    26,    27,
+      -1,    -1,    20,    21,    22,    23,    24,    25,    -1,    -1,
       -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,
       38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
       48,    49,    50,    51,    52,    53,    -1,    55,    56,    57,
@@ -14047,7 +14230,7 @@ namespace zorba {
      148,   149,   150,   151,   152,    -1,    -1,   155,   156,   157,
      158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,
      168,   169,   170,   171,    -1,   173,    -1,   175,   176,    -1,
-      -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,   187,
+      -1,   179,   180,   181,    -1,   183,    -1,   185,    -1,   187,
      188,    -1,   190,   191,   192,    -1,   194,    -1,   196,   197,
      198,   199,   200,   201,   202,   203,   204,   205,   206,    -1,
       -1,   209,   210,   211,    -1,   213,   214,   215,   216,   217,
@@ -14061,7 +14244,7 @@ namespace zorba {
      288,   289,   290,   291,   292,   293,   294,   295,   296,   297,
      298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
       11,    12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,
-      21,    22,    23,    24,    25,    26,    27,    -1,    29,    -1,
+      21,    22,    23,    24,    25,    -1,    -1,    -1,    29,    -1,
       -1,    -1,    33,    34,    -1,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    -1,    55,    56,    57,    58,    59,    60,
@@ -14077,7 +14260,7 @@ namespace zorba {
      151,   152,    -1,    -1,   155,   156,   157,   158,   159,    -1,
       -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
      171,    -1,   173,    -1,   175,   176,    -1,    -1,   179,   180,
-     181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,   190,
+     181,    -1,    -1,    -1,   185,   186,   187,   188,    -1,   190,
      191,   192,    -1,   194,    -1,   196,   197,   198,   199,   200,
      201,   202,   203,   204,   205,   206,    -1,    -1,   209,   210,
      211,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
@@ -14136,7 +14319,7 @@ namespace zorba {
      147,   148,   149,   150,   151,   152,    -1,    -1,   155,   156,
      157,   158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,
      167,   168,   169,   170,   171,    -1,   173,    -1,   175,   176,
-      -1,    -1,   179,   180,   181,    -1,   183,    -1,   185,    -1,
+      -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,
      187,   188,    -1,   190,   191,   192,    -1,   194,    -1,   196,
      197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
       -1,    -1,   209,   210,   211,    -1,   213,   214,   215,   216,
@@ -14166,7 +14349,7 @@ namespace zorba {
      150,   151,   152,    -1,    -1,   155,   156,   157,   158,   159,
       -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
      170,   171,    -1,   173,    -1,   175,   176,    -1,    -1,   179,
-     180,   181,    -1,    -1,    -1,   185,   186,   187,   188,    -1,
+     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
      190,   191,   192,    -1,   194,    -1,   196,   197,   198,   199,
      200,   201,   202,   203,   204,   205,   206,    -1,    -1,   209,
      210,   211,    -1,   213,   214,   215,   216,   217,   218,   219,
@@ -14196,7 +14379,7 @@ namespace zorba {
       -1,    -1,   155,   156,   157,   158,   159,    -1,    -1,    -1,
       -1,   164,   165,   166,   167,   168,   169,   170,   171,    -1,
      173,    -1,   175,   176,    -1,    -1,   179,   180,   181,    -1,
-      -1,    -1,   185,   186,   187,   188,    -1,   190,   191,   192,
+      -1,    -1,   185,    -1,   187,   188,    -1,   190,   191,   192,
       -1,   194,    -1,   196,   197,   198,   199,   200,   201,   202,
      203,   204,   205,   206,    -1,    -1,   209,   210,   211,    -1,
      213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
@@ -14223,9 +14406,9 @@ namespace zorba {
      126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,   135,
      136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,   145,
      146,   147,   148,   149,   150,   151,   152,    -1,    -1,   155,
-     156,   157,   158,   159,    -1,    -1,    -1,    -1,   164,   165,
-     166,   167,   168,   169,   170,   171,    -1,   173,    -1,   175,
-     176,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,
+     156,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,   165,
+     166,   167,   168,   169,   170,   171,    -1,   173,    -1,    -1,
+      -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,
       -1,   187,   188,    -1,   190,   191,   192,    -1,   194,    -1,
      196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
      206,    -1,    -1,   209,   210,   211,    -1,   213,   214,   215,
@@ -14252,11 +14435,11 @@ namespace zorba {
      119,    -1,    -1,    -1,   123,    -1,   125,   126,   127,   128,
       -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,   138,
       -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,   148,
-     149,   150,   151,   152,    -1,    -1,   155,   156,   157,   158,
+     149,   150,   151,   152,    -1,    -1,   155,   156,    -1,   158,
      159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,
-     169,   170,   171,    -1,   173,    -1,   175,   176,    -1,    -1,
+     169,   170,   171,    -1,   173,    -1,    -1,    -1,    -1,    -1,
      179,   180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,
-      -1,   190,   191,   192,    -1,   194,    -1,   196,   197,   198,
+      -1,    -1,    -1,   192,    -1,   194,    -1,   196,   197,   198,
      199,   200,   201,   202,   203,   204,   205,   206,    -1,    -1,
      209,   210,   211,    -1,   213,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
@@ -14268,26 +14451,26 @@ namespace zorba {
      279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
      289,   290,   291,   292,   293,   294,   295,   296,   297,   298,
      299,   300,   301,   302,   303,   304,   305,   306,   307,    11,
-      12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,    21,
-      22,    23,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
+      12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,    -1,
+      -1,    -1,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
       -1,    33,    34,    -1,    36,    37,    38,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
       52,    53,    -1,    55,    56,    57,    58,    59,    60,    61,
       62,    63,    64,    65,    66,    67,    -1,    69,    70,    71,
       72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
       82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    -1,    94,    95,    96,    97,    98,    99,   100,   101,
-      -1,    -1,   104,   105,    -1,    -1,    -1,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,    -1,    -1,
-      -1,   123,    -1,   125,   126,   127,   128,    -1,   130,    -1,
+      92,    -1,    94,    95,    96,    97,    -1,    99,   100,   101,
+      -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,
+     112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,
       -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,
-      -1,    -1,    -1,   145,   146,   147,   148,   149,   150,   151,
-     152,    -1,    -1,   155,   156,   157,   158,   159,    -1,    -1,
+      -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,   151,
+      -1,    -1,    -1,    -1,    -1,    -1,   158,   159,    -1,    -1,
       -1,    -1,   164,   165,   166,   167,   168,   169,   170,   171,
-      -1,   173,    -1,   175,   176,    -1,    -1,   179,   180,   181,
-      -1,    -1,    -1,   185,    -1,   187,   188,    -1,   190,   191,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,
+      -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,    -1,
      192,    -1,   194,    -1,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,    -1,    -1,   209,   210,   211,
+     202,   203,   204,   205,   206,    -1,    -1,   209,   210,    -1,
       -1,   213,   214,   215,   216,   217,   218,   219,   220,   221,
      222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
      232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
@@ -14298,7 +14481,7 @@ namespace zorba {
      282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
      292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
      302,   303,   304,   305,   306,   307,    11,    12,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    20,    21,    22,    23,    24,
+      -1,    -1,    -1,    -1,    -1,    20,    -1,    -1,    -1,    24,
       25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,
       -1,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    -1,
@@ -14306,18 +14489,18 @@ namespace zorba {
       65,    66,    67,    -1,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
       85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
-      95,    96,    97,    98,    99,   100,   101,    -1,    -1,   104,
-     105,    -1,    -1,    -1,   109,   110,   111,   112,   113,   114,
-     115,   116,   117,   118,   119,    -1,    -1,    -1,   123,    -1,
+      95,    96,    97,    -1,    99,   100,   101,    -1,    -1,   104,
+     105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
      125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,
      135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,
-     145,   146,   147,   148,   149,   150,   151,   152,    -1,    -1,
-     155,   156,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,
-     165,   166,   167,   168,   169,   170,   171,    -1,   173,    -1,
+     145,   146,   147,    -1,   149,   150,   151,    -1,    -1,    -1,
+      -1,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,
+     165,   166,   167,   168,   169,   170,   171,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,
-     185,    -1,   187,   188,    -1,   190,   191,   192,    -1,   194,
+     185,    -1,   187,   188,    -1,    -1,    -1,   192,    -1,   194,
       -1,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,    -1,    -1,   209,   210,   211,    -1,   213,   214,
+     205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
      235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
@@ -14327,37 +14510,36 @@ namespace zorba {
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,    11,    12,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    20,    21,    22,    23,    24,    25,    -1,    -1,
-      -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    -1,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      -1,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    -1,    94,    95,    96,    97,
-      98,    99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,
-      -1,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,    -1,    -1,    -1,   123,    -1,   125,   126,   127,
-     128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,
-     138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,
-     148,   149,   150,   151,   152,    -1,    -1,   155,   156,    -1,
-     158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,
-     168,   169,   170,   171,    -1,   173,    -1,    -1,    -1,    -1,
-      -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,   187,
-     188,    -1,    -1,    -1,   192,    -1,   194,    -1,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,    -1,
-      -1,   209,   210,   211,    -1,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,    -1,   257,
-     258,   259,    -1,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,   293,   294,   295,   296,   297,
-     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
-      11,    12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,
+     305,   306,   307,    16,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,
+      33,    34,    -1,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    -1,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    -1,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    -1,    99,   100,   101,    -1,
+      -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,
+      -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,
+      -1,    -1,   145,   146,   147,    -1,   149,   150,   151,    -1,
+      -1,    -1,    -1,    -1,    -1,   158,   159,    -1,    -1,    -1,
+      -1,   164,   165,   166,   167,   168,   169,   170,   171,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,
+      -1,    -1,   185,   186,   187,   188,    -1,    -1,    -1,    -1,
+      -1,   194,    -1,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,   251,   252,
+     253,   254,   255,    -1,   257,   258,   259,    -1,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,   284,   285,   286,   287,   288,   289,   290,   291,   292,
+     293,   294,   295,   296,   297,   298,   299,   300,   301,   302,
+     303,   304,   305,   306,   307,    16,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    24,    25,    -1,    -1,    -1,    29,    -1,
       -1,    -1,    33,    34,    -1,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
@@ -14375,7 +14557,7 @@ namespace zorba {
       -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
      171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,
      181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,
-      -1,   192,    -1,   194,    -1,   196,   197,   198,   199,   200,
+      -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,   200,
      201,   202,   203,   204,   205,   206,    -1,    -1,   209,   210,
       -1,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
      221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
@@ -14386,408 +14568,320 @@ namespace zorba {
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
      281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
      291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
-     301,   302,   303,   304,   305,   306,   307,    11,    12,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    20,    -1,    -1,    -1,
-      24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,
-      34,    -1,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      -1,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    -1,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    -1,
-      94,    95,    96,    97,    -1,    99,   100,   101,    -1,    -1,
-     104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,
-     114,   115,   116,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,
-     134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,
-      -1,   145,   146,   147,    -1,   149,   150,   151,    -1,    -1,
-      -1,    -1,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,
-     164,   165,   166,   167,   168,   169,   170,   171,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,
-      -1,   185,    -1,   187,   188,    -1,    -1,    -1,   192,    -1,
-     194,    -1,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,    -1,   257,   258,   259,    -1,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,   293,
-     294,   295,   296,   297,   298,   299,   300,   301,   302,   303,
-     304,   305,   306,   307,    16,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
-      -1,    33,    34,    -1,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    -1,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    -1,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    -1,    94,    95,    96,    97,    -1,    99,   100,   101,
-      -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,
-     112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,
-      -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,
-      -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,   151,
-      -1,    -1,    -1,    -1,    -1,    -1,   158,   159,    -1,    -1,
-      -1,    -1,   164,   165,   166,   167,   168,   169,   170,   171,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,
-      -1,    -1,    -1,   185,   186,   187,   188,    -1,    -1,    -1,
-      -1,    -1,   194,    -1,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,    -1,    -1,   209,   210,    -1,
-      -1,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,    -1,   257,   258,   259,    -1,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
-     302,   303,   304,   305,   306,   307,    16,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    24,    25,    -1,    -1,    -1,    29,
-      -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    -1,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    -1,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    -1,    94,    95,    96,    97,    -1,    99,
-     100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,
-     110,   111,   112,   113,   114,   115,   116,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,
-     130,    -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,
-      -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,
-     150,   151,    -1,    -1,    -1,    -1,    -1,    -1,   158,   159,
-      -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
-     170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,
-     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
-      -1,    -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,    -1,    -1,   209,
-     210,    -1,    -1,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,    -1,   257,   258,   259,
-      -1,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   301,   302,   303,   304,   305,   306,   307,    18,    19,
-      -1,    -1,    -1,    -1,    24,    25,    -1,    -1,    -1,    29,
-      -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    -1,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    -1,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    -1,    94,    95,    96,    97,    -1,    99,
-     100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,
-     110,   111,   112,   113,   114,   115,   116,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,
-     130,    -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,
-      -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,
-     150,   151,    -1,    -1,    -1,    -1,    -1,    -1,   158,   159,
-      -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
-     170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,
-     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
-      -1,    -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,    -1,    -1,   209,
-     210,    -1,    -1,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,    -1,   257,   258,   259,
-      -1,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   301,   302,   303,   304,   305,   306,   307,    24,    25,
-      -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,    -1,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    -1,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    -1,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    -1,    94,    95,
-      96,    97,    -1,    99,   100,   101,    -1,    -1,   104,   105,
-      -1,    -1,    -1,    -1,   110,   111,   112,   113,   114,   115,
-     116,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,
-     126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,   135,
-     136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,   145,
-     146,   147,    -1,   149,   150,   151,    -1,    -1,    -1,   155,
-      -1,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,   165,
-     166,   167,   168,   169,   170,   171,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,
-     186,   187,   188,    -1,    -1,    -1,   192,    -1,   194,    -1,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,    -1,    -1,   209,   210,    -1,    -1,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-      -1,   257,   258,   259,    -1,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,   291,   292,   293,   294,   295,
-     296,   297,   298,   299,   300,   301,   302,   303,   304,   305,
-     306,   307,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
-      -1,    33,    34,    -1,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    -1,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    -1,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    -1,    94,    95,    96,    97,    -1,    99,   100,   101,
-      -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,
-     112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,
-      -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,
-      -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,   151,
-      -1,    -1,    -1,    -1,    -1,    -1,   158,   159,    -1,    -1,
-      -1,    -1,   164,   165,   166,   167,   168,   169,   170,   171,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,
-      -1,    -1,    -1,   185,   186,   187,   188,    -1,    -1,    -1,
-     192,    -1,   194,    -1,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,    -1,    -1,   209,   210,    -1,
-      -1,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,    -1,   257,   258,   259,    -1,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
-     302,   303,   304,   305,   306,   307,    24,    25,    -1,    -1,
-      -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    -1,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      -1,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    -1,    94,    95,    96,    97,
-      -1,    99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,
-      -1,    -1,   110,   111,   112,   113,   114,   115,   116,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,   126,   127,
-     128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,
-     138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,
-      -1,   149,   150,   151,    -1,    -1,    -1,    -1,    -1,    -1,
-     158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,
-     168,   169,   170,   171,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   179,   180,   181,    -1,    -1,    -1,   185,   186,   187,
-     188,    -1,    -1,    -1,   192,    -1,   194,    -1,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,    -1,
-      -1,   209,   210,    -1,    -1,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,    -1,   257,
-     258,   259,    -1,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,   293,   294,   295,   296,   297,
-     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
-      24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,
-      34,    -1,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      -1,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    -1,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    -1,
-      94,    95,    96,    97,    -1,    99,   100,   101,    -1,    -1,
-     104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,
-     114,   115,   116,   117,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,
-     134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,
-      -1,   145,   146,   147,    -1,   149,   150,   151,    -1,    -1,
-      -1,   155,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,
-     164,   165,   166,   167,   168,   169,   170,   171,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,
-      -1,   185,    -1,   187,   188,    -1,    -1,    -1,    -1,    -1,
-     194,    -1,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,    -1,   257,   258,   259,    -1,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,   293,
-     294,   295,   296,   297,   298,   299,   300,   301,   302,   303,
-     304,   305,   306,   307,    24,    25,    -1,    -1,    -1,    29,
-      -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    -1,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    -1,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    -1,    94,    95,    96,    97,    -1,    99,
-     100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,
-     110,   111,   112,   113,   114,   115,   116,   117,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,
-     130,    -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,
-      -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,
-     150,   151,    -1,    -1,    -1,   155,    -1,    -1,   158,   159,
-      -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
-     170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,
-     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
-      -1,    -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,    -1,    -1,   209,
-     210,    -1,    -1,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,    -1,   257,   258,   259,
-      -1,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   301,   302,   303,   304,   305,   306,   307,    24,    25,
-      -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,    -1,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    -1,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    -1,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    -1,    94,    95,
-      96,    97,    -1,    99,   100,   101,    -1,    -1,   104,   105,
-      -1,    -1,    -1,    -1,   110,   111,   112,   113,   114,   115,
-     116,   117,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,
-     126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,   135,
-     136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,   145,
-     146,   147,    -1,   149,   150,   151,    -1,    -1,    -1,   155,
-      -1,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,   165,
-     166,   167,   168,   169,   170,   171,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,
-      -1,   187,   188,    -1,    -1,    -1,    -1,    -1,   194,    -1,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,    -1,    -1,   209,   210,    -1,    -1,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-      -1,   257,   258,   259,    -1,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,   291,   292,   293,   294,   295,
-     296,   297,   298,   299,   300,   301,   302,   303,   304,   305,
-     306,   307,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
-      -1,    33,    34,    -1,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    -1,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    -1,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    -1,    94,    95,    96,    97,    -1,    99,   100,   101,
-      -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,
-     112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,
-      -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,
-      -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,   151,
-      -1,    -1,    -1,   155,    -1,    -1,   158,   159,    -1,    -1,
-      -1,    -1,   164,   165,   166,   167,   168,   169,   170,   171,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,
-      -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,    -1,
-      -1,    -1,   194,    -1,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,    -1,    -1,   209,   210,    -1,
-      -1,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,    -1,   257,   258,   259,    -1,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,   293,   294,   295,   296,   297,   298,   299,   300,   301,
-     302,   303,   304,   305,   306,   307,    24,    25,    -1,    -1,
-      -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    -1,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      -1,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    -1,    94,    95,    96,    97,
-      -1,    99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,
-      -1,    -1,   110,   111,   112,   113,   114,   115,   116,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,   126,   127,
-     128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,
-     138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,
-      -1,   149,   150,   151,    -1,    -1,    -1,   155,    -1,    -1,
-     158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,
-     168,   169,   170,   171,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,   187,
-     188,    -1,    -1,    -1,    -1,    -1,   194,    -1,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,    -1,
-      -1,   209,   210,    -1,    -1,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,    -1,   257,
-     258,   259,    -1,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,   293,   294,   295,   296,   297,
-     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
-      24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,
-      34,    -1,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      -1,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    -1,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    -1,
-      94,    95,    96,    97,    -1,    99,   100,   101,    -1,    -1,
-     104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,
-     114,   115,   116,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,
-     134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,
-      -1,   145,   146,   147,    -1,   149,   150,   151,    -1,    -1,
-      -1,    -1,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,
-     164,   165,   166,   167,   168,   169,   170,   171,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,
-      -1,   185,    -1,   187,   188,    -1,    -1,    -1,    -1,    -1,
-     194,    -1,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,    -1,   257,   258,   259,    -1,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,   293,
-     294,   295,   296,   297,   298,   299,   300,   301,   302,   303,
-     304,   305,   306,   307,    24,    25,    -1,    -1,    -1,    29,
-      -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,    -1,
-      40,    41,    42,    43,    -1,    -1,    46,    47,    -1,    49,
-      50,    51,    52,    53,    -1,    55,    56,    57,    58,    -1,
-      60,    -1,    -1,    63,    64,    65,    66,    67,    -1,    69,
-      -1,    71,    -1,    -1,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    -1,    94,    95,    96,    -1,    -1,    99,
-     100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,
-     110,   111,   112,   113,   114,   115,   116,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,
-     130,    -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,
-      -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,
-     150,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   158,   159,
-      -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,   169,
-     170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,
-     180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,
-      -1,    -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,    -1,    -1,    -1,
-     210,    -1,    -1,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,    -1,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,    -1,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,    -1,   257,   258,   259,
-      -1,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   301,   302,   303,   304,   305,   306,   307
+     301,   302,   303,   304,   305,   306,   307,    18,    19,    -1,
+      -1,    -1,    -1,    24,    25,    -1,    -1,    -1,    29,    -1,
+      -1,    -1,    33,    34,    -1,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    -1,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    -1,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    -1,    94,    95,    96,    97,    -1,    99,   100,
+     101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,
+      -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,
+      -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,
+     151,    -1,    -1,    -1,    -1,    -1,    -1,   158,   159,    -1,
+      -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
+     171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,
+     181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,
+      -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,    -1,    -1,   209,   210,
+      -1,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,    -1,   257,   258,   259,    -1,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
+     291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,    24,    25,    -1,
+      -1,    -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    -1,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    -1,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,    91,    92,    -1,    94,    95,    96,
+      97,    -1,    99,   100,   101,    -1,    -1,   104,   105,    -1,
+      -1,    -1,    -1,   110,   111,   112,   113,   114,   115,   116,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,   126,
+     127,   128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,
+     137,   138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,
+     147,    -1,   149,   150,   151,    -1,    -1,    -1,   155,    -1,
+      -1,   158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,
+     167,   168,   169,   170,   171,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,   186,
+     187,   188,    -1,    -1,    -1,   192,    -1,   194,    -1,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+      -1,    -1,   209,   210,    -1,    -1,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,   251,   252,   253,   254,   255,    -1,
+     257,   258,   259,    -1,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
+     287,   288,   289,   290,   291,   292,   293,   294,   295,   296,
+     297,   298,   299,   300,   301,   302,   303,   304,   305,   306,
+     307,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,
+      33,    34,    -1,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    -1,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    -1,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    -1,    99,   100,   101,    -1,
+      -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,
+      -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,
+      -1,    -1,   145,   146,   147,    -1,   149,   150,   151,    -1,
+      -1,    -1,    -1,    -1,    -1,   158,   159,    -1,    -1,    -1,
+      -1,   164,   165,   166,   167,   168,   169,   170,   171,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,
+      -1,    -1,   185,   186,   187,   188,    -1,    -1,    -1,   192,
+      -1,   194,    -1,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,   251,   252,
+     253,   254,   255,    -1,   257,   258,   259,    -1,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,   284,   285,   286,   287,   288,   289,   290,   291,   292,
+     293,   294,   295,   296,   297,   298,   299,   300,   301,   302,
+     303,   304,   305,   306,   307,    24,    25,    -1,    -1,    -1,
+      29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    -1,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    -1,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    -1,
+      99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,
+      -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,   138,
+      -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,
+     149,   150,   151,    -1,    -1,    -1,    -1,    -1,    -1,   158,
+     159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,
+     169,   170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     179,   180,   181,    -1,    -1,    -1,   185,   186,   187,   188,
+      -1,    -1,    -1,   192,    -1,   194,    -1,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,    -1,    -1,
+     209,   210,    -1,    -1,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
+     249,   250,   251,   252,   253,   254,   255,    -1,   257,   258,
+     259,    -1,   261,   262,   263,   264,   265,   266,   267,   268,
+     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
+     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
+     289,   290,   291,   292,   293,   294,   295,   296,   297,   298,
+     299,   300,   301,   302,   303,   304,   305,   306,   307,    24,
+      25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,
+      -1,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    -1,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    -1,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    -1,    99,   100,   101,    -1,    -1,   104,
+     105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,   117,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,
+     135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,
+     145,   146,   147,    -1,   149,   150,   151,    -1,    -1,    -1,
+     155,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,
+     165,   166,   167,   168,   169,   170,   171,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,
+     185,    -1,   187,   188,    -1,    -1,    -1,    -1,    -1,   194,
+      -1,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,    -1,   257,   258,   259,    -1,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,    24,    25,    -1,    -1,    -1,    29,    -1,
+      -1,    -1,    33,    34,    -1,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    -1,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    -1,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    -1,    94,    95,    96,    97,    -1,    99,   100,
+     101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,   117,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,
+      -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,
+      -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,
+     151,    -1,    -1,    -1,   155,    -1,    -1,   158,   159,    -1,
+      -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
+     171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,
+     181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,
+      -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,    -1,    -1,   209,   210,
+      -1,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,    -1,   257,   258,   259,    -1,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
+     291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,    24,    25,    -1,
+      -1,    -1,    29,    -1,    -1,    -1,    33,    34,    -1,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    -1,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    -1,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,    91,    92,    -1,    94,    95,    96,
+      97,    -1,    99,   100,   101,    -1,    -1,   104,   105,    -1,
+      -1,    -1,    -1,   110,   111,   112,   113,   114,   115,   116,
+     117,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,   126,
+     127,   128,    -1,   130,    -1,    -1,    -1,   134,   135,   136,
+     137,   138,    -1,    -1,    -1,    -1,    -1,    -1,   145,   146,
+     147,    -1,   149,   150,   151,    -1,    -1,    -1,   155,    -1,
+      -1,   158,   159,    -1,    -1,    -1,    -1,   164,   165,   166,
+     167,   168,   169,   170,   171,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   179,   180,   181,    -1,    -1,    -1,   185,    -1,
+     187,   188,    -1,    -1,    -1,    -1,    -1,   194,    -1,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+      -1,    -1,   209,   210,    -1,    -1,   213,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,   251,   252,   253,   254,   255,    -1,
+     257,   258,   259,    -1,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
+     287,   288,   289,   290,   291,   292,   293,   294,   295,   296,
+     297,   298,   299,   300,   301,   302,   303,   304,   305,   306,
+     307,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,    -1,
+      33,    34,    -1,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    -1,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    -1,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    -1,    99,   100,   101,    -1,
+      -1,   104,   105,    -1,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   125,   126,   127,   128,    -1,   130,    -1,    -1,
+      -1,   134,   135,   136,   137,   138,    -1,    -1,    -1,    -1,
+      -1,    -1,   145,   146,   147,    -1,   149,   150,   151,    -1,
+      -1,    -1,   155,    -1,    -1,   158,   159,    -1,    -1,    -1,
+      -1,   164,   165,   166,   167,   168,   169,   170,   171,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   179,   180,   181,    -1,
+      -1,    -1,   185,    -1,   187,   188,    -1,    -1,    -1,    -1,
+      -1,   194,    -1,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,    -1,    -1,   209,   210,    -1,    -1,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,   251,   252,
+     253,   254,   255,    -1,   257,   258,   259,    -1,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,   284,   285,   286,   287,   288,   289,   290,   291,   292,
+     293,   294,   295,   296,   297,   298,   299,   300,   301,   302,
+     303,   304,   305,   306,   307,    24,    25,    -1,    -1,    -1,
+      29,    -1,    -1,    -1,    33,    34,    -1,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    -1,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    -1,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    -1,
+      99,   100,   101,    -1,    -1,   104,   105,    -1,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   125,   126,   127,   128,
+      -1,   130,    -1,    -1,    -1,   134,   135,   136,   137,   138,
+      -1,    -1,    -1,    -1,    -1,    -1,   145,   146,   147,    -1,
+     149,   150,   151,    -1,    -1,    -1,   155,    -1,    -1,   158,
+     159,    -1,    -1,    -1,    -1,   164,   165,   166,   167,   168,
+     169,   170,   171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     179,   180,   181,    -1,    -1,    -1,   185,    -1,   187,   188,
+      -1,    -1,    -1,    -1,    -1,   194,    -1,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,    -1,    -1,
+     209,   210,    -1,    -1,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
+     249,   250,   251,   252,   253,   254,   255,    -1,   257,   258,
+     259,    -1,   261,   262,   263,   264,   265,   266,   267,   268,
+     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
+     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
+     289,   290,   291,   292,   293,   294,   295,   296,   297,   298,
+     299,   300,   301,   302,   303,   304,   305,   306,   307,    24,
+      25,    -1,    -1,    -1,    29,    -1,    -1,    -1,    33,    34,
+      -1,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    -1,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    -1,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    -1,    99,   100,   101,    -1,    -1,   104,
+     105,    -1,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     125,   126,   127,   128,    -1,   130,    -1,    -1,    -1,   134,
+     135,   136,   137,   138,    -1,    -1,    -1,    -1,    -1,    -1,
+     145,   146,   147,    -1,   149,   150,   151,    -1,    -1,    -1,
+      -1,    -1,    -1,   158,   159,    -1,    -1,    -1,    -1,   164,
+     165,   166,   167,   168,   169,   170,   171,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   179,   180,   181,    -1,    -1,    -1,
+     185,    -1,   187,   188,    -1,    -1,    -1,    -1,    -1,   194,
+      -1,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,    -1,    -1,   209,   210,    -1,    -1,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,    -1,   257,   258,   259,    -1,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,    24,    25,    -1,    -1,    -1,    29,    -1,
+      -1,    -1,    33,    34,    -1,    36,    37,    38,    -1,    40,
+      41,    42,    43,    -1,    -1,    46,    47,    -1,    49,    50,
+      51,    52,    53,    -1,    55,    56,    57,    58,    -1,    60,
+      -1,    -1,    63,    64,    65,    66,    67,    -1,    69,    -1,
+      71,    -1,    -1,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    -1,    94,    95,    96,    -1,    -1,    99,   100,
+     101,    -1,    -1,   104,   105,    -1,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   125,   126,   127,   128,    -1,   130,
+      -1,    -1,    -1,   134,   135,   136,   137,   138,    -1,    -1,
+      -1,    -1,    -1,    -1,   145,   146,   147,    -1,   149,   150,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   158,   159,    -1,
+      -1,    -1,    -1,   164,   165,   166,   167,   168,   169,   170,
+     171,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   179,   180,
+     181,    -1,    -1,    -1,   185,    -1,   187,   188,    -1,    -1,
+      -1,    -1,    -1,   194,    -1,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,    -1,    -1,    -1,   210,
+      -1,    -1,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,    -1,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+      -1,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,    -1,   257,   258,   259,    -1,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
+     291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -14819,153 +14913,153 @@ namespace zorba {
      276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
      286,   287,   288,   289,   290,   291,   292,   293,   294,   295,
      296,   297,   298,   299,   300,   301,   302,   303,   304,   305,
-     306,   307,   308,   323,   325,   326,   327,   328,   329,   330,
-     331,   332,   333,   334,   335,   336,   337,   338,   339,   340,
-     341,   344,   345,   346,   347,   348,   349,   353,   354,   355,
-     359,   361,   362,   364,   371,   373,   376,   377,   378,   380,
-     381,   382,   383,   384,   386,   387,   389,   390,   391,   392,
-     393,   394,   396,   397,   400,   401,   402,   403,   408,   410,
-     412,   413,   418,   437,   440,   444,   447,   448,   453,   454,
-     455,   456,   458,   460,   461,   462,   463,   464,   465,   466,
-     467,   468,   469,   470,   471,   474,   475,   476,   477,   478,
-     479,   480,   481,   482,   483,   484,   485,   486,   487,   488,
-     489,   490,   491,   494,   495,   496,   497,   498,   499,   500,
-     501,   502,   504,   505,   506,   520,   521,   523,   524,   525,
-     526,   527,   528,   529,   537,   538,   539,   540,   541,   542,
-     543,   544,   545,   546,   549,   550,   551,   552,   557,   558,
-     559,   560,   561,   562,   565,   623,   625,   626,   627,    33,
-      34,    49,   213,   379,   380,   381,   379,   379,   155,   155,
+     306,   307,   314,   329,   331,   332,   333,   334,   335,   336,
+     337,   338,   339,   340,   341,   342,   343,   344,   345,   346,
+     347,   350,   351,   352,   353,   354,   355,   359,   360,   361,
+     365,   367,   368,   370,   377,   379,   382,   383,   384,   386,
+     387,   388,   389,   390,   392,   393,   395,   396,   397,   398,
+     399,   400,   402,   403,   406,   407,   408,   409,   414,   416,
+     418,   419,   424,   443,   446,   450,   453,   454,   459,   460,
+     461,   462,   464,   466,   467,   468,   469,   470,   471,   472,
+     473,   474,   475,   476,   477,   480,   481,   482,   483,   484,
+     485,   486,   487,   488,   489,   490,   491,   492,   493,   494,
+     495,   496,   497,   500,   501,   502,   503,   504,   505,   506,
+     507,   508,   510,   511,   512,   526,   527,   529,   530,   531,
+     532,   533,   534,   535,   543,   544,   545,   546,   547,   548,
+     549,   550,   551,   552,   555,   556,   557,   558,   563,   564,
+     565,   566,   567,   568,   571,   629,   631,   632,   633,    33,
+      34,    49,   213,   385,   386,   387,   385,   385,   155,   155,
       37,    38,    40,    41,    47,    56,    57,    74,    79,   110,
-     111,   112,   159,   218,   259,   285,   293,   301,   360,   361,
-     365,   366,   367,   159,   152,   155,   152,   155,   152,   155,
-      66,    71,   117,   405,   155,   368,   155,    24,    34,    60,
-     117,   271,   417,   419,   420,   152,   155,   155,   155,   117,
+     111,   112,   159,   218,   259,   285,   293,   301,   366,   367,
+     371,   372,   373,   159,   152,   155,   152,   155,   152,   155,
+      66,    71,   117,   411,   155,   374,   155,    24,    34,    60,
+     117,   271,   423,   425,   426,   152,   155,   155,   155,   117,
      152,   155,   155,   155,    76,   152,   219,   220,   121,   121,
      121,   152,   155,    29,    39,    43,    45,    46,    47,    48,
       51,    59,    67,    70,    72,    73,    75,    90,    91,    97,
      104,   111,   113,   114,   134,   137,   138,   168,   171,   179,
      180,   188,   200,   222,   224,   226,   227,   234,   236,   237,
-     238,   241,   242,   488,   625,   626,   121,   117,   388,   121,
+     238,   241,   242,   494,   631,   632,   121,   117,   394,   121,
      121,    39,    44,    45,    59,    61,    62,    70,    97,   223,
-     625,   117,   121,   121,   183,   379,   381,    48,    72,    73,
-     117,   152,   186,   242,   400,   402,   412,   625,   152,   121,
-      16,   624,   625,    18,    19,   625,   121,   121,   121,   480,
+     631,   117,   121,   121,   183,   385,   387,    48,    72,    73,
+     117,   152,   186,   242,   406,   408,   418,   631,   152,   121,
+      16,   630,   631,    18,    19,   631,   121,   121,   121,   486,
      152,    30,   212,   214,   223,   225,   155,   223,   225,   223,
-     223,   228,   117,   239,   239,   240,   155,   152,   383,   325,
-       0,   327,   328,    33,    49,   330,   347,     1,   189,   324,
-     189,   324,   111,   362,   382,   400,   106,   189,   106,   189,
-      42,    46,    51,    69,   167,   170,   185,   210,   395,   404,
-     409,   410,   411,   425,   426,   430,   166,    92,   131,   139,
+     223,   228,   117,   239,   239,   240,   155,   152,   389,   331,
+       0,   333,   334,    33,    49,   336,   353,     1,   189,   330,
+     189,   330,   111,   368,   388,   406,   106,   189,   106,   189,
+      42,    46,    51,    69,   167,   170,   185,   210,   401,   410,
+     415,   416,   417,   431,   432,   436,   166,    92,   131,   139,
      140,   142,   150,   154,   156,   161,   178,   201,   202,   203,
-     204,   205,   206,   472,   473,   247,   157,   175,   197,   116,
+     204,   205,   206,   478,   479,   247,   157,   175,   197,   116,
      145,   158,   192,   199,   208,   135,   149,    50,   198,   100,
-     101,   157,   175,   471,   152,   477,   480,   190,   191,   153,
-     492,   493,   488,   492,   488,   155,   492,   120,   144,   155,
-     183,   183,   183,    29,   363,   495,   363,   623,   181,   194,
-     181,   194,   165,   181,   626,   625,   168,   200,    47,   625,
-     151,   117,    45,    47,    79,   105,   167,   624,   219,   220,
-     221,   244,   596,   625,   625,   302,   136,   141,   111,   285,
-     293,   365,   624,   380,   381,   186,   380,    45,    62,   186,
-     545,   546,   400,   186,   192,   625,   282,   282,   414,   415,
-     625,   117,   421,   117,   186,   369,   370,   152,   385,   400,
-       1,   159,   623,   112,   159,   343,   623,   625,   117,   141,
-     106,   400,    29,   186,   624,   625,   625,   438,   439,   625,
-     380,   186,   400,   400,   547,   625,   380,   152,   152,   400,
-     186,   192,   625,   625,   141,   438,   183,   183,   155,   155,
-     155,   625,   152,   186,   185,    35,   508,   509,   510,   400,
-       8,   174,    17,   400,   212,    29,   401,   401,   186,   401,
-     401,   401,   401,   229,   563,   564,   625,   189,   189,   401,
-     400,   381,   400,   243,   398,   399,   189,   324,   189,   324,
-       3,   331,   347,   377,   331,   347,   377,    33,   348,   377,
-     348,   377,   388,   388,   401,   117,   167,   169,   169,   382,
-     401,   401,   455,   456,   458,   458,   458,   458,   457,   458,
-     458,   458,    70,   462,   462,   461,   463,   463,   463,   463,
-     464,   464,   465,   465,   229,    94,    94,    94,   183,   400,
-     480,   480,   400,   493,   186,   401,   503,   624,   148,   186,
-     503,   106,   186,   186,   106,   106,   368,    29,   626,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,   350,
-     351,   352,    94,   136,   141,   356,   357,   358,   625,   159,
-     159,   350,   623,   126,   131,    54,    56,    99,   249,   262,
-     264,   275,   276,   277,   279,   281,   597,   598,   599,   600,
-     601,   602,   609,   615,   616,   244,    94,   297,   625,   141,
-     401,   117,   625,   625,   131,   183,   183,   186,   186,   183,
-     106,   186,   106,   186,   106,    36,    94,    96,   146,   416,
-     417,   531,   625,    55,   215,   252,   406,   407,   625,    94,
-     106,   186,   379,   186,   624,    96,    45,   624,   623,    96,
-     141,   531,   625,   401,   420,   183,   186,   186,   186,   186,
-     106,   187,   146,   531,   183,   186,   186,   152,   183,   380,
-     380,   183,   106,   186,   106,   186,   141,   531,   401,   187,
-     400,   400,   400,   625,   509,   510,   129,   195,   183,   183,
+     101,   157,   175,   477,   152,   483,   486,   190,   191,   153,
+     498,   499,   494,   498,   494,   155,   498,   120,   144,   155,
+     183,   183,   183,    29,   369,   501,   369,   629,   181,   194,
+     181,   194,   165,   181,   632,   631,   168,   200,    47,   631,
+     151,   117,    45,    47,    79,   105,   167,   630,   219,   220,
+     221,   244,   602,   631,   631,   302,   136,   141,   111,   285,
+     293,   371,   630,   386,   387,   186,   386,    45,    62,   186,
+     551,   552,   406,   186,   192,   631,   282,   282,   420,   421,
+     631,   117,   427,   117,   186,   375,   376,   152,   391,   406,
+       1,   159,   629,   112,   159,   349,   629,   631,   117,   141,
+     106,   406,    29,   186,   630,   631,   631,   444,   445,   631,
+     386,   186,   406,   406,   553,   631,   386,   152,   152,   406,
+     186,   192,   631,   631,   141,   444,   183,   183,   155,   155,
+     155,   631,   152,   186,   185,    35,   514,   515,   516,   406,
+       8,   174,    17,   406,   212,    29,   407,   407,   186,   407,
+     407,   407,   407,   229,   569,   570,   631,   189,   189,   407,
+     406,   387,   406,   243,   404,   405,   189,   330,   189,   330,
+       3,   337,   353,   383,   337,   353,   383,    33,   354,   383,
+     354,   383,   394,   394,   407,   117,   167,   169,   169,   388,
+     407,   407,   461,   462,   464,   464,   464,   464,   463,   464,
+     464,   464,    70,   468,   468,   467,   469,   469,   469,   469,
+     470,   470,   471,   471,   229,    94,    94,    94,   183,   406,
+     486,   486,   406,   499,   186,   407,   509,   630,   148,   186,
+     509,   106,   186,   186,   106,   106,   374,    29,   632,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,   356,
+     357,   358,    94,   136,   141,   362,   363,   364,   631,   159,
+     159,   356,   629,   126,   131,    54,    56,    99,   249,   262,
+     264,   275,   276,   277,   279,   281,   603,   604,   605,   606,
+     607,   608,   615,   621,   622,   244,    94,   297,   631,   141,
+     407,   117,   631,   631,   131,   183,   183,   186,   186,   183,
+     106,   186,   106,   186,   106,    36,    94,    96,   146,   422,
+     423,   537,   631,    55,   215,   252,   412,   413,   631,    94,
+     106,   186,   385,   186,   630,    96,    45,   630,   629,    96,
+     141,   537,   631,   407,   426,   183,   186,   186,   186,   186,
+     106,   187,   146,   537,   183,   186,   186,   152,   183,   386,
+     386,   183,   106,   186,   106,   186,   141,   537,   407,   187,
+     406,   406,   406,   631,   515,   516,   129,   195,   183,   183,
      130,   189,    94,   216,   217,   231,    94,   216,   217,   231,
       94,   235,   223,   106,   233,   141,   189,   186,    48,    72,
-      73,   242,   402,   412,   183,   489,   569,   399,   347,    33,
-      33,   189,   324,   189,   112,   625,   169,   401,   431,   432,
-     117,   427,   428,   458,   152,   155,   257,   476,   495,   570,
-     573,   574,   575,   576,   577,   581,   583,   585,   586,    47,
-     151,   155,   209,   532,   534,   536,   537,   553,   554,   555,
-     556,   625,   532,   530,   536,   530,   183,   184,   106,   186,
-     186,   495,   147,   164,   147,   164,   136,   385,   368,   351,
-     131,   534,   358,   401,   531,   623,   623,   127,   128,   623,
-     275,   276,   277,   281,   625,   261,   272,   261,   272,    29,
-     284,    96,   112,   155,   603,   606,   597,    39,    44,    59,
-      61,    70,    97,   223,   372,   537,   225,   297,   306,   401,
-     625,    94,   297,   623,   152,   547,   548,   625,   547,   548,
-     117,   126,   532,   117,   401,   146,   417,   146,    36,   146,
-     416,   417,   146,   531,   252,    53,    58,    77,   117,   416,
-     422,   423,   424,   407,   531,   532,   370,    94,   183,   196,
-     131,   342,   623,   159,   131,    96,   342,   401,   141,   417,
-     152,   117,   401,   401,   146,    99,   441,   442,   443,   445,
-     446,    99,   449,   450,   451,   452,   380,   183,   183,   152,
-     547,   547,   401,   141,   189,   401,   186,   186,   186,    35,
-     510,   129,   195,     9,    10,   102,   122,   124,   152,   193,
-     505,   507,   518,   519,   522,    29,   230,   232,   401,   401,
-     401,   230,   232,   401,   401,   401,   401,   401,   401,   117,
-     401,   401,   382,   155,   155,   155,   152,   185,   243,   566,
-     567,   208,   383,   189,   112,   377,   377,   377,   431,    95,
-     105,   115,   126,   433,   434,   435,   436,   106,   625,   106,
-     400,   570,   577,   152,   283,   459,   622,    96,   168,   250,
-     251,   253,   260,   270,   282,   571,   572,   591,   592,   593,
-     594,   617,   620,   256,   258,   578,   596,   265,   582,   618,
-     245,   246,   268,   587,   588,   155,   155,   534,   155,   143,
-     175,   192,   533,   143,   401,   136,   385,   549,   357,   284,
-      29,    96,   112,   155,   610,    29,   603,   533,   478,   285,
-     304,   531,   372,   225,   189,   379,   186,   186,   143,   186,
-     186,   415,   146,   416,   625,   401,   146,   401,   126,   401,
-     146,   417,   146,   401,   146,   117,   117,   401,   625,   424,
-      77,   532,   382,   401,   623,   106,   342,   401,   141,   379,
-     439,   401,   401,   112,   442,   443,    99,   185,   112,   443,
-     446,   117,   532,    99,   112,   450,    99,   112,   452,   183,
-     379,   186,   186,   401,   196,   449,   131,   193,   507,     7,
-     380,   625,   193,   518,   189,   231,   231,   231,   231,   235,
-     564,   185,   400,   400,   400,   569,   567,   489,   623,   127,
-     128,   435,   436,   436,   432,   105,   429,   428,   183,   186,
-     570,   584,   248,   215,   252,   266,   273,   621,    96,   254,
-     255,   619,   248,   574,   621,   461,   591,   575,   146,   280,
-     579,   580,   619,   284,   590,    78,   589,   186,   192,   532,
-     535,   186,   186,   186,    29,   135,   199,   612,   613,   614,
-      29,   611,   612,   269,   607,   106,   604,   169,   625,   255,
-     478,   183,   401,   146,   401,   146,   416,   401,   146,   401,
-     401,   625,   625,   423,   401,   125,   125,    96,   623,   401,
-     183,   185,   185,   401,   382,   401,   185,   185,   625,   185,
-     117,   532,   117,   185,   117,   532,   185,   183,   112,   510,
-     625,   193,   183,   510,   625,   401,   401,   401,   401,   401,
-     401,   186,   186,   186,   152,   568,   436,   623,   183,   463,
-      52,   128,   461,   461,   267,   274,   284,   595,   595,   576,
-     152,   278,    94,   186,   106,   186,   610,   610,   614,   106,
-     186,    29,   608,   619,   605,   606,   186,   374,   375,   478,
-     117,   223,   305,   285,   169,   401,   401,   146,   401,    53,
-     382,   401,   342,   401,   382,    94,   382,   401,   625,   185,
-     625,   401,   625,   185,   382,   117,    93,   182,   511,   510,
-     625,   195,   510,   196,   449,   400,   461,   461,   197,   400,
-     532,   532,    94,    29,   263,   106,   106,   436,   531,   625,
-     117,   223,   625,   374,   401,   117,   532,    94,   185,    94,
-     625,     5,   132,   514,   515,   517,   519,    28,   133,   512,
-     513,   516,   519,   195,   510,   195,   112,   183,   461,   183,
-     532,   606,   375,   436,   303,   625,   117,   223,   625,   185,
-     532,   382,   401,   532,   185,    93,   132,   517,   182,   133,
-     516,   195,   117,   401,   303,   625,   117,   382,   401,   185,
-     185,   625,   291,   303,   625,   185,   304,   401,   304,   478,
-     478,   197,   285,   625,   223,   117,   625,   304,   478
+      73,   242,   408,   418,   183,   495,   575,   405,   353,    33,
+      33,   189,   330,   189,   112,   631,   169,   407,   437,   438,
+     117,   433,   434,   464,   152,   155,   257,   482,   501,   576,
+     579,   580,   581,   582,   583,   587,   589,   591,   592,    47,
+     151,   155,   209,   538,   540,   542,   543,   559,   560,   561,
+     562,   631,   538,   536,   542,   536,   183,   184,   106,   186,
+     186,   501,   147,   164,   147,   164,   136,   391,   374,   357,
+     131,   540,   364,   407,   537,   629,   629,   127,   128,   629,
+     275,   276,   277,   281,   631,   261,   272,   261,   272,    29,
+     284,    96,   112,   155,   609,   612,   603,    39,    44,    59,
+      61,    70,    97,   223,   378,   543,   225,   297,   306,   407,
+     631,    94,   297,   629,   152,   553,   554,   631,   553,   554,
+     117,   126,   538,   117,   407,   146,   423,   146,    36,   146,
+     422,   423,   146,   537,   252,    53,    58,    77,   117,   422,
+     428,   429,   430,   413,   537,   538,   376,    94,   183,   196,
+     131,   348,   629,   159,   131,    96,   348,   407,   141,   423,
+     152,   117,   407,   407,   146,    99,   447,   448,   449,   451,
+     452,    99,   455,   456,   457,   458,   386,   183,   183,   152,
+     553,   553,   407,   141,   189,   407,   186,   186,   186,    35,
+     516,   129,   195,     9,    10,   102,   122,   124,   152,   193,
+     511,   513,   524,   525,   528,    29,   230,   232,   407,   407,
+     407,   230,   232,   407,   407,   407,   407,   407,   407,   117,
+     407,   407,   388,   155,   155,   155,   152,   185,   243,   572,
+     573,   208,   389,   189,   112,   383,   383,   383,   437,    95,
+     105,   115,   126,   439,   440,   441,   442,   106,   631,   106,
+     406,   576,   583,   152,   283,   465,   628,    96,   168,   250,
+     251,   253,   260,   270,   282,   577,   578,   597,   598,   599,
+     600,   623,   626,   256,   258,   584,   602,   265,   588,   624,
+     245,   246,   268,   593,   594,   155,   155,   540,   155,   143,
+     175,   192,   539,   143,   407,   136,   391,   555,   363,   284,
+      29,    96,   112,   155,   616,    29,   609,   539,   484,   285,
+     304,   537,   378,   225,   189,   385,   186,   186,   143,   186,
+     186,   421,   146,   422,   631,   407,   146,   407,   126,   407,
+     146,   423,   146,   407,   146,   117,   117,   407,   631,   430,
+      77,   538,   388,   407,   629,   106,   348,   407,   141,   385,
+     445,   407,   407,   112,   448,   449,    99,   185,   112,   449,
+     452,   117,   538,    99,   112,   456,    99,   112,   458,   183,
+     385,   186,   186,   407,   196,   455,   131,   193,   513,     7,
+     386,   631,   193,   524,   189,   231,   231,   231,   231,   235,
+     570,   185,   406,   406,   406,   575,   573,   495,   629,   127,
+     128,   441,   442,   442,   438,   105,   435,   434,   183,   186,
+     576,   590,   248,   215,   252,   266,   273,   627,    96,   254,
+     255,   625,   248,   580,   627,   467,   597,   581,   146,   280,
+     585,   586,   625,   284,   596,    78,   595,   186,   192,   538,
+     541,   186,   186,   186,    29,   135,   199,   618,   619,   620,
+      29,   617,   618,   269,   613,   106,   610,   169,   631,   255,
+     484,   183,   407,   146,   407,   146,   422,   407,   146,   407,
+     407,   631,   631,   429,   407,   125,   125,    96,   629,   407,
+     183,   185,   185,   407,   388,   407,   185,   185,   631,   185,
+     117,   538,   117,   185,   117,   538,   185,   183,   112,   516,
+     631,   193,   183,   516,   631,   407,   407,   407,   407,   407,
+     407,   186,   186,   186,   152,   574,   442,   629,   183,   469,
+      52,   128,   467,   467,   267,   274,   284,   601,   601,   582,
+     152,   278,    94,   186,   106,   186,   616,   616,   620,   106,
+     186,    29,   614,   625,   611,   612,   186,   380,   381,   484,
+     117,   223,   305,   285,   169,   407,   407,   146,   407,    53,
+     388,   407,   348,   407,   388,    94,   388,   407,   631,   185,
+     631,   407,   631,   185,   388,   117,    93,   182,   517,   516,
+     631,   195,   516,   196,   455,   406,   467,   467,   197,   406,
+     538,   538,    94,    29,   263,   106,   106,   442,   537,   631,
+     117,   223,   631,   380,   407,   117,   538,    94,   185,    94,
+     631,     5,   132,   520,   521,   523,   525,    28,   133,   518,
+     519,   522,   525,   195,   516,   195,   112,   183,   467,   183,
+     538,   612,   381,   442,   303,   631,   117,   223,   631,   185,
+     538,   388,   407,   538,   185,    93,   132,   523,   182,   133,
+     522,   195,   117,   407,   303,   631,   117,   388,   407,   185,
+     185,   631,   291,   303,   631,   185,   304,   407,   304,   484,
+     484,   197,   285,   631,   223,   117,   631,   304,   484
   };
 
 #if YYDEBUG
@@ -15006,7 +15100,7 @@ namespace zorba {
      545,   546,   547,   548,   549,   550,   551,   552,   553,   554,
      555,   556,   557,   558,   559,   560,   561,   562,   563,   564,
      565,   566,   567,   568,   569,   570,   571,   572,   573,   574,
-     575,   576
+     575,   576,   577,   578,   579,   580,   581,   582
   };
 #endif
 
@@ -15014,102 +15108,102 @@ namespace zorba {
   const unsigned short int
   xquery_parser::yyr1_[] =
   {
-         0,   322,   323,   323,   324,   325,   325,   325,   325,   326,
-     326,   327,   327,   327,   327,   327,   327,   327,   327,   328,
-     328,   328,   328,   329,   330,   330,   330,   331,   331,   331,
-     331,   331,   332,   332,   332,   332,   332,   332,   332,   332,
-     333,   333,   334,   335,   336,   336,   337,   337,   338,   338,
-     339,   339,   339,   339,   340,   340,   340,   341,   341,   341,
-     341,   342,   342,   343,   343,   344,   344,   344,   344,   345,
-     346,   346,   347,   347,   347,   348,   348,   348,   348,   348,
-     348,   348,   348,   349,   349,   350,   350,   351,   352,   352,
-     352,   352,   352,   352,   352,   352,   352,   352,   353,   354,
-     355,   356,   356,   357,   357,   357,   358,   359,   359,   359,
-     360,   360,   360,   360,   361,   361,   362,   362,   362,   362,
-     363,   363,   364,   364,   365,   365,   366,   366,   367,   367,
-     368,   368,   368,   368,   369,   369,   370,   370,   371,   371,
-     371,   371,   372,   372,   373,   373,   374,   374,   375,   375,
-     375,   375,   376,   376,   376,   376,   377,   378,   378,   378,
-     379,   379,   379,   380,   380,   381,   381,   382,   382,   382,
-     382,   382,   382,   382,   382,   382,   382,   382,   382,   383,
-     383,   384,   385,   386,   387,   387,   387,   388,   388,   388,
-     388,   389,   390,   391,   392,   393,   393,   394,   395,   396,
-     397,   398,   398,   399,   400,   400,   401,   401,   401,   401,
-     401,   401,   402,   402,   402,   402,   402,   402,   402,   403,
-     404,   405,   405,   406,   406,   406,   407,   407,   408,   408,
-     409,   410,   410,   410,   411,   411,   411,   411,   411,   412,
-     412,   413,   414,   414,   415,   415,   415,   415,   415,   415,
-     415,   415,   415,   415,   415,   415,   416,   417,   418,   419,
-     419,   420,   420,   420,   420,   421,   421,   422,   422,   422,
-     423,   423,   423,   424,   424,   424,   425,   426,   427,   427,
-     428,   428,   429,   430,   430,   431,   431,   432,   432,   433,
-     433,   433,   433,   433,   433,   433,   434,   434,   435,   435,
-     436,   437,   437,   438,   438,   439,   439,   440,   441,   441,
-     442,   443,   443,   444,   445,   445,   446,   447,   447,   448,
-     448,   449,   449,   450,   450,   451,   451,   452,   452,   453,
-     454,   454,   455,   455,   456,   456,   456,   456,   456,   457,
-     456,   456,   456,   456,   458,   458,   459,   459,   460,   460,
-     461,   461,   461,   462,   462,   462,   462,   462,   463,   463,
-     463,   464,   464,   464,   465,   465,   466,   466,   467,   467,
-     468,   468,   469,   469,   470,   470,   470,   470,   471,   471,
-     471,   472,   472,   472,   472,   472,   472,   473,   473,   473,
-     474,   474,   474,   474,   475,   475,   476,   476,   477,   477,
-     477,   478,   478,   478,   478,   479,   480,   480,   480,   481,
-     481,   482,   482,   482,   482,   483,   483,   484,   484,   484,
-     484,   484,   484,   484,   485,   485,   486,   486,   487,   487,
-     487,   487,   487,   488,   488,   489,   489,   490,   490,   490,
-     490,   491,   491,   491,   491,   492,   492,   493,   494,   494,
-     494,   494,   494,   494,   494,   494,   494,   494,   495,   495,
-     496,   496,   496,   497,   498,   498,   499,   500,   501,   502,
-     502,   503,   503,   504,   504,   505,   505,   505,   506,   506,
-     506,   506,   506,   506,   507,   507,   508,   508,   509,   510,
-     510,   511,   511,   512,   512,   513,   513,   513,   513,   514,
-     514,   515,   515,   515,   515,   516,   516,   517,   517,   518,
-     518,   518,   518,   519,   519,   519,   519,   520,   520,   521,
-     521,   522,   523,   523,   523,   523,   523,   523,   524,   525,
-     525,   526,   526,   527,   528,   529,   529,   530,   530,   531,
-     532,   532,   532,   533,   533,   533,   534,   534,   534,   534,
-     534,   535,   535,   536,   537,   537,   537,   537,   537,   537,
-     537,   537,   537,   538,   539,   539,   539,   540,   541,   542,
-     542,   542,   543,   543,   543,   543,   543,   544,   545,   545,
-     545,   545,   545,   545,   545,   546,   547,   548,   549,   550,
-     550,   551,   552,   553,   553,   554,   555,   555,   556,   557,
-     557,   557,   558,   558,   558,   558,   558,   558,   558,   558,
-     558,   558,   559,   559,   560,   560,   561,   562,   563,   563,
-     564,   565,   566,   566,   567,   568,   569,   569,   570,   571,
-     571,   572,   572,   573,   573,   574,   574,   575,   575,   576,
-     576,   577,   578,   578,   579,   579,   580,   581,   581,   581,
-     582,   582,   583,   584,   584,   585,   586,   586,   587,   587,
-     588,   588,   588,   589,   589,   590,   590,   591,   591,   591,
-     591,   591,   592,   593,   594,   595,   595,   595,   596,   596,
-     597,   597,   597,   597,   597,   597,   597,   597,   598,   598,
-     598,   598,   599,   599,   600,   601,   601,   602,   602,   602,
-     603,   603,   604,   604,   605,   605,   606,   607,   607,   608,
-     608,   609,   609,   609,   610,   610,   611,   611,   612,   612,
-     613,   613,   614,   614,   615,   616,   616,   617,   617,   617,
-     618,   619,   619,   619,   619,   620,   620,   621,   621,   622,
-     623,   624,   624,   625,   625,   625,   625,   625,   625,   625,
-     625,   625,   625,   625,   625,   625,   625,   625,   625,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   626,   626,
-     626,   626,   626,   626,   626,   626,   626,   626,   627,   627
+         0,   328,   329,   329,   330,   331,   331,   331,   331,   332,
+     332,   333,   333,   333,   333,   333,   333,   333,   333,   334,
+     334,   334,   334,   335,   336,   336,   336,   337,   337,   337,
+     337,   337,   338,   338,   338,   338,   338,   338,   338,   338,
+     339,   339,   340,   341,   342,   342,   343,   343,   344,   344,
+     345,   345,   345,   345,   346,   346,   346,   347,   347,   347,
+     347,   348,   348,   349,   349,   350,   350,   350,   350,   351,
+     352,   352,   353,   353,   353,   354,   354,   354,   354,   354,
+     354,   354,   354,   355,   355,   356,   356,   357,   358,   358,
+     358,   358,   358,   358,   358,   358,   358,   358,   359,   360,
+     361,   362,   362,   363,   363,   363,   364,   365,   365,   365,
+     366,   366,   366,   366,   367,   367,   368,   368,   368,   368,
+     369,   369,   370,   370,   371,   371,   372,   372,   373,   373,
+     374,   374,   374,   374,   375,   375,   376,   376,   377,   377,
+     377,   377,   378,   378,   379,   379,   380,   380,   381,   381,
+     381,   381,   382,   382,   382,   382,   383,   384,   384,   384,
+     385,   385,   385,   386,   386,   387,   387,   388,   388,   388,
+     388,   388,   388,   388,   388,   388,   388,   388,   388,   389,
+     389,   390,   391,   392,   393,   393,   393,   394,   394,   394,
+     394,   395,   396,   397,   398,   399,   399,   400,   401,   402,
+     403,   404,   404,   405,   406,   406,   407,   407,   407,   407,
+     407,   407,   408,   408,   408,   408,   408,   408,   408,   409,
+     410,   411,   411,   412,   412,   412,   413,   413,   414,   414,
+     415,   416,   416,   416,   417,   417,   417,   417,   417,   418,
+     418,   419,   420,   420,   421,   421,   421,   421,   421,   421,
+     421,   421,   421,   421,   421,   421,   422,   423,   424,   425,
+     425,   426,   426,   426,   426,   427,   427,   428,   428,   428,
+     429,   429,   429,   430,   430,   430,   431,   432,   433,   433,
+     434,   434,   435,   436,   436,   437,   437,   438,   438,   439,
+     439,   439,   439,   439,   439,   439,   440,   440,   441,   441,
+     442,   443,   443,   444,   444,   445,   445,   446,   447,   447,
+     448,   449,   449,   450,   451,   451,   452,   453,   453,   454,
+     454,   455,   455,   456,   456,   457,   457,   458,   458,   459,
+     460,   460,   461,   461,   462,   462,   462,   462,   462,   463,
+     462,   462,   462,   462,   464,   464,   465,   465,   466,   466,
+     467,   467,   467,   468,   468,   468,   468,   468,   469,   469,
+     469,   470,   470,   470,   471,   471,   472,   472,   473,   473,
+     474,   474,   475,   475,   476,   476,   476,   476,   477,   477,
+     477,   478,   478,   478,   478,   478,   478,   479,   479,   479,
+     480,   480,   480,   480,   481,   481,   482,   482,   483,   483,
+     483,   484,   484,   484,   484,   485,   486,   486,   486,   487,
+     487,   488,   488,   488,   488,   489,   489,   490,   490,   490,
+     490,   490,   490,   490,   491,   491,   492,   492,   493,   493,
+     493,   493,   493,   494,   494,   495,   495,   496,   496,   496,
+     496,   497,   497,   497,   497,   498,   498,   499,   500,   500,
+     500,   500,   500,   500,   500,   500,   500,   500,   501,   501,
+     502,   502,   502,   503,   504,   504,   505,   506,   507,   508,
+     508,   509,   509,   510,   510,   511,   511,   511,   512,   512,
+     512,   512,   512,   512,   513,   513,   514,   514,   515,   516,
+     516,   517,   517,   518,   518,   519,   519,   519,   519,   520,
+     520,   521,   521,   521,   521,   522,   522,   523,   523,   524,
+     524,   524,   524,   525,   525,   525,   525,   526,   526,   527,
+     527,   528,   529,   529,   529,   529,   529,   529,   530,   531,
+     531,   532,   532,   533,   534,   535,   535,   536,   536,   537,
+     538,   538,   538,   539,   539,   539,   540,   540,   540,   540,
+     540,   541,   541,   542,   543,   543,   543,   543,   543,   543,
+     543,   543,   543,   544,   545,   545,   545,   546,   547,   548,
+     548,   548,   549,   549,   549,   549,   549,   550,   551,   551,
+     551,   551,   551,   551,   551,   552,   553,   554,   555,   556,
+     556,   557,   558,   559,   559,   560,   561,   561,   562,   563,
+     563,   563,   564,   564,   564,   564,   564,   564,   564,   564,
+     564,   564,   565,   565,   566,   566,   567,   568,   569,   569,
+     570,   571,   572,   572,   573,   574,   575,   575,   576,   577,
+     577,   578,   578,   579,   579,   580,   580,   581,   581,   582,
+     582,   583,   584,   584,   585,   585,   586,   587,   587,   587,
+     588,   588,   589,   590,   590,   591,   592,   592,   593,   593,
+     594,   594,   594,   595,   595,   596,   596,   597,   597,   597,
+     597,   597,   598,   599,   600,   601,   601,   601,   602,   602,
+     603,   603,   603,   603,   603,   603,   603,   603,   604,   604,
+     604,   604,   605,   605,   606,   607,   607,   608,   608,   608,
+     609,   609,   610,   610,   611,   611,   612,   613,   613,   614,
+     614,   615,   615,   615,   616,   616,   617,   617,   618,   618,
+     619,   619,   620,   620,   621,   622,   622,   623,   623,   623,
+     624,   625,   625,   625,   625,   626,   626,   627,   627,   628,
+     629,   630,   630,   631,   631,   631,   631,   631,   631,   631,
+     631,   631,   631,   631,   631,   631,   631,   631,   631,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   632,   632,
+     632,   632,   632,   632,   632,   632,   632,   632,   633,   633
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -15298,28 +15392,30 @@ namespace zorba {
   "\"'automatically'\"", "\"'maintained'\"", "\"'on'\"", "\"'range'\"",
   "\"'equality'\"", "\"'general'\"", "\"'integrity'\"", "\"'constraint'\"",
   "\"'check'\"", "\"'key'\"", "\"'foreach'\"", "\"'foreign'\"",
-  "\"'keys'\"", "\"'BOM_UTF8'\"", "RANGE_REDUCE", "ADDITIVE_REDUCE",
-  "MULTIPLICATIVE_REDUCE", "UNION_REDUCE", "INTERSECT_EXCEPT_REDUCE",
-  "QVARINDECLLIST_REDUCE", "COMMA_DOLLAR", "UNARY_PREC",
-  "SEQUENCE_TYPE_REDUCE", "OCCURS_STAR", "OCCURS_PLUS", "OCCURS_HOOK",
-  "STEP_REDUCE", "$accept", "Module", "ERROR", "ModuleWithoutBOM",
-  "VersionDecl", "MainModule", "LibraryModule", "ModuleDecl",
-  "SIND_DeclList", "SIND_Decl", "Setter", "BoundarySpaceDecl",
-  "DefaultCollationDecl", "BaseURIDecl", "ConstructionDecl",
-  "OrderingModeDecl", "EmptyOrderDecl", "CopyNamespacesDecl", "Import",
-  "SchemaImport", "URILiteralList", "SchemaPrefix", "ModuleImport",
-  "NamespaceDecl", "DefaultNamespaceDecl", "VFO_DeclList", "VFO_Decl",
-  "DecimalFormatDecl", "DecimalFormatParamList", "DecimalFormatParam",
-  "DecimalFormatParamName", "OptionDecl", "FTOptionDecl", "CtxItemDecl",
-  "CtxItemDecl2", "CtxItemDecl3", "CtxItemDecl4", "VarDecl",
-  "VarNameAndType", "AnnotationList", "Annotation",
-  "AnnotationLiteralList", "FunctionDecl", "FunctionDecl2",
-  "FunctionDeclSimple", "FunctionDeclUpdating", "FunctionSig", "ParamList",
-  "Param", "CollectionDecl", "CollectionTypeDecl", "IndexDecl",
-  "IndexKeyList", "IndexKeySpec", "IntegrityConstraintDecl", "QueryBody",
-  "StatementsAndOptionalExprTop", "StatementsAndOptionalExpr",
-  "StatementsAndExpr", "Statements", "Statement", "BlockStatement",
-  "BlockExpr", "EnclosedStatementsAndOptionalExpr", "VarDeclStatement",
+  "\"'keys'\"", "\"'array'\"", "\"'array-pair'\"", "\"'json-item'\"",
+  "\"'object'\"", "\"'object-pair'\"", "\"'pair'\"", "\"'BOM_UTF8'\"",
+  "RANGE_REDUCE", "ADDITIVE_REDUCE", "MULTIPLICATIVE_REDUCE",
+  "UNION_REDUCE", "INTERSECT_EXCEPT_REDUCE", "QVARINDECLLIST_REDUCE",
+  "COMMA_DOLLAR", "UNARY_PREC", "SEQUENCE_TYPE_REDUCE", "OCCURS_STAR",
+  "OCCURS_PLUS", "OCCURS_HOOK", "STEP_REDUCE", "$accept", "Module",
+  "ERROR", "ModuleWithoutBOM", "VersionDecl", "MainModule",
+  "LibraryModule", "ModuleDecl", "SIND_DeclList", "SIND_Decl", "Setter",
+  "BoundarySpaceDecl", "DefaultCollationDecl", "BaseURIDecl",
+  "ConstructionDecl", "OrderingModeDecl", "EmptyOrderDecl",
+  "CopyNamespacesDecl", "Import", "SchemaImport", "URILiteralList",
+  "SchemaPrefix", "ModuleImport", "NamespaceDecl", "DefaultNamespaceDecl",
+  "VFO_DeclList", "VFO_Decl", "DecimalFormatDecl",
+  "DecimalFormatParamList", "DecimalFormatParam", "DecimalFormatParamName",
+  "OptionDecl", "FTOptionDecl", "CtxItemDecl", "CtxItemDecl2",
+  "CtxItemDecl3", "CtxItemDecl4", "VarDecl", "VarNameAndType",
+  "AnnotationList", "Annotation", "AnnotationLiteralList", "FunctionDecl",
+  "FunctionDecl2", "FunctionDeclSimple", "FunctionDeclUpdating",
+  "FunctionSig", "ParamList", "Param", "CollectionDecl",
+  "CollectionTypeDecl", "IndexDecl", "IndexKeyList", "IndexKeySpec",
+  "IntegrityConstraintDecl", "QueryBody", "StatementsAndOptionalExprTop",
+  "StatementsAndOptionalExpr", "StatementsAndExpr", "Statements",
+  "Statement", "BlockStatement", "BlockExpr",
+  "EnclosedStatementsAndOptionalExpr", "VarDeclStatement",
   "BlockVarDeclList", "BlockVarDecl", "AssignStatement", "ApplyStatement",
   "ExitStatement", "WhileStatement", "FlowCtlStatement", "FLWORStatement",
   "ReturnStatement", "IfStatement", "TryStatement", "CatchListStatement",
@@ -15391,270 +15487,270 @@ namespace zorba {
   const xquery_parser::rhs_number_type
   xquery_parser::yyrhs_[] =
   {
-       323,     0,    -1,   325,    -1,   308,   325,    -1,     1,     3,
-      -1,   327,    -1,   326,   327,    -1,   328,    -1,   326,   328,
+       329,     0,    -1,   331,    -1,   314,   331,    -1,     1,     3,
+      -1,   333,    -1,   332,   333,    -1,   334,    -1,   332,   334,
       -1,   213,   214,    29,   189,    -1,   213,   214,    29,   130,
-      29,   189,    -1,   330,   189,   377,    -1,   347,   189,   377,
-      -1,   330,   189,   347,   189,   377,    -1,   377,    -1,   330,
-     324,   377,    -1,   347,   324,   377,    -1,   330,   189,   347,
-     324,   377,    -1,   330,   324,   347,   189,   377,    -1,   329,
-      -1,   329,   330,   189,    -1,   329,   347,   189,    -1,   329,
-     330,   189,   347,   189,    -1,    34,   159,   624,   131,   623,
-     189,    -1,   331,    -1,   330,   189,   331,    -1,   330,   324,
-     331,    -1,   332,    -1,   340,    -1,   345,    -1,   346,    -1,
-     354,    -1,   333,    -1,   334,    -1,   335,    -1,   336,    -1,
-     337,    -1,   338,    -1,   339,    -1,   557,    -1,    33,    38,
-     181,    -1,    33,    38,   194,    -1,    33,   112,   105,   623,
-      -1,    33,    37,   623,    -1,    33,    40,   181,    -1,    33,
+      29,   189,    -1,   336,   189,   383,    -1,   353,   189,   383,
+      -1,   336,   189,   353,   189,   383,    -1,   383,    -1,   336,
+     330,   383,    -1,   353,   330,   383,    -1,   336,   189,   353,
+     330,   383,    -1,   336,   330,   353,   189,   383,    -1,   335,
+      -1,   335,   336,   189,    -1,   335,   353,   189,    -1,   335,
+     336,   189,   353,   189,    -1,    34,   159,   630,   131,   629,
+     189,    -1,   337,    -1,   336,   189,   337,    -1,   336,   330,
+     337,    -1,   338,    -1,   346,    -1,   351,    -1,   352,    -1,
+     360,    -1,   339,    -1,   340,    -1,   341,    -1,   342,    -1,
+     343,    -1,   344,    -1,   345,    -1,   563,    -1,    33,    38,
+     181,    -1,    33,    38,   194,    -1,    33,   112,   105,   629,
+      -1,    33,    37,   629,    -1,    33,    40,   181,    -1,    33,
       40,   194,    -1,    33,    57,   168,    -1,    33,    57,   200,
       -1,    33,   112,   167,   126,   127,    -1,    33,   112,   167,
      126,   128,    -1,    33,    41,   181,   106,   147,    -1,    33,
       41,   181,   106,   164,    -1,    33,    41,   165,   106,   147,
-      -1,    33,    41,   165,   106,   164,    -1,   341,    -1,   344,
-      -1,    49,    24,     1,    -1,    49,    60,   623,    -1,    49,
-      60,   343,   623,    -1,    49,    60,   623,    96,   342,    -1,
-      49,    60,   343,   623,    96,   342,    -1,   623,    -1,   342,
-     106,   623,    -1,   159,   624,   131,    -1,   112,    45,   159,
-      -1,    49,    34,   623,    -1,    49,    34,   159,   624,   131,
-     623,    -1,    49,    34,   623,    96,   342,    -1,    49,    34,
-     159,   624,   131,   623,    96,   342,    -1,    33,   159,   624,
-     131,   623,    -1,    33,   112,    45,   159,   623,    -1,    33,
-     112,    47,   159,   623,    -1,   348,    -1,   347,   189,   348,
-      -1,   347,   324,   348,    -1,   349,    -1,   353,    -1,   355,
-      -1,   359,    -1,   364,    -1,   371,    -1,   373,    -1,   376,
-      -1,    33,   112,    79,   350,    -1,    33,    79,   625,   350,
-      -1,   351,    -1,   350,   351,    -1,   352,   131,   549,    -1,
+      -1,    33,    41,   165,   106,   164,    -1,   347,    -1,   350,
+      -1,    49,    24,     1,    -1,    49,    60,   629,    -1,    49,
+      60,   349,   629,    -1,    49,    60,   629,    96,   348,    -1,
+      49,    60,   349,   629,    96,   348,    -1,   629,    -1,   348,
+     106,   629,    -1,   159,   630,   131,    -1,   112,    45,   159,
+      -1,    49,    34,   629,    -1,    49,    34,   159,   630,   131,
+     629,    -1,    49,    34,   629,    96,   348,    -1,    49,    34,
+     159,   630,   131,   629,    96,   348,    -1,    33,   159,   630,
+     131,   629,    -1,    33,   112,    45,   159,   629,    -1,    33,
+     112,    47,   159,   629,    -1,   354,    -1,   353,   189,   354,
+      -1,   353,   330,   354,    -1,   355,    -1,   359,    -1,   361,
+      -1,   365,    -1,   370,    -1,   377,    -1,   379,    -1,   382,
+      -1,    33,   112,    79,   356,    -1,    33,    79,   631,   356,
+      -1,   357,    -1,   356,   357,    -1,   358,   131,   555,    -1,
       80,    -1,    88,    -1,    81,    -1,    82,    -1,    83,    -1,
       84,    -1,    89,    -1,    85,    -1,    86,    -1,    87,    -1,
-      33,    56,   625,    29,    -1,    33,   259,   596,    -1,    33,
-     110,   151,   356,    -1,    94,   534,   357,    -1,   357,    -1,
-     358,    -1,   136,    -1,   136,   358,    -1,   141,   401,    -1,
-      33,   360,   141,   401,    -1,    33,   360,   136,    -1,    33,
-     360,   136,   141,   401,    -1,   111,   117,   625,    -1,   111,
-     117,   625,   531,    -1,   361,   111,   117,   625,    -1,   361,
-     111,   117,   625,   531,    -1,   362,    -1,   361,   362,    -1,
-      26,    -1,    26,   155,   363,   186,    -1,    27,    -1,    27,
-     155,   363,   186,    -1,   495,    -1,   363,   106,   495,    -1,
-      33,   365,    -1,    33,   361,   365,    -1,   366,    -1,   367,
-      -1,    47,   626,   368,   385,    -1,    47,   626,   368,   136,
-      -1,    74,    47,   626,   368,   385,    -1,    74,    47,   626,
-     368,   136,    -1,   155,   186,    -1,   155,   369,   186,    -1,
-     155,   186,    94,   532,    -1,   155,   369,   186,    94,   532,
-      -1,   370,    -1,   369,   106,   370,    -1,   117,   625,    -1,
-     117,   625,   531,    -1,    33,   285,   625,    -1,    33,   285,
-     625,    94,   372,    -1,    33,   361,   285,   625,    -1,    33,
-     361,   285,   625,    94,   372,    -1,   537,    -1,   537,   533,
-      -1,    33,   293,   625,   297,   225,   478,   169,   374,    -1,
-      33,   361,   293,   625,   297,   225,   478,   169,   374,    -1,
-     375,    -1,   374,   106,   375,    -1,   478,    -1,   478,   531,
-      -1,   478,   436,    -1,   478,   531,   436,    -1,    33,   301,
-     302,   625,   297,   285,   625,   117,   625,   303,   401,    -1,
-      33,   301,   302,   625,   297,   285,   625,   223,   117,   625,
-     303,   291,   304,   478,    -1,    33,   301,   302,   625,   297,
-     285,   625,   305,   223,   117,   625,   303,   401,    -1,    33,
-     301,   302,   625,   306,   304,   255,   285,   625,   223,   117,
-     625,   304,   478,   197,   285,   625,   223,   117,   625,   304,
-     478,    -1,   378,    -1,   380,    -1,   381,    -1,    -1,   380,
-      -1,   381,    -1,    -1,   400,    -1,   381,   400,    -1,   382,
-      -1,   381,   382,    -1,   383,    -1,   386,    -1,   389,    -1,
-     390,    -1,   391,    -1,   392,    -1,   393,    -1,   394,    -1,
-     396,    -1,   448,    -1,   444,    -1,   397,    -1,   152,   381,
-     183,    -1,   152,   183,    -1,   152,   379,   183,    -1,   152,
-     379,   183,    -1,   387,   189,    -1,   387,   106,   388,    -1,
-     111,   388,    -1,   361,   111,   388,    -1,   117,   625,    -1,
-     117,   625,   531,    -1,   117,   625,   141,   401,    -1,   117,
-     625,   531,   141,   401,    -1,   117,   625,   141,   401,   189,
-      -1,   402,   189,    -1,   238,   240,   401,   189,    -1,   241,
-     155,   400,   186,   382,    -1,   236,   239,   189,    -1,   237,
-     239,   189,    -1,   412,   395,    -1,   185,   382,    -1,    48,
-     155,   400,   186,   196,   382,   125,   382,    -1,   242,   383,
-     398,    -1,   399,    -1,   398,   399,    -1,   243,   569,   383,
-      -1,   401,    -1,   400,   106,   401,    -1,   403,    -1,   440,
-      -1,   447,    -1,   453,    -1,   565,    -1,   402,    -1,   454,
-      -1,   437,    -1,   558,    -1,   559,    -1,   561,    -1,   560,
-      -1,   562,    -1,   412,   404,    -1,   185,   401,    -1,    66,
+      33,    56,   631,    29,    -1,    33,   259,   602,    -1,    33,
+     110,   151,   362,    -1,    94,   540,   363,    -1,   363,    -1,
+     364,    -1,   136,    -1,   136,   364,    -1,   141,   407,    -1,
+      33,   366,   141,   407,    -1,    33,   366,   136,    -1,    33,
+     366,   136,   141,   407,    -1,   111,   117,   631,    -1,   111,
+     117,   631,   537,    -1,   367,   111,   117,   631,    -1,   367,
+     111,   117,   631,   537,    -1,   368,    -1,   367,   368,    -1,
+      26,    -1,    26,   155,   369,   186,    -1,    27,    -1,    27,
+     155,   369,   186,    -1,   501,    -1,   369,   106,   501,    -1,
+      33,   371,    -1,    33,   367,   371,    -1,   372,    -1,   373,
+      -1,    47,   632,   374,   391,    -1,    47,   632,   374,   136,
+      -1,    74,    47,   632,   374,   391,    -1,    74,    47,   632,
+     374,   136,    -1,   155,   186,    -1,   155,   375,   186,    -1,
+     155,   186,    94,   538,    -1,   155,   375,   186,    94,   538,
+      -1,   376,    -1,   375,   106,   376,    -1,   117,   631,    -1,
+     117,   631,   537,    -1,    33,   285,   631,    -1,    33,   285,
+     631,    94,   378,    -1,    33,   367,   285,   631,    -1,    33,
+     367,   285,   631,    94,   378,    -1,   543,    -1,   543,   539,
+      -1,    33,   293,   631,   297,   225,   484,   169,   380,    -1,
+      33,   367,   293,   631,   297,   225,   484,   169,   380,    -1,
+     381,    -1,   380,   106,   381,    -1,   484,    -1,   484,   537,
+      -1,   484,   442,    -1,   484,   537,   442,    -1,    33,   301,
+     302,   631,   297,   285,   631,   117,   631,   303,   407,    -1,
+      33,   301,   302,   631,   297,   285,   631,   223,   117,   631,
+     303,   291,   304,   484,    -1,    33,   301,   302,   631,   297,
+     285,   631,   305,   223,   117,   631,   303,   407,    -1,    33,
+     301,   302,   631,   306,   304,   255,   285,   631,   223,   117,
+     631,   304,   484,   197,   285,   631,   223,   117,   631,   304,
+     484,    -1,   384,    -1,   386,    -1,   387,    -1,    -1,   386,
+      -1,   387,    -1,    -1,   406,    -1,   387,   406,    -1,   388,
+      -1,   387,   388,    -1,   389,    -1,   392,    -1,   395,    -1,
+     396,    -1,   397,    -1,   398,    -1,   399,    -1,   400,    -1,
+     402,    -1,   454,    -1,   450,    -1,   403,    -1,   152,   387,
+     183,    -1,   152,   183,    -1,   152,   385,   183,    -1,   152,
+     385,   183,    -1,   393,   189,    -1,   393,   106,   394,    -1,
+     111,   394,    -1,   367,   111,   394,    -1,   117,   631,    -1,
+     117,   631,   537,    -1,   117,   631,   141,   407,    -1,   117,
+     631,   537,   141,   407,    -1,   117,   631,   141,   407,   189,
+      -1,   408,   189,    -1,   238,   240,   407,   189,    -1,   241,
+     155,   406,   186,   388,    -1,   236,   239,   189,    -1,   237,
+     239,   189,    -1,   418,   401,    -1,   185,   388,    -1,    48,
+     155,   406,   186,   196,   388,   125,   388,    -1,   242,   389,
+     404,    -1,   405,    -1,   404,   405,    -1,   243,   575,   389,
+      -1,   407,    -1,   406,   106,   407,    -1,   409,    -1,   446,
+      -1,   453,    -1,   459,    -1,   571,    -1,   408,    -1,   460,
+      -1,   443,    -1,   564,    -1,   565,    -1,   567,    -1,   566,
+      -1,   568,    -1,   418,   410,    -1,   185,   407,    -1,    66,
      282,    -1,    71,   282,    -1,   215,    -1,   252,    -1,    55,
-     252,    -1,   406,   422,    77,   401,    -1,   406,    77,   401,
-      -1,    46,   405,   421,   407,   407,    -1,    46,   405,   421,
-     407,    -1,    42,   117,   625,    -1,   413,    -1,   418,    -1,
-     408,    -1,   410,    -1,   425,    -1,   430,    -1,   426,    -1,
-     409,    -1,   410,    -1,   412,   411,    -1,    46,   117,   414,
-      -1,   415,    -1,   414,   106,   117,   415,    -1,   625,   146,
-     401,    -1,   625,    36,   126,   146,   401,    -1,   625,   531,
-     146,   401,    -1,   625,   531,    36,   126,   146,   401,    -1,
-     625,   416,   146,   401,    -1,   625,    36,   126,   416,   146,
-     401,    -1,   625,   531,   416,   146,   401,    -1,   625,   531,
-      36,   126,   416,   146,   401,    -1,   625,   417,   146,   401,
-      -1,   625,   531,   417,   146,   401,    -1,   625,   416,   417,
-     146,   401,    -1,   625,   531,   416,   417,   146,   401,    -1,
-      96,   117,   625,    -1,   271,   117,   625,    -1,    51,   419,
-      -1,   420,    -1,   419,   106,   420,    -1,   117,   625,   141,
-     401,    -1,   117,   625,   531,   141,   401,    -1,   417,   141,
-     401,    -1,   117,   625,   531,   417,   141,   401,    -1,   117,
-     625,   146,   401,    -1,   117,   625,   531,   146,   401,    -1,
-     423,    -1,   117,   625,    -1,   117,   625,   423,    -1,   416,
-      -1,   416,   424,    -1,   424,    -1,    58,   117,   625,    53,
-     117,   625,    -1,    53,   117,   625,    -1,    58,   117,   625,
-      -1,   210,   401,    -1,   170,   169,   427,    -1,   428,    -1,
-     427,   106,   428,    -1,   117,   625,    -1,   117,   625,   429,
-      -1,   105,   623,    -1,   167,   169,   431,    -1,    69,   167,
-     169,   431,    -1,   432,    -1,   431,   106,   432,    -1,   401,
-      -1,   401,   433,    -1,   434,    -1,   435,    -1,   436,    -1,
-     434,   435,    -1,   434,   436,    -1,   435,   436,    -1,   434,
-     435,   436,    -1,    95,    -1,   115,    -1,   126,   127,    -1,
-     126,   128,    -1,   105,   623,    -1,    67,   117,   438,   187,
-     401,    -1,   134,   117,   438,   187,   401,    -1,   439,    -1,
-     438,   106,   117,   439,    -1,   625,   146,   401,    -1,   625,
-     531,   146,   401,    -1,    72,   155,   400,   186,   441,   112,
-     185,   401,    -1,   442,    -1,   441,   442,    -1,   443,   185,
-     401,    -1,    99,   401,    -1,   443,    99,   401,    -1,    72,
-     155,   400,   186,   445,   112,   185,   382,    -1,   446,    -1,
-     445,   446,    -1,   443,   185,   382,    -1,    73,   155,   400,
-     186,   449,   112,   185,   401,    -1,    73,   155,   400,   186,
-     449,   112,   117,   625,   185,   401,    -1,    73,   155,   400,
-     186,   451,   112,   185,   382,    -1,    73,   155,   400,   186,
-     449,   112,   117,   625,   185,   382,    -1,   450,    -1,   449,
-     450,    -1,    99,   532,   185,   401,    -1,    99,   117,   625,
-      94,   532,   185,   401,    -1,   452,    -1,   451,   452,    -1,
-      99,   532,   185,   382,    -1,    99,   117,   625,    94,   532,
-     185,   382,    -1,    48,   155,   400,   186,   196,   401,   125,
-     401,    -1,   455,    -1,   454,   166,   455,    -1,   456,    -1,
-     455,    92,   456,    -1,   458,    -1,   458,   472,   458,    -1,
-     458,   473,   458,    -1,   458,   131,   458,    -1,   458,   161,
-     458,    -1,    -1,   458,   156,   457,   458,    -1,   458,   154,
-     458,    -1,   458,   142,   458,    -1,   458,   140,   458,    -1,
-     460,    -1,   460,   247,    70,   570,   459,    -1,    -1,   622,
-      -1,   461,    -1,   461,   197,   461,    -1,   462,    -1,   461,
-     175,   462,    -1,   461,   157,   462,    -1,   463,    -1,   462,
-     192,   463,    -1,   462,   116,   463,    -1,   462,   145,   463,
-      -1,   462,   158,   463,    -1,   464,    -1,   463,   199,   464,
-      -1,   463,   208,   464,    -1,   465,    -1,   464,   149,   465,
-      -1,   464,   135,   465,    -1,   466,    -1,   466,    50,   229,
-     532,    -1,   467,    -1,   467,   198,    94,   532,    -1,   468,
-      -1,   468,   100,    94,   530,    -1,   469,    -1,   469,   101,
-      94,   530,    -1,   471,    -1,   470,   471,    -1,   175,    -1,
-     157,    -1,   470,   175,    -1,   470,   157,    -1,   474,    -1,
-     478,    -1,   475,    -1,   201,    -1,   206,    -1,   205,    -1,
+     252,    -1,   412,   428,    77,   407,    -1,   412,    77,   407,
+      -1,    46,   411,   427,   413,   413,    -1,    46,   411,   427,
+     413,    -1,    42,   117,   631,    -1,   419,    -1,   424,    -1,
+     414,    -1,   416,    -1,   431,    -1,   436,    -1,   432,    -1,
+     415,    -1,   416,    -1,   418,   417,    -1,    46,   117,   420,
+      -1,   421,    -1,   420,   106,   117,   421,    -1,   631,   146,
+     407,    -1,   631,    36,   126,   146,   407,    -1,   631,   537,
+     146,   407,    -1,   631,   537,    36,   126,   146,   407,    -1,
+     631,   422,   146,   407,    -1,   631,    36,   126,   422,   146,
+     407,    -1,   631,   537,   422,   146,   407,    -1,   631,   537,
+      36,   126,   422,   146,   407,    -1,   631,   423,   146,   407,
+      -1,   631,   537,   423,   146,   407,    -1,   631,   422,   423,
+     146,   407,    -1,   631,   537,   422,   423,   146,   407,    -1,
+      96,   117,   631,    -1,   271,   117,   631,    -1,    51,   425,
+      -1,   426,    -1,   425,   106,   426,    -1,   117,   631,   141,
+     407,    -1,   117,   631,   537,   141,   407,    -1,   423,   141,
+     407,    -1,   117,   631,   537,   423,   141,   407,    -1,   117,
+     631,   146,   407,    -1,   117,   631,   537,   146,   407,    -1,
+     429,    -1,   117,   631,    -1,   117,   631,   429,    -1,   422,
+      -1,   422,   430,    -1,   430,    -1,    58,   117,   631,    53,
+     117,   631,    -1,    53,   117,   631,    -1,    58,   117,   631,
+      -1,   210,   407,    -1,   170,   169,   433,    -1,   434,    -1,
+     433,   106,   434,    -1,   117,   631,    -1,   117,   631,   435,
+      -1,   105,   629,    -1,   167,   169,   437,    -1,    69,   167,
+     169,   437,    -1,   438,    -1,   437,   106,   438,    -1,   407,
+      -1,   407,   439,    -1,   440,    -1,   441,    -1,   442,    -1,
+     440,   441,    -1,   440,   442,    -1,   441,   442,    -1,   440,
+     441,   442,    -1,    95,    -1,   115,    -1,   126,   127,    -1,
+     126,   128,    -1,   105,   629,    -1,    67,   117,   444,   187,
+     407,    -1,   134,   117,   444,   187,   407,    -1,   445,    -1,
+     444,   106,   117,   445,    -1,   631,   146,   407,    -1,   631,
+     537,   146,   407,    -1,    72,   155,   406,   186,   447,   112,
+     185,   407,    -1,   448,    -1,   447,   448,    -1,   449,   185,
+     407,    -1,    99,   407,    -1,   449,    99,   407,    -1,    72,
+     155,   406,   186,   451,   112,   185,   388,    -1,   452,    -1,
+     451,   452,    -1,   449,   185,   388,    -1,    73,   155,   406,
+     186,   455,   112,   185,   407,    -1,    73,   155,   406,   186,
+     455,   112,   117,   631,   185,   407,    -1,    73,   155,   406,
+     186,   457,   112,   185,   388,    -1,    73,   155,   406,   186,
+     455,   112,   117,   631,   185,   388,    -1,   456,    -1,   455,
+     456,    -1,    99,   538,   185,   407,    -1,    99,   117,   631,
+      94,   538,   185,   407,    -1,   458,    -1,   457,   458,    -1,
+      99,   538,   185,   388,    -1,    99,   117,   631,    94,   538,
+     185,   388,    -1,    48,   155,   406,   186,   196,   407,   125,
+     407,    -1,   461,    -1,   460,   166,   461,    -1,   462,    -1,
+     461,    92,   462,    -1,   464,    -1,   464,   478,   464,    -1,
+     464,   479,   464,    -1,   464,   131,   464,    -1,   464,   161,
+     464,    -1,    -1,   464,   156,   463,   464,    -1,   464,   154,
+     464,    -1,   464,   142,   464,    -1,   464,   140,   464,    -1,
+     466,    -1,   466,   247,    70,   576,   465,    -1,    -1,   628,
+      -1,   467,    -1,   467,   197,   467,    -1,   468,    -1,   467,
+     175,   468,    -1,   467,   157,   468,    -1,   469,    -1,   468,
+     192,   469,    -1,   468,   116,   469,    -1,   468,   145,   469,
+      -1,   468,   158,   469,    -1,   470,    -1,   469,   199,   470,
+      -1,   469,   208,   470,    -1,   471,    -1,   470,   149,   471,
+      -1,   470,   135,   471,    -1,   472,    -1,   472,    50,   229,
+     538,    -1,   473,    -1,   473,   198,    94,   538,    -1,   474,
+      -1,   474,   100,    94,   536,    -1,   475,    -1,   475,   101,
+      94,   536,    -1,   477,    -1,   476,   477,    -1,   175,    -1,
+     157,    -1,   476,   175,    -1,   476,   157,    -1,   480,    -1,
+     484,    -1,   481,    -1,   201,    -1,   206,    -1,   205,    -1,
      204,    -1,   203,    -1,   202,    -1,   150,    -1,   178,    -1,
-     139,    -1,    75,   152,   380,   183,    -1,    75,   220,   152,
-     380,   183,    -1,    75,   219,   152,   380,   183,    -1,    75,
-      76,   547,   152,   380,   183,    -1,   476,   152,   183,    -1,
-     476,   152,   400,   183,    -1,   477,    -1,   476,   477,    -1,
-     176,   625,    17,    -1,   176,    18,    -1,   176,    19,    -1,
-     479,    -1,   479,   480,    -1,   191,   480,    -1,   480,    -1,
-     190,    -1,   481,    -1,   481,   190,   480,    -1,   481,   191,
-     480,    -1,   482,    -1,   491,    -1,   483,    -1,   483,   492,
-      -1,   486,    -1,   486,   492,    -1,   484,   488,    -1,   485,
+     139,    -1,    75,   152,   386,   183,    -1,    75,   220,   152,
+     386,   183,    -1,    75,   219,   152,   386,   183,    -1,    75,
+      76,   553,   152,   386,   183,    -1,   482,   152,   183,    -1,
+     482,   152,   406,   183,    -1,   483,    -1,   482,   483,    -1,
+     176,   631,    17,    -1,   176,    18,    -1,   176,    19,    -1,
+     485,    -1,   485,   486,    -1,   191,   486,    -1,   486,    -1,
+     190,    -1,   487,    -1,   487,   190,   486,    -1,   487,   191,
+     486,    -1,   488,    -1,   497,    -1,   489,    -1,   489,   498,
+      -1,   492,    -1,   492,   498,    -1,   490,   494,    -1,   491,
       -1,   104,   121,    -1,   113,   121,    -1,    97,   121,    -1,
      188,   121,    -1,   114,   121,    -1,   138,   121,    -1,   137,
-     121,    -1,   488,    -1,    98,   488,    -1,   487,   488,    -1,
+     121,    -1,   494,    -1,    98,   494,    -1,   493,   494,    -1,
      119,    -1,   171,   121,    -1,    90,   121,    -1,   180,   121,
-      -1,   179,   121,    -1,    91,   121,    -1,   537,    -1,   489,
-      -1,   625,    -1,   490,    -1,   192,    -1,    11,    -1,    12,
-      -1,    20,    -1,   494,    -1,   491,   492,    -1,   491,   155,
-     186,    -1,   491,   155,   503,   186,    -1,   493,    -1,   492,
-     493,    -1,   153,   400,   184,    -1,   495,    -1,   497,    -1,
-     498,    -1,   499,    -1,   502,    -1,   504,    -1,   500,    -1,
-     501,    -1,   550,    -1,   384,    -1,   496,    -1,   549,    -1,
-     109,    -1,   148,    -1,   123,    -1,   117,   625,    -1,   155,
-     186,    -1,   155,   400,   186,    -1,   118,    -1,   168,   152,
-     400,   183,    -1,   200,   152,   400,   183,    -1,   626,   155,
-     186,    -1,   626,   155,   503,   186,    -1,   401,    -1,   503,
-     106,   401,    -1,   505,    -1,   523,    -1,   506,    -1,   520,
-      -1,   521,    -1,   156,   625,   510,   129,    -1,   156,   625,
-     508,   510,   129,    -1,   156,   625,   510,   195,   193,   625,
-     510,   195,    -1,   156,   625,   510,   195,   507,   193,   625,
-     510,   195,    -1,   156,   625,   508,   510,   195,   193,   625,
-     510,   195,    -1,   156,   625,   508,   510,   195,   507,   193,
-     625,   510,   195,    -1,   518,    -1,   507,   518,    -1,   509,
-      -1,   508,   509,    -1,    35,   625,   510,   131,   510,   511,
-      -1,    -1,    35,    -1,   182,   512,   182,    -1,    93,   514,
-      93,    -1,    -1,   513,    -1,   133,    -1,   516,    -1,   513,
-     133,    -1,   513,   516,    -1,    -1,   515,    -1,   132,    -1,
-     517,    -1,   515,   132,    -1,   515,   517,    -1,    28,    -1,
-     519,    -1,     5,    -1,   519,    -1,   505,    -1,    10,    -1,
-     522,    -1,   519,    -1,     9,    -1,   122,    -1,   124,    -1,
-     152,   380,   183,    -1,   211,    30,   212,    -1,   211,   212,
-      -1,   173,   624,   174,    -1,   173,   624,     8,    -1,   102,
-       7,    -1,   524,    -1,   525,    -1,   526,    -1,   527,    -1,
-     528,    -1,   529,    -1,    43,   152,   380,   183,    -1,    21,
-     379,   183,    -1,    45,   152,   400,   183,   152,   379,   183,
-      -1,    22,   379,   183,    -1,    97,   152,   400,   183,   152,
-     379,   183,    -1,    70,   152,   380,   183,    -1,    39,   152,
-     380,   183,    -1,    23,   379,   183,    -1,    59,   152,   400,
-     183,   152,   379,   183,    -1,   536,    -1,   536,   143,    -1,
-      94,   532,    -1,   534,    -1,   534,   533,    -1,   209,   155,
-     186,    -1,   143,    -1,   192,    -1,   175,    -1,   536,    -1,
-     537,    -1,   151,   155,   186,    -1,   553,    -1,   556,    -1,
-     532,    -1,   535,   106,   532,    -1,   625,    -1,   539,    -1,
-     545,    -1,   543,    -1,   546,    -1,   544,    -1,   542,    -1,
-     541,    -1,   540,    -1,   538,    -1,   223,   155,   186,    -1,
-      44,   155,   186,    -1,    44,   155,   545,   186,    -1,    44,
-     155,   546,   186,    -1,    70,   155,   186,    -1,    39,   155,
-     186,    -1,    59,   155,   186,    -1,    59,   155,   624,   186,
+      -1,   179,   121,    -1,    91,   121,    -1,   543,    -1,   495,
+      -1,   631,    -1,   496,    -1,   192,    -1,    11,    -1,    12,
+      -1,    20,    -1,   500,    -1,   497,   498,    -1,   497,   155,
+     186,    -1,   497,   155,   509,   186,    -1,   499,    -1,   498,
+     499,    -1,   153,   406,   184,    -1,   501,    -1,   503,    -1,
+     504,    -1,   505,    -1,   508,    -1,   510,    -1,   506,    -1,
+     507,    -1,   556,    -1,   390,    -1,   502,    -1,   555,    -1,
+     109,    -1,   148,    -1,   123,    -1,   117,   631,    -1,   155,
+     186,    -1,   155,   406,   186,    -1,   118,    -1,   168,   152,
+     406,   183,    -1,   200,   152,   406,   183,    -1,   632,   155,
+     186,    -1,   632,   155,   509,   186,    -1,   407,    -1,   509,
+     106,   407,    -1,   511,    -1,   529,    -1,   512,    -1,   526,
+      -1,   527,    -1,   156,   631,   516,   129,    -1,   156,   631,
+     514,   516,   129,    -1,   156,   631,   516,   195,   193,   631,
+     516,   195,    -1,   156,   631,   516,   195,   513,   193,   631,
+     516,   195,    -1,   156,   631,   514,   516,   195,   193,   631,
+     516,   195,    -1,   156,   631,   514,   516,   195,   513,   193,
+     631,   516,   195,    -1,   524,    -1,   513,   524,    -1,   515,
+      -1,   514,   515,    -1,    35,   631,   516,   131,   516,   517,
+      -1,    -1,    35,    -1,   182,   518,   182,    -1,    93,   520,
+      93,    -1,    -1,   519,    -1,   133,    -1,   522,    -1,   519,
+     133,    -1,   519,   522,    -1,    -1,   521,    -1,   132,    -1,
+     523,    -1,   521,   132,    -1,   521,   523,    -1,    28,    -1,
+     525,    -1,     5,    -1,   525,    -1,   511,    -1,    10,    -1,
+     528,    -1,   525,    -1,     9,    -1,   122,    -1,   124,    -1,
+     152,   386,   183,    -1,   211,    30,   212,    -1,   211,   212,
+      -1,   173,   630,   174,    -1,   173,   630,     8,    -1,   102,
+       7,    -1,   530,    -1,   531,    -1,   532,    -1,   533,    -1,
+     534,    -1,   535,    -1,    43,   152,   386,   183,    -1,    21,
+     385,   183,    -1,    45,   152,   406,   183,   152,   385,   183,
+      -1,    22,   385,   183,    -1,    97,   152,   406,   183,   152,
+     385,   183,    -1,    70,   152,   386,   183,    -1,    39,   152,
+     386,   183,    -1,    23,   385,   183,    -1,    59,   152,   406,
+     183,   152,   385,   183,    -1,   542,    -1,   542,   143,    -1,
+      94,   538,    -1,   540,    -1,   540,   539,    -1,   209,   155,
+     186,    -1,   143,    -1,   192,    -1,   175,    -1,   542,    -1,
+     543,    -1,   151,   155,   186,    -1,   559,    -1,   562,    -1,
+     538,    -1,   541,   106,   538,    -1,   631,    -1,   545,    -1,
+     551,    -1,   549,    -1,   552,    -1,   550,    -1,   548,    -1,
+     547,    -1,   546,    -1,   544,    -1,   223,   155,   186,    -1,
+      44,   155,   186,    -1,    44,   155,   551,   186,    -1,    44,
+     155,   552,   186,    -1,    70,   155,   186,    -1,    39,   155,
+     186,    -1,    59,   155,   186,    -1,    59,   155,   630,   186,
       -1,    59,   155,    29,   186,    -1,    97,   155,   186,    -1,
-      97,   155,   625,   186,    -1,    97,   155,   625,   106,   547,
+      97,   155,   631,   186,    -1,    97,   155,   631,   106,   553,
      186,    -1,    97,   155,   192,   186,    -1,    97,   155,   192,
-     106,   547,   186,    -1,    61,   155,   625,   186,    -1,    45,
-     155,   186,    -1,    45,   155,   625,   186,    -1,    45,   155,
-     625,   106,   547,   186,    -1,    45,   155,   625,   106,   548,
+     106,   553,   186,    -1,    61,   155,   631,   186,    -1,    45,
+     155,   186,    -1,    45,   155,   631,   186,    -1,    45,   155,
+     631,   106,   553,   186,    -1,    45,   155,   631,   106,   554,
      186,    -1,    45,   155,   192,   186,    -1,    45,   155,   192,
-     106,   547,   186,    -1,    45,   155,   192,   106,   548,   186,
-      -1,    62,   155,   625,   186,    -1,   625,    -1,   625,   143,
-      -1,    29,    -1,   551,    -1,   552,    -1,   625,   144,   148,
-      -1,    47,   368,   385,    -1,   554,    -1,   555,    -1,    47,
-     155,   192,   186,    -1,    47,   155,   186,    94,   532,    -1,
-      47,   155,   535,   186,    94,   532,    -1,   155,   534,   186,
+     106,   553,   186,    -1,    45,   155,   192,   106,   554,   186,
+      -1,    62,   155,   631,   186,    -1,   631,    -1,   631,   143,
+      -1,    29,    -1,   557,    -1,   558,    -1,   631,   144,   148,
+      -1,    47,   374,   391,    -1,   560,    -1,   561,    -1,    47,
+     155,   192,   186,    -1,    47,   155,   186,    94,   538,    -1,
+      47,   155,   541,   186,    94,   538,    -1,   155,   540,   186,
       -1,    33,   218,   219,    -1,    33,   218,   220,    -1,    33,
-     218,   221,    -1,   224,   223,   401,   231,   401,    -1,   224,
-     223,   401,    94,   230,   231,   401,    -1,   224,   223,   401,
-      94,   232,   231,   401,    -1,   224,   223,   401,   216,   401,
-      -1,   224,   223,   401,   217,   401,    -1,   224,   225,   401,
-     231,   401,    -1,   224,   225,   401,    94,   230,   231,   401,
-      -1,   224,   225,   401,    94,   232,   231,   401,    -1,   224,
-     225,   401,   216,   401,    -1,   224,   225,   401,   217,   401,
-      -1,   222,   223,   401,    -1,   222,   225,   401,    -1,   227,
-     223,   401,   235,   401,    -1,   227,   228,   229,   223,   401,
-     235,   401,    -1,   226,   223,   401,    94,   401,    -1,   234,
-     117,   563,   233,   401,   185,   401,    -1,   564,    -1,   563,
-     106,   117,   564,    -1,   625,   141,   401,    -1,   242,   152,
-     400,   183,   566,    -1,   567,    -1,   566,   567,    -1,   243,
-     569,   568,    -1,   152,   400,   183,    -1,   489,    -1,   569,
-     208,   489,    -1,   573,   571,    -1,    -1,   572,    -1,   591,
-      -1,   572,   591,    -1,   574,    -1,   573,   260,   574,    -1,
-     575,    -1,   574,   256,   575,    -1,   576,    -1,   575,   258,
-     146,   576,    -1,   577,    -1,   257,   577,    -1,   581,   578,
-     579,    -1,    -1,   596,    -1,    -1,   580,    -1,   280,   152,
-     400,   183,    -1,   585,   582,    -1,   155,   570,   186,    -1,
-     583,    -1,    -1,   618,    -1,   476,   152,   584,   183,    -1,
-      -1,   570,    -1,   586,   587,    -1,   495,    -1,   152,   400,
-     183,    -1,    -1,   588,    -1,   246,   589,    -1,   245,   590,
-      -1,   268,    -1,    -1,    78,    -1,    -1,   284,    -1,   592,
-      -1,   593,    -1,   594,    -1,   620,    -1,   617,    -1,   168,
-      -1,   282,   461,   595,    -1,   251,   619,   595,    -1,   284,
-      -1,   274,    -1,   267,    -1,   244,   597,    -1,   596,   244,
-     597,    -1,   598,    -1,   599,    -1,   600,    -1,   615,    -1,
-     601,    -1,   609,    -1,   602,    -1,   616,    -1,    99,   272,
+     218,   221,    -1,   224,   223,   407,   231,   407,    -1,   224,
+     223,   407,    94,   230,   231,   407,    -1,   224,   223,   407,
+      94,   232,   231,   407,    -1,   224,   223,   407,   216,   407,
+      -1,   224,   223,   407,   217,   407,    -1,   224,   225,   407,
+     231,   407,    -1,   224,   225,   407,    94,   230,   231,   407,
+      -1,   224,   225,   407,    94,   232,   231,   407,    -1,   224,
+     225,   407,   216,   407,    -1,   224,   225,   407,   217,   407,
+      -1,   222,   223,   407,    -1,   222,   225,   407,    -1,   227,
+     223,   407,   235,   407,    -1,   227,   228,   229,   223,   407,
+     235,   407,    -1,   226,   223,   407,    94,   407,    -1,   234,
+     117,   569,   233,   407,   185,   407,    -1,   570,    -1,   569,
+     106,   117,   570,    -1,   631,   141,   407,    -1,   242,   152,
+     406,   183,   572,    -1,   573,    -1,   572,   573,    -1,   243,
+     575,   574,    -1,   152,   406,   183,    -1,   495,    -1,   575,
+     208,   495,    -1,   579,   577,    -1,    -1,   578,    -1,   597,
+      -1,   578,   597,    -1,   580,    -1,   579,   260,   580,    -1,
+     581,    -1,   580,   256,   581,    -1,   582,    -1,   581,   258,
+     146,   582,    -1,   583,    -1,   257,   583,    -1,   587,   584,
+     585,    -1,    -1,   602,    -1,    -1,   586,    -1,   280,   152,
+     406,   183,    -1,   591,   588,    -1,   155,   576,   186,    -1,
+     589,    -1,    -1,   624,    -1,   482,   152,   590,   183,    -1,
+      -1,   576,    -1,   592,   593,    -1,   501,    -1,   152,   406,
+     183,    -1,    -1,   594,    -1,   246,   595,    -1,   245,   596,
+      -1,   268,    -1,    -1,    78,    -1,    -1,   284,    -1,   598,
+      -1,   599,    -1,   600,    -1,   626,    -1,   623,    -1,   168,
+      -1,   282,   467,   601,    -1,   251,   625,   601,    -1,   284,
+      -1,   274,    -1,   267,    -1,   244,   603,    -1,   602,   244,
+     603,    -1,   604,    -1,   605,    -1,   606,    -1,   621,    -1,
+     607,    -1,   615,    -1,   608,    -1,   622,    -1,    99,   272,
       -1,    99,   261,    -1,   264,    -1,   279,    -1,   249,   272,
-      -1,   249,   261,    -1,    56,   625,    29,    -1,   275,    -1,
-      54,   275,    -1,   277,   603,    -1,   277,   155,   603,   604,
-     186,    -1,    54,   277,    -1,   606,    -1,   112,    -1,    -1,
-     106,   605,    -1,   606,    -1,   605,   106,   606,    -1,    96,
-      29,   607,   608,    -1,    -1,   269,    29,    -1,    -1,   619,
-     263,    -1,   276,   284,   610,   612,    -1,   276,   284,   112,
-     612,    -1,    54,   276,   284,    -1,    96,    29,    -1,   155,
-     611,   186,    -1,    29,    -1,   611,   106,    29,    -1,    -1,
-     613,    -1,   614,    -1,   613,   614,    -1,   199,   610,    -1,
-     135,   610,    -1,   262,    29,    -1,   281,    -1,    54,   281,
+      -1,   249,   261,    -1,    56,   631,    29,    -1,   275,    -1,
+      54,   275,    -1,   277,   609,    -1,   277,   155,   609,   610,
+     186,    -1,    54,   277,    -1,   612,    -1,   112,    -1,    -1,
+     106,   611,    -1,   612,    -1,   611,   106,   612,    -1,    96,
+      29,   613,   614,    -1,    -1,   269,    29,    -1,    -1,   625,
+     263,    -1,   276,   284,   616,   618,    -1,   276,   284,   112,
+     618,    -1,    54,   276,   284,    -1,    96,    29,    -1,   155,
+     617,   186,    -1,    29,    -1,   617,   106,    29,    -1,    -1,
+     619,    -1,   620,    -1,   619,   620,    -1,   199,   616,    -1,
+     135,   616,    -1,   262,    29,    -1,   281,    -1,    54,   281,
       -1,    96,   215,    -1,    96,   252,    -1,   253,   248,    -1,
-     265,   619,   278,    -1,   254,   461,    -1,    96,   128,   461,
-      -1,    96,    52,   461,    -1,   255,   461,   197,   461,    -1,
-     270,   621,    -1,   250,   621,    -1,   273,    -1,   266,    -1,
-     283,   248,   463,    -1,    29,    -1,    16,    -1,   625,    -1,
-     626,    -1,    97,    -1,    39,    -1,    44,    -1,    45,    -1,
+     265,   625,   278,    -1,   254,   467,    -1,    96,   128,   467,
+      -1,    96,    52,   467,    -1,   255,   467,   197,   467,    -1,
+     270,   627,    -1,   250,   627,    -1,   273,    -1,   266,    -1,
+     283,   248,   469,    -1,    29,    -1,    16,    -1,   631,    -1,
+     632,    -1,    97,    -1,    39,    -1,    44,    -1,    45,    -1,
      151,    -1,    48,    -1,   223,    -1,    59,    -1,    61,    -1,
       62,    -1,    70,    -1,    73,    -1,    72,    -1,   209,    -1,
-     241,    -1,   627,    -1,    24,    -1,   213,    -1,   126,    -1,
+     241,    -1,   633,    -1,    24,    -1,   213,    -1,   126,    -1,
       38,    -1,   259,    -1,    37,    -1,   220,    -1,   219,    -1,
      145,    -1,    43,    -1,   257,    -1,   258,    -1,   272,    -1,
      261,    -1,   249,    -1,   283,    -1,   275,    -1,   277,    -1,
@@ -15694,7 +15790,7 @@ namespace zorba {
      304,    -1,   305,    -1,   306,    -1,   307,    -1,    90,    -1,
      104,    -1,   113,    -1,   171,    -1,   179,    -1,   188,    -1,
      137,    -1,    91,    -1,   114,    -1,   138,    -1,   180,    -1,
-     623,   120,   624,    -1,    25,    -1
+     629,   120,   630,    -1,    25,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -15804,102 +15900,102 @@ namespace zorba {
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   992,   992,   993,  1002,  1011,  1017,  1025,  1031,  1042,
-    1047,  1055,  1062,  1069,  1078,  1085,  1093,  1101,  1109,  1120,
-    1125,  1132,  1139,  1151,  1161,  1168,  1175,  1187,  1188,  1189,
-    1190,  1191,  1196,  1197,  1198,  1199,  1200,  1201,  1202,  1205,
-    1210,  1215,  1223,  1231,  1239,  1244,  1252,  1257,  1265,  1270,
-    1278,  1285,  1292,  1299,  1309,  1311,  1314,  1324,  1329,  1337,
-    1345,  1356,  1363,  1374,  1379,  1387,  1394,  1401,  1410,  1423,
-    1431,  1438,  1448,  1455,  1462,  1473,  1474,  1475,  1476,  1477,
-    1478,  1479,  1480,  1485,  1491,  1500,  1507,  1517,  1527,  1528,
-    1529,  1530,  1531,  1532,  1533,  1534,  1535,  1536,  1541,  1549,
-    1557,  1565,  1572,  1580,  1587,  1592,  1600,  1608,  1623,  1638,
-    1656,  1661,  1669,  1677,  1688,  1693,  1702,  1707,  1714,  1719,
-    1729,  1734,  1743,  1749,  1762,  1767,  1775,  1786,  1801,  1813,
-    1828,  1833,  1838,  1843,  1851,  1858,  1869,  1874,  1884,  1891,
-    1898,  1905,  1915,  1919,  1929,  1937,  1948,  1954,  1963,  1968,
-    1975,  1982,  1993,  2003,  2013,  2023,  2041,  2061,  2066,  2071,
-    2078,  2083,  2088,  2095,  2100,  2112,  2119,  2131,  2132,  2133,
-    2134,  2135,  2136,  2137,  2139,  2140,  2141,  2142,  2143,  2148,
-    2153,  2161,  2178,  2186,  2194,  2201,  2208,  2218,  2230,  2243,
-    2255,  2271,  2279,  2287,  2295,  2310,  2315,  2323,  2337,  2354,
-    2379,  2387,  2394,  2405,  2415,  2420,  2435,  2436,  2437,  2438,
-    2439,  2440,  2445,  2446,  2449,  2450,  2451,  2452,  2453,  2458,
-    2472,  2480,  2485,  2493,  2498,  2503,  2511,  2520,  2532,  2542,
-    2555,  2563,  2564,  2565,  2570,  2571,  2572,  2573,  2574,  2579,
-    2586,  2596,  2604,  2611,  2621,  2631,  2641,  2651,  2661,  2671,
-    2681,  2691,  2702,  2711,  2721,  2731,  2747,  2756,  2765,  2773,
-    2779,  2791,  2799,  2809,  2817,  2829,  2835,  2846,  2848,  2852,
-    2860,  2864,  2869,  2873,  2877,  2881,  2891,  2899,  2906,  2912,
-    2923,  2927,  2936,  2944,  2950,  2960,  2966,  2976,  2980,  2990,
-    2996,  3002,  3008,  3017,  3026,  3035,  3048,  3052,  3060,  3066,
-    3076,  3084,  3093,  3106,  3113,  3125,  3129,  3141,  3148,  3154,
-    3163,  3170,  3176,  3187,  3194,  3200,  3209,  3218,  3225,  3236,
-    3243,  3255,  3261,  3273,  3279,  3290,  3296,  3307,  3313,  3324,
-    3333,  3337,  3346,  3350,  3358,  3362,  3372,  3379,  3388,  3398,
-    3397,  3411,  3420,  3429,  3442,  3446,  3459,  3462,  3469,  3473,
-    3482,  3486,  3490,  3499,  3503,  3509,  3515,  3521,  3532,  3536,
-    3540,  3548,  3552,  3558,  3568,  3572,  3582,  3586,  3596,  3600,
-    3610,  3614,  3624,  3628,  3636,  3640,  3644,  3648,  3658,  3662,
-    3666,  3674,  3678,  3682,  3686,  3690,  3694,  3702,  3706,  3710,
-    3718,  3722,  3726,  3730,  3741,  3747,  3757,  3763,  3773,  3777,
-    3781,  3819,  3823,  3833,  3843,  3856,  3865,  3875,  3879,  3888,
-    3892,  3901,  3907,  3915,  3921,  3933,  3939,  3949,  3953,  3957,
-    3961,  3965,  3971,  3977,  3985,  3989,  3997,  4001,  4012,  4016,
-    4020,  4026,  4030,  4044,  4048,  4056,  4060,  4070,  4074,  4078,
-    4082,  4091,  4095,  4099,  4103,  4111,  4117,  4127,  4135,  4139,
-    4143,  4147,  4151,  4155,  4159,  4163,  4167,  4177,  4185,  4189,
-    4197,  4204,  4211,  4222,  4230,  4234,  4242,  4250,  4258,  4312,
-    4316,  4329,  4335,  4345,  4349,  4357,  4361,  4365,  4373,  4383,
-    4393,  4403,  4413,  4423,  4438,  4444,  4455,  4461,  4472,  4483,
-    4485,  4489,  4494,  4504,  4507,  4514,  4520,  4526,  4534,  4547,
-    4550,  4557,  4563,  4569,  4576,  4587,  4591,  4601,  4605,  4615,
-    4619,  4623,  4628,  4637,  4643,  4649,  4655,  4663,  4668,  4676,
-    4681,  4689,  4697,  4702,  4707,  4712,  4717,  4722,  4731,  4739,
-    4743,  4760,  4764,  4772,  4780,  4788,  4792,  4800,  4806,  4816,
-    4824,  4828,  4832,  4867,  4873,  4879,  4889,  4893,  4897,  4901,
-    4905,  4912,  4918,  4928,  4936,  4940,  4944,  4948,  4952,  4956,
-    4960,  4964,  4968,  4976,  4984,  4988,  4992,  5002,  5010,  5018,
-    5022,  5026,  5034,  5038,  5044,  5050,  5054,  5064,  5072,  5076,
-    5082,  5091,  5100,  5106,  5112,  5122,  5139,  5146,  5161,  5197,
-    5201,  5209,  5217,  5229,  5233,  5241,  5249,  5253,  5264,  5281,
-    5287,  5293,  5303,  5307,  5313,  5319,  5323,  5329,  5333,  5339,
-    5345,  5352,  5362,  5367,  5375,  5381,  5391,  5413,  5422,  5428,
-    5441,  5455,  5462,  5468,  5478,  5487,  5495,  5501,  5519,  5528,
-    5531,  5538,  5543,  5551,  5555,  5562,  5566,  5573,  5577,  5584,
-    5588,  5597,  5610,  5613,  5621,  5624,  5632,  5640,  5648,  5652,
-    5660,  5663,  5671,  5683,  5686,  5694,  5706,  5712,  5722,  5725,
-    5733,  5737,  5741,  5749,  5752,  5760,  5763,  5771,  5775,  5779,
-    5783,  5787,  5795,  5803,  5815,  5827,  5831,  5835,  5843,  5849,
-    5859,  5863,  5867,  5871,  5875,  5879,  5883,  5887,  5895,  5899,
-    5903,  5907,  5915,  5921,  5931,  5941,  5945,  5953,  5963,  5974,
-    5981,  5985,  5993,  5996,  6003,  6008,  6017,  6027,  6030,  6038,
-    6041,  6049,  6058,  6065,  6075,  6079,  6086,  6092,  6102,  6105,
-    6112,  6117,  6129,  6137,  6149,  6157,  6161,  6169,  6173,  6177,
-    6185,  6193,  6197,  6201,  6205,  6213,  6221,  6233,  6237,  6245,
-    6258,  6262,  6263,  6276,  6277,  6278,  6279,  6280,  6281,  6282,
-    6283,  6284,  6285,  6286,  6287,  6288,  6289,  6290,  6291,  6295,
-    6296,  6297,  6298,  6299,  6300,  6301,  6302,  6303,  6304,  6305,
-    6306,  6307,  6308,  6309,  6310,  6311,  6312,  6313,  6314,  6315,
-    6316,  6317,  6318,  6319,  6320,  6321,  6322,  6323,  6324,  6325,
-    6326,  6327,  6328,  6329,  6330,  6331,  6332,  6333,  6334,  6335,
-    6336,  6337,  6338,  6339,  6340,  6341,  6342,  6343,  6344,  6345,
-    6346,  6347,  6348,  6349,  6350,  6351,  6352,  6353,  6354,  6355,
-    6356,  6357,  6358,  6359,  6360,  6361,  6362,  6363,  6364,  6365,
-    6366,  6367,  6368,  6369,  6370,  6371,  6372,  6373,  6374,  6375,
-    6376,  6377,  6378,  6379,  6380,  6381,  6382,  6383,  6384,  6385,
-    6386,  6387,  6388,  6389,  6390,  6391,  6392,  6393,  6394,  6395,
-    6396,  6397,  6398,  6399,  6400,  6401,  6402,  6403,  6404,  6405,
-    6406,  6407,  6408,  6409,  6410,  6411,  6412,  6413,  6414,  6415,
-    6416,  6417,  6418,  6419,  6420,  6421,  6422,  6423,  6424,  6425,
-    6426,  6427,  6428,  6429,  6430,  6431,  6432,  6433,  6434,  6435,
-    6436,  6437,  6438,  6439,  6440,  6441,  6442,  6443,  6444,  6445,
-    6446,  6447,  6448,  6449,  6450,  6451,  6452,  6453,  6454,  6455,
-    6456,  6457,  6458,  6459,  6460,  6461,  6462,  6463,  6464,  6465,
-    6466,  6467,  6468,  6469,  6470,  6471,  6472,  6473,  6474,  6475,
-    6476,  6477,  6478,  6479,  6480,  6481,  6482,  6483,  6484,  6485,
-    6486,  6487,  6488,  6489,  6490,  6491,  6492,  6493,  6498,  6505
+         0,  1015,  1015,  1016,  1025,  1034,  1040,  1048,  1054,  1065,
+    1070,  1078,  1085,  1092,  1101,  1108,  1116,  1124,  1132,  1143,
+    1148,  1155,  1162,  1174,  1184,  1191,  1198,  1210,  1211,  1212,
+    1213,  1214,  1219,  1220,  1221,  1222,  1223,  1224,  1225,  1228,
+    1233,  1238,  1246,  1254,  1262,  1267,  1275,  1280,  1288,  1293,
+    1301,  1308,  1315,  1322,  1332,  1334,  1337,  1347,  1352,  1360,
+    1368,  1379,  1386,  1397,  1402,  1410,  1417,  1424,  1433,  1446,
+    1454,  1461,  1471,  1478,  1485,  1496,  1497,  1498,  1499,  1500,
+    1501,  1502,  1503,  1508,  1514,  1523,  1530,  1540,  1550,  1551,
+    1552,  1553,  1554,  1555,  1556,  1557,  1558,  1559,  1564,  1572,
+    1580,  1588,  1595,  1603,  1610,  1615,  1623,  1631,  1646,  1661,
+    1679,  1684,  1692,  1700,  1711,  1716,  1725,  1730,  1737,  1742,
+    1752,  1757,  1766,  1772,  1785,  1790,  1798,  1809,  1824,  1836,
+    1851,  1856,  1861,  1866,  1874,  1881,  1892,  1897,  1907,  1914,
+    1921,  1928,  1938,  1942,  1952,  1960,  1971,  1977,  1986,  1991,
+    1998,  2005,  2016,  2026,  2036,  2046,  2064,  2084,  2089,  2094,
+    2101,  2106,  2111,  2118,  2123,  2135,  2142,  2154,  2155,  2156,
+    2157,  2158,  2159,  2160,  2162,  2163,  2164,  2165,  2166,  2171,
+    2176,  2184,  2201,  2209,  2217,  2224,  2231,  2241,  2253,  2266,
+    2278,  2294,  2302,  2310,  2318,  2333,  2338,  2346,  2360,  2377,
+    2402,  2410,  2417,  2428,  2438,  2443,  2458,  2459,  2460,  2461,
+    2462,  2463,  2468,  2469,  2472,  2473,  2474,  2475,  2476,  2481,
+    2495,  2503,  2508,  2516,  2521,  2526,  2534,  2543,  2555,  2565,
+    2578,  2586,  2587,  2588,  2593,  2594,  2595,  2596,  2597,  2602,
+    2609,  2619,  2627,  2634,  2644,  2654,  2664,  2674,  2684,  2694,
+    2704,  2714,  2725,  2734,  2744,  2754,  2770,  2779,  2788,  2796,
+    2802,  2814,  2822,  2832,  2840,  2852,  2858,  2869,  2871,  2875,
+    2883,  2887,  2892,  2896,  2900,  2904,  2914,  2922,  2929,  2935,
+    2946,  2950,  2959,  2967,  2973,  2983,  2989,  2999,  3003,  3013,
+    3019,  3025,  3031,  3040,  3049,  3058,  3071,  3075,  3083,  3089,
+    3099,  3107,  3116,  3129,  3136,  3148,  3152,  3164,  3171,  3177,
+    3186,  3193,  3199,  3210,  3217,  3223,  3232,  3241,  3248,  3259,
+    3266,  3278,  3284,  3296,  3302,  3313,  3319,  3330,  3336,  3347,
+    3356,  3360,  3369,  3373,  3381,  3385,  3395,  3402,  3411,  3421,
+    3420,  3434,  3443,  3452,  3465,  3469,  3482,  3485,  3492,  3496,
+    3505,  3509,  3513,  3522,  3526,  3532,  3538,  3544,  3555,  3559,
+    3563,  3571,  3575,  3581,  3591,  3595,  3605,  3609,  3619,  3623,
+    3633,  3637,  3647,  3651,  3659,  3663,  3667,  3671,  3681,  3685,
+    3689,  3697,  3701,  3705,  3709,  3713,  3717,  3725,  3729,  3733,
+    3741,  3745,  3749,  3753,  3764,  3770,  3780,  3786,  3796,  3800,
+    3804,  3842,  3846,  3856,  3866,  3879,  3888,  3898,  3902,  3911,
+    3915,  3924,  3930,  3938,  3944,  3956,  3962,  3972,  3976,  3980,
+    3984,  3988,  3994,  4000,  4008,  4012,  4020,  4024,  4035,  4039,
+    4043,  4049,  4053,  4067,  4071,  4079,  4083,  4093,  4097,  4101,
+    4105,  4114,  4118,  4122,  4126,  4134,  4140,  4150,  4158,  4162,
+    4166,  4170,  4174,  4178,  4182,  4186,  4190,  4200,  4214,  4218,
+    4226,  4233,  4240,  4251,  4259,  4263,  4271,  4279,  4287,  4341,
+    4345,  4358,  4364,  4374,  4378,  4386,  4390,  4394,  4402,  4412,
+    4422,  4432,  4442,  4452,  4467,  4473,  4484,  4490,  4501,  4512,
+    4514,  4518,  4523,  4533,  4536,  4543,  4549,  4555,  4563,  4576,
+    4579,  4586,  4592,  4598,  4605,  4616,  4620,  4630,  4634,  4644,
+    4648,  4652,  4657,  4666,  4672,  4678,  4684,  4692,  4697,  4705,
+    4710,  4718,  4726,  4731,  4736,  4741,  4746,  4751,  4760,  4768,
+    4772,  4789,  4793,  4801,  4809,  4817,  4821,  4829,  4835,  4845,
+    4853,  4857,  4861,  4896,  4902,  4908,  4918,  4922,  4926,  4930,
+    4934,  4941,  4947,  4957,  4965,  4969,  4973,  4977,  4981,  4985,
+    4989,  4993,  4997,  5005,  5013,  5017,  5021,  5031,  5039,  5047,
+    5051,  5055,  5063,  5067,  5073,  5079,  5083,  5093,  5101,  5105,
+    5111,  5120,  5129,  5135,  5141,  5151,  5168,  5175,  5190,  5226,
+    5230,  5238,  5246,  5258,  5262,  5270,  5278,  5282,  5293,  5310,
+    5316,  5322,  5332,  5336,  5342,  5348,  5352,  5358,  5362,  5368,
+    5374,  5381,  5391,  5396,  5404,  5410,  5420,  5442,  5451,  5457,
+    5470,  5484,  5491,  5497,  5507,  5516,  5524,  5530,  5548,  5557,
+    5560,  5567,  5572,  5580,  5584,  5591,  5595,  5602,  5606,  5613,
+    5617,  5626,  5639,  5642,  5650,  5653,  5661,  5669,  5677,  5681,
+    5689,  5692,  5700,  5712,  5715,  5723,  5735,  5741,  5751,  5754,
+    5762,  5766,  5770,  5778,  5781,  5789,  5792,  5800,  5804,  5808,
+    5812,  5816,  5824,  5832,  5844,  5856,  5860,  5864,  5872,  5878,
+    5888,  5892,  5896,  5900,  5904,  5908,  5912,  5916,  5924,  5928,
+    5932,  5936,  5944,  5950,  5960,  5970,  5974,  5982,  5992,  6003,
+    6010,  6014,  6022,  6025,  6032,  6037,  6046,  6056,  6059,  6067,
+    6070,  6078,  6087,  6094,  6104,  6108,  6115,  6121,  6131,  6134,
+    6141,  6146,  6158,  6166,  6178,  6186,  6190,  6198,  6202,  6206,
+    6214,  6222,  6226,  6230,  6234,  6242,  6250,  6262,  6266,  6274,
+    6359,  6363,  6364,  6377,  6378,  6379,  6380,  6381,  6382,  6383,
+    6384,  6385,  6386,  6387,  6388,  6389,  6390,  6391,  6392,  6396,
+    6397,  6398,  6399,  6400,  6401,  6402,  6403,  6404,  6405,  6406,
+    6407,  6408,  6409,  6410,  6411,  6412,  6413,  6414,  6415,  6416,
+    6417,  6418,  6419,  6420,  6421,  6422,  6423,  6424,  6425,  6426,
+    6427,  6428,  6429,  6430,  6431,  6432,  6433,  6434,  6435,  6436,
+    6437,  6438,  6439,  6440,  6441,  6442,  6443,  6444,  6445,  6446,
+    6447,  6448,  6449,  6450,  6451,  6452,  6453,  6454,  6455,  6456,
+    6457,  6458,  6459,  6460,  6461,  6462,  6463,  6464,  6465,  6466,
+    6467,  6468,  6469,  6470,  6471,  6472,  6473,  6474,  6475,  6476,
+    6477,  6478,  6479,  6480,  6481,  6482,  6483,  6484,  6485,  6486,
+    6487,  6488,  6489,  6490,  6491,  6492,  6493,  6494,  6495,  6496,
+    6497,  6498,  6499,  6500,  6501,  6502,  6503,  6504,  6505,  6506,
+    6507,  6508,  6509,  6510,  6511,  6512,  6513,  6514,  6515,  6516,
+    6517,  6518,  6519,  6520,  6521,  6522,  6523,  6524,  6525,  6526,
+    6527,  6528,  6529,  6530,  6531,  6532,  6533,  6534,  6535,  6536,
+    6537,  6538,  6539,  6540,  6541,  6542,  6543,  6544,  6545,  6546,
+    6547,  6548,  6549,  6550,  6551,  6552,  6553,  6554,  6555,  6556,
+    6557,  6558,  6559,  6560,  6561,  6562,  6563,  6564,  6565,  6566,
+    6567,  6568,  6569,  6570,  6571,  6572,  6573,  6574,  6575,  6576,
+    6577,  6578,  6579,  6580,  6581,  6582,  6583,  6584,  6585,  6586,
+    6587,  6588,  6589,  6590,  6591,  6592,  6593,  6594,  6599,  6606
   };
 
   // Print the state stack on the debug stream.
@@ -15996,7 +16092,8 @@ namespace zorba {
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
      305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321
+     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
+     325,   326,   327
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -16005,29 +16102,26 @@ namespace zorba {
   }
 
   const int xquery_parser::yyeof_ = 0;
-  const int xquery_parser::yylast_ = 13157;
+  const int xquery_parser::yylast_ = 13156;
   const int xquery_parser::yynnts_ = 306;
   const int xquery_parser::yyempty_ = -2;
   const int xquery_parser::yyfinal_ = 570;
   const int xquery_parser::yyterror_ = 1;
   const int xquery_parser::yyerrcode_ = 256;
-  const int xquery_parser::yyntokens_ = 322;
+  const int xquery_parser::yyntokens_ = 328;
 
-  const unsigned int xquery_parser::yyuser_token_number_max_ = 576;
+  const unsigned int xquery_parser::yyuser_token_number_max_ = 582;
   const xquery_parser::token_number_type xquery_parser::yyundef_token_ = 2;
 
 
-/* Line 1054 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
-/* Line 1054 of lalr1.cc  */
-#line 16027 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.cpp"
+/* Line 1136 of lalr1.cc  */
+#line 16121 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.cpp"
 
 
-/* Line 1056 of lalr1.cc  */
-#line 6509 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
+/* Line 1138 of lalr1.cc  */
+#line 6610 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {

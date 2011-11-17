@@ -5636,6 +5636,73 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+////////// JSON ///////////////////////////////////////////////////////////////
+
+JSON_ArrayConstructor::JSON_ArrayConstructor(
+  QueryLoc const &loc,
+  exprnode const *expr
+) :
+  JSON_Constructor( loc ),
+  expr_( expr )
+{
+}
+
+JSON_ArrayConstructor::~JSON_ArrayConstructor() {
+  delete expr_;
+}
+
+void JSON_ArrayConstructor::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( expr_ );
+  END_VISITOR();
+}
+
+JSON_ObjectConstructor::JSON_ObjectConstructor(
+  QueryLoc const &loc,
+  exprnode const *expr
+) :
+  JSON_Constructor( loc ),
+  expr_( expr )
+{
+}
+
+JSON_ObjectConstructor::~JSON_ObjectConstructor() {
+  delete expr_;
+}
+
+void JSON_ObjectConstructor::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( expr_ );
+  END_VISITOR();
+}
+
+JSON_PairConstructor::JSON_PairConstructor(
+  QueryLoc const &loc,
+  exprnode const *expr1,
+  exprnode const *expr2
+) :
+  JSON_Constructor( loc ),
+  expr1_( expr1 ),
+  expr2_( expr2 )
+{
+}
+
+JSON_PairConstructor::~JSON_PairConstructor() {
+  delete expr1_;
+  delete expr2_;
+}
+
+void JSON_PairConstructor::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( expr1_ );
+  ACCEPT( expr2_ );
+  END_VISITOR();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -13091,8 +13091,50 @@ void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   // nothing to do
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSON                                                                      //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
+void *begin_visit (const JSON_ArrayConstructor& v ) {
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  // TODO
+#endif /* ZORBA_WITH_JSON */
+  return no_state;
+}
+
+void end_visit (const JSON_ArrayConstructor& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
+void *begin_visit (const JSON_ObjectConstructor& v ) {
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  // TODO
+#endif /* ZORBA_WITH_JSON */
+  return no_state;
+}
+
+void end_visit (const JSON_ObjectConstructor& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
+void *begin_visit (const JSON_PairConstructor& v ) {
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  // TODO
+#endif /* ZORBA_WITH_JSON */
+  return no_state;
+}
+
+void end_visit (const JSON_PairConstructor& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
 
 /*******************************************************************************
 

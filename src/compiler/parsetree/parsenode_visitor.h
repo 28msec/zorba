@@ -271,6 +271,11 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TypedFunctionTest );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( DynamicFunctionInvocation );
 
+/* JSON */
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ArrayConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ObjectConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_PairConstructor );
+
 # undef DECL_PARSENODE_VISITOR_VISIT_MEM_FNS
 # define DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( NODE ) \
   void* begin_visit( NODE const& );                   \

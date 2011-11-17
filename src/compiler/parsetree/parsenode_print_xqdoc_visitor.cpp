@@ -1157,6 +1157,10 @@ XQDOC_NO_BEGIN_END_TAG (WindowClause)
 XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
+XQDOC_NO_BEGIN_END_TAG (JSON_ArrayConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSON_ObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSON_PairConstructor)
+
 XQDOC_NO_BEGIN_END_TAG (LiteralFunctionItem)
 XQDOC_NO_BEGIN_END_TAG (InlineFunction)
 XQDOC_NO_BEGIN_END_TAG (AnyFunctionTest)

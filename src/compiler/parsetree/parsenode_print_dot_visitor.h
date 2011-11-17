@@ -237,6 +237,11 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( FTWordsTimes );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( FTWordsValue );
 
+/* JSON-related */
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ArrayConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ObjectConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_PairConstructor );
+
  /*..........................................
   :  end visit                              :
   :.........................................*/

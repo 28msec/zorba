@@ -1018,6 +1018,32 @@ BEGIN_END_TAG( FTWords )
 BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
+////////// JSON ///////////////////////////////////////////////////////////////
+
+void* begin_visit( JSON_ArrayConstructor const &n ) {
+  INDENT;
+  os << "<JSON_ArrayConstructor>";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( JSON_ArrayConstructor )
+
+void* begin_visit( JSON_ObjectConstructor const &n ) {
+  INDENT;
+  os << "<JSON_ObjectConstructor>";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( JSON_ObjectConstructor )
+
+void* begin_visit( JSON_PairConstructor const &n ) {
+  INDENT;
+  os << "<JSON_PairConstructor>";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( JSON_PairConstructor )
+
 };
 
 void print_parsetree_xml (ostream &os, const parsenode *p) {
