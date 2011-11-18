@@ -499,7 +499,10 @@ DebuggerClientImpl::source(
   unsigned int aEndLine)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "source -i " << id << " -f \"" << aFile << "\"";
+  *theOutStream << "source -i " << id;
+  // enable zorba extensions
+  *theOutStream << " -z 1";
+  *theOutStream << " -f \"" << aFile << "\"";
   if (aBeginLine)
     *theOutStream << " -b " << aBeginLine;
   if (aEndLine)

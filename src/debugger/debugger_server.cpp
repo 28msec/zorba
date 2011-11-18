@@ -123,11 +123,19 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 {
   std::stringstream lResponse;
   int lTransactionID;
+  bool lZorbaExtensions = false;
   ExecutionStatus lStatus;
 
   if (aCommand.getArg("i", lTransactionID)) {
     lResponse << "<response command=\"" << aCommand.getName() << "\" transaction_id=\"" << lTransactionID << "\" ";
     lStatus = theRuntime->getExecutionStatus();
+
+    int lExtOpt;
+    if (aCommand.getArg("z", lExtOpt)) {
+      if (lExtOpt) {
+        lZorbaExtensions = true;
+      }
+    }
 
     std::string lCmdName = aCommand.getName();
 
@@ -428,7 +436,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         String lFileName(lTmp);
 
         lResponse << "<![CDATA[";
-        lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine) << std::endl;
+        lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine, lZorbaExtensions) << std::endl;
         lResponse << "]]>";
 
       } else if (aCommand.getName() == "stop") {
@@ -529,8 +537,6 @@ DebuggerServer::buildStackFrame(
   int aSNo,
   std::ostream& aStream)
 {
-  String lFileName(aFrame.getLocation().getFileName().str());
-  lFileName = URIHelper::encodeFileURI(lFileName);
   unsigned int lLB = aFrame.getLocation().getLineBegin();
   unsigned int lLE = aFrame.getLocation().getLineEnd();
 
@@ -542,7 +548,7 @@ DebuggerServer::buildStackFrame(
   aStream << "<stack "
     << "level=\"" << aSNo << "\" "
     << "type=\"" << "file" << "\" "
-    << "filename=\"" << lFileName << "\" "
+    << "filename=\"" << aFrame.getLocation().getFileName() << "\" "
     << "lineno=\"" << lLB << "\" "
     << "where=\"" << aFrame.getSignature() << "\" "
     << "cmdbegin=\"" << lLB << ":" << lCB << "\" "

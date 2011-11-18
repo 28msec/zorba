@@ -119,7 +119,11 @@ class DebuggerRuntime : public Runnable {
     setLastContinuationCommand(int transactionID, std::string commandName);
 
     std::string
-    listSource(String& lFileName, unsigned int aBeginLine, unsigned int aEndLine);
+    listSource(
+      String& fleName,
+      unsigned int beginLine,
+      unsigned int endLine,
+      bool zorbaExtensions);
 
     std::vector<std::pair<std::string, std::string> >
     getVariables();

@@ -191,7 +191,7 @@ declare %private function dmh:report-error(
   fn:string-join(
     (
       (: the error message :)
-      fn:concat("ERROR: ", $message),
+      fn:concat("Error: ", $message),
 
       (: the debug info :)
       if ($dmh:debug and fn:string-length($debugMessage) gt 0) then

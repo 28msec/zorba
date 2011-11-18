@@ -21,6 +21,7 @@
 #include <memory>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 #include <fstream>
 
 #include <zorba/util/uri.h>
@@ -244,6 +245,12 @@ DebuggerRuntime::getStackFrames()
   // add the frames for each function call
   for (std::size_t i = 0 ; i < lRawFrames.size(); i++) {
     lLocation = lRawFrames.at(i).first;
+
+    String lFileName(lLocation.getFilename().str());
+    String lPrefix = lFileName.substr(0, 7);
+    if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
+      lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
+    }
 
     StackFrameImpl lFrame(lSignature, lLocation);
     lFrames.push_back(lFrame);
@@ -493,8 +500,16 @@ DebuggerRuntime::eval(zstring& aExpr)
 
 
 std::string
-DebuggerRuntime::listSource(String& lFileName, unsigned int aBeginLine, unsigned int aEndLine)
+DebuggerRuntime::listSource(
+  String& lFileName,
+  unsigned int aBeginLine,
+  unsigned int aEndLine,
+  bool aZorbaExtensions)
 {
+  // these are needed if extensions are enabled
+  String lFileUri;
+  int lCurrentLine = 0;
+
   // for unspecified files determine the file
   if (lFileName == "") {
     // if not started, than it's the main module
@@ -503,31 +518,91 @@ DebuggerRuntime::listSource(String& lFileName, unsigned int aBeginLine, unsigned
     }
     // else, the file pointed by the top-most stack frame
     else {
-      DebuggerCommons* lCommons = getDebbugerCommons();
       std::vector<StackFrameImpl> lRawFrames = getStackFrames();
-      lFileName = lRawFrames.at(lRawFrames.size() - 1).getLocation().getFileName();
-      if (lFileName.substr(0, 7) == "file://") {
-        lFileName = URIHelper::decodeFileURI(lFileName);
-      }
+      StackFrameImpl lFrame = lRawFrames.at(lRawFrames.size() - 1);
+      lFileName = lFrame.getLocation().getFileName();
+      lCurrentLine = lFrame.getLocation().getLineBegin();
     }
   }
 
-  // go to first wanted line
-  std::ifstream lStream(lFileName.c_str());
-  std::string lCurrLine;
-  for (unsigned int i = 1; i < aBeginLine && lStream.good(); ++i) {
-    std::getline(lStream, lCurrLine);
+  String lPrefix = lFileName.substr(0, 7);
+  if (lPrefix == "file://") {
+    lFileUri = lFileName;
+    lFileName = URIHelper::decodeFileURI(lFileName);
+  } else {
+    if (lPrefix != "http://" && lPrefix != "https:/") {
+      lFileUri = URIHelper::encodeFileURI(lFileName);
+    } else {
+      lFileUri = lFileName;
+    }
   }
 
-  // read up to the last wanted line
-  std::stringstream lOut;
-  for (unsigned int i = aBeginLine; (i <= aEndLine || aEndLine == 0) && lStream.good(); ++i) {
+  // if a file is given check if this is the one in the top-most stack frame
+  if (lCurrentLine == 0 && aZorbaExtensions && theExecStatus == QUERY_SUSPENDED) {
+    std::vector<StackFrameImpl> lRawFrames = getStackFrames();
+    StackFrameImpl lFrame = lRawFrames.at(lRawFrames.size() - 1);
+    if (lFileUri == lFrame.getLocation().getFileName()) {
+      lCurrentLine = lFrame.getLocation().getLineBegin();
+    }
+  }
+
+  // read the entire file
+  std::ifstream lStream(lFileName.c_str());
+  std::string lCurrLine;
+  std::vector<std::string> lFileContent;
+
+  while (lStream.good()) {
     std::getline(lStream, lCurrLine);
-    lOut << lCurrLine;
-    if (lStream.good()) {
+    lFileContent.push_back(lCurrLine);
+  }
+  unsigned int lLineCount = lFileContent.size();
+
+  aBeginLine = std::min(lLineCount, (aBeginLine == 0 ? 1 : aBeginLine));
+  aEndLine = std::min(lLineCount, (aEndLine == 0 ? lLineCount : aEndLine));
+
+  // get only the needed lines
+  std::stringstream lOut;
+  for (unsigned int i = aBeginLine; i <= aEndLine; i++) {
+    if (aZorbaExtensions) {
+      //
+      // add breakpoint signs
+      //
+
+      // first breakpoints in this file
+      BreakableVector lBkps = getBreakpoints();
+      std::map<int, bool> lBreakLines;
+      for (BreakableVector::size_type j = 0; j < lBkps.size(); j++) {
+        Breakable lBkp = lBkps.at(j);
+        if (lBkp.isSet() && lBkp.getLocation().getFilename().str() == lFileUri.str()) {
+          lBreakLines[lBkp.getLocation().getLineBegin()] = lBkp.isEnabled();
+        }
+      }
+
+      //
+      // format and print the line
+      //
+
+      // get the width of the line number column
+      std::stringstream lTmpSs;
+      lTmpSs << aEndLine;
+      int lWidth = lTmpSs.str().length();
+
+      // prepend line info column to the source
+      lOut << std::setw(lWidth) << i << " ";
+      std::map<int, bool>::iterator lIter = lBreakLines.find(i);
+      if (lIter != lBreakLines.end()) {
+        lOut << (lIter->second ? "o" : "x");
+      } else {
+        lOut << " ";
+      }
+      lOut << (lCurrentLine == i ? ">" : "|") << " ";
+    }
+    lOut << lFileContent.at(i - 1);
+    if (i != aEndLine) {
       lOut << std::endl;
     }
   }
+
   return lOut.str();
 }
 
