@@ -120,7 +120,7 @@ CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
 {
   theWaitFor = theClient->run();
 }
-  
+
 template<>
 void
 CommandLineHandler::handle<BreakpointSet>(std::tr1::tuple<bstring, bstring, bint> &aTuple)
@@ -210,7 +210,28 @@ void CommandLineHandler::handle<Eval>(tuple<bstring>& aTuple)
 {
   theWaitFor = theClient->eval(get<0>(aTuple).second);
 }
-  
+
+template<>
+void
+CommandLineHandler::handle<StepIn>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->step_into();
+}
+
+template<>
+void
+CommandLineHandler::handle<StepOut>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->step_out();
+}
+
+template<>
+void
+CommandLineHandler::handle<StepOver>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->step_over();
+}
+
 void
 CommandLineHandler::addCommands()
 {
@@ -220,7 +241,7 @@ CommandLineHandler::addCommands()
                                           "Gets the variables visible in the current scope");
   theCommandLine << createCommand<Quit>(tuple<>(), "quit", *this,
                                         "Stops debugging and quits the client");
-  theCommandLine << createCommand<Run>(tuple<>(), "run", *this, "Run the Query");
+  theCommandLine << createCommand<Run>(tuple<>(), "run", *this, "Run the query");
   {
     Command<CommandLineHandler, tuple<bstring, bstring, bint>, BreakpointSet>* lCommand =
     createCommand<BreakpointSet>(tuple<bstring, bstring, bint>(), "bset", *this, "Set a breakpoint");
@@ -278,8 +299,8 @@ CommandLineHandler::addCommands()
     theCommandLine << lCommand;
   }
   {
-    Command<CommandLineHandler, tuple<bstring>, Eval>* lCommand
-    = createCommand<Eval>(tuple<bstring>(), "eval", *this, "Evaluate a function");
+    Command<CommandLineHandler, tuple<bstring>, Eval>* lCommand =
+      createCommand<Eval>(tuple<bstring>(), "eval", *this, "Evaluate a function");
     // TODO: this argument should not be here at all. Eval has the form: eval -i transaction_id -- {DATA}
     // Eval should be called with a command like: eval 1 + 3
     // - no need for an argument name
@@ -288,6 +309,9 @@ CommandLineHandler::addCommands()
       
     theCommandLine << lCommand;
   }
+  theCommandLine << createCommand<StepIn>(tuple<>(), "in", *this, "Step in");
+  theCommandLine << createCommand<StepOut>(tuple<>(), "out", *this, "Step out");
+  theCommandLine << createCommand<StepOver>(tuple<>(), "over", *this, "Step over");
 }
   
 } // namespace zorba

@@ -32,6 +32,7 @@ namespace zorba { namespace debugger {
   enum Commands {
     Status,
     Variables,
+    Quit,
     Run,
     BreakpointSet,
     BreakpointGet,
@@ -43,7 +44,9 @@ namespace zorba { namespace debugger {
     ContextGet,
     Source,
     Eval,
-    Quit
+    StepIn,
+    StepOut,
+    StepOver
   };
   
 class CommandLineHandler
@@ -151,7 +154,16 @@ void CommandLineHandler::handle<Source>(ZORBA_TR1_NS::tuple<bint, bint, bstring>
   
 template<>
 void CommandLineHandler::handle<Eval>(ZORBA_TR1_NS::tuple<bstring>& aTuple);
-  
+
+template<>
+void CommandLineHandler::handle<StepIn> (ZORBA_TR1_NS::tuple<> &t);
+
+template<>
+void CommandLineHandler::handle<StepOut> (ZORBA_TR1_NS::tuple<> &t);
+
+template<>
+void CommandLineHandler::handle<StepOver> (ZORBA_TR1_NS::tuple<> &t);
+
 } // namespace zorba
 } // namespace debugger
 

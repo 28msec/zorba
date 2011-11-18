@@ -47,6 +47,21 @@ declare %private function dmh:run($resp as element(response))
     dmh:status($resp)
 };
 
+declare %private function dmh:step-into($resp as element(response))
+{
+  dmh:status($resp)
+};
+
+declare %private function dmh:step-out($resp as element(response))
+{
+  dmh:status($resp)
+};
+
+declare %private function dmh:step-over($resp as element(response))
+{
+  dmh:status($resp)
+};
+
 declare %private function dmh:stop($resp as element(response))
 {
   dmh:status($resp)
@@ -207,6 +222,9 @@ declare %private function dmh:process-response($resp as element(response))
 {
   switch ($resp/@command)
   case "eval"               return dmh:eval($resp)
+  case "step_into"          return dmh:step-into($resp)
+  case "step_out"           return dmh:step-out($resp)
+  case "step_over"          return dmh:step-over($resp)
   case "context_get"        return dmh:context-get($resp)
   case "context_names"      return dmh:context-names($resp)
   case "stack_get"          return dmh:stack-get($resp)
