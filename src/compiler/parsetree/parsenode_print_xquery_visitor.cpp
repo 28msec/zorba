@@ -1908,6 +1908,7 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (JSON_ArrayConstructor);
   DEFAULT_VISIT (JSON_ObjectConstructor);
   DEFAULT_VISIT (JSON_PairConstructor);
+  DEFAULT_VISIT (JSON_Test);
 
   DEFAULT_VISIT (AssignExpr);
   DEFAULT_VISIT (ExitExpr);

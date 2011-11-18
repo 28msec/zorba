@@ -1022,7 +1022,7 @@ BEGIN_END_TAG( FTWordsValue )
 
 void* begin_visit( JSON_ArrayConstructor const &n ) {
   INDENT;
-  os << "<JSON_ArrayConstructor>";
+  os << "<JSON_ArrayConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
@@ -1030,7 +1030,7 @@ END_TAG( JSON_ArrayConstructor )
 
 void* begin_visit( JSON_ObjectConstructor const &n ) {
   INDENT;
-  os << "<JSON_ObjectConstructor>";
+  os << "<JSON_ObjectConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
@@ -1038,11 +1038,19 @@ END_TAG( JSON_ObjectConstructor )
 
 void* begin_visit( JSON_PairConstructor const &n ) {
   INDENT;
-  os << "<JSON_PairConstructor>";
+  os << "<JSON_PairConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
 END_TAG( JSON_PairConstructor )
+
+void* begin_visit( JSON_Test const &n ) {
+  INDENT;
+  os << "<JSON_Test type=\"" << json_test::string_of[ n.get() ] << "\"/>";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( JSON_Test )
 
 };
 

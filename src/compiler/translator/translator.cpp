@@ -13153,6 +13153,19 @@ void end_visit (const JSON_PairConstructor& v, void* /*visit_state*/) {
   // nothing to do
 }
 
+void *begin_visit (const JSON_Test& v ) {
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  // TODO
+#endif /* ZORBA_WITH_JSON */
+  return no_state;
+}
+
+void end_visit (const JSON_Test& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
 /*******************************************************************************
 
 ********************************************************************************/

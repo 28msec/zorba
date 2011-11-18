@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "compiler/parser/ft_types.h"
+#include "compiler/parser/json_types.h"
 #include "compiler/parsetree/parsenode_base.h"
 
 #include "store/api/item.h"
@@ -248,6 +249,7 @@ class DecimalFormatNode;
 class JSON_ArrayConstructor;
 class JSON_ObjectConstructor;
 class JSON_PairConstructor;
+class JSON_Test;
 
 
 /*******************************************************************************
@@ -6486,6 +6488,18 @@ public:
 private:
   exprnode const *const expr1_;
   exprnode const *const expr2_;
+};
+
+class JSON_Test : public parsenode {
+public:
+  JSON_Test( QueryLoc const&, json_test::type jt );
+
+  json_test::type get() const { return jt_; }
+
+  // inherited
+  void accept( parsenode_visitor& ) const;
+private:
+  json_test::type jt_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

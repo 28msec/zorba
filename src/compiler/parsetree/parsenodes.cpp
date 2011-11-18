@@ -5702,6 +5702,21 @@ void JSON_PairConstructor::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+JSON_Test::JSON_Test(
+  QueryLoc const &loc,
+  json_test::type jt
+) :
+  parsenode( loc ),
+  jt_( jt )
+{
+}
+
+void JSON_Test::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

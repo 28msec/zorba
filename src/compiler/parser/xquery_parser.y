@@ -171,6 +171,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
     FTSelection::pos_filter_list_t *pos_filter_list;
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
     ft_anyall_mode::type ft_anyall_value;
+    json_test::type json_test_value;
 };
 
 
@@ -862,13 +863,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-/*
 %type <node> opt_Expr
 %type <node> JSONConstructor
-%type <node> ArrayConstructor
-%type <node> ObjectConstructor
-%type <node> PairConstructor
-*/
+%type <node> JSONArrayConstructor
+%type <node> JSONObjectConstructor
+%type <node> JSONPairConstructor
+%type <json_test_value> JSONTest
+%type <json_test_value> JSONItemTest
+%type <json_test_value> JSONObjectTest JSONObjectPairTest
+%type <json_test_value> JSONArrayTest JSONArrayPairTest
+%type <json_test_value> JSONPairTest
 
 %type <fnsig> FunctionSig
 %type <varnametype> VarNameAndType
@@ -908,10 +912,8 @@ template<typename T> inline void release_hack( T *ref ) {
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
-/*
 // parsenodes: JSON
-%destructor { release_hack( $$ ); } JSONConstructor ArrayConstructor ObjectConstructor PairConstructor
-*/
+%destructor { release_hack( $$ ); } JSONConstructor JSONArrayConstructor JSONObjectConstructor JSONPairConstructor
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -4201,12 +4203,10 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-/*
     |   JSONConstructor
         {
           $$ = $1;
         }
-*/
     ;
 
 // [84]
@@ -4934,6 +4934,10 @@ ItemType :
     |   ParenthesizedItemType
         {
             $$ = $1;
+        }
+    |   JSONTest
+        {
+            $$ = new JSON_Test( LOC(@$), $1 );
         }
     ;
 
@@ -6279,48 +6283,44 @@ FTIgnoreOption :
 
 /********** JSON *************************************************************/
 
-/*
 JSONConstructor
-    :   ArrayConstructor
+    :   JSONArrayConstructor
         {
             $$ = $1;
         }
-    |   ObjectConstructor
+    |   JSONObjectConstructor
         {
             $$ = $1;
         }
-    |   PairConstructor
+    |   JSONPairConstructor
         {
             $$ = $1;
         }
     ;
 
-ArrayConstructor
+JSONArrayConstructor
     :   LBRACK opt_Expr RBRACK
         {
             $$ = new JSON_ArrayConstructor( LOC( @$ ), $2 );
         }
     ;
 
-ObjectConstructor
+JSONObjectConstructor
     :   LBRACE opt_Expr RBRACE
         {
             $$ = new JSON_ObjectConstructor( LOC( @$ ), $2 );
         }
     ;
 
-PairConstructor
+JSONPairConstructor
     :   ExprSingle COLON ExprSingle
         {
             $$ = new JSON_PairConstructor( LOC( @$ ), $1, $3 );
         }
     ;
-*/
 
-/*
 opt_Expr
-    :*/   /* empty */
-/*
+    :   /* empty */
         {
             $$ = NULL;
         }
@@ -6329,25 +6329,75 @@ opt_Expr
             $$ = $1;
         }
     ;
-*/
 
-/*
 JSONTest
     :   JSONItemTest
+        {
+            $$ = $1;
+        }
     |   JSONObjectTest
+        {
+            $$ = $1;
+        }
     |   JSONArrayTest
+        {
+            $$ = $1;
+        }
     |   JSONPairTest
+        {
+            $$ = $1;
+        }
     |   JSONObjectPairTest
+        {
+            $$ = $1;
+        }
     |   JSONArrayPairTest
+        {
+            $$ = $1;
+        }
     ;
 
-JSONItemTest : JSON_ITEM LPAR RPAR ;
-JSONObjectTest : OBJECT LPAR RPAR ;
-JSONArrayTest : ARRAY LPAR RPAR ;
-JSONPairTest : PAIR LPAR RPAR ;
-JSONObjectPairTest : OBJECT_PAIR LPAR RPAR ;
-JSONArrayPairTest : ARRAY_PAIR LPAR RPAR ;
-*/
+JSONItemTest
+    :   JSON_ITEM LPAR RPAR
+        {
+            $$ = json_test::json_item;
+        }
+    ;
+
+JSONObjectTest
+    :   OBJECT LPAR RPAR
+        {
+            $$ = json_test::object;
+        }
+    ;
+
+JSONArrayTest
+    :   ARRAY LPAR RPAR
+        {
+            $$ = json_test::array;
+        }
+    ;
+
+JSONPairTest
+    :   PAIR LPAR RPAR
+        {
+            $$ = json_test::pair;
+        }
+    ;
+
+JSONObjectPairTest
+    :   OBJECT_PAIR LPAR RPAR
+        {
+            $$ = json_test::object_pair;
+        }
+    ;
+
+JSONArrayPairTest
+    :   ARRAY_PAIR LPAR RPAR
+        {
+            $$ = json_test::array_pair;
+        }
+    ;
 
 
 /*_______________________________________________________________________
@@ -6603,7 +6653,7 @@ EQNAME :
           std::string eqname = SYMTAB(driver.symtab.put_uri(uri.c_str(), uri.size())) + ":" + SYMTAB($3);
           $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT(eqname.c_str())), true);
         }
-    |   EQNAME_SVAL	{ $$ = new QName(LOC(@$), SYMTAB($1), true); }
+    |   EQNAME_SVAL { $$ = new QName(LOC(@$), SYMTAB($1), true); }
     ;
 
 
