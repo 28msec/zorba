@@ -417,7 +417,12 @@ bool SubstringIterator::nextImpl(
           }
           catch ( std::range_error const& )
           {
-            istart = (xs_int)utf8_string<zstring>(strval).length();
+            throw XQUERY_EXCEPTION(
+              zerr::ZXQD0004_INVALID_PARAMETER,
+              ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                          start),
+              ERROR_LOC( loc )
+            );
           }
         }
         else
@@ -469,7 +474,12 @@ bool SubstringIterator::nextImpl(
               }
               catch ( std::range_error const& )
               {
-                ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
+                throw XQUERY_EXCEPTION(
+                  zerr::ZXQD0004_INVALID_PARAMETER,
+                  ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                              len),
+                  ERROR_LOC( loc )
+                );
               }
             }
             else
@@ -562,7 +572,7 @@ bool SubstringIntOptIterator::nextImpl(
       {
         start = to_xs_int(startItem->getIntegerValue());
       }
-      catch(std::range_error range_err)
+      catch ( std::range_error const& )
       {
         throw XQUERY_EXCEPTION(
           zerr::ZXQD0004_INVALID_PARAMETER,
@@ -608,7 +618,7 @@ bool SubstringIntOptIterator::nextImpl(
         {
           len = to_xs_int(lenItem->getIntegerValue());
         }
-        catch(std::range_error range_err)
+        catch ( std::range_error const& )
         {
           throw XQUERY_EXCEPTION(
             zerr::ZXQD0004_INVALID_PARAMETER,
