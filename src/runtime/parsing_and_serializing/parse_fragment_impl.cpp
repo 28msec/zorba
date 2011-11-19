@@ -146,6 +146,13 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
   }
 
   children->close();
+
+  if (props.getSchemaLaxValidate() + props.getSchemaStrictValidate() +
+      props.getDTDValidate() + props.getParseExternalParsedEntity() > 1)
+  {
+    throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                           ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed)), ERROR_LOC( loc ));
+  }
 }
 
 /*******************************************************************************

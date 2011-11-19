@@ -3369,12 +3369,8 @@
       <value>xqueryx content is empty</value>
     </entry>
 
-    <entry key="ParseFragmentOptionDSLNotAllowed">
-      <value>if the e option is specified, none of the options d, s, or l may be enabled</value>
-    </entry>
-
     <entry key="ParseFragmentOptionCombinationNotAllowed">
-      <value>specifying both $2 and $3 is an error</value>
+      <value>only one of the &lt;schemaValidate/&gt;, &lt;DTDValidate/&gt; or &lt;parseExternalParsedEntity/&gt; options can be specified</value>
     </entry>
 
   </subvalues>

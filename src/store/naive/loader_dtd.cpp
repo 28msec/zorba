@@ -427,7 +427,7 @@ void FragmentXmlLoader::characters(
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   if (loader.theFragmentStream->current_element_depth >= loader.theFragmentStream->root_elements_to_skip)
-  FastXmlLoader::characters(ctx, ch, len);
+    FastXmlLoader::characters(ctx, ch, len);
   checkStopParsing(ctx);
 }
 
@@ -439,7 +439,7 @@ void FragmentXmlLoader::comment(
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   if (loader.theFragmentStream->current_element_depth >= loader.theFragmentStream->root_elements_to_skip)
-  FastXmlLoader::comment(ctx, value);
+    FastXmlLoader::comment(ctx, value);
   checkStopParsing(ctx);
 }
 
@@ -452,7 +452,7 @@ void FragmentXmlLoader::cdataBlock(
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   if (loader.theFragmentStream->current_element_depth >= loader.theFragmentStream->root_elements_to_skip)
-  FastXmlLoader::cdataBlock(ctx, value, len);
+    FastXmlLoader::cdataBlock(ctx, value, len);
   checkStopParsing(ctx);
 }
 
@@ -465,7 +465,7 @@ void FragmentXmlLoader::processingInstruction(
   FragmentXmlLoader& loader = *(static_cast<FragmentXmlLoader*>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   if (loader.theFragmentStream->current_element_depth >= loader.theFragmentStream->root_elements_to_skip)
-  FastXmlLoader::processingInstruction(ctx, target, data);
+    FastXmlLoader::processingInstruction(ctx, target, data);
   checkStopParsing(ctx);
 }
 

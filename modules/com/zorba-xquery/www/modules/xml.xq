@@ -23,13 +23,14 @@ xquery version "3.0";
  : external parsed entities, described by 
  : <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed 
  : Parsed Entities</a>. The functions can also perform Schema and DTD 
- : validation of the input documents.
+ : validation of the input documents. 
  : </p>
  :
  : @see <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed 
  : Parsed Entities</a>
  : @see <a href="http://www.w3.org/TR/xpath-functions-30/#func-parse-xml">
  : fn:parse-xml() function in XPath and XQuery Functions and Operators 3.0</a>
+ : @see <a href="http://xmlsoft.org/html/libxml-parser.html">LibXml2 parser</a>
  :
  : @author Nicolae Brinza
  : @project data processing/data converters
@@ -50,21 +51,68 @@ declare option ver:module-version "2.0";
  : A function to parse XML files and fragments (i.e. 
  : <a href="http://www.w3.org/TR/xml/#wf-entities">external general parsed 
  : entities</a>). The functions takes two arguments: the first one is the 
- : string to be parsed and the second argument is a flags string 
- : (eEdDsSlLwWfF]*(;[\p{L}]*)?) selecting the options described below.
- : <br/>
- : <br/>
- : 
- : The convention for the flags is that a lower-case letter enables 
- : an option and the corresponding upper-case letter disables it; specifying 
- : both is an error; specifying neither leaves it implementation-defined 
- : whether the option is enabled or disabled. Specifying the same option twice 
- : is not an error, but specifying inconsistent options (for example "eE") is 
- : a dynamic error. The options are:
- : 
+ : string to be parsed and the second argument is an &lt;options/&gt; element that
+ : passes a list of options to the parsing function. They are described below.
+ : The options element must conform to the xml-options.xsd schema. Some of these
+ : will be passed to the underlying library (LibXml2) and further documentation 
+ : for them can be found at <a href="http://xmlsoft.org/html/libxml-parser.html">
+ : LibXml2 parser</a>.
+ :
+ : The list of available options:
+ :
  : <ul>
  : <li>
- : eE - enables or disables processing of XML external entities. If the option 
+ : &lt;base-uri/&gt; - the element must have a "value" attribute, which will provide
+ : the baseURI that will be used as the baseURI for every node returned by this 
+ : function.
+ : </li>
+ :
+ : <li>
+ : &lt;noError/&gt; - if present, the option will disable fatal error processing. Any
+ : failure to parse or validate the input in the requested manner will result
+ : in the function returning an empty sequence and no error will raised.
+ : </li>
+ :
+ : <li>
+ : &lt;stripWhitespace/&gt; - if present, it will enable LibXml2's XML_PARSE_NOBLANKS option,
+ : which will remove all the blank nodes from the input.
+ : </li>
+ :
+ : <li>
+ : &lt;schemaValidate/&gt; - if present, it will request that the input string be Schema 
+ : validated. The element accepts an attribute named "mode" which can have two 
+ : values: "strict and "lax". Enabling the option will produce a result that is 
+ : equivalent to processing the input with the option disabled, and then copying 
+ : the result using the XQuery "validate strict|lax" expression. This option can not
+ : be used together with either the &lt;DTDValidate/&gt; or the &lt;parseExternalParsedEntity/&gt;
+ : option. Doing so will raise a zerr:ZXQD0003 error.
+ : </li>
+ :
+ : <li>
+ : &lt;DTDValidate/&gt; - the option will enable the DTD-based validation. If this 
+ : option is enabled and the input references a DTD, then the input must be a 
+ : well-formed and DTD-valid XML document. The &lt;DTDLoad/&gt; option must be used for
+ : external DTD files to be loaded. If the option is enabled and the input does 
+ : not reference a DTD then the option is ignored. If the option is disabled, the 
+ : input is not required to reference a DTD and if it does reference a DTD then
+ : the DTD is ignored for validation purposes. This option can not
+ : be used together with either the &lt;schemaValidate/&gt; or the &lt;parseExternalParsedEntity&gt;
+ : option. Doing so will raise a zerr:ZXQD0003 error.
+ : </li>
+ :
+ : <li> 
+ : &lt;DTDLoad/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDLOAD option which
+ : will load the external subset.
+ : </li>
+ :
+ : <li>
+ : &lt;defaultDTDAttributes/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDATTR option,
+ : which enables the default DTD attributes.
+ : </li>
+ :
+ : <li>
+ : &lt;parseExternalParsedEntity/&gt; - if present, it will enable the processing of XML 
+ : external entities. If the option 
  : is enabled, the input must conform to the syntax extParsedEnt (production 
  : [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">
  : Well-Formed Parsed Entities</a>). The result of the function call is a list 
@@ -72,54 +120,49 @@ declare option ver:module-version "2.0";
  : external entity: that is, elements, processing instructions, comments, and 
  : text nodes. CDATA sections and character references are expanded, and 
  : adjacent characters are merged so the result contains no adjacent text 
- : nodes. If this option is enabled, none of the options d, s, or l may be 
- : enabled. If the option is disabled, the input must be a well-formed XML 
+ : nodes. If the option is disabled, the input must be a well-formed XML 
  : document conforming to the Document production 
  : (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
+ : This option can not be used together with either the &lt;schemaValidate/&gt; or the &lt;DTDValidate/&gt;
+ : option. Doing so will raise a zerr:ZXQD0003 error.
+ : The &lt;parseExternalParsedEntity/&gt; option has two parameters, given by attributes. The first
+ : attribute is "skipRootNodes" and it can have a non-negative value. Specifying the paramter
+ : tells the parser to skip the given number of root nodes and return only their children. E.g.
+ : skipRootNodes="1" is equivalent to parse-xml($xml-string)/*/* . skipRootNodes="2" is equivalent
+ : to parse-xml($xml-string)/*/*/* , etc. The second attribute is "skipTopLevelTextNodes" with a 
+ : boolean value. Specifying "true" will tell the parser to skip top level text nodes, returning
+ : only the top level elements, comments, PIs, etc. This parameter works in combination with
+ : the "skipRootNodes" paramter, thus top level text nodes are skipped after "skipRootNodes" has 
+ : been applied. 
  : </li>
  :
  : <li>
- : dD - enables or disables DTD-based validation. If this option is enabled and
- : the input references a DTD, then the input must be a well-formed and 
- : DTD-valid XML document. If the option is enabled and the input does not 
- : reference a DTD then the option is ignored. If the option is disabled, the 
- : input is not required to reference a DTD and if it does reference a DTD then 
- : the DTD is ignored for validation purposes (though it will still be read for 
- : purposes such as expanding entity references and identifying ID attributes).
+ : &lt;substituteEntities/&gt; - if present, it will enable LibXml2's XML_PARSE_NOENT option,
+ : which tells the parser to substitute entities.
  : </li>
  :
  : <li>
- : sS - enables or disables strict XSD-based validation. If this option is 
- : enabled, the result is equivalent to processing the input with the option 
- : disabled, and then copying the result using the XQuery "validate strict" 
- : expression.
+ : &lt;xincludeSubstitutions/&gt; - if present, it will enable LibXml2's XML_PARSE_XINCLUDE option,
+ : which will implement the XInclude substitution.
  : </li>
  :
  : <li>
- : lL - enables or disables lax XSD-based validation. If this option is enabled, 
- : the result is equivalent to processing the input with the option disabled, 
- : and then copying the result using the XQuery "validate lax " expression.
+ : &lt;removeRedundantNS/&gt; - if present, it will enable LibXml2's XML_PARSE_NSCLEAN option,
+ : which will remove redundant namespaces declarations.
  : </li>
  :
  : <li>
- : wW - enables or disables whitespace stripping. If the option is enabled, 
- : any whitespace-only text nodes that remain after any DTD-based or XSD-based 
- : processing are stripped from the input; if it is disabled, such 
- : whitespace-only text nodes are retained. 
+ : &lt;noCDATA/&gt; - if present, it will enable LibXml2's XML_PARSE_NOCDATA option,
+ : which will tell the parser to merge CDATA as text nodes.
  : </li>
  :
  : <li>
- : fF - enables or disables fatal error processing. If fatal error processing 
- : is enabled, then any failure to parse the input in the manner requested 
- : results in a dynamic error. If fatal error processing is disabled, then any 
- : failure to parse the input (and also, in the case of fn:doc, a failure to 
- : obtain the input by dereferencing the supplied URI) results in the function 
- : returning an empty sequence and raising no error. 
+ : &lt;noXIncludeNodes/&gt; - if present, it will enable LibXml2's XML_PARSE_NOXINCNODE option,
+ : which will tell parser not to generate XINCLUDE START/END nodes.
  : </li>
- : </ul>
+ :      
  :
- : @param $base-uri The baseURI that will be used as the baseURI for every
- :                    node returned by this function.
+ :
  : @param $xml-string The string that holds the XML to be parsed. If empty,
  :                    the function will return an empty sequence
  : @param $options The options for the parsing
@@ -135,7 +178,8 @@ declare option ver:module-version "2.0";
  :                     document has not passed it.
  :
  : @error err:XQDY0027 The error will be raised if schema validation was enabled
- :                     and the input document has not passed it.
+ :                     and the input document has not passed it or if the parsing options are not
+ :                     conformant to the xml-options.xsd schema.
  :
  :)
  
