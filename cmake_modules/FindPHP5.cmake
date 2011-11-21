@@ -97,6 +97,11 @@ MESSAGE(STATUS "Darwin Environment Configuration...")
     _zend_rsrc_list_get_rsrc_type
     _zend_wrong_param_count
     _zval_used_for_init
+    _zval_is_true
+    _zend_lookup_class
+    __object_init
+    __zend_hash_add_or_update
+    _php_strtolower
     )
     SET(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
       "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS},-U,${symbol}")
