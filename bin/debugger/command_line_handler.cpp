@@ -37,7 +37,7 @@ CommandLineHandler::CommandLineHandler(
     theContinueQueue(aContinueQueue),
     theClient(DebuggerClient::createDebuggerClient(&aHandler, port, "localhost")),
     theCommandLine(aCommandPrompt),
-    theQuit(false), theContinue(false), theWaitFor(0)
+    theQuit(false), theTerminated(true), theContinue(false), theWaitFor(0)
   {
     addCommands();
   }
@@ -53,20 +53,21 @@ CommandLineHandler::execute()
   std::set<std::size_t> lIdList;
   do {
     getNextId(lIdList);
-    while (!theQuit && lIdList.find(theWaitFor) == lIdList.end()) {
+    while (lIdList.find(theWaitFor) == lIdList.end()) {
       getNextId(lIdList);
       msleep(20);
     }
-    while (!theContinueQueue.consume(theQuit)) {
+    bool lCanQuit;
+    while (!theContinueQueue.consume(lCanQuit)) {
       msleep(20);
     }
-    theQuit = !theQuit;
-    if (!theQuit) {
+    if (lCanQuit) {
+      theTerminated = true;
+    }
+    theCommandLine.execute();
+    while (theContinue) {
+      theContinue = false;
       theCommandLine.execute();
-      while (theContinue) {
-        theContinue = false;
-        theCommandLine.execute();
-      }
     }
   } while (!theQuit);
 }
@@ -98,26 +99,30 @@ template<>
 void
 CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
 {
-  bool answered = false;
-  while (!answered) {
-    std::cout << "Do you really want to stop debugging and exit? (y/n) ";
-    std::string lAnswer;
-    std::getline(std::cin, lAnswer);
-    if (lAnswer == "y" || lAnswer == "yes") {
-      answered = true;
-    } else if (lAnswer == "n" || lAnswer == "no") {
-      theContinue = true;
-      return;
+  if (!theTerminated) {
+    bool answered = false;
+    while (!answered) {
+      std::cout << "Do you really want to stop debugging and exit? (y/n) ";
+      std::string lAnswer;
+      std::getline(std::cin, lAnswer);
+      if (lAnswer == "y" || lAnswer == "yes") {
+        answered = true;
+      } else if (lAnswer == "n" || lAnswer == "no") {
+        theContinue = true;
+        return;
+      }
     }
   }
   theWaitFor = theClient->stop();
   theClient->quit();
+  theQuit = true;
 }
   
 template<>
 void
 CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
 {
+  theTerminated = false;
   theWaitFor = theClient->run();
 }
 

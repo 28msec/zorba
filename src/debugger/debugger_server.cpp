@@ -42,6 +42,7 @@ DebuggerServer::DebuggerServer(
   void*                     aCallbackData,
   const std::string&        aHost,
   unsigned short            aPort)
+  : theStopping(false)
 {
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
   theRuntime = new DebuggerRuntime(
@@ -70,7 +71,7 @@ DebuggerServer::run()
 
   std::string lCommand;
 
-  while (//theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
+  while (!theStopping &&
       theRuntime->getExecutionStatus() != QUERY_DETACHED) {
 
     // read next command
@@ -459,6 +460,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        theStopping = true;
 
         lResponse << "reason=\"ok\" status=\"stopped\" ";
         lResponse << ">";

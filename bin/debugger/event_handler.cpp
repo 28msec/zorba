@@ -77,18 +77,21 @@ EventHandler::parseMessage(const std::string &aMessage)
     lStream >> lId;
 
     //   2. A message
+    bool lCanQuit = false;
     if (lIter->next(lItem)) {
+      String lMessage = lItem.getStringValue();
+      lCanQuit = lMessage == "stopping";
       std::cout << lItem.getStringValue() << std::endl;
     }
 
     // go and solve the event with this id
-    theContinueProducer.produce(true);
+    theContinueProducer.produce(lCanQuit);
     theIdQueue.produce(lId);
   } catch (ZorbaException& e) {
     std::cerr << "FATAL: could not execute query: " << std::endl;
     std::cerr << e << std::endl;
     std::cerr << "This is a bug, please report to zorba-users@lists.sourceforge.net" << std::endl;
-    theContinueProducer.produce(false);
+    //theContinueProducer.produce(false);
   }
 }
   

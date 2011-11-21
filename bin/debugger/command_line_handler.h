@@ -108,6 +108,7 @@ class CommandLineHandler
     DebuggerClient*                 theClient;
     CommandPrompt&                  theCommandLine;
     bool                            theQuit;
+    bool                            theTerminated;
     bool                            theContinue;
     std::size_t                     theWaitFor;
 
