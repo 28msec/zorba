@@ -209,11 +209,6 @@ MESSAGE(STATUS "processing store dir ${ZORBA_STORE_DIR} with name ${ZORBA_STORE_
 
 INCLUDE (${ZORBA_STORE_DIR}/CMakeLists.txt)     # side-effects!
 
-#
-# split zorba_simplestore into smaller libs
-#
-INCLUDE(SplitBuild.cmake)
-
 SET(STORE_SRCS)
 FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
   LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})

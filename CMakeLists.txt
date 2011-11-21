@@ -500,16 +500,6 @@ ADD_SUBDIRECTORY(cmake_modules)
 # before "modules" so external modules will be able to find
 # ZorbaConfig.cmake.
 
-#
-# Split libraries build: the ALL_SPLIT_LIBS variable needs to be declared before the
-# test subfolder is added. Unfortunately, it has to be updated *manually*.
-#
-
-SET(ALL_SPLIT_LIBS "capi;compiler;system;context;diagnostics;annotations;types;" 
-                   "util;zorbaserialization;zorbatypes;zorbautils;unit_tests;" 
-                   "store;funcs_runtime;api_build;compiler_build;context_build;"
-                   "debugger;zorbamisc;")
-
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(include)
