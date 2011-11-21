@@ -57,7 +57,6 @@ DebuggerServer::~DebuggerServer()
   delete theCommunicator;
 }
 
-
 bool
 DebuggerServer::run()
 {
@@ -71,11 +70,26 @@ DebuggerServer::run()
 
   std::string lCommand;
 
-  while (theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
+  while (//theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
       theRuntime->getExecutionStatus() != QUERY_DETACHED) {
+
     // read next command
     theCommunicator->receive(lCommand);
     DebuggerCommand lCmd = DebuggerCommand(lCommand);
+
+    if (theRuntime->getExecutionStatus() == QUERY_TERMINATED) {
+      // clone the existing runtime
+      DebuggerRuntime* lNewRuntime = theRuntime->clone();
+
+      // reset and delete the existing runtime
+      theRuntime->terminate();
+      theRuntime->resetRuntime();
+      theRuntime->join();
+      delete theRuntime;
+
+      // and save the new runtime
+      theRuntime = lNewRuntime;
+    }
 
     // process the received command
     std::string lResponse = processCommand(lCmd);
@@ -401,9 +415,9 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     // run
     case 'r':
 
-      if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {
+      if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE || lStatus == QUERY_TERMINATED) {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        if (lStatus == QUERY_IDLE) {
+        if (lStatus == QUERY_IDLE || lStatus == QUERY_TERMINATED) {
           theRuntime->start();
         } else if (lStatus == QUERY_SUSPENDED) {
           theRuntime->resumeRuntime();
@@ -436,7 +450,11 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         String lFileName(lTmp);
 
         lResponse << "<![CDATA[";
-        lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine, lZorbaExtensions) << std::endl;
+        try {
+          lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine, lZorbaExtensions) << std::endl;
+        } catch (std::string& lErr) {
+          return buildErrorResponse(lTransactionID, lCmdName, 100, lErr);
+        }
         lResponse << "]]>";
 
       } else if (aCommand.getName() == "stop") {

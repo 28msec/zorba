@@ -147,6 +147,9 @@ class DebuggerRuntime : public Runnable {
 
     void step(StepCommand stepType);
 
+    DebuggerRuntime*
+    clone();
+
   private:
 
     DebuggerCommons* 

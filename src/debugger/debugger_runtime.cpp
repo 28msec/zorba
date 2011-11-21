@@ -525,16 +525,43 @@ DebuggerRuntime::listSource(
     }
   }
 
+#ifdef WIN32
+  // TODO: tolower all the file names/URIs on Windows
+  // This must be implemented also in the breakable/breakpoint logic
+#endif
+
+  // normalize file uri and file name
   String lPrefix = lFileName.substr(0, 7);
   if (lPrefix == "file://") {
-    lFileUri = lFileName;
     lFileName = URIHelper::decodeFileURI(lFileName);
+    lFileUri = URIHelper::encodeFileURI(lFileName);
   } else {
     if (lPrefix != "http://" && lPrefix != "https:/") {
       lFileUri = URIHelper::encodeFileURI(lFileName);
     } else {
       lFileUri = lFileName;
     }
+  }
+
+  // check if this file is actually one file where breakpoints are allowed
+  // this prevents the user opening random files in the system
+  BreakableVector lBkps = getBreakpoints();
+  bool lFoundFile = false;
+  for (BreakableVector::size_type j = 0; j < lBkps.size(); j++) {
+    Breakable lBkp = lBkps.at(j);
+    if (lBkp.getLocation().getFilename().str() == lFileUri.str()) {
+      lFoundFile = true;
+      break;
+    }
+  }
+
+  // TODO: if lZorbaExtensions and file not found add search capability like
+  // for breakpoints. This ways the useer can specify only a file name suffix
+
+  if (!lFoundFile) {
+    std::stringstream lSs;
+    lSs << "Cannot open file: " << lFileUri;
+    throw lSs.str();
   }
 
   // if a file is given check if this is the one in the top-most stack frame
@@ -545,6 +572,7 @@ DebuggerRuntime::listSource(
       lCurrentLine = lFrame.getLocation().getLineBegin();
     }
   }
+
 
   // read the entire file
   std::ifstream lStream(lFileName.c_str());
@@ -569,7 +597,6 @@ DebuggerRuntime::listSource(
       //
 
       // first breakpoints in this file
-      BreakableVector lBkps = getBreakpoints();
       std::map<int, bool> lBreakLines;
       for (BreakableVector::size_type j = 0; j < lBkps.size(); j++) {
         Breakable lBkp = lBkps.at(j);
@@ -611,6 +638,21 @@ void
 DebuggerRuntime::setLastContinuationCommand(int aTransactionID, std::string aCommandName)
 {
   theLastContinuationCommand = std::pair<int, std::string>(aTransactionID, aCommandName);
+}
+
+DebuggerRuntime*
+DebuggerRuntime::clone()
+{
+  DebuggerRuntime* lNewRuntime = new DebuggerRuntime(
+    theQuery,
+    theOStream,
+    theSerializerOptions,
+    theCommunicator,
+    theItemHandler,
+    theCallbackData);
+
+  lNewRuntime->theBreakpoints = theBreakpoints;
+  return lNewRuntime;
 }
 
 

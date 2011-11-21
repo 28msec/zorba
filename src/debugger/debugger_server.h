@@ -108,7 +108,6 @@ class DebuggerServer {
     DebuggerCommunicator* theCommunicator;
     DebuggerRuntime*      theRuntime;
     std::string           theFileName;
-
   };
 }
 
