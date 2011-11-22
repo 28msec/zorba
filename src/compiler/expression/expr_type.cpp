@@ -677,8 +677,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     
     body->get_exprs_of_kind(exit_expr_kind, exitExprs);
 
-    ulong numExitExprs = exitExprs.size();
-    ulong i;
+    csize numExitExprs = exitExprs.size();
+    csize i;
 
     for (i = 0; i < numExitExprs; ++i)
     {

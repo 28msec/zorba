@@ -120,14 +120,14 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CONSUME(item, 0);
 
   {
-    ulong numEvalVars = theVarNames.size();
+    csize numEvalVars = theVarNames.size();
 
     // Create an "outer" sctx and register into it (a) global vars corresponding
     // to the eval vars and (b) the expression-level ns bindings at the place 
     // where the eval call appears at.
     static_context* outerSctx = theSctx->create_child_context();
 
-    for (ulong i = 0; i < numEvalVars; ++i)
+    for (csize i = 0; i < numEvalVars; ++i)
     {
       var_expr_t ve = new var_expr(outerSctx,
                                    loc,
@@ -253,7 +253,7 @@ void EvalIterator::copyOuterVariables(
   // For each of the eval vars, place its value into the evalDctx. The var
   // value is represented as a PlanIteratorWrapper over the subplan that
   // evaluates the domain expr of the eval var.
-  for (ulong i = 0; i < theChildren.size() - 1; ++i)
+  for (csize i = 0; i < theChildren.size() - 1; ++i)
   {
     var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
                                               loc,

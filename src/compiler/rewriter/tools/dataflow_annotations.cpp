@@ -918,11 +918,15 @@ void findNodeSourcesRec(
 
   case doc_expr_kind:
   case elem_expr_kind:
+  {
+    sources.push_back(node);
+    return;
+  }
+
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
-    sources.push_back(node);
     return;
   }
 
@@ -976,7 +980,7 @@ void findNodeSourcesRec(
     {
       user_function* udf = static_cast<user_function*>(f);
  
-      bool recursive = currentUdf->isMutuallyRecursiveWith(udf);
+      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
 
       UdfSourcesMap::iterator ite = rCtx.theUdfSourcesMap.find(udf);
 
@@ -1051,6 +1055,15 @@ void findNodeSourcesRec(
     break;
   }
 
+  case block_expr_kind:
+  {
+    block_expr* e = static_cast<block_expr*>(node);
+
+    findNodeSourcesRec(rCtx, (*e)[e->size()-1], sources, currentUdf);
+
+    return;
+  }
+
   case var_decl_expr_kind:
   {
     var_decl_expr* e = static_cast<var_decl_expr*>(node);
@@ -1077,11 +1090,12 @@ void findNodeSourcesRec(
     break;
   }
 
-#if 0
-  case block_expr_kind:
-    compute_block_expr(static_cast<block_expr *>(e));
-    break;
+  case eval_expr_kind:
+  {
+    assert(0);
+  }
 
+#if 0
   case exit_catcher_expr_kind: 
   {
     break;
@@ -1103,7 +1117,6 @@ void findNodeSourcesRec(
   case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
   case transform_expr_kind:
-  case eval_expr_kind:
   case debugger_expr_kind:
     break;
 #endif

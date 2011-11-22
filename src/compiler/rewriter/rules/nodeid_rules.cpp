@@ -557,7 +557,7 @@ expr_t MarkNodeCopyProps::apply(
 {
   modified = false;
 
-  if (rCtx.theCCB->theConfig.for_serialization_only)
+  if (!rCtx.theCCB->theConfig.for_serialization_only)
   {
     std::vector<expr*> sources;
     UDFCallChain dummyUdfCaller;
@@ -777,6 +777,8 @@ void MarkNodeCopyProps::applyInternal(
   case apply_expr_kind:
   case while_expr_kind:
   case flowctl_expr_kind:
+  case exit_expr_kind:
+  case exit_catcher_expr_kind: 
   {
     break;
   }
@@ -826,7 +828,19 @@ void MarkNodeCopyProps::applyInternal(
     for (csize i = 0; i < numVars; ++i)
     {
       std::vector<expr*> sources;
-      findNodeSources(rCtx, e->get_arg_expr(), &udfCaller, sources);
+      findNodeSources(rCtx, e->get_arg_expr(i), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    std::vector<var_expr_t> globalVars;
+    e->get_sctx()->getVariables(globalVars, true, true);
+  
+    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+    {
+      var_expr* globalVar = (*ite).getp();
+
+      std::vector<expr*> sources;
+      findNodeSources(rCtx, globalVar, &udfCaller, sources);
       markSources(sources);
     }
 
@@ -847,16 +861,6 @@ void MarkNodeCopyProps::applyInternal(
 #endif
 
 #if 0
-  case exit_catcher_expr_kind: 
-  {
-    break;
-  }
-
-  case exit_expr_kind:
-  {
-    break;
-  }
-
   case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
 

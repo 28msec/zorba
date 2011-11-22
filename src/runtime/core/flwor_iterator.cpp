@@ -1507,7 +1507,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
                                                               planState);
-      (*nongroupVarSequences)[i]->append(iterWrapper, true);
+      (*nongroupVarSequences)[i]->append(iterWrapper, false);
 
       nongroupingSpecs[i].reset(planState);
     }
@@ -1523,7 +1523,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
-      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, true, false);
+      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false, false);
 
       nongroupVarSequences->push_back(result);
 

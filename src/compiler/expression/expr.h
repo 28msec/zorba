@@ -1147,10 +1147,20 @@ public:
   There is no syntax corresponding to the eval_expr. Instead, an eval_expr is
   created by the translator whenever a call to the eval() function is reached.
 
-  theExpr  : The expr that computes the query string to be evaluated by eval.
-  theVars  : There is one eval var for each non-global var that is in scope
-             where the call to the eval function appears at.
-  theArgs  : The domain expr of each eval var.
+  theExpr:
+  --------
+  The expr that computes the query string to be evaluated by eval.
+
+  theVars:
+  --------
+  There is one "eval" var for each non-global var that is in scope where the call
+  to the eval function appears at.
+
+  theArgs:
+  --------
+  The domain expr of each eval var. Initially, the domain expr of an eval var
+  is always another var. However, that other var may be later inlined, so in
+  general, the domain expr of an eval var may be any expr.
 ********************************************************************************/
 class eval_expr : public namespace_context_base_expr
 {
@@ -1159,7 +1169,7 @@ class eval_expr : public namespace_context_base_expr
 
 protected:
   expr_t                      theExpr;
-  checked_vector<var_expr_t>  theVars;
+  std::vector<var_expr_t>     theVars;
   std::vector<expr_t>         theArgs;
   expr_script_kind_t          theInnerScriptingKind;
 

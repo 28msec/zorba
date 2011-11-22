@@ -291,7 +291,13 @@ public:
 
 
 /*******************************************************************************
-  A "helper" expr to catch the ExitExpr thrown by an exit_expr.
+  A "helper" expr to catch the exception thrown by an exit_expr that appears
+  inside a UDF. It is placed between the return-type-checking expr(s) at the
+  top of the UDF body and the effective UDF body.
+
+  theExpr:
+  --------
+  The child expr of "this" exit_catcher_expr (i.e., the effective UDF body).
 ********************************************************************************/
 class exit_catcher_expr : public expr 
 {

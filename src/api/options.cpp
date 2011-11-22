@@ -27,6 +27,13 @@ Zorba_CompilerHints::Zorba_CompilerHints()
 }
 
 
+void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
+{
+  Zorba_CompilerHints_t lDefault;
+  *aHints = lDefault;
+}
+
+
 Zorba_SerializerOptions::Zorba_SerializerOptions()
   :
   ser_method(ZORBA_SERIALIZATION_METHOD_XML),
@@ -121,6 +128,7 @@ void Zorba_SerializerOptions::SetSerializerOption(
   }
 }
 
+
 Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
 {
   Zorba_SerializerOptions_t opt;
@@ -136,11 +144,6 @@ Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringPa
   return opt;
 }
 
-void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
-{
-  Zorba_CompilerHints_t lDefault;
-  *aHints = lDefault;
-}
 
 Zorba_SerializerOptions_t* Zorba_SerializerOptions_default()
 {
@@ -148,10 +151,12 @@ Zorba_SerializerOptions_t* Zorba_SerializerOptions_default()
   return lDefault;
 }
 
+
 void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions)
 {
   delete serializerOptions;
 }
+
 
 void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value)
 {

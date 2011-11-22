@@ -237,10 +237,13 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // Mark node copy property
-  if (rCtx.theUDF == NULL)
+  if (Properties::instance()->noCopyOptim())
   {
-    RuleOnceDriver<MarkNodeCopyProps> driverMarkNodeCopyProps;
-    driverMarkNodeCopyProps.rewrite(rCtx);
+    if (rCtx.theUDF == NULL)
+    {
+      RuleOnceDriver<MarkNodeCopyProps> driverMarkNodeCopyProps;
+      driverMarkNodeCopyProps.rewrite(rCtx);
+    }
   }
 
   return modified;

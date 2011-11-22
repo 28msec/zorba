@@ -95,6 +95,11 @@ typedef rchandle<var_expr> var_expr_t;
   -------
   For arg vars, the corresponding UDF.
 
+  theSetExprs:
+  ------------
+  For global and local vars, this vector contains a pointer to the var_decl_expr
+  for the variable and to each var_set_expr for the same var.
+
   theIsExternal:
   --------------
   Whether this is an external variable or not (for prolog vars only).
@@ -162,6 +167,8 @@ protected:
   csize                 theParamPos;
 
   user_function       * theUDF;
+
+  std::vector<expr*>    theSetExprs;
 
   bool                  theIsExternal;
 
@@ -239,6 +246,8 @@ public:
   user_function* get_udf() const { return theUDF; }
 
   void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
+
+  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
 
   bool is_context_item() const;
 
