@@ -1505,7 +1505,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
                                                               planState);
-      (*nongroupVarSequences)[i]->append(iterWrapper, true);
+      (*nongroupVarSequences)[i]->append(iterWrapper, false);
 
       nongroupingSpecs[i].reset(planState);
     }
