@@ -1291,17 +1291,17 @@ void FLWORIterator::materializeStreamTuple(
 
   FlworState::TuplesTable& tuplesTable = iterState->theTuplesTable;
 
-  ulong numTuples = (ulong)tuplesTable.size();
+  csize numTuples = tuplesTable.size();
   tuplesTable.resize(numTuples + 1);
 
-  ulong numForVars = (ulong)theMaterializeClause->theInputForVars.size();
-  ulong numLetVars = (ulong)theMaterializeClause->theInputLetVars.size();
+  csize numForVars = theMaterializeClause->theInputForVars.size();
+  csize numLetVars = theMaterializeClause->theInputLetVars.size();
 
   StreamTuple& streamTuple = tuplesTable[numTuples];
   streamTuple.theItems.resize(numForVars);
   streamTuple.theSequences.resize(numLetVars);
 
-  for (ulong i = 0;  i < numForVars; ++i)
+  for (csize i = 0;  i < numForVars; ++i)
   {
     store::Item_t forItem;
     consumeNext(forItem,
@@ -1313,14 +1313,12 @@ void FLWORIterator::materializeStreamTuple(
     theMaterializeClause->theInputForVars[i]->reset(planState);
   }
 
-  for (ulong i = 0; i < numLetVars; ++i)
+  for (csize i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
-    const PlanIter_t    var_plan = theMaterializeClause->theInputLetVars[i];
-    createTempSeq(letTempSeq,
-                  var_plan,
-                  planState,
-                  false);
+    const PlanIter_t var_plan = theMaterializeClause->theInputLetVars[i];
+
+    createTempSeq(letTempSeq, var_plan, planState, false);
 
     streamTuple.theSequences[i].transfer(letTempSeq);
 
@@ -1330,7 +1328,7 @@ void FLWORIterator::materializeStreamTuple(
   // Create the sort tuple
 
   std::vector<OrderSpec>& orderSpecs = theMaterializeClause->theOrderSpecs;
-  ulong numSpecs = (ulong)orderSpecs.size();
+  csize numSpecs = orderSpecs.size();
 
   if (numSpecs == 0)
     return;
@@ -1498,11 +1496,11 @@ void FLWORIterator::materializeGroupTuple(
 
   std::vector<NonGroupingSpec> nongroupingSpecs = theGroupByClause->theNonGroupingSpecs;
   std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
-  ulong numNonGroupingSpecs = (ulong)nongroupingSpecs.size();
+  csize numNonGroupingSpecs = nongroupingSpecs.size();
 
   if (groupMap->get(groupTuple, nongroupVarSequences))
   {
-    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
+    for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
@@ -1518,12 +1516,12 @@ void FLWORIterator::materializeGroupTuple(
   {
     nongroupVarSequences = new std::vector<store::TempSeq_t>();
 
-    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
+    for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
-      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, true, false);
+      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false, false);
 
       nongroupVarSequences->push_back(result);
 
@@ -1547,18 +1545,18 @@ void FLWORIterator::rebindStreamTuple(
   StreamTuple& streamTuple = 
   iterState->theTuplesTable[tuplePos];
 
-  ulong numForVarsRefs = (ulong)theMaterializeClause->theOutputForVarsRefs.size();
+  csize numForVarsRefs = theMaterializeClause->theOutputForVarsRefs.size();
 
-  for (ulong i = 0; i < numForVarsRefs; ++i)
+  for (csize i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i],
                   theMaterializeClause->theOutputForVarsRefs[i],
                   planState);
   }
   
-  ulong numLetVarsRefs = (ulong)theMaterializeClause->theOutputLetVarsRefs.size();
+  csize numLetVarsRefs = theMaterializeClause->theOutputLetVarsRefs.size();
   
-  for (ulong i = 0; i < numLetVarsRefs; ++i)
+  for (csize i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i],
                   theMaterializeClause->theOutputLetVarsRefs[i],
