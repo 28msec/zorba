@@ -508,7 +508,7 @@ DebuggerRuntime::listSource(
 {
   // these are needed if extensions are enabled
   String lFileUri;
-  int lCurrentLine = 0;
+  unsigned int lCurrentLine = 0;
 
   // for unspecified files determine the file
   if (lFileName == "") {
