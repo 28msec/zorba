@@ -115,6 +115,15 @@ public:
    */
   virtual bool getNodeByReference(store::Item_t& result, const zstring& reference) = 0;
 
+  /* ------------------ Structural Information Management ----------------------*/
+
+  /**
+   * Computes the structural information of the passed item.
+   *
+   * @param item XDM item
+   * @return Returns an item of type xs:uri
+   */
+  virtual bool getStructuralInformation(Item_t& result, const Item* node) = 0;
 
   /* --------------------------- Node Id Management ---------------------------*/
 

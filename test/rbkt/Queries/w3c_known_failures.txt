@@ -69,6 +69,7 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
+test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-004
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-903
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-007
@@ -107,6 +108,7 @@ test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-005
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-001
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-008
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-902
+test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02

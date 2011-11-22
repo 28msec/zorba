@@ -34,6 +34,7 @@
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 namespace zorba
 {
@@ -59,8 +60,7 @@ class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
 
-typedef store::StringBufHashMap<XmlNode_t> DocumentSet;
-typedef store::StringBufHashMap<store::Collection_t> UriCollectionSet;
+typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 typedef ItemPointerHashMap<store::IC_t> ICSet;
 
@@ -270,18 +270,6 @@ public:
         const zstring& baseUri,
         const zstring& docUri,
         std::istream& stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream* stream,
-        bool storeDocument);
-
-  store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& stream,
         const store::LoadProperties& loadProperties);
 
   store::Item_t loadDocument(
@@ -330,6 +318,8 @@ public:
   store::Iterator_t distinctNodes(store::Iterator* input, bool aAllowAtomics);
 
   store::Iterator_t checkDistinctNodes(store::Iterator* input);
+
+  bool getStructuralInformation(store::Item_t& result, const store::Item* node);
 
   bool getPathInfo(
         const store::Item* docUri,

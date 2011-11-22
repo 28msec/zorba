@@ -1,0 +1,14 @@
+Iterator tree for const-folded expr:
+<SubstringIterator>
+  <SingletonIterator value="xs:string(12345)"/>
+  <PromoteIterator type="xs:double">
+    <SingletonIterator value="xs:decimal(1.5)"/>
+  </PromoteIterator>
+  <PromoteIterator type="xs:double">
+    <SingletonIterator value="xs:decimal(2.6)"/>
+  </PromoteIterator>
+</SubstringIterator>
+
+Iterator tree for main query:
+<SingletonIterator value="xs:string(234)"/>
+

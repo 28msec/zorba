@@ -18,8 +18,9 @@
 
 #include <vector>
 
+#include "zorbatypes/rchandle.h"
 #include "zorbamisc/config/platform.h"
-#include "store/api/item.h"
+#include "store/api/shared_types.h"
 
 namespace zorba { namespace simplestore {
 

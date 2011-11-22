@@ -114,8 +114,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
@@ -153,15 +153,15 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
 
   lResource = theSctx->resolve_uri(resolvedURIString,
-                                   impl::EntityData::COLLECTION,
+                                   internal::EntityData::COLLECTION,
                                    lErrorMessage);
 
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
-      err::FODC0004,
+      err::FODC0002,
       ERROR_PARAMS( resolvedURIString, lErrorMessage ),
       ERROR_LOC( loc )
     );
@@ -236,8 +236,8 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 {
   store::Item_t lURI;
   store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
@@ -274,10 +274,10 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 
 
   lResource = theSctx->resolve_uri(resolvedURIString, 
-                                   impl::EntityData::COLLECTION,
+                                   internal::EntityData::COLLECTION,
                                    lErrorMessage);
 
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
@@ -554,15 +554,15 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     // dynamic collections have some default properties
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable);
     lAnnotations.push_back(lAnn);
 
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_ordered);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_ordered);
     lAnnotations.push_back(lAnn);
 
     lAnn = new store::Annotation();
-    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable_nodes);
+    lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes);
     lAnnotations.push_back(lAnn);
 
     pul->addCreateCollection(
@@ -584,9 +584,9 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
       lAnn->theName = lTmp->getQName();
 
-      for (size_t j = 0; j < lTmp->getNumLiterals(); ++j)
+      for (csize j = 0; j < lTmp->getNumLiterals(); ++j)
       {
-        lAnn->theLiterals.push_back(lTmp->getLiteral(j)->getLiteralItem());
+        lAnn->theLiterals.push_back(lTmp->getLiteral(j));
       }
       lAnnotations.push_back(lAnn);
     }

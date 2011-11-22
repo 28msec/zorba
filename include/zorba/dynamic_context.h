@@ -43,6 +43,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC DynamicContext
 {
  public:
+	 
   /**
    * \brief Defines the external variable identified by aQName and assigns it
    * the value of aItem.
@@ -261,7 +262,6 @@ class ZORBA_DLL_PUBLIC DynamicContext
    */
   virtual ExternalFunctionParameter*
   getExternalFunctionParameter ( const String& aName ) const = 0;
-  
 
 protected:
   /** \brief Destructor

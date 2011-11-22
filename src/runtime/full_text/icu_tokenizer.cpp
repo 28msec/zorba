@@ -196,14 +196,14 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
       *c = L' ';
   }
 
-  // This UnicodeString wraps the existing buffer: no copy is made.
-  UnicodeString const utf16_s( false, utf16_buf, utf16_len );
+  // This unicode::string wraps the existing buffer: no copy is made.
+  unicode::string const utf16_s( false, utf16_buf, utf16_len );
 
   word_->setText( utf16_s );
-  int32_t word_start = word_->first(), word_end = word_->next();
+  unicode::size_type word_start = word_->first(), word_end = word_->next();
 
   sent_->setText( utf16_s );
-  int32_t sent_start = sent_->first(), sent_end = sent_->next();
+  unicode::size_type sent_end = sent_->first(); sent_end = sent_->next();
 
   temp_token t;
 
@@ -230,7 +230,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
     zstring_b utf8_word;
     utf8_word.wrap_memory( utf8_buf, utf8_len );
 
-    int32_t const rule_status = word_->getRuleStatus();
+    unicode::size_type const rule_status = word_->getRuleStatus();
 
     //
     // "Junk" tokens are whitespace and punctuation -- except some punctuation
@@ -364,7 +364,7 @@ set_token:
 next:
     word_start = word_end, word_end = word_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
-      sent_start = sent_end, sent_end = sent_->next();
+      sent_end = sent_->next();
       if ( sent_end != BreakIterator::DONE )
         ++numbers().sent;
     }

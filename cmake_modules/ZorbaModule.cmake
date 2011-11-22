@@ -272,12 +272,12 @@ MACRO (DECLARE_ZORBA_MODULE)
       IF(NOT ${PROJECT_NAME} STREQUAL "zorba")
         STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path}
+          ${target_type} DESTINATION ${ZORBA_CORE_LIB_DIR}/${module_path}
           COMPONENT ${component_name})
       
       ELSE(NOT ${PROJECT_NAME} STREQUAL "zorba")
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
+          ${target_type} DESTINATION ${ZORBA_NONCORE_LIB_DIR}/${module_path})
       ENDIF(NOT ${PROJECT_NAME} STREQUAL "zorba")
     ENDIF (NOT MODULE_TEST_ONLY)
       
@@ -296,7 +296,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     ENDIF (patch_ver)
   ENDIF (MODULE_VERSION)
   FOREACH (version_infix "" ${version_infixes})
-    ADD_COPY_RULE ("${SOURCE_FILE}" "${module_path}/${module_filename}"
+    ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${module_path}/${module_filename}"
       "${version_infix}" "" "${MODULE_TEST_ONLY}")
   ENDFOREACH (version_infix)
 
@@ -304,7 +304,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   IF (module_lib_target)
     GET_TARGET_PROPERTY (lib_location "${module_lib_target}" LOCATION)
     GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
-    ADD_COPY_RULE ("${lib_location}" "${module_path}/${lib_filename}"
+    ADD_COPY_RULE ("LIB" "${lib_location}" "${module_path}/${lib_filename}"
       "" "${module_lib_target}" "${MODULE_TEST_ONLY}")
   ENDIF (module_lib_target)
 
@@ -357,27 +357,30 @@ MACRO (DECLARE_ZORBA_SCHEMA)
     ADD_ZORBA_MANIFEST_ENTRY("schema" ${SCHEMA_URI} "")
   ENDIF (NOT SCHEMA_TEST_ONLY)
 
-  ADD_COPY_RULE ("${SOURCE_FILE}" "${schema_path}/${schema_filename}"
+  ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${schema_path}/${schema_filename}"
     "" "" "${SCHEMA_TEST_ONLY}")
 
 ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
 # Utility macro for setting up a build rule to copy a file to a
-# particular (possible versioned) file in URI_PATH if such a file has
+# particular (possibly versioned) file in a shared directory if such a file has
 # not already been output.
+# FILE_TYPE: Either "URI" or "LIB"; will be used to determine which shared
+#    directory to place output in (URI_PATH or LIB_PATH).
 # INPUT_FILE: Absolute path to file to copy.
 # OUTPUT_FILE: Relative path to output file (relative to URI_PATH).
 # VERSION_ARG: Version; may be "" for non-versioned files.
 # DEPEND_TARGET: A CMake target name upon which the copy rule should depend;
 #    may be "".
 # TEST_ONLY: If 1, file is for testcases only; will be copied into
-#    TEST_URI_PATH and will not be installed
-MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET TEST_ONLY)
+#    TEST_URI_PATH/TEST_LIB_PATH and will not be installed
+MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
+       DEPEND_TARGET TEST_ONLY)
   # Choose output base directory
   IF (${TEST_ONLY} EQUAL 1)
-    SET (_output_basedir "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
+    SET (_output_basedir "${CMAKE_BINARY_DIR}/TEST_${FILE_TYPE}_PATH")
   ELSE (${TEST_ONLY} EQUAL 1)
-    SET (_output_basedir "${CMAKE_BINARY_DIR}/URI_PATH")
+    SET (_output_basedir "${CMAKE_BINARY_DIR}/${FILE_TYPE}_PATH")
   ENDIF (${TEST_ONLY} EQUAL 1)
 
   # Compute the modified output filename by inserting VERSION_ARG (if
@@ -416,7 +419,7 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET TEST_ONLY)
         IF(NOT PROJECT_NAME STREQUAL "zorba")
           STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
           INSTALL (FILES "${INPUT_FILE}"
-            DESTINATION "${ZORBA_MODULES_INSTALL_DIR}/${_output_path}"
+            DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
             RENAME "${_output_filename}"
             COMPONENT "${component_name}")
           
@@ -436,7 +439,7 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET TEST_ONLY)
             
         ELSE(NOT PROJECT_NAME STREQUAL "zorba")
           INSTALL (FILES "${INPUT_FILE}"
-          DESTINATION "${ZORBA_MODULES_INSTALL_DIR}/${_output_path}"
+          DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
           RENAME "${_output_filename}")
         ENDIF(NOT PROJECT_NAME STREQUAL "zorba")
         
@@ -673,6 +676,10 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 # ZORBA_XHTML_REQUISITES_PATH - points to the dir containing the html requisites (images, lib, styles, templates dirs)
 # Zorba_EXE - points to zorba.exe (or zorba.bat)
 MACRO (ADD_XQDOC_TARGETS)
+	IF(NOT ZORBA_WITH_FILE_ACCESS)
+		MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
+	ENDIF()
+
   MESSAGE(STATUS "ADD_XQDOC_TARGETS")
 
   SET(ZORBA_XQDOC_XML_XQ
@@ -695,7 +702,7 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc XML documentation ..."
   )
   MESSAGE(STATUS "  added target xqdoc-xml")
-  ADD_DEPENDENCIES(xqdoc-xml zorba_simplestore)
+  ADD_DEPENDENCIES(xqdoc-xml zorbacmd zorba_simplestore check_uris)
 
   SET_TARGET_PROPERTIES (xqdoc-xml PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1

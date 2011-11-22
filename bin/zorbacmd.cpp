@@ -43,7 +43,7 @@
 
 #include "error_printer.h"
 #include "util.h"
-#include "module_path.h"
+#include "path_util.h"
 
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
@@ -70,7 +70,7 @@ const char *copyright_str =
 
 #ifndef ZORBA_NO_FULL_TEXT
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
-OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS, URIMapper::COMPONENT);
+OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
 
 bool
@@ -85,10 +85,8 @@ populateStaticContext(
     // 2. environment ZORBA_MODULE_PATH
     // 3. current working directory
     {
-      std::vector<String> lModulePaths;
-      ModulePath::getModulePaths(aProperties, lModulePaths);
-
-      aStaticContext->setModulePaths(lModulePaths);
+      std::vector<String> lModulePath;
+      PathUtil::setPathsOnContext(aProperties, aStaticContext);
     }
 
     if (aProperties.boundarySpace().size() != 0 )
