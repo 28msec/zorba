@@ -514,7 +514,15 @@ DebuggerRuntime::listSource(
   if (lFileName == "") {
     // if not started, than it's the main module
     if (theExecStatus != QUERY_SUSPENDED) {
-      lFileName = theQuery->getFileName();
+#ifdef WIN32
+      theFileName = aQuery->getFileName().str();
+#else
+      // TODO: under Linux, when trying to get the file name of the query
+      //       the call fails because getFileName tries to get a lock that
+      //       is already taken. Therefore the assertion in mutex.cpp:63
+      //       terminates the execution 
+      lFileName = "";
+#endif
     }
     // else, the file pointed by the top-most stack frame
     else {
