@@ -3204,7 +3204,7 @@ void* begin_visit(const VFO_DeclList& v)
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ? 
+    bool isSequential = (theAnnotations ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -4173,12 +4173,12 @@ void* begin_visit(const AST_IndexDecl& v)
   if (theAnnotations)
   {
     if (ZANN_CONTAINS(zann_general_equality) ||
-        ZANN_CONTAINS(zann_general_range)) 
+        ZANN_CONTAINS(zann_general_range))
     {
       index->setGeneral(true);
     }
     if (ZANN_CONTAINS(zann_general_range) ||
-        ZANN_CONTAINS(zann_value_range)) 
+        ZANN_CONTAINS(zann_value_range))
     {
       index->setMethod(IndexDecl::TREE);
     }
@@ -7245,7 +7245,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 /*******************************************************************************
   QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
 
-  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle 
+  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle
                      ("," "$" VarName TypeDeclaration? "in" ExprSingle)*
 
   A universally quantified expr is translated into a flwor expr:
@@ -9190,13 +9190,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t condExpr;
   std::vector<expr_t> condOperands(3);
 
-  condOperands[0] = 
+  condOperands[0] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = 
+  condOperands[1] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = 
+  condOperands[2] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
@@ -9695,6 +9695,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
+      case FunctionConsts::FN_SUBSTRING_2:
+      case FunctionConsts::FN_SUBSTRING_3:
       {
         std::reverse(arguments.begin(), arguments.end());
 
@@ -9704,7 +9706,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -9714,7 +9719,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
               TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
@@ -10359,11 +10367,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  try 
+  try
   {
     arity = to_xs_unsignedInt(v.getArity());
   }
-  catch ( std::range_error const& ) 
+  catch ( std::range_error const& )
   {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
