@@ -515,7 +515,7 @@ DebuggerRuntime::listSource(
     // if not started, than it's the main module
     if (theExecStatus != QUERY_SUSPENDED) {
 #ifdef WIN32
-      theFileName = aQuery->getFileName().str();
+      lFileName = theQuery->getFileName();
 #else
       // TODO: under Linux, when trying to get the file name of the query
       //       the call fails because getFileName tries to get a lock that
