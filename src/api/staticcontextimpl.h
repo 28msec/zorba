@@ -246,7 +246,7 @@ public:
   setAuditEvent(audit::Event* anEvent);
   
   virtual audit::Event*
-  getAuditEvent();
+  getAuditEvent() const;
 
   virtual void
   getExternalVariables(Iterator_t& aVarsIter) const;  

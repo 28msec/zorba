@@ -27,6 +27,7 @@ namespace zorba {
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
+class DynamicLoader;
 
 namespace internal {
 class HTTPURLResolver;
@@ -66,6 +67,8 @@ private:
 #ifndef ZORBA_NO_FULL_TEXT
   internal::ThesaurusURLResolver  * m_thesaurus_resolver;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  mutable DynamicLoader  * m_dynamic_loader;
 
 public:
 
@@ -108,6 +111,8 @@ public:
   internal::ThesaurusURLResolver* getThesaurusURLResolver() const { return m_thesaurus_resolver; }
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  DynamicLoader* getDynamicLoader() const;
+
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();
 #endif
@@ -134,6 +139,8 @@ private:
 #define GENV_ITERATOR_FACTORY GlobalEnvironment::getInstance().getIteratorFactory()
 
 #define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
+
+#define GENV_DYNAMIC_LOADER GlobalEnvironment::getInstance().getDynamicLoader()
 
 }
 
