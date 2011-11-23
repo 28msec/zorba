@@ -1405,7 +1405,8 @@ eval_expr::eval_expr(
   :
   namespace_context_base_expr(sctx, loc, eval_expr_kind, nsCtx),
   theExpr(e),
-  theInnerScriptingKind(scriptingKind)
+  theInnerScriptingKind(scriptingKind),
+  theDoNodeCopy(false)
 {
   compute_scripting_kind();
 }
@@ -1418,6 +1419,7 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theVars;
   ar & theArgs;
   SERIALIZE_ENUM(expr_script_kind_t, theInnerScriptingKind);
+  ar & theDoNodeCopy;
 }
 
 
@@ -1450,8 +1452,9 @@ expr_t eval_expr::clone(substitution_t& s) const
                                                theExpr->clone(s),
                                                theInnerScriptingKind,
                                                theNSCtx.getp());
+  new_eval->setNodeCopy(theDoNodeCopy);
 
-  for (ulong i = 0; i < theVars.size(); ++i)
+  for (csize i = 0; i < theVars.size(); ++i)
   {
     var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
     assert(cloneVar != NULL);

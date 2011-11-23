@@ -72,13 +72,15 @@ EvalIterator::EvalIterator(
     const std::vector<store::Item_t>& aVarNames,
     const std::vector<xqtref_t>& aVarTypes,
     expr_script_kind_t scriptingKind,
-    const store::NsBindings& localBindings)
+    const store::NsBindings& localBindings,
+    bool doNodeCopy)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),
   theVarTypes(aVarTypes),
   theScriptingKind(scriptingKind),
-  theLocalBindings(localBindings)
+  theLocalBindings(localBindings),
+  theDoNodeCopy(doNodeCopy)
 {
 }
 
@@ -104,6 +106,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarTypes;
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
+  ar & theDoNodeCopy;
 }
 
 
@@ -154,6 +157,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
     evalCCB->theIsEval = true;
     evalCCB->theRootSctx = evalSctx;
+    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
     (evalCCB->theSctxMap)[1] = evalSctx;
 
     state->ccb.reset(evalCCB);

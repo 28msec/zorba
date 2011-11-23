@@ -1161,6 +1161,13 @@ public:
   The domain expr of each eval var. Initially, the domain expr of an eval var
   is always another var. However, that other var may be later inlined, so in
   general, the domain expr of an eval var may be any expr.
+
+  theInnerScriptingKind:
+  ----------------------
+
+  theDoNodeCopy:
+  --------------
+
 ********************************************************************************/
 class eval_expr : public namespace_context_base_expr
 {
@@ -1172,6 +1179,7 @@ protected:
   std::vector<var_expr_t>     theVars;
   std::vector<expr_t>         theArgs;
   expr_script_kind_t          theInnerScriptingKind;
+  bool                        theDoNodeCopy;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
@@ -1201,6 +1209,10 @@ public:
   }
 
   expr_script_kind_t get_inner_scripting_kind() const;
+
+  bool getNodeCopy() const { return theDoNodeCopy; }
+
+  void setNodeCopy(bool v) { theDoNodeCopy = true; }
 
   void compute_scripting_kind();
 

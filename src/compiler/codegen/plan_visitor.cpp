@@ -2051,7 +2051,8 @@ void end_visit(eval_expr& v)
                                 varnames,
                                 vartypes, 
                                 v.get_inner_scripting_kind(),
-                                localBindings));
+                                localBindings,
+                                v.getNodeCopy()));
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -2077,16 +2078,18 @@ void end_visit(debugger_expr& v)
 
   std::vector<PlanIter_t> argvEvalIter;
 
-  ulong numVars = v.var_count();
+  csize numVars = v.var_count();
   std::vector<store::Item_t> varnames(numVars);
   std::vector<xqtref_t> vartypes(numVars);
 
   //create the eval iterator children
-  for (ulong i = 0; i < numVars; i++) {
+  for (csize i = 0; i < numVars; i++) 
+  {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
     argvEvalIter.push_back(pop_itstack());
   }
+
   argvEvalIter.push_back(
     new DebuggerSingletonIterator(sctx, qloc, theCCB->theDebuggerCommons));
 
@@ -2108,16 +2111,19 @@ void end_visit(debugger_expr& v)
 
   // child 1
   store::NsBindings localBindings;
-  if (v.getNSCtx()) {
+  if (v.getNSCtx()) 
+  {
     v.getNSCtx()->getAllBindings(localBindings);
   }
+
   argv.push_back(new EvalIterator(sctx,
                                   qloc,
                                   argvEvalIter,
                                   varnames,
                                   vartypes,
                                   SIMPLE_EXPR,
-                                  localBindings));
+                                  localBindings,
+                                  true));
 
   lDebugIterator->setChildren(&argv);
   lDebugIterator->setVariables(varnames, vartypes);

@@ -1092,7 +1092,9 @@ void findNodeSourcesRec(
 
   case eval_expr_kind:
   {
-    assert(0);
+    eval_expr* e = static_cast<eval_expr*>(node);
+    e->setNodeCopy(true);
+    return;
   }
 
 #if 0
@@ -1101,22 +1103,18 @@ void findNodeSourcesRec(
     break;
   }
 
-  case exit_expr_kind:
-  {
-    break;
-  }
-
   case var_set_expr_kind:
-  case flowctl_expr_kind:
     break;
 
   case validate_expr_kind:
-    compute_validate_expr(static_cast<validate_expr *>(e));
+    validate_expr* e = static_cast<validate_expr *>(node);
     break;
 
   case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
+
   case transform_expr_kind:
+
   case debugger_expr_kind:
     break;
 #endif
@@ -1132,6 +1130,8 @@ void findNodeSourcesRec(
   case rename_expr_kind:
   case replace_expr_kind:
   case while_expr_kind:
+  case exit_expr_kind:
+  case flowctl_expr_kind:
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
 #endif
