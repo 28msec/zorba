@@ -438,7 +438,7 @@ and
 The \c Thesaurus class is:
 
 \code
-class Thesaurus {
+class Thesaurus : public Resource {
 public:
   typedef /* implementation-defined */ ptr;
   typedef /* implementation-defined */ range_type;
@@ -446,12 +446,15 @@ public:
   class iterator {
   public:
     typedef /* implementation-defined */ ptr;
+    virtual void destroy() const = 0;
     virtual bool next( String *synonym ) = 0;
   protected:
     virtual ~iterator();
   };
 
   virtual iterator::ptr lookup( String const &phrase, String const &relationship, range_type at_least, range_type at_most ) const = 0;
+
+  virtual void destroy() const = 0;     // interited from Resource
 protected:
   virtual ~Thesaurus();
 };
@@ -566,50 +569,48 @@ bool MyThesaurus::iterator::next( String *synonym ) {
 A real thesaurus would load a large number of synonyms,
 of course.
 
-\subsection ft_class_thesaurus_provider The ThesaurusProvider Class
+\subsection ft_class_thesaurus_resolver A Thesaurus URL Resolver Class
 
 In addition to a \c Thesaurus,
-you must also implement a \c ThesaurusProvider
-that, given a language, provides a \c Thesaurus for that language:
+you must also implement a "thesaurus resolver" class
+that,
+given a URL and a language,
+provides a \c Thesaurus for that language.
+A simple \c ThesaurusURLResolver
+for our simple thesaurus can be implemented as:
 
 \code
-class ThesaurusProvider {
+class ThesaurusURLResolver : public URLResolver {
 public:
-  virtual ~ThesaurusProvider();
-  virtual Thesaurus::ptr getThesaurus( String const &uri, locale::iso639_1::type lang ) const = 0;
-};
-\endcode
-
-A simple \c ThesaurusProvider for our simple thesaurus can be implemented as:
-
-\code
-class MyThesaurusProvider : public ThesaurusProvider {
-public:
-  ThesaurusProvider( String const &uri ) : uri_( uri ) { }
-  Thesaurus::ptr getThesaurus( String const &uri, locale::iso639_1::type lang ) const;
+  ThesaurusURLResolver( String const &url ) : url_( url ) { }
+  Resource* resolveURL( String const &url, EntityData const* ); // inherited
 private:
-  String const uri_;
+  String const url_;
 };
 
-Thesaurus::ptr
-MyThesaurusProvider::getThesaurus( String const &uri, locale::iso639_1::type lang ) const {
+Resource*
+ThesaurusURLResolver::resolveURL( String const &url, EntityData const *data ) const {
+  ThesaurusEntityData const *const t_data = dynamic_cast<ThesaurusEntityData const*>( data );
+  assert( t_data );
   static MyThesaurus thesaurus;
-  Thesaurus::ptr result;
-  if ( uri == uri_ )
-    switch ( lang ) {
+  if ( url == url_ )
+    switch ( t_data->getLanguage() ) {
       case locale::iso639_1::en:
       case locale::iso639_1::unknown:
         //
-        // Here, we could test to ensure that the language of our thesaurus
-        // matches the language sought, but in our case, we want our thesaurus
-        // to be used for all languages since "foo" and "foobar" are universal.
+        // Here, we could test to ensure that the language of our thesaurus matches the
+        // language sought, but in our case, we want our thesaurus to be used for all
+        // languages since "foo" and "foobar" are universal.
         //
       default:
-        result.reset( &thesaurus );
+        return &thesaurus;
     }
-  return std::move( result );
+  return 0;
 }
 \endcode
+
+For more on \c URLResolver, see
+\ref uriresolvers.
 
 \subsection ft_thesaurus_enable Using Your Thesaurus
 
@@ -618,8 +619,8 @@ you need to add it to a static context:
 
 \code
 StaticContext_t sctx = zorba->createStaticContext();
-MyThesaurusProvider provider( "http://www.example.com" );
-sctx->addThesaurusProvider( &provider );
+ThesaurusURLResolver resolver( "http://www.example.com" );
+sctx->registerURLResolver( &resolver );
 \endcode
 
 You can then perform a query using your thesaurus:

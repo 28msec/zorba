@@ -20,9 +20,16 @@
 
 namespace zorba {
 
-  const char* root_static_context::theBuiltInModulePaths[] = { 
-    "@CMAKE_INSTALL_PREFIX@/@ZORBA_MODULES_INSTALL_DIR@/",
+  const char* root_static_context::theBuiltinURIPath[] = {
+    "@CMAKE_INSTALL_PREFIX@/@ZORBA_CORE_URI_DIR@/",
+    "@CMAKE_INSTALL_PREFIX@/@ZORBA_NONCORE_URI_DIR@/",
     "@CMAKE_BINARY_DIR@/URI_PATH/",
+    0 };
+
+  const char* root_static_context::theBuiltinLibPath[] = {
+    "@CMAKE_INSTALL_PREFIX@/@ZORBA_CORE_LIB_DIR@/",
+    "@CMAKE_INSTALL_PREFIX@/@ZORBA_NONCORE_LIB_DIR@/",
+    "@CMAKE_BINARY_DIR@/LIB_PATH/",
     0 };
 
 } /* namespace zorba */

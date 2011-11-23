@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /******
  * Fileize mapper.
@@ -147,7 +147,7 @@ AutoFSURIMapper::mapURI
   // file: URI based on every member of the static context's module
   // paths, and return that URI to the caller.
   std::vector<zstring> lModulePaths;
-  aSctx.get_full_module_paths(lModulePaths);
+  aSctx.get_full_uri_path(lModulePaths);
   for (std::vector<zstring>::const_iterator lIter = lModulePaths.begin();
        lIter != lModulePaths.end(); lIter++)
   {

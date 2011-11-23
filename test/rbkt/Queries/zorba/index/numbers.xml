@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone="yes"?>
+<numbers>
+<xs_long num="1"/>
+
+<xs_long num="9223372036854770178"/>
+<xs_long num="9223372036854770688" noloss="t"/>
+<xs_long num="9223372036854770888"/>
+
+<xs_long num="9223372036854771200"/>
+</numbers>

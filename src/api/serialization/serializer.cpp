@@ -407,9 +407,8 @@ void serializer::emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(
-      err::SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
-    );
+    throw XQUERY_EXCEPTION(err::SENR0001, 
+    ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
   else
   {
@@ -423,13 +422,17 @@ void serializer::emitter::emit_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_node(const store::Item* item, int depth)
 {
-  if (item->getNodeKind() == store::StoreConsts::documentNode)
+  switch (item->getNodeKind())
+  {
+  case store::StoreConsts::documentNode:
   {
     emit_node_children(item, depth);
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  case store::StoreConsts::elementNode:
   {
     store::Item* qnameItem = item->getNodeName();
     const zstring& prefix = qnameItem->getPrefix();
@@ -452,7 +455,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
-    bool should_remove_binding = emit_bindings(item);
+    bool should_remove_binding = emit_bindings(item, depth);
 
     int closed_parent_tag = emit_node_children(item, depth+1);
 
@@ -472,8 +475,10 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  case store::StoreConsts::attributeNode:
   {
     store::Item* qnameItem = item->getNodeName();
     const zstring& prefix = qnameItem->getPrefix();
@@ -492,8 +497,10 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     tr << "\"";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  case store::StoreConsts::textNode:
   {
     zstring text;
     item->getStringValue2(text);
@@ -509,21 +516,29 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     {
       previous_item = PREVIOUS_ITEM_WAS_NODE;
     }
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode)
+  case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else
+  default:
   {
+    ZORBA_ASSERT(false);
     tr << "node of type: " << item->getNodeKind();
+  }
   }
 }
 
@@ -673,15 +688,19 @@ int serializer::emitter::emit_node_children(
 /*******************************************************************************
 
 ********************************************************************************/
-bool serializer::emitter::emit_bindings(const store::Item* item)
+bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
   // emit namespace bindings
   store::NsBindings nsBindings;
-  item->getNamespaceBindings(nsBindings);
 
-  ulong numBindings = (ulong)nsBindings.size();
+  if (depth == 0)
+    item->getNamespaceBindings(nsBindings);
+  else
+    item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
 
-  for (ulong i = 0; i < numBindings; ++i)
+  csize numBindings = nsBindings.size();
+
+  for (csize i = 0; i < numBindings; ++i)
   {
     if (!haveBinding(nsBindings[i]))
     {
@@ -728,11 +747,11 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
 ********************************************************************************/
 bool serializer::emitter::haveBinding(std::pair<zstring, zstring>& nsBinding) const
 {
-  for (ulong i = 0; i < theBindings.size(); ++i)
+  for (csize i = 0; i < theBindings.size(); ++i)
   {
     const store::NsBindings& nsBindings = theBindings[i];
 
-    for (ulong j = 0; j < nsBindings.size(); ++j)
+    for (csize j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first == nsBinding.first &&
           nsBindings[j].second == nsBinding.second)
@@ -1087,7 +1106,7 @@ void serializer::html_emitter::emit_node(
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
-    bool should_remove_binding = emit_bindings(item);
+    bool should_remove_binding = emit_bindings(item, depth);
 
     // If there is a head element, and the include-content-type parameter has
     // the value yes, the HTML output method MUST add a meta element as the
@@ -1314,7 +1333,7 @@ void serializer::xhtml_emitter::emit_node(
       }
     }
 
-    bool should_remove_binding = emit_bindings(item);
+    bool should_remove_binding = emit_bindings(item, depth);
 
     closed_parent_tag |= emit_node_children(item, depth+1);
 
@@ -1406,7 +1425,7 @@ void serializer::sax2_emitter::emit_declaration_end()
 /*******************************************************************************
 
 ********************************************************************************/
-bool serializer::sax2_emitter::emit_bindings(const store::Item * item)
+bool serializer::sax2_emitter::emit_bindings(const store::Item * item, int)
 {
   return false;
 }
@@ -1646,6 +1665,7 @@ serializer::text_emitter::text_emitter(
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 void serializer::text_emitter::emit_declaration()
 {
@@ -1653,6 +1673,7 @@ void serializer::text_emitter::emit_declaration()
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 void serializer::text_emitter::emit_streamable_item(store::Item* item)
 {
@@ -1690,7 +1711,9 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   is.exceptions(old_exceptions);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
@@ -2051,9 +2074,11 @@ short int serializer::getSerializationMethod() const
 void
 serializer::validate_parameters(void)
 {
-  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) {
+  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) 
+  {
     // XML-only validation
-    if (method == PARAMETER_VALUE_XML) {
+    if (method == PARAMETER_VALUE_XML) 
+    {
       if (version != "1.0" && version != "1.1")
         throw XQUERY_EXCEPTION(
           err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
@@ -2061,12 +2086,14 @@ serializer::validate_parameters(void)
     }
 
     // XHTML-only validation
-    if (method == PARAMETER_VALUE_XHTML) {
+    if (method == PARAMETER_VALUE_XHTML) 
+    {
     }
 
     // XML and XHTML validation
 
-    if (omit_xml_declaration == PARAMETER_VALUE_YES) {
+    if (omit_xml_declaration == PARAMETER_VALUE_YES) 
+    {
       if (standalone != PARAMETER_VALUE_OMIT)
         throw XQUERY_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
@@ -2081,11 +2108,15 @@ serializer::validate_parameters(void)
       throw XQUERY_EXCEPTION( err::SEPM0010 );
   }
 
-  if (method == PARAMETER_VALUE_HTML) {
+  if (method == PARAMETER_VALUE_HTML) 
+  {
     // Default value for "version" when method is HTML is "4.0"
-    if (version_has_default_value) {
+    if (version_has_default_value) 
+    {
       version = "4.0";
-    } else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) {
+    }
+    else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) 
+    {
       throw XQUERY_EXCEPTION(
         err::SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
       );
@@ -2168,12 +2199,14 @@ serializer::serialize(
 
   validate_parameters();
 
-  if (!setup(aOStream)) {
+  if (!setup(aOStream)) 
+  {
     return;
   }
 
   // in case we use SAX event notifications
-  if (aHandler) {
+  if (aHandler) 
+  {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
         method != PARAMETER_VALUE_XHTML) {
@@ -2190,10 +2223,12 @@ serializer::serialize(
   e->emit_declaration();
 
   store::Item_t lItem;
-//+  aObject->open();
-  while (aObject->next(lItem)) {
+  //+  aObject->open();
+  while (aObject->next(lItem)) 
+  {
     // PUL's cannot be serialized
-    if (lItem->isPul()) {
+    if (lItem->isPul()) 
+    {
       throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
@@ -2214,7 +2249,9 @@ void serializer::serialize(
     void* aHandlerData)
 {
   validate_parameters();
-  if (!setup(stream)) {
+
+  if (!setup(stream)) 
+  {
     return;
   }
 
@@ -2222,22 +2259,27 @@ void serializer::serialize(
 
   store::Item_t lItem;
   //object->open();
-  while (object->next(lItem)) {
+  while (object->next(lItem)) 
+  {
     Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams) {
+    if (lSerParams) 
+    {
       SerializerImpl::setSerializationParameters(*this, *lSerParams);
-      if (!setup(stream)) {
+      if (!setup(stream)) 
+      {
         return;
       }
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul()) {
+    if (lItem->isPul()) 
+    {
       throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
-  } 
+  }
+ 
   //object->close();
   e->emit_declaration_end();
 }

@@ -47,10 +47,13 @@ SET_NORMALIZED (Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
   "Path to Zorba's testdriver" FORCE)
 SET_NORMALIZED (Zorba_EXE "@Zorba_EXE_PATH@" CACHE PATH "Path to Zorba executable" FORCE)
 
-# Tell the user project where modules are installed. Note: This variable
-# is all-uppercase because it is also used internally by Zorba's build.
-SET (ZORBA_MODULES_INSTALL_DIR "@Zorba_MODULES_INSTALL_DIR@"
-  CACHE STRING "Path to Zorba modules in this Zorba installation" FORCE)
+# Tell the user project where (non-core) modules are installed. Note:
+# These variables are all-uppercase because they are also used
+# internally by Zorba's build.
+SET (ZORBA_NONCORE_URI_DIR "@Zorba_NONCORE_URI_DIR@"
+  CACHE STRING "Path to Zorba to non-core modules/schemas in this Zorba installation" FORCE)
+SET (ZORBA_NONCORE_LIB_DIR "@Zorba_NONCORE_LIB_DIR@"
+  CACHE STRING "Path to Zorba to non-core libraries in this Zorba installation" FORCE)
 
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project.
