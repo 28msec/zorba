@@ -9992,7 +9992,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     expr_t resultExpr = foExpr.getp();
 
-    if (f->isExternal())
+    if (f->isExternal() && !f->isUpdating())
     {
       const xqtref_t& resultType = f->getSignature().returnType();
 
