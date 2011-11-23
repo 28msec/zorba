@@ -279,17 +279,17 @@ void index_flwor_vars(
         const group_clause* gc = static_cast<const group_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        unsigned numGroupVars = (unsigned)gvars.size();
+        csize numGroupVars = gvars.size();
 
-        for (unsigned i = 0; i < numGroupVars; ++i)
+        for (csize i = 0; i < numGroupVars; ++i)
         {
           add_var(gvars[i].second.getp(), numVars, varidmap, idvarmap);
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        unsigned numNonGroupVars = (unsigned)ngvars.size();
+        csize numNonGroupVars = ngvars.size();
 
-        for (unsigned i = 0; i < numNonGroupVars; ++i)
+        for (csize i = 0; i < numNonGroupVars; ++i)
         {
           add_var(ngvars[i].second.getp(), numVars, varidmap, idvarmap);
         }
@@ -309,8 +309,8 @@ void index_flwor_vars(
       else if (c->get_kind() == flwor_clause::order_clause)
       {
         const orderby_clause* obc = static_cast<const orderby_clause *>(c);
-        ulong numExprs = obc->num_columns();
-        for (ulong i = 0; i < numExprs; ++i)
+        csize numExprs = obc->num_columns();
+        for (csize i = 0; i < numExprs; ++i)
         {
           index_flwor_vars(obc->get_column_expr(i), numVars, varidmap, idvarmap);
         }

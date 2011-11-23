@@ -33,6 +33,7 @@
 #include <zorba/collection_manager.h>
 #include <zorba/xquery.h>
 #include <zorba/zorba_string.h>
+#include <zorba/iterator.h>
 
 namespace zorba {
 

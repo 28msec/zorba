@@ -15,7 +15,15 @@
  */
 #include "stdafx.h"
 
+#include "common/shared_types.h"
+#include "types/typeops.h"
+
+#include "functions/function.h"
+#include "functions/function_impl.h"
+
 #include "functions/func_strings.h"
+
+#include "system/globalenv.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -41,6 +49,17 @@ BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
   return ANNOTATION_TRUE;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+function* fn_substring::specialize( 
+    static_context* sctx,
+    const std::vector<xqtref_t>& argTypes) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
 
 }
 

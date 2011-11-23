@@ -78,6 +78,8 @@
         <zorba:propagatesSortedNodes producer="0"/>
         <zorba:ignoresSortedNodes/>
         <zorba:ignoresDuplicateNodes/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getReturnType/>
       </zorba:methods>
 
     </zorba:function>

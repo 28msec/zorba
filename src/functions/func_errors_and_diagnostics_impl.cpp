@@ -65,5 +65,15 @@ PlanIter_t fn_trace::codegen(
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_trace::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& argTypes) const
+{
+  return argTypes[0];
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -360,19 +360,24 @@ class flwor_wincond : public SimpleRCObject
   friend class ExprIterator;
 
 public:
-  struct vars
+  struct vars : public SerializeBaseClass
   {
     var_expr_t posvar;
     var_expr_t curr;
     var_expr_t prev;
     var_expr_t next;
 
+    vars();
     ~vars();
     void set_flwor_clause(flwor_clause* c);
 
     void clone(vars& cloneVars, expr::substitution_t& subst) const;
 
     std::ostream& put(std::ostream&) const;
+  public:
+    SERIALIZABLE_CLASS(vars)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(vars)
+    void serialize(::zorba::serialization::Archiver& ar);
   };
 
 protected:
@@ -380,6 +385,11 @@ protected:
   vars    theInputVars;
   vars    theOutputVars;
   expr_t  theCondExpr;
+
+public:
+  SERIALIZABLE_CLASS(flwor_wincond)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_wincond, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   flwor_wincond(

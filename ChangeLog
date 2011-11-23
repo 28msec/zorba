@@ -29,6 +29,7 @@ version 2.1
     corruption will occur)
   * Fixed bug # (Should not destroy the parent of a node that is being detached
     before the detach is done).
+  * Added const qualifier to StaticContext::getAuditEvent() 
   * Fixed bug #3408181 (available-collection() returns undeclared collections)
   * Fixed bug #859465 (Fatal error if a PUL contains two deactivate IC primitives)
   * Fixed bug #859467 (Fatal error if a PUL contains two activate Foreign Key primitives)
@@ -57,6 +58,7 @@ version 2.1
   * Fixed bug #867133 (SWIG PHP build failure on Mac OSX)
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
+  * Fixed bug #872850  (Serialization of Tumbling Window For fails)
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)
   * Fixed bug #862089 (Split binary/xq install directories for modules) by
 	splitting "module path" into separate URI and Library paths

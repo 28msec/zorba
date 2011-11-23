@@ -260,6 +260,52 @@ public:
 
 
 /*******************************************************************************
+
+  AssignStatement ::= "$" VarName ":=" ExprSingle ";"
+
+  The RHS of the assignment must be a non-updating expr.
+
+  var_set_expr is used to assign a value to a prolog or block-local var. During
+  runtime, the function computes theExpr and stores the resulting value inside 
+  the appropriate dynamic ctx (global or local), at the location that is identified
+  by the variable id.
+********************************************************************************/
+class var_set_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  var_expr_t theVarExpr;
+  expr_t     theExpr;
+
+public:
+  SERIALIZABLE_CLASS(var_set_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_set_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  var_set_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const var_expr_t& varExpr,
+      const expr_t& setExpr);
+
+  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+
+  expr* get_expr() const { return theExpr.getp(); }
+
+  void compute_scripting_kind();
+
+  expr_t clone(substitution_t& s) const;
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
   ExitExpr ::= "exit" "with" ExprSingle
 ********************************************************************************/
 class exit_expr : public expr 

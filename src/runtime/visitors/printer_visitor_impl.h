@@ -313,4 +313,5 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(FlowCtlIterator);
 
   DECLARE_VISITOR(CountCollectionIterator);
+
 /* vim:set et sw=2 ts=2: */

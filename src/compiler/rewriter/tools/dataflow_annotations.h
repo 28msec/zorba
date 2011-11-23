@@ -40,6 +40,7 @@ private:
   void compute_block_expr(block_expr* e);
   void compute_wrapper_expr(wrapper_expr* e);
   void compute_var_expr(var_expr* e);
+  void compute_var_set_expr(var_set_expr* e);
   void compute_flwor_expr(flwor_expr* e);
   void compute_trycatch_expr(trycatch_expr* e);
   void compute_promote_expr(promote_expr* e);

@@ -78,6 +78,12 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
+  bool accessesDynCtx() const { return true; }
+
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
+
   CODEGEN_DECL();
 };
 

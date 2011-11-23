@@ -151,7 +151,7 @@ const store::Item* fo_expr::get_fname() const
 void fo_expr::compute_scripting_kind()
 {
   const function* func = get_func();
-  ulong numArgs = num_args();
+  csize numArgs = num_args();
 
   if (func->getKind() == FunctionConsts::OP_CONCATENATE_N)
   {
@@ -159,7 +159,7 @@ void fo_expr::compute_scripting_kind()
 
     theScriptingKind = VACUOUS_EXPR;
 
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;
@@ -202,26 +202,13 @@ void fo_expr::compute_scripting_kind()
 
     checkScriptingKind();
   }
-  else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN_1)
-  {
-    assert(numArgs == 2);
-
-    expr* valueExpr = theArgs[1];
-
-    theScriptingKind = VAR_SETTING_EXPR;
-    theScriptingKind |= valueExpr->get_scripting_detail();
-    theScriptingKind &= ~VACUOUS_EXPR;
-    theScriptingKind &= ~SIMPLE_EXPR;
-
-    checkScriptingKind();
-  }
   else
   {
     theScriptingKind = func->getScriptingKind();
 
     bool vacuous = (theScriptingKind == VACUOUS_EXPR);
 
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;

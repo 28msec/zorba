@@ -45,6 +45,10 @@ typedef UChar char_type;
  */
 typedef UChar32 code_point;
 
+/**
+ * The type that represents the size of a string.  Do not assume that this is
+ * an unsigned type.
+ */
 typedef int32_t size_type;
 
 /**

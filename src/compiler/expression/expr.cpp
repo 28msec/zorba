@@ -1414,7 +1414,7 @@ eval_expr::eval_expr(
 
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
+  serialize_baseclass(ar, (namespace_context_base_expr*)this);
   ar & theExpr;
   ar & theVars;
   ar & theArgs;

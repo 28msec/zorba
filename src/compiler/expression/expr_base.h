@@ -97,6 +97,7 @@ enum expr_kind_t
 
   block_expr_kind,
   var_decl_expr_kind,
+  var_set_expr_kind,
   apply_expr_kind,
   exit_expr_kind,
   exit_catcher_expr_kind,

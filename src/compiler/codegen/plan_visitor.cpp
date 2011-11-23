@@ -637,6 +637,41 @@ void end_visit(var_decl_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
+bool begin_visit(var_set_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(var_set_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  const var_expr* varExpr = v.get_var_expr();
+
+  xqtref_t exprType = v.get_expr()->get_return_type();
+
+  PlanIter_t exprIter = pop_itstack();
+
+  CtxVarAssignIterator* iter = 
+  new CtxVarAssignIterator(sctx,
+                           qloc,
+                           varExpr->get_unique_id(),
+                           varExpr->get_name(),
+                           (varExpr->get_kind() == var_expr::local_var),
+                           exprIter);
+  
+  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    iter->setSingleItem();
+
+  push_itstack(iter);
+}
+
+
 /*******************************************************************************
   VarRef expr
 ********************************************************************************/

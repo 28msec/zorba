@@ -63,6 +63,10 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_var_decl_expr(static_cast<var_decl_expr*>(e));
     break;
 
+  case var_set_expr_kind:
+    compute_var_set_expr(static_cast<var_set_expr*>(e));
+    break;
+
   case block_expr_kind:
     compute_block_expr(static_cast<block_expr *>(e));
     break;
@@ -290,6 +294,16 @@ void DataflowAnnotationsComputer::compute_var_decl_expr(var_decl_expr* e)
     PROPOGATE_SORTED_NODES(initExpr, varExpr);
     PROPOGATE_DISTINCT_NODES(initExpr, varExpr);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void DataflowAnnotationsComputer::compute_var_set_expr(var_set_expr* e)
+{
+  generic_compute(e);
+  default_walk(e);
 }
 
 
