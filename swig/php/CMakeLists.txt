@@ -55,6 +55,7 @@ ELSE (NOT PHP5_FOUND)
 
     INSTALL (
       FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/ZorbaXQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
         ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.so
       DESTINATION ${PHP5_INSTALL_PATH}
@@ -77,10 +78,16 @@ ELSE (NOT PHP5_FOUND)
 
   ### Start PHP proxy generation
   # Configure the test file
+  SET (phpLibPrefix ${ZORBA_SWIG_LIB_PREFIX})
   SET (phpAPIPath ${CMAKE_CURRENT_BINARY_DIR})
   CONFIGURE_FILE (
     ${CMAKE_CURRENT_SOURCE_DIR}/generate_proxy.php.in
     ${CMAKE_CURRENT_BINARY_DIR}/generate_proxy.php
+  )
+
+  CONFIGURE_FILE (
+    ${CMAKE_CURRENT_SOURCE_DIR}/ZorbaXQueryProcessor.php
+    ${CMAKE_CURRENT_BINARY_DIR}/ZorbaXQueryProcessor.php
   )
 
   ADD_CUSTOM_COMMAND (
@@ -94,6 +101,7 @@ ELSE (NOT PHP5_FOUND)
   ADD_CUSTOM_TARGET (
     Api_PHP_Wrapper ALL
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ZorbaXQueryProcessor.php
   )
   ### End PHP proxy generation
 
