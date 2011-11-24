@@ -26,6 +26,7 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "types/typeops.h"
@@ -775,6 +776,7 @@ void MarkNodeCopyProps::applyInternal(
   }
 
   case var_decl_expr_kind:
+  case var_set_expr_kind:
   case apply_expr_kind:
   case while_expr_kind:
   case flowctl_expr_kind:
@@ -861,10 +863,34 @@ void MarkNodeCopyProps::applyInternal(
   }
 #endif
 
-#if 0
   case dynamic_function_invocation_expr_kind:
-  case function_item_expr_kind:
+  {
+    // Conservatively assume that the function item that is going to be executed
+    // requires stand-alone trees as inputs, so find and mark the sources in the
+    // arguments. TODO: look for function_item_expr in the subtree to check if
+    // this assumption is really true. 
+    dynamic_function_invocation_expr* e = 
+    static_cast<dynamic_function_invocation_expr*>(node);
 
+    const std::vector<expr_t>& args = e->get_args();
+
+    FOR_EACH(std::vector<expr_t>, ite, args)
+    {
+      std::vector<expr*> sources;
+      findNodeSources(rCtx, (*ite).getp(), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    break;
+  }
+
+  case function_item_expr_kind:
+  {
+    // TODO
+    return;
+  }
+
+#if 0
   case debugger_expr_kind:
     break;
 #endif

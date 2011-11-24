@@ -57,7 +57,7 @@ function* fn_substring::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  ZORBA_ASSERT(false);
+  assert(false);
   return NULL;
 }
 

@@ -249,6 +249,12 @@ public:
 
   void add_set_expr(expr* e) { theSetExprs.push_back(e); }
 
+  void remove_set_expr(expr* e);
+
+  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+
+  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+  
   bool is_context_item() const;
 
   void compute_scripting_kind();

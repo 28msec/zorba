@@ -291,6 +291,8 @@ public:
       const var_expr_t& varExpr,
       const expr_t& setExpr);
 
+  ~var_set_expr();
+
   var_expr* get_var_expr() const { return theVarExpr.getp(); }
 
   expr* get_expr() const { return theExpr.getp(); }

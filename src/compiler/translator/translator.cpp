@@ -1912,8 +1912,8 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
   assert(theAssignedVars.size() == 1);
 
   for (std::list<GlobalBinding>::iterator i = thePrologVars.begin();
-      i != thePrologVars.end();
-      ++i)
+       i != thePrologVars.end();
+       ++i)
   {
     declare_var(*i, theModulesInfo->theInitExprs);
   }
@@ -3153,7 +3153,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    ulong numParams = (ulong)params->size();
+    csize numParams = params->size();
 
     std::vector<xqtref_t> paramTypes;
 
@@ -3766,8 +3766,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     push_nodestack(initExpr);
   }
-  theAnnotations = NULL;
 
+  theAnnotations = NULL;
 }
 
 

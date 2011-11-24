@@ -2845,8 +2845,8 @@ bool begin_visit(doc_expr& v)
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
 
-  if (!v.copyInputNodes())
-    theCopyNodesStack.push(false);
+  if (v.copyInputNodes())
+    theCopyNodesStack.push(true);
 
   return true;
 }
@@ -2860,14 +2860,14 @@ void end_visit(doc_expr& v)
   PlanIter_t lDocIter = new DocumentIterator(sctx,
                                              qloc,
                                              lContent, 
-                                             theCopyNodesStack.empty());
+                                             !theCopyNodesStack.empty());
   push_itstack(lDocIter);
 
   theEnclosedContextStack.pop();
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 
-  if (!v.copyInputNodes())
+  if (v.copyInputNodes())
     theCopyNodesStack.pop();
 }
 
@@ -2879,8 +2879,8 @@ bool begin_visit(elem_expr& v)
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
 
-  if (!v.copyInputNodes())
-    theCopyNodesStack.push(false);
+  if (v.copyInputNodes())
+    theCopyNodesStack.push(true);
 
   return true;
 }
@@ -2928,10 +2928,10 @@ void end_visit(elem_expr& v)
                                         lContentIter,
                                         v.getNSCtx(),
                                         isRoot,
-                                        theCopyNodesStack.empty());
+                                        !theCopyNodesStack.empty());
   push_itstack(iter);
 
-  if (!v.copyInputNodes())
+  if (v.copyInputNodes())
     theCopyNodesStack.pop();
 }
 

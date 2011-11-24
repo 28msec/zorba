@@ -171,9 +171,11 @@ class op_substring_int : public function
 {
 public:
   op_substring_int(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

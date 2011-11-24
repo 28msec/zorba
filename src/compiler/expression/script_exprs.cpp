@@ -258,6 +258,9 @@ var_decl_expr::var_decl_expr(
 
   // var_decl_expr is unfoldable because it requires access to the dyn ctx.
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+
+  if (initExpr)
+    varExpr->add_set_expr(this);
 }
 
 
@@ -319,6 +322,14 @@ var_set_expr::var_set_expr(
 
   // var_set_expr is unfoldable because it requires access to the dyn ctx.
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+
+  varExpr->add_set_expr(this);
+}
+
+
+var_set_expr::~var_set_expr()
+{
+  theVarExpr->remove_set_expr(this);
 }
 
 

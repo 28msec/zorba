@@ -218,6 +218,28 @@ for_clause* var_expr::get_for_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
+void var_expr::remove_set_expr(expr* e) 
+{
+  assert(theKind == local_var || theKind == prolog_var);
+
+  std::vector<expr*>::iterator ite = theSetExprs.begin();
+  std::vector<expr*>::iterator end = theSetExprs.end();
+  for (; ite != end; ++ite)
+  {
+    if (*ite == e)
+    {
+      theSetExprs.erase(ite);
+      break;
+    }
+  }
+
+  assert(ite != end);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool var_expr::is_context_item() const
 {
   return theName->getLocalName() == ".";
