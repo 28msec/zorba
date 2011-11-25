@@ -3188,12 +3188,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3228,7 +3222,7 @@ void* begin_visit(const VFO_DeclList& v)
         // We make sure that the types of the parameters and the return type
         // are equal to the one that is declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',

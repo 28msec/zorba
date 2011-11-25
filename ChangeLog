@@ -15,6 +15,7 @@ New Features:
   * Implemented the probe-index-range-value for general indexes
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
   * New module for compiling and executing XQueries from XQuery (xqxq)
+  * External functions are allowed to be updating (i.e. return a pending update list)
 
 Optimization:
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
