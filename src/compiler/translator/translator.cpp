@@ -3151,7 +3151,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    ulong numParams = (ulong)params->size();
+    csize numParams = params->size();
 
     std::vector<xqtref_t> paramTypes;
 
@@ -3187,12 +3187,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3225,9 +3219,9 @@ void* begin_visit(const VFO_DeclList& v)
       if (f.getp() != 0)
       {
         // We make sure that the types of the parameters and the return type
-        // are equal to the one that is declared in the module
+        // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -3366,7 +3360,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-  ulong numParams = v.get_param_count();
+  csize numParams = v.get_param_count();
 
   function* lFunc = lookup_fn(v.get_name(), numParams, loc);
 
@@ -3451,7 +3445,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
       ZORBA_ASSERT(flwor != NULL);
 
-      for (ulong i = 0; i < numParams; ++i)
+      for (csize i = 0; i < numParams; ++i)
       {
         const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
