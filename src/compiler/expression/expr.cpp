@@ -720,11 +720,12 @@ expr_t name_cast_expr::clone(substitution_t& subst) const
 doc_expr::doc_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aContent)
+    expr* aContent,
+    bool copyNodes)
   :
   expr(sctx, loc, doc_expr_kind),
   theContent(aContent),
-  theCopyInputNodes(false)
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 }
@@ -751,9 +752,10 @@ void doc_expr::compute_scripting_kind()
 
 expr_t doc_expr::clone(substitution_t& subst) const
 {
-  doc_expr* clone = new doc_expr(theSctx, get_loc(), CLONE(getContent(), subst));
-
-  clone->theCopyInputNodes = theCopyInputNodes;
+  doc_expr* clone = new doc_expr(theSctx,
+                                 get_loc(),
+                                 CLONE(getContent(), subst),
+                                 theCopyInputNodes);
   return clone;
 }
 
@@ -764,16 +766,17 @@ expr_t doc_expr::clone(substitution_t& subst) const
 elem_expr::elem_expr(
     static_context* sctx,
     const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aAttrs,
-    expr_t aContent,
-    const namespace_context* aNSCtx)
+    expr* aQNameExpr,
+    expr* attrs,
+    expr* content,
+    const namespace_context* aNSCtx,
+    bool copyNodes)
   :
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
-  theAttrs(aAttrs),
-  theContent(aContent),
-  theCopyInputNodes(false)
+  theAttrs(attrs),
+  theContent(content),
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 
@@ -784,15 +787,16 @@ elem_expr::elem_expr(
 elem_expr::elem_expr(
     static_context* sctx,
     const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aContent,
-    const namespace_context* aNSCtx)
+    expr* aQNameExpr,
+    expr* content,
+    const namespace_context* aNSCtx,
+    bool copyNodes)
   :
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
-  theContent(aContent),
-  theCopyInputNodes(false)
+  theContent(content),
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 
@@ -844,9 +848,8 @@ expr_t elem_expr::clone(substitution_t& subst) const
                                     CLONE(getQNameExpr(), subst),
                                     CLONE(getAttrs(), subst),
                                     CLONE(getContent(), subst),
-                                    getNSCtx());
-
-  clone->theCopyInputNodes = theCopyInputNodes;
+                                    getNSCtx(),
+                                    theCopyInputNodes);
   return clone;
 }
 

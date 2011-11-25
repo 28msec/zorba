@@ -21,6 +21,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/update_exprs.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
@@ -782,12 +783,13 @@ static void findNodeSourcesRec(
   If the result of the given expr may contain costructed nodes, find the node-
   constructor exprs where such nodes may come from. 
 
-  If "node" is inside a UDF, "inFo" is the expr that invoked that UDF.
+  If "node" is inside a UDF, "udfCaller" contains the fo expr that invoked that
+  UDF.
 ********************************************************************************/
 void findNodeSources(
     RewriterContext& rCtx,
     expr* node,
-    UDFCallChain* udfChain,
+    UDFCallChain* udfCaller,
     std::vector<expr*>& sources)
 {
   findNodeSourcesRec(rCtx, node, sources, NULL);
@@ -800,19 +802,25 @@ void findNodeSources(
     {
       var_expr* varExpr = static_cast<var_expr*>(source);
 
-      ZORBA_ASSERT(udfChain != NULL);
+      ZORBA_ASSERT(udfCaller != NULL);
       ZORBA_ASSERT(varExpr->get_kind() == var_expr::arg_var);
-      ZORBA_ASSERT(varExpr->get_udf() == udfChain->theFo->get_func());
 
       sources.erase(sources.begin() + i);
       --i;
 
-      fo_expr* foExpr = udfChain->theFo;
-      expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
-      std::vector<expr*> argSources;
-      findNodeSources(rCtx, foArg, udfChain->thePrev, argSources);
+      // If this method is called to find the sources of an expr within the
+      // body of a function_item. then udfCaller->theFo will be NULL. 
+      if (udfCaller->theFo)
+      {
+        ZORBA_ASSERT(varExpr->get_udf() == udfCaller->theFo->get_func());
 
-      sources.insert(sources.end(), argSources.begin(), argSources.end());
+        fo_expr* foExpr = udfCaller->theFo;
+        expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
+        std::vector<expr*> argSources;
+        findNodeSources(rCtx, foArg, udfCaller->thePrev, argSources);
+
+        sources.insert(sources.end(), argSources.begin(), argSources.end());
+      }
     }
     else
     {
@@ -963,7 +971,7 @@ void findNodeSourcesRec(
   case elem_expr_kind:
   {
     sources.push_back(node);
-    return;
+    break;
   }
 
   case attr_expr_kind:
@@ -1138,6 +1146,28 @@ void findNodeSourcesRec(
     break;
   }
 
+  case exit_catcher_expr_kind: 
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
+
+    expr* body = e->get_expr();
+
+    std::vector<expr*> exitExprs;
+    
+    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
+
+    csize numExitExprs = exitExprs.size();
+
+    for (csize i = 0; i < numExitExprs; ++i)
+    {
+      exit_expr* ex = static_cast<exit_expr*>(exitExprs[i]);
+
+      findNodeSourcesRec(rCtx, ex->get_expr(), sources, currentUdf);
+    }
+
+    break;
+  }
+
   case eval_expr_kind:
   {
     eval_expr* e = static_cast<eval_expr*>(node);
@@ -1145,15 +1175,34 @@ void findNodeSourcesRec(
     return;
   }
 
-#if 0
-  case exit_catcher_expr_kind: 
+  case dynamic_function_invocation_expr_kind:
   {
+    // Conservatively assume that the function item that is going to be executed
+    // is going to propagate its inputs, so find the sources in the arguments.
+    // TODO: look for function_item_expr in the subtree to check if this assumption
+    // is really true. 
+    dynamic_function_invocation_expr* e = 
+    static_cast<dynamic_function_invocation_expr*>(node);
+
+    const std::vector<expr_t>& args = e->get_args();
+
+    FOR_EACH(std::vector<expr_t>, ite, args)
+    {
+      std::vector<expr*> sources;
+      findNodeSourcesRec(rCtx, (*ite).getp(), sources, currentUdf);
+    }
+
     break;
   }
 
-  case dynamic_function_invocation_expr_kind:
   case function_item_expr_kind:
+  {
+    function_item_expr* e = static_cast<function_item_expr*>(node);
 
+    return;
+  }
+
+#if 0
   case debugger_expr_kind:
     break;
 #endif

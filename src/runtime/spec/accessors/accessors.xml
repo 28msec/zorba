@@ -141,7 +141,7 @@
       <zorba:isMap producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
-      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:mustCopyInputNodes/>
     </zorba:methods>
 
   </zorba:function>
@@ -172,7 +172,7 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:mustCopyInputNodes value="true"/>
     </zorba:methods>
 
   </zorba:function>

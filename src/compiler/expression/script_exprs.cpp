@@ -401,7 +401,7 @@ void exit_expr::compute_scripting_kind()
 
 expr_t exit_expr::clone(substitution_t& subst) const
 {
-  return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
+  return new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 }
 
 

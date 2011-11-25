@@ -536,6 +536,26 @@ store::Item* XmlNode::copy(
 
     if (copymode.theDoCopy == false)
     {
+      if (getNodeKind() == store::StoreConsts::textNode)
+      {
+        pos = parent->numChildren();
+
+        XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
+
+        if (lsib != NULL &&
+            lsib->getNodeKind() == store::StoreConsts::textNode)
+        {
+          TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+          ZORBA_ASSERT(!textSibling->isTyped());
+
+          zstring content = textSibling->getText();
+          appendStringValue(content);
+
+          textSibling->setText(content);
+          return const_cast<XmlNode*>(this);
+        }
+      }
+
       new ConnectorNode(parent->getTree(), parent, this);
       return const_cast<XmlNode*>(this);
     }
@@ -555,7 +575,7 @@ store::Item* XmlNode::copy(
 }
 
 
-
+#if 0
 /*******************************************************************************
   Make a copy of the xml tree rooted at this node and place the copied tree at
   a given position under a given node. Return a pointer to the root node of the
@@ -599,6 +619,7 @@ store::Item* XmlNode::copy(
 
   return copyInternal(parent, parent, pos, NULL, copymode);
 }
+#endif
 
 
 /*******************************************************************************
@@ -1291,7 +1312,7 @@ void InternalNode::removeChild(csize pos)
   {
     iterator ite = childrenBegin() + pos;
     assert((*ite)->theParent == this);
-    assert((*ite)->isConnectorNode());
+    assert(!(*ite)->isConnectorNode());
     (*ite)->theParent = NULL;
     theNodes.erase(ite);
   }

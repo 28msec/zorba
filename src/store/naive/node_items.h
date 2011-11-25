@@ -471,14 +471,7 @@ public:
 
   store::Item_t getEBV() const;
 
-  store::Item* copy(
-      store::Item* parent,
-      const store::CopyMode& copymode) const;
-
-  store::Item* copy(
-      store::Item* parent,
-      csize pos,
-      const store::CopyMode& copymode) const;
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
   virtual store::Item_t getNilled() const 
   {
@@ -815,19 +808,21 @@ public:
   {
     XmlNode* attr = theNodes[i];
 
-    if (attr->isConnectorNode())
+    if (attr && attr->isConnectorNode())
+    {
       return reinterpret_cast<AttributeNode*>
              (static_cast<ConnectorNode*>(attr)->getNode());
-
+    }
     return reinterpret_cast<AttributeNode*>(attr);
   }
 
   AttributeNode* getAttr(const_iterator& ite) const
   {
-    if ((*ite)->isConnectorNode())
+    if ((*ite) && (*ite)->isConnectorNode())
+    {
       return reinterpret_cast<AttributeNode*>
              (static_cast<ConnectorNode*>(*ite)->getNode());
-
+    }
     return reinterpret_cast<AttributeNode*>(*ite);
   }
 

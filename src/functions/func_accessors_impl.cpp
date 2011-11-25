@@ -63,6 +63,14 @@ BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, csize input) const
 }
 
 
+bool fn_data::mustCopyInputNodes(expr* fo, csize input) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  return (sctx->construction_mode() != StaticContextConsts::cons_preserve);
+}
+
+
 xqtref_t fn_data::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
@@ -130,6 +138,14 @@ BoolAnnotationValue fn_data_3_0::ignoresSortedNodes(expr* fo, csize input) const
 BoolAnnotationValue fn_data_3_0::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
+}
+
+
+bool fn_data_3_0::mustCopyInputNodes(expr* fo, csize input) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  return (sctx->construction_mode() != StaticContextConsts::cons_preserve);
 }
 
 

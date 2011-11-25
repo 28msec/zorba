@@ -326,7 +326,7 @@ public:
 public:
   exit_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
 
-  expr* get_value() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
 

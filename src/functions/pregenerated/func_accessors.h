@@ -126,7 +126,7 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
@@ -152,7 +152,7 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
@@ -169,7 +169,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

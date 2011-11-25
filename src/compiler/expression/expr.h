@@ -565,7 +565,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  doc_expr(static_context* sctx, const QueryLoc&, expr_t content);
+  doc_expr(static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
 
   expr* getContent() const { return theContent.getp(); }
 
@@ -629,17 +629,19 @@ public:
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t qnameExpr,
-        expr_t attrs,
-        expr_t content,
-        const namespace_context* nsCtx);
+        expr* qnameExpr,
+        expr* attrs,
+        expr* content,
+        const namespace_context* nsCtx,
+        bool copyNodes);
   
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t qnameExpr,
-        expr_t content,
-        const namespace_context* nsCtx);
+        expr* qnameExpr,
+        expr* content,
+        const namespace_context* nsCtx,
+        bool copyNodes);
   
   expr* getQNameExpr() const { return theQNameExpr.getp(); }
 

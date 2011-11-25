@@ -675,14 +675,13 @@ void expr::compute_return_type(bool deep, bool* modified)
     body->get_exprs_of_kind(exit_expr_kind, exitExprs);
 
     csize numExitExprs = exitExprs.size();
-    csize i;
 
-    for (i = 0; i < numExitExprs; ++i)
+    for (csize i = 0; i < numExitExprs; ++i)
     {
       exit_expr* e = static_cast<exit_expr*>(exitExprs[i]);
 
       newType = TypeOps::union_type(*newType.getp(),
-                                    *e->get_value()->get_return_type(),
+                                    *e->get_expr()->get_return_type(),
                                     tm);
     }
 

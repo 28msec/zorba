@@ -3553,12 +3553,6 @@ void end_visit(const Param& v, void* /*visit_state*/)
   var_expr_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
   var_expr_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
-  const user_function* udf = 
-  static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
-
-  arg_var->set_param_pos(flwor->num_clauses());
-  arg_var->set_udf(udf);
-
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
   // theCurrentPrologVFDecl might be null in case of inline functions
@@ -3566,8 +3560,13 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull())
   {
-    //const function* f = theCurrentPrologVFDecl.getFunction();
     //lc->setLazyEval(!f->isSequential());
+
+    const user_function* udf = 
+    static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
+
+    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_udf(udf);
   }
   else
   {
@@ -10703,12 +10702,16 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   nameExpr = new const_expr(theRootSctx, loc, qnameItem);
 
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
   push_nodestack(new elem_expr(theRootSctx,
                                loc,
                                nameExpr,
                                attrExpr,
                                contentExpr,
-                               theNSCtx));
+                               theNSCtx,
+                               copyNodes));
   pop_elem_scope();
   pop_scope();
 }
@@ -11365,7 +11368,10 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
 
-  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed, copyNodes));
 }
 
 
@@ -11407,7 +11413,15 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), theNSCtx, false);
   }
 
-  push_nodestack (new elem_expr(theRootSctx, loc, nameExpr, contentExpr, theNSCtx));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new elem_expr(theRootSctx,
+                               loc,
+                               nameExpr,
+                               contentExpr,
+                               theNSCtx,
+                               copyNodes));
 }
 
 

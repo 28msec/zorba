@@ -886,7 +886,14 @@ void MarkNodeCopyProps::applyInternal(
 
   case function_item_expr_kind:
   {
-    // TODO
+    function_item_expr* e = static_cast<function_item_expr*>(node);
+
+    user_function* udf = static_cast<user_function*>(e->get_function());
+
+    UDFCallChain dummyUdfCaller;
+
+    applyInternal(rCtx, udf->getBody(), dummyUdfCaller);
+
     return;
   }
 
