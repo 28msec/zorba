@@ -23,6 +23,10 @@ SET(PARSER_SRCS
     query_loc.cpp
     xqdoc_comment.cpp)
 
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND PARSER_SRCS json_parser.cpp)
+ENDIF (ZORBA_WITH_JSON)
+
 SET(PARSER_BUILD_SRCS)
 
 ###################################################################
