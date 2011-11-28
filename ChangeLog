@@ -38,6 +38,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #3290122 (ZDST0003 needs collection name)
   * Fixed bug #3406272 (merging of adjacent text nodes must be done after all
     updates have been applied).
+  * Don't raise warnings for unknown annotations.
   * Fixed bug #3409344 (during detach, if the node being detached is the root of
     its tree, it should be detached from the tree as well; otherwise memory
     corruption will occur)
