@@ -639,7 +639,6 @@ DynamicContextImpl::isBoundContextItem() const
   }
   ZORBA_DCTX_CATCH
   return false;
-
 }
 
 } // namespace zorba

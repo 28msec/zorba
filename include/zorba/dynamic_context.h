@@ -264,15 +264,15 @@ class ZORBA_DLL_PUBLIC DynamicContext
   getExternalFunctionParameter ( const String& aName ) const = 0;
 
   /** \brief Returns true if the variable is bound to a value
-	 *
-	 * @param aNamespace the namespace of the qname of the variable to check
+   *
+   * @param aNamespace the namespace of the qname of the variable to check
    * @param aLocalname the localname of the qname of the variable to check
-	 */
+   */
   virtual bool
   isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const = 0;
 
   /** \brief Returns true if a context item has been bound to the Dynamic Context
-	 */
+   */
   virtual bool
   isBoundContextItem() const = 0;
 
