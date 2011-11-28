@@ -143,7 +143,8 @@ public:
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
-    MUST_COPY_NODES         = 16
+    WILL_BE_SERIALIZED      = 16,
+    MUST_COPY_NODES         = 18
   } Annotationkey;
 
   typedef enum
@@ -156,7 +157,8 @@ public:
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
-    MUST_COPY_NODES_MASK          = 0x30000
+    WILL_BE_SERIALIZED_MASK       = 0x30000,
+    MUST_COPY_NODES_MASK          = 0xC0000
   } AnnotationMask;
 
 
@@ -300,6 +302,13 @@ public:
   BoolAnnotationValue getMustCopyNodes() const;
 
   void setMustCopyNodes(BoolAnnotationValue v);
+
+  // Annotation : willBeSerialized
+  BoolAnnotationValue getWillBeSerialized() const;
+
+  void setWillBeSerialized(BoolAnnotationValue v);
+
+  bool willBeSerialized() const;
 
   bool is_constant() const;
 

@@ -772,11 +772,15 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-static void findNodeSourcesRec(
-    RewriterContext& rCtx,
-    expr* node,
-    std::vector<expr*>& sources,
-    user_function* currentUdf);
+SourceFinder::~SourceFinder()
+{
+  UdfSourcesMap::iterator ite = theUdfSourcesMap.begin();
+  UdfSourcesMap::iterator end = theUdfSourcesMap.end();
+  for (; ite != end; ++ite)
+  {
+    delete ite->second;
+  }
+}
 
 
 /*******************************************************************************
@@ -786,13 +790,12 @@ static void findNodeSourcesRec(
   If "node" is inside a UDF, "udfCaller" contains the fo expr that invoked that
   UDF.
 ********************************************************************************/
-void findNodeSources(
-    RewriterContext& rCtx,
+void SourceFinder::findNodeSources(
     expr* node,
     UDFCallChain* udfCaller,
     std::vector<expr*>& sources)
 {
-  findNodeSourcesRec(rCtx, node, sources, NULL);
+  findNodeSourcesRec(node, sources, NULL);
 
   for (csize i = 0; i < sources.size(); ++i)
   {
@@ -817,7 +820,7 @@ void findNodeSources(
         fo_expr* foExpr = udfCaller->theFo;
         expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
         std::vector<expr*> argSources;
-        findNodeSources(rCtx, foArg, udfCaller->thePrev, argSources);
+        findNodeSources(foArg, udfCaller->thePrev, argSources);
 
         sources.insert(sources.end(), argSources.begin(), argSources.end());
       }
@@ -831,8 +834,7 @@ void findNodeSources(
 }
 
 
-void findNodeSourcesRec(
-    RewriterContext& rCtx,
+void SourceFinder::findNodeSourcesRec(
     expr* node,
     std::vector<expr*>& sources,
     user_function* currentUdf)
@@ -842,7 +844,7 @@ void findNodeSourcesRec(
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
     return;
 
   switch(node->get_expr_kind()) 
@@ -866,17 +868,23 @@ void findNodeSourcesRec(
     case var_expr::groupby_var:
     case var_expr::non_groupby_var:
     {
-      VarSourcesMap::iterator ite = rCtx.theVarSourcesMap.find(e);
+      VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
-      if (ite == rCtx.theVarSourcesMap.end())
+      if (ite == theVarSourcesMap.end())
       {
         std::vector<expr*> varSources;
-        findNodeSourcesRec(rCtx, e->get_domain_expr(), varSources, currentUdf);
+        findNodeSourcesRec(e->get_domain_expr(), varSources, currentUdf);
 
-        ite = (rCtx.theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
+        ite = (theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
       }
 
-      sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
+      std::vector<expr*>::iterator ite2 = (*ite).second.begin();
+      std::vector<expr*>::iterator end2 = (*ite).second.end();
+      for (; ite2 != end2; ++ite2)
+      {
+        if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
+          sources.push_back(*ite2);
+      }
 
       return;
     }
@@ -900,19 +908,21 @@ void findNodeSourcesRec(
 
     case var_expr::arg_var:
     {
-      sources.push_back(node);
+      if (std::find(sources.begin(), sources.end(), node) == sources.end())
+        sources.push_back(node);
+
       return;
     }
 
     case var_expr::prolog_var: 
     case var_expr::local_var:
     {
-      VarSourcesMap::iterator ite = rCtx.theVarSourcesMap.find(e);
+      VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
-      if (ite == rCtx.theVarSourcesMap.end())
+      if (ite == theVarSourcesMap.end())
       {
         std::vector<expr*> varSources;
-        rCtx.theVarSourcesMap.insert(VarSourcesPair(e, varSources));
+        theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
         std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
         std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
@@ -923,8 +933,7 @@ void findNodeSourcesRec(
 
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
-            findNodeSourcesRec(rCtx,
-                               static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
+            findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
                                varSources,
                                currentUdf);
           }
@@ -932,14 +941,13 @@ void findNodeSourcesRec(
           {
             assert(setExpr->get_expr_kind() == var_set_expr_kind);
 
-            findNodeSourcesRec(rCtx,
-                               static_cast<var_set_expr*>(setExpr)->get_expr(),
+            findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
                                varSources,
                                currentUdf);
           }
         }
 
-        ite = rCtx.theVarSourcesMap.find(e);
+        ite = theVarSourcesMap.find(e);
         
         (*ite).second.insert((*ite).second.end(), varSources.begin(), varSources.end());
       }
@@ -970,7 +978,9 @@ void findNodeSourcesRec(
   case doc_expr_kind:
   case elem_expr_kind:
   {
-    sources.push_back(node);
+    if (std::find(sources.begin(), sources.end(), node) == sources.end())
+      sources.push_back(node);
+
     break;
   }
 
@@ -984,7 +994,7 @@ void findNodeSourcesRec(
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
-    findNodeSourcesRec(rCtx, (*e)[0], sources, currentUdf);
+    findNodeSourcesRec((*e)[0], sources, currentUdf);
     return;
   }
 
@@ -1003,7 +1013,7 @@ void findNodeSourcesRec(
     {
       // We don't need to drill down to the domain exprs of variables that
       // are not referenced in the return clause.
-      findNodeSourcesRec(rCtx, e->get_return_expr(), sources, currentUdf);
+      findNodeSourcesRec(e->get_return_expr(), sources, currentUdf);
       return;
     }
     break;
@@ -1012,8 +1022,8 @@ void findNodeSourcesRec(
   case if_expr_kind:
   {
     if_expr* e = static_cast<if_expr *>(node);
-    findNodeSourcesRec(rCtx, e->get_then_expr(), sources, currentUdf);
-    findNodeSourcesRec(rCtx, e->get_else_expr(), sources, currentUdf);
+    findNodeSourcesRec(e->get_then_expr(), sources, currentUdf);
+    findNodeSourcesRec(e->get_else_expr(), sources, currentUdf);
     return;
   }
 
@@ -1033,42 +1043,45 @@ void findNodeSourcesRec(
  
       bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
 
-      UdfSourcesMap::iterator ite = rCtx.theUdfSourcesMap.find(udf);
+      UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
 
-      if (ite == rCtx.theUdfSourcesMap.end() ||
+      std::vector<expr*>* udfSources;
+
+      if (ite == theUdfSourcesMap.end() ||
           (recursive &&
-           std::find(rCtx.theUdfCallPath.begin(), rCtx.theUdfCallPath.end(), e) ==
-           rCtx.theUdfCallPath.end()))
+           std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e) ==
+           theUdfCallPath.end()))
       {
         if (recursive)
-          rCtx.theUdfCallPath.push_back(e);
-
-        std::vector<expr*> udfSources;
+          theUdfCallPath.push_back(e);
 
         // must do this before calling findNodeSourcesRec in order to break
         // recursion cycle
-        if (ite == rCtx.theUdfSourcesMap.end())
-          rCtx.theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+        if (ite == theUdfSourcesMap.end())
+        {
+          udfSources = new std::vector<expr*>;
+          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+        }
+        else
+        {
+          udfSources = (*ite).second;
+        }
 
-        findNodeSourcesRec(rCtx, udf->getBody(), udfSources, udf);
-
-        // must reset ite because the map may have been relocated during the
-        // previous call to findNodeSourcesRec.
-        ite == rCtx.theUdfSourcesMap.find(udf);
-
-        (*ite).second.insert((*ite).second.end(), udfSources.begin(), udfSources.end());
+        findNodeSourcesRec(udf->getBody(), *udfSources, udf);
 
         if (recursive)
-          rCtx.theUdfCallPath.pop_back();
+          theUdfCallPath.pop_back();
+      }
+      else
+      {
+        udfSources = (*ite).second;
       }
 
-      std::vector<expr*>& udfSources = (*ite).second;
+      csize numUdfSources = udfSources->size();
 
-      std::vector<expr*>::const_iterator ite2 = udfSources.begin();
-      std::vector<expr*>::const_iterator end2 = udfSources.end();
-      for (; ite2 != end2; ++ite2)
+      for (csize i = 0; i < numUdfSources; ++i)
       {
-        expr* source = (*ite2);
+        expr* source = (*udfSources)[i];
 
         if (source->get_expr_kind() == var_expr_kind)
         {
@@ -1078,16 +1091,12 @@ void findNodeSourcesRec(
 
           expr* argExpr = e->get_arg(argVar->get_param_pos());
 
-          xqtref_t argType = argExpr->get_return_type();
-
-          if (!TypeOps::is_subtype(tm, *argType, *rtm.ANY_ATOMIC_TYPE_STAR))
-          {
-            findNodeSourcesRec(rCtx, argExpr, sources, currentUdf);
-          }
+          findNodeSourcesRec(argExpr, sources, currentUdf);
         }
         else
         {
-          sources.push_back(source);
+          if (std::find(sources.begin(), sources.end(), source) == sources.end())
+            sources.push_back(source);
         }
       }
     } // f->isUdf()
@@ -1098,7 +1107,7 @@ void findNodeSourcesRec(
       {
         if (f->propagatesInputNodes(e, i))
         {
-          findNodeSourcesRec(rCtx, e->get_arg(i), sources, currentUdf);
+          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
         }
       }
     }
@@ -1121,7 +1130,7 @@ void findNodeSourcesRec(
   {
     transform_expr* e = static_cast<transform_expr*>(node);
 
-    findNodeSourcesRec(rCtx, e->getReturnExpr(), sources, currentUdf);
+    findNodeSourcesRec(e->getReturnExpr(), sources, currentUdf);
 
     return;
   }
@@ -1130,7 +1139,7 @@ void findNodeSourcesRec(
   {
     block_expr* e = static_cast<block_expr*>(node);
 
-    findNodeSourcesRec(rCtx, (*e)[e->size()-1], sources, currentUdf);
+    findNodeSourcesRec((*e)[e->size()-1], sources, currentUdf);
 
     return;
   }
@@ -1162,7 +1171,7 @@ void findNodeSourcesRec(
     {
       exit_expr* ex = static_cast<exit_expr*>(exitExprs[i]);
 
-      findNodeSourcesRec(rCtx, ex->get_expr(), sources, currentUdf);
+      findNodeSourcesRec(ex->get_expr(), sources, currentUdf);
     }
 
     break;
@@ -1189,7 +1198,7 @@ void findNodeSourcesRec(
     FOR_EACH(std::vector<expr_t>, ite, args)
     {
       std::vector<expr*> sources;
-      findNodeSourcesRec(rCtx, (*ite).getp(), sources, currentUdf);
+      findNodeSourcesRec((*ite).getp(), sources, currentUdf);
     }
 
     break;
@@ -1233,7 +1242,7 @@ void findNodeSourcesRec(
     expr* child = (*iter).getp();
     if (child != NULL) 
     {
-      findNodeSourcesRec(rCtx, child, sources, currentUdf);
+      findNodeSourcesRec(child, sources, currentUdf);
     }
     iter.next();
   }

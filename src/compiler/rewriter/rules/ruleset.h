@@ -28,6 +28,10 @@
 namespace zorba 
 {
 
+
+class SourceFinder;
+
+
 PREPOST_RULE(EchoNodes);
 
 PREPOST_RULE(PlanPrinter);
@@ -125,6 +129,9 @@ public:
 ********************************************************************************/
 class MarkNodeCopyProps : public RewriteRule 
 {
+protected:
+  SourceFinder  * theSourceFinder;
+
 public:
   MarkNodeCopyProps() 
     :
@@ -138,6 +145,8 @@ protected:
   void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
 
   void markSources(const std::vector<expr*>& sources);
+
+  void markForSerialization(expr* node);
 };
 
 

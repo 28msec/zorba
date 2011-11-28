@@ -559,16 +559,48 @@ expr_t MarkNodeCopyProps::apply(
 {
   modified = false;
 
-  if (!rCtx.theCCB->theConfig.for_serialization_only)
+  theSourceFinder = new SourceFinder;
+
+  try
   {
-    std::vector<expr*> sources;
+    if (rCtx.theCCB->theConfig.for_serialization_only)
+    {
+      static_context* sctx = node->get_sctx();
+      if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
+          sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+      {
+        markForSerialization(rCtx.theRoot);
+      }
+      else
+      {
+        std::vector<expr*> sources;
+        UDFCallChain dummyUdfCaller;
+        theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+        markSources(sources);
+      }
+    }
+    else
+    {
+      std::vector<expr*> sources;
+      UDFCallChain dummyUdfCaller;
+      theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+      markSources(sources);
+    }
+
     UDFCallChain dummyUdfCaller;
-    findNodeSources(rCtx, rCtx.theRoot, &dummyUdfCaller, sources);
-    markSources(sources);
+    applyInternal(rCtx, node, dummyUdfCaller);
+  }
+  catch (...)
+  {
+    delete theSourceFinder;
+    theSourceFinder = NULL;
+
+    throw;
   }
 
-  UDFCallChain dummyUdfCaller;
-  applyInternal(rCtx, node, dummyUdfCaller);
+  delete theSourceFinder;
+  theSourceFinder = NULL;
+
   return NULL;
 }
 
@@ -633,23 +665,32 @@ void MarkNodeCopyProps::applyInternal(
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
 
-    std::vector<expr_t>::const_iterator ite = e->begin();
-    std::vector<expr_t>::const_iterator end = e->end();
-
-    for (++ite; ite != end; ++ite)
+    if (e->willBeSerialized())
     {
-      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
-      axis_kind_t axisKind = axisExpr->getAxis();
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+      markSources(sources);
+    }
+    else
+    {
+      std::vector<expr_t>::const_iterator ite = e->begin();
+      std::vector<expr_t>::const_iterator end = e->end();
 
-      if (axisKind != axis_kind_child &&
-          axisKind != axis_kind_descendant &&
-          axisKind != axis_kind_self &&
-          axisKind != axis_kind_attribute)
+      for (++ite; ite != end; ++ite)
       {
-        std::vector<expr*> sources;
-        findNodeSources(rCtx, (*e)[0],  &udfCaller, sources);
-        markSources(sources);
-        break;
+        axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
+        axis_kind_t axisKind = axisExpr->getAxis();
+
+        if (axisKind != axis_kind_child &&
+            axisKind != axis_kind_descendant &&
+            axisKind != axis_kind_self &&
+            axisKind != axis_kind_attribute)
+        {
+          std::vector<expr*> sources;
+          theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+          markSources(sources);
+          break;
+        }
       }
     }
 
@@ -694,7 +735,7 @@ void MarkNodeCopyProps::applyInternal(
         if (f->mustCopyInputNodes(e, i))
         {
           std::vector<expr*> sources;
-          findNodeSources(rCtx, e->get_arg(i), &udfCaller, sources);
+          theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
           markSources(sources);
         }
       }
@@ -721,7 +762,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     validate_expr* e = static_cast<validate_expr *>(node);
     std::vector<expr*> sources;
-    findNodeSources(rCtx, e->get_expr(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
     markSources(sources);
     break;
   }
@@ -734,7 +775,7 @@ void MarkNodeCopyProps::applyInternal(
     update_expr_base* e = static_cast<update_expr_base*>(node);
 
     std::vector<expr*> sources;
-    findNodeSources(rCtx, e->getTargetExpr(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
     markSources(sources);
 
     static_context* sctx = e->get_sctx();
@@ -746,7 +787,7 @@ void MarkNodeCopyProps::applyInternal(
          sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
     {
       std::vector<expr*> sources;
-      findNodeSources(rCtx, e->getSourceExpr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
       markSources(sources);
     }
 
@@ -767,7 +808,7 @@ void MarkNodeCopyProps::applyInternal(
       for (; ite != end; ++ite)
       {
         std::vector<expr*> sources;
-        findNodeSources(rCtx, (*ite)->getExpr(), &udfCaller, sources);
+        theSourceFinder->findNodeSources((*ite)->getExpr(), &udfCaller, sources);
         markSources(sources);
       }
     }
@@ -802,7 +843,7 @@ void MarkNodeCopyProps::applyInternal(
         if (haveUpdates)
         {
           std::vector<expr*> sources;
-          findNodeSources(rCtx, child, &udfCaller, sources);
+          theSourceFinder->findNodeSources(child, &udfCaller, sources);
           markSources(sources);
         }
         else
@@ -831,7 +872,7 @@ void MarkNodeCopyProps::applyInternal(
     for (csize i = 0; i < numVars; ++i)
     {
       std::vector<expr*> sources;
-      findNodeSources(rCtx, e->get_arg_expr(i), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->get_arg_expr(i), &udfCaller, sources);
       markSources(sources);
     }
 
@@ -843,7 +884,7 @@ void MarkNodeCopyProps::applyInternal(
       var_expr* globalVar = (*ite).getp();
 
       std::vector<expr*> sources;
-      findNodeSources(rCtx, globalVar, &udfCaller, sources);
+      theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
       markSources(sources);
     }
 
@@ -856,7 +897,7 @@ void MarkNodeCopyProps::applyInternal(
     ftcontains_expr* e = static_cast<ftcontains_expr*>(node);
 
     std::vector<expr*> sources;
-    findNodeSources(rCtx, e->get_range(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_range(), &udfCaller, sources);
     markSources(sources);
 
     break;
@@ -877,7 +918,7 @@ void MarkNodeCopyProps::applyInternal(
     FOR_EACH(std::vector<expr_t>, ite, args)
     {
       std::vector<expr*> sources;
-      findNodeSources(rCtx, (*ite).getp(), &udfCaller, sources);
+      theSourceFinder->findNodeSources((*ite).getp(), &udfCaller, sources);
       markSources(sources);
     }
 
@@ -951,6 +992,336 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
     }
     }
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MarkNodeCopyProps::markForSerialization(expr* node)
+{
+  TypeManager* tm = node->get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t retType = node->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
+    return;
+
+  switch (node->get_expr_kind()) 
+  {
+  case const_expr_kind:
+  {
+    return;
+  }
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(node);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_in_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    {
+      if (!e->willBeSerialized())
+      {
+        e->setWillBeSerialized(ANNOTATION_TRUE);
+        markForSerialization(e->get_domain_expr());
+      }
+      return;
+    }
+
+    case var_expr::copy_var:
+    case var_expr::catch_var:
+    {
+      return;
+    }
+
+    case var_expr::arg_var:
+    {
+      e->setWillBeSerialized(ANNOTATION_TRUE);
+      return;
+    }
+
+    case var_expr::prolog_var: 
+    case var_expr::local_var:
+    {
+      if (!e->willBeSerialized())
+      {
+        e->setWillBeSerialized(ANNOTATION_TRUE);
+
+        std::vector<expr*>::const_iterator ite = e->setExprsBegin();
+        std::vector<expr*>::const_iterator end = e->setExprsEnd();
+
+        for (; ite != end; ++ite)
+        {
+          expr* setExpr = *ite;
+
+          if (setExpr->get_expr_kind() == var_decl_expr_kind)
+          {
+            markForSerialization(static_cast<var_decl_expr*>(setExpr)->get_init_expr());
+          }
+          else
+          {
+            assert(setExpr->get_expr_kind() == var_set_expr_kind);
+
+            markForSerialization(static_cast<var_set_expr*>(setExpr)->get_expr());
+          }
+        }
+      }
+      return;
+    }
+
+    case var_expr::wincond_in_pos_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::pos_var:
+    case var_expr::score_var:
+    case var_expr::count_var:
+    case var_expr::eval_var:
+    default:
+    {
+      ZORBA_ASSERT(false);
+      return;
+    }
+    }
+  }
+
+  case doc_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  {
+    break;
+  }
+
+  case relpath_expr_kind:
+  {
+    relpath_expr* e = static_cast<relpath_expr *>(node);
+    e->setWillBeSerialized(ANNOTATION_TRUE);
+    markForSerialization((*e)[0]);
+    return;
+  }
+
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+  {
+    flwor_expr* e = static_cast<flwor_expr *>(node);
+    e->setWillBeSerialized(ANNOTATION_TRUE);
+    markForSerialization(e->get_return_expr());
+    return;
+  }
+
+  case if_expr_kind:
+  case trycatch_expr_kind:
+  {
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr *>(node);
+    function* f = e->get_func();
+
+    e->setWillBeSerialized(ANNOTATION_TRUE);
+
+    if (f->isUdf())
+    {
+      user_function* udf = static_cast<user_function*>(f);
+      expr* body = udf->getBody();
+
+      if (!body->willBeSerialized())
+      {
+        markForSerialization(body);
+      }
+
+      std::vector<var_expr_t>::const_iterator ite = udf->getArgVars().begin();
+      std::vector<var_expr_t>::const_iterator end = udf->getArgVars().end();
+      for (; ite != end; ++ite)
+      {
+        expr* argVar = (*ite).getp();
+        if (argVar->willBeSerialized())
+        {
+          expr* argExpr = e->get_arg(ite - udf->getArgVars().begin());
+          markForSerialization(argExpr);
+        }
+      }
+    } // f->isUdf()
+    else
+    {
+      csize numArgs = e->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (f->propagatesInputNodes(e, i))
+        {
+          markForSerialization(e->get_arg(i));
+        }
+      }
+    }
+
+    return;
+  }
+
+  case promote_expr_kind:
+  case treat_expr_kind:
+  case order_expr_kind:
+  case wrapper_expr_kind:
+  case function_trace_expr_kind:
+  case extension_expr_kind:
+  {
+    break;
+  }
+
+  case validate_expr_kind:
+  {
+    node->setWillBeSerialized(ANNOTATION_TRUE);
+    return;
+  }
+
+  case transform_expr_kind:
+  {
+    transform_expr* e = static_cast<transform_expr *>(node);
+    e->setWillBeSerialized(ANNOTATION_TRUE);
+    markForSerialization(e->getReturnExpr());
+    return;
+  }
+
+  case block_expr_kind:
+  {
+    block_expr* e = static_cast<block_expr *>(node);
+    e->setWillBeSerialized(ANNOTATION_TRUE);
+    expr* lastChild = (*e)[e->size()-1];
+    markForSerialization(lastChild);
+    return;
+  }
+
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    return;
+  }
+
+  case apply_expr_kind:
+  {
+    break;
+  }
+
+  case exit_catcher_expr_kind: 
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
+
+    expr* body = e->get_expr();
+
+    std::vector<expr*> exitExprs;
+    
+    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
+
+    csize numExitExprs = exitExprs.size();
+
+    for (csize i = 0; i < numExitExprs; ++i)
+    {
+      exit_expr* ex = static_cast<exit_expr*>(exitExprs[i]);
+
+      markForSerialization(ex->get_expr());
+    }
+
+    break;
+  }
+
+
+  case eval_expr_kind:
+  {
+    eval_expr* e = static_cast<eval_expr*>(node);
+
+    csize numVars = e->var_count();
+
+    for (csize i = 0; i < numVars; ++i)
+    {
+      markForSerialization(e->get_arg_expr(i));
+    }
+
+    std::vector<var_expr_t> globalVars;
+    e->get_sctx()->getVariables(globalVars, true, true);
+  
+    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+    {
+      var_expr* globalVar = (*ite).getp();
+      markForSerialization(globalVar);
+    }
+
+    return;
+  }
+
+  case dynamic_function_invocation_expr_kind:
+  {
+    dynamic_function_invocation_expr* e = 
+    static_cast<dynamic_function_invocation_expr*>(node);
+
+    const std::vector<expr_t>& args = e->get_args();
+
+    FOR_EACH(std::vector<expr_t>, ite, args)
+    {
+      markForSerialization((*ite).getp());
+    }
+
+    break;
+  }
+
+  case function_item_expr_kind:
+  {
+    function_item_expr* e = static_cast<function_item_expr*>(node);
+
+    user_function* udf = static_cast<user_function*>(e->get_function());
+
+    UDFCallChain dummyUdfCaller;
+
+    markForSerialization(udf->getBody());
+
+    return;
+  }
+
+#if 0
+  case debugger_expr_kind:
+    break;
+#endif
+
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case name_cast_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case delete_expr_kind:
+  case rename_expr_kind:
+  case insert_expr_kind:
+  case replace_expr_kind:
+  case while_expr_kind:
+  case flowctl_expr_kind:
+  case exit_expr_kind:
+  case ft_expr_kind:
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  node->setWillBeSerialized(ANNOTATION_TRUE);
+
+  ExprIterator iter(node);
+  while(!iter.done()) 
+  {
+    expr* child = (*iter).getp();
+    if (child != NULL) 
+    {
+      markForSerialization(child);
+    }
+    iter.next();
+  }
+
+  return;
 }
 
 

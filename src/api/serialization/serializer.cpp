@@ -693,9 +693,33 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   // emit namespace bindings
   store::NsBindings nsBindings;
   if (depth == 0)
+  {
     item->getNamespaceBindings(nsBindings);
+  }
   else
-    item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  {
+    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+    item->getNamespaceBindings(nsBindings);
+
+    store::Item* nodeName = item->getNodeName();
+
+    const zstring& prefix = nodeName->getPrefix();
+    const zstring& nsuri = nodeName->getNamespace();
+    if (prefix.empty() && nsuri.empty())
+    {
+      store::NsBindings::const_iterator ite = nsBindings.begin();
+      store::NsBindings::const_iterator end = nsBindings.end();
+
+      for (; ite != end; ++ite)
+      {
+        if (ite->second.empty() && ite->first.empty())
+          break;
+      }
+
+      if (ite == end)
+        nsBindings.push_back(std::pair<zstring, zstring>(prefix, nsuri));
+    }
+  }
 
   csize numBindings = nsBindings.size();
 

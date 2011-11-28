@@ -35,12 +35,6 @@ typedef std::map<var_expr *, ulong> VarIdMap;
 typedef std::vector<var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
-typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
-typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
-
-typedef std::map<user_function*, std::vector<expr*> > UdfSourcesMap;
-typedef std::pair<user_function*, std::vector<expr*> > UdfSourcesPair;
-
 typedef std::set<fo_expr*> UdfCalls;
 
 /*******************************************************************************
@@ -96,10 +90,6 @@ public:
   ExprVarsMap                * theExprVarsMap;
   std::vector<expr_t>          theFlworStack;
   std::vector<bool>            theInReturnClause;
-
-  VarSourcesMap                theVarSourcesMap;
-  UdfSourcesMap                theUdfSourcesMap;
-  std::vector<fo_expr*>        theUdfCallPath;
 
   UdfCalls                     theProcessedUDFCalls;
 

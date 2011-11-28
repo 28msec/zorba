@@ -551,15 +551,48 @@ store::Item* XmlNode::copy(
           zstring content = textSibling->getText();
           appendStringValue(content);
 
-          textSibling->setText(content);
-          return const_cast<XmlNode*>(this);
+          if (textSibling->theParent != parent)
+          {
+            parent->removeConnector(pos-1);
+
+            TextNode* textNode = 
+            GET_NODE_FACTORY().createTextNode(parent->getTree(),
+                                              parent,
+                                              true,
+                                              0,
+                                              content);
+            return textNode;
+          }
+          else
+          {
+            textSibling->setText(content);
+            return const_cast<XmlNode*>(this);
+          }
+        }
+      }
+      else if (getNodeKind() == store::StoreConsts::attributeNode)
+      {
+        ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
+        store::Item_t attrName = getNodeName();
+        pnode->checkUniqueAttr(attrName);
+
+        try
+        {
+          
+          pnode->addBindingForQName(attrName, true, false);
+        }
+        catch (...)
+        {
+          goto doCopy;
         }
       }
 
       new ConnectorNode(parent->getTree(), parent, this);
       return const_cast<XmlNode*>(this);
     }
-    else if (getNodeKind() == store::StoreConsts::attributeNode)
+
+  doCopy:
+    if (getNodeKind() == store::StoreConsts::attributeNode)
     {
       ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
       pnode->checkUniqueAttr(getNodeName());
@@ -569,7 +602,7 @@ store::Item* XmlNode::copy(
     {
       pos = parent->numChildren();
     }
-  }
+  } // have parent
 
   return copyInternal(parent, parent, pos, NULL, copymode);
 }
@@ -1315,6 +1348,24 @@ void InternalNode::removeChild(csize pos)
     assert(!(*ite)->isConnectorNode());
     (*ite)->theParent = NULL;
     theNodes.erase(ite);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void InternalNode::removeConnector(csize pos)
+{
+  if (pos < numChildren())
+  {
+    iterator ite = childrenBegin() + pos;
+    assert((*ite)->isConnectorNode());
+    ConnectorNode* connector = static_cast<ConnectorNode*>(*ite);
+    assert(connector->theParent == this);
+    connector->theParent = NULL;
+    theNodes.erase(ite);
+    delete connector;
   }
 }
 
@@ -2558,13 +2609,78 @@ void ElementNode::getNamespaceBindings(
   assert(bindings.empty());
   assert(theNsContext != NULL);
 
+  if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
+  {
+    const zstring& prefix = theName->getPrefix();
+    zstring ns;
+
+    bool found = getNsContext()->findBinding(prefix, ns);
+
+    // binding may be absent only if the prefix was empty and there was no
+    // default namespace declaration in scope.
+    ZORBA_ASSERT(prefix.empty() || prefix == "xml" || found);
+
+    if (found)
+      bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+      
+    const_iterator ite = attrsBegin();
+    const_iterator end = attrsEnd();
+
+    for (; ite != end; ++ite)
+    {
+      const zstring& prefix = (*ite)->getNodeName()->getPrefix();
+
+      bool found = getNsContext()->findBinding(prefix, ns);
+
+      ZORBA_ASSERT(prefix.empty() || prefix == "xml" || found);
+
+      if (found)
+      {
+        store::NsBindings::const_iterator ite2 = bindings.begin();
+        store::NsBindings::const_iterator end2 = bindings.end();
+
+        for (; ite2 != end2; ++ite2)
+        {
+          if (ite2->second == ns && ite2->first == prefix)
+            break;
+        }
+
+        if (ite2 == end2)
+          bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+      }
+    }
+
+    if (haveLocalBindings())
+    {
+      store::NsBindings::const_iterator ite = getNsContext()->getBindings().begin();
+      store::NsBindings::const_iterator end = getNsContext()->getBindings().end();
+
+      for (; ite != end; ++ite)
+      {
+        const zstring& prefix = ite->first;
+        const zstring& ns = ite->second;
+
+        store::NsBindings::const_iterator ite2 = bindings.begin();
+        store::NsBindings::const_iterator end2 = bindings.end();
+
+        for (; ite2 != end2; ++ite2)
+        {
+          if (ite2->second == ns && ite2->first == prefix)
+            break;
+        }
+
+        if (ite2 == end2)
+          bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+      }
+    }
+
+    return;
+  }
+
   if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
   {
     bindings = theNsContext->getBindings();
   }
-
-  if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
-    return;
 
   const NsBindingsContext* parentContext = theNsContext->getParent();
 
@@ -2797,7 +2913,7 @@ void ElementNode::uninheritBinding(
   {
     if (theNsContext.getp() == rootNSCtx)
     {
-      theNsContext = new NsBindingsContext;
+      theNsContext = new NsBindingsContext(rootNSCtx);
     }
 
     zstring emptyStr;

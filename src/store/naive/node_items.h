@@ -853,6 +853,8 @@ protected:
 
   void removeChildren(csize pos, csize numChildren);
 
+  void removeConnector(csize pos);
+
   csize findAttr(XmlNode* attr) const;
 
   void insertAttr(XmlNode* child, csize pos);
