@@ -529,6 +529,17 @@ DebuggerRuntime::listSource(
       std::vector<StackFrameImpl> lRawFrames = getStackFrames();
       StackFrameImpl lFrame = lRawFrames.at(lRawFrames.size() - 1);
       lFileName = lFrame.getLocation().getFileName();
+      // filter out the eval stack frames. They Start with "eval@"
+      // TODO: Unsafe if the stackframe changes notation.
+      //       Should use a constant taken from the stack frame logic.
+      if (lFileName.substr(0, 5) == "eval@") {
+        // TODO: can we get the eval iterator, get its source and surprize the user
+        //       with the source code of the eval code. That would be great!
+        std::stringstream lSs;
+        lSs << "Cannot list source code for stack frames inside an eval expression. "
+          << "(Yet! Try again in the next version!)";
+        throw lSs.str();
+      }
       lCurrentLine = lFrame.getLocation().getLineBegin();
     }
   }
@@ -596,27 +607,22 @@ DebuggerRuntime::listSource(
   aBeginLine = std::min(lLineCount, (aBeginLine == 0 ? 1 : aBeginLine));
   aEndLine = std::min(lLineCount, (aEndLine == 0 ? lLineCount : aEndLine));
 
+  // first, find the breakpoints in this file
+  std::map<int, bool> lBreakLines;
+  if (aBeginLine <= aEndLine) {
+    for (BreakableVector::size_type j = 0; j < lBkps.size(); j++) {
+      Breakable lBkp = lBkps.at(j);
+      if (lBkp.isSet() && lBkp.getLocation().getFilename().str() == lFileUri.str()) {
+        // TODO: one could also check if the line in in the range we want
+        lBreakLines[lBkp.getLocation().getLineBegin()] = lBkp.isEnabled();
+      }
+    }
+  }
+
   // get only the needed lines
   std::stringstream lOut;
   for (unsigned int i = aBeginLine; i <= aEndLine; i++) {
     if (aZorbaExtensions) {
-      //
-      // add breakpoint signs
-      //
-
-      // first breakpoints in this file
-      std::map<int, bool> lBreakLines;
-      for (BreakableVector::size_type j = 0; j < lBkps.size(); j++) {
-        Breakable lBkp = lBkps.at(j);
-        if (lBkp.isSet() && lBkp.getLocation().getFilename().str() == lFileUri.str()) {
-          lBreakLines[lBkp.getLocation().getLineBegin()] = lBkp.isEnabled();
-        }
-      }
-
-      //
-      // format and print the line
-      //
-
       // get the width of the line number column
       std::stringstream lTmpSs;
       lTmpSs << aEndLine;

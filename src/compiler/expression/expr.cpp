@@ -1493,6 +1493,13 @@ void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVar
 
 void debugger_expr::compute_scripting_kind()
 {
+  theScriptingKind = theExpr->get_scripting_detail();
+}
+
+zorba::expr_script_kind_t
+debugger_expr::get_scripting_kind()
+{
+  return (zorba::expr_script_kind_t)theScriptingKind;
 }
 
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
