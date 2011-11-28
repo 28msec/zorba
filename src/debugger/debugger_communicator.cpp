@@ -77,7 +77,7 @@ DebuggerCommunicator::~DebuggerCommunicator()
 void
 DebuggerCommunicator::connect()
 {
-	for (int i = 0; i < 3 && !theSocket; i++)
+	for (int i = 0; i < 5 && !theSocket; i++)
   {
 		try
     {

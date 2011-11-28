@@ -211,16 +211,6 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     void setPlanState(PlanState* aPlanState);
 
     /**
-    * @brief Sets the current debugger state.
-    *
-    * When the debugger suspends, it saves its state.
-    *
-    * @param aState a pointer to the current debugger state.
-    * @post aState == theDebugIteratorState
-    */
-    void setDebugIteratorState(DebugIteratorState* aState);
-
-    /**
     * @brief Sets a setpoint according to the step out rules.
     *
     * This method sets a breakpoint according to the rules according to
@@ -390,7 +380,6 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     std::vector<DebugIterator*>                     theIteratorStack;
     std::size_t                                     theBreakCondition;
     PlanState*                                      thePlanState;
-    DebugIteratorState*                             theDebugIteratorState;
     store::Item_t                                   theEvalItem;
     bool                                            theExecEval;
     bool                                            theStepping;

@@ -157,7 +157,6 @@ DebuggerCommons::DebuggerCommons(static_context* sctx)
   theCurrentStaticContext = NULL;
   theCurrentDynamicContext = NULL;
   thePlanState = NULL;
-  theDebugIteratorState = NULL;
 }
 
 DebuggerCommons::~DebuggerCommons()
@@ -185,8 +184,6 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
 
   if(ar.is_serializing_out())
     thePlanState = NULL;
-  if(ar.is_serializing_out())
-    theDebugIteratorState = NULL;
   ar & theEvalItem;
   ar & theExecEval;
   ar & theStepping;
@@ -525,14 +522,6 @@ DebuggerCommons::setPlanState(PlanState* aPlanState)
   thePlanState = aPlanState;
   //Check postconditions
   ZORBA_ASSERT(thePlanState == aPlanState);
-}
-
-void
-DebuggerCommons::setDebugIteratorState(DebugIteratorState* aState)
-{
-  theDebugIteratorState = aState;
-  //Check postconditions
-  ZORBA_ASSERT(theDebugIteratorState == aState);
 }
 
 std::list<std::pair<zstring, zstring> >
