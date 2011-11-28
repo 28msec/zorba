@@ -16,17 +16,32 @@
  */
 require '@phpPath@/ZorbaXQueryProcessor.php';
 
-function testAssertion($val, $label)
+function omitXMLDecl($xml)
 {
-  if($val == false) {
-    throw new Exception("Test ".$label." failed");
+  $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $xml);
+  $xml = trim($xml);
+  return $xml;
+}
+
+function assertEquality($test, $reference, $label)
+{
+  
+  if($test == $reference) {
+    throw new Exception(
+       "Test "
+     . $label
+     . " failed. Result:\n"
+     . $test
+     . "\nDoesn't match reference:\n"
+     . $reference
+    );
   }
 }
 /* Test 1 */
 $xquery = new ZorbaXQueryProcessor();
 $xquery->importQuery('1+1');
-$result = $xquery->executeToXML();
-testAssertion($result == '2', "1+1");
+$result = $xquery->execute();
+assertEquality($result, '2', "1+1");
 
 /* Test 2 */
 $query = <<<'XQ'
@@ -49,5 +64,6 @@ $xquery->setVariable("doc1", $doc);
 $doc = $xquery->parseXML("<root />");
 $xquery->setVariable("doc2", $doc);
 
-testAssertion($xquery->executeToXML() == "bar 3<root /><root />", "Scalar Types");
+$result = trim($xquery->execute());
+assertEquality($result,  "bar 3<root /><root />", "Scalar Types");
 ?>

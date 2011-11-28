@@ -121,33 +121,6 @@ class ZorbaXQueryProcessor {
     return $result;
   }
   
-  public function executeToXML() {
-    $result = $this->execute();
-    return str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $result);
-  }
-
-  public function executeToStream($stream) {
-    $query = $this->prepareQuery();
-    
-    $it = $query->iterator();
-    $it->open();
-    
-    $item = Item::createEmptyItem();
-    
-    while($it->next($item))
-    {
-      fwrite($stream, 
-             trim(str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $item->serialize()))
-      );
-    }
-    $it->close();
-    $it->destroy();
-    
-    $query->destroy();
-    
-    return $result;
-  }
-
   public function executeToURI($uri) {
     $result = $this->execute();
     return file_put_contents($uri, $result);
