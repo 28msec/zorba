@@ -131,3 +131,4 @@ ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 # ADD NEW UNIT TESTS HERE
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
+ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
