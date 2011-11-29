@@ -188,6 +188,8 @@ Zorba_CompilerHints getCompilerHints()
     //std::cout << "testdriver is using optimization level O1" << std::endl;
   }
 
+  lHints.for_serialization_only = false;
+
   if (zorba::Properties::instance()->serializeOnlyQuery())
   {
     lHints.for_serialization_only = true;

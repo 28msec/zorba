@@ -237,7 +237,10 @@ void signature::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool signature::equals(const TypeManager* tm, const signature& s) const
+bool signature::equals(
+    const TypeManager* tm,
+    const signature& s,
+    const QueryLoc& loc) const
 {
   if (paramCount() != s.paramCount())
     return false;
@@ -251,7 +254,34 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
     if (!TypeOps::is_equal(tm,
                            *theTypes[i].getp(),
                            *s.theTypes[i].getp(), 
-                           QueryLoc::null))
+                           loc))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+bool signature::subtype(
+    const TypeManager* tm,
+    const signature& s,
+    const QueryLoc& loc) const
+{
+  if (paramCount() != s.paramCount())
+    return false;
+
+  if (!theQName->equals(s.theQName.getp()))
+    return false;
+
+  assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
+  for (csize i = 0; i < theTypes.size(); ++i)
+  {
+    if (!TypeOps::is_subtype(tm,
+                             *theTypes[i].getp(),
+                             *s.theTypes[i].getp(), 
+                             loc))
     {
       return false;
     }

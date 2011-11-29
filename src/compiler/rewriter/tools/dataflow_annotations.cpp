@@ -1003,20 +1003,10 @@ void SourceFinder::findNodeSourcesRec(
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);
 
-    if (e->has_sequential_clauses())
-    {
-      // no clause should be skipped, beacuase a clause may contain var 
-      // assingment exprs.
-      break;
-    }
-    else
-    {
-      // We don't need to drill down to the domain exprs of variables that
-      // are not referenced in the return clause.
-      findNodeSourcesRec(e->get_return_expr(), sources, currentUdf);
-      return;
-    }
-    break;
+    // We don't need to drill down to the domain exprs of variables that
+    // are not referenced in the return clause.
+    findNodeSourcesRec(e->get_return_expr(), sources, currentUdf);
+    return;
   }
 
   case if_expr_kind:
@@ -1159,17 +1149,12 @@ void SourceFinder::findNodeSourcesRec(
   {
     exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
 
-    expr* body = e->get_expr();
+    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
+    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
 
-    std::vector<expr*> exitExprs;
-    
-    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
-
-    csize numExitExprs = exitExprs.size();
-
-    for (csize i = 0; i < numExitExprs; ++i)
+    for (; ite != end; ++ite)
     {
-      exit_expr* ex = static_cast<exit_expr*>(exitExprs[i]);
+      exit_expr* ex = static_cast<exit_expr*>(*ite);
 
       findNodeSourcesRec(ex->get_expr(), sources, currentUdf);
     }

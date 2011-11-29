@@ -110,6 +110,13 @@ int _tmain(int argc, _TCHAR* argv[])
     chints.opt_level = ZORBA_OPT_LEVEL_O1;
   }
 
+  chints.for_serialization_only = false;
+
+  if (Properties::instance()->serializeOnlyQuery())
+  {
+    chints.for_serialization_only = true;
+  }
+
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));

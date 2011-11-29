@@ -118,7 +118,7 @@ protected:
     theLoopHoisting = true;
     theInferJoins = true;
     theNoCopyOptim = true;
-    theSerializeOnlyQuery = false;
+    theSerializeOnlyQuery = true;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theTraceFulltext = false;

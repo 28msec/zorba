@@ -41,6 +41,7 @@ namespace zorba
 
 class expr_visitor;
 class var_expr;
+class exit_catcher_expr;
 
 
 /***************************************************************************//**
@@ -316,7 +317,9 @@ class exit_expr : public expr
   friend class expr;
 
 private:
-  expr_t theExpr;
+  expr_t               theExpr;
+
+  exit_catcher_expr  * theCatcherExpr;
 
 public:
   SERIALIZABLE_CLASS(exit_expr)
@@ -326,7 +329,11 @@ public:
 public:
   exit_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
 
+  ~exit_expr();
+
   expr* get_expr() const { return theExpr.getp(); }
+
+  void setCatcherExpr(exit_catcher_expr* e) { theCatcherExpr = e; }
 
   void compute_scripting_kind();
 
@@ -346,6 +353,10 @@ public:
   theExpr:
   --------
   The child expr of "this" exit_catcher_expr (i.e., the effective UDF body).
+
+  theExitExprs:
+  -------------
+  All the exit_exprs that appear in the body of the udf.
 ********************************************************************************/
 class exit_catcher_expr : public expr 
 {
@@ -353,7 +364,9 @@ class exit_catcher_expr : public expr
   friend class expr;
 
 private:
-  expr_t theExpr;
+  expr_t             theExpr;
+
+  std::vector<expr*> theExitExprs;
 
 public:
   SERIALIZABLE_CLASS(exit_catcher_expr)
@@ -361,9 +374,25 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  exit_catcher_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
+  exit_catcher_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& inExpr,
+      std::vector<expr*>& exitExprs);
 
   expr* get_expr() const { return theExpr.getp(); }
+
+  std::vector<expr*>::const_iterator exitExprsBegin() const 
+  {
+    return theExitExprs.begin(); 
+  }
+
+  std::vector<expr*>::const_iterator exitExprsEnd() const 
+  {
+    return theExitExprs.end(); 
+  }
+
+  void removeExitExpr(const expr* exitExpr);
 
   void compute_scripting_kind();
 

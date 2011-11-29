@@ -436,6 +436,12 @@ public:
   detect "leaf" udfs, i.e., udfs that do not invoke other udfs. Such udfs are
   inlined by the optimizer.
 
+  theExitExprs:
+  -------------
+  This vector stores the exit_exprs that are encountered during the translation
+  of the body of a UDF. It is used to associated those exot_exprs with the
+  exit_catcher_expr that is added at the top of the UDF body.
+
   theHaveUpdatingExitExprs :
   --------------------------
 
@@ -571,6 +577,8 @@ protected:
 
   PrologGraph                            thePrologGraph;
   PrologGraphVertex                      theCurrentPrologVFDecl;
+
+  std::vector<expr*>                     theExitExprs;
 
   bool                                   theHaveUpdatingExitExprs;
 
@@ -3002,7 +3010,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
-                              zstring(ZORBA_VERSIONING_NS),
+                              static_context::ZORBA_VERSIONING_NS,
                               zstring(""),
                               zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
@@ -3096,7 +3104,17 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
-      theSctx->bind_option( qnameItem, value, opt_decl->get_location() );
+      theSctx->bind_option(qnameItem, value, opt_decl->get_location());
+
+      if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
+          value == "for-serialization-only")
+      {
+        if (qnameItem->getLocalName() == "enable")
+          theCCB->theConfig.for_serialization_only = true;
+        else
+          theCCB->theConfig.for_serialization_only = false;
+      }
+
       continue;
     }
 
@@ -3189,12 +3207,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3229,7 +3241,7 @@ void* begin_visit(const VFO_DeclList& v)
         // We make sure that the types of the parameters and the return type
         // are equal to the one that is declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -3368,7 +3380,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-  ulong numParams = v.get_param_count();
+  csize numParams = v.get_param_count();
 
   function* lFunc = lookup_fn(v.get_name(), numParams, loc);
 
@@ -3469,7 +3481,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (udf->isExiting())
     {
-      body = new exit_catcher_expr(theRootSctx, loc, body);
+      body = new exit_catcher_expr(theRootSctx, loc, body, theExitExprs);
     }
 
     // Wrap the UDF body to the type-related expr that enforce the declared
@@ -5528,6 +5540,8 @@ void end_visit(const ExitExpr& v, void* visit_state)
     theHaveSequentialExitExprs = true;
   }
 
+  expr_t exitExpr = new exit_expr(theRootSctx, loc, childExpr);
+
   if (inUDFBody())
   {
     function* f = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
@@ -5535,9 +5549,10 @@ void end_visit(const ExitExpr& v, void* visit_state)
     user_function* udf = static_cast<user_function*>(f);
 
     udf->setExiting(true);
+    theExitExprs.push_back(exitExpr.getp());
   }
 
-  push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
+  push_nodestack(exitExpr);
 }
 
 

@@ -1215,17 +1215,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   {
     exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
 
-    expr* body = e->get_expr();
+    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
+    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
 
-    std::vector<expr*> exitExprs;
-    
-    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
-
-    csize numExitExprs = exitExprs.size();
-
-    for (csize i = 0; i < numExitExprs; ++i)
+    for (; ite != end; ++ite)
     {
-      exit_expr* ex = static_cast<exit_expr*>(exitExprs[i]);
+      exit_expr* ex = static_cast<exit_expr*>(*ite);
 
       markForSerialization(ex->get_expr());
     }

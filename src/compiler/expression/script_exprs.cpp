@@ -376,7 +376,8 @@ exit_expr::exit_expr(
     const expr_t& inExpr)
   :
   expr(sctx, loc, exit_expr_kind),
-  theExpr(inExpr)
+  theExpr(inExpr),
+  theCatcherExpr(NULL)
 {
   compute_scripting_kind();
 
@@ -386,10 +387,20 @@ exit_expr::exit_expr(
 }
 
 
+exit_expr::~exit_expr()
+{
+  if (theCatcherExpr)
+  {
+    theCatcherExpr->removeExitExpr(this);
+  }
+}
+
+
 void exit_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
+  ar & theCatcherExpr;
 }
 
 
@@ -401,7 +412,11 @@ void exit_expr::compute_scripting_kind()
 
 expr_t exit_expr::clone(substitution_t& subst) const
 {
-  return new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
+  expr* clone = new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
+
+  subst[this] = clone;
+
+  return clone;
 }
 
 
@@ -411,11 +426,21 @@ expr_t exit_expr::clone(substitution_t& subst) const
 exit_catcher_expr::exit_catcher_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr)
+    const expr_t& inExpr,
+    std::vector<expr*>& exitExprs)
   :
   expr(sctx, loc, exit_catcher_expr_kind),
   theExpr(inExpr)
 {
+  theExitExprs.swap(exitExprs);
+
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    static_cast<exit_expr*>(*ite)->setCatcherExpr(this);
+  }
+
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
@@ -426,6 +451,7 @@ void exit_catcher_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
+  ar & theExitExprs;
 }
 
 
@@ -435,9 +461,36 @@ void exit_catcher_expr::compute_scripting_kind()
 }
 
 
+void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
+{
+  std::vector<expr*>::iterator ite = theExitExprs.begin();
+  std::vector<expr*>::iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    if (*ite == exitExpr)
+    {
+      theExitExprs.erase(ite);
+      return;
+    }
+  }
+}
+
+
 expr_t exit_catcher_expr::clone(substitution_t& subst) const
 {
-  return new exit_catcher_expr(theSctx, get_loc(), get_expr()->clone(subst));
+  expr_t clonedInput = get_expr()->clone(subst);
+
+  std::vector<expr*> clonedExits;
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    assert(subst.find(*ite) != subst.end());
+
+    clonedExits.push_back(subst[*ite]);
+  }
+
+  return new exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
 }
 
 

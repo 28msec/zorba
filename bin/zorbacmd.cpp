@@ -516,10 +516,14 @@ compileAndExecute(
     lHints.opt_level = ZORBA_OPT_LEVEL_O2;
   }
 
-  if (Properties::instance()->serializeOnlyQuery())
+  lHints.for_serialization_only = true;
+
+#if ZORBACMD_LOAD_SYSTEM_PROPERTIES
+  if (!Properties::instance()->serializeOnlyQuery())
   {
-    lHints.for_serialization_only = true;
+    lHints.for_serialization_only = false;
   }
+#endif
 
   // default is false
   if (properties.libModule())
