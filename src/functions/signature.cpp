@@ -249,7 +249,7 @@ bool signature::equals(
     return false;
 
   assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
-  for (size_t i = 0; i < s.theTypes.size(); ++i)
+  for (csize i = 0; i < s.theTypes.size(); ++i)
   {
     if (!TypeOps::is_equal(tm,
                            *theTypes[i].getp(),
