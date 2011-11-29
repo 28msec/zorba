@@ -74,6 +74,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
   * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
+  * Fixed bug #897616 (Fix the generation of the XQFTTS report results for
+  W3C)
 
 version 2.0.3
   * Fixed bug #867662 ("nullptr" warning)
