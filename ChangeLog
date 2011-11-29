@@ -72,6 +72,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #862089 (Split binary/xq install directories for modules) by
   splitting "module path" into separate URI and Library paths
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
 
 version 2.0.3
