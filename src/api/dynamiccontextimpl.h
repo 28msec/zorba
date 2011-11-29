@@ -81,6 +81,7 @@ protected:
   virtual ~DynamicContextImpl();
 
 public:
+
   virtual bool
   getVariable(
       const String& inNamespace,

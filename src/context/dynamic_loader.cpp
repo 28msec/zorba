@@ -191,14 +191,6 @@ DynamicLoader::DynamicLoader()
 }
 
 
-DynamicLoader&
-DynamicLoader::getInstance()
-{
-  static DynamicLoader singleton;
-  return singleton;
-}
-
-
 DynamicLoader::~DynamicLoader()
 {
   for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
@@ -216,12 +208,12 @@ DynamicLoader::~DynamicLoader()
 ExternalModule*
 DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
 {
-  std::vector<zstring> lModulePaths;
-  aSctx.get_full_module_paths(lModulePaths);
+  std::vector<zstring> lLibPath;
+  aSctx.get_full_lib_path(lLibPath);
 
   std::auto_ptr<std::istream> modfile(0); // result file
 
-  if (lModulePaths.size() != 0)
+  if (lLibPath.size() != 0)
   {
     URI lURI(aNsURI);
 
@@ -243,10 +235,9 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
 
     zstring lLibraryNameDebug = computeLibraryName(lURI, lImportedVersion, true);
 
-    // Check all module path in the according order. The higher in the hirarchy
-    // the static context is the higher the priority of its module paths.
-    for (std::vector<zstring>::const_iterator ite = lModulePaths.begin();
-         ite != lModulePaths.end();
+    // Check all module path in the according order.
+    for (std::vector<zstring>::const_iterator ite = lLibPath.begin();
+         ite != lLibPath.end();
          ++ite)
     {
       zstring potentialModuleFile = (*ite);
@@ -266,7 +257,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
 
       if (modfile->good())
       {
-        ExternalModule* lModule = getInstance().loadModule(potentialModuleFile);
+        ExternalModule* lModule = loadModule(potentialModuleFile);
         if (lModule)
         {
           if (lModule->getURI().c_str() != aNsURI)

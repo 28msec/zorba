@@ -175,30 +175,45 @@ store::Item_t dynamic_context::get_default_collection() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
   theDefaultCollectionUri = default_collection_uri;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
   theTimezone = tzone_seconds;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 long dynamic_context::get_implicit_timezone() const
 {
   return theTimezone;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
   this->theCurrentDateTime = aDateTimeItem;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::reset_current_date_time()
 {
   int lTimeShift = 0;
@@ -232,6 +247,9 @@ void dynamic_context::reset_current_date_time()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t dynamic_context::get_current_date_time() const
 {
   return theCurrentDateTime;
@@ -463,12 +481,28 @@ void dynamic_context::get_variable(
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::exists_variable(ulong varid)
+bool dynamic_context::is_set_variable(ulong varid) const
+{
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared ||
+      theVarValues[varid].theState == VarValue::declared)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool dynamic_context::exists_variable(ulong varid) const
 {
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    return false; // variable not found
+    return false;
   }
 
   return true;

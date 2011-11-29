@@ -40,10 +40,6 @@
 
 #include "zorbautils/hashmap_zstring.h"
 
-#ifndef ZORBA_NO_FULL_TEXT
-#include "runtime/full_text/thesaurus.h"
-#endif /* ZORBA_NO_FULL_TEXT */
-
 #include "common/shared_types.h"
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
@@ -498,16 +494,13 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<impl::URIMapper>       theURIMappers;
+  ztd::auto_vector<internal::URIMapper>       theURIMappers;
 
-  ztd::auto_vector<impl::URLResolver>     theURLResolvers;
+  ztd::auto_vector<internal::URLResolver>     theURLResolvers;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  typedef std::deque<internal::ThesaurusProvider const*> thesaurus_providers_t;
-  thesaurus_providers_t                   theThesaurusProviders;
-#endif /* ZORBA_NO_FULL_TEXT */
+  checked_vector<zstring>                 theURIPath;
 
-  checked_vector<zstring>                 theModulePaths;
+  checked_vector<zstring>                 theLibPath;
 
   ExternalModuleMap                     * theExternalModulesMap;
 
@@ -592,6 +585,8 @@ public:
 
   static bool is_reserved_module(const zstring& ns);
 
+  static zstring var_name(const store::Item*);
+
 public:
   SERIALIZABLE_CLASS(static_context);
 
@@ -666,20 +661,27 @@ public:
    * Add a URIMapper to be used by this static context when resolving
    * URIs to resources.
    */
-  void add_uri_mapper(impl::URIMapper* aMapper);
+  void add_uri_mapper(internal::URIMapper* aMapper);
 
   /**
    * Add a URLResolver to be used by this static context when
    * resolving URIs to resources.
    */
-  void add_url_resolver(impl::URLResolver* aResolver);
+  void add_url_resolver(internal::URLResolver* aResolver);
 
   /**
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<impl::Resource> resolve_uri
-  (zstring const& aUri, impl::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
+  std::auto_ptr<internal::Resource> resolve_uri
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
+
+  /**
+   * Given a URI, return a Resource for that URI.
+   * @param aEntityData an EntityData object to pass to the mappers/resolvers.
+   */
+  std::auto_ptr<internal::Resource> resolve_uri
+  (zstring const& aUri, internal::EntityData const& aEntityData, zstring& oErrorMessage) const;
 
   /**
    * Given a URI, populate a vector with a list of component URIs.  If
@@ -687,26 +689,20 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
-  (zstring const& aUri, impl::EntityData::Kind aEntityKind,
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  void add_thesaurus_provider( internal::ThesaurusProvider const *p ) {
-    theThesaurusProviders.push_front( p );
-  }
+  void set_uri_path(const std::vector<zstring>& aURIPath);
 
-  internal::Thesaurus::ptr get_thesaurus( zstring const &uri,
-                                          locale::iso639_1::type lang ) const;
+  void get_uri_path(std::vector<zstring>& oURIPath) const;
 
-  void remove_thesaurus_provider( internal::ThesaurusProvider const *p );
-#endif /* ZORBA_NO_FULL_TEXT */
+  void get_full_uri_path(std::vector<zstring>& oURIPath) const;
 
-  void set_module_paths(const std::vector<zstring>& aModulePaths);
+  void set_lib_path(const std::vector<zstring>& aLibPath);
 
-  void get_module_paths(std::vector<zstring>& aModulePaths) const;
+  void get_lib_path(std::vector<zstring>& oLibPath) const;
 
-  void get_full_module_paths(std::vector<zstring>& aFullModulePaths) const;
-
+  void get_full_lib_path(std::vector<zstring>& oLibPath) const;
 
   //
   // Validating Items
@@ -786,20 +782,12 @@ public:
   void getVariables(
     std::vector<var_expr_t>& variableList,
     bool localsOnly = false,
-    bool returnPrivateVars = false) const;
+    bool returnPrivateVars = false,
+    bool externalVarsOnly = false) const;
 
   void set_context_item_type(xqtref_t& t);
 
   const XQType* get_context_item_type() const;
-
-  // convert
-  //  $$dot => context item
-  //  $$pos => context position
-  //  $$last-idx => context size
-  // or return the string-value of the argument
-  static zstring
-  var_name(const store::Item*);
-
 
   //
   // Functions
@@ -929,7 +917,7 @@ public:
   //
   void set_audit_event(audit::Event* ae);
 
-  audit::Event* get_audit_event();
+  audit::Event* get_audit_event() const;
 
 
   //
@@ -1025,13 +1013,13 @@ protected:
 private:
 
   void apply_uri_mappers(zstring const& aUri,
-    impl::EntityData const* aEntityData,
-    impl::URIMapper::Kind aMapperKind,
+    internal::EntityData const* aEntityData,
+    internal::URIMapper::Kind aMapperKind,
     std::vector<zstring>& oUris) const;
 
   void apply_url_resolvers(std::vector<zstring>& aUrls,
-    impl::EntityData const* aEntityData,
-    std::auto_ptr<impl::Resource>& oResource,
+    internal::EntityData const* aEntityData,
+    std::auto_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const;
 
 public:

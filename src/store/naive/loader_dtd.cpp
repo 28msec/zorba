@@ -586,17 +586,23 @@ store::Item_t DtdXmlLoader::loadXml(
     theBuffer.resize(static_cast<unsigned int>(fileSize+1));
     theBuffer[fileSize] = 0;
 
-    std::streamsize numChars = readPacket(stream, static_cast<char*>(&theBuffer[0]), fileSize);
+    std::streamsize numChars = readPacket(stream,
+                                          static_cast<char*>(&theBuffer[0]),
+                                          fileSize);
 
     if (numChars < 0)
     {
-      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
       abortload();
       return NULL;
     }
     else if (numChars == 0)
     {
-      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS(ZED(NoInputData))));
+      theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                    ERROR_PARAMS(ZED(NoInputData))));
       abortload();
       return NULL;
     }
@@ -1200,6 +1206,8 @@ void DtdXmlLoader::startElement(
         }
 
         elemNode->getBaseURI(baseUri);
+
+        ++i;
       }
 
       loader.theOrdPath.nextChild();
@@ -1226,9 +1234,8 @@ void DtdXmlLoader::startElement(
   }
   catch (...)
   {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
+    loader.theXQueryDiagnostics->
+    add_error(NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR));
   }
 }
 
