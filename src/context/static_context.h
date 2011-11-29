@@ -920,7 +920,7 @@ public:
   //
   void set_audit_event(audit::Event* ae);
 
-  audit::Event* get_audit_event();
+  audit::Event* get_audit_event() const;
 
 
   //

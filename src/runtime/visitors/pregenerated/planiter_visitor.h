@@ -554,6 +554,8 @@ namespace zorba{
 
     class SubstringIterator;
 
+    class SubstringIntOptIterator;
+
     class StringLengthIterator;
 
     class NormalizeSpaceIterator;
@@ -1392,6 +1394,9 @@ public:
 
     virtual void beginVisit ( const SubstringIterator& ) = 0;
     virtual void endVisit   ( const SubstringIterator& ) = 0;
+
+    virtual void beginVisit ( const SubstringIntOptIterator& ) = 0;
+    virtual void endVisit   ( const SubstringIntOptIterator& ) = 0;
 
     virtual void beginVisit ( const StringLengthIterator& ) = 0;
     virtual void endVisit   ( const StringLengthIterator& ) = 0;

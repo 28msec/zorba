@@ -3766,6 +3766,20 @@ void PrinterVisitor::endVisit ( const SubstringIterator& ) {
 // </SubstringIterator>
 
 
+// <SubstringIntOptIterator>
+void PrinterVisitor::beginVisit ( const SubstringIntOptIterator& a) {
+  thePrinter.startBeginVisit("SubstringIntOptIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SubstringIntOptIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SubstringIntOptIterator>
+
+
 // <StringLengthIterator>
 void PrinterVisitor::beginVisit ( const StringLengthIterator& a) {
   thePrinter.startBeginVisit("StringLengthIterator", ++theId);

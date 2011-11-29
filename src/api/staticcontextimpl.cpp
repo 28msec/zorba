@@ -1424,7 +1424,7 @@ StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 
 
 audit::Event*
-StaticContextImpl::getAuditEvent()
+StaticContextImpl::getAuditEvent() const
 {
   return theCtx->get_audit_event();
 }

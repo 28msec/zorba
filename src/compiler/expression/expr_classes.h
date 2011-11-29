@@ -60,6 +60,7 @@ namespace zorba
   class block_expr; 
   class apply_expr;
   class var_decl_expr;
+  class var_set_expr;
   class exit_expr;
   class exit_catcher_expr; 
   class while_expr; 
