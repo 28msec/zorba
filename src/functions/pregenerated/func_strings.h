@@ -141,6 +141,24 @@ public:
 
 }
 
+  bool specializable() const { return true; }
+
+  function* specialize( static_context* sctx,
+                        const std::vector<xqtref_t>& argTypes) const;
+
+  CODEGEN_DECL();
+};
+
+
+//op:substring_int
+class op_substring_int : public function
+{
+public:
+  op_substring_int(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
   CODEGEN_DECL();
 };
 

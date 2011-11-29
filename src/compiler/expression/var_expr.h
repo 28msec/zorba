@@ -121,6 +121,7 @@ protected:
 
   bool           theIsPrivate; 
   bool           theIsMutable;
+  bool           theHasInitializer;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -132,10 +133,10 @@ public:
 
 public:
   var_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        var_kind k,
-        store::Item* name);
+      static_context* sctx,
+      const QueryLoc& loc,
+      var_kind k,
+      store::Item* name);
 
   ulong get_unique_id() const { return theUniqueId; }
 
@@ -154,6 +155,10 @@ public:
   bool is_external() const { return theIsExternal; }
 
   void set_external(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
 
   bool is_mutable() const { return theIsMutable; }
 

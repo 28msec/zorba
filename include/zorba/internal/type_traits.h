@@ -53,12 +53,13 @@ struct enable_if<true,T> {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef ZORBA_CXX_UNIQUE_PTR
 namespace zorba {
 namespace internal {
 
 /**
  * \internal
- * Dummy rvalue class used by unique_ptr to prevent copying.
+ * Dummy rvalue class used by unique_ptr to prevent implicit copying.
  */
 template<typename T>
 class rv : public T {
@@ -89,6 +90,7 @@ struct is_movable< rv<T> > : bool_value<false> {
 
 } // namespace internal
 } // namespace zorba
+#endif /* ZORBA_CXX_UNIQUE_PTR */
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -27,6 +27,7 @@
 #include <zorba/empty_sequence.h>
 
 #include "store/api/item_factory.h"
+#include "store/api/temp_seq.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -35,6 +36,7 @@
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
 #include "api/staticcollectionmanagerimpl.h"
+#include "api/vectoriterator.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -46,6 +48,7 @@
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/expression/var_expr.h"
 
 #include "functions/function.h"
 
@@ -749,34 +752,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
-
-#ifndef ZORBA_NO_FULL_TEXT
-/*******************************************************************************
-
-********************************************************************************/
-
-void StaticContextImpl::addThesaurusProvider( ThesaurusProvider const *p ) {
-  if ( !theThesaurusProviders[ p ] ) {
-    internal::ThesaurusProviderWrapper *const w =
-      new internal::ThesaurusProviderWrapper( p );
-    theThesaurusProviders[ p ] = w;
-    theCtx->add_thesaurus_provider( w );
-  }
-}
-
-void StaticContextImpl::removeThesaurusProvider( ThesaurusProvider const *p ) {
-  thesaurus_providers_t::iterator const i = theThesaurusProviders.find( p );
-  if ( i != theThesaurusProviders.end() ) {
-    internal::ThesaurusProviderWrapper const *const w = i->second;
-    theThesaurusProviders.erase( i );
-    theCtx->remove_thesaurus_provider( w );
-    delete w;
-  }
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1449,9 +1424,31 @@ StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 
 
 audit::Event*
-StaticContextImpl::getAuditEvent()
+StaticContextImpl::getAuditEvent() const
 {
   return theCtx->get_audit_event();
+}
+
+
+void
+StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
+{
+  ZORBA_TRY
+  std::vector<var_expr_t> lVars;
+  theCtx->getVariables(lVars, true, false, true);
+
+  std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
+  std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
+  std::vector<store::Item_t> lExVars;
+
+  for (; lIte != lEnd; ++lIte) 
+  { 
+    lExVars.push_back(lIte->getp()->get_name());        
+  }
+
+  Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+  aVarsIter = vIter; 
+  ZORBA_CATCH
 }
 
 } /* namespace zorba */

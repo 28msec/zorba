@@ -30,11 +30,6 @@ namespace zorba {
   class DiagnosticHandler;
   class StaticCollectionManagerImpl;
   class static_context;
-#ifndef ZORBA_NO_FULL_TEXT
-  namespace internal {
-    class ThesaurusProviderWrapper;
-  }
-#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 
@@ -61,14 +56,6 @@ protected:
 
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  typedef std::map<ThesaurusProvider const*,
-                   internal::ThesaurusProviderWrapper const*>
-          thesaurus_providers_t;
-
-  thesaurus_providers_t               theThesaurusProviders;
-#endif /* ZORBA_NO_FULL_TEXT */
 
   // allow for lazy creation
   mutable StaticCollectionManagerImpl* theCollectionMgr;
@@ -186,14 +173,6 @@ public:
   virtual TypeIdentifier_t
   getCollectionType(const String& aCollectionUri) const;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  virtual void
-  addThesaurusProvider( ThesaurusProvider const* );
-
-  virtual void
-  removeThesaurusProvider( ThesaurusProvider const* );
-#endif /* ZORBA_NO_FULL_TEXT */
-
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
 
@@ -265,9 +244,12 @@ public:
 
   virtual void
   setAuditEvent(audit::Event* anEvent);
-
+  
   virtual audit::Event*
-  getAuditEvent();
+  getAuditEvent() const;
+
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const;  
 
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
