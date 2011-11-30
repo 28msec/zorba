@@ -772,11 +772,10 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
   QUERY_CATCH
 }
 
-
 /*******************************************************************************
 
 ********************************************************************************/
-bool XQueryImpl::isBoundExternalVariable(
+bool XQueryImpl::isBoundVariable(
     const String& aNamespace,
     const String& aLocalname) const
 {

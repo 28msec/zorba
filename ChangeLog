@@ -8,7 +8,7 @@ New Features:
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
-  * Modified C++ API to add isSequential, getExternalVariables, and 
+  * Modified C++ API to add isSequential, getExternalVariables, isBoundContextItem and 
   isBoundExternalVariable Functions
   * Collection allows to retrieve information about the type
   and the annotations of a static collection.
