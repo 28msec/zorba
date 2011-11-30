@@ -676,10 +676,6 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 # ZORBA_XHTML_REQUISITES_PATH - points to the dir containing the html requisites (images, lib, styles, templates dirs)
 # Zorba_EXE - points to zorba.exe (or zorba.bat)
 MACRO (ADD_XQDOC_TARGETS)
-	IF(NOT ZORBA_WITH_FILE_ACCESS)
-		MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
-	ENDIF()
-
   MESSAGE(STATUS "ADD_XQDOC_TARGETS")
 
   SET(ZORBA_XQDOC_XML_XQ
