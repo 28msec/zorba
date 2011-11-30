@@ -523,11 +523,15 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
       ENDIF (_is_core)
     ENDWHILE (copy_rules)
 
+    # Targets and dependencies:
+    #   ALL depends on check_uris; check_uris depends on check_core_uris;
+    #   zorbacmd depends on check_core_uris.
     ADD_CUSTOM_TARGET (check_core_uris 
       DEPENDS ${_core_output_files} VERBATIM)
     ADD_CUSTOM_TARGET (check_uris ALL
       DEPENDS ${_noncore_output_files} VERBATIM)
     ADD_DEPENDENCIES(check_uris check_core_uris)
+    ADD_DEPENDENCIES(zorbacmd check_core_uris)
     SET_TARGET_PROPERTIES(check_core_uris PROPERTIES FOLDER "Modules")
     SET_TARGET_PROPERTIES(check_uris PROPERTIES FOLDER "Modules")
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
