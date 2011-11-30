@@ -284,7 +284,13 @@ public:
 
   const StaticContext* getStaticContext() const;
 
+  void getExternalVariables(Iterator_t& aVarsIter) const;
+
+  bool isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
+
   bool isUpdating() const;
+  
+  bool isSequential() const;
 
   bool saveExecutionPlan(
         std::ostream& os,

@@ -121,10 +121,10 @@ public:
    *        to be serialized.
    * @param stream The stream to serialize to.
    */
-  void serialize(store::Iterator_t         object, std::ostream& stream);
+  void serialize(store::Iterator_t object, std::ostream& stream);
 
   void serialize(
-        store::Iterator_t     object,
+        store::Iterator_t object,
         std::ostream& stream,
         itemHandler aHandler,
         void* aHandlerData);
@@ -247,7 +247,7 @@ protected:
      *  @return  returns true if the function has added a set of bindings to the list,
      *           which should be removed when the elememnt is out of the scope.
      */
-    virtual bool emit_bindings(const store::Item* item);
+    virtual bool emit_bindings(const store::Item* item, int depth);
 
     /**
      *  Serializes the given string, performing character expansion
@@ -424,7 +424,7 @@ protected:
 
     void emit_node_children(const store::Item* item);
 
-    bool emit_bindings(const store::Item* item);
+    bool emit_bindings(const store::Item* item, int depth);
 
     void emit_item(store::Item* item );
   };

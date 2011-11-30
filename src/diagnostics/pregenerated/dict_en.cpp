@@ -232,6 +232,7 @@ extern entry const dict_en[] = {
   { "ZAPI0007", "cannot serialize pul" },
   { "ZAPI0008", "can not execute a non-updating XQuery" },
   { "ZAPI0009", "XQuery not compiled in debug mode" },
+  { "ZAPI0011", "\"$1\": undefined $2" },
   { "ZAPI0014", "\"$1\": invalid argument${: 2}" },
   { "ZAPI0015", "\"$1\": createModule() function not found${: 2}" },
   { "ZAPI0019", "\"$1\": external module already registered" },

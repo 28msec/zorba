@@ -244,9 +244,30 @@ public:
 
   virtual void
   setAuditEvent(audit::Event* anEvent);
-
+  
   virtual audit::Event*
-  getAuditEvent();
+  getAuditEvent() const;
+
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const;  
+
+  virtual void
+  setURIPath(const std::vector<String>& aURIPath);
+
+  virtual void
+  getURIPath(std::vector<String>& aURIPath) const;
+
+  virtual void
+  getFullURIPath(std::vector<String>& aURIPath) const;
+
+  virtual void
+  setLibPath(const std::vector<String>& aLibPath);
+
+  virtual void
+  getLibPath(std::vector<String>& aLibPath) const;
+
+  virtual void
+  getFullLibPath(std::vector<String>& aLibPath) const;
 
   virtual void
   setURIPath(const std::vector<String>& aURIPath);

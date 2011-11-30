@@ -59,6 +59,10 @@ typedef uint32_t code_point;
 typedef /* ICU's */ UChar32 code_point;
 #endif /* ZORBA_NO_ICU */
 
+/**
+ * The type that represents the size of a string.  Do not assume that this is
+ * an unsigned type.
+ */
 typedef int32_t size_type;
 
 /**

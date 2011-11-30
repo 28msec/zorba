@@ -585,6 +585,8 @@ public:
 
   static bool is_reserved_module(const zstring& ns);
 
+  static zstring var_name(const store::Item*);
+
 public:
   SERIALIZABLE_CLASS(static_context);
 
@@ -780,20 +782,12 @@ public:
   void getVariables(
     std::vector<var_expr_t>& variableList,
     bool localsOnly = false,
-    bool returnPrivateVars = false) const;
+    bool returnPrivateVars = false,
+    bool externalVarsOnly = false) const;
 
   void set_context_item_type(xqtref_t& t);
 
   const XQType* get_context_item_type() const;
-
-  // convert
-  //  $$dot => context item
-  //  $$pos => context position
-  //  $$last-idx => context size
-  // or return the string-value of the argument
-  static zstring
-  var_name(const store::Item*);
-
 
   //
   // Functions
@@ -923,7 +917,7 @@ public:
   //
   void set_audit_event(audit::Event* ae);
 
-  audit::Event* get_audit_event();
+  audit::Event* get_audit_event() const;
 
 
   //
