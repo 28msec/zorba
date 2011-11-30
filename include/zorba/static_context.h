@@ -586,7 +586,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @return the audit event
    */
   virtual audit::Event*
-  getAuditEvent() = 0;
+  getAuditEvent() const = 0;
 
 
   /** \brief Returns the QName of all external variables within the
