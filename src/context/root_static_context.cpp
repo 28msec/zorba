@@ -134,7 +134,7 @@ void root_static_context::init()
     char *last_slash = strrchr(dll_path, '\\');
     if(last_slash)
     {
-      last_slash[1] = 0;
+      last_slash[0] = 0;
       last_slash = strrchr (dll_path, '\\');
       if (last_slash) {
         last_slash[1] = 0;
