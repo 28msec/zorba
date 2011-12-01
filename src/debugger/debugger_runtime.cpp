@@ -124,7 +124,7 @@ void
 DebuggerRuntime::runQuery()
 {
   theLock.wlock();
-  theExecStatus = theExecStatus == QUERY_SUSPENDED ? QUERY_RESUMED : QUERY_RUNNING;
+  theExecStatus = QUERY_RUNNING;
 
   try {
     DebuggerCommons* lCommons = getDebbugerCommons();
@@ -153,15 +153,6 @@ DebuggerRuntime::runQuery()
   theLock.wlock();
   theExecStatus = QUERY_TERMINATED;
   theLock.unlock();
-}
-
-
-void
-DebuggerRuntime::setQueryRunning()
-{
-  AutoLock lLock(theLock, Lock::WRITE);
-  assert(theExecStatus == QUERY_RESUMED);
-  theExecStatus = QUERY_RUNNING;
 }
 
 // ****************************************************************************
@@ -294,7 +285,11 @@ DebuggerRuntime::resumeRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theExecStatus = QUERY_RUNNING;
-  resume();
+  if (theExecStatus == QUERY_SUSPENDED) {
+    resume();
+  } else {
+    start();
+  }
 }
 
 
@@ -448,16 +443,27 @@ DebuggerRuntime::step(StepCommand aStepType)
   case STEP_INTO:
     // Resume and then suspend as soon as the next iterator is reached.
     lCommons->setBreak(true, CAUSE_STEP);
-    resumeRuntime();
     break;
   case STEP_OUT:
     lCommons->makeStepOut();
-    resumeRuntime();
     break;
   case STEP_OVER:
     lCommons->makeStepOver();
-    resumeRuntime();
     break;
+  default:
+    return;
+  }
+
+  // this combination doesn't make sense: to step out when the exeecution did not start yet
+  // TODO: throw an error to the user (this could be placed in the debugger_server as well)
+  if (theExecStatus != QUERY_RUNNING && aStepType == STEP_OUT) {
+    return;
+  }
+
+  if (theExecStatus == QUERY_RUNNING) {
+    resumeRuntime();
+  } else {
+    start();
   }
 }
 

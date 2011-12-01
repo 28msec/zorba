@@ -32,10 +32,9 @@ const StepCommand STEP_OVER   = 0x03;
 /* Status of the engine */
 const ExecutionStatus QUERY_IDLE       = 0x01;
 const ExecutionStatus QUERY_RUNNING    = 0x02;
-const ExecutionStatus QUERY_RESUMED    = 0x03;
-const ExecutionStatus QUERY_SUSPENDED  = 0x04;
-const ExecutionStatus QUERY_TERMINATED = 0x05;
-const ExecutionStatus QUERY_DETACHED   = 0x06;
+const ExecutionStatus QUERY_SUSPENDED  = 0x03;
+const ExecutionStatus QUERY_TERMINATED = 0x04;
+const ExecutionStatus QUERY_DETACHED   = 0x05;
 
 /* Cause of the suspension of the engine */
 const SuspensionCause CAUSE_USER               = 0x01;

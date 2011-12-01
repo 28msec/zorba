@@ -67,9 +67,6 @@ class DebuggerRuntime : public Runnable {
   public:
 
     void
-    setQueryRunning();
-
-    void
     setNotSendTerminateEvent();
 
     void

@@ -504,12 +504,11 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
         ExecutionStatus lStatus = theRuntime->getExecutionStatus();
         std::string lStatusStr;
-        switch (lStatus) {
+        switch (lStatus) {  
         case QUERY_IDLE:
           lStatusStr = "starting";
           break;
         case QUERY_RUNNING:
-        case QUERY_RESUMED:
           lStatusStr = "running";
           break;
         case QUERY_SUSPENDED:
