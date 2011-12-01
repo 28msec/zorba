@@ -272,12 +272,12 @@ MACRO (DECLARE_ZORBA_MODULE)
       IF(NOT ${PROJECT_NAME} STREQUAL "zorba")
         STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_CORE_LIB_DIR}/${module_path}
+          ${target_type} DESTINATION ${ZORBA_NONCORE_LIB_DIR}/${module_path}
           COMPONENT ${component_name})
       
       ELSE(NOT ${PROJECT_NAME} STREQUAL "zorba")
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_NONCORE_LIB_DIR}/${module_path})
+          ${target_type} DESTINATION ${ZORBA_CORE_LIB_DIR}/${module_path})
       ENDIF(NOT ${PROJECT_NAME} STREQUAL "zorba")
     ENDIF (NOT MODULE_TEST_ONLY)
       
@@ -427,7 +427,7 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
         IF(NOT _is_core)
           STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
           INSTALL (FILES "${INPUT_FILE}"
-            DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
+            DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
             RENAME "${_output_filename}"
             COMPONENT "${component_name}")
           
@@ -447,11 +447,9 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
             
         ELSE(NOT _is_core)
           INSTALL (FILES "${INPUT_FILE}"
-          DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
+          DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
           RENAME "${_output_filename}")
         ENDIF(NOT _is_core)
-        
-        
           
       ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
     ENDIF (NOT ${TEST_ONLY} EQUAL 1)
