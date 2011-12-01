@@ -59,7 +59,8 @@ EventHandler::parseMessage(const std::string &aMessage)
 {
   try {
 #ifndef NDEBUG
-    std::cout << "Processing response: " << aMessage << std::endl;
+    // uncomment this to see the raw messages received by the event handler
+    //std::cout << "Processing response: " << aMessage << std::endl;
 #endif
     // the query to process the response
     std::stringstream lQueryStream;

@@ -221,7 +221,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           try {
             unsigned int lBID = theRuntime->addBreakpoint(lLocation, lEnabled);
             lResponse << "state=\"" << lState << "\" id=\"" << lBID << "\" ";
-          } catch (std::string lErr) {
+          } catch (std::string& lErr) {
             return buildErrorResponse(lTransactionID, lCmdName, 200, lErr);
           }
  
@@ -233,11 +233,14 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           int lHitValue;
 //          bool lHasCondition = false;
 
-          // we can not change the line number of a breakpoint
-          // so we will never read the -n option
+          // since we can not change the line number of a breakpoint, we throw an error for that
+          if (aCommand.getArg("n", lBID)) {
+            return buildErrorResponse(lTransactionID, lCmdName, 208, "A breakpoint line number can not be changed. Omit the -n argument.");
+          }
 
+          // the breakpoint ID must be present or we throw an error
           if (!aCommand.getArg("d", lBID)) {
-            // TODO: throw exception
+            return buildErrorResponse(lTransactionID, lCmdName, 200, "No breakpoint could not be updated: missing breakpoint ID (-d) argument.");
           }
           if (!aCommand.getArg("s", lState)) {
             lState = "enabled";
@@ -253,14 +256,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           try {
             bool lEnabled = (lState == "disabled" ? false : true);
             theRuntime->updateBreakpoint(lBID, lEnabled, lCondition, lHitValue);
-          } catch (std::string lErr) {
-            // TODO: report error
+          } catch (std::string& lErr) {
+            return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
           }
 
         } else if (aCommand.getName() == "breakpoint_remove") {
           int lBID;
           if (aCommand.getArg("d", lBID)) {
-            theRuntime->removeBreakpoint(lBID);
+            try {
+              theRuntime->removeBreakpoint(lBID);
+            } catch (std::string& lErr) {
+              return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
+            }
           }
         }
 

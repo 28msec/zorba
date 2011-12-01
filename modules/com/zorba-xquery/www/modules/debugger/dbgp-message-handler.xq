@@ -25,46 +25,48 @@ declare variable $dmh:endl as xs:string := "
  : Set this variale to true if you want to have mode debug information when
  : an error occurs.
  :)
-declare variable $dmh:debug as xs:boolean := fn:true();
+declare variable $dmh:debug as xs:boolean := fn:false();
 
 
 declare %private function dmh:status($resp as element(response))
 {
-  fn:concat(
-    $resp/@status,
-    if ($resp/@status eq "break" and $resp/@reason ne "ok") then
-      fn:concat(" (", $resp/@reason, ")")
-    else
-      ""
-  )
+  switch ($resp/@status)
+  case "starting"
+  case "stopping"
+    return "idle"
+  case "break"
+    return
+      if ($resp/@status eq "break" and $resp/@reason ne "ok") then
+        fn:concat($resp/@status, " (", $resp/@reason, ")")
+      else
+        $resp/@status
+  default
+    return $resp/@status
 };
 
 declare %private function dmh:run($resp as element(response))
 {
-  if ($resp/@status eq "starting") then
-    "Starting query"
-  else
-    dmh:status($resp)
+  fn:concat($dmh:endl, dmh:status($resp))
 };
 
 declare %private function dmh:step-into($resp as element(response))
 {
-  dmh:status($resp)
+  fn:concat($dmh:endl, dmh:status($resp))
 };
 
 declare %private function dmh:step-out($resp as element(response))
 {
-  dmh:status($resp)
+  fn:concat($dmh:endl, dmh:status($resp))
 };
 
 declare %private function dmh:step-over($resp as element(response))
 {
-  dmh:status($resp)
+  fn:concat($dmh:endl, dmh:status($resp))
 };
 
 declare %private function dmh:stop($resp as element(response))
 {
-  dmh:status($resp)
+  fn:concat($dmh:endl, dmh:status($resp))
 };
 
 declare %private function dmh:source($resp as element(response))
@@ -210,7 +212,7 @@ declare %private function dmh:report-error(
 
       (: the debug info :)
       if ($dmh:debug and fn:string-length($debugMessage) gt 0) then
-        fn:concat("DEBUG: ", $debugMessage)
+        $debugMessage
       else
         ()
     ),
