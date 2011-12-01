@@ -152,7 +152,7 @@ CommandLineHandler::handle<BreakpointGet>(tuple<bint> &aTuple)
   
 template<>
 void
-CommandLineHandler::handle<BreakpointDel>(tuple<bint> &aTuple)
+CommandLineHandler::handle<BreakpointRemove>(tuple<bint> &aTuple)
 {
   theWaitFor = theClient->breakpoint_remove(get<0>(aTuple).second);
 }
@@ -190,15 +190,18 @@ CommandLineHandler::handle<ContextNames>(tuple<>& aTuple)
 }
   
 template<>
-void CommandLineHandler::handle<ContextGet>(tuple<bint> &aTuple)
+void CommandLineHandler::handle<ContextGet>(tuple<bint, bint> &aTuple)
 {
-  // currently only the 2nd parameter is relevant (the context id)
-  // because for the stack depth only 0 is supported (top-most)
+  int lDepth = -1;
+  int lContext = -1;
+
   if (get<0>(aTuple).first) {
-    theWaitFor = theClient->context_get(-1, get<0>(aTuple).second);
-  } else {
-    theWaitFor = theClient->context_get();
+    lDepth = get<0>(aTuple).second;
   }
+  if (get<1>(aTuple).first) {
+    lContext  = get<1>(aTuple).second;
+  }
+  theWaitFor = theClient->context_get(lDepth, lContext);
 }
 
 template<>
@@ -240,83 +243,122 @@ CommandLineHandler::handle<StepOver>(ZORBA_TR1_NS::tuple<> &t)
 void
 CommandLineHandler::addCommands()
 {
-  theCommandLine << createCommand<Status>(tuple<>(), "status", *this,
-                                          "Gets the status of the server");
-  theCommandLine << createCommand<Variables>(tuple<>(), "variables", *this,
-                                          "Gets the variables visible in the current scope");
-  theCommandLine << createCommand<Quit>(tuple<>(), "quit", *this,
-                                        "Stops debugging and quits the client");
-  theCommandLine << createCommand<Run>(tuple<>(), "run", *this, "Run the query");
+  typedef tuple<> TUPLE;
+  typedef tuple<bint> TUPLE_INT;
+  typedef tuple<bstring> TUPLE_STR;
+  typedef tuple<bint, bint> TUPLE_INT_INT;
+  typedef tuple<bstring, bstring, bint> TUPLE_STR_STR_INT;
+  typedef tuple<bint, bint, bstring> TUPLE_INT_INT_STR;
+
+  // DBGP: status
+  theCommandLine << createCommand<Status>(TUPLE(), "status", *this, "Gets the status of the server");
+
+  // ALIAS: variables (context_get -c -1)
+  theCommandLine << createCommand<Variables>(TUPLE(), "variables", *this, "Gets the variables visible in the current scope");
+
+  // META: quit
+  theCommandLine << createCommand<Quit>(TUPLE(), "quit", *this, "Stops debugging and quits the client");
+
+  // DBGP: run
+  theCommandLine << createCommand<Run>(TUPLE(), "run", *this, "Run the query");
+
+  // DBGP: breakpoint_set
   {
-    Command<CommandLineHandler, tuple<bstring, bstring, bint>, BreakpointSet>* lCommand =
-    createCommand<BreakpointSet>(tuple<bstring, bstring, bint>(), "bset", *this, "Set a breakpoint");
-    lCommand->addArgument(0, "s", createArgType<tuple<bstring, bstring, bint>, std::string, 0>(tuple<bstring, bstring, bint>()),
-                "breakpoint state (enabled or disabled - default: enabled)", false);
-    lCommand->addArgument(1, "f", createArgType<tuple<bstring, bstring, bint>, std::string, 1>(tuple<bstring, bstring, bint>()),
-                "name of the file where to stop", true);
-    lCommand->addArgument(2, "l", createArgType<tuple<bstring, bstring, bint>, int, 2>(tuple<bstring, bstring, bint>()),
-                "line number", true);
+    Command<CommandLineHandler, TUPLE_STR_STR_INT, BreakpointSet>* lCommand =
+      createCommand<BreakpointSet>(TUPLE_STR_STR_INT(), "bset", *this, "Set a breakpoint");
+
+    lCommand->addArgument(0, "s", createArgType<TUPLE_STR_STR_INT, std::string, 0>(TUPLE_STR_STR_INT()), "breakpoint state (optional, 'enabled' or 'disabled', default: enabled)", false);
+    lCommand->addArgument(1, "f", createArgType<TUPLE_STR_STR_INT, std::string, 1>(TUPLE_STR_STR_INT()), "name of the file where to stop", true);
+    lCommand->addArgument(2, "l", createArgType<TUPLE_STR_STR_INT, int, 2>(TUPLE_STR_STR_INT()), "line number", true);
       
     theCommandLine << lCommand;
   }
+
+  // DBGP: breakpoint_get
   {
-    Command<CommandLineHandler, tuple<bint>, BreakpointGet>* lCommand
-    = createCommand<BreakpointGet>(tuple<bint>(), "bget", *this, 
-                                  "Get information about a given breakpoint");
-    lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()),
-                "id of the breakpoint", true);
+    Command<CommandLineHandler, TUPLE_INT, BreakpointGet>* lCommand =
+      createCommand<BreakpointGet>(TUPLE_INT(), "bget", *this, "Get information about a given breakpoint");
+
+    lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "breakpoint ID", true);
       
     theCommandLine << lCommand;
   }
+
+  // DBGP: breakpoint_remove
   {
-    Command<CommandLineHandler, tuple<bint>, BreakpointDel>* lCommand
-    = createCommand<BreakpointDel>(tuple<bint>(), "bremove", *this, "Delete a breakpoint with a given id");
-    lCommand->addArgument(0, "i", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "id of the breakpoint", true);
+    Command<CommandLineHandler, TUPLE_INT, BreakpointRemove>* lCommand = 
+      createCommand<BreakpointRemove>(TUPLE_INT(), "bremove", *this, "Delete a breakpoint");
+
+    lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "breakpoint ID", true);
       
     theCommandLine << lCommand;
   }
-  theCommandLine << createCommand<BreakpointList>(tuple<>(), "blist", *this, "List all set breakpoints");
-  theCommandLine << createCommand<StackDepth>(tuple<>(), "sdepth", *this, "Get the depth of the stack");
+
+  // DBGP: breakpoint_list
+  theCommandLine << createCommand<BreakpointList>(TUPLE(), "blist", *this, "List all set breakpoints");
+
+  // DBGP: stack_depth
+  theCommandLine << createCommand<StackDepth>(TUPLE(), "sdepth", *this, "Get the depth of the stack");
+
+  // DBGP: stack_get
   {
-    Command<CommandLineHandler, tuple<bint>, StackGet>* lCommand
-    = createCommand<StackGet>(tuple<bint>(), "sget", *this, "Get information about one or all stack frames");
-    lCommand->addArgument(0, "d", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "stack entry two show (show all if not provided)", false);
+    Command<CommandLineHandler, TUPLE_INT, StackGet>* lCommand =
+      createCommand<StackGet>(TUPLE_INT(), "sget", *this, "Get information about one or all stack frames");
+
+    lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "stack frame to show: 0 for current stack frame, N for the main module (optional, all frames are shown if not provided)", false);
+
     theCommandLine << lCommand;
   }
+
+  // DBGP: context_names
   theCommandLine << createCommand<ContextNames>(tuple<>(), "cnames", *this, "Get the names of the avilable contexts");
+  // the DBGP -d arguments for this command is omitted since we always have/return: 0 - Local, 1 - Global
+
+  // DBGP: context_get
   {
-    Command<CommandLineHandler, tuple<bint>, ContextGet>* lCommand
-    = createCommand<ContextGet>(tuple<bint>(), "cget", *this, "Get a context");
-    lCommand->addArgument(0, "c", createArgType<tuple<bint>, int, 0>(tuple<bint>()), "id of the context", false);
-      
+    Command<CommandLineHandler, TUPLE_INT_INT, ContextGet>* lCommand =
+      createCommand<ContextGet>(TUPLE_INT_INT(), "cget", *this, "Get a context (list variables in this context)");
+
+    lCommand->addArgument(0, "d", createArgType<TUPLE_INT_INT, int, 0>(TUPLE_INT_INT()), "stack depth (optional, default: 0)", false);
+    lCommand->addArgument(0, "c", createArgType<TUPLE_INT_INT, int, 1>(TUPLE_INT_INT()), "context ID: 0 for Local, 1 for Global (optional, default: 0)", false);
+
     theCommandLine << lCommand;
   }
+
+  // DBGP: source
   {
-    Command<CommandLineHandler, tuple<bint, bint, bstring>, Source>* lCommand =
-      createCommand<Source>(tuple<bint, bint, bstring>(), "source", *this, "List source code");
-    lCommand->addArgument(0, "b", createArgType<tuple<bint, bint, bstring>, int, 0>(tuple<bint, bint, bstring>()),
-                "begin line", false);
-    lCommand->addArgument(1, "e", createArgType<tuple<bint, bint, bstring>, int, 1>(tuple<bint, bint, bstring>()),
-                "end line", false);
-    lCommand->addArgument(2, "f", createArgType<tuple<bint, bint, bstring>, std::string, 2>(tuple<bint, bint, bstring>()),
-                "file URI", false);
-      
+    Command<CommandLineHandler, TUPLE_INT_INT_STR, Source>* lCommand =
+      createCommand<Source>(TUPLE_INT_INT_STR(), "source", *this, "List source code");
+
+    lCommand->addArgument(0, "b", createArgType<TUPLE_INT_INT_STR, int, 0>(TUPLE_INT_INT_STR()), "begin line (optional, default: first line)", false);
+    lCommand->addArgument(1, "e", createArgType<TUPLE_INT_INT_STR, int, 1>(TUPLE_INT_INT_STR()), "end line (optional, default: last line)", false);
+    lCommand->addArgument(2, "f", createArgType<TUPLE_INT_INT_STR, std::string, 2>(TUPLE_INT_INT_STR()), "file URI (optional, default: the file in the top-most stack frame during execution, main module otherwise)", false);
+
     theCommandLine << lCommand;
   }
+
+  // DBGP: eval
   {
-    Command<CommandLineHandler, tuple<bstring>, Eval>* lCommand =
-      createCommand<Eval>(tuple<bstring>(), "eval", *this, "Evaluate a function");
+    Command<CommandLineHandler, TUPLE_STR, Eval>* lCommand =
+      createCommand<Eval>(TUPLE_STR(), "eval", *this, "Evaluate an expression");
+
     // TODO: this argument should not be here at all. Eval has the form: eval -i transaction_id -- {DATA}
     // Eval should be called with a command like: eval 1 + 3
     // - no need for an argument name
     // - everything following the fist contiguous set of whitespaces are sent as string
-    lCommand->addArgument(0, "c", createArgType<tuple<bstring>, std::string, 0>(tuple<bstring>()), "command to evaluate", true);
+    lCommand->addArgument(0, "c", createArgType<TUPLE_STR, std::string, 0>(TUPLE_STR()), "expression to evaluate", true);
       
     theCommandLine << lCommand;
   }
-  theCommandLine << createCommand<StepIn>(tuple<>(), "in", *this, "Step in");
-  theCommandLine << createCommand<StepOut>(tuple<>(), "out", *this, "Step out");
-  theCommandLine << createCommand<StepOver>(tuple<>(), "over", *this, "Step over");
+
+  // DBGP: step_in
+  theCommandLine << createCommand<StepIn>(TUPLE(), "in", *this, "Step in");
+
+  // DBGP: step_out
+  theCommandLine << createCommand<StepOut>(TUPLE(), "out", *this, "Step out");
+
+  // DBGP: step_over
+  theCommandLine << createCommand<StepOver>(TUPLE(), "over", *this, "Step over");
 }
   
 } // namespace zorba

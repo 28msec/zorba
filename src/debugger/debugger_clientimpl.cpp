@@ -160,7 +160,7 @@ std::size_t
 DebuggerClientImpl::feature_get(std::string const& aFeatureName)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "feature-get -i " << id << " -n " << aFeatureName << '\0';
+  *theOutStream << "feature_get -i " << id << " -n " << aFeatureName << '\0';
   theOutStream->flush();
   return id;
 }
@@ -170,7 +170,7 @@ DebuggerClientImpl::feature_set(std::string const &aFeatureName,
                                             std::string const &aValue)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "feature-set -i " << id << " -n " << aFeatureName << " -v "
+  *theOutStream << "feature_set -i " << id << " -n " << aFeatureName << " -v "
               << aValue << '\0';
   theOutStream->flush();
   return id;
@@ -369,7 +369,7 @@ DebuggerClientImpl::stack_get(int depth)
 {
   std::size_t id = ++theLastId;
   *theOutStream << "stack_get";
-  if (depth > 0) {
+  if (depth >= 0) {
     *theOutStream << " -d " << depth;
   }
   *theOutStream << " -i " << id << '\0';
@@ -382,7 +382,7 @@ DebuggerClientImpl::context_names(int depth)
 {
   std::size_t id = ++theLastId;
   *theOutStream << "context_names";
-  if (depth > 0) {
+  if (depth >= 0) {
     *theOutStream << " -d " << depth;
   }
   *theOutStream << " -i " << id << '\0';
@@ -395,10 +395,10 @@ DebuggerClientImpl::context_get(int depth, int contextId)
 {
   std::size_t id = ++theLastId;
   *theOutStream << "context_get";
-  if (depth > 0) {
+  if (depth >= 0) {
     *theOutStream << " -d " << depth;
   }
-  if (contextId > 0){
+  if (contextId >= 0){
     *theOutStream << " -c " << contextId;
   }
   *theOutStream << " -i " << id << '\0';

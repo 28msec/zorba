@@ -326,10 +326,10 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         } else {
           std::stringstream lErrMsg;
           if (lContextDepth < 0) {
-            lErrMsg << "Stack depth (" << lContextDepth << ") invalid.";
+            lErrMsg << "Invalid stack depth: " << lContextDepth << "";
             return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
           } else if (lContextDepth > 0) {
-            lErrMsg << "Stack depth (" << lContextDepth << ") invalid." << "Currently we only support data commands for the topmost stack frame.";
+            lErrMsg << "Invalid stack depth: " << lContextDepth << ". Currently we only support data commands for the top-most stack frame.";
             return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
           }
         }

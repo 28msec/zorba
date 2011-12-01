@@ -36,7 +36,7 @@ namespace zorba { namespace debugger {
     Run,
     BreakpointSet,
     BreakpointGet,
-    BreakpointDel,
+    BreakpointRemove,
     BreakpointList,
     StackDepth,
     StackGet,
@@ -97,6 +97,12 @@ class CommandLineHandler
     }
     
     template<int>
+    void handle(ZORBA_TR1_NS::tuple<bint, bint>& aTuple)
+    {
+      assert(false);
+    }
+    
+    template<int>
     void handle(ZORBA_TR1_NS::tuple<bstring>& aTuple)
     {
       assert(false);
@@ -139,7 +145,7 @@ template<>
 void CommandLineHandler::handle<BreakpointGet> (ZORBA_TR1_NS::tuple<bint>& aTuple);
   
 template<>
-void CommandLineHandler::handle<BreakpointDel>(ZORBA_TR1_NS::tuple<bint> &aTuple);
+void CommandLineHandler::handle<BreakpointRemove>(ZORBA_TR1_NS::tuple<bint> &aTuple);
   
 template<>
 void CommandLineHandler::handle<StackGet> (ZORBA_TR1_NS::tuple<bint>& aTuple);
@@ -148,7 +154,7 @@ template<>
 void CommandLineHandler::handle<ContextNames>(ZORBA_TR1_NS::tuple<> &aTuple);
   
 template<>
-void CommandLineHandler::handle<ContextGet>(ZORBA_TR1_NS::tuple<bint> &aTuple);
+void CommandLineHandler::handle<ContextGet>(ZORBA_TR1_NS::tuple<bint, bint> &aTuple);
   
 template<>
 void CommandLineHandler::handle<Source>(ZORBA_TR1_NS::tuple<bint, bint, bstring> &aTuple);
