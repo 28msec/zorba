@@ -29,7 +29,7 @@ Iterator tree for main query:
           <flwor::FLWORIterator>
             <ForVariable name="$$dot">
               <FnDocIterator>
-                <SingletonIterator value="xs:string(min_ic1980.xml)"/>
+                <SingletonIterator value="xs:string(../hashjoins/min_ic1980.xml)"/>
               </FnDocIterator>
             </ForVariable>
             <ForVariable name="$$dot">
@@ -94,7 +94,7 @@ Iterator tree for main query:
               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inst)" typename="*" nill allowed="0">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,institutions)" typename="*" nill allowed="0">
                   <FnDocIterator>
-                    <SingletonIterator value="xs:string(base.xml)"/>
+                    <SingletonIterator value="xs:string(../hashjoins/base.xml)"/>
                   </FnDocIterator>
                 </ChildAxisIterator>
               </ChildAxisIterator>

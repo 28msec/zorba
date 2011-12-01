@@ -1,5 +1,8 @@
 Zorba - The XQuery Processor
 
+version 2.x
+  * Optimization to avoid copying nodes during node-constructor expressions.
+	
 version 2.1
 
 New Features:
@@ -21,7 +24,7 @@ Optimization:
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
   sequence of integers)
   * Optimization for count(collection()) expressions
-  *	Optimization of the fn:substring function in the case when its $start and $length arguments
+  * Optimization of the fn:substring function in the case when its $start and $length arguments
   are integers
 
 Bug Fixes/Other Changes:

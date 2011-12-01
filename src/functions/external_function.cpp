@@ -119,8 +119,10 @@ bool external_function::propagatesInputNodes(
   if (res == false)
     return res;
 
-  AnnotationInternal* ann = 
-  theAnnotationList->get(AnnotationInternal::zann_propagates_input_nodes);
+  AnnotationInternal* ann = NULL;
+
+  if (theAnnotationList)
+    ann = theAnnotationList->get(AnnotationInternal::zann_propagates_input_nodes);
 
   if (ann != NULL)
   {
@@ -151,8 +153,10 @@ bool external_function::mustCopyInputNodes(
   if (res == false)
     return res;
 
-  AnnotationInternal* ann = 
-  theAnnotationList->get(AnnotationInternal::zann_must_copy_input_nodes);
+  AnnotationInternal* ann = NULL;
+
+  if (theAnnotationList)
+    ann = theAnnotationList->get(AnnotationInternal::zann_must_copy_input_nodes);
 
   if (ann != NULL)
   {

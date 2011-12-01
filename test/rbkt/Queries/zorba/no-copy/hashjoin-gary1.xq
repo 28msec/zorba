@@ -5,8 +5,8 @@ declare option opt:enable "for-serialization-only";
 
 <institutions>
 {
-let $y := doc("min_ic1980.xml")/ipeds[@year = 1980][@file = "ic1980"]/data
-for $i in doc("base.xml")/institutions/inst
+let $y := doc("../hashjoins/min_ic1980.xml")/ipeds[@year = 1980][@file = "ic1980"]/data
+for $i in doc("../hashjoins/base.xml")/institutions/inst
 let $unitid := $i/@unitid
 return
     <inst unitid="{$unitid}" >
