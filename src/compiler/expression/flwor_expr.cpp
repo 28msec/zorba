@@ -70,6 +70,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(where_clause)
 SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
+
+SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
+
 
 DEF_EXPR_ACCEPT (flwor_expr)
 
@@ -530,6 +536,25 @@ flwor_wincond::~flwor_wincond()
   set_flwor_clause(NULL);
 }
 
+void flwor_wincond::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theIsOnly;
+  ar & theInputVars;
+  ar & theOutputVars;
+  ar & theCondExpr;
+}
+
+void flwor_wincond::vars::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & posvar;
+  ar & curr;
+  ar & prev;
+  ar & next;
+}
+
+flwor_wincond::vars::vars()
+{
+}
 
 flwor_wincond::vars::~vars()
 {

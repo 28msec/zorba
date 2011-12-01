@@ -1,0 +1,10 @@
+Iterator tree for const-folded expr:
+<SubstringIntOptIterator>
+  <SingletonIterator value="xs:string(metadata)"/>
+  <SingletonIterator value="xs:integer(4)"/>
+  <SingletonIterator value="xs:integer(3)"/>
+</SubstringIntOptIterator>
+
+Iterator tree for main query:
+<SingletonIterator value="xs:string(ada)"/>
+
