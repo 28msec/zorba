@@ -189,7 +189,7 @@ uint32_t GroupTupleCmp::hash(GroupTuple* t) const
 
   csize numCols = theGroupingSpecs->size();
 
-  for (csize i = 0; i < numCols; i++)
+  for (csize i = 0; i < numCols; ++i)
   {
     if (t->theTypedValues[i] != NULL)
     {
@@ -212,16 +212,16 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
   std::vector<store::Item_t>::const_iterator end = t1->theTypedValues.end();
   long i = 0;
 
-  while(iter1 != end)
+  while (iter1 != end)
   {
-    if(*iter1 == NULL)
+    if (*iter1 == NULL)
     {      
-      if(*iter2 != NULL)
+      if (*iter2 != NULL)
       {
         return false;
       }
     }
-    else if(*iter2 == NULL)
+    else if (*iter2 == NULL)
     {
       return false;
     }
