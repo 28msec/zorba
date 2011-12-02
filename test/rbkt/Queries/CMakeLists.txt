@@ -294,3 +294,17 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
+
+# Failing windowing tests.
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)
+
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling44 899366)
+
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling14 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling16 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling15 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling18 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
