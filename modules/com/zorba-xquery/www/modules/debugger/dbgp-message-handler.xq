@@ -44,31 +44,6 @@ declare %private function dmh:status($resp as element(response))
     return $resp/@status
 };
 
-declare %private function dmh:run($resp as element(response))
-{
-  fn:concat($dmh:endl, dmh:status($resp))
-};
-
-declare %private function dmh:step-into($resp as element(response))
-{
-  fn:concat($dmh:endl, dmh:status($resp))
-};
-
-declare %private function dmh:step-out($resp as element(response))
-{
-  fn:concat($dmh:endl, dmh:status($resp))
-};
-
-declare %private function dmh:step-over($resp as element(response))
-{
-  fn:concat($dmh:endl, dmh:status($resp))
-};
-
-declare %private function dmh:stop($resp as element(response))
-{
-  fn:concat($dmh:endl, dmh:status($resp))
-};
-
 declare %private function dmh:source($resp as element(response))
 {
   $resp/text()
@@ -224,9 +199,6 @@ declare %private function dmh:process-response($resp as element(response))
 {
   switch ($resp/@command)
   case "eval"               return dmh:eval($resp)
-  case "step_into"          return dmh:step-into($resp)
-  case "step_out"           return dmh:step-out($resp)
-  case "step_over"          return dmh:step-over($resp)
   case "context_get"        return dmh:context-get($resp)
   case "context_names"      return dmh:context-names($resp)
   case "stack_get"          return dmh:stack-get($resp)
@@ -235,10 +207,16 @@ declare %private function dmh:process-response($resp as element(response))
   case "breakpoint_list"    return dmh:breakpoint-list($resp)
   case "breakpoint_get"     return dmh:breakpoint-get($resp)
   case "breakpoint_set"     return dmh:breakpoint-set($resp)
-  case "run"                return dmh:run($resp)
   case "source"             return dmh:source($resp)
-  case "stop"               return dmh:stop($resp)
-  case "status"             return dmh:status($resp)
+
+  (: continuation command only need to display/process the status :)
+  case "run"
+  case "step_into"
+  case "step_out"
+  case "step_over"
+  case "stop"
+  case "status"
+    return dmh:status($resp)
 
   default
     return dmh:report-error(fn:concat("Command not implemented: ", $resp/@command))

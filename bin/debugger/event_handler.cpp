@@ -68,7 +68,7 @@ EventHandler::parseMessage(const std::string &aMessage)
     XQuery_t lQuery = theZorbaInstance->compileQuery(lQueryStream.str(), theStaticContext);
 
     // get the query result sequrence:
-    //   1. transaction id
+    //   1. a message
     Iterator_t lIter = lQuery->iterator();
     Item lItem;
     lIter->open();
@@ -77,16 +77,16 @@ EventHandler::parseMessage(const std::string &aMessage)
     std::stringstream lStream(lItem.getStringValue().c_str());
     lStream >> lId;
 
-    //   2. A message
+    //   2. an "idle" flag (to disable quit confirmation)
     bool lCanQuit = false;
     if (lIter->next(lItem)) {
       String lMessage = lItem.getStringValue();
-      lCanQuit = lMessage == "stopping";
-      std::cout << lItem.getStringValue() << std::endl;
+      lCanQuit = lMessage == "idle";
+      std::cout << std::endl << lItem.getStringValue() << std::endl;
     }
+    theContinueProducer.produce(lCanQuit);
 
     // go and solve the event with this id
-    theContinueProducer.produce(lCanQuit);
     theIdQueue.produce(lId);
   } catch (ZorbaException& e) {
     std::cerr << "FATAL: could not execute query: " << std::endl;
