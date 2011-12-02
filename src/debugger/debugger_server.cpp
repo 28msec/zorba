@@ -504,7 +504,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
         ExecutionStatus lStatus = theRuntime->getExecutionStatus();
         std::string lStatusStr;
-        switch (lStatus) {  
+        switch (lStatus) {
         case QUERY_IDLE:
           lStatusStr = "starting";
           break;
@@ -526,15 +526,19 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "step_into") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theRuntime->step(STEP_INTO);
+        theRuntime->stepIn();
         return "";
       } else if (aCommand.getName() == "step_over") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theRuntime->step(STEP_OVER);
+        theRuntime->stepOver();
         return "";
       } else if (aCommand.getName() == "step_out") {
+        ExecutionStatus lStatus = theRuntime->getExecutionStatus();
+        if (lStatus != QUERY_RUNNING) {
+          return buildErrorResponse(lTransactionID, lCmdName, 6, "Can not step out since the execution is not started.");
+        }
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theRuntime->step(STEP_OUT);
+        theRuntime->stepOut();
         return "";
       }
 

@@ -281,15 +281,26 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
 
 
 void
+DebuggerRuntime::startRuntime()
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+  if (theExecStatus == QUERY_RUNNING) {
+    return;
+  }
+  theExecStatus = QUERY_RUNNING;
+  start();
+}
+
+
+void
 DebuggerRuntime::resumeRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
-  theExecStatus = QUERY_RUNNING;
-  if (theExecStatus == QUERY_SUSPENDED) {
-    resume();
-  } else {
-    start();
+  if (theExecStatus != QUERY_SUSPENDED) {
+    return;
   }
+  theExecStatus = QUERY_RUNNING;
+  resume();
 }
 
 
@@ -434,37 +445,46 @@ DebuggerRuntime::getVariables(bool aLocals)
 
 
 void
-DebuggerRuntime::step(StepCommand aStepType)
+DebuggerRuntime::stepIn()
 {
   DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+  // Resume and then suspend as soon as the next iterator is reached.
+  lCommons->setBreak(true, CAUSE_STEP);
 
-  switch (aStepType)
-  {
-  case STEP_INTO:
-    // Resume and then suspend as soon as the next iterator is reached.
-    lCommons->setBreak(true, CAUSE_STEP);
-    break;
-  case STEP_OUT:
-    lCommons->makeStepOut();
-    break;
-  case STEP_OVER:
-    lCommons->makeStepOver();
-    break;
-  default:
-    return;
-  }
-
-  // this combination doesn't make sense: to step out when the exeecution did not start yet
-  // TODO: throw an error to the user (this could be placed in the debugger_server as well)
-  if (theExecStatus != QUERY_RUNNING && aStepType == STEP_OUT) {
-    return;
-  }
-
-  if (theExecStatus == QUERY_RUNNING) {
+  if (theExecStatus == QUERY_SUSPENDED) {
     resumeRuntime();
   } else {
-    start();
+    startRuntime();
   }
+}
+
+
+void
+DebuggerRuntime::stepOver()
+{
+  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+  lCommons->makeStepOver();
+
+  if (theExecStatus == QUERY_SUSPENDED) {
+    resumeRuntime();
+  } else {
+    startRuntime();
+  }
+}
+
+
+void
+DebuggerRuntime::stepOut()
+{
+  // this combination doesn't make sense: to step out when the exeecution did not start yet
+  if (theExecStatus != QUERY_SUSPENDED) {
+    return;
+  }
+
+  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+  lCommons->makeStepOut();
+
+  resumeRuntime();
 }
 
 

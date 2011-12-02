@@ -134,15 +134,25 @@ class DebuggerRuntime : public Runnable {
     void runQuery();
 
     void
+    startRuntime();
+
+    void
     resumeRuntime();
-    
+
     void
     terminateRuntime();
     
     void
     detachRuntime();
 
-    void step(StepCommand stepType);
+    void
+    stepIn();
+
+    void
+    stepOver();
+
+    void
+    stepOut();
 
     DebuggerRuntime*
     clone();
