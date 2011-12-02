@@ -3809,23 +3809,9 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                           "\'" + lExpandedQName->getNamespace() + "\'"
-                           : lExpandedQName->getPrefix())
-                    + ":" + lExpandedQName->getLocalName()));
+      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
+                    + ":" + lExpandedQName->getLocalName())));
     }
-  }
-  else
-  {
-    // annotation in unknown namespace -- generate a warning
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(
-        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
-        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                      "\'" + lExpandedQName->getNamespace() + "\'"
-                      : lExpandedQName->getPrefix())
-                      + ":" + lExpandedQName->getLocalName()),
-        WARN_LOC(loc)));
   }
 
   std::vector<rchandle<const_expr> > lLiterals;

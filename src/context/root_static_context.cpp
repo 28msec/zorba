@@ -134,13 +134,17 @@ void root_static_context::init()
     char *last_slash = strrchr(dll_path, '\\');
     if(last_slash)
     {
-      last_slash[1] = 0;
-      zstring zorba_root_dir(dll_path);
+      last_slash[0] = 0;
+      last_slash = strrchr (dll_path, '\\');
+      if (last_slash) {
+        last_slash[1] = 0;
+        zstring zorba_root_dir(dll_path);
 
-      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_CORE_URI_DIR));
-      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_NONCORE_URI_DIR));
-      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_CORE_LIB_DIR));
-      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_NONCORE_LIB_DIR));
+        append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_CORE_URI_DIR));
+        append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_NONCORE_URI_DIR));
+        append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_CORE_LIB_DIR));
+        append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_NONCORE_LIB_DIR));
+      }
     }
   }
 #endif
