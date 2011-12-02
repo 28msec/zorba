@@ -534,7 +534,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         return "";
       } else if (aCommand.getName() == "step_out") {
         ExecutionStatus lStatus = theRuntime->getExecutionStatus();
-        if (lStatus != QUERY_RUNNING) {
+        if (lStatus != QUERY_SUSPENDED) {
           return buildErrorResponse(lTransactionID, lCmdName, 6, "Can not step out since the execution is not started.");
         }
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());

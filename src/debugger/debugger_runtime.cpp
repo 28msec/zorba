@@ -146,9 +146,8 @@ DebuggerRuntime::runQuery()
     theOStream.flush();
   } catch (FlowCtlException&) {
     // Runtime correctly terminated by user interrupt
-  } catch (ZorbaException const& e){
-    // this does not rethrow but only print the error message
-    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);
+  } catch (ZorbaException const& e) {
+    std::cerr << e << std::endl;
   }
   theLock.wlock();
   theExecStatus = QUERY_TERMINATED;
