@@ -151,7 +151,6 @@ DebuggerCommons::DebuggerCommons(static_context* sctx)
     theBreakCondition(0),
     theExecEval(false),
     theStepping(false)
-    
 {
   theRuntime = NULL;
   theCurrentStaticContext = NULL;
@@ -260,7 +259,7 @@ DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
     while (lIter != theBreakableIDs.end()) {
       // for now, only valid if on the breakable is on the same line as requested
       // TODO: this will have to consider asking for a line INSIDE a breakable
-      if (lIter->first.getLineBegin() == aLocation.getLineBegin()) {
+      if (lIter->second != theMainModuleBreakableId && lIter->first.getLineBegin() == aLocation.getLineBegin()) {
         zorba::String lBreakablePath = lIter->first.getFilename().str();
 
         // is the name suffixed with the searched path?
@@ -578,11 +577,16 @@ DebuggerCommons::getFilepathOfURI(const std::string& aUri) const
 }
 
 void
-DebuggerCommons::addBreakable(Breakable& aBreakable)
+DebuggerCommons::addBreakable(
+  Breakable& aBreakable,
+  bool aIsMainModuleBreakable)
 {
   adjustLocationFilePath(aBreakable.getLocation());
 
   unsigned int lId = theBreakables.size();
+  if (aIsMainModuleBreakable) {
+    theMainModuleBreakableId = lId;
+  }
   theBreakables.push_back(aBreakable);
   theBreakableIDs[aBreakable.getLocation()] = lId;
 }

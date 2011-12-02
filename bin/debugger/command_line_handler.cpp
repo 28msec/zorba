@@ -223,6 +223,7 @@ template<>
 void
 CommandLineHandler::handle<StepIn>(ZORBA_TR1_NS::tuple<> &t)
 {
+  theTerminated = false;
   theWaitFor = theClient->step_into();
 }
 
@@ -237,6 +238,7 @@ template<>
 void
 CommandLineHandler::handle<StepOver>(ZORBA_TR1_NS::tuple<> &t)
 {
+  theTerminated = false;
   theWaitFor = theClient->step_over();
 }
 

@@ -332,7 +332,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     std::string getFilepathOfURI(const std::string& aUri) const;
 
     void
-    addBreakable(Breakable& location);
+    addBreakable(Breakable& location, bool isMainModuleBreakable = false);
 
     void
     pushStackFrame(QueryLoc location, std::string& functionName);
@@ -383,6 +383,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     store::Item_t                                   theEvalItem;
     bool                                            theExecEval;
     bool                                            theStepping;
+    unsigned int                                    theMainModuleBreakableId;
   };
 
 }
