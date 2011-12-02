@@ -6431,9 +6431,9 @@ private:
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-class JSON_Constructor : public parsenode {
+class JSON_Constructor : public exprnode {
 protected:
-  JSON_Constructor( QueryLoc const &loc ) : parsenode( loc ) { }
+  JSON_Constructor( QueryLoc const &loc ) : exprnode( loc ) { }
 };
 
 class JSON_ArrayConstructor : public JSON_Constructor {

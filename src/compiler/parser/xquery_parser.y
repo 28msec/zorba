@@ -863,11 +863,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-%type <node> opt_Expr
-%type <node> JSONConstructor
-%type <node> JSONArrayConstructor
-%type <node> JSONObjectConstructor
-%type <node> JSONPairConstructor
+%type <expr> opt_Expr
+%type <expr> JSONConstructor
+%type <expr> JSONArrayConstructor
+%type <expr> JSONObjectConstructor
+%type <expr> JSONPairConstructor
 %type <json_test_value> JSONTest
 %type <json_test_value> JSONItemTest
 %type <json_test_value> JSONObjectTest JSONObjectPairTest
