@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect shift/reduce conflicts
-%expect 63
+//%expect 63
 
 
 %code requires {

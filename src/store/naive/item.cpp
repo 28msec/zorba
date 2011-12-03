@@ -172,7 +172,11 @@ void Item::removeReference()
 bool Item::isNode() const
 {
   return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
-          theUnion.treeRCPtr != 0);
+          theUnion.treeRCPtr != 0
+#ifdef ZORBA_WITH_JSON
+          && !theIsJSONItem
+#endif
+         );
 }
 
 
@@ -1319,6 +1323,60 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
+
+
+#ifdef ZORBA_WITH_JSON
+bool Item::isJSONItem() const
+{
+  return theIsJSONItem;
+}
+
+Iterator_t
+Item::pairs() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::lookup(const store::Item_t& name) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getName() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getPosition() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getValue() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+#endif
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
