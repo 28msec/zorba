@@ -232,6 +232,34 @@ SubstringIterator::~SubstringIterator() {}
 // </SubstringIterator>
 
 
+// <SubstringIntOptIterator>
+const char* SubstringIntOptIterator::class_name_str = "SubstringIntOptIterator";
+SubstringIntOptIterator::class_factory<SubstringIntOptIterator>
+SubstringIntOptIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SubstringIntOptIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SubstringIntOptIterator::class_versions_count =
+sizeof(SubstringIntOptIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SubstringIntOptIterator::~SubstringIntOptIterator() {}
+
+// </SubstringIntOptIterator>
+
+
 // <StringLengthIterator>
 const char* StringLengthIterator::class_name_str = "StringLengthIterator";
 StringLengthIterator::class_factory<StringLengthIterator>

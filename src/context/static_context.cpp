@@ -207,7 +207,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     if (dyn_loaded_module)
     {
       ZORBA_ASSERT(sctx);
-      module = DynamicLoader::getExternalModule(lURI, *sctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
 
       // no way to get the module
       if (!module)
@@ -2634,7 +2634,7 @@ ExternalFunction* static_context::lookup_external_function(
   // dynamic loader
   if (!found)
   {
-    lModule = DynamicLoader::getExternalModule(aURI, *this);
+    lModule = GENV_DYNAMIC_LOADER->getExternalModule(aURI, *this);
 
     // no way to get the module
     if (!lModule)
@@ -3400,7 +3400,7 @@ void static_context::set_audit_event(audit::Event* ae)
 /***************************************************************************//**
 
 ********************************************************************************/
-audit::Event* static_context::get_audit_event()
+audit::Event* static_context::get_audit_event() const
 {
   const static_context* sctx = this;
   audit::Event* res = sctx->theAuditEvent;

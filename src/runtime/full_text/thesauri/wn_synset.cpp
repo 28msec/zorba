@@ -84,9 +84,11 @@ part_of_speech::type synset::get_pos( mem_ptr_type *pptr ) {
 }
 
 synset::mem_ptr_type* synset::skip_lemmas( size_type n, mem_ptr_type *pptr ) {
-  unsigned char const *&u = *reinterpret_cast<unsigned char const**>( pptr );
+  //
+  // This custom code is faster than using decode_base128() here.
+  //
   while ( n-- > 0 )
-    while ( *u++ & 0x80 )               // faster than decode_base128()
+    while ( static_cast<unsigned char>( *(*pptr)++ ) & 0x80 )
       ;
   return pptr;
 }
