@@ -1830,7 +1830,7 @@ static void addGroupElement(store::Item_t &parent,
     GENV_ITEMFACTORY->createString(strid_item, zstrid);
     store::Item_t id_attrib_item;
     GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
-    if(match_startg < 0)
+    if((match_startg < 0) || (match_startg < match_endgood))
       continue;
     match_endgood = match_endg;
     if((i+1)<nr_pattern_groups)

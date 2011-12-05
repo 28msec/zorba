@@ -286,8 +286,6 @@ public:
 
   void getExternalVariables(Iterator_t& aVarsIter) const;
 
-  bool isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
-
   bool isUpdating() const;
   
   bool isSequential() const;
@@ -399,6 +397,8 @@ protected:
 #endif
 
   void notifyAllWarnings() const;
+
+  bool isBoundVariable(const String& aNamespace, const String& aLocalname) const;
 };
 
 

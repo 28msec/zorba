@@ -1682,14 +1682,18 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   std::streambuf *  pbuf;
   std::streamsize   read_bytes;
   std::istream& is = item->getStream();
-
-  // prepare the stream
+  std::streampos pos;
   std::ios::iostate const old_exceptions = is.exceptions();
-  is.exceptions( std::ios::badbit | std::ios::failbit );
-  std::streampos const pos = is.tellg();
-  if (pos)
-    is.seekg(0, std::ios::beg);
-  is.exceptions(is.exceptions() & ~std::ios::failbit);
+
+  if (item->isSeekable())
+  {
+    // prepare the stream
+    is.exceptions( std::ios::badbit | std::ios::failbit );
+    pos = is.tellg();
+    if (pos)
+      is.seekg(0, std::ios::beg);
+    is.exceptions(is.exceptions() & ~std::ios::failbit);
+  }
 
   // read bytes and do string expansion
   do
@@ -1703,12 +1707,15 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 
   // restore stream's state
   is.clear();                   // clear eofbit
-  if (pos)
+  if (item->isSeekable())
   {
-    is.exceptions(is.exceptions() | std::ios::failbit);
-    is.seekg(pos, std::ios::beg);
+    if (pos != 0 && pos != -1)
+    {
+      is.exceptions(is.exceptions() | std::ios::failbit);
+      is.seekg(pos, std::ios::beg);
+    }
+    is.exceptions(old_exceptions);
   }
-  is.exceptions(old_exceptions);
 }
 
 
