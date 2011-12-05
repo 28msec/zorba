@@ -20,6 +20,7 @@ SET(UTIL_SRCS
   dir.cpp
   fs_util.cpp
   indent.cpp
+  json_parser.cpp
   regex.cpp
   string_util.cpp
   unicode_util.cpp

@@ -20,8 +20,7 @@ SET(PARSER_SRCS
     symbol_table.cpp
     xquery_driver.cpp
     query_loc.cpp
-    xqdoc_comment.cpp
-    json_parser.cpp)
+    xqdoc_comment.cpp)
 
 SET(PARSER_BUILD_SRCS)
 

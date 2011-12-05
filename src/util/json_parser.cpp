@@ -15,9 +15,10 @@
  */
 
 #include "diagnostics/assert.h"
-#include "util/ascii_util.h"
-#include "util/string_util.h"
-#include "util/utf8_util.h"
+
+#include "ascii_util.h"
+#include "string_util.h"
+#include "utf8_util.h"
 
 #include "json_parser.h"
 
