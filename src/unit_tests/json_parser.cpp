@@ -16,7 +16,7 @@
 
 #include <sstream>
 
-#include "compiler/parser/json_parser.h"
+#include "util/json_parser.h"
 
 using namespace std;
 using namespace zorba;
