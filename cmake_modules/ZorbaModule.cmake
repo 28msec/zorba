@@ -524,14 +524,20 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
     # Targets and dependencies:
     #   ALL depends on check_uris; check_uris depends on check_core_uris;
     #   zorbacmd depends on check_core_uris.
-    ADD_CUSTOM_TARGET (check_core_uris 
-      DEPENDS ${_core_output_files} VERBATIM)
     ADD_CUSTOM_TARGET (check_uris ALL
       DEPENDS ${_noncore_output_files} VERBATIM)
-    ADD_DEPENDENCIES(check_uris check_core_uris)
-    ADD_DEPENDENCIES(zorbacmd check_core_uris)
-    SET_TARGET_PROPERTIES(check_core_uris PROPERTIES FOLDER "Modules")
     SET_TARGET_PROPERTIES(check_uris PROPERTIES FOLDER "Modules")
+    # Only create check_core_uris target and associated dependencies if
+    # there are any core URIs; there should never be any when building a
+    # standalone module project.
+    LIST (LENGTH _core_output_files _num_core)
+    IF (_num_core GREATER 0)
+      ADD_CUSTOM_TARGET (check_core_uris 
+        DEPENDS ${_core_output_files} VERBATIM)
+      ADD_DEPENDENCIES(check_uris check_core_uris)
+      ADD_DEPENDENCIES(zorbacmd check_core_uris)
+      SET_TARGET_PROPERTIES(check_core_uris PROPERTIES FOLDER "Modules")
+    ENDIF (_num_core GREATER 0)
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
 
     #add 'xqdoc' and 'xqdoc-xml' targets
