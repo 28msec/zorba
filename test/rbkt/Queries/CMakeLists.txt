@@ -311,4 +311,3 @@ ENDIF(ZORBA_NO_ICU)
 
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
-
