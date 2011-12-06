@@ -16,6 +16,7 @@
 SET(UNIT_TEST_SRCS
   unit_tests.cpp
   test_uri.cpp
+  json_parser.cpp
 )
 
 IF(ZORBA_WITH_DEBUGGER)
