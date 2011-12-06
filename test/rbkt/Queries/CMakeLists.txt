@@ -295,3 +295,13 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
 EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
+
+# external variable default expected failures
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 XXXXXX) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 XXXXXX) # forward references not implemented -> cycles cannot be detected
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 XXXXXX) # not possible to set context item for rbkt tests
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 XXXXXX) # not possible to set context item in XQuery
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016a XXXXXX) # not possible to set context item in XQuery
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016b XXXXXX) # not possible to set context item in XQuery
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 XXXXXX) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-024 XXXXXX) # wrong error code from schema validation failure
