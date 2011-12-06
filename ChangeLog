@@ -12,13 +12,14 @@ New Features:
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
-  * Modified C++ API to add isSequential, getExternalVariables, and 
+  * Modified C++ API to add isSequential, getExternalVariables, isBoundContextItem and 
   isBoundExternalVariable Functions
   * Collection allows to retrieve information about the type
   and the annotations of a static collection.
   * Implemented the probe-index-range-value for general indexes
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
   * New module for compiling and executing XQueries from XQuery (xqxq)
+  * External functions are allowed to be updating (i.e. return a pending update list)
 
 Optimization:
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
@@ -41,6 +42,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #3290122 (ZDST0003 needs collection name)
   * Fixed bug #3406272 (merging of adjacent text nodes must be done after all
     updates have been applied).
+  * Don't raise warnings for unknown annotations.
   * Fixed bug #3409344 (during detach, if the node being detached is the root of
     its tree, it should be detached from the tree as well; otherwise memory
     corruption will occur)
@@ -90,7 +92,10 @@ Bug Fixes/Other Changes:
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
+  * Fixed bug #897616 (Fix the generation of the XQFTTS report results for
+  W3C)
 
 version 2.0.3
   * Fixed bug #867662 ("nullptr" warning)

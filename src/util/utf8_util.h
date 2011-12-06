@@ -36,6 +36,7 @@
 #ifdef ZORBA_NO_ICU
 # include "diagnostics/assert.h"
 #else
+#include "zorbatypes/libicu.h"
 # include <unicode/coll.h>
 # include <unicode/sortkey.h>
 #endif /* ZORBA_NO_ICU */
@@ -796,11 +797,25 @@ int compare(const StringType1 &s1, const StringType2 &s2,
  *
  */
 template<class StringType> inline
-uint32_t hash(const StringType& s, const XQPCollator* collation = NULL) {
+uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
+{
 #ifndef ZORBA_NO_ICU
   if (!collation || collation->doMemCmp())
-#endif /* ZORBA_NO_ICU */
-    return ztd::hash( s.data(), s.size() );
+#endif
+  {
+    const char* str = s.data();
+    ulong len = (ulong)s.size();
+    uint32_t hash = 5381;
+    ulong i = 0;
+    int c;
+    while (i < len && (c = *str++))
+    {
+      hash = ((hash << 5) + hash) + c;
+      ++i;
+    }
+    return hash;
+    //return hashfun::h32((void*)(s.data()), s.size());
+  }
 
 #ifndef ZORBA_NO_ICU
   CollationKey collKey;

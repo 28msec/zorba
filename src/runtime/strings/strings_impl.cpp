@@ -749,6 +749,7 @@ bool NormalizeUnicodeIterator::nextImpl(
   zstring normForm;
   zstring resStr;
   unicode::normalization::type normType;
+  bool success;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -799,8 +800,9 @@ bool NormalizeUnicodeIterator::nextImpl(
 
     item0->getStringValue2(resStr);
 #ifndef ZORBA_NO_ICU
-    ZORBA_ASSERT( utf8::normalize( resStr, normType, &resStr ) );
-#endif /* ZORBA_NO_ICU */
+    success = utf8::normalize(resStr, normType, &resStr);
+    ZORBA_ASSERT(success);
+#endif//#ifndef ZORBA_NO_ICU
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
   }
   else
@@ -1734,24 +1736,15 @@ static void copyUtf8Chars(const char *&sin,
                           int utf8end,
                           zstring &out)
 {
-#ifndef ZORBA_NO_ICU
   utf8::size_type clen;
   while(utf8start < utf8end)
   {
     clen = utf8::char_length(*sin);
-    if(clen == 0)
-      clen = 1;
     out.append(sin, clen);
     utf8start++;
     bytestart += clen;
     sin += clen;
   }
-#else
-  out.append(sin, utf8end-utf8start);
-  sin += utf8end-utf8start;
-  utf8start = utf8end;
-  bytestart = utf8end;
-#endif
 }
 
 static void addNonMatchElement(store::Item_t &parent,

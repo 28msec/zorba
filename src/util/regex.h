@@ -42,6 +42,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
 
 namespace unicode {
 
+
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
  */
@@ -420,13 +421,14 @@ public:
     return replace_all( in.c_str(), replacement.c_str(), out );
   }
 
+
   /**
    * Set the string to work on, without doing matching yet.
    *
    * @param in The UTF-8 input string.
    * @param len the size in bytes.
    */
-  void set_string( char const *in, size_type len );
+  void set_string( const char* in, size_type len );
 
   /**
    * Find the next match in string set by set_string().
@@ -494,13 +496,12 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#else /* ZORBA_NO_ICU (ascii part:) */
+#else /* ZORBA_NO_ICU */
 
 #include "util/regex_xquery.h"
 #include <string>
 
-namespace zorba {
-
+namespace zorba{
 /**
  * Converts an XQuery regular expression to the form used by the regular
  * expression library Zorba is using (here regex_xquery).
@@ -512,9 +513,9 @@ namespace zorba {
 void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
                         char const *flags = "" );
 
-namespace unicode {
-
+namespace unicode{
 ////////// classes ////////////////////////////////////////////////////////////
+
 
 /**
  * The %regex class wraps the underlying Unicode regular expression library.

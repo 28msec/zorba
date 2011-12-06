@@ -116,7 +116,7 @@ IF (FOUND_XQUTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
     #copied from above, the expected failures for XQuery Update
     # We "don't care" that these fail
-    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-005-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-005 3354993)
     EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-004-fail 3354993)
     EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-003-fail 3354993)
     EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-006-fail 3354993)

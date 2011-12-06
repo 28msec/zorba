@@ -269,24 +269,6 @@ public:
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
 
-  virtual void
-  setURIPath(const std::vector<String>& aURIPath);
-
-  virtual void
-  getURIPath(std::vector<String>& aURIPath) const;
-
-  virtual void
-  getFullURIPath(std::vector<String>& aURIPath) const;
-
-  virtual void
-  setLibPath(const std::vector<String>& aLibPath);
-
-  virtual void
-  getLibPath(std::vector<String>& aLibPath) const;
-
-  virtual void
-  getFullLibPath(std::vector<String>& aLibPath) const;
-
 protected:
   String
   createInvokeQuery(const Function_t&, size_t aArity) const;

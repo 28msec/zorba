@@ -50,6 +50,13 @@ protected:
   UriPool    * theUriPool;
   QNamePool  * theQNamePool;
 
+  // boolean items
+  // we don't need to create more than two, hence
+  // they are cached here. createBoolean always
+  // returns one of them
+  store::Item_t theTrueItem;
+  store::Item_t theFalseItem;
+
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
 

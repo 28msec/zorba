@@ -21,10 +21,10 @@
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
+#include "diagnostics/xquery_exception.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
-#include "diagnostics/xquery_exception.h"
 
 #include "ascii_util.h"
 #include "cxx_util.h"

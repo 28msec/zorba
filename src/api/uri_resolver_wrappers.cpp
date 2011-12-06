@@ -28,7 +28,7 @@ namespace zorba
   // external mappers/resolvers. This can serve as a plain EntityData or
   // a ThesaurusEntityData. However, when there's another EntityData subclass
   // in future, this won't work as EntityData becomes an ambiguous base class...
-  class EntityDataWrapper : public ThesaurusEntityData
+  class EntityDataWrapper : public internal::ThesaurusEntityData
   {
   public:
     static EntityDataWrapper const* create(internal::EntityData const* aData) {

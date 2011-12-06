@@ -333,6 +333,7 @@
  //#include "zorbatypes/floatimpl.h"
  #include "zorbatypes/ft_token.h"
  //#include "zorbatypes/integer.h"
+ #include "zorbatypes/libicu.h"
  #include "zorbatypes/m_apm.h"
  //#include "zorbatypes/rchandle.h"
  #include "zorbatypes/rclock.h"

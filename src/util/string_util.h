@@ -138,17 +138,6 @@ inline std::ostream& operator<<( std::ostream &o, string_builder const &sb ) {
  */
 #define BUILD_STRING(...) (::zorba::ztd::string_builder() << __VA_ARGS__)
 
-////////// String hash /////////////////////////////////////////////////////////
-
-/**
- * Performs a hash of the given data.
- *
- * @param data A pointer to the start of the data.
- * @param len The length of the data in bytes.
- * @return Returns said hash.
- */
-uint32_t hash( char const *data, size_t len );
-
 ////////// String equality /////////////////////////////////////////////////////
 
 /**
