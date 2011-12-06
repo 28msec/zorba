@@ -294,4 +294,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
-EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-false-2  897800)
+EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
