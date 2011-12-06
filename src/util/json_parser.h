@@ -484,6 +484,8 @@ private:
     V0      // Value
   };
 
+  friend std::ostream& operator<<( std::ostream&, state );
+
   bool get_token( token *result );
   bool matches_token( token::type, token *result );
   token::type peek_token();
