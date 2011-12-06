@@ -20,6 +20,12 @@
 #include "string_util.h"
 #include "utf8_util.h"
 
+#define DEBUG_JSON_PARSER 0
+
+#if DEBUG_JSON_PARSER
+# include "indent.h"
+#endif /* DEBUG_JSON_PARSER */
+
 #include "json_parser.h"
 
 using namespace std;
@@ -383,11 +389,64 @@ void lexer::set_loc( char const *file, line_type line, column_type col ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define GOTO_STATE(S) { state_ = (S); continue; }
-#define PUSH_STATE(S) state_stack_.push(S)
-#define POP_STATE()   state_ = ztd::pop_stack( state_stack_ )
+#if DEBUG_JSON_PARSER
+
+ostream& operator<<( ostream &o, parser::state s ) {
+  static char const *const string_of[] = {
+    "A0", "A1",
+    "E0", "E1",
+    "J0", "J1",
+    "M0", "M1",
+    "O0", "O1",
+    "P0", "P1",
+    "V0"
+  };
+  return o << string_of[ s ];
+}
+
+inline void print_line( int line ) {
+  cerr << "throw from line " << line << endl;
+}
+
+# define GOTO_STATE(S)  \
+    if (0) ; else {     \
+      state_ = (S);     \
+      cout << __LINE__ << ':' << indent << "GOTO_STATE( " << state_ << " )" << endl; continue;          \
+    }
+
+# define PUSH_STATE(S)      \
+    if (0) ; else {         \
+      state_stack_.push(S); \
+      cout << __LINE__ << ':' << indent << "PUSH_STATE( " << (S) << " )" << endl << inc_indent;             \
+    }
+
+# define POP_STATE()                            \
+    if (0) ; else {                             \
+      state_ = ztd::pop_stack( state_stack_ );  \
+      cout << __LINE__ << ':' << indent << "POP_STATE() => " << state_ << endl << dec_indent;                                   \
+    }
+
+#else
+
+inline void print_line( int ) {
+  // do nothing
+}
+
+# define GOTO_STATE(S)  { state_ = (S); continue; }
+# define PUSH_STATE(S)  state_stack_.push(S)
+# define POP_STATE()    state_ = ztd::pop_stack( state_stack_ )
+
+#endif /* DEBUG_JSON_PARSER */
+
+#define THROW_UNEXPECTED_TOKEN(T) \
+  do { print_line( __LINE__ ); throw unexpected_token( T ); } while (0)
+
+///////////////////////////////////////////////////////////////////////////////
 
 parser::parser( istream &in ) : lexer_( in ) {
+#if DEBUG_JSON_PARSER
+  get_indent( cout ) = 0;
+#endif /* DEBUG_JSON_PARSER */
   PUSH_STATE( J0 );
 }
 
@@ -412,7 +471,7 @@ token::type parser::peek_token() {
 
 void parser::require_token( token::type tt, token *result ) {
   if ( get_token( result ) && result->get_type() != tt )
-    throw unexpected_token( *result );
+    THROW_UNEXPECTED_TOKEN( *result );
 }
 
 bool parser::next( token *result ) {
@@ -427,7 +486,7 @@ bool parser::next( token *result ) {
                 switch ( peek_token() ) {
                   case token::begin_array : GOTO_STATE( A0 );
                   case token::begin_object: GOTO_STATE( O0 );
-                  default: throw unexpected_token( peeked_token_ );
+                  default: THROW_UNEXPECTED_TOKEN( peeked_token_ );
                 }
       case J1:  return false;
 
@@ -435,10 +494,8 @@ bool parser::next( token *result ) {
       case A0:  require_token( token::begin_array, result );
                 PUSH_STATE( A1 );
                 return true;
-      case A1:  if ( matches_token( token::end_array, result ) ) {
-                  POP_STATE();
+      case A1:  if ( matches_token( token::end_array, result ) )
                   return true;
-                }
                 PUSH_STATE( A1 );
                 GOTO_STATE( E0 );
 
@@ -456,10 +513,8 @@ bool parser::next( token *result ) {
       case O0:  require_token( token::begin_object, result );
                 PUSH_STATE( O1 );
                 return true;
-      case O1:  if ( matches_token( token::end_object, result ) ) {
-                  POP_STATE();
+      case O1:  if ( matches_token( token::end_object, result ) )
                   return true;
-                }
                 PUSH_STATE( O1 );
                 GOTO_STATE( M0 );
 
@@ -496,7 +551,7 @@ bool parser::next( token *result ) {
                     get_token( result );
                     return true;
                   default:
-                    throw unexpected_token( peeked_token_ );
+                    THROW_UNEXPECTED_TOKEN( peeked_token_ );
                 }
     } // switch ( state_ )
   } // while
