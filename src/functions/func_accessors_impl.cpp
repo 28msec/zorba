@@ -20,6 +20,7 @@
 #include "runtime/accessors/accessors.h"
 
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "functions/func_accessors_impl.h"
 #include "functions/func_accessors.h"
@@ -31,11 +32,11 @@
 #include "zorbamisc/ns_consts.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
 {
@@ -49,16 +50,21 @@ BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, ulong input) const
 }
 
 
-xqtref_t fn_data::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_data::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
+
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_subtype(tm, *arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR, QueryLoc::null))
-    return arg_types[0];  // includes () case
+  xqtref_t arg_type = caller->get_arg(0)->get_return_type();
 
-  const XQType& argType = *arg_types[0];
+  if (TypeOps::is_subtype(tm,
+        *arg_type,
+        *RTM.ANY_ATOMIC_TYPE_STAR,
+        QueryLoc::null))
+    return arg_type; // includes () case
+
+  const XQType& argType = *arg_type;
   TypeConstants::quantifier_t q = TypeOps::quantifier(argType);
 
   if (argType.type_kind() == XQType::NODE_TYPE_KIND)
@@ -78,7 +84,7 @@ xqtref_t fn_data::getReturnType(
     {
       return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
     }
-    
+
     xqtref_t cType = nType.get_content_type();
     if (cType != NULL)
     {
@@ -104,7 +110,7 @@ xqtref_t fn_data::getReturnType(
 }
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 BoolAnnotationValue fn_data_3_0::ignoresSortedNodes(expr* fo, ulong input) const
 {
@@ -118,17 +124,17 @@ BoolAnnotationValue fn_data_3_0::ignoresDuplicateNodes(expr* fo, ulong input) co
 }
 
 
-xqtref_t fn_data_3_0::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_data_3_0::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
+
   return tm->create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC,
                                         TypeConstants::QUANT_STAR);
 }
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 PlanIter_t fn_name_func::codegen(
     CompilerCB* /*cb*/,
@@ -145,7 +151,7 @@ PlanIter_t fn_name_func::codegen(
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 PlanIter_t fn_string::codegen(
       CompilerCB* /*cb*/,
@@ -159,7 +165,7 @@ PlanIter_t fn_string::codegen(
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 void populate_context_accessors_impl(static_context* sctx)
 {

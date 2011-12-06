@@ -66,12 +66,12 @@ public:
 
 	virtual ~function() {}
 
-  StaticContextConsts::xquery_version_t getXQueryVersion() const 
+  StaticContextConsts::xquery_version_t getXQueryVersion() const
   {
-    return theXQueryVersion; 
+    return theXQueryVersion;
   }
 
-  void setXQueryVersion(StaticContextConsts::xquery_version_t version) 
+  void setXQueryVersion(StaticContextConsts::xquery_version_t version)
   {
     theXQueryVersion = version;
   }
@@ -161,8 +161,7 @@ public:
   virtual short getScriptingKind() const { return SIMPLE_EXPR; }
 
   virtual xqtref_t getReturnType(
-      const TypeManager* tm,
-      const std::vector<xqtref_t>& argTypes) const;
+      const fo_expr* caller) const;
 
   virtual bool accessesDynCtx() const { return false; }
 

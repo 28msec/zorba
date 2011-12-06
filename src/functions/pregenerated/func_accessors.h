@@ -98,9 +98,7 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool isMap(ulong producer) const { return producer == 0; }
 
@@ -120,9 +118,7 @@ public:
 
 }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool isMap(ulong producer) const { return producer == 0; }
 
