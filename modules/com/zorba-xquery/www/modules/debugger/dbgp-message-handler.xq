@@ -36,10 +36,19 @@ declare %private function dmh:status($resp as element(response))
     return "idle"
   case "break"
     return
-      if ($resp/@status eq "break" and $resp/@reason ne "ok") then
-        fn:concat($resp/@status, " (", $resp/@reason, ")")
-      else
-        $resp/@status
+      let $status := $resp/@status
+      let $whyInfo :=
+        if ($resp/@reason ne "ok") then
+          fn:concat(" (", $resp/@reason, ")")
+        else
+          ""
+      let $whereInfo :=
+        if ($resp/text()[1] ne "") then
+          fn:concat(" in ", $resp/text()[1])
+        else
+          ""
+      return
+        fn:concat($status, $whyInfo, $whereInfo)
   default
     return $resp/@status
 };

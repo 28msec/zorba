@@ -58,6 +58,7 @@ namespace zorba { namespace debugger {
   class UntypedCommand {
   public:
     virtual std::string getName() const = 0;
+    virtual std::set<std::string> getAliases() const = 0;
     virtual std::string getDescription() const = 0;
     virtual void printHelp() const = 0;
     virtual bool execute(const std::vector<std::string>& args) = 0;
@@ -67,8 +68,15 @@ namespace zorba { namespace debugger {
   class Command : public UntypedCommand {
   public:
     Command(const std::string& aName, Func& aFunction, const std::string& aDescription)
-      : theName(aName), theFunction(aFunction), theDescription(aDescription) {}
+      : theName(aName), theFunction(aFunction), theDescription(aDescription)
+    {}
+
+    Command(const std::string& aName, const std::set<std::string> aAliases, Func& aFunction, const std::string& aDescription)
+      : theName(aName), theAliases(aAliases), theFunction(aFunction), theDescription(aDescription)
+    {}
+
     ~Command();
+
   public:
 
     void
@@ -88,6 +96,11 @@ namespace zorba { namespace debugger {
     getName() const
     {
       return theName;
+    }
+
+    virtual std::set<std::string> getAliases() const
+    {
+      return theAliases;
     }
 
     virtual std::string
@@ -110,6 +123,7 @@ namespace zorba { namespace debugger {
     }
   private:
     std::string theName;
+    std::set<std::string> theAliases;
     Func& theFunction;
     Tuple theTuple;
     std::string theDescription;
@@ -155,11 +169,17 @@ Command<Func, Tuple, CommandIdx>::splitNames(const std::string& aNames, std::set
   std::string::size_type before = 0;
   std::string::size_type pos = aNames.find(" ", 0);
   while (pos != aNames.npos) {
-    aSet.insert(aNames.substr(before, pos));
+    std::string lName = aNames.substr(before, pos);
+    if (lName != "") {
+      aSet.insert(lName);
+    }
     before = pos + 1;
     pos = aNames.find(" ", before);
   }
-  aSet.insert(aNames.substr(before));
+  std::string lName = aNames.substr(before);
+  if (lName != "") {
+    aSet.insert(lName);
+  }
 }
 
 template<typename Func, typename Tuple, int CommandIdx>
@@ -203,6 +223,16 @@ Command<Func, Tuple, CommandIdx>::addArgument(
                                                   const std::string& aDescription)
   {
     return new Command<Func, Tuple, CommandIdx>(aName, aFunction, aDescription);
+  }
+  
+  template<int CommandIdx, typename Tuple, typename Func>
+  Command<Func, Tuple, CommandIdx>* createCommand(Tuple t,
+                                                  const std::string& aName,
+                                                  const std::set<std::string>& aAliases,
+                                                  Func& aFunction,
+                                                  const std::string& aDescription)
+  {
+    return new Command<Func, Tuple, CommandIdx>(aName, aAliases, aFunction, aDescription);
   }
   
   template<typename Func, typename Tuple, int CommandIdx>

@@ -269,9 +269,21 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
   std::stringstream lResponse;
   lResponse << "<response "
     << "command=\"" << theLastContinuationCommand.second << "\" "
-    << "transaction_id=\"" << theLastContinuationCommand.first << "\" ";
-  lResponse << "reason=\"ok\" status=\"break\" ";
-  lResponse << "/>";
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\" "
+    << "reason=\"ok\" status=\"break\" "
+    << ">";
+
+  // if available, show the location where the execution is suspended
+  // this should be the top-most stack frame
+  std::vector<StackFrameImpl> lFrames = getStackFrames();
+  if (lFrames.size() > 0) {
+    StackFrameImpl lFrame = lFrames[lFrames.size() - 1];
+    lResponse  << lFrame.getSignature()
+      << " at " << lFrame.getLocation().getFileName()
+      << ":" << lFrame.getLocation().getLineBegin();
+  }
+
+  lResponse << "</response>";
   theCommunicator->send(lResponse.str());
 
   theLock.unlock();

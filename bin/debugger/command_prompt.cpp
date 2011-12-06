@@ -43,7 +43,14 @@ CommandPrompt::printHelp(UntypedCommand* aCommand)
     // print the names of all commands
     std::map<std::string, UntypedCommand*>::iterator lIter = theCommands.begin();
     while (lIter != theCommands.end()) {
-      std::cout << "  " << (*lIter).first << std::endl;
+      std::cout << "  " << (*lIter).first;
+      std::set<std::string> lAliases = (*lIter).second->getAliases();
+      std::set<std::string>::const_iterator lAliasIter = lAliases.begin();
+      while (lAliasIter != lAliases.end()) {
+        std::cout << ", " << *lAliasIter;
+        lAliasIter++;
+      }
+      std::cout << std::endl;
       lIter++;
     }
 
@@ -81,8 +88,7 @@ CommandPrompt::execute()
 
     UntypedCommand* lCommand = NULL;
 
-    // help is not a command but a hook here, so please do not add commands that have
-    // "h" or "help" as prefix, or you will get the help instead of that command
+    // help is not a command but a hook here
     if (lArgs.at(0) == "h" || lArgs.at(0) == "help") {
       std::string lCmd = "";
 
@@ -123,9 +129,34 @@ CommandPrompt::findCommand(const std::string& aPrefix, UntypedCommand*& aCommand
       aCommand = (*lIter).second;
       return true;
     }
+
+    bool lIsCandidate = false;
+
+    // add this command to candidate commands if the prefix matches
     if ((*lIter).first.find(aPrefix) == 0) {
       lFoundCommands.push_back((*lIter).second);
+      lIsCandidate = true;
     }
+
+    // now process the aliases
+    std::set<std::string> lAliases = (*lIter).second->getAliases();
+    std::set<std::string>::const_iterator lAliasIter = lAliases.begin();
+    while (lAliasIter != lAliases.end()) {
+      // if a command alias is equal with the prefix, this is the command we want
+      if (*lAliasIter == aPrefix) {
+        aCommand = (*lIter).second;
+        return true;
+      }
+
+      // add this command to candidate commands if the prefix matches one alias
+      // and if the command is not already added 
+      if (!lIsCandidate && (*lAliasIter).find(aPrefix) == 0) {
+        lFoundCommands.push_back((*lIter).second);
+        break;
+      }
+      lAliasIter++;
+    }
+
     lIter++;
   }
 
@@ -138,7 +169,22 @@ CommandPrompt::findCommand(const std::string& aPrefix, UntypedCommand*& aCommand
     std::cout << "Ambigous command: " << aPrefix << std::endl;
     // show all possible commands that start with this prefix
     for (std::string::size_type i = 0; i < lFoundCommands.size(); i++) {
-      std::cout << "  " << lFoundCommands.at(i)->getName() << std::endl;
+      UntypedCommand* lCommand = lFoundCommands.at(i);
+
+      // commands
+      if (lCommand->getName().find(aPrefix) == 0) {
+        std::cout << "  " << lCommand->getName() << std::endl;
+      }
+
+      // and aliases
+      std::set<std::string> lAliases = lCommand->getAliases();
+      std::set<std::string>::const_iterator lAliasIter = lAliases.begin();
+      while (lAliasIter != lAliases.end()) {
+        if ((*lAliasIter).find(aPrefix) == 0) {
+          std::cout << "  " << *lAliasIter << std::endl;
+        }
+        lAliasIter++;
+      }
     }
     return false;
   }

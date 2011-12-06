@@ -1,4 +1,4 @@
-/*
+  /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -117,7 +117,7 @@ CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
   theClient->quit();
   theQuit = true;
 }
-  
+
 template<>
 void
 CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
@@ -256,7 +256,11 @@ CommandLineHandler::addCommands()
   theCommandLine << createCommand<Status>(TUPLE(), "status", *this, "Gets the status of the server");
 
   // ALIAS: variables (context_get -c -1)
-  theCommandLine << createCommand<Variables>(TUPLE(), "variables", *this, "Gets the variables visible in the current scope");
+  {
+    std::set<std::string> lAliases;
+    lAliases.insert("vars");
+    theCommandLine << createCommand<Variables>(TUPLE(), "variables", lAliases, *this, "Gets the variables visible in the current scope");
+  }
 
   // META: quit
   theCommandLine << createCommand<Quit>(TUPLE(), "quit", *this, "Stops debugging and quits the client");
@@ -266,8 +270,10 @@ CommandLineHandler::addCommands()
 
   // DBGP: breakpoint_set
   {
+    std::set<std::string> lAliases;
+    lAliases.insert("break");
     Command<CommandLineHandler, TUPLE_STR_STR_INT, BreakpointSet>* lCommand =
-      createCommand<BreakpointSet>(TUPLE_STR_STR_INT(), "bset", *this, "Set a breakpoint");
+      createCommand<BreakpointSet>(TUPLE_STR_STR_INT(), "bset", lAliases, *this, "Set a breakpoint");
 
     lCommand->addArgument(0, "s", createArgType<TUPLE_STR_STR_INT, std::string, 0>(TUPLE_STR_STR_INT()), "breakpoint state (optional, 'enabled' or 'disabled', default: enabled)", false);
     lCommand->addArgument(1, "f", createArgType<TUPLE_STR_STR_INT, std::string, 1>(TUPLE_STR_STR_INT()), "name of the file where to stop", true);
@@ -288,8 +294,11 @@ CommandLineHandler::addCommands()
 
   // DBGP: breakpoint_remove
   {
+    std::set<std::string> lAliases;
+    lAliases.insert("clear");
+    lAliases.insert("delete");
     Command<CommandLineHandler, TUPLE_INT, BreakpointRemove>* lCommand = 
-      createCommand<BreakpointRemove>(TUPLE_INT(), "bremove", *this, "Delete a breakpoint");
+      createCommand<BreakpointRemove>(TUPLE_INT(), "bremove", lAliases, *this, "Delete a breakpoint");
 
     lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "breakpoint ID", true);
       
@@ -329,8 +338,10 @@ CommandLineHandler::addCommands()
 
   // DBGP: source
   {
+    std::set<std::string> lAliases;
+    lAliases.insert("list");
     Command<CommandLineHandler, TUPLE_INT_INT_STR, Source>* lCommand =
-      createCommand<Source>(TUPLE_INT_INT_STR(), "source", *this, "List source code");
+      createCommand<Source>(TUPLE_INT_INT_STR(), "source", lAliases, *this, "List source code");
 
     lCommand->addArgument(0, "b", createArgType<TUPLE_INT_INT_STR, int, 0>(TUPLE_INT_INT_STR()), "begin line (optional, default: first line)", false);
     lCommand->addArgument(1, "e", createArgType<TUPLE_INT_INT_STR, int, 1>(TUPLE_INT_INT_STR()), "end line (optional, default: last line)", false);
@@ -341,8 +352,10 @@ CommandLineHandler::addCommands()
 
   // DBGP: eval
   {
+    std::set<std::string> lAliases;
+    lAliases.insert("print");
     Command<CommandLineHandler, TUPLE_STR, Eval>* lCommand =
-      createCommand<Eval>(TUPLE_STR(), "eval", *this, "Evaluate an expression");
+      createCommand<Eval>(TUPLE_STR(), "eval", lAliases, *this, "Evaluate an expression");
 
     // TODO: this argument should not be here at all. Eval has the form: eval -i transaction_id -- {DATA}
     // Eval should be called with a command like: eval 1 + 3
@@ -354,13 +367,27 @@ CommandLineHandler::addCommands()
   }
 
   // DBGP: step_in
-  theCommandLine << createCommand<StepIn>(TUPLE(), "in", *this, "Step in");
+  {
+    std::set<std::string> lAliases;
+    lAliases.insert("step");
+    lAliases.insert("s");
+    theCommandLine << createCommand<StepIn>(TUPLE(), "in", lAliases, *this, "Step in");
+  }
 
   // DBGP: step_out
-  theCommandLine << createCommand<StepOut>(TUPLE(), "out", *this, "Step out");
+  {
+    std::set<std::string> lAliases;
+    lAliases.insert("finish");
+    theCommandLine << createCommand<StepOut>(TUPLE(), "out", lAliases, *this, "Step out");
+  }
 
   // DBGP: step_over
-  theCommandLine << createCommand<StepOver>(TUPLE(), "over", *this, "Step over");
+  {
+    std::set<std::string> lAliases;
+    lAliases.insert("next");
+    lAliases.insert("n");
+    theCommandLine << createCommand<StepOver>(TUPLE(), "over", lAliases, *this, "Step over");
+  }
 }
   
 } // namespace zorba
