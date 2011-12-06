@@ -36,7 +36,6 @@
 #ifdef ZORBA_NO_ICU
 # include "diagnostics/assert.h"
 #else
-#include "zorbatypes/libicu.h"
 # include <unicode/coll.h>
 # include <unicode/sortkey.h>
 #endif /* ZORBA_NO_ICU */
