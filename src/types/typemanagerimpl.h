@@ -97,6 +97,10 @@ public:
 
   xqtref_t create_any_simple_type() const;
 
+  xqtref_t create_any_item_type(TypeConstants::quantifier_t quant) const;
+
+  xqtref_t create_any_function_type(TypeConstants::quantifier_t quant) const;
+
   xqtref_t create_builtin_atomic_type(
         TypeConstants::atomic_type_code_t type_code,
         TypeConstants::quantifier_t quant) const;
@@ -104,18 +108,14 @@ public:
   xqtref_t create_named_atomic_type(
         store::Item* qname,
         TypeConstants::quantifier_t quant,
-        const QueryLoc& loc = QueryLoc::null,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const;
 
   xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE,
-        const QueryLoc& loc = QueryLoc::null,
+        TypeConstants::quantifier_t quant,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const;
-
-  xqtref_t create_any_item_type(TypeConstants::quantifier_t quant) const;
-
-  xqtref_t create_any_function_type(TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
@@ -125,24 +125,22 @@ public:
         bool nillable,
         bool schematest) const;
 
+#ifdef ZORBA_WITH_JSON
+  xqtref_t create_json_type(
+        store::StoreConsts::JSONItemKind kind,
+        TypeConstants::quantifier_t quantifier) const;
+#endif
+
   xqtref_t create_function_type(
         const std::vector<xqtref_t>& aArgs,
         const xqtref_t& aReturn,
         TypeConstants::quantifier_t aQuant) const;
 
-  xqtref_t create_type(
-        const XQType& type,
-        TypeConstants::quantifier_t quant) const;
-
-  xqtref_t create_type_x_quant(
-        const XQType& type,
-        TypeConstants::quantifier_t quant) const;
-
-  xqtref_t create_type(const TypeIdentifier& ident) const;
-
   xqtref_t create_value_type(
         const store::Item* item,
         const QueryLoc& loc = QueryLoc::null) const;
+
+  xqtref_t create_type(const TypeIdentifier& ident) const;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -166,6 +164,14 @@ public:
         store::Item_t& typeName,
         const QueryLoc& loc);
 #endif
+
+  xqtref_t create_type(
+        const XQType& type,
+        TypeConstants::quantifier_t quant) const;
+
+  xqtref_t create_type_x_quant(
+        const XQType& type,
+        TypeConstants::quantifier_t quant) const;
 
 private:
   xqtref_t create_builtin_node_type(

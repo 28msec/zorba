@@ -47,7 +47,7 @@ namespace zorba
 
   SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
 
-  ItemType ::= KindTest | ("item" "(" ")") | AtomicType
+  ItemType ::= KindTest | ("item" "(" ")") | AtomicType | JSONTest
 
   OccurrenceIndicator ::= "?" | "*" | "+"
 
@@ -94,6 +94,25 @@ namespace zorba
   TextTest ::= "text" "(" ")"
 
   AnyKindTest ::= "node" "(" ")"
+
+  JSONTest ::= JSONItemTest |
+               JSONObjectTest |
+               JSONArrayTest |
+               JSONPairTest |
+               JSONOjectPairTest |
+               JSONArrayPairTest
+
+  JSONItemTest ::= "json-item" "(" ")"
+
+  JSONObjectTest ::= "object" "(" ")"
+
+  JSONArrayTest ::= "array" "(" ")"
+
+  JSONPairTest ::= "pair" "(" ")"
+
+  JSONOjectPairTest ::= "object-pair" "(" ")"
+
+  JSONArrayPairTest ::= "array-pair" "(" ")"
 
 
   ******************
@@ -233,6 +252,9 @@ public:
   //
   // type_kind_t contains one enum code for each concrete subclass of XQType
   //
+  // ATTENTION !!!! The order of the enum values is important because they are
+  // used as indexes into the KIND_STRINGS array !!!!
+  //
   typedef enum
   {
     EMPTY_KIND,              // empty-sequence() (quanttifier = ?)
@@ -242,6 +264,8 @@ public:
     ITEM_KIND,               // item() + quantifier
 
     NODE_TYPE_KIND,          // KindTest + quantifier
+
+    JSON_TEST_KIND,          // JSONTest + quantifier
 
     FUNCTION_TYPE_KIND,      // function(...) as ... + quantifier
 
@@ -256,7 +280,7 @@ public:
     NONE_KIND,               // special kind of "type" defined by the formal
                              // semantics. it represents the absence of type.
                              // for example, the static type of the fn:error
-                             // function is "none". (quanttifier = 1)
+                             // function is "none". (quantifier = 1)
 
     USER_DEFINED_KIND,       // Named, user-defined XMLSchema type (may be atomic,
                              // list, union, or complex) + quantifier
@@ -422,6 +446,30 @@ public:
 };
 
 
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
+
+
 /******************************************************************************
   xs:anyType
 *******************************************************************************/
@@ -485,15 +533,11 @@ private:
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-    SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
    AtomicXQType(
-        const TypeManager *manager,
+        const TypeManager* manager,
         TypeConstants::atomic_type_code_t type_code,
         TypeConstants::quantifier_t quantifier,
         bool builtin = false)
@@ -572,32 +616,37 @@ public:
       const store::Item* subitem,
       const QueryLoc& loc) const;
 
-  virtual std::ostream& serialize_ostream(std::ostream& os) const;
+  std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
+#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
-  xs:untyped
+  Class JSONXQType represents all the sequence types whose ItemType is a
+  JSONTest.
 ********************************************************************************/
-class UntypedXQType : public XQType
+class JSONXQType : public XQType
 {
+private:
+  store::StoreConsts::JSONItemKind  theKind;
+
 public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
+  SERIALIZABLE_CLASS(JSONXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(JSONXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
 
-  store::Item_t get_qname() const;
+public:
+  JSONXQType(
+      const TypeManager* manager,
+      store::StoreConsts::JSONItemKind kind,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin = false);
 
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  store::StoreConsts::JSONItemKind get_kind() const { return theKind; }
+
+  std::ostream& serialize_ostream(std::ostream& os) const;
 };
+#endif
 
 
 /******************************************************************************

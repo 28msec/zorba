@@ -747,7 +747,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
-      TypeConstants::quantifier_t argQuant = TypeOps::quantifier(*argType);
+      TypeConstants::quantifier_t argQuant = argType->get_quantifier();
       int type_cnt = TypeOps::type_cnt(tm, *argType);
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)

@@ -88,7 +88,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lQuantifier = TypeOps::quantifier(*theSequenceType);
+  lQuantifier = theSequenceType->get_quantifier();
 
   if (consumeNext(lTreatItem, theChild.getp(), planState))
   {
@@ -157,7 +157,7 @@ CastIterator::CastIterator(
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -237,7 +237,7 @@ CastableIterator::CastableIterator(
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -314,7 +314,7 @@ PromoteIterator::PromoteIterator(
   theFnQName(fnQName)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *aPromoteType);
-  theQuantifier = TypeOps::quantifier(*aPromoteType); 
+  theQuantifier = aPromoteType->get_quantifier(); 
 }
 
 
@@ -338,7 +338,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring const type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
+      zstring type = thePromoteType->toSchemaString() + 
+                     (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
 
       if (theFnQName.getp())
       {
@@ -471,7 +472,7 @@ TreatIterator::TreatIterator(
   theFnQName(fnQName)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
-  theQuantifier = TypeOps::quantifier(*aTreatType);
+  theQuantifier = aTreatType->get_quantifier();
 }
 
 

@@ -150,7 +150,7 @@ xqtref_t ValueOpComparison::getReturnType(
     if (TypeOps::is_equal(tm, *empty, *arg_types[i], QueryLoc::null))
       return empty;
 
-    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+    TypeConstants::quantifier_t aq = arg_types[i]->get_quantifier();
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
       quant = TypeConstants::QUANT_QUESTION;

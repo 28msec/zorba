@@ -390,8 +390,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(input_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc())) 
     {
@@ -413,8 +413,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(in_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype, get_loc()))
     {

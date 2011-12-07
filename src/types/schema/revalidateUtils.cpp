@@ -200,7 +200,7 @@ void SchemaValidatorImpl::processElement(
   if ( !typeQName->equals(element->getType()) )
   {
     isNewType = true;
-    newType = typeManager->create_named_type(typeQName);
+    newType = typeManager->create_named_type(typeQName, TypeConstants::QUANT_ONE, loc);
 
     elm = element;
   }
@@ -496,7 +496,8 @@ void SchemaValidatorImpl::processTextValue (
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
-                                                        TypeConstants::QUANT_ONE);
+                                                        TypeConstants::QUANT_ONE,
+                                                        loc);
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"

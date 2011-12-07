@@ -202,6 +202,14 @@ bool Item::isNode() const
 }
 
 
+#ifdef ZORBA_WITH_JSON
+bool Item::isJSONItem() const
+{
+  return theIsJSONItem;
+}
+#endif
+
+
 bool Item::isAtomic() const
 {
   return ((theUnion.itemKind & ATOMIC) == ATOMIC); 
@@ -1267,8 +1275,9 @@ Item* Item::copy(
 }
 
 
-#if 0
-const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
+#ifdef ZORBA_WITH_JSON
+
+store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1277,7 +1286,8 @@ const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
 }
 
 
-int Item::getTupleFieldCount() const
+Iterator_t
+Item::pairs() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1285,15 +1295,43 @@ int Item::getTupleFieldCount() const
   );
 }
 
-
-const TupleField& Item::getTupleField(int index) const
+store::Item*
+Item::lookup(const store::Item_t& name) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
-#endif
+
+store::Item*
+Item::getName() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getPosition() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getValue() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+#endif // ZORBA_WITH_JSON
 
 
 ZorbaException* Item::getError() const
@@ -1347,58 +1385,6 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
 }
 
 
-#ifdef ZORBA_WITH_JSON
-bool Item::isJSONItem() const
-{
-  return theIsJSONItem;
-}
-
-Iterator_t
-Item::pairs() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::lookup(const store::Item_t& name) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getName() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getPosition() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getValue() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-#endif
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

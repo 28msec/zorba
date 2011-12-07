@@ -25,6 +25,13 @@ class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 
+  enum NsScoping 
+  {
+    ALL_NAMESPACES,
+    ONLY_LOCAL_NAMESPACES,
+    ONLY_PARENT_NAMESPACES
+  };
+
   enum NodeKind
   {
     anyNode        = 0,
@@ -36,16 +43,10 @@ class ZORBA_DLL_PUBLIC StoreConsts
     commentNode    = 6
   };
 
-  enum NsScoping 
-  {
-    ALL_NAMESPACES,
-    ONLY_LOCAL_NAMESPACES,
-    ONLY_PARENT_NAMESPACES
-  };
-
   static std::string toString(NodeKind k)
   {
-    switch(k) {
+    switch(k) 
+    {
       case anyNode:
         return "anyNode";
 
@@ -71,6 +72,50 @@ class ZORBA_DLL_PUBLIC StoreConsts
         return "<unknown NodeKind>";
     }
   }
+
+
+#ifdef ZORBA_WITH_JSON
+
+  enum JSONItemKind
+  {
+    jsonItem,
+    jsonObject,
+    jsonArray,
+    jsonPair,
+    jsonObjectPair,
+    jsonArrayPair
+  };
+
+
+  static std::string toString(JSONItemKind k)
+  {
+    switch(k) 
+    {
+      case jsonItem:
+        return "json-item";
+
+      case jsonObject:
+        return "object";
+
+      case jsonArray:
+        return "array";
+
+      case jsonPair:
+        return "pair";
+
+      case jsonObjectPair:
+        return "object-pair";
+
+      case jsonArrayPair:
+        return "array-pair";
+
+      default:
+        return "<unknown JSONItemKind>";
+    }
+  }
+
+#endif // ZORBA_WITH_JSON
+ 
 };
 
 } // namespace store

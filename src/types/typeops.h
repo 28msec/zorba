@@ -77,16 +77,6 @@ public:
    */
   static int type_cnt(const TypeManager* tm, const XQType& type);
 
-  /**
-   * Returns the quantifier of the argument.
-   */
-  static TypeConstants::quantifier_t quantifier(const XQType& type);
-
-  /**
-   * @return QName of the type if the type is named.
-   */
-  static store::Item_t getQName(const XQType& type);
-
   /*
    * Returns the atomic_type_code_t for a given type, which is assumed to be
    * a quantified builtin atomic type.

@@ -76,6 +76,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
 SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 
+#ifdef ZORBA_WITH_JSON
+SERIALIZABLE_CLASS_VERSIONS(JSONXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(JSONXQType)
+#endif
+
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
 {
@@ -83,6 +88,7 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
   "ATOMIC_TYPE_KIND",
   "ITEM_KIND",
   "NODE_TYPE_KIND",
+  "JSON_ITEM_KIND",
   "FUNCTION_TYPE_KIND",
   "ANY_TYPE_KIND",
   "ANY_SIMPLE_TYPE_KIND",
@@ -231,21 +237,6 @@ std::string XQType::toSchemaString() const
   return result;
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
-{
-  return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
-            << TypeOps::decode_quantifier (get_quantifier());
-}
-
-
-store::Item_t AtomicXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
-}
-
 
 /*******************************************************************************
 
@@ -274,6 +265,49 @@ store::Item_t UntypedXQType::get_qname() const
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  AtomicXQType                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AtomicXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
+{
+  return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
+            << TypeOps::decode_quantifier (get_quantifier());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t AtomicXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  NodeXQType                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -297,6 +331,9 @@ NodeXQType::NodeXQType(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 NodeXQType::NodeXQType(
     const NodeXQType& source,
     TypeConstants::quantifier_t quantifier)
@@ -311,6 +348,9 @@ NodeXQType::NodeXQType(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void NodeXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
@@ -322,12 +362,18 @@ void NodeXQType::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool NodeXQType::is_untyped() const
 {
   return m_content_type == GENV_TYPESYSTEM.UNTYPED_TYPE;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 {
   if (m_node_kind != other.m_node_kind)
@@ -360,6 +406,9 @@ bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool NodeXQType::is_subtype(
     const TypeManager* tm, 
     const NodeXQType& supertype,
@@ -442,6 +491,9 @@ bool NodeXQType::is_subtype(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool NodeXQType::is_supertype(
     const TypeManager* tm, 
     const store::Item* subitem,
@@ -505,6 +557,9 @@ bool NodeXQType::is_supertype(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 {
   store::StoreConsts::NodeKind node_kind = m_node_kind;
@@ -529,6 +584,60 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 }
 
 
+#ifdef ZORBA_WITH_JSON
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  JSONXQType                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONXQType::JSONXQType(
+    const TypeManager* manager,
+    store::StoreConsts::JSONItemKind kind,
+    TypeConstants::quantifier_t quantifier,
+    bool builtin)
+  :
+  XQType(manager, JSON_TEST_KIND, quantifier, builtin),
+  theKind(kind)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, theKind);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
+{
+  os << "[JSONXQType " << store::StoreConsts::toString(theKind)
+     << TypeOps::decode_quantifier(get_quantifier());
+
+  return os << "]";
+}
+
+#endif // ZORBA_WITH_JSON
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  FunctionXQType                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
   Constructor for user-defined Atomic and Complex types
 ********************************************************************************/
@@ -546,6 +655,9 @@ FunctionXQType::FunctionXQType(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 FunctionXQType::is_equal(const TypeManager* tm, const FunctionXQType& other) const
 {
@@ -553,14 +665,14 @@ FunctionXQType::is_equal(const TypeManager* tm, const FunctionXQType& other) con
 }
 
 
-/**
- * Bi is function(Ba_1, Ba_2, ... Ba_N) as Br,
- * Ai is function(Aa_1, Aa_2, ... Aa_M) as Ar,
- * Ai is subtype of Bi iff
- * N (arity of Bi) equals M (arity of Ai),
- * subtype(Ar, Br), and
- * for values of I between 1 and N, subtype(Ba_I, Aa_I).
- */
+/*******************************************************************************
+  Bi is function(Ba_1, Ba_2, ... Ba_N) as Br,
+  Ai is function(Aa_1, Aa_2, ... Aa_M) as Ar,
+  Ai is subtype of Bi iff
+  N (arity of Bi) equals M (arity of Ai),
+  subtype(Ar, Br), and
+  for values of I between 1 and N, subtype(Ba_I, Aa_I).
+********************************************************************************/
 bool
 FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const
 {
@@ -589,6 +701,10 @@ FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertyp
   return true;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void FunctionXQType::serialize(::zorba::serialization::Archiver &ar)
 {
   serialize_baseclass(ar, (XQType*)this);
@@ -596,6 +712,10 @@ void FunctionXQType::serialize(::zorba::serialization::Archiver &ar)
   ar & m_return_type;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream&
 FunctionXQType::serialize_ostream(std::ostream& os) const
 {
@@ -620,6 +740,13 @@ FunctionXQType::serialize_ostream(std::ostream& os) const
 
   return os << "]";
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  UserDefinedXQType                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -688,6 +815,9 @@ UserDefinedXQType::UserDefinedXQType(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
@@ -700,6 +830,9 @@ void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 {
   xqtref_t builtinType = m_baseType;
@@ -716,7 +849,12 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 }
 
 
-bool UserDefinedXQType::isSuperTypeOf(const TypeManager* tm, const XQType& subType) const
+/*******************************************************************************
+
+********************************************************************************/
+bool UserDefinedXQType::isSuperTypeOf(
+    const TypeManager* tm,
+    const XQType& subType) const
 {
   if (subType.type_kind() != XQType::USER_DEFINED_KIND)
     return false;
@@ -743,7 +881,12 @@ bool UserDefinedXQType::isSuperTypeOf(const TypeManager* tm, const XQType& subTy
 }
 
 
-bool UserDefinedXQType::isSubTypeOf(const TypeManager* tm, const XQType& supertype) const
+/*******************************************************************************
+
+********************************************************************************/
+bool UserDefinedXQType::isSubTypeOf(
+    const TypeManager* tm,
+    const XQType& supertype) const
 {
   const XQType* subtype = this;
 
@@ -771,6 +914,9 @@ bool UserDefinedXQType::isSubTypeOf(const TypeManager* tm, const XQType& superty
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::string UserDefinedXQType::typeCategoryStr(type_category_t typeCategory)
 {
   switch(typeCategory)
@@ -788,6 +934,10 @@ std::string UserDefinedXQType::typeCategoryStr(type_category_t typeCategory)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
 {
   std::ostringstream info;
