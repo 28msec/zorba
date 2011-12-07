@@ -132,6 +132,15 @@ private:
 };
 
 /**
+ * Emits the given token type to an ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param tt The token type to emit.
+ * @return Returns \a o.
+ */
+std::ostream& operator<<( std::ostream &o, token::type tt );
+
+/**
  * Emits the given token to an ostream.
  *
  * @param o The ostream to emit to.
@@ -475,21 +484,25 @@ public:
 
 private:
   enum state {
-    A0, A1, // Array
-    E0, E1, // Element
-    J0, J1, // JSON
-    M0, M1, // Member
-    O0, O1, // Object
-    P0, P1, // Pair
-    V0      // Value
+    A0, A1, A2, // Array
+    E0, E1,     // Element
+    J0, J1,     // JSON
+    M0, M1,     // Member
+    O0, O1, O2, // Object
+    P0, P1,     // Pair
+    V0          // Value
   };
 
   friend std::ostream& operator<<( std::ostream&, state );
 
-  bool get_token( token *result );
-  bool matches_token( token::type, token *result );
+  bool get_token( token* );
+  bool get_token_debug( int, token* );
+  bool matches_token( token::type, token* );
+  bool matches_token_debug( int, token::type, token* );
   token::type peek_token();
-  void require_token( token::type, token *result );
+  token::type peek_token_debug( int );
+  void require_token( token::type, token* );
+  void require_token_debug( int, token::type, token* );
 
   lexer lexer_;
   token peeked_token_;
