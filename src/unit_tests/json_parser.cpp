@@ -522,7 +522,7 @@ static void test_parser_object() {
 static void test_unexpected_token() {
   token t;
   {
-    char const source[] = "{ 1 : 1 }";
+    char const source[] = "{ 1 }";
     istringstream iss( source );
     parser p( iss );
 
@@ -549,6 +549,25 @@ static void test_unexpected_token() {
 
     ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
     ASSERT_TRUE( t == token::value_separator );
+
+    ASSERT_EXCEPTION( p.next( &t ), unexpected_token );
+  }
+  {
+    char const source[] = "{ \"t\" : true \"f\" : false }";
+    istringstream iss( source );
+    parser p( iss );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::begin_object );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::string );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::name_separator );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::json_true );
 
     ASSERT_EXCEPTION( p.next( &t ), unexpected_token );
   }
