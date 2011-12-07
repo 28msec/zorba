@@ -20,6 +20,7 @@
   */
  
 #include "stdafx.h"
+#include "zorba/config.h"
 #include "diagnostics/dict_impl.h"
 
 namespace zorba {

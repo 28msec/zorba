@@ -73,7 +73,7 @@ protected:
 public:
   AtomicItem() : store::Item(ATOMIC) { }
 
-  ~AtomicItem() {}
+  virtual ~AtomicItem() {}
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -350,7 +350,7 @@ protected:
   uint16_t     thePrevFree;
 
 public:
-  ~QNameItem();
+  virtual ~QNameItem();
 
   QNameItem* getNormalized() const;
 
@@ -815,7 +815,7 @@ public:
 
   void setStreamReleaser(StreamReleaser aReleaser);
 
-  ~StreamableStringItem()
+  virtual ~StreamableStringItem()
   {
     if (theStreamReleaser) 
     {
@@ -2322,7 +2322,7 @@ protected:
   }
 
 public:
-  ~ErrorItem();
+  virtual ~ErrorItem();
 
   ZorbaException* getError() const { return theError; }
 

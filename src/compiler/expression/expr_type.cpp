@@ -650,19 +650,16 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
-  case exit_expr_kind:
+  case var_set_expr_kind:
   {
-    // TODO: should this be the empty-sequence type ???? Or should we check
-    // for an exit operand when computing the type of any other expr and
-    // just skip the exit ????
-#if 0
-    exit_expr* e = static_cast<exit_expr*>(this);
-    newType = e->theExpr->get_return_type();
-    break;
-#else
     theType = rtm.EMPTY_TYPE;
     return;
-#endif
+  }
+
+  case exit_expr_kind:
+  {
+    theType = rtm.EMPTY_TYPE;
+    return;
   }
 
   case exit_catcher_expr_kind:

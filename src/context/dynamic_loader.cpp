@@ -191,14 +191,6 @@ DynamicLoader::DynamicLoader()
 }
 
 
-DynamicLoader&
-DynamicLoader::getInstance()
-{
-  static DynamicLoader singleton;
-  return singleton;
-}
-
-
 DynamicLoader::~DynamicLoader()
 {
   for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
@@ -265,7 +257,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
 
       if (modfile->good())
       {
-        ExternalModule* lModule = getInstance().loadModule(potentialModuleFile);
+        ExternalModule* lModule = loadModule(potentialModuleFile);
         if (lModule)
         {
           if (lModule->getURI().c_str() != aNsURI)

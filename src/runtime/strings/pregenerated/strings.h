@@ -303,6 +303,42 @@ public:
 
 /**
  * 
+ *      fn:substring
+ *  
+ * Author: Zorba Team
+ */
+class SubstringIntOptIterator : public NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SubstringIntOptIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubstringIntOptIterator,
+    NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>*)this);
+  }
+
+  SubstringIntOptIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SubstringIntOptIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SubstringIntOptIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    fn:string-length
  *  
  * Author: Zorba Team

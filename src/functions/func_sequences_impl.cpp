@@ -286,55 +286,6 @@ PlanIter_t fn_subsequence::codegen(
 
 
 /******************************************************************************
-fn:count
-*******************************************************************************/
-PlanIter_t fn_count::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  const std::type_info& counted_type = typeid(*argv[0]);
-
-  if (typeid(ZorbaCollectionIterator) == counted_type)
-  {
-    ZorbaCollectionIterator& collection =
-    static_cast<ZorbaCollectionIterator&>(*argv[0]);
-
-    if (collection.isDynamic())
-    {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBADYNAMIC);
-    }
-    else
-    {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBASTATIC);
-    }
-  }
-  else if (typeid(FnCollectionIterator) == counted_type)
-  {
-    FnCollectionIterator& collection =
-    static_cast<FnCollectionIterator&>(*argv[0]);
-
-    return new CountCollectionIterator(sctx, 
-                                       loc,
-                                       collection.getChildren(),
-                                       CountCollectionIterator::W3C);
-  }
-  else
-  {
-    return new FnCountIterator(sctx, loc, argv);
-  }
-}
-
-
-/******************************************************************************
 
 *******************************************************************************/
 xqtref_t op_zorba_subsequence_int::getReturnType(
@@ -507,6 +458,55 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   }
 
   return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
+}
+
+
+/******************************************************************************
+fn:count
+*******************************************************************************/
+PlanIter_t fn_count::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  const std::type_info& counted_type = typeid(*argv[0]);
+
+  if (typeid(ZorbaCollectionIterator) == counted_type)
+  {
+    ZorbaCollectionIterator& collection =
+    static_cast<ZorbaCollectionIterator&>(*argv[0]);
+
+    if (collection.isDynamic())
+    {
+      return new CountCollectionIterator(sctx,
+                                         loc,
+                                         collection.getChildren(),
+                                         CountCollectionIterator::ZORBADYNAMIC);
+    }
+    else
+    {
+      return new CountCollectionIterator(sctx,
+                                         loc,
+                                         collection.getChildren(),
+                                         CountCollectionIterator::ZORBASTATIC);
+    }
+  }
+  else if (typeid(FnCollectionIterator) == counted_type)
+  {
+    FnCollectionIterator& collection =
+    static_cast<FnCollectionIterator&>(*argv[0]);
+
+    return new CountCollectionIterator(sctx, 
+                                       loc,
+                                       collection.getChildren(),
+                                       CountCollectionIterator::W3C);
+  }
+  else
+  {
+    return new FnCountIterator(sctx, loc, argv);
+  }
 }
 
 

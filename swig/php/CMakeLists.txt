@@ -78,6 +78,7 @@ ELSE (NOT PHP5_FOUND)
   ### Start PHP proxy generation
   # Configure the test file
   SET (phpAPIPath ${CMAKE_CURRENT_BINARY_DIR})
+  SET (phpLibPrefix ${ZORBA_SWIG_LIB_PREFIX})
   CONFIGURE_FILE (
     ${CMAKE_CURRENT_SOURCE_DIR}/generate_proxy.php.in
     ${CMAKE_CURRENT_BINARY_DIR}/generate_proxy.php

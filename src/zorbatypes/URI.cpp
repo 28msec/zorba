@@ -1191,8 +1191,6 @@ bool URI::is_absolute() const
   return is_set(Scheme) && !theScheme.empty();
 }
 
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1347,7 +1345,6 @@ void URI::resolve(const URI* base_uri)
       path = base_path.substr(0, last_slash+1);
 //  else
 //    path = "/";
-
   }
 
   // 6b - append the relative URI path
