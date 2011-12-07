@@ -35,7 +35,8 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-JSONLoader::JSONLoader()
+JSONLoader::JSONLoader(std::istream& s)
+  : in(s)
 {
 }
 
@@ -52,11 +53,17 @@ JSONLoader::~JSONLoader()
 
 *******************************************************************************/
 store::Item_t
-JSONLoader::load( std::istream & in )
+JSONLoader::next( )
 {
   using namespace zorba::json;
   using namespace zorba::simplestore;
   using namespace zorba::simplestore::json;
+
+  in.peek();
+  if (in.eof())
+  {
+    return NULL;
+  }
 
   BasicItemFactory& lFactory = GET_FACTORY();
 
@@ -75,8 +82,6 @@ JSONLoader::load( std::istream & in )
   {
     while (lParser.next(&lToken))
     {
-      std::cout << "type " << (char)lToken.get_type() << std::endl;
-
       switch (lToken.get_type())
       {
         case token::begin_array:

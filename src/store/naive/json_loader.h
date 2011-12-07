@@ -31,13 +31,16 @@ namespace json
 
 class JSONLoader
 {
+protected:
+  std::istream& in;
 public:
-  JSONLoader();
+
+  JSONLoader(std::istream& s);
 
   ~JSONLoader();
 
   store::Item_t
-  load( std::istream &in );
+  next( );
 
 private:
   template<typename T>
