@@ -281,7 +281,7 @@ public:
   getContainer() const { return theContainer; }
 
   virtual void
-  accept(JSONVisitor*) const;
+  accept(JSONVisitor*) const {}
 };
 
 

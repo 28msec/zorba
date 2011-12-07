@@ -69,10 +69,10 @@ JSONPrinterVisitor::begin( const JSONArray* a )
 void
 JSONPrinterVisitor::end( const JSONArray* a )
 {
-  eol();
   dec();
-  os << "]";
   eol();
+  indent();
+  os << "]";
 }
 
 
@@ -80,7 +80,7 @@ JSONPrinterVisitor::end( const JSONArray* a )
 
 *******************************************************************************/
 void
-JSONPrinterVisitor::begin( const JSONObjectPair* p )
+JSONPrinterVisitor::begin( const JSONObjectPair* p, bool /*aLast*/ )
 {
   indent();
   visit(p->getName());
@@ -92,8 +92,12 @@ JSONPrinterVisitor::begin( const JSONObjectPair* p )
 
 *******************************************************************************/
 void
-JSONPrinterVisitor::end( const JSONObjectPair* p )
+JSONPrinterVisitor::end( const JSONObjectPair* p, bool aLast )
 {
+  if (!aLast)
+  {
+    os << ", ";
+  }
   eol();
 }
 
@@ -102,7 +106,7 @@ JSONPrinterVisitor::end( const JSONObjectPair* p )
 
 *******************************************************************************/
 void
-JSONPrinterVisitor::begin( const JSONArrayPair* p )
+JSONPrinterVisitor::begin( const JSONArrayPair* p, bool /* aLast */ )
 {
   indent();
   visit(p->getValue());
@@ -113,10 +117,9 @@ JSONPrinterVisitor::begin( const JSONArrayPair* p )
 
 *******************************************************************************/
 void
-JSONPrinterVisitor::end( const JSONArrayPair* p )
+JSONPrinterVisitor::end( const JSONArrayPair* p, bool aLast )
 {
-  JSONArray* lArray = dynamic_cast<JSONArray*>(p->getContainer());
-  if (lArray->size() != p->getPosition()->getIntegerValue())
+  if (!aLast)
   {
     os << ", ";
     eol();

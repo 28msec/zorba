@@ -79,9 +79,11 @@ JSONObject::accept(JSONVisitor* v) const
 {
   v->begin(this);
 
-  for (PairsConstIter lIter = thePairs.begin(); lIter != thePairs.end(); ++lIter)
+  size_t i = 1;
+
+  for (PairsConstIter lIter = thePairs.begin(); lIter != thePairs.end(); ++i, ++lIter)
   {
-    v->begin(*lIter);
+    v->begin(*lIter, i == thePairs.size());
 
     JSONObject* lObject = dynamic_cast<JSONObject*>((*lIter)->getValue());
     JSONArray* lArray = dynamic_cast<JSONArray*>((*lIter)->getValue());
@@ -98,7 +100,7 @@ JSONObject::accept(JSONVisitor* v) const
       v->visit((*lIter)->getValue());
     }
 
-    v->end(*lIter);
+    v->end(*lIter, i == thePairs.size());
   }
 
   v->end(this);
@@ -140,21 +142,11 @@ JSONArray::push_back(const JSONArrayPair_t& aPair)
 
 *******************************************************************************/
 void
-JSONObjectPair::accept(JSONVisitor* v) const
-{
-  v->begin(this);
-  v->end(this);
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void
 JSONArrayPair::accept(JSONVisitor* v) const
 {
-  v->begin(this);
-  v->end(this);
+  xs_integer lSize = theContainer->size();
+  v->begin(this, lSize == getPosition()->getIntegerValue());
+  v->end(this, lSize == getPosition()->getIntegerValue());
 }
 
 } // namespace json

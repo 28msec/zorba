@@ -35,7 +35,6 @@ int runLoaderTest(int argc, char* argv[])
 
   std::stringstream json;
 
-#if 0
   json
     << "{" << std::endl
     << "  \"glossary\": {" << std::endl
@@ -59,14 +58,13 @@ int runLoaderTest(int argc, char* argv[])
     << "      }" << std::endl
     << "  }" << std::endl
     << "}";
-#endif
   //json << "{ \"foo\": true, \"bar\": false }";
   //json << "[ \"foo\", \"bar\" ]";
-  json << "{ \"foo\": { \"bar\" : false } }";
+  //json << "{ \"foo\": { \"bar\" : false } }";
 
   store::Item_t lJSON = lLoader.load(json);
 
-  JSONPrinterVisitor lVisitor(std::cout);
+  JSONPrinterVisitor lVisitor(std::cout, false);
   dynamic_cast<JSONItem*>(lJSON.getp())->accept(&lVisitor);
 
   return 0;

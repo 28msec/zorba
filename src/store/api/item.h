@@ -79,12 +79,12 @@ protected:
 
 protected:
 
-  Item() : theRefCount(0)
+  Item() : theRefCount(0), theIsJSONItem(false)
   {
     theUnion.treeRCPtr = 0;
   }
 
-  Item(ItemKind k) : theRefCount(0)
+  Item(ItemKind k) : theRefCount(0), theIsJSONItem(false)
   {
     theUnion.itemKind = k;
   }
