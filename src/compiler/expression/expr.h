@@ -1242,8 +1242,6 @@ public:
 
   void compute_scripting_kind();
 
-  zorba::expr_script_kind_t get_scripting_kind();
-
 private:
   void store_local_variables(checked_vector<var_expr_t>& aScopedVariables);
 };

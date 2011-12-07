@@ -2150,7 +2150,7 @@ void end_visit(debugger_expr& v)
                                   argvEvalIter,
                                   varnames,
                                   vartypes,
-                                  v.get_scripting_kind(),
+                                  SEQUENTIAL_FUNC_EXPR,
                                   localBindings));
 
   lDebugIterator->setChildren(&argv);
