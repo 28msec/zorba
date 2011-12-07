@@ -304,4 +304,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 XXXXXX) # not possibl
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016a XXXXXX) # not possible to set context item in XQuery
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016b XXXXXX) # not possible to set context item in XQuery
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 XXXXXX) # forward references not implemented
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-024 XXXXXX) # wrong error code from schema validation failure

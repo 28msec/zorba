@@ -1,4 +1,6 @@
-declare function local:aaa() { 1 };
-declare variable $x external := local:bbb() + local:aaa();
-declare function local:bbb() { 2 };
+declare variable $y external;
+declare variable $z external := 10;
+declare function local:aaa() { $z };
+declare variable $x external := local:bbb() + local:aaa() + 2;
+declare function local:bbb() { $y };
 $x 
