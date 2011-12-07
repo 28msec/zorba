@@ -934,6 +934,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RANGE_REDUCE
 %nonassoc TO
 
+%nonassoc JSON_REDUCE
+%left COLON
+
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
@@ -3490,16 +3493,32 @@ opt_FTIgnoreOption :
         }
     ;
 
-RangeExpr :
-        AdditiveExpr %prec RANGE_REDUCE
-        {
-            $$ = $1;
-        }
-    |   AdditiveExpr TO AdditiveExpr
-        {
-            $$ = new RangeExpr( LOC(@$), $1, $3 );
-        }
-    ;
+
+RangeExpr 
+  :
+    JSONPairConstructor %prec RANGE_REDUCE
+    {
+      $$ = $1;
+    }
+  | JSONPairConstructor TO JSONPairConstructor
+    {
+      $$ = new RangeExpr(LOC(@$), $1, $3);
+    }
+;
+
+
+JSONPairConstructor
+  :
+    AdditiveExpr %prec JSON_REDUCE
+    {
+      $$ = $1;
+    }
+  |   
+    AdditiveExpr COLON AdditiveExpr
+    {
+      $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
+    }
+;
 
 
 // [50]
@@ -4308,7 +4327,7 @@ UnorderedExpr :
 |       empty-sequence
 |       if
 |       item
-|   node
+|       node
 |       processing-instruction
 |       schema-attribute
 |       schema-element
@@ -6292,10 +6311,6 @@ JSONConstructor
         {
             $$ = $1;
         }
-    |   JSONPairConstructor
-        {
-            $$ = $1;
-        }
     ;
 
 JSONArrayConstructor
@@ -6312,12 +6327,6 @@ JSONObjectConstructor
         }
     ;
 
-JSONPairConstructor
-    :   ExprSingle COLON ExprSingle
-        {
-            $$ = new JSON_PairConstructor( LOC( @$ ), $1, $3 );
-        }
-    ;
 
 opt_Expr
     :   /* empty */
@@ -6646,14 +6655,7 @@ FUNCTION_NAME :
 
 // [196]
 EQNAME :
-        URI_LITERAL COLON NCNAME
-        {
-          // EQName's namespace URI value is whitespace normalized according to the rules for the xs:anyURI type
-          std::string uri = "\"" + SYMTAB($1) + "\"";
-          std::string eqname = SYMTAB(driver.symtab.put_uri(uri.c_str(), uri.size())) + ":" + SYMTAB($3);
-          $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT(eqname.c_str())), true);
-        }
-    |   EQNAME_SVAL { $$ = new QName(LOC(@$), SYMTAB($1), true); }
+    EQNAME_SVAL { $$ = new QName(LOC(@$), SYMTAB($1), true); }
     ;
 
 
