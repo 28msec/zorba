@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-#include "json_items.h"
 #include "json_visitor.h"
-#include "simple_item_factory.h"
-#include "simple_store.h"
+#include "json_items.h"
 
 namespace zorba
 {
@@ -28,12 +26,28 @@ namespace simplestore
 namespace json
 {
 
+
 /******************************************************************************
 
 *******************************************************************************/
-JSONTree::JSONTree()
-  : theRoot(0)
+void
+JSONPrinterVisitor::begin( const JSONObject* o )
 {
+  os << "{";
+  eol();
+  inc();
+}
+
+/******************************************************************************
+
+*******************************************************************************/
+
+void
+JSONPrinterVisitor::end( const JSONObject* o )
+{
+  dec();
+  indent();
+  os << "}";
 }
 
 
@@ -41,23 +55,11 @@ JSONTree::JSONTree()
 
 *******************************************************************************/
 void
-JSONTree::free()
+JSONPrinterVisitor::begin( const JSONArray* a )
 {
-  delete theRoot;
-
-  delete this;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-bool
-JSONObject::JSONObjectPairComparator::operator()(
-    const JSONObjectPair_t& lhs,
-    const JSONObjectPair_t& rhs) const
-{
-  return lhs->getName()->getStringValue().compare(rhs->getName()->getStringValue());
+  os << "[";
+  eol();
+  inc();
 }
 
 
@@ -65,9 +67,12 @@ JSONObject::JSONObjectPairComparator::operator()(
 
 *******************************************************************************/
 void
-JSONObject::add(const JSONObjectPair_t& p)
+JSONPrinterVisitor::end( const JSONArray* a )
 {
-  thePairs.insert(p);
+  dec();
+  eol();
+  indent();
+  os << "]";
 }
 
 
@@ -75,35 +80,25 @@ JSONObject::add(const JSONObjectPair_t& p)
 
 *******************************************************************************/
 void
-JSONObject::accept(JSONVisitor* v) const
+JSONPrinterVisitor::begin( const JSONObjectPair* p, bool /*aLast*/ )
 {
-  v->begin(this);
+  indent();
+  visit(p->getName());
+  os << " : ";
+}
 
-  size_t i = 1;
 
-  for (PairsConstIter lIter = thePairs.begin(); lIter != thePairs.end(); ++i, ++lIter)
+/******************************************************************************
+
+*******************************************************************************/
+void
+JSONPrinterVisitor::end( const JSONObjectPair* p, bool aLast )
+{
+  if (!aLast)
   {
-    v->begin(*lIter, i == thePairs.size());
-
-    JSONObject* lObject = dynamic_cast<JSONObject*>((*lIter)->getValue());
-    JSONArray* lArray = dynamic_cast<JSONArray*>((*lIter)->getValue());
-    if (lObject)
-    {
-      lObject->accept(v);
-    }
-    else if (lArray)
-    {
-      lArray->accept(v);
-    }
-    else
-    {
-      v->visit((*lIter)->getValue());
-    }
-
-    v->end(*lIter, i == thePairs.size());
+    os << ", ";
   }
-
-  v->end(this);
+  eol();
 }
 
 
@@ -111,16 +106,24 @@ JSONObject::accept(JSONVisitor* v) const
 
 *******************************************************************************/
 void
-JSONArray::accept(JSONVisitor* v) const
+JSONPrinterVisitor::begin( const JSONArrayPair* p, bool /* aLast */ )
 {
-  v->begin(this);
+  indent();
+  visit(p->getValue());
+}
 
-  for (PairsConstIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+JSONPrinterVisitor::end( const JSONArrayPair* p, bool aLast )
+{
+  if (!aLast)
   {
-    (*lIter)->accept(v);
+    os << ", ";
+    eol();
   }
-
-  v->end(this);
 }
 
 
@@ -128,25 +131,17 @@ JSONArray::accept(JSONVisitor* v) const
 
 *******************************************************************************/
 void
-JSONArray::push_back(const JSONArrayPair_t& aPair)
+JSONPrinterVisitor::visit( const zorba::store::Item* i )
 {
-  store::Item_t lPos;
-  GET_FACTORY().createInteger(lPos, theContent.size() + 1);
-  aPair->setPosition(lPos);
-
-  theContent.push_back(aPair);
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void
-JSONArrayPair::accept(JSONVisitor* v) const
-{
-  xs_integer lSize = theContainer->size();
-  v->begin(this, lSize == getPosition()->getIntegerValue());
-  v->end(this, lSize == getPosition()->getIntegerValue());
+  if (dynamic_cast<const StringItem*>(i))
+  {
+    // todo escaping
+    os << "\"" << i->getStringValue() << "\"";
+  }
+  else if (dynamic_cast<const BooleanItem*>(i))
+  {
+    os << i->getStringValue();
+  }
 }
 
 } // namespace json
@@ -159,3 +154,5 @@ JSONArrayPair::accept(JSONVisitor* v) const
  * End:
  */
 /* vim:set et sw=2 ts=2: */
+
+
