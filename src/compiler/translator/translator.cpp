@@ -1686,8 +1686,7 @@ void wrap_in_debugger_expr(
     // add the breakable expression in the debugger commons as a possible
     // breakpoint location
     Breakable lBreakable(aLoc);
-    if (aAddBreakable) 
-    {
+    if (aAddBreakable) {
       theCCB->theDebuggerCommons->addBreakable(lBreakable);
     }
 
@@ -10055,9 +10054,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
