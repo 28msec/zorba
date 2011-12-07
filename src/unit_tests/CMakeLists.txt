@@ -18,6 +18,12 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
 )
 
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND UNIT_TEST_SRCS
+    test_json_loader.cpp
+  )
+ENDIF (ZORBA_WITH_JSON)
+
 IF(ZORBA_WITH_DEBUGGER)
   LIST(APPEND UNIT_TEST_SRCS
 #    test_debugger_protocol.cpp

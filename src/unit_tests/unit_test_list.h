@@ -24,6 +24,7 @@ namespace zorba {
 
   namespace UnitTests {
     int runUriTest(int argc, char* argv[]);
+    int runLoaderTest(int argc, char* argv[]);
     int runDebuggerProtocolTest(int argc, char* argv[]);
     /**
      * ADD NEW UNIT TESTS HERE

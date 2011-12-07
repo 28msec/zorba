@@ -26,6 +26,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
+#include "store/naive/json_items.h"
 
 #include "runtime/function_item/function_item.h"
 
@@ -40,7 +41,7 @@ namespace store
 void Item::addReference() const
 {
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode())
+  if (isNode() || isJSONItem())
   {
     InterlockedIncrement(theUnion.treeRCPtr);
     InterlockedIncrement(&theRefCount);
@@ -58,6 +59,13 @@ void Item::addReference() const
     ++(*theUnion.treeRCPtr);
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+  }
+  else if (isJSONItem())
+  {
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+    ++(*theUnion.treeRCPtr);
+    ++theRefCount;
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
   }
   else if (isAtomic() || isError())
   {
@@ -89,7 +97,7 @@ void Item::addReference() const
 void Item::removeReference()
 {
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode())
+  if (isNode() || isJSONItem())
   {
     InterlockedDecrement(&theRefCount);
     if (!InterlockedDecrement(theUnion.treeRCPtr))
@@ -119,6 +127,20 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+  }
+  else if (isJSONItem())
+  {
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+
+    --theRefCount;
+    if (--(*theUnion.treeRCPtr) == 0)
+    {
+      SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
   }
   else if (isAtomic() || isError())
   {
