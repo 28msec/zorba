@@ -282,6 +282,12 @@ QName       ({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
+   |  QName definition
+   |______________________________________________________________________*/
+EQName       ({StringLiteral}":"){NCName}
+
+  /*_____________________________________________________________________
+   |
    |  Annotation QName definition
    |______________________________________________________________________*/
 AnnotationQName  "%"({NCName}":")?{NCName}
@@ -720,6 +726,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 {StringLiteral}":*"           { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+1, yyleng-4), yytext+1); }
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
+
+{EQName}                       { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
 
 {AnnotationQName}             { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 
