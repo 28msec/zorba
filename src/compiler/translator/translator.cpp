@@ -8470,8 +8470,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
                                          *errCode);
 
-      if (TypeOps::type_max_cnt(pathExpr->get_type_manager(),
-                                *sourceExpr->get_return_type()) > 1)
+      if (sourceExpr->get_return_type()->max_card() > 1)
         theNodeSortStack.top().theSingleInput = false;
 
       pathExpr->add_back(sourceExpr);

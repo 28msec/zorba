@@ -28,7 +28,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
 
-#include "types/typeops.h"
+#include "types/typeimpl.h"
 
 #include "util/dynamic_bitset.h"
 
@@ -392,7 +392,7 @@ static expr_t try_hoisting(
 
       inloop = (inloop ||
                 (flc->get_kind() == flwor_clause::for_clause &&
-                 TypeOps::type_max_cnt(tm, *flc->get_expr()->get_return_type()) >= 2));
+                 flc->get_expr()->get_return_type()->max_card() >= 2));
     }
 
     if (foundSequentialClause || foundReferencedFLWORVar)

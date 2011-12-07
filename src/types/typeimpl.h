@@ -234,16 +234,26 @@ namespace zorba
   XQType Data Members:
   *********************
 
-  m_manager    : XQType instances are created via methods provided by TypeManager
-                 and its subclasses. m_manager is a pointer back to the specific
-                 TypeManager that created this XQType.
-  m_type_kind  : The "kind" of this type. One "kind" per each concrete subclass
-                 of XQType. See type_kind_t enum below
-  m_quantifier : The quantifier of this type.
-  theIsBuiltin : Whether the type is built-in or not. For built-in types refernce
-                 counting based garbage collection does not apply; these types
-                 are deleted when the root TypeManager is deleted during engine
-                 shutdown.
+  m_manager:
+  ----------
+  XQType instances are created via methods provided by TypeManager and its
+  subclasses. m_manager is a pointer back to the specific TypeManager that
+  created this XQType.
+
+  theKind:
+  --------
+  The "kind" of this type. One "kind" per each concrete subclass of XQType.
+  See type_kind_t enum below
+
+  theQuantifier:
+  --------------
+  The quantifier of this type.
+
+  theIsBuiltin:
+  -------------
+  Whether the type is built-in or not. For built-in types refernce counting based
+  garbage collection does not apply; these types are deleted when the root 
+  TypeManager is deleted during engine shutdown.
 
 ********************************************************************************/
 class XQType : public SimpleRCObject
@@ -306,22 +316,15 @@ protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
   /*const*/ TypeManager        * m_manager;
-  /*const*/ type_kind_t          m_type_kind;
-  TypeConstants::quantifier_t    m_quantifier;
+  type_kind_t                    theKind;
+  TypeConstants::quantifier_t    theQuantifier;
   bool                           theIsBuiltin;
 
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
-    SERIALIZE_ENUM(type_kind_t, m_type_kind)
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, m_quantifier);
-    ar & theIsBuiltin;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   virtual ~XQType() { }
@@ -334,11 +337,21 @@ public:
 
   TypeManager* get_manager() const { return m_manager; }
 
-  type_kind_t type_kind() const { return m_type_kind; }
+  type_kind_t type_kind() const { return theKind; }
 
-  TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
+  TypeConstants::quantifier_t get_quantifier() const { return theQuantifier; }
 
   bool is_builtin() const { return theIsBuiltin; }
+
+  bool is_empty() const { return theKind == XQType::EMPTY_KIND; }
+
+  bool is_none() const { return theKind == XQType::NONE_KIND; }
+
+  int max_card() const;
+  
+  int min_card() const;
+
+  int card() const;
 
   virtual bool isList() const { return false; }
 
@@ -362,15 +375,16 @@ protected:
          bool builtin)
     :
     m_manager((TypeManager*)manager),
-    m_type_kind(type_kind),
-    m_quantifier(quantifier),
+    theKind(type_kind),
+    theQuantifier(quantifier),
     theIsBuiltin(builtin)
   {
     if (theIsBuiltin)
     {
       // register this hardcoded object to help plan serialization
       XQType* this_ptr = this;
-      *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
+      *::zorba::serialization::ClassSerializer::getInstance()->
+      getArchiverForHardcodedObjects() & this_ptr;
     }
   }
 };

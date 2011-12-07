@@ -82,49 +82,6 @@ TypeConstants::quantifier_t TypeOps::union_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_max_cnt(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return (is_empty(tm, type) ?
-          0 : RootTypeManager::QUANT_MAX_CNT[type.get_quantifier()]);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_min_cnt(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return (is_empty(tm, type) ?
-          0 : RootTypeManager::QUANT_MIN_CNT[type.get_quantifier()]);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_cnt(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  if (is_empty(tm, type) || is_none(tm, type))
-    return 0;
-
-  TypeConstants::quantifier_t q = type.get_quantifier();
-
-  if ( RootTypeManager::QUANT_MIN_CNT[q] ==  RootTypeManager::QUANT_MAX_CNT[q])
-    return  RootTypeManager::QUANT_MIN_CNT[q];
-
-  return -1;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
@@ -201,28 +158,6 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   {
     return true;
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_empty(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::EMPTY_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_none(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::NONE_KIND;
 }
 
 
@@ -924,10 +859,10 @@ xqtref_t TypeOps::union_type(
   else if (is_subtype(tm, type2, type1))
     return &type1;
 
-  else if (is_empty(tm, type1))
+  else if (type1.is_empty())
     return tm->create_type_x_quant(type2, TypeConstants::QUANT_QUESTION);
 
-  else if (is_empty(tm, type2))
+  else if (type2.is_empty())
     return tm->create_type_x_quant(type1, TypeConstants::QUANT_QUESTION);
 
   else if (type1.get_quantifier() == TypeConstants::QUANT_ONE &&
@@ -1050,10 +985,10 @@ xqtref_t TypeOps::arithmetic_type(
     const XQType& type2,
     bool division)
 {
-  if (is_empty(tm, type1))
+  if (type1.is_empty())
     return &type1;
 
-  if (is_empty(tm, type2))
+  if (type2.is_empty())
     return &type2;
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
