@@ -45,10 +45,9 @@ JSONPrinterVisitor::begin( const JSONObject* o )
 void
 JSONPrinterVisitor::end( const JSONObject* o )
 {
-  eol();
   dec();
+  indent();
   os << "}";
-  eol();
 }
 
 
@@ -84,7 +83,7 @@ void
 JSONPrinterVisitor::begin( const JSONObjectPair* p )
 {
   indent();
-  print(p->getName());
+  visit(p->getName());
   os << " : ";
 }
 
@@ -95,7 +94,7 @@ JSONPrinterVisitor::begin( const JSONObjectPair* p )
 void
 JSONPrinterVisitor::end( const JSONObjectPair* p )
 {
-  print(p->getValue());
+  eol();
 }
 
 
@@ -106,7 +105,7 @@ void
 JSONPrinterVisitor::begin( const JSONArrayPair* p )
 {
   indent();
-  print(p->getValue());
+  visit(p->getValue());
 }
 
 
@@ -129,7 +128,7 @@ JSONPrinterVisitor::end( const JSONArrayPair* p )
 
 *******************************************************************************/
 void
-JSONPrinterVisitor::print( const zorba::store::Item* i )
+JSONPrinterVisitor::visit( const zorba::store::Item* i )
 {
   if (dynamic_cast<const StringItem*>(i))
   {

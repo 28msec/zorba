@@ -81,7 +81,24 @@ JSONObject::accept(JSONVisitor* v) const
 
   for (PairsConstIter lIter = thePairs.begin(); lIter != thePairs.end(); ++lIter)
   {
-    (*lIter)->accept(v);
+    v->begin(*lIter);
+
+    JSONObject* lObject = dynamic_cast<JSONObject*>((*lIter)->getValue());
+    JSONArray* lArray = dynamic_cast<JSONArray*>((*lIter)->getValue());
+    if (lObject)
+    {
+      lObject->accept(v);
+    }
+    else if (lArray)
+    {
+      lArray->accept(v);
+    }
+    else
+    {
+      v->visit((*lIter)->getValue());
+    }
+
+    v->end(*lIter);
   }
 
   v->end(this);

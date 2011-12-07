@@ -50,6 +50,8 @@ public:
 
   virtual void begin( const JSONArrayPair* ) = 0;
   virtual void end( const JSONArrayPair* ) = 0;
+
+  virtual void visit( const zorba::store::Item* ) = 0;
 };
 
 
@@ -92,8 +94,8 @@ public:
   virtual void begin( const JSONArrayPair* );
   virtual void end( const JSONArrayPair* );
 
+  virtual void visit( const zorba::store::Item* );
 protected:
-  virtual void print( const zorba::store::Item* );
 
   void inc()
   {

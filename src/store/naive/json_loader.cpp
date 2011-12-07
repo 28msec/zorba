@@ -64,11 +64,8 @@ JSONLoader::load( std::istream & in )
 
   JSONItem_t lRootItem;
 
-  // stack of objects and arrays
+  // stack of objects, arrays, and object pairs
   std::vector<JSONItem_t> lStack;
-
-  // used as indicator whether we are currently creating an object pair
-  JSONObjectPair_t lObjectPair;
 
   parser lParser(in);
 
@@ -78,92 +75,48 @@ JSONLoader::load( std::istream & in )
   {
     while (lParser.next(&lToken))
     {
-      JSONItem_t& lLast = lStack.back();
-
-      // std::cout << "type " << (char)lToken.get_type() << std::endl;
+      std::cout << "type " << (char)lToken.get_type() << std::endl;
 
       switch (lToken.get_type())
       {
         case token::begin_array:
-          {
-            lStack.push_back(new JSONArray());
-            break;
-          }
+          lStack.push_back(new JSONArray());
+          break;
+
         case token::begin_object:
-          {
-            lStack.push_back(new JSONObject());
-            break;
-          }
+          lStack.push_back(new JSONObject());
+          break;
+
         case token::end_array:
-          {
-            JSONArray* lArray = cast<JSONArray>(lStack.back());
-
-            lStack.pop_back();
-
-            if (lStack.empty())
-            {
-              lRootItem = lArray;
-            }
-
-            break;
-          }
         case token::end_object:
           {
-            JSONObject* lObject = cast<JSONObject>(lStack.back());
+            JSONItem* lItem = cast<JSONItem>(lStack.back());
 
             lStack.pop_back();
 
             if (lStack.empty())
             {
-              lRootItem = lObject;
+              lRootItem = lItem;
+            }
+            else
+            {
+              JSONObjectPair* lOPair = cast<JSONObjectPair>(lStack.back());
+              lOPair->setValue(lItem);
+              lStack.pop_back();
             }
 
             break;
           }
         case token::name_separator:
-          {
-            assert(lObjectPair);
-            break;
-          }
         case token::value_separator:
-          {
             break;
-          }
         case token::string:
           {
             store::Item_t lValue;
             zstring s = lToken.get_value();
             lFactory.createString(lValue, s);
 
-            JSONObject* lObject = dynamic_cast<JSONObject*>(lLast.getp());
-
-            if (lObject)
-            {
-              if (!lObjectPair)
-              {
-                lObjectPair = new JSONObjectPair();
-                lObjectPair->setName(lValue);
-              }
-              else
-              {
-                lObjectPair->setValue(lValue);
-                lObject->add(lObjectPair);
-                lObjectPair = NULL;
-              }
-            }
-            else
-            {
-              JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast.getp());
-              assert(lArray);
-
-              JSONArrayPair_t lArrayPair(
-                  new JSONArrayPair(
-                    lValue,
-                    lArray
-                  )
-                );
-              lArray->push_back(lArrayPair);
-            }
+            addValue(lStack, lValue);
             break;
           }
         case token::number:
@@ -174,26 +127,24 @@ JSONLoader::load( std::istream & in )
           {
             store::Item_t lValue;
             lFactory.createBoolean(lValue, false);
-            addValue(lLast, lValue, lObjectPair);
-            lObjectPair = NULL;
+            addValue(lStack, lValue);
             break;
           }
         case token::json_true:
           {
             store::Item_t lValue;
             lFactory.createBoolean(lValue, true);
-            addValue(lLast, lValue, lObjectPair);
-            lObjectPair = NULL;
+            addValue(lStack, lValue);
             break;
           }
         case token::json_null:
           {
             store::Item_t lValue = new JSONNull();
-            addValue(lLast, lValue, lObjectPair);
-            lObjectPair = NULL;
+            addValue(lStack, lValue);
             break;
           }
-        default: assert(false);
+        default:
+          assert(false);
       }
     }
     return lRootItem;
@@ -207,30 +158,46 @@ JSONLoader::load( std::istream & in )
 
 void
 JSONLoader::addValue(
-  JSONItem_t& aItem,
-  store::Item_t& aValue,
-  JSONObjectPair_t& aObjectPair)
+  std::vector<JSONItem_t>& aStack,
+  const store::Item_t& aValue)
 {
-  JSONObject* lObject = cast<JSONObject>(aItem);
+  JSONItem* lLast = aStack.back().getp();
+
+  JSONObject* lObject = dynamic_cast<JSONObject*>(lLast);
+
   if (lObject)
   {
-    assert(aObjectPair);
-    aObjectPair->setValue(aValue);
-    lObject->add(aObjectPair);
-  }
-  else
-  {
-    JSONArray* lArray  = dynamic_cast<JSONArray*>(aItem.getp());
-    assert(lArray);
+    // if the top of the stack is an object, then
+    // the value must be a string which is the name
+    // of the object's name value pair
+    JSONObjectPair_t lOPair = new JSONObjectPair();
+    lOPair->setName(aValue);
+    lObject->add(lOPair);
+    aStack.push_back(lOPair);
 
-    JSONArrayPair_t lArrayPair(
-        new JSONArrayPair(
-          aValue,
-          lArray
-        )
-      );
-    lArray->push_back(lArrayPair.release());
+    return;
   }
+
+  JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lLast);
+  if (lOPair)
+  {
+    lOPair->setValue(aValue);
+    aStack.pop_back();
+
+    return;
+  }
+
+  JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast);
+  assert(lArray);
+
+  JSONArrayPair_t lArrayPair(
+      new JSONArrayPair(
+        aValue,
+        lArray
+      )
+    );
+  lArray->push_back(lArrayPair);
+  
 }
 
 template<typename T> T*

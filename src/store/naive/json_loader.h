@@ -45,7 +45,7 @@ private:
   cast(const JSONItem_t&);
 
   void
-  addValue(JSONItem_t&, store::Item_t&, JSONObjectPair_t&);
+  addValue(std::vector<JSONItem_t>&, const store::Item_t&);
 
 }; /* class JSONLoader */
 

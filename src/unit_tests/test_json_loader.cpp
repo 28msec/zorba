@@ -60,8 +60,9 @@ int runLoaderTest(int argc, char* argv[])
     << "  }" << std::endl
     << "}";
 #endif
-  json << "{ \"foo\": true \"bar\": false }";
+  //json << "{ \"foo\": true, \"bar\": false }";
   //json << "[ \"foo\", \"bar\" ]";
+  json << "{ \"foo\": { \"bar\" : false } }";
 
   store::Item_t lJSON = lLoader.load(json);
 
