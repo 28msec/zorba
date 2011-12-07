@@ -539,27 +539,25 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     return;
   }
 
-  if (lExplicitCacheRequest)
+  if (isSequential() || !isDeterministic())
   {
-    if (isSequential() || !isDeterministic())
+    if (lExplicitCacheRequest)
     {
-      if (lExplicitCacheRequest)
-      {
-        diag->add_warning(
-          NEW_XQUERY_WARNING(
-            zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
-            WARN_PARAMS(
-              getName()->getStringValue(),
-              (isSequential()?"sequential":"non-deterministic")
-            ),
-            WARN_LOC(theLoc)
-          )
-        );
-      }
+      diag->add_warning(
+        NEW_XQUERY_WARNING(
+          zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
+          WARN_PARAMS(
+            getName()->getStringValue(),
+            (isSequential()?"sequential":"non-deterministic")
+          ),
+          WARN_LOC(theLoc)
+        )
+      );
+      lExit.cache();
     }
-    lExit.cache();
     return;
   }
+  
 
   // optimization is prerequisite before invoking isRecursive
   if (!lExplicitCacheRequest && isOptimized() && !isRecursive())
