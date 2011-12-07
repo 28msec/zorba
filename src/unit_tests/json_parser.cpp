@@ -68,6 +68,14 @@ static void print_exception( char const *expr, int line,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static void test_empty_stream() {
+  char const source[] = "";
+  istringstream iss( source );
+  parser p( iss );
+  token t;
+  ASSERT_NO_EXCEPTION( p.next( &t ) );
+}
+
 static void test_illegal_character() {
   char const source[] = " x ";
   istringstream iss( source );
@@ -600,6 +608,7 @@ int json_parser( int, char*[] ) {
   test_unterminated_string();
 
   // parser tests
+  test_empty_stream();
   test_parser_array();
   test_parser_object();
   test_unexpected_token();
