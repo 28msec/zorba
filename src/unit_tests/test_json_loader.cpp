@@ -31,8 +31,6 @@ namespace UnitTests {
 int runLoaderTest(int argc, char* argv[])
 {
 
-  JSONLoader lLoader;
-
   std::stringstream json;
 
   json
@@ -61,14 +59,20 @@ int runLoaderTest(int argc, char* argv[])
     << "  \"double\": 42e42" << std::endl
     << "  }" << std::endl
     << "}";
-  //json << "{ \"foo\": true, \"bar\": false }";
+    json << "{ \"foo\": true, \"bar\": false }";
   //json << "[ \"foo\", \"bar\" ]";
   //json << "{ \"foo\": { \"bar\" : false } }";
 
-  store::Item_t lJSON = lLoader.load(json);
+  JSONLoader lLoader(json);
 
-  JSONPrinterVisitor lVisitor(std::cout, false);
-  dynamic_cast<JSONItem*>(lJSON.getp())->accept(&lVisitor);
+  store::Item_t lJSON;
+  
+  while (lJSON = lLoader.next())
+  {
+    JSONPrinterVisitor lVisitor(std::cout);
+    dynamic_cast<JSONItem*>(lJSON.getp())->accept(&lVisitor);
+    std::cout << std::endl;
+  }
 
   return 0;
 }

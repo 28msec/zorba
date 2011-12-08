@@ -59,7 +59,7 @@ xqtref_t fn_data::getReturnType(
     return arg_types[0];  // includes () case
 
   const XQType& argType = *arg_types[0];
-  TypeConstants::quantifier_t q = TypeOps::quantifier(argType);
+  TypeConstants::quantifier_t q = argType.get_quantifier();
 
   if (argType.type_kind() == XQType::NODE_TYPE_KIND)
   {

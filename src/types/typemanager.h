@@ -99,13 +99,13 @@ public:
   virtual xqtref_t create_named_atomic_type(
         store::Item* qname,
         TypeConstants::quantifier_t quantifier,
-        const QueryLoc& loc = QueryLoc::null,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
   virtual xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE,
-        const QueryLoc& loc = QueryLoc::null,
+        TypeConstants::quantifier_t quantifier,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
   virtual xqtref_t create_any_item_type(
@@ -121,6 +121,12 @@ public:
         TypeConstants::quantifier_t quantifier,
         bool nillable,
         bool schematype) const = 0;
+
+#ifdef ZORBA_WITH_JSON
+ virtual xqtref_t create_json_type(
+        store::StoreConsts::JSONItemKind kind,
+        TypeConstants::quantifier_t quantifier) const = 0;
+#endif
 
   virtual xqtref_t create_function_type(
         const std::vector<xqtref_t>& aArgs,

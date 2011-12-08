@@ -59,7 +59,7 @@ xqtref_t op_concatenate::getReturnType(
     for (ulong i = 1; i < sz; i++)
     {
       t = TypeOps::union_type(*t, *arg_types[i], tm);
-      TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
+      TypeConstants::quantifier_t pq = t->get_quantifier();
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }

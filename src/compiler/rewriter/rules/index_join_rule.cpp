@@ -289,8 +289,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   xqtref_t innerType = predInfo.theInnerOp->get_return_type();
   xqtref_t primeOuterType = TypeOps::prime_type(tm, *outerType);
   xqtref_t primeInnerType = TypeOps::prime_type(tm, *innerType);
-  TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
-  TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
+  TypeConstants::quantifier_t outerQuant = outerType->get_quantifier();
+  TypeConstants::quantifier_t innerQuant = innerType->get_quantifier();
   const QueryLoc& innerLoc = predInfo.theInnerOp->get_loc();
   const QueryLoc& outerLoc = predInfo.theOuterOp->get_loc();
 

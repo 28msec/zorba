@@ -305,7 +305,7 @@ expr_t MarkConsumerNodeProps::apply(
 
     TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+    TypeConstants::quantifier_t q = targetType->get_quantifier();
     
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
 
@@ -336,7 +336,7 @@ expr_t MarkConsumerNodeProps::apply(
       
     TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+    TypeConstants::quantifier_t q = targetType->get_quantifier();
 
     if (TypeOps::is_empty(tm, *targetType)) 
     {

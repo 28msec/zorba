@@ -109,6 +109,14 @@ public:
   bool 
   isNode() const;
 
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool
+  isJSONItem() const;
+#endif
+
   /**
    *  @return  "true" if the item is an atomic value
    */
@@ -785,14 +793,51 @@ public:
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
 
-  /* -------------------- Methods for tuples --------------------- */
-#if 0
-  virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
 
-  virtual int getTupleFieldCount() const;
+#ifdef ZORBA_WITH_JSON
+  /* -------------------- Methods for JSON items --------------------- */
 
-  virtual const TupleField& getTupleField(int index) const;
-#endif
+  /**
+   * @return the kind of the json item
+   */
+  virtual store::StoreConsts::JSONItemKind getJSONItemKind() const;
+
+  /**
+   * @return the pairs of a json object or json array
+   */
+  virtual Iterator_t
+  pairs() const;
+
+  /**
+   * defined on JSONObject and JSONArray
+   * @return the pair with given name or index, respectively
+   */
+  virtual store::Item*
+  lookup(const store::Item_t& name) const;
+
+  /**
+   * defined on JSONObjectPair
+   * @return the name of the json pair
+   */
+  virtual store::Item*
+  getName() const;
+
+  /**
+   * defined on JSONArrayPair
+   * @return the position of the json pair in the array
+   */
+  virtual store::Item*
+  getPosition() const;
+
+  /**
+   * defined on JSONObjectPair JSONArrayPair
+   * @return the value of the json pair
+   */
+  virtual store::Item*
+  getValue() const;
+
+#endif // ZORBA_WITH_JSON
+
 
   /* -------------------- Methods for ErrorItem --------------------- */
 
@@ -855,47 +900,6 @@ public:
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#ifdef ZORBA_WITH_JSON
-  /**
-   * @return "true" if the item is a json-item
-   */
-  bool
-  isJSONItem() const;
-
-  /**
-   * @return the pairs of a json object or json array
-   */
-  virtual Iterator_t
-  pairs() const;
-
-  /**
-   * defined on JSONObject and JSONArray
-   * @return the pair with given name or index, respectively
-   */
-  virtual store::Item*
-  lookup(const store::Item_t& name) const;
-
-  /**
-   * defined on JSONObjectPair
-   * @return the name of the json pair
-   */
-  virtual store::Item*
-  getName() const;
-
-  /**
-   * defined on JSONArrayPair
-   * @return the position of the json pair in the array
-   */
-  virtual store::Item*
-  getPosition() const;
-
-  /**
-   * defined on JSONObjectPair JSONArrayPair
-   * @return the value of the json pair
-   */
-  virtual store::Item*
-  getValue() const;
-#endif
 
 private:
   Item(const Item& other);

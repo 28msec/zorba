@@ -186,6 +186,7 @@ xqtref_t TypeManagerImpl::create_any_function_type(
   }
 }
 
+
 /***************************************************************************//**
   Return the builtin sequence type corresponding to the given typecode and
   quantifier. The typecode identifies a builtin atomic type.
@@ -223,13 +224,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   {
     if (error != zerr::ZXQP0000_NO_ERROR)
     {
-			throw XQUERY_EXCEPTION_VAR(
-				error,
-				ERROR_PARAMS(
-					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-				),
-				ERROR_LOC( loc )
-			);
+			throw XQUERY_EXCEPTION_VAR(error,
+			ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+			ERROR_LOC(loc));
     }
     else
     {
@@ -248,13 +245,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     {
       if (error != zerr::ZXQP0000_NO_ERROR)
       {
-				throw XQUERY_EXCEPTION_VAR(
-					error,
-					ERROR_PARAMS(
-						qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-					),
-					ERROR_LOC( loc )
-				);
+				throw XQUERY_EXCEPTION_VAR(error,
+				ERROR_PARAMS(qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes)),
+				ERROR_LOC(loc));
       }
       else
       {
@@ -274,13 +267,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   if (error != zerr::ZXQP0000_NO_ERROR)
   {
-		throw XQUERY_EXCEPTION_VAR(
-			error,
-			ERROR_PARAMS(
-				qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-			),
-			ERROR_LOC( loc )
-		);
+		throw XQUERY_EXCEPTION_VAR(error,
+		ERROR_PARAMS(qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes)),
+		ERROR_LOC(loc));
   }
   else
   {
@@ -314,10 +303,6 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_untyped_type();
   }
-  else if (qname->equals(RTM.ZXSE_TUPLE_QNAME.getp()))
-  {
-    return RTM.ITEM_TYPE_ONE;
-  }
   else
   {
     // Try to resolve the type name as a builtin atomic type
@@ -339,11 +324,9 @@ xqtref_t TypeManagerImpl::create_named_type(
       {
         if (error != zerr::ZXQP0000_NO_ERROR)
         {
-					throw XQUERY_EXCEPTION_VAR(
-						error,
-						ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-						ERROR_LOC( loc )
-					);
+					throw XQUERY_EXCEPTION_VAR(error,
+					ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+					ERROR_LOC(loc));
         }
         else
         {
@@ -359,11 +342,9 @@ xqtref_t TypeManagerImpl::create_named_type(
 
     if (error != zerr::ZXQP0000_NO_ERROR)
     {
-			throw XQUERY_EXCEPTION_VAR(
-				error,
-				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-				ERROR_LOC(loc)
-			);
+			throw XQUERY_EXCEPTION_VAR(error,
+			ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+			ERROR_LOC(loc));
     }
     else
     {
@@ -612,6 +593,19 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 }
 
 
+#ifdef ZORBA_WITH_JSON
+/***************************************************************************//**
+  Create a sequence type based on json item kind and a quantifier
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_json_type(
+    store::StoreConsts::JSONItemKind kind,
+    TypeConstants::quantifier_t quantifier) const
+{
+  return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
+}
+#endif
+
+
 /***************************************************************************//**
   Create a sequence type based on the kind and content of an item.
 ********************************************************************************/
@@ -703,6 +697,13 @@ xqtref_t TypeManagerImpl::create_value_type(
     }
     }
   }
+
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
+  {
+    return create_json_type(item->getJSONItemKind(), quant);
+  }
+#endif
 
   else if (item->isFunction())
   {
@@ -873,6 +874,14 @@ xqtref_t TypeManagerImpl::create_type(
     }
   }
 
+#ifdef ZORBA_WITH_JSON
+  case XQType::JSON_TEST_KIND:
+  {
+    const JSONXQType& jt = static_cast<const JSONXQType&>(type);
+    return create_json_type(jt.get_kind(), quantifier);
+  }
+#endif
+
   case XQType::FUNCTION_TYPE_KIND:
   {
     const FunctionXQType& ft = static_cast<const FunctionXQType&>(type);
@@ -1041,6 +1050,24 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
+
+  case IdentTypes::JSON_ITEM_TYPE:
+    return create_json_type(store::StoreConsts::jsonItem, q);
+
+  case IdentTypes::JSON_OBJECT_TYPE:
+    return create_json_type(store::StoreConsts::jsonObject, q);
+
+  case IdentTypes::JSON_ARRAY_TYPE:
+    return create_json_type(store::StoreConsts::jsonArray, q);
+
+  case IdentTypes::JSON_PAIR_TYPE:
+    return create_json_type(store::StoreConsts::jsonPair, q);
+
+  case IdentTypes::JSON_OBJECT_PAIR_TYPE:
+    return create_json_type(store::StoreConsts::jsonPair, q);
+
+  case IdentTypes::JSON_ARRAY_PAIR_TYPE:
+    return create_json_type(store::StoreConsts::jsonArrayPair, q);
 
   case IdentTypes::ITEM_TYPE:
     return create_any_item_type(q);

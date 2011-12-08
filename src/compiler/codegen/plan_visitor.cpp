@@ -2804,10 +2804,13 @@ bool begin_visit(match_expr& v)
     axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
-    store::Item *typeName = v.getTypeName();
+    store::Item* typeName = v.getTypeName();
     if (typeName != NULL) 
     {
-      axisItep->setType(sctx->get_typemanager()->create_named_type(typeName));
+      axisItep->setType(sctx->get_typemanager()->
+                        create_named_type(typeName,
+                                          TypeConstants::QUANT_ONE,
+                                          qloc));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }

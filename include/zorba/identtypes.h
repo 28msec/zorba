@@ -18,10 +18,14 @@
 
 #include <zorba/config.h>
 
-namespace zorba {
-class ZORBA_DLL_PUBLIC IdentTypes {
+namespace zorba 
+{
+
+class ZORBA_DLL_PUBLIC IdentTypes 
+{
 public:
-  typedef enum {
+  typedef enum 
+  {
     NAMED_TYPE,     // builtin atomic type
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
@@ -30,12 +34,19 @@ public:
     TEXT_TYPE,
     COMMENT_TYPE,
     ANY_NODE_TYPE, // node()
+    JSON_ITEM_TYPE,
+    JSON_OBJECT_TYPE,
+    JSON_ARRAY_TYPE,
+    JSON_PAIR_TYPE,
+    JSON_OBJECT_PAIR_TYPE,
+    JSON_ARRAY_PAIR_TYPE,
     ITEM_TYPE,     // item()
     EMPTY_TYPE,    // empty-sequence()
     INVALID_TYPE,
   } kind_t;
 
-  typedef enum {
+  typedef enum 
+  {
     QUANT_ONE,
     QUANT_QUESTION,
     QUANT_PLUS,

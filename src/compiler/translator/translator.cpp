@@ -9910,7 +9910,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   // Check if this is a call to a type constructor function
   xqtref_t type = CTX_TM->create_named_type(qnameItem,
-                                            TypeConstants::QUANT_QUESTION);
+                                            TypeConstants::QUANT_QUESTION,
+                                            loc);
 
   if (type != NULL)
   {
@@ -11619,7 +11620,9 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem,
+                                                TypeConstants::QUANT_ONE,
+                                                loc);
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -11789,7 +11792,9 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
   if (typeName != NULL)
   {
-    contentType = CTX_TM->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+    contentType = CTX_TM->create_named_type(typeNameItem,
+                                            TypeConstants::QUANT_ONE,
+                                            loc);
 
     if (contentType == NULL)
     {
@@ -11908,7 +11913,9 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   {
     expand_elem_qname(typeNameItem, typeName->get_name(), typeName->get_location());
 
-    contentType = CTX_TM->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+    contentType = CTX_TM->create_named_type(typeNameItem,
+                                            TypeConstants::QUANT_ONE,
+                                            loc);
 
     if (contentType == NULL)
     {

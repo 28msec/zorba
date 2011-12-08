@@ -497,7 +497,7 @@ void cast_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool cast_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -622,7 +622,7 @@ void castable_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool castable_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 

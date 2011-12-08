@@ -35,7 +35,8 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-JSONLoader::JSONLoader()
+JSONLoader::JSONLoader(std::istream& s)
+  : in(s)
 {
 }
 
@@ -52,7 +53,7 @@ JSONLoader::~JSONLoader()
 
 *******************************************************************************/
 store::Item_t
-JSONLoader::load( std::istream & in )
+JSONLoader::next( )
 {
   using namespace zorba::json;
   using namespace zorba::simplestore;

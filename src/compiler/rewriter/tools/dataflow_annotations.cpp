@@ -262,7 +262,7 @@ void DataflowAnnotationsComputer::default_walk(expr* e)
 bool DataflowAnnotationsComputer::generic_compute(expr* e)
 {
   xqtref_t rt = e->get_return_type();
-  TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
+  TypeConstants::quantifier_t quant = rt->get_quantifier();
 
   if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) 
   {

@@ -31,18 +31,19 @@
 #include "types/schema/schema.h"
 
 #include "diagnostics/assert.h"
-
+#include "diagnostics/util_macros.h"
 
 namespace zorba {
 
 
 
-#define CHECK_IN_SCOPE(tm, type, loc) \
-  { \
-  TypeManager const *const ttm = type.get_manager(); \
+#define CHECK_IN_SCOPE(tm, type, loc)                                         \
+{                                                                             \
+  const TypeManager* ttm = type.get_manager();                                \
   if (ttm != tm && ttm != &GENV_TYPESYSTEM && !TypeOps::is_in_scope(tm,type)) \
-    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), type, ZED( NotAmongInScopeSchemaTypes ) ) ); \
-  }
+    RAISE_ERROR(err::XPTY0004, loc,                                           \
+    ERROR_PARAMS(ZED(BadType_23o), type, ZED(NotAmongInScopeSchemaTypes)));   \
+}
 
 
 /*******************************************************************************
@@ -85,7 +86,8 @@ int TypeOps::type_max_cnt(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
-  return (is_empty(tm, type) ? 0 : RootTypeManager::QUANT_MAX_CNT[quantifier(type)]);
+  return (is_empty(tm, type) ?
+          0 : RootTypeManager::QUANT_MAX_CNT[type.get_quantifier()]);
 }
 
 
@@ -96,7 +98,8 @@ int TypeOps::type_min_cnt(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
-  return (is_empty(tm, type) ? 0 : RootTypeManager::QUANT_MIN_CNT[quantifier(type)]);
+  return (is_empty(tm, type) ?
+          0 : RootTypeManager::QUANT_MIN_CNT[type.get_quantifier()]);
 }
 
 
@@ -110,30 +113,12 @@ int TypeOps::type_cnt(const TypeManager* tm, const XQType& type)
   if (is_empty(tm, type) || is_none(tm, type))
     return 0;
 
-  TypeConstants::quantifier_t q = quantifier(type);
+  TypeConstants::quantifier_t q = type.get_quantifier();
 
   if ( RootTypeManager::QUANT_MIN_CNT[q] ==  RootTypeManager::QUANT_MAX_CNT[q])
     return  RootTypeManager::QUANT_MIN_CNT[q];
 
   return -1;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-TypeConstants::quantifier_t TypeOps::quantifier(const XQType &type)
-{
-  return type.get_quantifier();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t TypeOps::getQName(const XQType& type)
-{
-  return type.get_qname();
 }
 
 
@@ -154,7 +139,9 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 {
   if (type.type_kind() == XQType::USER_DEFINED_KIND)
   {
-    return (tm->create_named_type(type.get_qname()) != NULL);
+    return (tm->create_named_type(type.get_qname(), 
+                                  TypeConstants::QUANT_ONE,
+                                  QueryLoc::null) != NULL);
   }
   else if (type.type_kind() == XQType::NODE_TYPE_KIND)
   {
@@ -168,7 +155,9 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         assert(!ntype.is_schema_test());
         return is_in_scope(tm, *ctype);
       }
-      else if (tm->create_named_type(ctype->get_qname()) == NULL)
+      else if (tm->create_named_type(ctype->get_qname(),
+                                     TypeConstants::QUANT_ONE,
+                                     QueryLoc::null) == NULL)
       {
         return false;
       }
@@ -205,10 +194,8 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   }
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZXQP0004_NOT_IMPLEMENTED,
-      ERROR_PARAMS( ZED( ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZXQP0004_NOT_IMPLEMENTED,
+    ERROR_PARAMS(ZED(ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes)));
   }
   else
   {
@@ -300,6 +287,9 @@ bool TypeOps::is_numeric(const TypeManager* tm, const XQType& type)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_numeric_or_untyped(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);
@@ -940,8 +930,8 @@ xqtref_t TypeOps::union_type(
   else if (is_empty(tm, type2))
     return tm->create_type_x_quant(type1, TypeConstants::QUANT_QUESTION);
 
-  else if (quantifier(type1) == TypeConstants::QUANT_ONE &&
-           quantifier(type2) == TypeConstants::QUANT_ONE) 
+  else if (type1.get_quantifier() == TypeConstants::QUANT_ONE &&
+           type2.get_quantifier() == TypeConstants::QUANT_ONE) 
   {
     if (type1.type_kind() == type2.type_kind())
     {
@@ -964,9 +954,10 @@ xqtref_t TypeOps::union_type(
 
     if (! is_equal(tm, type1, *pt1) || ! is_equal(tm, type2, *pt2))
     {
-      return tm->create_type_x_quant(*union_type(*pt1, *pt2, tm),
+      return tm->create_type_x_quant(
+                 *union_type(*pt1, *pt2, tm),
                  RootTypeManager::QUANT_UNION_MATRIX[TypeConstants::QUANT_QUESTION] /* to be on the safe side */
-                 [RootTypeManager::QUANT_UNION_MATRIX [quantifier(type1)] [quantifier(type2)]]);
+                 [RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()] [type2.get_quantifier()]]);
     }
     else
     {
@@ -984,12 +975,13 @@ xqtref_t TypeOps::intersect_type(
     const XQType& type2,
     const TypeManager* tm)
 {
-  XQType::type_kind_t tk1 = type1.type_kind(), tk2 = type2.type_kind ();
+  XQType::type_kind_t tk1 = type1.type_kind(), tk2 = type2.type_kind();
 
   if (tk1 < tk2)
     return intersect_type(type2, type1, tm);
 
-  TypeConstants::quantifier_t q1 = quantifier(type1), q2 = quantifier(type2);
+  TypeConstants::quantifier_t q1 = type1.get_quantifier();
+  TypeConstants::quantifier_t q2 = type2.get_quantifier();
 
   if (is_subtype(tm, type1, type2))
     return &type1;
@@ -1164,7 +1156,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  IdentTypes::quantifier_t q = get_typeident_quant(quantifier(type));
+  IdentTypes::quantifier_t q = get_typeident_quant(type.get_quantifier());
+
   switch(type.type_kind()) 
   {
   case XQType::ATOMIC_TYPE_KIND:
