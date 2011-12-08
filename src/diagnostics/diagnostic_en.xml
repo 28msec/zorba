@@ -1706,6 +1706,10 @@
       <value>key with type $1 not subtype or castable to target type $2 of map ($3)</value>
     </diagnostic>
 
+    <diagnostic code="ZXQD0006" name="INVALID_UTF8_BYTE_SEQUENCE">
+      <value>"$1": invalid UTF-8 byte sequence</value>
+    </diagnostic>
+
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">

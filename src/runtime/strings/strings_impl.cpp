@@ -135,11 +135,36 @@ bool StringToCodepointsIterator::nextImpl(
     while ( !state->theStream->eof() )
     {
       utf8::encoded_char_type ec;
+      ::bzero( ec, sizeof( ec ) );
       utf8::storage_type *p;
+      p = ec;
 
       if ( utf8::read( *state->theStream, ec ) == utf8::npos )
-        /* TODO */;
-      p = ec;
+        if ( state->theStream->good() ) {
+          //
+          // If read() failed but the stream state is good, it means that an
+          // invalid byte was encountered.
+          //
+          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
+          bool first = true;
+          for ( ; *p; ++p ) {
+            if ( first )
+              first = false;
+            else
+              *b++ = ',';
+            ::strcpy( b, "0x" );          b += 2;
+            ::sprintf( b, "%0hhX", *p );  b += 2;
+          }
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+            ERROR_PARAMS( buf ),
+            ERROR_LOC( loc )
+          );
+        } else {
+          throw XQUERY_EXCEPTION(
+            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
+          );
+        }
       state->theResult.clear();
       state->theResult.push_back( utf8::next_char( p ) );
       
