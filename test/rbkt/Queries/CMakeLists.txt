@@ -312,4 +312,6 @@ ENDIF(ZORBA_NO_ICU)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
-EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
+IF (NOT ZORBA_NO_FULL_TEXT)
+  EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
