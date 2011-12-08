@@ -243,8 +243,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t sourceType = e->theSteps[0]->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *sourceType) ||
-          TypeOps::is_none(get_type_manager(), *sourceType))
+      if (sourceType->is_empty() || sourceType->is_none())
       {
         newType = sourceType;
       }
@@ -256,7 +255,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         xqtref_t stepType = sourceType;
 
-        for (ulong i = 1; i < e->size(); ++i) 
+        for (csize i = 1; i < e->size(); ++i) 
         {
           const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
           
@@ -529,10 +528,10 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t t = e->get_text()->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *t))
+      if (t->is_empty())
         newType = t;
 
-      else if (TypeOps::type_min_cnt(tm, *t) == 0)
+      else if (t->min_card() == 0)
         q = TypeConstants::QUANT_QUESTION;
 
       nodeKind = store::StoreConsts::textNode;

@@ -173,6 +173,57 @@ std::string XQType::contentKindStr(content_kind_t contentKind)
 /*******************************************************************************
 
 ********************************************************************************/
+void XQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  SERIALIZE_TYPEMANAGER(TypeManager, theManager);
+  SERIALIZE_ENUM(type_kind_t, theKind)
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  ar & theIsBuiltin;
+}
+
+
+/*******************************************************************************
+  Return the maximum number of items that can appear in an instance of the
+  type. Returned value may be 0, 1 or 2, with 2 meaning "infinity".
+********************************************************************************/
+int XQType::max_card() const
+{
+  return (is_empty() ? 0 : RootTypeManager::QUANT_MAX_CNT[get_quantifier()]);
+}
+
+
+/*******************************************************************************
+  Return the minimum number of items that can appear in an instance of the
+  type. Returned value may be 0 or 1.
+********************************************************************************/
+int XQType::min_card() const
+{
+  return (is_empty() ? 0 : RootTypeManager::QUANT_MIN_CNT[get_quantifier()]);
+}
+
+
+/*******************************************************************************
+  Return 0 if all instances of the type consist of exactly 0 items,  1 if all
+  instances of the type consist of exactly 1 item, or -1  otherwise.
+********************************************************************************/
+int XQType::card() const
+{
+  if (is_empty() || is_none())
+    return 0;
+
+  TypeConstants::quantifier_t q = get_quantifier();
+
+  if (RootTypeManager::QUANT_MIN_CNT[q] == RootTypeManager::QUANT_MAX_CNT[q])
+    return  RootTypeManager::QUANT_MIN_CNT[q];
+
+  return -1;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 std::string XQType::toString() const
 {
   std::ostringstream os;
@@ -338,7 +389,7 @@ NodeXQType::NodeXQType(
     const NodeXQType& source,
     TypeConstants::quantifier_t quantifier)
   :
-  XQType(source.m_manager, NODE_TYPE_KIND, quantifier, false),
+  XQType(source.theManager, NODE_TYPE_KIND, quantifier, false),
   m_node_kind(source.m_node_kind),
   m_node_name(source.m_node_name),
   m_content_type(source.m_content_type),
@@ -442,7 +493,7 @@ bool NodeXQType::is_subtype(
     {
       if (supertype.m_schema_test)
       {
-        Schema* schema = supertype.m_manager->getSchema();
+        Schema* schema = supertype.theManager->getSchema();
         ZORBA_ASSERT(schema != NULL);
 
         store::Item_t headName;
@@ -511,7 +562,7 @@ bool NodeXQType::is_supertype(
     {
       if (m_schema_test)
       {
-        Schema* schema = m_manager->getSchema();
+        Schema* schema = theManager->getSchema();
         ZORBA_ASSERT(schema != NULL);
 
         store::Item_t headName;
@@ -601,8 +652,8 @@ JSONXQType::JSONXQType(
     TypeConstants::quantifier_t quantifier,
     bool builtin)
   :
-  XQType(manager, JSON_TEST_KIND, quantifier, builtin),
-  theKind(kind)
+  XQType(manager, JSON_TYPE_KIND, quantifier, builtin),
+  theJSONKind(kind)
 {
 }
 
@@ -613,7 +664,7 @@ JSONXQType::JSONXQType(
 void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
-  SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, theKind);
+  SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, theJSONKind);
 }
 
 
@@ -622,7 +673,7 @@ void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 {
-  os << "[JSONXQType " << store::StoreConsts::toString(theKind)
+  os << "[JSONXQType " << store::StoreConsts::toString(theJSONKind)
      << TypeOps::decode_quantifier(get_quantifier());
 
   return os << "]";

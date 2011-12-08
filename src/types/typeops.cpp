@@ -82,49 +82,6 @@ TypeConstants::quantifier_t TypeOps::union_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_max_cnt(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return (is_empty(tm, type) ?
-          0 : RootTypeManager::QUANT_MAX_CNT[type.get_quantifier()]);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_min_cnt(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return (is_empty(tm, type) ?
-          0 : RootTypeManager::QUANT_MIN_CNT[type.get_quantifier()]);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_cnt(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  if (is_empty(tm, type) || is_none(tm, type))
-    return 0;
-
-  TypeConstants::quantifier_t q = type.get_quantifier();
-
-  if ( RootTypeManager::QUANT_MIN_CNT[q] ==  RootTypeManager::QUANT_MAX_CNT[q])
-    return  RootTypeManager::QUANT_MIN_CNT[q];
-
-  return -1;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
@@ -201,28 +158,6 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   {
     return true;
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_empty(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::EMPTY_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_none(const TypeManager* tm, const XQType& type) 
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::NONE_KIND;
 }
 
 
@@ -338,7 +273,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     return true;  // TODO: finer analysis
 
   default:
-    // NODE, EMPTY, NONE
+    // NODE, EMPTY, NONE, JSON
     return false;
   }
 }
@@ -395,7 +330,10 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
   case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
-  case XQType::NODE_TYPE_KIND: 
+  case XQType::NODE_TYPE_KIND:
+#ifdef ZORBA_WITH_JSON
+  case XQType::JSON_TYPE_KIND: 
+#endif 
   {
     if (type.get_quantifier() == TypeConstants::QUANT_ONE)
       return &type;
@@ -464,6 +402,15 @@ bool TypeOps::is_equal(
 
       return n1.is_equal(tm, n2);
     }
+#ifdef ZORBA_WITH_JSON
+    case XQType::JSON_TYPE_KIND:
+    {
+      const JSONXQType& j1 = static_cast<const JSONXQType&>(type1);
+      const JSONXQType& j2 = static_cast<const JSONXQType&>(type2);
+
+      return j1.get_json_kind() == j2.get_json_kind();
+    }
+#endif
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
@@ -518,12 +465,14 @@ bool TypeOps::is_subtype(
       }
       case XQType::USER_DEFINED_KIND:
       {
-        const UserDefinedXQType& udSubtype = static_cast<const UserDefinedXQType&>(subtype);
+        const UserDefinedXQType& udSubtype = 
+        static_cast<const UserDefinedXQType&>(subtype);
+
         return udSubtype.isSubTypeOf(tm, supertype);
       }
       default:
       {
-        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED
+        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
         return false;
       }
       }
@@ -547,12 +496,46 @@ bool TypeOps::is_subtype(
       }
       default:
       {
-        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, FUNCTION, USER_DEFINED (???)
+        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, FUNCTION, JSON, USER_DEFINED (???)
         return false;
       }
       }
       break;
     }
+
+#ifdef ZORBA_WITH_JSON
+    case XQType::JSON_TYPE_KIND:
+    {
+      if (subtype.type_kind() != XQType::NODE_TYPE_KIND)
+        return false;
+
+      const JSONXQType& sub = static_cast<const JSONXQType&>(subtype);
+      const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
+
+      store::StoreConsts::JSONItemKind subKind = sub.get_json_kind();
+      store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
+
+      switch (supKind)
+      {
+      case store::StoreConsts::jsonItem:
+        return true;
+
+      case store::StoreConsts::jsonObject:
+      case store::StoreConsts::jsonArray:
+      case store::StoreConsts::jsonObjectPair:
+      case store::StoreConsts::jsonArrayPair:
+        return (subKind == supKind);
+
+      case store::StoreConsts::jsonPair:
+        return (subKind == store::StoreConsts::jsonPair ||
+                subKind == store::StoreConsts::jsonArrayPair ||
+                subKind == store::StoreConsts::jsonObjectPair);
+
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+#endif
 
     case XQType::ITEM_KIND:
     {
@@ -564,11 +547,15 @@ bool TypeOps::is_subtype(
       case XQType::FUNCTION_TYPE_KIND:
       case XQType::ANY_FUNCTION_TYPE_KIND:
       case XQType::EMPTY_KIND:
+#ifdef ZORBA_WITH_JSON
+      case XQType::JSON_TYPE_KIND:
+#endif
         return true;
 
       case XQType::USER_DEFINED_KIND:
       {
-        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        const UserDefinedXQType& udSubType = 
+        static_cast<const UserDefinedXQType&>(subtype);
 
         // What about union of atomic types ????
         return udSubType.isAtomic();
@@ -586,14 +573,17 @@ bool TypeOps::is_subtype(
       switch(subtype.type_kind()) 
       {
       case XQType::ATOMIC_TYPE_KIND:
-      case XQType::NODE_TYPE_KIND:
-      case XQType::ITEM_KIND:
       case XQType::ANY_TYPE_KIND:
       case XQType::ANY_SIMPLE_TYPE_KIND:
       case XQType::UNTYPED_KIND:
       case XQType::EMPTY_KIND:
       case XQType::USER_DEFINED_KIND:
         return true;
+
+      case XQType::NODE_TYPE_KIND:
+      case XQType::JSON_TYPE_KIND:
+      case XQType::ITEM_KIND:
+        return false;
 
       default:
         ZORBA_ASSERT(false);
@@ -619,7 +609,7 @@ bool TypeOps::is_subtype(
       }
 
       default:
-        // ANY, UNTYPED, ITEM, NODE
+        // ANY, UNTYPED, ITEM, NODE, JSON
         return false;
       }
       break;
@@ -639,7 +629,7 @@ bool TypeOps::is_subtype(
       default:
         return false;
       }
-    } // XQType::FUNCTION_TYPE_KIND
+    }
 
     case XQType::ANY_FUNCTION_TYPE_KIND:
     {
@@ -652,7 +642,7 @@ bool TypeOps::is_subtype(
         // any, untyped, node, atomic
         return false;
       }
-    } // XQTYPE::ANY_FUNCTION_TYPE_KIND
+    }
 
     case XQType::UNTYPED_KIND:
     {
@@ -687,7 +677,8 @@ bool TypeOps::is_subtype(
 
     case XQType::USER_DEFINED_KIND:
     {
-      const UserDefinedXQType& udSuperType = static_cast<const UserDefinedXQType&>(supertype);
+      const UserDefinedXQType& udSuperType = 
+      static_cast<const UserDefinedXQType&>(supertype);
 
       return udSuperType.isSuperTypeOf(tm, subtype);
     }
@@ -749,7 +740,7 @@ bool TypeOps::is_subtype(
       }
       default:
       {
-        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED
+        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
         return false;
       }
       }
@@ -768,8 +759,40 @@ bool TypeOps::is_subtype(
       break;
     }
 
+#ifdef ZORBA_WITH_JSON
+    case XQType::JSON_TYPE_KIND:
+    {
+      if (!subitem->isJSONItem())
+        return false;
+
+      const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
+
+      store::StoreConsts::JSONItemKind subKind = subitem->getJSONItemKind();
+      store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
+
+      switch (supKind)
+      {
+      case store::StoreConsts::jsonItem:
+        return true;
+
+      case store::StoreConsts::jsonObject:
+      case store::StoreConsts::jsonArray:
+      case store::StoreConsts::jsonObjectPair:
+      case store::StoreConsts::jsonArrayPair:
+        return (subKind == supKind);
+
+      case store::StoreConsts::jsonPair:
+        return (subKind == store::StoreConsts::jsonPair ||
+                subKind == store::StoreConsts::jsonArrayPair ||
+                subKind == store::StoreConsts::jsonObjectPair);
+
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+#endif
+
     case XQType::ITEM_KIND:
-    case XQType::ANY_TYPE_KIND:
     {
       return true;
       break;
@@ -836,6 +859,7 @@ bool TypeOps::is_subtype(
     }
 
     case XQType::UNTYPED_KIND:
+    case XQType::ANY_TYPE_KIND:
     {
       // We shouldn't be here because xs:untyped is not a sequence type
       ZORBA_ASSERT(false);
@@ -903,8 +927,11 @@ TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& 
   {
     const AtomicXQType& aSrc = static_cast<const AtomicXQType&>(src);
     const AtomicXQType& aTarget = static_cast<const AtomicXQType&>(target);
-    return RootTypeManager::ATOMIC_CAST_MATRIX[aSrc.get_type_code()][aTarget.get_type_code()];
+
+    return RootTypeManager::ATOMIC_CAST_MATRIX[aSrc.get_type_code()]
+                                              [aTarget.get_type_code()];
   }
+
   // incorect should work for other than built-in types or at least rename it.
   return TypeConstants::MAYBE_CASTABLE;
 }
@@ -924,10 +951,10 @@ xqtref_t TypeOps::union_type(
   else if (is_subtype(tm, type2, type1))
     return &type1;
 
-  else if (is_empty(tm, type1))
+  else if (type1.is_empty())
     return tm->create_type_x_quant(type2, TypeConstants::QUANT_QUESTION);
 
-  else if (is_empty(tm, type2))
+  else if (type2.is_empty())
     return tm->create_type_x_quant(type1, TypeConstants::QUANT_QUESTION);
 
   else if (type1.get_quantifier() == TypeConstants::QUANT_ONE &&
@@ -1050,10 +1077,10 @@ xqtref_t TypeOps::arithmetic_type(
     const XQType& type2,
     bool division)
 {
-  if (is_empty(tm, type1))
+  if (type1.is_empty())
     return &type1;
 
-  if (is_empty(tm, type2))
+  if (type2.is_empty())
     return &type2;
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;

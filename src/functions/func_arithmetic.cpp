@@ -90,14 +90,14 @@ xqtref_t binary_arith_func::getReturnType(
   }
            
 
-  if (TypeOps::is_empty(tm, *arg_types [0]))
+  if (arg_types[0]->is_empty())
     return arg_types[0];
 
-  if (TypeOps::is_empty(tm, *arg_types [1]))
+  if (arg_types[1]->is_empty())
     return arg_types[1];
 
-  int cnt1 = TypeOps::type_min_cnt(tm, *arg_types [0]);
-  int cnt2 = TypeOps::type_min_cnt(tm, *arg_types [0]);
+  int cnt1 = arg_types[0]->min_card();
+  int cnt2 = arg_types[1]->min_card();
   if (cnt2 < cnt1) cnt1 = cnt2;
 
   return (cnt1 == 0 ?

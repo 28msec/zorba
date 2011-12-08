@@ -315,7 +315,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       xqtref_t t0 = arg0->get_return_type();
       xqtref_t t1 = arg1->get_return_type();
 
-      if (TypeOps::type_max_cnt(tm, *t0) > 1 || TypeOps::type_max_cnt(tm, *t1) > 1)
+      if (t0->max_card() > 1 || t1->max_card() > 1)
         return NULL;
 
       if (props.specializeNum() && fn->isArithmeticFunction())
@@ -507,7 +507,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
   if (TypeOps::is_subtype(tm, *oldt, *t, arg->get_loc()))
     return NULL;
 
-  if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(tm, *t) <= 1)
+  if (arg->get_expr_kind() == promote_expr_kind && t->max_card() <= 1)
   {
     promote_expr* pe = static_cast<promote_expr*>(arg);
     xqtref_t peType = pe->get_target_type();

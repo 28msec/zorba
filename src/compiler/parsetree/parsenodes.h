@@ -6431,12 +6431,15 @@ private:
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-class JSON_Constructor : public exprnode {
+class JSON_Constructor : public exprnode 
+{
 protected:
   JSON_Constructor( QueryLoc const &loc ) : exprnode( loc ) { }
 };
 
-class JSON_ArrayConstructor : public JSON_Constructor {
+
+class JSON_ArrayConstructor : public JSON_Constructor 
+{
 public:
   JSON_ArrayConstructor(
     QueryLoc const&,
@@ -6453,7 +6456,9 @@ private:
   exprnode const *const expr_;
 };
 
-class JSON_ObjectConstructor : public JSON_Constructor {
+
+class JSON_ObjectConstructor : public JSON_Constructor 
+{
 public:
   JSON_ObjectConstructor(
     QueryLoc const&,

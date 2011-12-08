@@ -875,10 +875,10 @@ xqtref_t TypeManagerImpl::create_type(
   }
 
 #ifdef ZORBA_WITH_JSON
-  case XQType::JSON_TEST_KIND:
+  case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
-    return create_json_type(jt.get_kind(), quantifier);
+    return create_json_type(jt.get_json_kind(), quantifier);
   }
 #endif
 

@@ -26,7 +26,7 @@
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 
-#include "types/typeops.h"
+#include "types/typeimpl.h"
 
 #include "functions/func_node_sort_distinct.h"
 
@@ -309,13 +309,13 @@ expr_t MarkConsumerNodeProps::apply(
     
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
 
-    if (TypeOps::is_empty(tm, *targetType)) 
+    if (targetType->is_empty()) 
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
     else if (q == TypeConstants::QUANT_STAR ||
              (q == TypeConstants::QUANT_PLUS &&
-              TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1))
+              arg->get_return_type()->min_card() >= 1))
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
@@ -338,7 +338,7 @@ expr_t MarkConsumerNodeProps::apply(
     xqtref_t targetType = curExpr->get_target_type();
     TypeConstants::quantifier_t q = targetType->get_quantifier();
 
-    if (TypeOps::is_empty(tm, *targetType)) 
+    if (targetType->is_empty()) 
     {
       set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
@@ -357,7 +357,7 @@ expr_t MarkConsumerNodeProps::apply(
       if (curExpr->getIgnoresDuplicateNodes() == ANNOTATION_TRUE &&
           (q == TypeConstants::QUANT_STAR ||
            (q == TypeConstants::QUANT_PLUS &&
-            TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1)))
+            arg->get_return_type()->min_card() >= 1)))
       {
         set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
       }

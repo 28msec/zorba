@@ -234,16 +234,26 @@ namespace zorba
   XQType Data Members:
   *********************
 
-  m_manager    : XQType instances are created via methods provided by TypeManager
-                 and its subclasses. m_manager is a pointer back to the specific
-                 TypeManager that created this XQType.
-  m_type_kind  : The "kind" of this type. One "kind" per each concrete subclass
-                 of XQType. See type_kind_t enum below
-  m_quantifier : The quantifier of this type.
-  theIsBuiltin : Whether the type is built-in or not. For built-in types refernce
-                 counting based garbage collection does not apply; these types
-                 are deleted when the root TypeManager is deleted during engine
-                 shutdown.
+  theManager:
+  -----------
+  XQType instances are created via methods provided by TypeManager and its
+  subclasses. m_manager is a pointer back to the specific TypeManager that
+  created this XQType.
+
+  theKind:
+  --------
+  The "kind" of this type. One "kind" per each concrete subclass of XQType.
+  See type_kind_t enum below
+
+  theQuantifier:
+  --------------
+  The quantifier of this type.
+
+  theIsBuiltin:
+  -------------
+  Whether the type is built-in or not. For built-in types refernce counting based
+  garbage collection does not apply; these types are deleted when the root 
+  TypeManager is deleted during engine shutdown.
 
 ********************************************************************************/
 class XQType : public SimpleRCObject
@@ -265,7 +275,7 @@ public:
 
     NODE_TYPE_KIND,          // KindTest + quantifier
 
-    JSON_TEST_KIND,          // JSONTest + quantifier
+    JSON_TYPE_KIND,          // JSONTest + quantifier
 
     FUNCTION_TYPE_KIND,      // function(...) as ... + quantifier
 
@@ -305,23 +315,16 @@ public:
 protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
-  /*const*/ TypeManager        * m_manager;
-  /*const*/ type_kind_t          m_type_kind;
-  TypeConstants::quantifier_t    m_quantifier;
+  TypeManager                  * theManager;
+  type_kind_t                    theKind;
+  TypeConstants::quantifier_t    theQuantifier;
   bool                           theIsBuiltin;
 
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
-    SERIALIZE_ENUM(type_kind_t, m_type_kind)
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, m_quantifier);
-    ar & theIsBuiltin;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   virtual ~XQType() { }
@@ -332,13 +335,23 @@ public:
       delete this;
   }
 
-  TypeManager* get_manager() const { return m_manager; }
+  TypeManager* get_manager() const { return theManager; }
 
-  type_kind_t type_kind() const { return m_type_kind; }
+  type_kind_t type_kind() const { return theKind; }
 
-  TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
+  TypeConstants::quantifier_t get_quantifier() const { return theQuantifier; }
 
   bool is_builtin() const { return theIsBuiltin; }
+
+  bool is_empty() const { return theKind == XQType::EMPTY_KIND; }
+
+  bool is_none() const { return theKind == XQType::NONE_KIND; }
+
+  int max_card() const;
+  
+  int min_card() const;
+
+  int card() const;
 
   virtual bool isList() const { return false; }
 
@@ -356,21 +369,22 @@ public:
 
 protected:
   XQType(
-        const TypeManager* manager,
+         const TypeManager* manager,
          type_kind_t type_kind,
          TypeConstants::quantifier_t quantifier,
          bool builtin)
     :
-    m_manager((TypeManager*)manager),
-    m_type_kind(type_kind),
-    m_quantifier(quantifier),
+    theManager(const_cast<TypeManager*>(manager)),
+    theKind(type_kind),
+    theQuantifier(quantifier),
     theIsBuiltin(builtin)
   {
     if (theIsBuiltin)
     {
       // register this hardcoded object to help plan serialization
       XQType* this_ptr = this;
-      *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
+      *::zorba::serialization::ClassSerializer::getInstance()->
+      getArchiverForHardcodedObjects() & this_ptr;
     }
   }
 };
@@ -389,10 +403,11 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+
  public:
   SERIALIZABLE_CLASS(NoneXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
   }
@@ -412,10 +427,11 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+
  public:
   SERIALIZABLE_CLASS(EmptyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
   }
@@ -429,17 +445,18 @@ class ItemXQType : public XQType
 {
 public:
   ItemXQType(
-        const TypeManager* manager,
-        TypeConstants::quantifier_t quantifier,
-        bool builtin = false)
+      const TypeManager* manager,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin = false)
     :
     XQType(manager, ITEM_KIND, quantifier, builtin)
   {
   }
+
  public:
   SERIALIZABLE_CLASS(ItemXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ItemXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
   }
@@ -628,7 +645,7 @@ public:
 class JSONXQType : public XQType
 {
 private:
-  store::StoreConsts::JSONItemKind  theKind;
+  store::StoreConsts::JSONItemKind  theJSONKind;
 
 public:
   SERIALIZABLE_CLASS(JSONXQType)
@@ -642,7 +659,7 @@ public:
       TypeConstants::quantifier_t quantifier,
       bool builtin = false);
 
-  store::StoreConsts::JSONItemKind get_kind() const { return theKind; }
+  store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -728,7 +745,7 @@ public:
 
   m_qname          : The name of this user-defined type. The actual type
                      definition is stored in the TypeManger that created this
-                     type (and is pointed to my m_manager). The TypeManager
+                     type (and is pointed to my theManager). The TypeManager
                      also stores the mapping from the type name to the type
                      definition.
   m_base_type      : The baseType of this type. NULL for list or union types.

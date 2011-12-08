@@ -532,6 +532,7 @@ bool parser::next( token *t ) {
                 switch ( PEEK_TOKEN() ) {
                   case token::begin_array : GOTO_STATE( A0 );
                   case token::begin_object: GOTO_STATE( O0 );
+                  case token::none        : break;
                   default: THROW_UNEXPECTED_TOKEN( peeked_token_ );
                 }
       case J1:  return false;
