@@ -641,8 +641,14 @@ DebuggerRuntime::listSource(
   }
   unsigned int lLineCount = lFileContent.size();
 
-  aBeginLine = std::min(lLineCount, (aBeginLine == 0 ? 1 : aBeginLine));
-  aEndLine = std::min(lLineCount, (aEndLine == 0 ? lLineCount : aEndLine));
+  // ocmpute the begin and end lines depending on the current line:
+  // - 5 lines before and after the current line if available
+  // - all the file otherwise
+  unsigned int lLines = 5;
+  unsigned int lClBl = lCurrentLine == 0  || lCurrentLine <= lLines ? 1 : lCurrentLine - lLines;
+  unsigned int lClEl = lCurrentLine == 0  || lCurrentLine >= lLineCount - lLines ? lLineCount : lCurrentLine + lLines;
+  aBeginLine = std::min(lLineCount, (aBeginLine == 0 ? lClBl : aBeginLine));
+  aEndLine = std::min(lLineCount, (aEndLine == 0 ? lClEl : aEndLine));
 
   // first, find the breakpoints in this file
   std::map<int, bool> lBreakLines;
