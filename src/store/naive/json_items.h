@@ -82,57 +82,14 @@ public:
 
 *******************************************************************************/
 
-class JSONTree
-{
-protected:
-  mutable long              theRefCount;
-  SYNC_CODE(mutable RCLock  theRCLock;)
-
-  JSONItem*                 theRoot;
-
-public:
-  JSONTree();
-
-  ~JSONTree() {}
-
-  void free();
-
-  long getRefCount() const { return theRefCount; }
-
-  long& getRefCount()      { return theRefCount; }
-
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  JSONItem* getRoot() const { return theRoot; }
-
-  void setRoot(JSONItem* root) { theRoot = root; }
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-
 class JSONItem : public store::Item
 {
+protected:
+  SYNC_CODE(mutable RCLock  theRCLock;)
 public:
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
   virtual ~JSONItem() {}
-
-  void setTree(const JSONTree* t)
-  {
-    theUnion.treeRCPtr = (long*)t;
-  }
-
-  void free()
-  {
-    if (getTree() != NULL)
-      getTree()->free();
-  }
-
-  JSONTree*
-  getTree() const { return (JSONTree*)theUnion.treeRCPtr; }
-
-  SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
   virtual void
   accept(JSONVisitor*) const = 0;
@@ -144,6 +101,47 @@ public:
 *******************************************************************************/
 
 class JSONObject : public JSONItem
+{
+public:
+  virtual ~JSONObject() {}
+
+  virtual void
+  add(const JSONObjectPair_t& aPair) = 0;
+
+#if 0
+  // accessors
+  virtual store::Iterator_t
+  pairs() const;
+
+  bool getBooleanValue() const { return true; }
+
+  virtual Item*
+  getType() const;
+
+  // 
+  // convenience accessors pushed down for performance
+  virtual store::Item*
+  lookup(const store::Item_t& name) const;
+
+  bool equals(
+        const store::Item*,
+        long = 0,
+        const XQPCollator* = 0) const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  virtual store::Item* copy(
+        store::Item* parent,
+        const store::CopyMode&) const;
+#endif
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+
+class SimpleJSONObject : public JSONObject
 {
 protected:
   struct JSONObjectPairComparator
@@ -160,7 +158,7 @@ protected:
   Pairs thePairs;
 
 public:
-  virtual ~JSONObject() {}
+  virtual ~SimpleJSONObject() {}
 
   void
   add(const JSONObjectPair_t& aPair);
@@ -203,13 +201,6 @@ public:
 
 class JSONArray : public JSONItem
 {
-protected:
-  typedef std::vector<JSONArrayPair_t> Pairs;
-  typedef Pairs::const_iterator PairsConstIter;
-  typedef Pairs::iterator PairsIter;
-
-  Pairs theContent;
-
 public:
   virtual ~JSONArray() {}
 
@@ -230,13 +221,10 @@ public:
 #endif
 
   virtual void
-  accept(JSONVisitor*) const;
+  push_back(const JSONArrayPair_t& aPair) = 0;
 
-  void
-  push_back(const JSONArrayPair_t& aPair);
-
-  xs_integer
-  size() const { return theContent.size(); }
+  virtual xs_integer
+  size() const = 0;
 
 };
 
@@ -245,7 +233,81 @@ public:
 
 *******************************************************************************/
 
+class SimpleJSONArray : public JSONArray
+{
+protected:
+  typedef std::vector<JSONArrayPair_t> Pairs;
+  typedef Pairs::const_iterator PairsConstIter;
+  typedef Pairs::iterator PairsIter;
+
+  Pairs theContent;
+
+public:
+  virtual ~SimpleJSONArray() {}
+
+#if 0
+  // accessors
+  virtual store::Iterator_t
+  pairs() const;
+
+  bool getBooleanValue() const { return true; }
+
+  virtual store::Item*
+  getType() const;
+
+  // 
+  // convenience accessors pushed down for performance
+  virtual store::Item*
+  lookup(const store::Item_t& index) const;
+#endif
+
+  virtual void
+  accept(JSONVisitor*) const;
+
+  virtual void
+  push_back(const JSONArrayPair_t& aPair);
+
+  virtual xs_integer
+  size() const { return theContent.size(); }
+
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
 class JSONObjectPair : public JSONItem
+{
+public:
+  virtual ~JSONObjectPair() {}
+
+  virtual void
+  setName(const store::Item_t& aName) = 0;
+
+  virtual void
+  setValue(const store::Item_t& aValue)  = 0;
+
+  virtual void
+  setContainer(JSONObject* aContainer)  = 0;
+
+  virtual store::Item*
+  getName() const = 0;
+
+  virtual store::Item*
+  getValue() const = 0;
+
+  virtual store::Item*
+  getContainer() const = 0;
+
+  virtual void
+  accept(JSONVisitor*) const {}
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class SimpleJSONObjectPair : public JSONObjectPair
 {
 protected:
   store::Item_t theName;
@@ -253,14 +315,17 @@ protected:
   JSONObject*   theContainer;
 
 public:
-  JSONObjectPair() {}
+  SimpleJSONObjectPair() {}
 
-  JSONObjectPair(
+  SimpleJSONObjectPair(
       const store::Item_t& aName,
       const store::Item_t& aValue
-    );
+    )
+    : theName(aName),
+      theValue(aValue),
+      theContainer(0) {}
 
-  virtual ~JSONObjectPair() {}
+  virtual ~SimpleJSONObjectPair() {}
 
   void
   setName(const store::Item_t& aName) { theName = aName; }
@@ -288,8 +353,35 @@ public:
 /******************************************************************************
 
 *******************************************************************************/
-
 class JSONArrayPair : public JSONItem
+{
+public:
+  virtual ~JSONArrayPair() {}
+
+  virtual void
+  setPosition(const store::Item_t& aPos) = 0;
+
+  virtual void
+  setValue(const store::Item_t& aValue) = 0;
+
+  virtual void
+  setContainer(JSONArray* aArray) = 0;
+
+  virtual store::Item*
+  getPosition() const = 0;
+
+  virtual store::Item*
+  getValue() const = 0;
+
+  virtual store::Item*
+  getContainer() const = 0;
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class SimpleJSONArrayPair : public JSONArrayPair
 {
 protected:
   store::Item_t thePosition;
@@ -297,15 +389,23 @@ protected:
   JSONArray*    theContainer;
 
 public:
-  JSONArrayPair(
+  SimpleJSONArrayPair(
       const store::Item_t& aValue,
       JSONArray*           aContainer
     )
     : theValue(aValue),
       theContainer(aContainer) {}
 
+  SimpleJSONArrayPair(
+      const store::Item_t& aPosition,
+      const store::Item_t& aValue
+    )
+    : thePosition(aPosition),
+      theValue(aValue),
+      theContainer(0) {}
 
-  virtual ~JSONArrayPair() {}
+
+  virtual ~SimpleJSONArrayPair() {}
 
   void
   setPosition(const store::Item_t& aPos) { thePosition = aPos; }

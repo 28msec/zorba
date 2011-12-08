@@ -31,29 +31,8 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-JSONTree::JSONTree()
-  : theRoot(0)
-{
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void
-JSONTree::free()
-{
-  delete theRoot;
-
-  delete this;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
 bool
-JSONObject::JSONObjectPairComparator::operator()(
+SimpleJSONObject::JSONObjectPairComparator::operator()(
     const JSONObjectPair_t& lhs,
     const JSONObjectPair_t& rhs) const
 {
@@ -65,7 +44,7 @@ JSONObject::JSONObjectPairComparator::operator()(
 
 *******************************************************************************/
 void
-JSONObject::add(const JSONObjectPair_t& p)
+SimpleJSONObject::add(const JSONObjectPair_t& p)
 {
   thePairs.insert(p);
 }
@@ -75,7 +54,7 @@ JSONObject::add(const JSONObjectPair_t& p)
 
 *******************************************************************************/
 void
-JSONObject::accept(JSONVisitor* v) const
+SimpleJSONObject::accept(JSONVisitor* v) const
 {
   v->begin(this);
 
@@ -111,7 +90,7 @@ JSONObject::accept(JSONVisitor* v) const
 
 *******************************************************************************/
 void
-JSONArray::accept(JSONVisitor* v) const
+SimpleJSONArray::accept(JSONVisitor* v) const
 {
   v->begin(this);
 
@@ -128,7 +107,7 @@ JSONArray::accept(JSONVisitor* v) const
 
 *******************************************************************************/
 void
-JSONArray::push_back(const JSONArrayPair_t& aPair)
+SimpleJSONArray::push_back(const JSONArrayPair_t& aPair)
 {
   store::Item_t lPos;
   GET_FACTORY().createInteger(lPos, theContent.size() + 1);
@@ -142,7 +121,7 @@ JSONArray::push_back(const JSONArrayPair_t& aPair)
 
 *******************************************************************************/
 void
-JSONArrayPair::accept(JSONVisitor* v) const
+SimpleJSONArrayPair::accept(JSONVisitor* v) const
 {
   xs_integer lSize = theContainer->size();
   v->begin(this, lSize == getPosition()->getIntegerValue());

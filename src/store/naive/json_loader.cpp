@@ -65,37 +65,35 @@ JSONLoader::next( )
     return NULL;
   }
 
-  BasicItemFactory& lFactory = GET_FACTORY();
-
-  std::auto_ptr<JSONTree> lTree(new JSONTree());
-
-  JSONItem_t lRootItem;
-
-  // stack of objects, arrays, and object pairs
-  std::vector<JSONItem_t> lStack;
-
-  parser lParser(in);
-
-  token lToken;
-
   try
   {
+    BasicItemFactory& lFactory = GET_FACTORY();
+
+    JSONItem_t lRootItem;
+
+    // stack of objects, arrays, and object pairs
+    std::vector<JSONItem_t> lStack;
+
+    parser lParser(in);
+
+    token lToken;
+
     while (lParser.next(&lToken))
     {
       switch (lToken.get_type())
       {
         case token::begin_array:
-          lStack.push_back(new JSONArray());
+          lStack.push_back(new SimpleJSONArray());
           break;
 
         case token::begin_object:
-          lStack.push_back(new JSONObject());
+          lStack.push_back(new SimpleJSONObject());
           break;
 
         case token::end_array:
         case token::end_object:
           {
-            JSONItem* lItem = cast<JSONItem>(lStack.back());
+            JSONItem_t lItem = lStack.back();
 
             lStack.pop_back();
 
@@ -126,6 +124,11 @@ JSONLoader::next( )
           }
         case token::number:
           {
+            store::Item_t lValue;
+            zstring s = lToken.get_value();
+            lFactory.createJSONNumber(lValue, s);
+            // todo check return type
+            addValue(lStack, lValue);
             break;
           }
         case token::json_false:
@@ -144,7 +147,8 @@ JSONLoader::next( )
           }
         case token::json_null:
           {
-            store::Item_t lValue = new JSONNull();
+            store::Item_t lValue;
+            lFactory.createJSONNull(lValue);
             addValue(lStack, lValue);
             break;
           }
@@ -166,16 +170,16 @@ JSONLoader::addValue(
   std::vector<JSONItem_t>& aStack,
   const store::Item_t& aValue)
 {
-  JSONItem* lLast = aStack.back().getp();
+  JSONItem_t lLast = aStack.back();
 
-  JSONObject* lObject = dynamic_cast<JSONObject*>(lLast);
+  JSONObject* lObject = dynamic_cast<JSONObject*>(lLast.getp());
 
   if (lObject)
   {
     // if the top of the stack is an object, then
     // the value must be a string which is the name
     // of the object's name value pair
-    JSONObjectPair_t lOPair = new JSONObjectPair();
+    JSONObjectPair_t lOPair = new SimpleJSONObjectPair();
     lOPair->setName(aValue);
     lObject->add(lOPair);
     aStack.push_back(lOPair);
@@ -183,7 +187,7 @@ JSONLoader::addValue(
     return;
   }
 
-  JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lLast);
+  JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lLast.getp());
   if (lOPair)
   {
     lOPair->setValue(aValue);
@@ -192,11 +196,11 @@ JSONLoader::addValue(
     return;
   }
 
-  JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast);
+  JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast.getp());
   assert(lArray);
 
   JSONArrayPair_t lArrayPair(
-      new JSONArrayPair(
+      new SimpleJSONArrayPair(
         aValue,
         lArray
       )

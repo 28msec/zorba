@@ -804,6 +804,32 @@ public:
   virtual bool createError(
           store::Item_t& result,
           ZorbaException* ze) = 0;
+
+#ifdef ZORBA_WITH_JSON
+  virtual bool createJSONNull(store::Item_t& result) = 0;
+
+  virtual bool createJSONNumber(
+      store::Item_t& result,
+      store::Item_t& string) = 0;
+
+  virtual bool createJSONNumber(
+      store::Item_t& result,
+      zstring& string) = 0;
+
+  virtual bool createJSONObject(store::Item_t& result) = 0;
+
+  virtual bool createJSONArray(store::Item_t& result) = 0;
+
+  virtual bool createJSONObjectPair(
+        store::Item_t& result,
+        store::Item_t& name,
+        store::Item_t& value) = 0;
+
+  virtual bool createJSONArrayPair(
+        store::Item_t& result,
+        store::Item_t& position,
+        store::Item_t& value) = 0;
+#endif
 };
 
 } // namespace store

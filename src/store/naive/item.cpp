@@ -41,7 +41,7 @@ namespace store
 void Item::addReference() const
 {
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode() || isJSONItem())
+  if (isNode())
   {
     InterlockedIncrement(theUnion.treeRCPtr);
     InterlockedIncrement(&theRefCount);
@@ -60,13 +60,14 @@ void Item::addReference() const
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
   }
+#ifdef ZORBA_WITH_JSON
   else if (isJSONItem())
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
-    ++(*theUnion.treeRCPtr);
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
   }
+#endif
   else if (isAtomic() || isError())
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
@@ -97,7 +98,7 @@ void Item::addReference() const
 void Item::removeReference()
 {
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode() || isJSONItem())
+  if (isNode())
   {
     InterlockedDecrement(&theRefCount);
     if (!InterlockedDecrement(theUnion.treeRCPtr))
@@ -128,12 +129,12 @@ void Item::removeReference()
 
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
   }
+#ifdef ZORBA_WITH_JSON
   else if (isJSONItem())
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
 
-    --theRefCount;
-    if (--(*theUnion.treeRCPtr) == 0)
+    if (--theRefCount == 0)
     {
       SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
       free();
@@ -142,6 +143,7 @@ void Item::removeReference()
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
   }
+#endif
   else if (isAtomic() || isError())
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
@@ -194,20 +196,8 @@ void Item::removeReference()
 bool Item::isNode() const
 {
   return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
-          theUnion.treeRCPtr != 0
-#ifdef ZORBA_WITH_JSON
-          && !theIsJSONItem
-#endif
-         );
+          theUnion.treeRCPtr != 0);
 }
-
-
-#ifdef ZORBA_WITH_JSON
-bool Item::isJSONItem() const
-{
-  return theIsJSONItem;
-}
-#endif
 
 
 bool Item::isAtomic() const
@@ -1276,6 +1266,11 @@ Item* Item::copy(
 
 
 #ifdef ZORBA_WITH_JSON
+bool Item::isJSONItem() const
+{
+  return ((theUnion.itemKind & JSONIQ) == JSONIQ); 
+}
+
 
 store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
@@ -1383,7 +1378,6 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
-
 
 } // namespace store
 } // namespace zorba
