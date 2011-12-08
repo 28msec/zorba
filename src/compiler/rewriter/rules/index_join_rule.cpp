@@ -271,7 +271,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // The domain of the outer var must contain more than 1 item.
   xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
 
-  if (TypeOps::type_max_cnt(tm, *outerDomainType) < 2)
+  if (outerDomainType->max_card() < 2)
     return false;
 
   // The expr that defines the inner var must not depend on the outer var.

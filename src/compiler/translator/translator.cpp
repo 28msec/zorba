@@ -8470,8 +8470,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
                                          *errCode);
 
-      if (TypeOps::type_max_cnt(pathExpr->get_type_manager(),
-                                *sourceExpr->get_return_type()) > 1)
+      if (sourceExpr->get_return_type()->max_card() > 1)
         theNodeSortStack.top().theSingleInput = false;
 
       pathExpr->add_back(sourceExpr);
@@ -10590,6 +10589,72 @@ void end_visit(const InlineFunction& v, void* aState)
 
 
 /*******************************************************************************
+  JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
+********************************************************************************/
+void* begin_visit(const JSON_PairConstructor& v) 
+{
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  JSONConstructor ::= ObjectConstructor | ArrayConstructor
+********************************************************************************/
+
+
+/*******************************************************************************
+  ArrayConstructor ::= "[" Expr? "]"
+********************************************************************************/
+void* begin_visit(const JSON_ArrayConstructor& v)
+{
+  TRACE_VISIT();
+#ifdef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+#ifdef ZORBA_WITH_JSON
+  expr_t contentExpr;
+
+  if (v.get_expr() != NULL)
+    contentExpr = pop_nodestack();
+
+  push_nodestack(contentExpr);
+#endif
+}
+
+
+/*******************************************************************************
+  ObjectConstructor ::= "{" Expr? "}"
+********************************************************************************/
+void* begin_visit(const JSON_ObjectConstructor& v)
+{
+  TRACE_VISIT();
+#ifdef ZORBA_WITH_JSON
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
 
   Node Construction
 
@@ -10653,7 +10718,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname())
   {
     RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(StartEndTagMismatch_23),
+    ERROR_PARAMS(ZED(XPST0003_StartEndTagMismatch_23),
                  start_tag->get_qname(),
                  end_tag->get_qname()));
   }
@@ -13105,44 +13170,6 @@ void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void *begin_visit (const JSON_ArrayConstructor& v ) {
-  TRACE_VISIT ();
-#ifdef ZORBA_WITH_JSON
-  // TODO
-#endif /* ZORBA_WITH_JSON */
-  return no_state;
-}
-
-void end_visit (const JSON_ArrayConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  // nothing to do
-}
-
-void *begin_visit (const JSON_ObjectConstructor& v ) {
-  TRACE_VISIT ();
-#ifdef ZORBA_WITH_JSON
-  // TODO
-#endif /* ZORBA_WITH_JSON */
-  return no_state;
-}
-
-void end_visit (const JSON_ObjectConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  // nothing to do
-}
-
-void *begin_visit (const JSON_PairConstructor& v ) {
-  TRACE_VISIT ();
-#ifdef ZORBA_WITH_JSON
-  // TODO
-#endif /* ZORBA_WITH_JSON */
-  return no_state;
-}
-
-void end_visit (const JSON_PairConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  // nothing to do
-}
 
 void *begin_visit (const JSON_Test& v ) {
   TRACE_VISIT ();
@@ -13269,10 +13296,8 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   std::map<zstring, zstring> modulesStack;
 
   if (typeid(root) != typeid(MainModule))
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( ModuleDeclNotInMain ) ),
-      ERROR_LOC( root.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, root.get_location(),
+    ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
 
   ModulesInfo minfo(ccb);
 

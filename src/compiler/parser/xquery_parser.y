@@ -6284,11 +6284,11 @@ FTScope :
 FTBigUnit :
         SENTENCE
         {
-            $$ = new FTBigUnit( LOC(@$), ft_big_unit::sentence );
+          $$ = new FTBigUnit( LOC(@$), ft_big_unit::sentence );
         }
     |   PARAGRAPH
         {
-            $$ = new FTBigUnit( LOC(@$), ft_big_unit::paragraph );
+          $$ = new FTBigUnit( LOC(@$), ft_big_unit::paragraph );
         }
     ;
 
@@ -6296,7 +6296,7 @@ FTBigUnit :
 FTIgnoreOption :
         WITHOUT CONTENT UnionExpr
         {
-            $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
+          $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
         }
     ;
 
@@ -6305,25 +6305,25 @@ FTIgnoreOption :
 JSONConstructor
     :   JSONArrayConstructor
         {
-            $$ = $1;
+          $$ = $1;
         }
     |   JSONObjectConstructor
         {
-            $$ = $1;
+          $$ = $1;
         }
     ;
 
 JSONArrayConstructor
     :   LBRACK opt_Expr RBRACK
         {
-            $$ = new JSON_ArrayConstructor( LOC( @$ ), $2 );
+          $$ = new JSON_ArrayConstructor(LOC(@$), $2);
         }
     ;
 
 JSONObjectConstructor
     :   LBRACE opt_Expr RBRACE
         {
-            $$ = new JSON_ObjectConstructor( LOC( @$ ), $2 );
+          $$ = new JSON_ObjectConstructor(LOC(@$), $2);
         }
     ;
 
@@ -6331,7 +6331,7 @@ JSONObjectConstructor
 opt_Expr
     :   /* empty */
         {
-            $$ = NULL;
+          $$ = NULL;
         }
     |   Expr
         {

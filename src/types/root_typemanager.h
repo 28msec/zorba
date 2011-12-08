@@ -35,6 +35,7 @@ class RootTypeManager : public TypeManagerImpl
 {
   friend class root_static_context;
   friend class TypeOps;
+  friend class XQType;
   friend class TypeManagerImpl;
   friend class AtomicXQType;
 

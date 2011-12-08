@@ -25,7 +25,7 @@
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
 
-#include "types/typeops.h"
+#include "types/typeimpl.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -611,15 +611,13 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
   if (!generic_compute(e)) 
   {
-    TypeManager* tm = e->get_type_manager();
-
-    ulong num_steps = (ulong)e->size();
+    csize num_steps = e->size();
     bool only_child_axes = true;
     ulong num_desc_axes = 0;
     ulong num_following_axes = 0;
     bool reverse_axes = false;
 
-    for (ulong i = 1; i < num_steps; ++i) 
+    for (csize i = 1; i < num_steps; ++i) 
     {
       axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i].getp());
       assert(ase != NULL);
@@ -658,7 +656,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
     {
       xqtref_t crt = (*e)[0]->get_return_type();
 
-      if (TypeOps::type_max_cnt(tm, *crt) <= 1) 
+      if (crt->max_card() <= 1) 
       {
         bool sorted = false;
         bool distinct = false;
