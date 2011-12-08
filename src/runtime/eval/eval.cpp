@@ -38,6 +38,8 @@
 
 #include "api/auditimpl.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba {
 
@@ -72,13 +74,15 @@ EvalIterator::EvalIterator(
     const std::vector<store::Item_t>& aVarNames,
     const std::vector<xqtref_t>& aVarTypes,
     expr_script_kind_t scriptingKind,
-    const store::NsBindings& localBindings)
+    const store::NsBindings& localBindings,
+    bool forDebugger)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),
   theVarTypes(aVarTypes),
   theScriptingKind(scriptingKind),
-  theLocalBindings(localBindings)
+  theLocalBindings(localBindings),
+  theForDebugger(forDebugger)
 {
 }
 
@@ -104,6 +108,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarTypes;
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
+  ar & theForDebugger;
 }
 
 
@@ -120,14 +125,14 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CONSUME(item, 0);
 
   {
-    ulong numEvalVars = theVarNames.size();
+    csize numEvalVars = theVarNames.size();
 
     // Create an "outer" sctx and register into it (a) global vars corresponding
     // to the eval vars and (b) the expression-level ns bindings at the place 
     // where the eval call appears at.
     static_context* outerSctx = theSctx->create_child_context();
 
-    for (ulong i = 0; i < numEvalVars; ++i)
+    for (csize i = 0; i < numEvalVars; ++i)
     {
       var_expr_t ve = new var_expr(outerSctx,
                                    loc,
@@ -214,7 +219,7 @@ void EvalIterator::copyOuterVariables(
   dynamic_context* outerDctx = evalDctx->getParent();
 
   std::vector<var_expr_t> globalVars;
-  outerSctx->get_parent()->getVariables(globalVars, true, true);
+  outerSctx->get_parent()->getVariables(globalVars, theForDebugger, true);
   
   FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
   {
@@ -253,7 +258,7 @@ void EvalIterator::copyOuterVariables(
   // For each of the eval vars, place its value into the evalDctx. The var
   // value is represented as a PlanIteratorWrapper over the subplan that
   // evaluates the domain expr of the eval var.
-  for (ulong i = 0; i < theChildren.size() - 1; ++i)
+  for (csize i = 0; i < theChildren.size() - 1; ++i)
   {
     var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
                                               loc,
@@ -351,14 +356,17 @@ PlanIter_t EvalIterator::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   std::string lName = evalname.str();
-  zorba::audit::StringAuditor filenameAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lName);
+
+  audit::StringAuditor filenameAudit(sar, audit::XQUERY_COMPILATION_FILENAME, lName);
 
   parsenode_t ast;
+
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(sar,
+                                         audit::XQUERY_COMPILATION_PARSE_DURATION,
+                                         lTimer);
+
     ast = compiler.parse(os, lName);
   }
 
@@ -367,7 +375,37 @@ PlanIter_t EvalIterator::compile(
     throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   expr_t rootExpr;
-  PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId, sar);
+  PlanIter_t rootIter = compiler.compile(ast,
+                                         false, // do not apply pul
+                                         rootExpr,
+                                         maxOuterVarId,
+                                         sar);
+
+  if (theScriptingKind == SIMPLE_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0004, loc, ERROR_PARAMS("eval"));
+    }
+    else if (ccb->isUpdating())
+    {
+      RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), "eval"));
+    }
+  }
+  else if (theScriptingKind == UPDATING_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0003, loc, ERROR_PARAMS("eval_u"));
+    }
+  }
+  else // sequential
+  {
+    if (ccb->isUpdating())
+    {
+      RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS("eval_s"));
+    }
+  }
 
   return rootIter;
 }
