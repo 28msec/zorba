@@ -59,6 +59,12 @@ JSONLoader::next( )
   using namespace zorba::simplestore;
   using namespace zorba::simplestore::json;
 
+  in.peek();
+  if (in.eof())
+  {
+    return NULL;
+  }
+
   try
   {
     BasicItemFactory& lFactory = GET_FACTORY();
