@@ -236,9 +236,15 @@ DebuggerRuntime::getStackFrames()
   for (std::size_t i = 0 ; i < lRawFrames.size(); i++) {
     lLocation = lRawFrames.at(i).first;
 
+    // TODO: this encoding-decoding should be cleanped up after bug 901676 is solved
     String lFileName(lLocation.getFilename().str());
     String lPrefix = lFileName.substr(0, 7);
     if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
+      lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
+    } else if (lPrefix == "file://") {
+      // TODO: this else block whould be removed when bug 901669 is solved
+      // this should correct the bad file URI on windows that the stack frames have
+      lFileName = URIHelper::decodeFileURI(lFileName);
       lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
     }
 
@@ -251,6 +257,17 @@ DebuggerRuntime::getStackFrames()
   // add the top most frame from the current iterator
   const DebugIterator* lIterator = lCommons->getCurrentIterator();
   lLocation = lIterator->loc;
+  // TODO: this encoding-decoding should be cleanped up after bug 901676 is solved
+  String lFileName(lLocation.getFilename().str());
+  String lPrefix = lFileName.substr(0, 7);
+  if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
+    lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
+  } else if (lPrefix == "file://") {
+    // TODO: this else block whould be removed when bug 901669 is solved
+    // this should correct the bad file URI on windows that the stack frames have
+    lFileName = URIHelper::decodeFileURI(lFileName);
+    lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
+  }
   StackFrameImpl lFrame(lSignature, lLocation);
   lFrames.push_back(lFrame);
 
@@ -277,10 +294,27 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
   // this should be the top-most stack frame
   std::vector<StackFrameImpl> lFrames = getStackFrames();
   if (lFrames.size() > 0) {
+    // wrap in CDATA because xml elements might come along
+    lResponse << "<![CDATA[";
+
     StackFrameImpl lFrame = lFrames[lFrames.size() - 1];
+    String lFileName = lFrame.getLocation().getFileName();
+    String lPrefix = lFileName.substr(0, 7);
+    if (lPrefix == "file://") {
+      lFileName = URIHelper::decodeFileURI(lFileName);
+    }
+
+    unsigned int lBeginLine = lFrame.getLocation().getLineBegin();
+    unsigned int lEndLine = lFrame.getLocation().getLineEnd();
     lResponse  << lFrame.getSignature()
-      << " at " << lFrame.getLocation().getFileName()
-      << ":" << lFrame.getLocation().getLineBegin();
+      << " at " << lFileName
+      << ":" << lBeginLine;
+
+    // show also the current line
+    lResponse << std::endl << std::endl;
+    lResponse << listSource(lFileName, lBeginLine, lEndLine, true);
+
+    lResponse << "]]>";
   }
 
   lResponse << "</response>";
