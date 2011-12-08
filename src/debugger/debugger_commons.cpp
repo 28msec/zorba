@@ -226,20 +226,28 @@ DebuggerCommons::getCurrentStaticContext() const
 }
 
 unsigned int
-DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
+DebuggerCommons::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
 {
-  BreakableIdMap::iterator lIter = theBreakableIDs.find(aLocation);
+  QueryLoc lLocation;
+  lLocation.setLineBegin(aLine);
+  lLocation.setLineEnd(aLine);
+  lLocation.setFilename(aFileName.c_str());
+
+  // we make sure that the this location file name is aligned with the internal ones
+  // it must have a valid URI and a scheme (file://, http://, or https://)
+  adjustLocationFilePath(lLocation);
+
+  BreakableIdMap::iterator lIter = theBreakableIDs.find(lLocation);
   unsigned int lId;
 
   if (lIter == theBreakableIDs.end()) {
+    String lFileName = aFileName;
     // be prepared to throw an exception
     std::stringstream lSs;
-    lSs << "The breakpoint could not be set at line " << aLocation.getLineBegin()
-      << " in file \"" << aLocation.getFilename() << "\"";
+    lSs << "The breakpoint could not be set at line " << aLine
+      << " in file \"" << lFileName << "\"";
 
     // let us then try some search before we fail, be good to the user and help him
-    zorba::String lFileName = aLocation.getFilename().str();
-
     // 1. first we check if he sent a file URI; in this case, sorry!
     if (lFileName.find("file://") == 0) {
       throw lSs.str();
@@ -251,19 +259,20 @@ DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
     // TODO: maybe there is a better way to do this encoding
     lFileName = lFileName.substr(8);
 
-    // 2. secondly we hope he gave us a path suffix
+    // 2. secondly we hope he gave us part of a path of a file
     lIter = theBreakableIDs.begin();
-    zorba::String::size_type lFileNameSize = lFileName.size();
+    String::size_type lFileNameSize = lFileName.size();
     std::vector<std::pair<QueryLoc, int> > lFoundBreakables;
     zorba::String lFirstBreakablePath;
     while (lIter != theBreakableIDs.end()) {
       // for now, only valid if on the breakable is on the same line as requested
-      // TODO: this will have to consider asking for a line INSIDE a breakable
-      if (lIter->second != theMainModuleBreakableId && lIter->first.getLineBegin() == aLocation.getLineBegin()) {
+      // TODO: this could be improved if the user wants to add a breakpoint to a line
+      //       INSIDE a breakable that spans over multiple lines
+      if (lIter->second != theMainModuleBreakableId && lIter->first.getLineBegin() == aLine) {
         zorba::String lBreakablePath = lIter->first.getFilename().str();
 
-        // is the name suffixed with the searched path?
-        if (lBreakablePath.find(lFileName) + lFileNameSize == lBreakablePath.size()) {
+        // dies the given string matche any part in the breakable file name?
+        if (lBreakablePath.find(lFileName) != String::npos) {
           // we found the fist candidate path
           if (lFirstBreakablePath == "") {
             lFirstBreakablePath = lBreakablePath;
@@ -271,8 +280,8 @@ DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
           // but stop as soon as we are reaching a second different path (report ambiguity)
           else if (lFirstBreakablePath != lBreakablePath){
             lSs.str("");
-            lSs << "The file name \"" << aLocation.getFilename() << "\" is ambiguous. "
-              << "I already found two potential files to set a breakpoint in line " << aLocation.getLineBegin()
+            lSs << "The file name \"" << aFileName << "\" is ambiguous. "
+              << "I already found two potential files to set a breakpoint in line " << aLine
               << ":" << std::endl << "  " << lFirstBreakablePath << std::endl << "  " << lBreakablePath;
             throw lSs.str();
           }
@@ -412,6 +421,7 @@ DebuggerCommons::mustBreak(SuspensionCause& aCause)
 bool
 DebuggerCommons::hasToBreakAt(QueryLoc aLocation)
 {
+  // we make sure that this location file name is a valid URI and has a scheme (file://, http://, or https://)
   adjustLocationFilePath(aLocation);
 
   BreakableIdMap::const_iterator lIter = theBreakableIDs.find(aLocation);
@@ -581,6 +591,7 @@ DebuggerCommons::addBreakable(
   Breakable& aBreakable,
   bool aIsMainModuleBreakable)
 {
+  // we make sure that this breakable file name is a valid URI and has a scheme (file://, http://, or https://)
   adjustLocationFilePath(aBreakable.getLocation());
 
   unsigned int lId = theBreakables.size();
@@ -594,6 +605,9 @@ DebuggerCommons::addBreakable(
 void
 DebuggerCommons::pushStackFrame(QueryLoc aLocation, std::string& aFunctionName)
 {
+  // we make sure that the stack frame locations always have valid URIs and a scheme (file://, http://, or https://)
+  adjustLocationFilePath(aLocation);
+
   theStackTrace.push_back(std::pair<QueryLoc, std::string>(aLocation, aFunctionName));
 }
 

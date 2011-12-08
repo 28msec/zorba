@@ -203,8 +203,10 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
           int lLineNo;
           aCommand.getArg("n", lLineNo);
-          std::string lFileName;
-          aCommand.getArg("f", lFileName);
+          std::string lFileNameTmp;
+          aCommand.getArg("f", lFileNameTmp);
+          String lFileName(lFileNameTmp);
+
           std::string lState;
           bool lEnabled = true;
           if (!aCommand.getArg("s", lState)) {
@@ -213,13 +215,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           lEnabled = (lState == "disabled" ? false : true);
           lState = (lEnabled ? "enabled" : "disabled");
 
-          QueryLoc lLocation;
-          lLocation.setLineBegin(lLineNo);
-          lLocation.setLineEnd(lLineNo);
-          lLocation.setFilename(lFileName);
-
           try {
-            unsigned int lBID = theRuntime->addBreakpoint(lLocation, lEnabled);
+            unsigned int lBID = theRuntime->addBreakpoint(lFileName, lLineNo, lEnabled);
             lResponse << "state=\"" << lState << "\" id=\"" << lBID << "\" ";
           } catch (std::string& lErr) {
             return buildErrorResponse(lTransactionID, lCmdName, 200, lErr);
@@ -465,6 +462,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         }
         String lFileName(lTmp);
 
+        // we wrap the source code in CDATA to have it unparsed because it might contain XML
         lResponse << "<![CDATA[";
         try {
           lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine, lZorbaExtensions) << std::endl;
@@ -575,6 +573,12 @@ DebuggerServer::buildStackFrame(
   int aSNo,
   std::ostream& aStream)
 {
+  // the file names in query locations always come as URIs, so decode it
+  String lFileName(aFrame.getLocation().getFileName());
+  if (lFileName.substr(0, 7) == "file://") {
+    lFileName = URIHelper::decodeFileURI(lFileName);
+  }
+
   unsigned int lLB = aFrame.getLocation().getLineBegin();
   unsigned int lLE = aFrame.getLocation().getLineEnd();
 
@@ -586,7 +590,7 @@ DebuggerServer::buildStackFrame(
   aStream << "<stack "
     << "level=\"" << aSNo << "\" "
     << "type=\"" << "file" << "\" "
-    << "filename=\"" << aFrame.getLocation().getFileName() << "\" "
+    << "filename=\"" << lFileName << "\" "
     << "lineno=\"" << lLB << "\" "
     << "where=\"" << aFrame.getSignature() << "\" "
     << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
@@ -600,6 +604,7 @@ DebuggerServer::buildBreakpoint(
   int aBID,
   std::ostream& aStream)
 {
+  // the file names in query locations always come as URIs, so decode it
   String lFileName(aBreakpoint.getLocation().getFilename().str());
   if (lFileName.substr(0, 7) == "file://") {
     lFileName = URIHelper::decodeFileURI(lFileName);

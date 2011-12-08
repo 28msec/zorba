@@ -158,11 +158,11 @@ DebuggerRuntime::runQuery()
 // Breakpoints
 
 unsigned int
-DebuggerRuntime::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
+DebuggerRuntime::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   DebuggerCommons* lCommons = getDebbugerCommons();
-  return lCommons->addBreakpoint(aLocation, aEnabled);
+  return lCommons->addBreakpoint(aFileName, aLine, aEnabled);
 }
 
 Breakable
@@ -235,39 +235,14 @@ DebuggerRuntime::getStackFrames()
   // add the frames for each function call
   for (std::size_t i = 0 ; i < lRawFrames.size(); i++) {
     lLocation = lRawFrames.at(i).first;
-
-    // TODO: this encoding-decoding should be cleanped up after bug 901676 is solved
-    String lFileName(lLocation.getFilename().str());
-    String lPrefix = lFileName.substr(0, 7);
-    if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
-      lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
-    } else if (lPrefix == "file://") {
-      // TODO: this else block whould be removed when bug 901669 is solved
-      // this should correct the bad file URI on windows that the stack frames have
-      lFileName = URIHelper::decodeFileURI(lFileName);
-      lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
-    }
-
     StackFrameImpl lFrame(lSignature, lLocation);
     lFrames.push_back(lFrame);
-
     lSignature = lRawFrames.at(i).second;
   }
 
   // add the top most frame from the current iterator
   const DebugIterator* lIterator = lCommons->getCurrentIterator();
   lLocation = lIterator->loc;
-  // TODO: this encoding-decoding should be cleanped up after bug 901676 is solved
-  String lFileName(lLocation.getFilename().str());
-  String lPrefix = lFileName.substr(0, 7);
-  if (lPrefix != "file://" && lPrefix != "http://" && lPrefix != "https:/") {
-    lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
-  } else if (lPrefix == "file://") {
-    // TODO: this else block whould be removed when bug 901669 is solved
-    // this should correct the bad file URI on windows that the stack frames have
-    lFileName = URIHelper::decodeFileURI(lFileName);
-    lLocation.setFilename(URIHelper::encodeFileURI(lFileName).str());
-  }
   StackFrameImpl lFrame(lSignature, lLocation);
   lFrames.push_back(lFrame);
 
@@ -298,14 +273,9 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
     lResponse << "<![CDATA[";
 
     StackFrameImpl lFrame = lFrames[lFrames.size() - 1];
-    String lFileName = lFrame.getLocation().getFileName();
-    String lPrefix = lFileName.substr(0, 7);
-    if (lPrefix == "file://") {
-      lFileName = URIHelper::decodeFileURI(lFileName);
-    }
-
     unsigned int lBeginLine = lFrame.getLocation().getLineBegin();
     unsigned int lEndLine = lFrame.getLocation().getLineEnd();
+    String lFileName = lFrame.getLocation().getFileName();
     lResponse  << lFrame.getSignature()
       << " at " << lFileName
       << ":" << lBeginLine;

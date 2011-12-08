@@ -238,7 +238,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
   public:
 
     unsigned int
-    addBreakpoint(const QueryLoc& location, bool enabled);
+    addBreakpoint(String& fileName, int line, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
