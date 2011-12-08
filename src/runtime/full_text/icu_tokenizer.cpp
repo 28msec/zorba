@@ -329,10 +329,10 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
       }
     }
 
-    else {
+    else /* if ( IS_WORD_BREAK( OTHER, rule_status ) ) */ {
       //
-      // "OTHER" tokens are for non-whitespace, non-digits, and non-numbers,
-      // i.e., word tokens.
+      // "OTHER" tokens are for non-whitespace, non-punctuation, and
+      // non-numbers, i.e., word tokens.
       //
 #     if DEBUG_TOKENIZER
       cout << "(OTHER)" << endl;
@@ -375,7 +375,9 @@ next:
       sent_end = sent_it_->next();
       // The addition of the "if" fixes:
       // https://bugs.launchpad.net/bugs/863320
+#if 0
       if ( sent_end != BreakIterator::DONE )
+#endif
         ++numbers().sent;
     }
   } // while
@@ -387,7 +389,12 @@ next:
   t.send( payload, callback );
   // Incrementing "sent" here fixes:
   // https://bugs.launchpad.net/bugs/897800
+#if 0
   ++numbers().sent;
+#endif
+#if DEBUG_TOKENIZER
+  cout << "--------------------\n";
+#endif /* DEBUG_TOKENIZER */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
