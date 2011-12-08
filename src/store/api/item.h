@@ -58,7 +58,8 @@ protected:
     PUL        = 0x41, 
     FUNCTION   = 0x81,
     LIST       = 0x101,
-    ERROR_     = 0x201
+    ERROR_     = 0x201,
+    JSONIQ     = 0x402
   };
 
   typedef union 
@@ -72,19 +73,15 @@ protected:
 protected:
   mutable long      theRefCount;
   mutable ItemUnion theUnion;
-#ifdef ZORBA_WITH_JSON
-  // TODO: needs to go away and verwurschtelt into the itemKind
-  bool              theIsJSONItem;
-#endif
 
 protected:
 
-  Item() : theRefCount(0), theIsJSONItem(false)
+  Item() : theRefCount(0)
   {
     theUnion.treeRCPtr = 0;
   }
 
-  Item(ItemKind k) : theRefCount(0), theIsJSONItem(false)
+  Item(ItemKind k) : theRefCount(0)
   {
     theUnion.itemKind = k;
   }

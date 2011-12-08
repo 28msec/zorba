@@ -55,7 +55,10 @@ int runLoaderTest(int argc, char* argv[])
     << "        \"GlossSee\": \"markup\"" << std::endl
     << "              }" << std::endl
     << "          }" << std::endl
-    << "      }" << std::endl
+    << "      }," << std::endl
+    << "  \"integer\": 42," << std::endl
+    << "  \"decimal\": 42.42," << std::endl
+    << "  \"double\": 42e42" << std::endl
     << "  }" << std::endl
     << "}";
   //json << "{ \"foo\": true, \"bar\": false }";

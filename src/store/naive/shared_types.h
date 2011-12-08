@@ -57,12 +57,14 @@ class JSONObject;
 class JSONArray;
 class JSONObjectPair;
 class JSONArrayPair;
+class JSONTree;
 
 typedef store::ItemHandle<JSONItem>       JSONItem_t;
 typedef store::ItemHandle<JSONObject>     JSONObject_t;
 typedef store::ItemHandle<JSONArray>      JSONArray_t;
 typedef store::ItemHandle<JSONObjectPair> JSONObjectPair_t;
 typedef store::ItemHandle<JSONArrayPair>  JSONArrayPair_t;
+typedef store::ItemHandle<JSONTree>       JSONTree_t;
 
 } /* namespace json */
 #endif

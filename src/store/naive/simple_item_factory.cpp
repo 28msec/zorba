@@ -34,6 +34,10 @@
 #include "store/naive/string_pool.h"
 #include "store/naive/node_factory.h"
 
+#ifdef ZORBA_WITH_JSON
+#  include "store/naive/json_items.h"
+#endif
+
 #include "util/ascii_util.h"
 
 
@@ -44,8 +48,11 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
   theQNamePool(qnPool),
-  theTrueItem(NULL),
-  theFalseItem(NULL)
+  theTrueItem(new BooleanItem(true)),
+  theFalseItem(new BooleanItem(false))
+#ifdef ZORBA_WITH_JSON
+  ,theNullItem(new json::JSONNull())
+#endif
 {
 }
 
@@ -425,22 +432,7 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  if (value)
-  {
-    if (!theTrueItem)
-    {
-      theTrueItem = new BooleanItem(true);
-    }
-    result = theTrueItem;
-  }
-  else
-  {
-    if (!theFalseItem)
-    {
-      theFalseItem = new BooleanItem(false);
-    }
-    result = theFalseItem;
-  }
+  result = value?theTrueItem:theFalseItem;
   return true;
 }
 
@@ -1968,6 +1960,114 @@ void BasicItemFactory::splitToAtomicTextValues(
   if ( start < (i-1) )
     atomicTextValues.push_back(textValue.substr(start, i-start));
 }
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNull(store::Item_t& result)
+{
+  result = theNullItem;
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNumber(
+    store::Item_t& result,
+    store::Item_t& string)
+{
+  zstring s = string->getStringValue();
+  return createJSONNumber(result, s);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNumber(
+    store::Item_t& result,
+    zstring& string)
+{
+  try
+  {
+    bool dot = (strchr(string.c_str(), 46) != NULL);
+    bool e   = (strpbrk(string.c_str(), "eE") != NULL);
+    if (!e)
+    {
+      if (!dot)
+      {
+        // xs:integer
+        xs_integer i = Integer(string.c_str());
+        return createInteger(result, i);
+      }
+      else
+      {
+        // xs:decimal
+        xs_decimal d = Decimal(string.c_str());
+        return createDecimal(result, d);
+      }
+    }
+    else
+    {
+      // xs:double
+      xs_double d = FloatImpl<double>(string.c_str());
+      return createDouble(result, d);
+    }
+  } catch (std::exception& e)
+  {
+    return false;
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONObject(store::Item_t& result)
+{
+  result = new json::SimpleJSONObject();
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONArray(store::Item_t& result)
+{
+  result = new json::SimpleJSONArray();
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONObjectPair(
+        store::Item_t& result,
+        store::Item_t& name,
+        store::Item_t& value)
+{
+  result = new json::SimpleJSONObjectPair(name, value);
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONArrayPair(
+        store::Item_t& result,
+        store::Item_t& position,
+        store::Item_t& value)
+{
+  result = new json::SimpleJSONArrayPair(position, value);
+  return true;
+}
+#endif
 
 } // namespace simplestore
 } // namespace zorba
