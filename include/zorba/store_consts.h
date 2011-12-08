@@ -78,12 +78,12 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   enum JSONItemKind
   {
-    jsonItem,
-    jsonObject,
-    jsonArray,
-    jsonPair,
-    jsonObjectPair,
-    jsonArrayPair
+    jsonItem       = 0,
+    jsonObject     = 1,
+    jsonArray      = 3,
+    jsonPair       = 4,
+    jsonObjectPair = 5,
+    jsonArrayPair  = 6
   };
 
 

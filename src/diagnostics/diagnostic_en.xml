@@ -26,6 +26,7 @@
       <value>${"1": }undefined value${: 2}</value>
     </diagnostic>
 
+
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -34,13 +35,24 @@
       <value>"$1": $2</value>
     </diagnostic>
 
+
     <diagnostic code="XPST0003">
+
       <comment>
        It is a static error if an expression is not a valid instance of the
        grammar.
       </comment>
+
       <value>invalid expression${: 1}</value>
+
+      <entry key="StartEndTagMismatch_23">
+        <value>start tag "$2" does not match end tag "$3"</value>
+      </entry>
+      <entry key="ModuleDeclNotInMain">
+        <value>module declaration must not be in main module</value>
+      </entry>
     </diagnostic>
+
 
     <diagnostic code="XPTY0004">
       <comment>
@@ -2661,10 +2673,6 @@
       <value>XQuery library version can not be imported by a $3 version module</value>
     </entry>
 
-    <entry key="ModuleDeclNotInMain">
-      <value>module declaration must not be in main module</value>
-    </entry>
-
     <entry key="ModuleNotFound">
       <value>module not found</value>
     </entry>
@@ -2983,10 +2991,6 @@
 
     <entry key="StackOverflow">
       <value>stack overflow</value>
-    </entry>
-
-    <entry key="StartEndTagMismatch_23">
-      <value>start tag "$2" does not match end tag "$3"</value>
     </entry>
 
     <entry key="StingLiteral">
