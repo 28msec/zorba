@@ -1482,12 +1482,6 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theArgs;
   ar & theIsVarDeclaration;
 }
-
-
-void debugger_expr::compute_scripting_kind()
-{
-  theScriptingKind = SEQUENTIAL_FUNC_EXPR;
-}
 #endif
 
 
