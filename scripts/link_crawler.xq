@@ -28,10 +28,10 @@ declare namespace xhtml="http://www.w3.org/1999/xhtml";
 declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 
-declare variable $result-file as xs:string external; (:PROJECT_SOURCE_DIR:)
+(: declare variable $result-file as xs:string external; :)(:PROJECT_SOURCE_DIR:)
 
 declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/html/index.html"; (: the start page :)
-declare variable $uri-host as xs:string := "http://www.zorba-xquery.com/site2/"; (:  what differentiates an internal uri :)
+declare variable $uri-host as xs:string := "http://www.zorba-xquery.com"; (:  what differentiates an internal uri :)
 
 declare variable $supported-media-types as xs:string+ := ("text/xml", "application/xml", "text/xml-external-parsed-entity", "application/xml-external-parsed-entity",
                             "application/atom+xml", "text/html");
@@ -64,13 +64,14 @@ declare %ann:sequential function local:get-uris-from-page($uri as xs:string,
   {
     map:insert($internal-uris, $uri, $uri);
     $method := "GET";
+    fn:trace($uri, "internal ");
   }
   else
   {
     map:insert($external-uris, $uri, $uri);
     $method := "HEAD";
+    fn:trace($uri, "external ");
   }
-  fn:trace($uri, "");
   
   variable $load-result;
   variable $content-string;
@@ -224,7 +225,7 @@ return  $e}
 </link-crawler>
 
 return
-file:write($result-file,
+file:write(fn:resolve-uri("link_crawler_result.xml"),
             $full-report,
             <output:serialization-parameters>
                 <output:indent value="yes"/>
