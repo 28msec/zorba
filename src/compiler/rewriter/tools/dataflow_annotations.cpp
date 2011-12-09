@@ -981,7 +981,21 @@ void SourceFinder::findNodeSourcesRec(
     if (std::find(sources.begin(), sources.end(), node) == sources.end())
       sources.push_back(node);
 
-    break;
+    std::vector<expr*> enclosedExprs;
+    node->get_fo_exprs_of_kind(FunctionConsts::OP_ENCLOSED_1, false, enclosedExprs);
+
+    std::vector<expr*>::const_iterator ite = enclosedExprs.begin();
+    std::vector<expr*>::const_iterator end = enclosedExprs.end();
+    for (; ite != end; ++ite)
+    {
+      fo_expr* fo = static_cast<fo_expr*>(*ite);
+
+      assert(fo->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1);
+
+      findNodeSourcesRec(fo, sources, currentUdf);
+    }
+
+    return;
   }
 
   case attr_expr_kind:
@@ -1191,8 +1205,8 @@ void SourceFinder::findNodeSourcesRec(
 
   case function_item_expr_kind:
   {
-    function_item_expr* e = static_cast<function_item_expr*>(node);
-
+    //function_item_expr* e = static_cast<function_item_expr*>(node);
+    // TODO
     return;
   }
 

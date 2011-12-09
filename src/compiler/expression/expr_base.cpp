@@ -679,11 +679,17 @@ bool expr::contains_node_construction() const
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
+void expr::get_exprs_of_kind(
+    expr_kind_t kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
 {
   if (kind == get_expr_kind())
   {
     exprs.push_back(const_cast<expr*>(this));
+
+    if (!deep)
+      return;
   }
 
   ExprConstIterator iter(this);
@@ -692,7 +698,40 @@ void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
     const expr* ce = iter.get_expr();
     if (ce)
     {
-      ce->get_exprs_of_kind(kind, exprs);
+      ce->get_exprs_of_kind(kind, deep, exprs);
+    }
+
+    iter.next();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::get_fo_exprs_of_kind(
+    FunctionConsts::FunctionKind kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
+{
+  if (get_expr_kind() == fo_expr_kind)
+  {
+    if (static_cast<const fo_expr*>(this)->get_func()->getKind() == kind)
+    {
+      exprs.push_back(const_cast<expr*>(this));
+
+      if (!deep)
+        return;
+    }
+  }
+
+  ExprConstIterator iter(this);
+  while(!iter.done())
+  {
+    const expr* ce = iter.get_expr();
+    if (ce)
+    {
+      ce->get_fo_exprs_of_kind(kind, deep, exprs);
     }
 
     iter.next();

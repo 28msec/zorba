@@ -613,43 +613,9 @@ void MarkNodeCopyProps::applyInternal(
   switch (node->get_expr_kind()) 
   {
   case const_expr_kind:
-  {
-    return;
-  }
   case var_expr_kind:
   {
-    var_expr* e = static_cast<var_expr*>(node);
-
-    switch (e->get_kind())
-    {
-    case var_expr::for_var:
-    case var_expr::let_var:
-    case var_expr::win_var:
-    case var_expr::wincond_out_var:
-    case var_expr::wincond_in_var:
-    case var_expr::groupby_var:
-    case var_expr::non_groupby_var:
-    case var_expr::wincond_in_pos_var:
-    case var_expr::wincond_out_pos_var:
-    case var_expr::pos_var:
-    case var_expr::score_var:
-    case var_expr::count_var:
-    case var_expr::copy_var:
-    case var_expr::catch_var:
-    case var_expr::arg_var:
-    case var_expr::prolog_var: 
-    case var_expr::local_var:
-    {
-      return;
-    }
-
-    case var_expr::eval_var: // TODO
-    default:
-    {
-      ZORBA_ASSERT(false);
-      return;
-    }
-    }
+    return;
   }
 
   case doc_expr_kind:

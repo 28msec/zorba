@@ -2125,12 +2125,12 @@ void end_visit(debugger_expr& v)
     argvEvalIter.push_back(pop_itstack());
   }
 
-  argvEvalIter.push_back(
-    new DebuggerSingletonIterator(sctx, qloc, theCCB->theDebuggerCommons));
+  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
+                                                       qloc,
+                                                       theCCB->theDebuggerCommons));
 
   // now reverse them (first the expression, then the variables)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
-
 
   // get the debugger iterator from the debugger stack
   std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());

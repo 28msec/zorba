@@ -320,7 +320,15 @@ public:
 
   bool contains_node_construction() const;
 
-  void get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const;
+  void get_exprs_of_kind(
+      expr_kind_t kind,
+      bool deep,
+      std::vector<expr*>& exprs) const;
+
+  void get_fo_exprs_of_kind(
+      FunctionConsts::FunctionKind kind,
+      bool deep,
+      std::vector<expr*>& exprs) const;
 
   bool is_map(expr* e, static_context* sctx) const;
 

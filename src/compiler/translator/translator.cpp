@@ -1660,8 +1660,8 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   return flworExpr;
 }
 
-QueryLoc
-expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
+
+QueryLoc expandQueryLoc(const QueryLoc& aLocationFrom, const QueryLoc& aLocationTo)
 {
   QueryLoc lExpandedLocation(aLocationFrom);
   lExpandedLocation.setColumnEnd(aLocationTo.getColumnEnd());
@@ -1689,7 +1689,6 @@ void wrap_in_debugger_expr(
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aLoc,
                                                          aExpr,
-                                                         thePrologVars,
                                                          theNSCtx,
                                                          aIsVarDeclaration));
 
@@ -1712,6 +1711,7 @@ void wrap_in_debugger_expr(
          ++lIter)
     {
       store::Item* lVarname = (*lIter)->get_name();
+
       if (lVarname->getStringValue() == "$$dot")
       {
         continue;
@@ -2123,23 +2123,26 @@ import_schema_auto_prefix(
 #endif
 }
 
+
 /******************************************************************************
   Wraps an expression in a validate expression. If the schema URI is a
   non-empty string, the corresponding schema is imported. If the location is
   QueryLoc::null, the wrapped expression's location will be used.
 *******************************************************************************/
-expr_t
-wrap_in_validate_expr_strict(
-  expr* aExpr,
-  std::string aSchemaURI)
+expr_t wrap_in_validate_expr_strict(
+    expr* aExpr,
+    const zstring& aSchemaURI)
 {
   QueryLoc lLoc = aExpr->get_loc();
-  import_schema_auto_prefix(lLoc, zstring(aSchemaURI.c_str()), NULL);
+  import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
 
   store::Item_t qname;
-  return new validate_expr(
-    theRootSctx, lLoc, ParseConstants::val_strict,
-    qname, aExpr, theSctx->get_typemanager());
+  return new validate_expr(theRootSctx,
+                           lLoc,
+                           ParseConstants::val_strict,
+                           qname,
+                           aExpr,
+                           theSctx->get_typemanager());
 }
 
 
@@ -3304,7 +3307,7 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ASSERT(ef != NULL);
 
       f = new external_function(loc,
-                                theSctx,
+                                theRootSctx,
                                 qnameItem->getNamespace(),
                                 sig,
                                 scriptKind,
@@ -5917,9 +5920,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = expandQueryLoc(
-    v.get_name()->get_location(),
-    domainExpr->get_loc());
+  QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                              domainExpr->get_loc());
+
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
@@ -6026,9 +6029,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     // it's important to insert the debugger before the scope is pushed.
     // Otherwise, the variable in question would already be in scope for
     // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(
-      v.get_name()->get_location(),
-      domainExpr->get_loc());
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                domainExpr->get_loc());
+
     wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
     push_scope();
