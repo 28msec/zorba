@@ -1482,7 +1482,7 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void debugger_expr::compute_scripting_kind()
 {
-  theScriptingKind = SEQUENTIAL_FUNC_EXPR;
+  theScriptingKind = theExpr->get_scripting_detail();
 }
 #endif
 
