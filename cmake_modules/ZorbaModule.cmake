@@ -272,12 +272,12 @@ MACRO (DECLARE_ZORBA_MODULE)
       IF(NOT ${PROJECT_NAME} STREQUAL "zorba")
         STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_CORE_LIB_DIR}/${module_path}
+          ${target_type} DESTINATION ${ZORBA_NONCORE_LIB_DIR}/${module_path}
           COMPONENT ${component_name})
       
       ELSE(NOT ${PROJECT_NAME} STREQUAL "zorba")
         INSTALL(TARGETS ${module_lib_target}
-          ${target_type} DESTINATION ${ZORBA_NONCORE_LIB_DIR}/${module_path})
+          ${target_type} DESTINATION ${ZORBA_CORE_LIB_DIR}/${module_path})
       ENDIF(NOT ${PROJECT_NAME} STREQUAL "zorba")
     ENDIF (NOT MODULE_TEST_ONLY)
       
@@ -407,19 +407,27 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
   IF (file_found EQUAL -1)
     SET_PROPERTY (GLOBAL APPEND PROPERTY "${_dir_sym}-output-files"
       "${_output_file}")
-    # Save the input file, output file, and any library dependency
-    # target for this rule in a global property
+    # Detect whether this is a core URI or not
+    IF (PROJECT_NAME STREQUAL "zorba")
+      SET (_is_core 1)
+    ELSE (PROJECT_NAME STREQUAL "zorba")
+      SET (_is_core 0)
+    ENDIF (PROJECT_NAME STREQUAL "zorba")
+
+    # Save the (input file, output file, any library dependency
+    # target, and whether this is a core or non-core file) for this
+    # rule in a global property
     SET_PROPERTY (GLOBAL APPEND PROPERTY ZORBA_URI_FILES
-      "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}")
+      "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}" "${_is_core}")
 
     # For .xq and .xsd files, also set up an INSTALL rule (if not TEST_ONLY).
     IF (NOT ${TEST_ONLY} EQUAL 1)
       IF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
         
-        IF(NOT PROJECT_NAME STREQUAL "zorba")
+        IF(NOT _is_core)
           STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
           INSTALL (FILES "${INPUT_FILE}"
-            DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
+            DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
             RENAME "${_output_filename}"
             COMPONENT "${component_name}")
           
@@ -437,13 +445,11 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
             FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_INSTALL_TYPES Full)\n")
           ENDIF (NOT ${component_name}_cpack)  
             
-        ELSE(NOT PROJECT_NAME STREQUAL "zorba")
+        ELSE(NOT _is_core)
           INSTALL (FILES "${INPUT_FILE}"
-          DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
+          DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
           RENAME "${_output_filename}")
-        ENDIF(NOT PROJECT_NAME STREQUAL "zorba")
-        
-        
+        ENDIF(NOT _is_core)
           
       ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
     ENDIF (NOT ${TEST_ONLY} EQUAL 1)
@@ -488,16 +494,17 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
     IF (POLICY CMP0007)
       CMAKE_POLICY (SET CMP0007 NEW)
     ENDIF (POLICY CMP0007)
-    MESSAGE (STATUS "Creating check_uris target")
+    MESSAGE (STATUS "Creating check_core_uris and check_uris targets")
     GET_PROPERTY (copy_rules GLOBAL PROPERTY ZORBA_URI_FILES)
     SET (_output_files)
     WHILE (copy_rules)
-      # Pop three items off the list, and set up the corresponding
+      # Pop four items off the list, and set up the corresponding
       # rule
       LIST (GET copy_rules 0 _input_file)
       LIST (GET copy_rules 1 _output_file)
       LIST (GET copy_rules 2 _depend_target)
-      LIST (REMOVE_AT copy_rules 0 1 2)
+      LIST (GET copy_rules 3 _is_core)
+      LIST (REMOVE_AT copy_rules 0 1 2 3)
       SET (_depends "${_input_file}")
       IF (_depend_target)
         LIST (APPEND _depends "${_depend_target}")
@@ -507,12 +514,30 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
         "${_input_file}" "${_output_file}"
         DEPENDS ${_depends}
         COMMENT "Copying ${_input_file} to URI path" VERBATIM)
-      LIST (APPEND _output_files "${_output_file}")
+      IF (_is_core)
+        LIST (APPEND _core_output_files "${_output_file}")
+      ELSE (_is_core)
+        LIST (APPEND _noncore_output_files "${_output_file}")
+      ENDIF (_is_core)
     ENDWHILE (copy_rules)
-    ADD_CUSTOM_TARGET (check_uris ALL DEPENDS ${_output_files} VERBATIM)
-    SET_TARGET_PROPERTIES(check_uris PROPERTIES
-      FOLDER "Modules"
-    )
+
+    # Targets and dependencies:
+    #   ALL depends on check_uris; check_uris depends on check_core_uris;
+    #   zorbacmd depends on check_core_uris.
+    ADD_CUSTOM_TARGET (check_uris ALL
+      DEPENDS ${_noncore_output_files} VERBATIM)
+    SET_TARGET_PROPERTIES(check_uris PROPERTIES FOLDER "Modules")
+    # Only create check_core_uris target and associated dependencies if
+    # there are any core URIs; there should never be any when building a
+    # standalone module project.
+    LIST (LENGTH _core_output_files _num_core)
+    IF (_num_core GREATER 0)
+      ADD_CUSTOM_TARGET (check_core_uris 
+        DEPENDS ${_core_output_files} VERBATIM)
+      ADD_DEPENDENCIES(check_uris check_core_uris)
+      ADD_DEPENDENCIES(zorbacmd check_core_uris)
+      SET_TARGET_PROPERTIES(check_core_uris PROPERTIES FOLDER "Modules")
+    ENDIF (_num_core GREATER 0)
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
 
     #add 'xqdoc' and 'xqdoc-xml' targets
@@ -698,7 +723,7 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc XML documentation ..."
   )
   MESSAGE(STATUS "  added target xqdoc-xml")
-  ADD_DEPENDENCIES(xqdoc-xml zorbacmd zorba_simplestore check_uris)
+  ADD_DEPENDENCIES(xqdoc-xml zorbacmd check_core_uris)
 
   SET_TARGET_PROPERTIES (xqdoc-xml PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1
