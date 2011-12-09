@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,7 +202,7 @@ xqtref_t TypeManagerImpl::create_builtin_atomic_type(
 /***************************************************************************//**
   Create a sequence type from the given typename and quantifier. The typename
   is assumed to be of an atomic type. If not, or if no type with this name is
-  found in the in-scope schemaa, the method will return NULL. 
+  found in the in-scope schemaa, the method will return NULL.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
@@ -299,7 +299,7 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_any_simple_type();
   }
-  else if (qname->equals(RTM.XS_UNTYPED_QNAME.getp())) 
+  else if (qname->equals(RTM.XS_UNTYPED_QNAME.getp()))
   {
     return create_untyped_type();
   }
@@ -379,7 +379,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  bool untyped = (contentType == RTM.UNTYPED_TYPE || 
+  bool untyped = (contentType == RTM.UNTYPED_TYPE ||
                   (nodeKind == store::StoreConsts::attributeNode &&
                    contentType == RTM.UNTYPED_ATOMIC_TYPE_ONE));
 
@@ -411,7 +411,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
   case store::StoreConsts::elementNode:
   {
-    if (nodeName != NULL || 
+    if (nodeName != NULL ||
         nillable ||
         (contentType != RTM.UNTYPED_TYPE && contentType != RTM.ANY_TYPE))
     {
@@ -430,7 +430,7 @@ xqtref_t TypeManagerImpl::create_node_type(
   }
   case store::StoreConsts::attributeNode:
   {
-    if (nodeName != NULL || 
+    if (nodeName != NULL ||
         (contentType != RTM.UNTYPED_ATOMIC_TYPE_ONE &&
          contentType != RTM.ANY_SIMPLE_TYPE))
     {
@@ -518,7 +518,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
 xqtref_t TypeManagerImpl::create_builtin_node_type(
     store::StoreConsts::NodeKind nodeKind,
-    TypeConstants::quantifier_t quantifier, 
+    TypeConstants::quantifier_t quantifier,
     bool untyped) const
 {
   switch (nodeKind)
@@ -566,7 +566,7 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
       return GENV_TYPESYSTEM.PI_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
-    }            
+    }
   }
 
   case store::StoreConsts::commentNode:
@@ -583,7 +583,7 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
       return GENV_TYPESYSTEM.COMMENT_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
-    }   
+    }
   }
 
   default:
@@ -611,7 +611,7 @@ xqtref_t TypeManagerImpl::create_json_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_value_type(
     const store::Item* item,
-    const QueryLoc& loc) const 
+    const QueryLoc& loc) const
 {
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
@@ -711,7 +711,7 @@ xqtref_t TypeManagerImpl::create_value_type(
     const signature& lSig = lFItem->getSignature();
     const xqtref_t& lRetType = lSig.returnType();
     std::vector<xqtref_t> lParamTypes;
-    for (uint32_t i = 0; i < lSig.paramCount(); ++i) 
+    for (uint32_t i = 0; i < lSig.paramCount(); ++i)
     {
       lParamTypes.push_back(lSig[i]);
     }
@@ -749,7 +749,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
     );
   }
 
-  xqtref_t contentType = 
+  xqtref_t contentType =
   m_schema->createXQTypeFromElementName(this, elemName, true, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
@@ -802,7 +802,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
     );
   }
 
-  xqtref_t contentType = 
+  xqtref_t contentType =
   m_schema->createXQTypeFromAttributeName(this, attrName, true, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
@@ -937,7 +937,7 @@ xqtref_t TypeManagerImpl::create_type(
 
 /***************************************************************************//**
   Create a sequence type whose ItemType is the same as the one of a given type
-  T, and whose quantifier is the union of T's quantifier and another given 
+  T, and whose quantifier is the union of T's quantifier and another given
   quantifier.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_type_x_quant(
@@ -957,7 +957,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 {
   TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
 
-  switch(ident.getQuantifier()) 
+  switch(ident.getQuantifier())
   {
     case IdentTypes::QUANT_ONE:
       q = TypeConstants::QUANT_ONE;
@@ -976,7 +976,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
       break;
   }
 
-  switch(ident.getKind()) 
+  switch(ident.getKind())
   {
   case IdentTypes::NAMED_TYPE:
   {
@@ -1051,6 +1051,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
 
+#ifdef ZORBA_WITH_JSON
   case IdentTypes::JSON_ITEM_TYPE:
     return create_json_type(store::StoreConsts::jsonItem, q);
 
@@ -1068,6 +1069,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::JSON_ARRAY_PAIR_TYPE:
     return create_json_type(store::StoreConsts::jsonArrayPair, q);
+#endif // #ifdef ZORBA_WITH_JSON
 
   case IdentTypes::ITEM_TYPE:
     return create_any_item_type(q);

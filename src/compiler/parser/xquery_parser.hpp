@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/jsoniq/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/Users/pjl/src/flwor/zorba/repo/jsoniq/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/xquery_bzr/jsoniq/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -146,11 +146,12 @@ namespace zorba {
     FTSelection::pos_filter_list_t *pos_filter_list;
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
     ft_anyall_mode::type ft_anyall_value;
+    json_test::type json_test_value;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 155 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -473,18 +474,19 @@ namespace zorba {
      PAIR = 568,
      BYTE_ORDER_MARK_UTF8 = 569,
      RANGE_REDUCE = 570,
-     ADDITIVE_REDUCE = 571,
-     MULTIPLICATIVE_REDUCE = 572,
-     UNION_REDUCE = 573,
-     INTERSECT_EXCEPT_REDUCE = 574,
-     QVARINDECLLIST_REDUCE = 575,
-     COMMA_DOLLAR = 576,
-     UNARY_PREC = 577,
-     SEQUENCE_TYPE_REDUCE = 578,
-     OCCURS_STAR = 579,
-     OCCURS_PLUS = 580,
-     OCCURS_HOOK = 581,
-     STEP_REDUCE = 582
+     JSON_REDUCE = 571,
+     ADDITIVE_REDUCE = 572,
+     MULTIPLICATIVE_REDUCE = 573,
+     UNION_REDUCE = 574,
+     INTERSECT_EXCEPT_REDUCE = 575,
+     QVARINDECLLIST_REDUCE = 576,
+     COMMA_DOLLAR = 577,
+     UNARY_PREC = 578,
+     SEQUENCE_TYPE_REDUCE = 579,
+     OCCURS_STAR = 580,
+     OCCURS_PLUS = 581,
+     OCCURS_HOOK = 582,
+     STEP_REDUCE = 583
    };
 
     };
@@ -586,8 +588,8 @@ namespace zorba {
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const short int yytable_[];
-    static const short int yytable_ninf_;
+    static const unsigned short int yytable_[];
+    static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
 
@@ -664,7 +666,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 668 "/Users/pjl/src/flwor/zorba/repo/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 670 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

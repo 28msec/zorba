@@ -727,7 +727,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 
-{EQName}                       { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
+{EQName}                      { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
 
 {AnnotationQName}             { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 

@@ -284,7 +284,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
-    /* Decimal format tokens */
+/* Decimal format tokens */
+/* --------------------- */
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
 %token GROUPING_SEPARATOR               "'grouping-separator'"
@@ -509,7 +510,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                            "'words'"
 
 /* Data Definition Facility */
-
+/* ------------------------ */
 %token COLLECTION                       "'collection'"
 %token CONSTOPT                         "'const'"
 %token APPEND_ONLY                      "'append-only'"
@@ -553,14 +554,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %type <expr> LeadingSlash
 
-/* placeholder node for reducing UNRECOGNIZED and generating an error */
-/* ---------------------------- */
-// %type <node> UnrecognizedToken
-
-
 /* left-hand sides: syntax only */
 /* ---------------------------- */
-
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> Annotation
@@ -863,7 +858,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-%type <expr> opt_Expr
 %type <expr> JSONConstructor
 %type <expr> JSONArrayConstructor
 %type <expr> JSONObjectConstructor
@@ -935,7 +929,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc TO
 
 %nonassoc JSON_REDUCE
-%left COLON
+%nonassoc COLON
 
 /*_____________________________________________________________________
  *
@@ -3494,8 +3488,7 @@ opt_FTIgnoreOption :
     ;
 
 
-RangeExpr 
-  :
+RangeExpr :
     JSONPairConstructor %prec RANGE_REDUCE
     {
       $$ = $1;
@@ -3507,14 +3500,12 @@ RangeExpr
 ;
 
 
-JSONPairConstructor
-  :
+JSONPairConstructor :
     AdditiveExpr %prec JSON_REDUCE
     {
       $$ = $1;
     }
-  |   
-    AdditiveExpr COLON AdditiveExpr
+  | AdditiveExpr COLON AdditiveExpr
     {
       $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
     }
@@ -6313,29 +6304,21 @@ JSONConstructor
         }
     ;
 
-JSONArrayConstructor
-    :   LBRACK opt_Expr RBRACK
+JSONArrayConstructor :
+        LBRACK RBRACK
+        {
+            $$ = new JSON_ArrayConstructor( LOC( @$ ), NULL );
+        }
+    |   LBRACK Expr RBRACK
         {
           $$ = new JSON_ArrayConstructor(LOC(@$), $2);
         }
     ;
 
 JSONObjectConstructor
-    :   LBRACE opt_Expr RBRACE
+    :   BracedExpr
         {
-          $$ = new JSON_ObjectConstructor(LOC(@$), $2);
-        }
-    ;
-
-
-opt_Expr
-    :   /* empty */
-        {
-          $$ = NULL;
-        }
-    |   Expr
-        {
-            $$ = $1;
+            $$ = new JSON_ObjectConstructor( LOC( @$ ), $1 );
         }
     ;
 
