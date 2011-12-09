@@ -100,6 +100,42 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
 
     static
     TypeIdentifier_t
+    createJSONItemType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
+    createJSONObjectType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
+    createJSONArrayType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
+    createJSONPairType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
+    createJSONObjectPairType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
+    createJSONArrayPairType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+
+    static
+    TypeIdentifier_t
     createItemType(
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );

@@ -23,13 +23,14 @@
 namespace zorba {
 
 TypeIdentifier::TypeIdentifier()
-    : m_kind(IdentTypes::INVALID_TYPE),
-    m_quantifier(IdentTypes::QUANT_ONE),
-    m_uri(""),
-    m_uriWildcard(false),
-    m_localName(""),
-    m_localNameWildcard(false),
-    m_contentType()
+  :
+  m_kind(IdentTypes::INVALID_TYPE),
+  m_quantifier(IdentTypes::QUANT_ONE),
+  m_uri(""),
+  m_uriWildcard(false),
+  m_localName(""),
+  m_localNameWildcard(false),
+  m_contentType()
 {
 }
 
@@ -186,6 +187,69 @@ TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quan
 
   return ti;
 }
+
+
+#ifdef ZORBA_WITH_JSON
+
+TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_ITEM_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONObjectType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_OBJECT_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_ARRAY_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONPairType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_PAIR_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONObjectPairType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_OBJECT_PAIR_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONArrayPairType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_ARRAY_PAIR_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+#endif
 
 
 TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)

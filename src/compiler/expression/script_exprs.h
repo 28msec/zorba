@@ -17,24 +17,10 @@
 #ifndef ZORBA_COMPILER_SCRIPT_EXPRS
 #define ZORBA_COMPILER_SCRIPT_EXPRS
 
-#include <string>
 #include <vector>
-
-#include <zorba/store_consts.h>
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbautils/checked_vector.h"
-
-#include "zorbatypes/schema_types.h"
-
-#include "diagnostics/xquery_diagnostics.h"
-
-#include "context/static_context.h"
-
-#include "types/typeimpl.h"
-
-#include "store/api/item.h"
 
 namespace zorba 
 {

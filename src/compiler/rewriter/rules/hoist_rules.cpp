@@ -324,8 +324,6 @@ static expr_t try_hoisting(
     return NULL;
   }
 
-  TypeManager* tm = e->get_type_manager();
-
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;

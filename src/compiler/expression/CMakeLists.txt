@@ -18,6 +18,7 @@ SET(EXPRESSION_SRCS
     expr_type.cpp
     expr.cpp
     expr_put.cpp
+    json_exprs.cpp
     var_expr.cpp
     path_expr.cpp
     flwor_expr.cpp

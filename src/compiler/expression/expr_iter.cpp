@@ -22,6 +22,7 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
@@ -379,6 +380,45 @@ void ExprIterator::next()
     EXPR_ITER_END();
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind:
+  {
+    json_pair_expr* e = static_cast<json_pair_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theNameExpr);
+    EXPR_ITER_NEXT(e->theValueExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case json_object_expr_kind:
+  {
+    json_object_expr* e = static_cast<json_object_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theContentExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case json_array_expr_kind:
+  {
+    json_array_expr* e = static_cast<json_array_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theContentExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+#endif
 
   case if_expr_kind:
   {

@@ -38,6 +38,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
@@ -3051,6 +3052,54 @@ void end_visit(pi_expr& v)
   PlanIter_t target = pop_itstack ();
   push_itstack(new PiIterator(sctx, qloc, target, content, isRoot));
 }
+
+
+#ifdef ZORBA_WITH_JSON
+
+/*******************************************************************************
+
+  JSON Constructors
+
+********************************************************************************/
+bool begin_visit(json_pair_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_pair_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+bool begin_visit(json_object_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_object_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+bool begin_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+#endif // ZORBA_WITH_JSON
 
 
 bool begin_visit(const_expr& v)
