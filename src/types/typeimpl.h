@@ -127,10 +127,9 @@ namespace zorba
   4. Simple vs. complex.
 
   1. Built-in datatypes are those which are defined in XMLSchema specification.
+     They are all simple types (no complex built-in types).
+     They can be either atomic or list (no union built-in types).
      They can be either primitive or derived.
-     They can be either atomic or list.
-     There are no union built-in types.
-     There are no complex built-in types.
 
      User-derived datatypes are those derived datatypes that are defined by
      individual schema designers. They are always derived. They can be atomic,
@@ -151,7 +150,7 @@ namespace zorba
      is the parent of T in the type hierarchy. This is true even for primitive
      types: their baseType is xs:anyAtomicType.
 
-     If T is a type derived from another type D and it base type is P, then D
+     If T is a type derived from another type D and its base type is P, then D
      and P may or may not be the same type. For example, list types are derived
      from their "itemType" (see below), but their "baseType" is always the
      xs:anySimpleType.
@@ -369,10 +368,10 @@ public:
 
 protected:
   XQType(
-         const TypeManager* manager,
-         type_kind_t type_kind,
-         TypeConstants::quantifier_t quantifier,
-         bool builtin)
+      const TypeManager* manager,
+      type_kind_t type_kind,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin)
     :
     theManager(const_cast<TypeManager*>(manager)),
     theKind(type_kind),
@@ -391,7 +390,12 @@ protected:
 
 
 /***************************************************************************//**
+  NONE is a special sequence "type" defined by the formal semantics. It 
+  represents the "absence" of type. For example, the static type of the fn:error
+  function is "none". 
 
+  NONE type has quantifier ONE
+  NONE type is considered a subtype of every other type.
 ********************************************************************************/
 class NoneXQType : public XQType
 {
@@ -456,78 +460,6 @@ public:
  public:
   SERIALIZABLE_CLASS(ItemXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ItemXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
-};
-
-
-/***************************************************************************//**
-  xs:untyped
-********************************************************************************/
-class UntypedXQType : public XQType
-{
-public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  store::Item_t get_qname() const;
-
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
-};
-
-
-/******************************************************************************
-  xs:anyType
-*******************************************************************************/
-class AnyXQType : public XQType
-{
-public:
-  AnyXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  store::Item_t get_qname() const;
- public:
-  SERIALIZABLE_CLASS(AnyXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
-};
-
-
-/******************************************************************************
-  xs:anySimpleType
-*******************************************************************************/
-class AnySimpleXQType : public XQType
-{
-public:
-  AnySimpleXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
- public:
-  SERIALIZABLE_CLASS(AnySimpleXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
@@ -740,9 +672,15 @@ public:
 
 
 /***************************************************************************//**
-  Represents a XMLSchema user-defined type that describes the content of an
-  element or attribute node.
+  Represents :
 
+  (a) a XMLSchema user-defined type that describes the content of an element
+      or attribute node, or
+  (b) a sequence type whose ItemType is a user0defined atomic type.
+
+  Note: unless the user-defined tpye is an atomic one, the quentifier of
+  "this" must be QUANT_ONE.
+ 
   m_qname          : The name of this user-defined type. The actual type
                      definition is stored in the TypeManger that created this
                      type (and is pointed to my theManager). The TypeManager
@@ -840,6 +778,80 @@ public:
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
+
+
+/******************************************************************************
+  xs:anyType
+*******************************************************************************/
+class AnyXQType : public XQType
+{
+public:
+  AnyXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+ public:
+  SERIALIZABLE_CLASS(AnyXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
+
+
+/******************************************************************************
+  xs:anySimpleType
+*******************************************************************************/
+class AnySimpleXQType : public XQType
+{
+public:
+  AnySimpleXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
+
+  store::Item_t get_qname() const;
+ public:
+  SERIALIZABLE_CLASS(AnySimpleXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
+
+
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
+
+
 
 }
 

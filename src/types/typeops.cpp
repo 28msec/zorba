@@ -308,6 +308,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
   case XQType::ANY_TYPE_KIND:
+  case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
@@ -326,9 +327,6 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
                                     lType.get_return_type(),
                                     TypeConstants::QUANT_ONE);
   }
-
-  case XQType::UNTYPED_KIND:
-    return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
   case XQType::NODE_TYPE_KIND:
 #ifdef ZORBA_WITH_JSON
@@ -724,7 +722,8 @@ bool TypeOps::is_subtype(
       {
         const AtomicXQType& a1 = static_cast<const AtomicXQType&>(*subtype);
 
-        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
+        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()]
+                                                     [a2.get_type_code()];
       }
       case XQType::USER_DEFINED_KIND:
       {
@@ -861,7 +860,7 @@ bool TypeOps::is_subtype(
     case XQType::UNTYPED_KIND:
     case XQType::ANY_TYPE_KIND:
     {
-      // We shouldn't be here because xs:untyped is not a sequence type
+      // We shouldn't be here because these are not a sequence types
       ZORBA_ASSERT(false);
 
       if (!subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME))
@@ -966,12 +965,32 @@ xqtref_t TypeOps::union_type(
       {
       case XQType::ATOMIC_TYPE_KIND:
         return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+
       case XQType::NODE_TYPE_KIND:
           return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+
+#ifdef ZORBA_WITH_JSON
+      case XQType::JSON_TYPE_KIND:
+      {
+        const JSONXQType& t1 = static_cast<const JSONXQType&>(type1);
+        const JSONXQType& t2 = static_cast<const JSONXQType&>(type2);
+        store::StoreConsts::JSONItemKind kind1 = t1.get_json_kind();
+        store::StoreConsts::JSONItemKind kind2 = t2.get_json_kind();
+
+        if (kind1 >= store::StoreConsts::jsonObject &&
+            kind2 >= store::StoreConsts::jsonObject)
+        {
+          return GENV_TYPESYSTEM.JSON_OBJECT_ONE;
+        }
+   
+        return GENV_TYPESYSTEM.JSON_ITEM_ONE;
+      }
+#endif
       default:
         break;
       }
     }
+
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
   else
@@ -981,15 +1000,21 @@ xqtref_t TypeOps::union_type(
 
     if (! is_equal(tm, type1, *pt1) || ! is_equal(tm, type2, *pt2))
     {
-      return tm->create_type_x_quant(
-                 *union_type(*pt1, *pt2, tm),
-                 RootTypeManager::QUANT_UNION_MATRIX[TypeConstants::QUANT_QUESTION] /* to be on the safe side */
-                 [RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()] [type2.get_quantifier()]]);
+      TypeConstants::quantifier_t q1 = type1.get_quantifier();
+      TypeConstants::quantifier_t q2 = type2.get_quantifier();
+
+      TypeConstants::quantifier_t q12 = RootTypeManager::QUANT_UNION_MATRIX[q1][q2];
+
+      // to be on the safe side
+      q12 = RootTypeManager::QUANT_UNION_MATRIX[TypeConstants::QUANT_QUESTION][q12];
+
+      return tm->create_type_x_quant(*union_type(*pt1, *pt2, tm), q12); 
     }
     else
     {
+      ZORBA_ASSERT(false);
       return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
+    }
   }
 }
 
@@ -1002,7 +1027,16 @@ xqtref_t TypeOps::intersect_type(
     const XQType& type2,
     const TypeManager* tm)
 {
-  XQType::type_kind_t tk1 = type1.type_kind(), tk2 = type2.type_kind();
+  XQType::type_kind_t tk1 = type1.type_kind();
+  XQType::type_kind_t tk2 = type2.type_kind();
+
+  ZORBA_ASSERT(tk1 != XQType::ANY_TYPE_KIND &&
+               tk1 != XQType::ANY_SIMPLE_TYPE_KIND &&
+               tk1 != XQType::UNTYPED_KIND);
+
+  ZORBA_ASSERT(tk2 != XQType::ANY_TYPE_KIND &&
+               tk2 != XQType::ANY_SIMPLE_TYPE_KIND &&
+               tk2 != XQType::UNTYPED_KIND);
 
   if (tk1 < tk2)
     return intersect_type(type2, type1, tm);
@@ -1013,37 +1047,65 @@ xqtref_t TypeOps::intersect_type(
   if (is_subtype(tm, type1, type2))
     return &type1;
 
-  else if (is_subtype(tm, type2, type1))
+  if (is_subtype(tm, type2, type1))
     return &type2;
 
-  else if (tk1 == XQType::EMPTY_KIND)
+  if (tk1 == XQType::EMPTY_KIND)
     return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR ?
             GENV_TYPESYSTEM.EMPTY_TYPE :
             GENV_TYPESYSTEM.NONE_TYPE);
 
-  else if (tk2 == XQType::EMPTY_KIND)
+  if (tk2 == XQType::EMPTY_KIND)
     return (q1 == TypeConstants::QUANT_QUESTION || q1 == TypeConstants::QUANT_STAR ?
             GENV_TYPESYSTEM.EMPTY_TYPE :
             GENV_TYPESYSTEM.NONE_TYPE);
 
-  else if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) 
+  if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) 
   {
     switch (tk1) 
     {
     case XQType::ATOMIC_TYPE_KIND:
-      if (tk2 == XQType::NODE_TYPE_KIND || tk2 == XQType::ATOMIC_TYPE_KIND)
+    {
+      switch (tk2)
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      case XQType::NODE_TYPE_KIND:
+#ifdef ZORBA_WITH_JSON
+      case XQType::JSON_TYPE_KIND:
+#endif
+      case XQType::FUNCTION_TYPE_KIND:
+      case XQType::ANY_FUNCTION_TYPE_KIND:
+      case XQType::USER_DEFINED_KIND:
+      {
         return GENV_TYPESYSTEM.NONE_TYPE;
-      else
-        return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
-      break;
+      }
+
+      case XQType::EMPTY_KIND:
+      case XQType::NONE_KIND:
+      case XQType::ITEM_KIND:
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
+    }
 
     case XQType::NODE_TYPE_KIND:
+    {
       return (tk2 != XQType::NODE_TYPE_KIND ?
               GENV_TYPESYSTEM.NONE_TYPE :
               GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE); // ????
+    }
+
+#ifdef ZORBA_WITH_JSON
+    case XQType::JSON_TYPE_KIND:
+    {
+      return GENV_TYPESYSTEM.NONE_TYPE;
+    }
+#endif
 
     default:
       break;
+    }
     }
 
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -1062,6 +1124,7 @@ xqtref_t TypeOps::intersect_type(
     }
     else
     {
+      ZORBA_ASSERT(false);
       return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
     }
   }
@@ -1254,6 +1317,11 @@ type_ident_ref_t TypeOps::get_type_identifier(
       return type_ident_ref_t();
     }
   }
+#ifdef ZORBA_WITH_JSON
+  case XQType::JSON_TYPE_KIND:
+  {
+  }
+#endif
   case XQType::ANY_TYPE_KIND:
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getNamespace() ),

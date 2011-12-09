@@ -281,7 +281,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
 
 /***************************************************************************//**
-  Create a sequence type from the given typename and quantifier.
+  Create a type from the given typename and quantifier.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,

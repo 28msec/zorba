@@ -379,6 +379,25 @@ NodeXQType::NodeXQType(
   m_nillable(nillable),
   m_schema_test(schematest)
 {
+  assert(contentType == NULL ||
+         (nodeKind == store::StoreConsts::documentNode &&
+          contentType->type_kind() == NODE_TYPE_KIND) ||
+         contentType->type_kind() == ATOMIC_TYPE_KIND ||
+         contentType->type_kind() == ANY_TYPE_KIND ||
+         contentType->type_kind() == ANY_SIMPLE_TYPE_KIND ||
+         contentType->type_kind() == UNTYPED_KIND ||
+         contentType->type_kind() == USER_DEFINED_KIND);
+
+  assert(contentType == NULL ||
+         contentType->get_quantifier() == TypeConstants::QUANT_ONE ||
+         contentType->type_kind() == ANY_TYPE_KIND ||
+         contentType->type_kind() == ANY_SIMPLE_TYPE_KIND ||
+         contentType->type_kind() == UNTYPED_KIND);
+
+  assert(nodeKind != store::StoreConsts::anyNode ||
+         (contentType == NULL ||
+          contentType->type_kind() == XQType::UNTYPED_KIND ||
+          contentType->type_kind() == XQType::ANY_TYPE_KIND));
 }
 
 
@@ -467,10 +486,6 @@ bool NodeXQType::is_subtype(
 {
   if (supertype.m_node_kind == store::StoreConsts::anyNode)
   {
-    assert(supertype.m_content_type == NULL ||
-           supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND ||
-           supertype.m_content_type->type_kind() == XQType::ANY_TYPE_KIND);
-
     if (supertype.m_content_type != NULL &&
         supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND)
     {
@@ -817,7 +832,10 @@ UserDefinedXQType::UserDefinedXQType(
   m_typeCategory(typeCategory),
   m_contentKind(contentKind)
 {
-  ZORBA_ASSERT(baseType!=NULL);
+  assert(typeCategory == ATOMIC_TYPE || typeCategory == COMPLEX_TYPE);
+
+  ZORBA_ASSERT(baseType != NULL);
+  ZORBA_ASSERT(typeCategory == ATOMIC_TYPE || quantifier == TypeConstants::QUANT_ONE);
 
   TRACE("UserDefinedXQType c2: " << m_qname->getLocalName()->str() << "@"
         << m_qname->getNamespace()->str() << " " << typeCategoryStr(m_typeCategory)
@@ -842,7 +860,8 @@ UserDefinedXQType::UserDefinedXQType(
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_listItemType(listItemType)
 {
-  ZORBA_ASSERT( listItemType );
+  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
+  ZORBA_ASSERT(listItemType);
 }
 
 
@@ -863,6 +882,7 @@ UserDefinedXQType::UserDefinedXQType(
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_unionItemTypes(unionItemTypes)
 {
+  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
 }
 
 

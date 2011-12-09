@@ -954,6 +954,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+#endif
   {
     return !contains_expr(e);
   }

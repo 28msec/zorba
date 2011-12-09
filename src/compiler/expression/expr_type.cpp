@@ -470,13 +470,14 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case doc_expr_kind:
   {
-    doc_expr* e = static_cast<doc_expr*>(this);
+    xqtref_t contentType =
+      (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+       rtm.ANY_TYPE : 
+       rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::documentNode,
                                    NULL,
-                                   (e->theContent == NULL ?
-                                    NULL :
-                                    e->theContent->get_return_type()),
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -485,14 +486,14 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case elem_expr_kind:
   {
-    xqtref_t typeName =
+    xqtref_t contentType =
       (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
        rtm.ANY_TYPE : 
        rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
-                                   typeName,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -501,13 +502,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case attr_expr_kind:
   {
-    attr_expr* e = static_cast<attr_expr*>(this);
-
     newType = tm->create_node_type(store::StoreConsts::attributeNode,
                                    NULL,
-                                   (e->theValueExpr == NULL ?
-                                    NULL :
-                                    e->theValueExpr->get_return_type()),
+                                   rtm.UNTYPED_ATOMIC_TYPE_ONE,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -567,6 +564,26 @@ void expr::compute_return_type(bool deep, bool* modified)
                                    false);
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind:
+  {
+    newType = rtm.JSON_OBJECT_PAIR_ONE;
+    break;
+  }
+
+  case json_object_expr_kind:
+  {
+    newType = rtm.JSON_OBJECT_ONE;
+    break;
+  }
+
+  case json_array_expr_kind:
+  {
+    newType = rtm.JSON_ARRAY_ONE;
+    break;
+  }
+#endif
 
   case const_expr_kind:
   {

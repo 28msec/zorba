@@ -303,7 +303,6 @@ expr_t MarkConsumerNodeProps::apply(
 
     expr* arg = curExpr->get_input();
 
-    TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
     TypeConstants::quantifier_t q = targetType->get_quantifier();
     
@@ -334,7 +333,6 @@ expr_t MarkConsumerNodeProps::apply(
 
     expr* arg = curExpr->get_input();
       
-    TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
     TypeConstants::quantifier_t q = targetType->get_quantifier();
 
