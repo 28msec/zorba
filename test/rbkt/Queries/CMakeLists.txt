@@ -1,11 +1,11 @@
 # Copyright 2006-2008 The FLWOR Foundation.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,10 @@ ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 
-FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS 
+FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
 IF(ZORBA_TEST_XQUERYX)
-  FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS 
+  FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
   IF (TESTFILES_XQX)
     LIST(APPEND TESTFILES ${TESTFILES_XQX})
@@ -32,12 +32,21 @@ ENDIF(ZORBA_TEST_XQUERYX)
 # appropriate. IF YOU THINK YOU WANT TO DO THIS, YOU ARE PROBABLY
 # WRONG OR THERE IS A SERIOUS PROBLEM WITH THE BUILD SYSTEM.
 # PLEASE DO NOT USE THIS MECHANISM IF AT ALL POSSIBLE.
-# IF STILL NEEDED, GIVE THE CORRESPONDING BUG PRIORITY 9 BECAUSE
-# THIS HAS TO BE ADDRESSED ASAP.
+# IF STILL NEEDED, GIVE THE CORRESPONDING BUG IMPORTANCE "CRITICAL"
+# BECAUSE THIS HAS TO BE ADDRESSED ASAP.
 LIST(REMOVE_ITEM TESTFILES
 
-# Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
+  # crashes on Windows: 866978, 866742 (fix 866978 before 866742)
   zorba/HigherOrder/hof-101.xq
+
+  # fails because of the image external module's broken documentation
+  # If you try to submit something else to the external module, it will
+  # fail because of this test.
+  # If you try and mark it as expected failure here, the "expected failure"
+  # will fail because the image module will not be tested and therefore the
+  # module documentation test will succeed.
+  # Created bug 871335 for this.
+  zorba/xqdoc/moduleDocumentation.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -85,7 +94,7 @@ IF(${cxqNO} STRGREATER "0")
     LIST(SORT CHAINED_TESTS_FILES)
 
     SET(TEST_NAME "test/rbkt/${TEST_NAME}")
-    
+
     # finally add the test
     ZORBA_ADD_TEST("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
 
@@ -134,7 +143,7 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(HTTP_CLIENT)
   ENDIF(NOT CURL_FOUND)
-  
+
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")
@@ -192,7 +201,7 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
 ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
   IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
 
-SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS OFF CACHE BOOL "Bool var that says if w3c testing results are to be submited to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
+SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS OFF CACHE BOOL "Bool var that says if w3c testing results are to be submitted to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
 MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 ####
@@ -202,6 +211,7 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
 
   IF(NOT ZORBA_WITH_BIG_INTEGER)
     # These tests fail due to integer overflow.
@@ -220,6 +230,10 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
   ENDIF(ZORBA_TEST_XQUERYX)
+  
+  #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
+  #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
@@ -246,9 +260,18 @@ IF(XVERMAJ EQUAL 2)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
-  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external1 870991)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
+
+  # this is still an expected failure but has been commented out since the
+  # test is now completely disabled because of bug 871335
+  #EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
+
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
@@ -269,4 +292,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
-# vim:set et sw=2 ts=2:
+EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
+
+IF (NOT ZORBA_NO_FULL_TEXT)
+  EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)

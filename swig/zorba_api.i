@@ -52,7 +52,6 @@
   class Item;
   class Iterator;
   class XQuery;
-  class StaticContext;
   class Store;
   class Zorba;
 
@@ -64,6 +63,9 @@
   class TypeException;
   class UserException;
   class ZorbaException;
+
+  #include "StaticContext.h"
+  #include "ItemFactory.h"
 
 %}
 
@@ -77,5 +79,6 @@
 %include "CompilerHints.i"
 %include "StaticContext.i"
 %include "Zorba.i"
+%include "ItemFactory.i"
 
 

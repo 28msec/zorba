@@ -338,7 +338,7 @@ store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
     // library
     for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
-      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library");
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library", true);
     }
 
     // example

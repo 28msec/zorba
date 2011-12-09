@@ -110,6 +110,16 @@ PlanIter_t fn_substring::codegen(
   return new SubstringIterator(sctx, loc, argv);
 }
 
+PlanIter_t op_substring_int::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new SubstringIntOptIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_string_length::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -436,6 +446,33 @@ void populate_context_strings(static_context* sctx)
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_SUBSTRING_3);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_substring_int,
+        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::OP_SUBSTRING_INT_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_substring_int,
+        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::OP_SUBSTRING_INT_3);
 
   }
 

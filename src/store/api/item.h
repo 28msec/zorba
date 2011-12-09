@@ -662,6 +662,12 @@ public:
    *
    */
   virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
   isDescendant(const store::Item_t&) const;
 
   /**
@@ -686,13 +692,91 @@ public:
    *
    */
   virtual bool
+  isAttribute(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
   isParent(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
 
   /**
    *
    */
   virtual store::Item_t
   getLevel() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isSibling(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isAttribute() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isComment() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDocument() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isElement() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isProcessingInstruction() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isText() const;
+
+  /**
+   *
+   */
+  virtual bool
+  inSameTree(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  inCollection() const;
+
+  /**
+   *
+   */
+  virtual bool
+  inSameCollection(const store::Item_t&) const;
 
   /**
    *
@@ -721,6 +805,14 @@ public:
    * @return true only if it is.
    */
   virtual bool isStreamable() const;
+
+  /**
+   * Checks whether the item's content is streamable
+   * and the underlying stream is seekable
+   *
+   * @return true only if it is.
+   */
+  virtual bool isSeekable() const;
 
   /**
    * Gets an istream for the item's content.

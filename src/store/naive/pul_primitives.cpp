@@ -25,12 +25,14 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_item_factory.h"
 #include "store/naive/node_factory.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/simple_index_value.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
+#include "store/api/validator.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -464,13 +466,24 @@ void UpdRenameElem::undo()
 void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
+  TextNode* textChild;
+
+  theOldTypeName = target->getType();
+  theOldHaveTypedValue = target->haveTypedValue();
+  theOldHaveTypedTypedValue = target->haveTypedTypedValue(textChild);
+
+  if (theOldHaveTypedValue)
+    theOldHaveEmptyTypedValue = target->haveEmptyTypedValue();
+
+  theOldIsInSubstitutionGroup = target->isInSubstitutionGroup();
 
   target->setType(theTypeName);
 
-  TextNode* textChild;
-
-  if (target->haveTypedTypedValue(textChild))
+  if (theOldHaveTypedTypedValue)
   {
+    theOldHaveListTypedValue = textChild->haveListValue();    
+    theOldTypedValue = textChild->getValue();
+
     zstring textValue;
     textChild->getStringValue2(textValue);
 
@@ -480,31 +493,89 @@ void UpdSetElementType::apply()
     textChild->setText(textValue);
   }
 
-  if (theHaveValue)
+  if (theHaveTypedValue)
   {
-    target->setHaveValue();
+    target->setHaveTypedValue();
 
-    if (theHaveEmptyValue)
-      target->setHaveEmptyValue();
+    if (theHaveEmptyTypedValue)
+      target->setHaveEmptyTypedValue();
+    else
+      target->resetHaveEmptyTypedValue();
 
-    if (theHaveTypedValue)
+    if (theHaveTypedTypedValue)
     {
-      TextNode* textChild = target->getUniqueTextChild();
+      textChild = target->getUniqueTextChild();
 
       textChild->setTypedValue(theTypedValue);
-      if (theHaveListValue)
+
+      if (theHaveListTypedValue)
         textChild->setHaveListValue();
+      else
+        textChild->resetHaveListValue();
     }
   }
   else
   {
-    target->resetHaveValue();
+    target->resetHaveTypedValue();
   }
 
   if (theIsInSubstitutionGroup)
     target->setInSubstGroup();
+  else
+    target->resetInSubstGroup();
+
+  theIsApplied = true;
 }
 
+
+void UpdSetElementType::undo()
+{
+  if (theIsApplied)
+  {
+    ElementNode* target = ELEM_NODE(theTarget);
+
+    target->setType(theOldTypeName);
+
+    if (theHaveTypedTypedValue)
+    {
+      TextNode* textChild = target->getUniqueTextChild();
+      textChild->revertToTextContent();
+    }
+
+    if (theOldHaveTypedValue)
+    {
+      target->setHaveTypedValue();
+
+      if (theOldHaveEmptyTypedValue)
+        target->setHaveEmptyTypedValue();
+      else
+        target->resetHaveEmptyTypedValue();
+
+      if (theOldHaveTypedTypedValue)
+      {
+        TextNode* textChild = target->getUniqueTextChild();
+
+        textChild->setTypedValue(theOldTypedValue);
+
+        if (theOldHaveListTypedValue)
+          textChild->setHaveListValue();
+        else
+          textChild->resetHaveListValue();
+      }
+    }
+    else
+    {
+      target->resetHaveTypedValue();
+    }
+
+    if (theOldIsInSubstitutionGroup)
+      target->setInSubstGroup();
+    else
+      target->resetInSubstGroup();
+
+    theIsApplied = false;
+  }
+}
 
 /*******************************************************************************
 
@@ -548,7 +619,8 @@ void UpdRenameAttr::check()
       ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
       parent->checkUniqueAttrs();
     }
-  } catch (ZorbaException& e)
+  } 
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
@@ -563,11 +635,76 @@ void UpdSetAttributeType::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
+  theOldTypeName = target->getType();
+  theOldTypedValue.transfer(target->theTypedValue);
+  theOldHaveListValue = target->haveListValue();
+
   target->setType(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
 
   if (theHaveListValue)
     target->setHaveListValue();
+  else
+    target->resetHaveListValue();
+
+  theIsApplied = true;
+}
+
+
+void UpdSetAttributeType::undo()
+{
+  if (theIsApplied)
+  {
+    AttributeNode* target = ATTR_NODE(theTarget);
+    target->setType(theOldTypeName);
+    target->theTypedValue.transfer(theOldTypedValue);
+
+    if (theOldHaveListValue)
+      target->setHaveListValue();
+    else
+      target->resetHaveListValue();
+
+    theIsApplied = false;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRevalidate::apply()
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+  std::set<store::Item*> nodes;
+
+  theRevalidationPul = GET_STORE().getItemFactory()->createPendingUpdateList();
+
+  nodes.insert(theTarget.getp());
+
+  if (!thePul->theValidator)
+    return;
+
+  thePul->theValidator->validate(nodes, *theRevalidationPul.getp());
+
+  try
+  {
+    theRevalidationPul->applyUpdates(false);
+  }
+  catch (...)
+  {
+    ZORBA_FATAL(0, "Error during the in-place validation");
+  }
+
+  theIsApplied = true;
+#endif
+}
+
+
+void UpdRevalidate::undo()
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+  static_cast<PULImpl *>(theRevalidationPul.getp())->undoUpdates();
+#endif
 }
 
 
@@ -658,6 +795,9 @@ void UpdPut::apply()
 {
   SimpleStore* store = &GET_STORE();
 
+  zstring targetUri;
+  theTargetUri->getStringValue2(targetUri);
+
   try
   {
     // Have to copy because addNode() will set the doc uri of target tree to
@@ -668,33 +808,32 @@ void UpdPut::apply()
     // a parent already.
     store::CopyMode copymode;
     copymode.set(true, true, true, true);
-    theTarget = theTarget->copy(NULL, copymode);
 
     if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
     {
-      XmlNode* target =  BASE_NODE(theTarget);
+      store::Item_t docItem;
+      GET_FACTORY().createDocumentNode(docItem, targetUri, targetUri);
 
-      DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
-      doc->setId(target->getTree(), NULL);
-      doc->insertChild(target, 0);
-      doc->getTree()->setRoot(doc);
+      theTarget = theTarget->copy(docItem.getp(), copymode);
 
-      store::Item_t docItem(doc);
-
-      theTarget = docItem;
+      theTarget.transfer(docItem);
+    }
+    else
+    {
+      theTarget = theTarget->copy(NULL, copymode);
     }
 
-    store->addNode(theTargetUri->getStringValue(), theTarget);
+    store->addNode(targetUri, theTarget);
   }
   catch(ZorbaException const& e)
   {
     if (e.diagnostic() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
-      theOldDocument = store->getDocument(theTargetUri->getStringValue());
+      theOldDocument = store->getDocument(targetUri);
 
-      store->deleteDocument(theTargetUri->getStringValue());
+      store->deleteDocument(targetUri);
 
-      store->addNode(theTargetUri->getStringValue(), theTarget);
+      store->addNode(targetUri, theTarget);
     }
     else
     {
@@ -807,7 +946,8 @@ void UpdCreateCollection::undo()
 void UpdDeleteCollection::apply()
 {
   theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
-  assert(theCollection);
+  if (theCollection == NULL)
+    return;//If two delete collection are issued in the same snapshot is a noop
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
@@ -1629,14 +1769,11 @@ void UpdInsertIntoHashMap::apply()
 
   if (!lMap)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
-  simplestore::IndexImpl* lImpl =
-    static_cast<simplestore::IndexImpl*>(lMap.getp());
+  ValueIndex* lImpl = static_cast<ValueIndex*>(lMap.getp());
 
   theValue->open();
   store::Item_t lValue;
@@ -1653,7 +1790,7 @@ void UpdInsertIntoHashMap::apply()
     }
 
     store::IndexKey* lKeyPtr = lKey.get();
-    if (!lImpl->insert(lKeyPtr, lValue, lKey->size() > 1))
+    if (!lImpl->insert(lKeyPtr, lValue))
     {
       // the index took the ownership over the key if the index
       // did _not_ already contain an entry with the same key

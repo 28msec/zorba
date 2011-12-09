@@ -57,6 +57,8 @@
 #include "store/naive/pul_primitive_factory.h"
 
 #include "util/cxx_util.h"
+#include "util/uuid/uuid.h"
+#include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "runtime/full_text/default_tokenizer.h"
@@ -104,7 +106,8 @@ SimpleStore::SimpleStore()
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theTraceLevel(0)
+  theTraceLevel(0),
+  theNodeToReferencesMap(128, true)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )
   , theTokenizerProvider( nullptr )
@@ -334,6 +337,32 @@ void SimpleStore::shutdown(bool soft)
       theNodeFactory = NULL;
     }
 
+    if (theNodeToReferencesMap.size() > 0)
+    {
+      NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
+      NodeRefMap::iterator end = theNodeToReferencesMap.end();
+      for (; iter != end; ++iter)
+      {
+        std::cerr << "Reference: " << (*iter).second
+                  << "is still in the nodes to references map" << std::endl;
+      }
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() + 
+                     " node references still in the nodes to references map");
+    }
+
+    if (theReferencesToNodeMap.size() > 0)
+    {
+      RefNodeMap::iterator iter = theReferencesToNodeMap.begin();
+      RefNodeMap::iterator end = theReferencesToNodeMap.end();
+      for (; iter != end; ++iter)
+      {
+        std::cerr << "Reference: " << (*iter).first 
+                  << "is still in the references to nodes map" << std::endl;
+      }
+      ZORBA_FATAL(0, theReferencesToNodeMap.size() +
+                     " node references still in the references to nodes map");
+    }
+
     // do cleanup of the libxml2 library
     // however, after that, a user will have to call
     // LIBXML_TEST_VERSION if he wants to use libxml2
@@ -484,10 +513,8 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (spec.theIsGeneral && spec.theIsSorted)
@@ -531,7 +558,7 @@ void SimpleStore::populateValueIndex(
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 
-  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+  ValueIndex* index = static_cast<ValueIndex*>(aIndex.getp());
 
   aSourceIter->open();
 
@@ -592,7 +619,6 @@ void SimpleStore::populateGeneralIndex(
   store::Item_t domainNode;
   store::Item_t firstKeyItem;
   store::Item_t keyItem;
-  store::IndexKey* key = NULL;
 
   GeneralIndex* index = static_cast<GeneralIndex*>(idx.getp());
 
@@ -605,67 +631,54 @@ void SimpleStore::populateGeneralIndex(
       bool more = true;
 
       assert(domainNode->isNode());
+      assert(keyItem == NULL);
 
+      // Compute the keys associated with the current domain node. Note: We
+      // must check whether the domain node has more than one key, before we
+      // do any insertions in the index.
       while (more)
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          throw ZORBA_EXCEPTION(
-            zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-            ERROR_PARAMS( index->getName()->getStringValue() )
-          );
+          RAISE_ERROR_NO_LOC(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          ERROR_PARAMS(index->getName()->getStringValue()));
         }
-
-        // Compute the keys of the current domain node. We must check whether
-        // the domain node has more than one key, before we do any insertions
-        // in the index.
-
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
 
         // Compute 1st key, or next domain node
         more = sourceIter->next(firstKeyItem);
 
+        // If current node has no keys, put it in the "null" entry and continue
+        // with the next domain node, if nay.
         if (!more || firstKeyItem->isNode())
         {
-          // Current node has no keys
-          (*key)[0] = NULL;
-          index->insert(key, domainNode, false);
+          index->insert(keyItem, domainNode);
 
-          if (more)
-            domainNode.transfer(firstKeyItem);
-
+          domainNode.transfer(firstKeyItem);
           continue;
         }
-
-        // Prepare to insert the 1st key. Note: we have to copy domainNode
-        // rchandle because index->insert() will transfer the given node.
-        store::Item_t node = domainNode;
-        (*key)[0].transfer(firstKeyItem);
 
         // Compute 2nd key, or next domain node
         more = sourceIter->next(keyItem);
 
+        // If current domain node has exactly 1 key, insert it in the index
+        // and continue with next domain node, if any.
         if (!more || keyItem->isNode())
         {
-          // Current domain node has exactly 1 key. So insert it in the
-          // index and continue with next domain node, if any.
-          index->insert(key, node, false);
+          index->insert(firstKeyItem, domainNode);
 
           domainNode.transfer(keyItem);
           continue;
         }
 
         // Current domain node has at least 2 keys. So insert them in the index.
-        index->insert(key, node, true);
+        // Note: we have to copy the domainNode rchandle because index->insert()
+        // will transfer the given node.
+        index->setMultiKey();
 
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
-
+        store::Item_t node = domainNode;
+        index->insert(firstKeyItem, node);
         node = domainNode;
-        (*key)[0].transfer(keyItem);
-
-        index->insert(key, node, true);
+        index->insert(keyItem, node);
 
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
@@ -676,29 +689,18 @@ void SimpleStore::populateGeneralIndex(
             break;
           }
 
-          if (key == NULL)
-            key = new store::IndexKey(numColumns);
-
-          (*key)[0].transfer(keyItem);
           node = domainNode;
-
-          index->insert(key, node);
+          index->insert(keyItem, node);
         }
       }
     }
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
-
     sourceIter->close();
 
     throw;
   }
-
-  if (key != NULL)
-    delete key;
 
   sourceIter->close();
 }
@@ -900,6 +902,7 @@ SimpleStore::getMap(const store::Item* aQName) const
   return lIndex.getp();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -907,6 +910,7 @@ store::Iterator_t SimpleStore::listMapNames()
 {
   return new NameIterator<IndexSet>(theHashMaps);
 }
+
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -935,10 +939,8 @@ store::Collection_t SimpleStore::createCollection(
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 
   return collection;
@@ -956,10 +958,8 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 
   if (!inserted)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( lName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
   }
 }
 
@@ -976,9 +976,12 @@ store::Collection_t SimpleStore::getCollection(
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) {
+  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  {
     return collection;
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -997,10 +1000,8 @@ void SimpleStore::deleteCollection(
 
   if (!theCollections->remove(aName, aDynamicCollection))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-      ERROR_PARAMS( aName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
+    ERROR_PARAMS(aName->getStringValue()));
   }
 }
 
@@ -1091,27 +1092,16 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (node == NULL || !node->isNode())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
 
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  bool inserted = theDocuments.insert(urib, root);
+  bool inserted = theDocuments.insert(uri, root);
 
   if (!inserted && node.getp() != root.getp())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
-    );
-  }
-  else if (inserted)
-  {
-    root->setDocUri(uri);
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS(uri));
   }
 
   ZORBA_FATAL(node.getp() == root.getp(), "");
@@ -1126,21 +1116,19 @@ store::Iterator_t SimpleStore::getDocumentNames() const
   return new DocumentNameIterator<DocumentSet>(theDocuments);
 }
 
+
 /*******************************************************************************
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-store::Item_t SimpleStore::getDocument(const zstring& docUri)
+store::Item_t SimpleStore::getDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return NULL;
-
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
 
   XmlNode_t root;
 
-  bool found = theDocuments.get(urib, root);
+  bool found = theDocuments.get(uri, root);
 
   if (found)
     return root.getp();
@@ -1153,15 +1141,12 @@ store::Item_t SimpleStore::getDocument(const zstring& docUri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(const zstring& docUri)
+void SimpleStore::deleteDocument(const zstring& uri)
 {
-  if (docUri.empty())
+  if (uri.empty())
     return;
 
-  zstring_b urib;
-  urib.wrap_memory(docUri.data(), docUri.size());
-
-  theDocuments.remove(urib);
+  theDocuments.erase(uri);
 }
 
 
@@ -1173,7 +1158,9 @@ void SimpleStore::deleteAllDocuments()
   theDocuments.clear();
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::createHashMap(
@@ -1314,358 +1301,147 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 
 
 /*******************************************************************************
-  Computes the URI for the given node.
+  Computes the Structural Reference for the given node.
 ********************************************************************************/
-bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
+bool SimpleStore::getStructuralInformation(
+    store::Item_t& result, 
+    const store::Item* node)
 {
-  std::ostringstream stream;
-
-  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
-  stream << "zorba:"
-         << n->getCollectionId() << "."
-         << n->getTreeId() << "."
-         << n->getTree()->getPosition() + 1;
-
 #ifdef TEXT_ORDPATH
+  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-  if (n->getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    stream <<  ".a."
-  }
-  else
-  {
-    stream <<  ".c."
-  }
-  stream << n->getOrdPath().serialize();
-
+  return theItemFactory->createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
 #else
+  if (node->getNodeKind() == store::StoreConsts::textNode)
+  {
+    OrdPath ordPath;
+    const TextNode* n = static_cast<const TextNode*>(node);
+    n->getOrdPath(ordPath);
 
-  if (n->getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    stream << ".a."
-           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
-  }
-  else if (n->getNodeKind() == store::StoreConsts::textNode)
-  {
-    stream << ".a."
-           << static_cast<const OrdPathNode*>(n->getParent())->getOrdPath().serialize();
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  store::StoreConsts::textNode,
+                                                  ordPath);
   }
   else
   {
-    stream << ".c."
-           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
+    const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+
+    return theItemFactory->createStructuralAnyURI(result,
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
+                                                  n->getNodeKind(),
+                                                  n->getOrdPath());
   }
 #endif
-
-  zstring str(stream.str());
-
-  return theItemFactory->createAnyURI(result, str);
 }
 
 
 /*******************************************************************************
-  Returns Item which is identified by a reference
-
-  @param uri Has to be an xs:URI item
-  @returns referenced item if it exists, otherwise NULL
+ Computes the reference of the given node.
+ 
+ @param node XDM node
+ @return the identifier as an item of type xs:anyURI
 ********************************************************************************/
-bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* uri)
+bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
 {
-  const zstring& str = uri->getString();
+  XmlNode* xmlNode = static_cast<XmlNode*>(node);
 
-  ulong prefixlen = (ulong)strlen("zorba:");
-
-  if (strncmp(str.c_str(), "zorba:", prefixlen))
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  const char* start;
-  long tmp = 0;
-
-  //
-  // Decode collection id
-  //
-  start = str.c_str() + prefixlen;
-  char* next = const_cast<char*>(start);
-
-  tmp = strtol(start, &next, 10);
-
-  if (tmp < 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong collectionId = (ulong)tmp;
-
-  //
-  // Decode tree id
-  //
-  tmp = strtol(start, &next, 10);
-
-  if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong treeId = (ulong)tmp;
-
-  //
-  // Decode tree position within collection
-  //
-  tmp = strtol(start, &next, 10);
-
-  if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong treePos = (ulong)tmp;
-
-  //
-  // Check if the uri specifies attribute node or not
-  //
-  bool attributeNode;
-
-  if (*start == 'a')
-    attributeNode = true;
-  else if (*start == 'c')
-    attributeNode = false;
-  else
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  //
-  // Search for the tree
-  //
-  XmlNode* rootNode = NULL;
-
-  if (collectionId == 0)
+  if (xmlNode->haveReference())
   {
-    DocumentSet::iterator it = theDocuments.begin();
-    DocumentSet::iterator end = theDocuments.end();
+    NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
 
-    for (; it != end; ++it)
-    {
-      rootNode = (*it).second.getp();
+    ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
-      if (rootNode->getTreeId() == treeId)
-        break;
-    }
+    zstring id = (*resIt).second;
+    return theItemFactory->createAnyURI(result, id);
+  }
 
-    if (it == end)
-      rootNode = NULL;
+  uuid_t uuid;
+  uuid_create(&uuid);
+  zstring uuidStr = uuidToURI(uuid);
+
+  xmlNode->setHaveReference();
+
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  theReferencesToNodeMap[uuidStr] = node;
+
+  return theItemFactory->createAnyURI(result, uuidStr);
+}
+
+
+/*******************************************************************************
+  Returns the node which is identified by the given reference.
+ 
+  @param reference an xs:anyURI item
+  @result the node identified by the reference, or NULL if no node with the given
+          reference exists
+  @return false if no node with the given reference exists; true otherwise.
+********************************************************************************/
+bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
+{
+  if (reference.length() != 45 ||
+      !utf8::match_whole(reference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(reference));
+  }
+
+  RefNodeMap::iterator resIt;
+
+  if ((resIt = theReferencesToNodeMap.find(reference)) != theReferencesToNodeMap.end())
+  {
+    result = resIt->second;
+    return true;
+  }
+
+  result = NULL;
+  return false;
+}
+
+
+/*******************************************************************************
+  Returns whether a reference has already been generated for the given node.
+ 
+  @param item XDM node
+  @return whether a reference has already been generated for the given node.
+********************************************************************************/
+bool SimpleStore::hasReference(const store::Item* node)
+{
+  return static_cast<const XmlNode*>(node)->haveReference();
+}
+
+
+/*******************************************************************************
+  Removes a node from the reference-to-nodes and nodes-to-references maps.
+ 
+  @param node XDM node
+  @return whether the node was registered or not.
+********************************************************************************/
+bool SimpleStore::unregisterNode(XmlNode* node)
+{
+  if (!node->haveReference())
+    return false;
+
+  NodeRefMap::iterator resIt;
+
+  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
+  {
+    zstring value = (*resIt).second;
+    theNodeToReferencesMap.erase(resIt);
+    node->resetHaveReference();
+
+    theReferencesToNodeMap.erase(value);
+
+    return true;
   }
   else
   {
-    // Look for the collection
-    SimpleCollection* collection;
-
-    CollectionIterator_t lIter = theCollections->collections();
-    lIter->open();
-
-    store::Collection_t lCollection;
-    bool lFound = false;
-
-    // search the collection
-    while (lIter->next(lCollection))
-    {
-      collection = static_cast<SimpleCollection*>(lCollection.getp());
-
-      if (collection->getId() == collectionId) {
-        lFound = true;
-        break;
-      }
-    }
-
-    if (!lFound)
-    {
-      lIter = theCollections->collections(true);
-      lIter->open();
-
-      // search the collection
-      while (lIter->next(lCollection))
-      {
-        collection = static_cast<SimpleCollection*>(lCollection.getp());
-
-        if (collection->getId() == collectionId) {
-          lFound = true;
-          break;
-        }
-      }
-    }
-
-    // If collection found, look for the tree
-    if (lFound)
-    {
-      store::Item_t rootItem = collection->nodeAt(treePos);
-
-      rootNode = BASE_NODE(rootItem);
-
-      if (rootNode == NULL || rootNode->getTreeId() != treeId)
-      {
-        store::Iterator_t treeIter = collection->getIterator();
-
-        treeIter->open();
-
-        while (treeIter->next(rootItem))
-        {
-          rootNode = BASE_NODE(rootItem);
-          if (rootNode->getTreeId() == treeId)
-            break;
-        }
-
-        treeIter->close();
-
-        rootNode = BASE_NODE(rootItem);
-      }
-    }
-  }
-
-  if (rootNode == NULL)
-  {
-    result = NULL;
     return false;
-  }
-
-  //
-  // Search for node in the tree
-  //
-
-  OrdPath op((unsigned char*)start, (ulong)strlen(start));
-
-#ifdef TEXT_ORDPATH
-  if (static_cast<OrdPathNode*>(rootNode)->getOrdPath() == op)
-  {
-    result = rootNode;
-    return true;
-  }
-#else
-  if (rootNode->getNodeKind() == store::StoreConsts::textNode)
-  {
-    result = NULL;
-    return false;
-  }
-  else if (static_cast<OrdPathNode*>(rootNode)->getOrdPath() == op)
-  {
-    result = rootNode;
-    return true;
-  }
-#endif
-
-  XmlNode* parent = rootNode;
-
-  while (1)
-  {
-    ulong i;
-
-    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
-        parent->getNodeKind() != store::StoreConsts::elementNode)
-    {
-      result = NULL;
-      return false;
-    }
-
-    if (attributeNode && parent->getNodeKind() == store::StoreConsts::elementNode)
-    {
-      ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
-
-      ulong numAttrs = elemParent->numAttrs();
-      for (i = 0; i < numAttrs; i++)
-      {
-        AttributeNode* child = elemParent->getAttr(i);
-
-        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
-
-        if (pos == OrdPath::SELF)
-        {
-          result = child;
-          return true;
-        }
-        else if (pos != OrdPath::FOLLOWING)
-        {
-          result = NULL;
-          return false;
-        }
-      }
-    }
-
-    InternalNode* parent2 = reinterpret_cast<InternalNode*>(parent);
-
-    ulong numChildren = parent2->numChildren();
-    for (i = 0; i < numChildren; i++)
-    {
-#ifdef TEXT_ORDPATH
-      OrdPathNode* child = static_cast<OrdPathNode*>(parent2->getChild(i));
-#else
-      XmlNode* c = parent2->getChild(i);
-
-      if (c->getNodeKind() == store::StoreConsts::textNode)
-        continue;
-
-      OrdPathNode* child = static_cast<OrdPathNode*>(c);
-#endif
-
-      OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
-
-      if (pos == OrdPath::SELF)
-      {
-        result = child;
-        return true;
-      }
-      else if (pos == OrdPath::DESCENDANT)
-      {
-        parent = child;
-        break;
-      }
-      else if (pos != OrdPath::FOLLOWING)
-      {
-        result = NULL;
-        return false;
-      }
-    }
-
-    if (i == numChildren)
-    {
-      result = NULL;
-      return false;
-    }
   }
 }
 
@@ -1689,12 +1465,14 @@ bool SimpleStore::getPathInfo(
   if (docRoot == NULL)
     return false;
 
+#ifdef DATAGUIDE
   GuideNode* guideRoot = docRoot->getDataGuide();
 
   if (!guideRoot)
     return false;
 
   guideRoot->getPathInfo(contextPath, relativePath, isAttrPath, found, unique);
+#endif
   return true;
 }
 

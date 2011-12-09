@@ -130,18 +130,17 @@ CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int>
 ################################################################################
 # Various cmake macros
 
-IF(WIN32)
+SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules ${CMAKE_MODULE_PATH})
+IF (WIN32)
   # On Windows we use proxy modules that try to guess first the location
   # of the required third party libraries. This will search in order in:
   # 1. the path pointed by ZORBA_THIRD_PARTY_REQUIREMENTS
   # 2. the Program Files directory available on the users computer
   # 3. the PATH environment variable
   # The logic is implemented by the macros in the ProxyFindModule.cmake module.
-  LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/Windows")
-  INCLUDE(ProxyFindModule)
-ENDIF(WIN32)
-LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
-
+  SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  INCLUDE (ProxyFindModule)
+ENDIF (WIN32)
 
 ################################################################################
 # This section is used for batch script generation. Each executable
@@ -418,13 +417,35 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "0")
-SET(ZORBA_PATCH_NUMBER "1")
+SET(ZORBA_MINOR_NUMBER "1")
+SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
-SET(ZORBA_MODULES_INSTALL_DIR "share/zorba-${ZORBA_VERSION}/modules"
-  CACHE STRING "Path (relative to installdir) to modules" FORCE)
-MARK_AS_ADVANCED(ZORBA_MODULES_INSTALL_DIR)
+
+SET(ZORBA_LIB_DIRNAME "lib" CACHE STRING
+  "directory name for libs (may want to set to 'lib64' on 64-bit Linux platforms)")
+
+# Directories for modules and schemas. "Core" are those which are
+# shipped with Zorba and must be present for correct Zorba
+# functionality. "Non-core" are developed independently of Zorba and
+# have different version lifecycles.
+#
+# URI dir is for things resolved by URI - specifically modules (.xq
+# files) and schemas (.xsd files) - which are platform-
+# independent. Lib dir is for platform-specific files, specifically
+# shared libraries for module external functions.
+SET(ZORBA_NONCORE_URI_DIR "share/zorba/uris"
+  CACHE STRING "Path (relative to installdir) to non-core modules/schemas")
+MARK_AS_ADVANCED(ZORBA_NONCORE_URI_DIR)
+SET(ZORBA_CORE_URI_DIR "${ZORBA_NONCORE_URI_DIR}/core/${ZORBA_VERSION}"
+  CACHE STRING "Path (relative to installdir) to core modules/schemas")
+MARK_AS_ADVANCED(ZORBA_CORE_URI_DIR)
+SET(ZORBA_NONCORE_LIB_DIR "${ZORBA_LIB_DIRNAME}/zorba"
+  CACHE STRING "Path (relative to installdir) to non-core libraries")
+MARK_AS_ADVANCED(ZORBA_NONCORE_LIB_DIR)
+SET(ZORBA_CORE_LIB_DIR "${ZORBA_NONCORE_LIB_DIR}/core/${ZORBA_VERSION}"
+  CACHE STRING "Path (relative to installdir) to core libraries")
+MARK_AS_ADVANCED(ZORBA_CORE_LIB_DIR)
 
 # add compiler variables
 ADD_DEFINITIONS(${DEFINITIONS})
@@ -461,7 +482,7 @@ IF (WIN32)
   SET(ZORBA_CMAKE_DIR "cmake" CACHE STRING
     "Relative path to CMake files in Zorba installation")
 ELSE (WIN32)
-  SET(ZORBA_CMAKE_DIR "share/zorba-${ZORBA_VERSION}/cmake" CACHE STRING
+  SET(ZORBA_CMAKE_DIR "share/cmake/zorba-${ZORBA_VERSION}" CACHE STRING
     "Relative path to CMake files in Zorba installation")
 ENDIF (WIN32)
 
@@ -535,4 +556,4 @@ DONE_DECLARING_ZORBA_URIS()
 # This dependency is zorba-only related, which is why it's added here
 # and not within zorba-modules, which is for general use in other
 # non-zorba modules.
-ADD_DEPENDENCIES(check_uris gen_diag_modules)
+ADD_DEPENDENCIES(check_core_uris gen_diag_modules)

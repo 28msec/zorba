@@ -43,11 +43,11 @@ FetchContentIterator::nextImpl(
 {
   store::Item_t lUri;
   store::Item_t lEntityKind;
-  impl::EntityData::Kind lKind;
+  internal::EntityData::Kind lKind;
   zstring lKindStr;
   zstring lErrorMessage;
-  std::auto_ptr<impl::Resource> lRes;
-  impl::StreamResource* lStreamRes;
+  std::auto_ptr<internal::Resource> lRes;
+  internal::StreamResource* lStreamRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -58,20 +58,22 @@ FetchContentIterator::nextImpl(
   // Figure out the EntityKind (any better way to do this?)
   lKindStr = lEntityKind->getStringValue();
   if ( ! lKindStr.compare("SOME_CONTENT")) {
-    lKind = impl::EntityData::SOME_CONTENT;
+    lKind = internal::EntityData::SOME_CONTENT;
   }
   else if ( ! lKindStr.compare("SCHEMA")) {
-    lKind = impl::EntityData::SCHEMA;
+    lKind = internal::EntityData::SCHEMA;
   }
   else if ( ! lKindStr.compare("MODULE")) {
-    lKind = impl::EntityData::MODULE;
+    lKind = internal::EntityData::MODULE;
   }
+#ifndef ZORBA_NO_FULL_TEXT
   else if ( ! lKindStr.compare("THESAURUS")) {
-    lKind = impl::EntityData::THESAURUS;
+    lKind = internal::EntityData::THESAURUS;
   }
   else if ( ! lKindStr.compare("STOP_WORDS")) {
-    lKind = impl::EntityData::STOP_WORDS;
+    lKind = internal::EntityData::STOP_WORDS;
   }
+#endif /* ZORBA_NO_FULL_TEXT */
   else {
     throw XQUERY_EXCEPTION(
           zerr::ZXQP0026_INVALID_ENUM_VALUE,
@@ -95,7 +97,7 @@ FetchContentIterator::nextImpl(
     );
   }
 
-  lStreamRes = dynamic_cast<impl::StreamResource*>(lRes.get());
+  lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
   if ( !lStreamRes ) {
     throw XQUERY_EXCEPTION(
       zerr::ZXQP0025_ITEM_CREATION_FAILED,

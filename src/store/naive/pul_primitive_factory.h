@@ -40,6 +40,7 @@ namespace zorba { namespace simplestore {
   class UpdReplaceCommentValue;
   class UpdSetElementType;
   class UpdSetAttributeType;
+  class UpdRevalidate;
   class UpdPut;
   class UpdCreateCollection;
   class UpdDeleteCollection;
@@ -213,6 +214,14 @@ class PULPrimitiveFactory
         store::Item_t& typedValue,
         bool           haveListValue);
   
+  /***************************************************************************
+     ***************************************************************************/
+  virtual UpdRevalidate*
+  createUpdRevalidate(
+        PULImpl*       pul,
+        const QueryLoc*,
+        store::Item_t& target);
+
   /***************************************************************************
    ***************************************************************************/
   virtual UpdPut*

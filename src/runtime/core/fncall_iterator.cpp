@@ -28,6 +28,7 @@
 #include "diagnostics/user_exception.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/xquery_stack_trace.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/dynamic_context.h"
 
@@ -91,6 +92,7 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   thePlan(NULL),
   thePlanState(NULL),
   thePlanStateSize(0),
+  theLocalDCtx(NULL),
   thePlanOpen(false)
 {
 }
@@ -102,19 +104,13 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
-  {
     thePlan->close(*thePlanState);
-    thePlanOpen = false;
-  }
 
   if (thePlanState != NULL)
-  {
-    if (thePlanState->theLocalDynCtx)
-      delete thePlanState->theLocalDynCtx;
-
     delete thePlanState;
-    thePlanState = NULL;
-  }
+
+  if (theLocalDCtx != NULL)
+    delete theLocalDCtx;
 }
 
 
@@ -123,17 +119,17 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB).getp();
+  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf
   // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
-  dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
   thePlanState = new PlanState(planState.theGlobalDynCtx,
-                               localDCtx,
+                               theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
@@ -224,9 +220,10 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > planState.theMaxStackDepth)
-    throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-                           ERROR_PARAMS(ZED(StackOverflow)),
-                           ERROR_LOC(loc));
+  {
+    RAISE_ERROR(zerr::ZXQP0003_INTERNAL_ERROR, loc,
+    ERROR_PARAMS(ZED(StackOverflow)));
+  }
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
@@ -234,7 +231,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
-  ulong numArgs = (ulong)theChildren.size();
+  csize numArgs = theChildren.size();
 
   state->theArgWrappers.resize(numArgs);
 
@@ -310,7 +307,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen) {
+    if (!state->thePlanOpen) 
+    {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;
@@ -399,29 +397,35 @@ class ExtFuncArgItemSequence : public ItemSequence
   {
   private:
     ExtFuncArgItemSequence * theItemSequence;
-    bool is_open;
-    int open_count;
+    bool                     theIsOpen;
+    bool                     theFirstOpen;
 
   public:
-    InternalIterator(ExtFuncArgItemSequence* item_sequence) 
+    InternalIterator(ExtFuncArgItemSequence* seq) 
       : 
-      theItemSequence(item_sequence),
-      is_open(false),
-      open_count(0)
+      theItemSequence(seq),
+      theIsOpen(false),
+      theFirstOpen(true)
     {
     }
 
-    virtual void open()
+    void open()
     {
-      is_open = true;
-      //if(open_count)
-      //  theItemSequence->theChild->reset(theItemSequence->thePlanState);
-      open_count++;
+      if (theIsOpen)
+        throw ZORBA_EXCEPTION(zerr::ZAPI0041_ITERATOR_ALREADY_OPEN);
+
+      if (!theFirstOpen)
+        theItemSequence->theChild->reset(theItemSequence->thePlanState);
+
+      theIsOpen = true;
+      theFirstOpen = false;
     }
 
     bool next(Item& item)
     {
-      ZORBA_ASSERT(is_open);
+      if (!theIsOpen)  
+        throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
+
       store::Item_t result;
       bool status = theItemSequence->theChild->
                     consumeNext(result,
@@ -431,28 +435,38 @@ class ExtFuncArgItemSequence : public ItemSequence
       return status;
     }
 
-    virtual void close()
+    void close()
     {
-      is_open = false;
-      // theItemSequence->theChild->close(theItemSequence->thePlanState);
+      if (!theIsOpen)  
+        throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
+
+      theIsOpen = false;
     }
 
-    virtual bool isOpen() const {return is_open;}
+    bool isOpen() const { return theIsOpen; }
   };
 
 private:
   PlanIter_t   theChild;
   PlanState  & thePlanState;
+  bool         theHasIterator;
 
 public:
   ExtFuncArgItemSequence(PlanIter_t& child, PlanState& state)
     :
     theChild(child),
-    thePlanState(state)
+    thePlanState(state),
+    theHasIterator(false)
   {
   }
 
-  virtual Iterator_t getIterator() {return new InternalIterator(this);}
+  virtual Iterator_t getIterator() 
+  {
+    if (theHasIterator)
+      throw ZORBA_EXCEPTION(zerr::ZAPI0039_XQUERY_HAS_ITERATOR_ALREADY);
+
+    return new InternalIterator(this);
+  }
 };
 
 
@@ -468,9 +482,9 @@ ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
 {
   theResultIter = NULL;
 
-  ulong n = (ulong)m_extArgs.size();
+  csize n = m_extArgs.size();
 
-  for (ulong i = 0; i < n; ++i)
+  for (csize i = 0; i < n; ++i)
   {
     delete m_extArgs[i];
   }

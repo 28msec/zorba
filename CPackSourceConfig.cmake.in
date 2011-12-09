@@ -19,7 +19,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH  @ZORBA_PATCH_NUMBER@)
 
 SET(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 SET(CPACK_GENERATOR "TGZ;TZ")
-SET(CPACK_IGNORE_FILES "test/coverity/;dist/;_CPack_Packages/;build/;build./;CVS/;/\\.svn/;\\.swp$;\\.#;/#")
+SET(CPACK_IGNORE_FILES "test/coverity/;dist/;_CPack_Packages/;build/;build./;CVS/;/\\.svn/;\\.swp$;\\.#;/#;\\.bzr/")
 SET(CPACK_INSTALLED_DIRECTORIES "@CMAKE_SOURCE_DIR@;/")
 SET(CPACK_INSTALL_CMAKE_PROJECTS "")
 SET(CPACK_MODULE_PATH "")

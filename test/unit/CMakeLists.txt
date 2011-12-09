@@ -16,9 +16,20 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
+#belongs to test cxx_api_changes.cpp
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch1.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch1.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch2.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch3.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch3.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cxx_api_ch4.xq ${CMAKE_CURRENT_BINARY_DIR}/cxx_api_ch4.xq)
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarA"
+  FILE "testGetExtVarA.xq" TEST_ONLY)  
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarB"
+  FILE "testGetExtVarB.xq" TEST_ONLY)
+  
 #belongs to test external_function.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main2.xq)
 
 #belongs to test no_folding.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod1.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod1.xq)
@@ -54,6 +65,7 @@ SET(UNIT_TESTS_SRCS
   multiple_runs.cpp
   plan_serializer.cpp
   call_stack.cpp
+  cxx_api_changes.cpp
   external_function.cpp
   no_folding.cpp
   ordpath_big.cpp

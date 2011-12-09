@@ -81,6 +81,7 @@ protected:
   virtual ~DynamicContextImpl();
 
 public:
+
   virtual bool
   getVariable(
       const String& inNamespace,
@@ -141,6 +142,12 @@ public:
 
   virtual ExternalFunctionParameter*
   getExternalFunctionParameter ( const String& aName ) const;
+
+  virtual bool 
+  isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
+
+  virtual bool
+  isBoundContextItem() const;
 
 protected:
   void checkNoIterators() const;

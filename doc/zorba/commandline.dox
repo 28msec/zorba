@@ -112,8 +112,14 @@ Print no logo when starting.
 --timeout
 Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.
 
+--uri-path
+URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.
+
+--lib-path
+Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.
+
 --module-path
-Module paths added to the built-in resolver, i.e. where module imports are looking for modules.
+Path (list of directories) to add to both the URI and Library paths.
 
 --option
 Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value

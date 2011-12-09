@@ -34,6 +34,7 @@
 #include "types/schema/schema.h"
 #include "context/root_static_context.h"
 #include "context/default_url_resolvers.h"
+#include "context/dynamic_loader.h"
 #include "functions/library.h"
 #include "annotations/annotations.h"
 #include "compiler/api/compiler_api.h"
@@ -75,10 +76,11 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_rootStaticContext = new root_static_context();
   m_globalEnv->m_rootStaticContext->init();
-  RCHelper::addReference (m_globalEnv->m_rootStaticContext);
+  RCHelper::addReference(m_globalEnv->m_rootStaticContext);
 
   BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
-  AnnotationList::createBuiltIn(m_globalEnv->m_rootStaticContext);
+
+  AnnotationInternal::createBuiltIn();
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
@@ -93,9 +95,12 @@ void GlobalEnvironment::init(store::Store* store)
 
   std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
     XQueryCompilerSubsystem::create();
+
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_http_resolver      = new impl::HTTPURLResolver();
+  m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
+
+  m_globalEnv->m_dynamic_loader = 0;
 }
 
 
@@ -103,6 +108,8 @@ void GlobalEnvironment::init(store::Store* store)
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
+  delete m_globalEnv->m_dynamic_loader;
+
   delete m_globalEnv->m_http_resolver;
 
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
@@ -118,8 +125,10 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
+  RCHelper::removeReference(m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;
+
+  AnnotationInternal::destroyBuiltIn();
 
   m_globalEnv->m_store = NULL;
 
@@ -132,6 +141,8 @@ void GlobalEnvironment::destroy()
   m_globalEnv->cleanup_icu();
 
   BuiltinFunctionLibrary::destroy();
+
+  AnnotationInternal::destroyBuiltIn();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;
@@ -265,6 +276,15 @@ store::IteratorFactory* GlobalEnvironment::getIteratorFactory()
 XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {
   return *m_compilerSubSys;
+}
+
+DynamicLoader* GlobalEnvironment::getDynamicLoader() const
+{
+  if (!m_dynamic_loader)
+  {
+    m_dynamic_loader = new DynamicLoader();
+  }
+  return m_dynamic_loader;
 }
 
 #ifdef ZORBA_XQUERYX

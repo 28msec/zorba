@@ -20,6 +20,7 @@
   */
  
 #include "stdafx.h"
+#include "zorba/config.h"
 #include "diagnostics/dict_impl.h"
 
 namespace zorba {
@@ -231,6 +232,7 @@ extern entry const dict_en[] = {
   { "ZAPI0007", "cannot serialize pul" },
   { "ZAPI0008", "can not execute a non-updating XQuery" },
   { "ZAPI0009", "XQuery not compiled in debug mode" },
+  { "ZAPI0011", "\"$1\": undefined $2" },
   { "ZAPI0014", "\"$1\": invalid argument${: 2}" },
   { "ZAPI0015", "\"$1\": createModule() function not found${: 2}" },
   { "ZAPI0019", "\"$1\": external module already registered" },
@@ -238,6 +240,8 @@ extern entry const dict_en[] = {
   { "ZAPI0021", "\"$1\": item to load is not a node" },
   { "ZAPI0027", "cannot update dynamic context with iterators" },
   { "ZAPI0028", "\"$1\": invalid node URI" },
+  { "ZAPI0029", "\"$1\": reference already present in the store" },
+  { "ZAPI0030", "node has no current reference" },
   { "ZAPI0039", "XQuery has iterator already" },
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
@@ -284,7 +288,7 @@ extern entry const dict_en[] = {
   { "ZDDY0022", "\"$1\": index already exists" },
   { "ZDDY0023", "\"$1\": index does not exist" },
   { "ZDDY0024", "\"$1\": index uniqueness violation" },
-  { "ZDDY0025", "${\"1\": }invalid number of arguments in probe" },
+  { "ZDDY0025", "\"$1\": invalid number of arguments to $2 operation; given $3 expected $4" },
   { "ZDDY0026", "\"$1\": index range probe not allowed" },
   { "ZDDY0027", "\"$1\": index multiple creates" },
   { "ZDDY0028", "\"$1\": index domain has duplicate nodes" },
@@ -304,6 +308,7 @@ extern entry const dict_en[] = {
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
   { "ZDST0023", "\"$1\": index declaration not allowed in main module" },
   { "ZDST0024", "index multiple property values" },
+  { "ZDST0025", "\"$1\": index cannot be declared as unique" },
   { "ZDST0026", "index invalid property value" },
   { "ZDST0027", "\"$1\": index bad key type" },
   { "ZDST0028", "\"$1\": index not deterministic" },
@@ -335,8 +340,6 @@ extern entry const dict_en[] = {
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
   { "ZSTR0004", "\"$1\": partial key deletion from index \"$2\"" },
-  { "ZSTR0005", "\"$1\": partial key probe into index \"$2\"" },
-  { "ZSTR0006", "for index \"$1\": $2" },
   { "ZSTR0007", "\"$1\": unsupported probe condition for index \"$2\"" },
   { "ZSTR0008", "\"$1\": collection already exists" },
   { "ZSTR0009", "\"$1\": collection not found" },
@@ -422,6 +425,7 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+  { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },

@@ -241,7 +241,11 @@ MapGetIterator::nextImpl(
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
+      ERROR_PARAMS(
+        lQName->getStringValue(),
+        "map",
+        theChildren.size() - 1,
+        lSpec.getNumColumns() ),
       ERROR_LOC( loc )
     );
   }
@@ -316,7 +320,11 @@ MapInsertIterator::nextImpl(
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
+      ERROR_PARAMS(
+        lQName->getStringValue(),
+        "map",
+        theChildren.size() - 2,
+        lSpec.getNumColumns() ),
       ERROR_LOC( loc )
     );
   }
@@ -386,7 +394,12 @@ MapRemoveIterator::nextImpl(
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
+      ERROR_PARAMS(
+        lQName->getStringValue(),
+        "map",
+        theChildren.size() - 1,
+        lSpec.getNumColumns()
+      ),
       ERROR_LOC( loc )
     );
   }

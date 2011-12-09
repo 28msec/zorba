@@ -101,6 +101,7 @@
 #include "util/tracer.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+#include "util/hashmap.h"
 
 
 #define NODE_SORT_OPT
@@ -160,8 +161,7 @@ static expr_t translate_aux(
 /*******************************************************************************
 
 ********************************************************************************/
-#define ZANN_CONTAINS( ann ) \
-  theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts:: ann))
+#define ZANN_CONTAINS( ann ) theAnnotations->contains(AnnotationInternal::ann)
 
 
 /*******************************************************************************
@@ -1304,11 +1304,25 @@ void normalize_fo(fo_expr* foExpr)
     if (qname != NULL)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
+      ERROR_PARAMS(
+        qname->getStringValue(),
+        "index",
+        n-1,
+        "multiple of 6"
+      )
+      );
     }
     else
     {
-      RAISE_ERROR_NO_PARAMS(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc);
+      RAISE_ERROR(
+          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+          ERROR_PARAMS(
+            "anonymous",
+            "index",
+            n-1,
+            "multiple of 6"
+          )
+      );
     }
   }
 
@@ -1824,17 +1838,17 @@ void collect_flwor_vars (
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. var_dec_expr(varExpr, initExpr)
+  1. var_decl_expr(varExpr, initExpr)
 
-  2. var_dec_expr(varExpr, initExpr)
+  2. var_decl_expr(varExpr, initExpr)
 
-     In this case, the var_dec_expr will be a NOOP if a value has been assigned
+     In this case, the var_decl_expr will be a NOOP if a value has been assigned
      to the external var via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. var_dec_expr(varExpr)
+  3. var_decl_expr(varExpr)
 
-  4. var_dec_expr(varExpr)
+  4. var_decl_expr(varExpr)
 
      In this case, the variable must be initialized via the c++ api before the
      query is executed, and it is this external intialization that will declare
@@ -1997,16 +2011,16 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<impl::Resource> lSchema;
-    impl::StreamResource* lStream = NULL;
+    std::auto_ptr<internal::Resource> lSchema;
+    internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      lSchema = theSctx->resolve_uri(*lIter, impl::EntityData::SCHEMA,
+      lSchema = theSctx->resolve_uri(*lIter, internal::EntityData::SCHEMA,
                                      lErrorMessage);
-      lStream = dynamic_cast<impl::StreamResource*>(lSchema.get());
+      lStream = dynamic_cast<internal::StreamResource*>(lSchema.get());
       if (lStream != NULL)
       {
         break;
@@ -2140,7 +2154,8 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
+  if (v.get_encoding().length() != 0 &&
+      !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
   std::string versionStr = v.get_version().str();
@@ -2810,7 +2825,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
     theSctx->get_component_uris(modVer.versioned_uri(),
-                                impl::EntityData::MODULE, compURIs);
+                                internal::EntityData::MODULE, compURIs);
   }
   else
   {
@@ -2884,13 +2899,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
-      std::auto_ptr<impl::Resource> lResource =
+      std::auto_ptr<internal::Resource> lResource =
       theSctx->resolve_uri(compModVer.versioned_uri(),
-                           impl::EntityData::MODULE,
+                           internal::EntityData::MODULE,
                            lErrorMessage);
 
-      impl::StreamResource* lStreamResource =
-      dynamic_cast<impl::StreamResource*> (lResource.get());
+      internal::StreamResource* lStreamResource =
+      dynamic_cast<internal::StreamResource*> (lResource.get());
 
       if (lStreamResource != NULL)
       {
@@ -3137,7 +3152,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    ulong numParams = (ulong)params->size();
+    csize numParams = params->size();
 
     std::vector<xqtref_t> paramTypes;
 
@@ -3173,12 +3188,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3189,7 +3198,7 @@ void* begin_visit(const VFO_DeclList& v)
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ? 
+    bool isSequential = (theAnnotations ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -3211,9 +3220,9 @@ void* begin_visit(const VFO_DeclList& v)
       if (f.getp() != 0)
       {
         // We make sure that the types of the parameters and the return type
-        // are equal to the one that is declared in the module
+        // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -3352,7 +3361,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-  ulong numParams = v.get_param_count();
+  csize numParams = v.get_param_count();
 
   function* lFunc = lookup_fn(v.get_name(), numParams, loc);
 
@@ -3437,7 +3446,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
       ZORBA_ASSERT(flwor != NULL);
 
-      for (ulong i = 0; i < numParams; ++i)
+      for (csize i = 0; i < numParams; ++i)
       {
         const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3539,8 +3548,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-  // theCurrentPrologVFDecl might be null in case
-  // of inline functions
+  // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull())
@@ -3653,19 +3661,15 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   {
     if (v.is_global())
     {
-      if (theAnnotations->contains(
-
-            theSctx->lookup_ann(StaticContextConsts::fn_private)))
+      if (ZANN_CONTAINS(fn_private))
         ve->set_private(true);
     }
 
-    if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_assignable)))
+    if (ZANN_CONTAINS(zann_assignable))
     {
       ve->set_mutable(true);
     }
-    else if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_nonassignable)))
+    else if (ZANN_CONTAINS(zann_nonassignable))
     {
       ve->set_mutable(false);
     }
@@ -3706,18 +3710,21 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure the initExpr is a simple expr.
     if (initExpr != NULL)
+    {
       expr::checkSimpleExpr(initExpr);
+      ve->setHasInitializer(true);
+    }
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
-      QueryLoc lExpandedLocation = expandQueryLoc(
-        v.get_name()->get_location(),
-        initExpr->get_loc());
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    {
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                  initExpr->get_loc());
+
       wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
     }
 #endif
@@ -3792,38 +3799,25 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
-  if (lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
-      lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
-      lExpandedQName->getNamespace() == XSI_NS ||
-      lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
-      lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
-      lExpandedQName->getNamespace() == ZORBA_ANNOTATIONS_NS)
+  zstring annotNS = lExpandedQName->getNamespace();
+
+  if (annotNS == static_context::W3C_XML_NS ||
+      annotNS == XML_SCHEMA_NS ||
+      annotNS == XSI_NS ||
+      annotNS == static_context::W3C_FN_NS ||
+      annotNS == XQUERY_MATH_FN_NS ||
+      annotNS == ZORBA_ANNOTATIONS_NS)
   {
-    if ( theSctx->lookup_ann(lExpandedQName) ==  StaticContextConsts::zann_end)
+    if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
-      throw XQUERY_EXCEPTION(
-          err::XQST0045,
-          ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                        "\'" + lExpandedQName->getNamespace() + "\'"
-                        : lExpandedQName->getPrefix())
-                        + ":" + lExpandedQName->getLocalName()),
-          ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0045, loc,
+      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
+                    + ":" + lExpandedQName->getLocalName())));
     }
-  }
-  else
-  {
-    // annotation in unknown namespace -- generate a warning
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(
-        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
-        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                      "\'" + lExpandedQName->getNamespace() + "\'"
-                      : lExpandedQName->getPrefix())
-                      + ":" + lExpandedQName->getLocalName()),
-        WARN_LOC(loc)));
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
+
   if (v.get_literals())
   {
     std::vector<rchandle<exprnode> >::const_iterator lIter;
@@ -4016,62 +4010,62 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   StaticContextConsts::node_modifier_t lNodeModifier;
 
   std::vector<rchandle<const_expr> > lLiterals;
-  if ( ZANN_CONTAINS (zann_queue) )
+  if (ZANN_CONTAINS(zann_queue))
   {
     lUpdateMode = StaticContextConsts::decl_queue;
   }
-  else if ( ZANN_CONTAINS ( zann_append_only) )
+  else if (ZANN_CONTAINS(zann_append_only))
   {
     lUpdateMode = StaticContextConsts::decl_append_only;
   }
-  else if ( ZANN_CONTAINS ( zann_const ) )
+  else if (ZANN_CONTAINS(zann_const))
   {
     lUpdateMode = StaticContextConsts::decl_const;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable ) )
+  else if (ZANN_CONTAINS(zann_mutable))
   {
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable),
+              lLiterals);
+
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
 
-  if ( ZANN_CONTAINS ( zann_ordered) )
+  if (ZANN_CONTAINS(zann_ordered))
   {
     lOrderMode = StaticContextConsts::decl_ordered;
   }
-  else if ( ZANN_CONTAINS ( zann_unordered ) )
+  else if (ZANN_CONTAINS(zann_unordered))
   {
     lOrderMode = StaticContextConsts::decl_unordered;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_unordered ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_unordered),
+              lLiterals);
+
     lOrderMode = StaticContextConsts::decl_unordered;
   }
 
-  if ( ZANN_CONTAINS ( zann_read_only_nodes) )
+  if (ZANN_CONTAINS(zann_read_only_nodes))
   {
     lNodeModifier = StaticContextConsts::read_only;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable_nodes ) )
+  else if (ZANN_CONTAINS(zann_mutable_nodes))
   {
     lNodeModifier = StaticContextConsts::mutable_node;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable_nodes ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes),
+              lLiterals);
+
     lNodeModifier = StaticContextConsts::mutable_node;
   }
 
@@ -4122,11 +4116,8 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "data-definition (ddl)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("data-definition (ddl)"));
   }
 
   const QName* qname = v.getName();
@@ -4148,10 +4139,10 @@ void* begin_visit(const AST_IndexDecl& v)
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
-  index->setGeneral ( false );
-  index->setUnique ( false );
-  index->setMethod ( IndexDecl::HASH );
-  index->setMaintenanceMode ( IndexDecl::MANUAL );
+  index->setGeneral(false);
+  index->setUnique(false);
+  index->setMethod(IndexDecl::HASH);
+  index->setMaintenanceMode(IndexDecl::MANUAL);
 
   AnnotationListParsenode* lAnns = v.get_annotations();
   if (lAnns)
@@ -4159,27 +4150,28 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if ( theAnnotations )
+  if (theAnnotations)
   {
-    if ( ZANN_CONTAINS ( zann_general_equality ) ||
-         ZANN_CONTAINS ( zann_general_range ) ) 
+    if (ZANN_CONTAINS(zann_general_equality) ||
+        ZANN_CONTAINS(zann_general_range))
     {
-      index->setGeneral( true );
+      index->setGeneral(true);
     }
-    if ( ZANN_CONTAINS ( zann_general_range ) ||
-         ZANN_CONTAINS ( zann_value_range ) ) 
+    if (ZANN_CONTAINS(zann_general_range) ||
+        ZANN_CONTAINS(zann_value_range))
     {
-      index->setMethod( IndexDecl::TREE );
+      index->setMethod(IndexDecl::TREE);
     }
-    if ( ZANN_CONTAINS ( zann_unique ) )
+    if (ZANN_CONTAINS(zann_unique))
     {
-      index->setUnique( true );
+      index->setUnique(true);
     }
-    if ( ZANN_CONTAINS ( zann_automatic ) )
+    if (ZANN_CONTAINS(zann_automatic))
     {
       index->setMaintenanceMode(IndexDecl::REBUILD);
     }
   }
+
   theAnnotations = NULL;
 
   theIndexDecl = index;
@@ -5190,6 +5182,11 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
     theModulesInfo->theCCB->setIsUpdating(true);
   }
 
+  if(program->is_sequential())
+  {
+    theModulesInfo->theCCB->setIsSequential(true);
+  }
+
   if (program->is_updating() && !theCCB->theIsEval)
   {
     program = new apply_expr(theRootSctx,
@@ -5440,11 +5437,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   if (varType != NULL)
     valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
 
-  push_nodestack(new fo_expr(theRootSctx,
-                             loc,
-                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
-                             ve,
-                             valueExpr));
+  push_nodestack(new var_set_expr(theRootSctx, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve.getp());
 }
@@ -7228,7 +7221,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 /*******************************************************************************
   QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
 
-  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle 
+  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle
                      ("," "$" VarName TypeDeclaration? "in" ExprSingle)*
 
   A universally quantified expr is translated into a flwor expr:
@@ -9173,13 +9166,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t condExpr;
   std::vector<expr_t> condOperands(3);
 
-  condOperands[0] = 
+  condOperands[0] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = 
+  condOperands[1] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = 
+  condOperands[2] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
@@ -9678,6 +9671,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
+      case FunctionConsts::FN_SUBSTRING_2:
+      case FunctionConsts::FN_SUBSTRING_3:
       {
         std::reverse(arguments.begin(), arguments.end());
 
@@ -9687,7 +9682,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -9697,7 +9695,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
               TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
@@ -10328,14 +10329,12 @@ void* begin_visit(const LiteralFunctionItem& v)
 
   if ( !theSctx->is_feature_set(feature::hof) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("higher-order functions (hof)"));
   }
   return no_state;
 }
+
 
 void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 {
@@ -10344,10 +10343,12 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  try {
+  try
+  {
     arity = to_xs_unsignedInt(v.getArity());
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }
@@ -10461,6 +10462,7 @@ void* begin_visit(const InlineFunction& v)
 
     var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
+
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_type(varExpr->get_return_type());

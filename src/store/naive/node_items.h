@@ -180,14 +180,13 @@ protected:
   ulong                     theId;
   ulong                     thePos;
 
-  zstring                   theDocUri;
-  zstring                   theBaseUri;
-
   SimpleCollection        * theCollection;
 
   XmlNode                 * theRootNode;
 
+#ifdef DATAGUIDE
   GuideNode               * theDataGuideRootNode;
+#endif
 
   bool                      theIsValidated;
   bool                      theIsRecursive;
@@ -220,14 +219,6 @@ public:
 
   ulong getId() const { return theId; }
 
-  const zstring& getDocUri() const { return theDocUri; }
-
-  void setDocUri(const zstring& uri) { theDocUri = uri; }
-
-  const zstring& getBaseUri() const { return theBaseUri; }
-
-  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
-
   ulong getCollectionId() const;
 
   const SimpleCollection* getCollection() const { return theCollection; }
@@ -250,9 +241,11 @@ public:
 
   bool isRecursive() const { return theIsRecursive; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
+#endif
 
 #ifndef EMBEDED_TYPE
   store::Item* getType(const XmlNode* n) const;
@@ -309,30 +302,57 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
-    NodeKindMask      =   0x7,
-    IsId              =   0x8,
-    IsIdRefs          =   0x10,
-    HaveTypedValue    =   0x20,    // for element nodes only
-    HaveEmptyValue    =   0x40,    // for element nodes only
-    IsTyped           =   0x80,    // for text nodes only
-    HaveListValue     =   0x100,   // for text and attribute nodes only
+    // Encodes the kind of the node (document, element, attribute, etc.)
+    NodeKindMask          = 0x7,
 
-    HaveLocalBindings =   0x200,   // for element nodes only
-    HaveBaseUri       =   0x400,   // for element nodes only
-    IsBaseUri         =   0x800,   // for attribute nodes only
-    IsHidden          =   0x1000,  // for attribute nodes only
-    IsInSubstGroup    =   0x2000,  // for element nodes only
+    // For element nodes only.
+    HaveLocalBindings     = 0x80,
+
+    // For element nodes only.
+    HaveBaseUri           = 0x10,
+
+    // For element nodes only. Set if the target element node has a typed value.
+    // The only case when an element node does not have a typed value is when 
+    // the type of the node is complex with complex content, but with no mixed 
+    //content allowed.
+    HaveTypedValue        = 0x20,
+
+    // For element nodes only. Set if the target element node has a complex 
+    // type with empty content. In this case, the typed value of the node is
+    // the empty sequence.
+    HaveEmptyTypedValue   = 0x40,
+
+    // For text nodes only. Set if the text node is actually used to store the
+    // typed value of its parent element node. In such a case, the remaining
+    // children (if any) of the parent node can be comment and/or pi nodes only.
+    IsTyped               = 0x80,
+
+    // For text and attribute nodes only. Set if the typed value stored in the
+    // node is actually a sequence of atomic items.
+    HaveListValue         = 0x100,
+
+    // For attribute nodes only.
+    IsBaseUri             = 0x800,
+
+    // For attribute nodes only.
+    IsHidden              = 0x1000,
+
+    // For element nodes only.
+    IsInSubstGroup        = 0x2000,
 
     // For element nodes only. The flag is set for a node N if there is another
     // node M in its subtree such that N and M have the same name.
-    IsRecursive       =   0x4000
+    IsRecursive           = 0x4000,
 
 #ifndef EMBEDED_TYPE
-    ,
     // For element and attribute nodes only. The flag is set if the node has
     // a type other than untyped (for elements) or untypedAtomic (for attributes)
-    HaveType  =   0x8000
+    HaveType              = 0x8000,
 #endif
+
+    // For any kind of node. Set if an identifier has been generated for the node
+    // (see SimpleStore::getNodeReference() method).
+    HaveReference         = 0x10000
   };
 
 protected:
@@ -464,15 +484,9 @@ public:
 
   void setParent(InternalNode* p) { theParent = p; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
-
-  const zstring& getBaseUri() const { return getTree()->getBaseUri(); }
-
-  void setBaseUri(const zstring& uri) { getTree()->setBaseUri(uri); }
-
-  const zstring& getDocUri() const { return getTree()->getDocUri(); }
-
-  void setDocUri(const zstring& uri) { getTree()->setDocUri(uri); }
+#endif
 
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
@@ -495,9 +509,18 @@ public:
 
   void setFlags(uint32_t flags) { theFlags = flags; }
 
+  bool haveReference() const { return (theFlags & HaveReference) != 0; }
+
+  void setHaveReference() { theFlags |= HaveReference; }
+
+  void resetHaveReference() { theFlags &= ~HaveReference; }
+
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
@@ -624,6 +647,7 @@ class InternalNode : public OrdPathNode
   friend class CommentNode;
   friend class UpdPut;
   friend class CollectionPul;
+  friend class SimpleStore;
 
 public:
   typedef std::vector<XmlNode*> NodeVector;
@@ -721,7 +745,7 @@ public:
   void finalizeNode();
 
 protected:
-  csize findChild(XmlNode* child) const;
+  csize findChild(const XmlNode* child) const;
 
   void insertChild(XmlNode* child, csize pos);
 
@@ -757,10 +781,14 @@ class DocumentNode : public InternalNode
   friend class NodeFactory;
 
 protected:
+  zstring  theBaseUri;
+  zstring  theDocUri;
+
+protected:
   DocumentNode(
       XmlTree* tree,
-      zstring& baseUri,
-      zstring& docUri);
+      const zstring& baseUri,
+      const zstring& docUri);
 
   DocumentNode();
 
@@ -771,7 +799,7 @@ public:
 
   store::Item* getType() const;
 
-  void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
+  void getDocumentURI(zstring& uri) const { uri = theDocUri; }
 
   store::Iterator_t getChildren() const;
 
@@ -801,6 +829,12 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copyMode) const;
+
+  const zstring& getBaseUri() const { return theBaseUri; }
+
+  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
+
+  void setDocUri(const zstring& uri) { theDocUri = uri; }
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -892,32 +926,33 @@ public:
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
   void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
 
-  void setHaveValue()           { theFlags |= HaveTypedValue; }
-  void resetHaveValue()         { theFlags &= ~HaveTypedValue; }
-  bool haveValue() const        { return (theFlags & HaveTypedValue) != 0; }
-  void setHaveEmptyValue()      { theFlags |= HaveEmptyValue; }
-  void resetHaveEmptyValue()    { theFlags &= ~HaveEmptyValue; }
-  bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
+  void setHaveTypedValue()      { theFlags |= HaveTypedValue; }
+  void resetHaveTypedValue()    { theFlags &= ~HaveTypedValue; }
+  bool haveTypedValue() const   { return (theFlags & HaveTypedValue) != 0; }
+
+  void setHaveEmptyTypedValue()      { theFlags |= HaveEmptyTypedValue; }
+  void resetHaveEmptyTypedValue()    { theFlags &= ~HaveEmptyTypedValue; }
+  bool haveEmptyTypedValue() const   { return (theFlags & HaveEmptyTypedValue) != 0; }
 
   bool haveTypedTypedValue(TextNode*&) const;
 
   TextNode* getUniqueTextChild() const;
 
-  void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
+  void setInSubstGroup() { theFlags |= IsInSubstGroup; }
 
-  void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
+  void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
-  bool haveType() const         { return (theFlags & HaveType) != 0; }
+  bool haveType() const { return (theFlags & HaveType) != 0; }
 
-  void setHaveType()            { theFlags |= HaveType; }
+  void setHaveType() { theFlags |= HaveType; }
 
-  void resetHaveType()          { theFlags &= ~HaveType; }
+  void resetHaveType() { theFlags &= ~HaveType; }
 #endif
 
-  bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
+  bool isRecursive() const { return (theFlags & IsRecursive) != 0; }
 
-  void resetRecursive()         { theFlags &= ~IsRecursive; }
+  void resetRecursive() { theFlags &= ~IsRecursive; }
 
   void setRecursive()
   {
@@ -1175,7 +1210,7 @@ protected:
   TextNode() {}
 
 public:
-  ~TextNode()
+  virtual ~TextNode()
   {
     if (isTyped())
     {
@@ -1217,6 +1252,10 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
+
+#ifndef TEXT_ORDPATH
+  void getOrdPath(OrdPath& ordPath) const;
+#endif
 
   bool isTyped() const;
 

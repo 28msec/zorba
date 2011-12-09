@@ -41,6 +41,7 @@ namespace simplestore
 class StringPool;
 typedef StringPool UriPool;
 class QNamePool;
+class OrdPath;
 
 
 class BasicItemFactory : public store::ItemFactory
@@ -48,6 +49,13 @@ class BasicItemFactory : public store::ItemFactory
 protected:
   UriPool    * theUriPool;
   QNamePool  * theQNamePool;
+
+  // boolean items
+  // we don't need to create more than two, hence
+  // they are cached here. createBoolean always
+  // returns one of them
+  store::Item_t theTrueItem;
+  store::Item_t theFalseItem;
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -77,6 +85,15 @@ public:
   bool createAnyURI(store::Item_t& result, zstring& value);
 
   bool createAnyURI(store::Item_t& result, const char* value);
+
+  bool createStructuralAnyURI(store::Item_t& result, zstring& value);
+
+  bool createStructuralAnyURI(
+      store::Item_t& result,
+      ulong collectionId,
+      ulong treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
 
   bool createUntypedAtomic(store::Item_t& result, zstring& value);
 

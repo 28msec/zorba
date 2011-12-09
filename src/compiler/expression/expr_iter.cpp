@@ -592,6 +592,15 @@ void ExprIterator::next()
     break;
   }
 
+  case var_set_expr_kind:
+  {
+    var_set_expr* varSetExpr = static_cast<var_set_expr*>(theExpr);
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_NEXT(varSetExpr->theExpr);
+    EXPR_ITER_END();
+    break;
+  }
+
   case flowctl_expr_kind:
   {
     EXPR_ITER_BEGIN();

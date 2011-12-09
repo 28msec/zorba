@@ -18,28 +18,45 @@
 #include "uri_resolver_wrappers.h"
 #include "uriresolverimpl.h"
 #include "unmarshaller.h"
+#include <zorba/thesaurus.h>
+#include <runtime/full_text/thesaurus.h>
+#include <context/thesaurus_wrappers.h>
 
 namespace zorba
 {
-
+  // "Convenience" class for passing an internal EntityData object to
+  // external mappers/resolvers. This can serve as a plain EntityData or
+  // a ThesaurusEntityData. However, when there's another EntityData subclass
+  // in future, this won't work as EntityData becomes an ambiguous base class...
+#ifndef ZORBA_NO_FULL_TEXT
+  class EntityDataWrapper : public ThesaurusEntityData
+#else
   class EntityDataWrapper : public EntityData
+#endif /* ZORBA_NO_FULL_TEXT */
   {
   public:
-    static EntityDataWrapper const* create(impl::EntityData::Kind aKind) {
+    static EntityDataWrapper const* create(internal::EntityData const* aData) {
       // More ugly: Create a public-API EntityData with the same Entity Kind,
       // but only if it's one of the publicly-supported kinds
-      switch (aKind) {
-      case impl::EntityData::MODULE:
+      switch (aData->getKind()) {
+      case internal::EntityData::MODULE:
         return new EntityDataWrapper(EntityData::MODULE);
-      case impl::EntityData::SCHEMA:
+      case internal::EntityData::SCHEMA:
         return new EntityDataWrapper(EntityData::SCHEMA);
-      case impl::EntityData::THESAURUS:
-        return new EntityDataWrapper(EntityData::THESAURUS);
-      case impl::EntityData::STOP_WORDS:
+#ifndef ZORBA_NO_FULL_TEXT
+      case internal::EntityData::THESAURUS:
+      {
+        EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
+        retval->theThesaurusLang =
+            dynamic_cast<const internal::ThesaurusEntityData*>(aData)->getLanguage();
+        return retval;
+      }
+      case internal::EntityData::STOP_WORDS:
         return new EntityDataWrapper(EntityData::STOP_WORDS);
-      case impl::EntityData::COLLECTION:
+#endif /* ZORBA_NO_FULL_TEXT */
+      case internal::EntityData::COLLECTION:
         return new EntityDataWrapper(EntityData::COLLECTION);
-      case impl::EntityData::DOCUMENT:
+      case internal::EntityData::DOCUMENT:
         return new EntityDataWrapper(EntityData::DOCUMENT);
       default:
         return NULL;
@@ -50,12 +67,21 @@ namespace zorba
       return theKind;
     }
 
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual zorba::locale::iso639_1::type getLanguage() const {
+      return theThesaurusLang;
+    }
+#endif /* ZORBA_NO_FULL_TEXT */
+
   private:
     EntityDataWrapper(EntityData::Kind aKind)
       : theKind(aKind)
     {}
 
     EntityData::Kind const theKind;
+#ifndef ZORBA_NO_FULL_TEXT
+    zorba::locale::iso639_1::type theThesaurusLang;
+#endif /* ZORBA_NO_FULL_TEXT */
   };
 
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)
@@ -68,40 +94,40 @@ namespace zorba
   void
   URIMapperWrapper::mapURI
   (const zstring& aUri,
-    impl::EntityData const* aEntityData,
+    internal::EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
-        (EntityDataWrapper::create(aEntityData->getKind()));
+        (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return;
     }
 
     std::vector<zorba::String> lUserUris;
     // QQQ should public API have a StaticContext on it?
-    theUserMapper.mapURI(zorba::String(aUri.c_str()),
-      lDataWrap.get(), lUserUris);
+    theUserMapper.mapURI(zorba::String(aUri.c_str()), lDataWrap.get(),
+                         lUserUris);
     std::vector<zorba::String>::iterator iter;
     for (iter = lUserUris.begin(); iter != lUserUris.end(); iter++) {
       oUris.push_back(Unmarshaller::getInternalString(*iter));
     }
   }
 
-  impl::URIMapper::Kind
+  internal::URIMapper::Kind
   URIMapperWrapper::mapperKind()
   {
     // Still so ugly.
     switch (theUserMapper.mapperKind()) {
       case URIMapper::COMPONENT:
-        return impl::URIMapper::COMPONENT;
+        return internal::URIMapper::COMPONENT;
       case URIMapper::CANDIDATE:
-        return impl::URIMapper::CANDIDATE;
+        return internal::URIMapper::CANDIDATE;
     }
 
     assert(false);
     // dummy return
-    return impl::URIMapper::COMPONENT;
+    return internal::URIMapper::COMPONENT;
   }
 
 
@@ -112,40 +138,50 @@ namespace zorba
   URLResolverWrapper::~URLResolverWrapper()
   {}
 
-  impl::Resource*
+  internal::Resource*
   URLResolverWrapper::resolveURL
   (const zstring& aUrl,
-    impl::EntityData const* aEntityData)
+    internal::EntityData const* aEntityData)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
-        (EntityDataWrapper::create(aEntityData->getKind()));
+        (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return NULL;
     }
 
-    impl::StreamResource* lRetval = nullptr;
-    // Get the user's Resource. It's OK to use an auto_ptr here for safety,
-    // because the Resource will have been created by a factory method inside
-    // libzorba (no cross-DLL memory allocation issue).
-    std::auto_ptr<Resource> lUserPtr
+    internal::Resource* lRetval = nullptr;
+    // Get the user's Resource.
+    Resource::ptr lUserPtr
       (theUserResolver.resolveURL(zorba::String(aUrl.c_str()),
                                   lDataWrap.get()));
     if (lUserPtr.get() != NULL) {
-      // This will get a bit more complicated when we publicly support more than
-      // one kind of Resource subclass.
+      // Sooo ugly... have to try down-casting to each subclass in turn to
+      // figure out what kind of Resource we've got.
       StreamResourceImpl* lUserStream =
           dynamic_cast<StreamResourceImpl*>(lUserPtr.get());
       if (lUserStream != NULL) {
         // Here we pass memory ownership of the std::istream to the internal
         // StreamResource, by passing the StreamReleaser to it and setting the
         // user's StreamResource's StreamReleaser to nullptr.
-        lRetval = new impl::StreamResource(lUserStream->getStream(),
+        lRetval = new internal::StreamResource(lUserStream->getStream(),
                                            lUserStream->getStreamReleaser());
         lUserStream->setStreamReleaser(nullptr);
       }
+#ifndef ZORBA_NO_FULL_TEXT
       else {
-        assert(false);
+        Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
+        if (lUserThesaurus != NULL) {
+          // Here we pass memory ownership of the actual Thesaurus to the
+          // internal ThesaurusWrapper.
+          lRetval = new internal::ThesaurusWrapper
+              (Thesaurus::ptr(lUserThesaurus));
+          lUserPtr.release();
+        }
+        else {
+          assert(false);
+        }
       }
+#endif /* ZORBA_NO_FULL_TEXT */
     }
     return lRetval;
   }

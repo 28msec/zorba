@@ -43,15 +43,19 @@ namespace zorba { namespace simplestore {
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
-  theQNamePool(qnPool)
+  theQNamePool(qnPool),
+  theTrueItem(NULL),
+  theFalseItem(NULL)
 {
 }
 
 
 BasicItemFactory::~BasicItemFactory()
 {
+  theFalseItem = NULL;
+  theTrueItem  = NULL;
   theQNamePool = NULL;
-  theUriPool = NULL;
+  theUriPool   = NULL;
 }
 
 
@@ -106,6 +110,35 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
+bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
+{
+  result =  new StructuralAnyUriItem(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createStructuralAnyURI(
+    store::Item_t& result,
+    ulong collectionId,
+    ulong treeId,
+    store::StoreConsts::NodeKind nodeKind,
+    const OrdPath& ordPath)
+{
+  ZORBA_FATAL(nodeKind,"Unexpected node kind");
+  std::ostringstream stream;
+  stream   << "zorba:"
+           << collectionId << "."
+           << treeId << "."
+           << static_cast<int>(nodeKind) << "."
+           << ordPath.serialize();
+  zstring uri = stream.str();
+
+  theUriPool->insert(uri);
+  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  return true;
+}
+
+
 bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 {
   result = new StringItem(value);
@@ -117,7 +150,8 @@ bool BasicItemFactory::createStreamableString(
     store::Item_t& result,
     std::istream &stream,
     StreamReleaser streamReleaser,
-    bool seekable) {
+    bool seekable) 
+{
   result = new StreamableStringItem( stream, streamReleaser, seekable );
   return true;
 }
@@ -162,7 +196,7 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
     store::Item_t resultItem;
-    if ( createNMTOKENS(resultItem, atomicTextValues[i]) )
+    if ( createNMTOKEN(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -391,7 +425,22 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  result = new BooleanItem(value);
+  if (value)
+  {
+    if (!theTrueItem)
+    {
+      theTrueItem = new BooleanItem(true);
+    }
+    result = theTrueItem;
+  }
+  else
+  {
+    if (!theFalseItem)
+    {
+      theFalseItem = new BooleanItem(false);
+    }
+    result = theFalseItem;
+  }
   return true;
 }
 
