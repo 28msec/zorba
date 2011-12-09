@@ -347,6 +347,9 @@ const zstring
 static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
 
 const zstring
+static_context::ZORBA_JSON_FN_NS = NS_PRE + "modules/converters/json#2";
+
+const zstring
 static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
 
 const zstring
@@ -394,6 +397,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);

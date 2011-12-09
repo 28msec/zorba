@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONParseInternal" arity="nary">
+
+  <zorba:description author="Zorba Team">
+    function for parsing strings into json-xdm
+  </zorba:description>
+
+  <!--
+  <zorba:state>
+    <zorba:member type="xs_integer" name="theSeqLength" brief=""/>
+  </zorba:state>
+  -->
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="parse-internal" prefix="fn-zorba-json">
+      <zorba:param>xs:string</zorba:param> 
+      <zorba:param>item()?</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONSerializeInternal" arity="nary">
+
+  <zorba:description author="Zorba Team">
+    Function to serialize json/jsonml xdm to string
+  </zorba:description>
+
+  <!--
+  <zorba:state>
+    <zorba:member type="xs_integer" name="theCurrCounter" brief=""/>
+  </zorba:state>
+  -->
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="serialize-internal" prefix="fn-zorba-json">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>item()?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>

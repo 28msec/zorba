@@ -463,6 +463,7 @@ public:
   static const zstring ZORBA_INTROSP_SCTX_FN_NS;
   static const zstring ZORBA_REFLECTION_FN_NS;
   static const zstring ZORBA_STRING_FN_NS;
+  static const zstring ZORBA_JSON_FN_NS;
   static const zstring ZORBA_FETCH_FN_NS;
   static const zstring ZORBA_NODE_FN_NS;
   static const zstring ZORBA_XML_FN_NS;

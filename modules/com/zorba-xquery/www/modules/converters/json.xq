@@ -57,7 +57,7 @@ xquery version "3.0";
   : @project data processing/data converters
   :
   :)
-module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+module namespace json = "http://www.zorba-xquery.com/modules/converters/json#2";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
@@ -66,7 +66,7 @@ import schema namespace json-options = "http://www.zorba-xquery.com/modules/conv
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "1.0";
+declare option ver:module-version "2.0";
 
 (:~
  : This function parses a JSON string and returns an XDM instance according
@@ -86,7 +86,7 @@ declare option ver:module-version "1.0";
 declare function json:parse(
   $arg as xs:string?,
   $options as element(json-options:options)
-) as document-node(element(*, xs:untyped))
+) as element(*, xs:untyped)*
 {
   let $validated-options := if(schema:is-validated($options)) then
                                 $options
@@ -108,7 +108,7 @@ declare function json:parse(
  :)
 declare function json:parse(
   $arg as xs:string?
-) as document-node(element(*, xs:untyped))
+) as element(*, xs:untyped)*
 {
   json:parse-internal($arg,
     validate {
@@ -131,7 +131,7 @@ declare function json:parse(
  :)
 declare function json:parse-ml(
   $arg as xs:string?
-) as document-node(element(*, xs:untyped))
+) as element(*, xs:untyped)*
 {
   json:parse-internal($arg,
     validate {
@@ -144,8 +144,8 @@ declare function json:parse-ml(
 
 declare %private function json:parse-internal(
   $html as xs:string,
-  $options as element(json-options:options)?
-) as document-node(element(*, xs:untyped)) external;
+  $options as item()?
+) as element()* external;
 
 
 (:~
@@ -227,5 +227,5 @@ declare function json:serialize-ml(
 
 declare %private function json:serialize-internal(
   $xml as item()*,
-  $options as element(json-options:options)?
+  $options as item()?
   ) as xs:string external;
