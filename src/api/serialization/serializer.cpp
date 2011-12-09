@@ -1717,8 +1717,7 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   is.clear();                   // clear eofbit
   if (item->isSeekable())
   {
-    if (pos != (std::streampos)0 && pos != (std::streampos)-1)
-    // if (pos) // not sure which line is correct -- pjl
+    if (pos)
     {
       is.exceptions(is.exceptions() | std::ios::failbit);
       is.seekg(pos, std::ios::beg);
