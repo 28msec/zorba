@@ -965,7 +965,7 @@ void SourceFinder::findNodeSourcesRec(
       return;
     }
 
-    case var_expr::eval_var: // TODO
+    case var_expr::eval_var:
     default:
     {
       ZORBA_ASSERT(false);
@@ -1179,8 +1179,14 @@ void SourceFinder::findNodeSourcesRec(
   case eval_expr_kind:
   {
     eval_expr* e = static_cast<eval_expr*>(node);
+    // Make sure that the eval iterator will produce standalone trees.
     e->setNodeCopy(true);
     return;
+  }
+
+  case debugger_expr_kind:
+  {
+    break;
   }
 
   case dynamic_function_invocation_expr_kind:
@@ -1209,11 +1215,6 @@ void SourceFinder::findNodeSourcesRec(
     // TODO
     return;
   }
-
-#if 0
-  case debugger_expr_kind:
-    break;
-#endif
     
   case castable_expr_kind:
   case cast_expr_kind:

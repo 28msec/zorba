@@ -818,11 +818,13 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " <<
-      inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -853,10 +855,13 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -906,7 +911,10 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     ForVarIterator* iter = static_cast<ForVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : ";
+
+    if (! Properties::instance()->noTreeIds())
+      str1 <<  iter;
   }
   else
   {
@@ -914,11 +922,14 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     LetVarIterator* iter = static_cast<LetVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : " ;
+
+    if (! Properties::instance()->noTreeIds())
+      str1 << iter;
   }
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)

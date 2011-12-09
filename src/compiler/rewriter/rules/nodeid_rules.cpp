@@ -831,19 +831,8 @@ void MarkNodeCopyProps::applyInternal(
 
   case eval_expr_kind:
   {
-    eval_expr* e = static_cast<eval_expr*>(node);
-
-    csize numVars = e->var_count();
-
-    for (csize i = 0; i < numVars; ++i)
-    {
-      std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->get_arg_expr(i), &udfCaller, sources);
-      markSources(sources);
-    }
-
     std::vector<var_expr_t> globalVars;
-    e->get_sctx()->getVariables(globalVars, true, true);
+    node->get_sctx()->getVariables(globalVars, false, true);
   
     FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
     {
@@ -854,6 +843,11 @@ void MarkNodeCopyProps::applyInternal(
       markSources(sources);
     }
 
+    break;
+  }
+
+  case debugger_expr_kind:
+  {
     break;
   }
 
@@ -903,11 +897,6 @@ void MarkNodeCopyProps::applyInternal(
 
     return;
   }
-
-#if 0
-  case debugger_expr_kind:
-    break;
-#endif
 
   case axis_step_expr_kind:
   case match_expr_kind:

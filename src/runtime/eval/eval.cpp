@@ -371,7 +371,11 @@ PlanIter_t EvalIterator::compile(
     throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   expr_t rootExpr;
-  PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId, sar);
+  PlanIter_t rootIter = compiler.compile(ast,
+                                         false, // do not apply PUL
+                                         rootExpr,
+                                         maxOuterVarId,
+                                         sar);
 
   return rootIter;
 }

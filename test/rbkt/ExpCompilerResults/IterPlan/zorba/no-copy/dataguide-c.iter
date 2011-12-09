@@ -105,9 +105,9 @@ Iterator tree for local:collapseNodesSameName:
     <LetVarIterator varname="s"/>
   </ForVariable>
   <MaterializeClause>
-    <MaterializeForVariable inputVar="s : 0xa0f8780"/>
-    <MaterializeForVariable inputVar="e : 0xa0e2718"/>
-    <MaterializeLetVariable inputVar="x : 0xa0e23e0"/>
+    <MaterializeForVariable inputVar="s : "/>
+    <MaterializeForVariable inputVar="e : "/>
+    <MaterializeLetVariable inputVar="x : "/>
   </MaterializeClause>
   <ReturnClause>
     <SequentialIterator>
@@ -310,7 +310,6 @@ Iterator tree for local:collapseNodesSameName:
   </ReturnClause>
 </flwor::FLWORIterator>
 
-<?xml version="1.0" encoding="UTF-8"?>
 Iterator tree for local:collapseNodes:
 <flwor::FLWORIterator>
   <LetVariable name="x" materialize="true">
@@ -323,9 +322,9 @@ Iterator tree for local:collapseNodes:
     <LetVarIterator varname="s"/>
   </ForVariable>
   <MaterializeClause>
-    <MaterializeForVariable inputVar="e : 0xa0e8620"/>
-    <MaterializeForVariable inputVar="s : 0xa0e86d0"/>
-    <MaterializeLetVariable inputVar="x : 0xa102ff8"/>
+    <MaterializeForVariable inputVar="e : "/>
+    <MaterializeForVariable inputVar="s : "/>
+    <MaterializeLetVariable inputVar="x : "/>
   </MaterializeClause>
   <ReturnClause>
     <IfThenElseIterator>
@@ -353,7 +352,7 @@ Iterator tree for local:collapseNodes:
           </Spec>
         </GroupByClause>
         <MaterializeClause>
-          <MaterializeLetVariable inputVar="y : 0xa0e84f8"/>
+          <MaterializeLetVariable inputVar="y : "/>
           <OrderBySpec>
             <FnStringIterator>
               <ForVarIterator varname="n"/>
