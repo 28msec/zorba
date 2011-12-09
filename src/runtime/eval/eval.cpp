@@ -401,7 +401,7 @@ PlanIter_t EvalIterator::compile(
   }
   else // sequential
   {
-    if (ccb->isUpdating())
+    if (ccb->isUpdating() && !theForDebugger)
     {
       RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS("eval_s"));
     }

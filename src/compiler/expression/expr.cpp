@@ -1469,11 +1469,6 @@ debugger_expr::debugger_expr(
   compute_scripting_kind();
 }
 
-void debugger_expr::compute_scripting_kind()
-{
-  theScriptingKind = theExpr->get_scripting_detail();
-}
-
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -1481,6 +1476,12 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theVars;
   ar & theArgs;
   ar & theIsVarDeclaration;
+}
+
+
+void debugger_expr::compute_scripting_kind()
+{
+  theScriptingKind = theExpr->get_scripting_detail();
 }
 #endif
 
