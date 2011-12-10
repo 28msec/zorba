@@ -1160,7 +1160,7 @@ public:
   eval_expr(
       static_context* sctx,
       const QueryLoc& loc, 
-      expr_t e,
+      const expr_t& e,
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
 
@@ -1168,9 +1168,9 @@ public:
 
   expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
 
-  ulong var_count() const { return (ulong)theVars.size(); }
+  csize var_count() const { return theVars.size(); }
 
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
+  const var_expr* get_var(csize i) const { return theVars[i]; }
 
   void add_var(const var_expr_t& var, const expr_t& arg) 
   {
@@ -1193,6 +1193,19 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
 /***************************************************************************//**
   debugger expression
+
+  theExpr:
+  --------
+  The wrapped expr
+
+  theVars:
+  --------
+
+  theArgs:
+  --------
+
+  theIsVarDeclaration:
+  --------------------
 ********************************************************************************/
 class debugger_expr : public namespace_context_base_expr
 {
@@ -1203,7 +1216,6 @@ private:
   expr_t                      theExpr;
   checked_vector<var_expr_t>  theVars;
   std::vector<expr_t>         theArgs;
-  std::list<GlobalBinding>    theGlobals;
   bool                        theIsVarDeclaration;
 
 public:
@@ -1215,14 +1227,11 @@ public:
   debugger_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aChild,
-    std::list<GlobalBinding> aGlobals,
+    const expr_t& aChild,
     namespace_context* nsCtx,
     bool aIsVarDeclaration);
 
   expr* get_expr() const { return theExpr.getp(); }
-
-  std::list<GlobalBinding> getGlobals() const { return theGlobals; }
 
   bool isVarDeclaration() const { return theIsVarDeclaration; }
 
@@ -1230,9 +1239,9 @@ public:
 
   std::ostream& put(std::ostream&) const;
 
-  ulong var_count() const { return (ulong)theVars.size(); }
+  csize var_count() const { return theVars.size(); }
 
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
+  const var_expr* get_var(csize i) const { return theVars[i]; }
 
   void add_var(const var_expr_t& var, const expr_t& arg) 
   {
@@ -1241,9 +1250,6 @@ public:
   }
 
   void compute_scripting_kind();
-
-private:
-  void store_local_variables(checked_vector<var_expr_t>& aScopedVariables);
 };
 #endif
 

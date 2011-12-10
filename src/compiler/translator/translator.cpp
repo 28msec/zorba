@@ -1680,7 +1680,6 @@ void wrap_in_debugger_expr(
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aLoc,
                                                          aExpr,
-                                                         thePrologVars,
                                                          theNSCtx,
                                                          aIsVarDeclaration));
 
@@ -1702,23 +1701,24 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      store::Item* lVarname = (*lIter)->get_name();
+      var_expr* argVar = *lIter;
+
+      store::Item* lVarname = argVar->get_name();
+
       if (lVarname->getStringValue() == "$$dot")
       {
         continue;
       }
 
-      var_expr_t ve = create_var(lBreakable.getLocation(),
-                                 lVarname,
-                                 var_expr::eval_var,
-                                 NULL).dyn_cast<var_expr>();
+      var_expr_t evalVar = create_var(lBreakable.getLocation(),
+                                      lVarname,
+                                      var_expr::eval_var,
+                                      NULL);
 
-      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
-
-      expr_t val = new wrapper_expr(theRootSctx,
-                                    lBreakable.getLocation(),
-                                    rchandle<expr>(lVe));
-      lExpr->add_var(ve, val);
+      expr_t argExpr = new wrapper_expr(theRootSctx,
+                                        lBreakable.getLocation(),
+                                        rchandle<expr>(argVar));
+      lExpr->add_var(evalVar, argExpr);
     }
 
     aExpr = lExpr.release();
@@ -5871,9 +5871,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = expandQueryLoc(
-    v.get_name()->get_location(),
-    domainExpr->get_loc());
+  QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                              domainExpr->get_loc());
+
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
@@ -5980,9 +5980,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     // it's important to insert the debugger before the scope is pushed.
     // Otherwise, the variable in question would already be in scope for
     // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(
-      v.get_name()->get_location(),
-      domainExpr->get_loc());
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                domainExpr->get_loc());
+
     wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
     push_scope();
@@ -10054,9 +10054,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
