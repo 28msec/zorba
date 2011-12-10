@@ -294,3 +294,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
+IF (NOT ZORBA_NO_FULL_TEXT)
+  EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)

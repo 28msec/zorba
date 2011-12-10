@@ -782,6 +782,14 @@ public:
   virtual bool isStreamable() const;
 
   /**
+   * Checks whether the item's content is streamable
+   * and the underlying stream is seekable
+   *
+   * @return true only if it is.
+   */
+  virtual bool isSeekable() const;
+
+  /**
    * Gets an istream for the item's content.
    *
    * @return the stream.

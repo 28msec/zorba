@@ -3242,7 +3242,7 @@ void* begin_visit(const VFO_DeclList& v)
       if (f.getp() != 0)
       {
         // We make sure that the types of the parameters and the return type
-        // are equal to the one that is declared in the module
+        // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
         if (!s.subtype(tm, sig, loc))
         {
@@ -3468,7 +3468,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
       ZORBA_ASSERT(flwor != NULL);
 
-      for (ulong i = 0; i < numParams; ++i)
+      for (csize i = 0; i < numParams; ++i)
       {
         const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3840,25 +3840,11 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                           "\'" + lExpandedQName->getNamespace() + "\'"
-                           : lExpandedQName->getPrefix())
-                    + ":" + lExpandedQName->getLocalName()));
+      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
+                    + ":" + lExpandedQName->getLocalName())));
     }
 
     recognised = true;
-  }
-  else
-  {
-    // annotation in unknown namespace -- generate a warning
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(
-        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
-        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                      "\'" + lExpandedQName->getNamespace() + "\'"
-                      : lExpandedQName->getPrefix())
-                      + ":" + lExpandedQName->getLocalName()),
-        WARN_LOC(loc)));
   }
 
   std::vector<rchandle<const_expr> > lLiterals;

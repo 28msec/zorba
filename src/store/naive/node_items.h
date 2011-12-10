@@ -1310,7 +1310,7 @@ protected:
   TextNode() {}
 
 public:
-  ~TextNode()
+  virtual ~TextNode()
   {
     if (isTyped())
     {
