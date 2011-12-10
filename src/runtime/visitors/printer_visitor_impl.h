@@ -229,6 +229,11 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (DocumentContentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
+#ifdef ZORBA_WITH_JSON
+  DECLARE_VISITOR(JSONArrayIterator)
+  DECLARE_VISITOR(JSONObjectIterator)
+  DECLARE_VISITOR(JSONPairIterator)
+#endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)
   DECLARE_VISITOR (NodeDistinctIterator)

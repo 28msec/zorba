@@ -56,6 +56,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
+#include "runtime/json/json_constructors.h"
 #include "runtime/collections/collections_impl.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -1239,6 +1240,13 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION (DocumentContentIterator)
   PRINTER_VISITOR_DEFINITION (CommentIterator)
   PRINTER_VISITOR_DEFINITION (PiIterator)
+
+#ifdef ZORBA_WITH_JSON
+  PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
+  PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
+  PRINTER_VISITOR_DEFINITION(JSONPairIterator)
+#endif
+
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
   PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
 

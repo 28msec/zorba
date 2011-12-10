@@ -70,7 +70,7 @@ public:
     :
     UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, aChild)
   {
-    theTypePreserve = false;//pre initialize things to avoid valgrind warnings during serialization
+    theTypePreserve = false;
     theNsPreserve = false;
     theNsInherit = false;
   }

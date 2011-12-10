@@ -129,6 +129,7 @@ LIST(APPEND RUNTIME_SRCS
   collections/collections_base.cpp
   misc/materialize.cpp
   scripting/scripting.cpp
+  json/json_constructors.cpp
 )
 
 IF(NOT ZORBA_NO_FULL_TEXT)
