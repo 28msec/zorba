@@ -40,6 +40,7 @@ staticcollectionamanger1(zorba::Zorba* z)
 
   ItemFactory* lFac = z->getItemFactory();
   Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
+  Item lIdxName   = lFac->createQName("http://www.mod2.com/", "index");
   Item lCollName3 = lFac->createQName("http://www.mod3.com/", "coll");
 
   ItemSequence_t lSeq = lColMgr->declaredCollections();
@@ -56,16 +57,35 @@ staticcollectionamanger1(zorba::Zorba* z)
     return false;
   }
 
+  int num_idxs = 0;
+  lSeq = lColMgr->declaredIndexes();
+  lIter = lSeq->getIterator();
+  lIter->open();
+  while (lIter->next(lTmp)) {
+    std::cout << "name " << lTmp.getStringValue() << std::endl;
+    ++num_idxs;
+  }
+
+  if (num_idxs != 1) {
+    return false;
+  }
+
   if (!lColMgr->isDeclaredCollection(lCollName2) ||
       !lColMgr->isDeclaredCollection(lCollName3)) {
     return false;
   }
 
+  if (!lColMgr->isDeclaredIndex(lIdxName)) {
+    return false;
+  }
+
   lColMgr->createCollection(lCollName2);
   lColMgr->createCollection(lCollName3);
+  lColMgr->createIndex(lIdxName);
 
   if (!lColMgr->isAvailableCollection(lCollName2) ||
-      !lColMgr->isAvailableCollection(lCollName3)) {
+      !lColMgr->isAvailableCollection(lCollName3) ||
+      !lColMgr->isAvailableIndex(lIdxName)) {
     return false;
   }
 
@@ -82,11 +102,13 @@ staticcollectionamanger1(zorba::Zorba* z)
     return false;
   }
 
+  lColMgr->deleteIndex(lIdxName);
   lColMgr->deleteCollection(lCollName2);
   lColMgr->deleteCollection(lCollName3);
 
   if (lColMgr->isAvailableCollection(lCollName2) ||
-      lColMgr->isAvailableCollection(lCollName3)) {
+      lColMgr->isAvailableCollection(lCollName3) ||
+      lColMgr->isAvailableIndex(lIdxName)) {
     return false;
   }
 
