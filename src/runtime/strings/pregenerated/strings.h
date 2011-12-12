@@ -1074,6 +1074,58 @@ public:
 };
 
 
+/**
+ * 
+ *    string:tokenize
+ *  
+ * Author: Matthias Brantner
+ */
+class StringTokenizeIteratorState : public PlanIteratorState
+{
+public:
+  zstring theSeparator; //separator for the tokenization
+  std::istream* theIStream; //the remaining string (if the input is streamable)
+  zstring theInput; //the string to tokenize (if the input is not streamable)
+  size_t theNextStartPos; //
+
+  StringTokenizeIteratorState();
+
+  ~StringTokenizeIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StringTokenizeIterator : public NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringTokenizeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringTokenizeIterator,
+    NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>*)this);
+  }
+
+  StringTokenizeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringTokenizeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

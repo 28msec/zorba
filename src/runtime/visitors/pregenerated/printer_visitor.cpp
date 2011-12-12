@@ -3961,6 +3961,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
 // </StringIsStreamableIterator>
 
 
+// <StringTokenizeIterator>
+void PrinterVisitor::beginVisit ( const StringTokenizeIterator& a) {
+  thePrinter.startBeginVisit("StringTokenizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringTokenizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringTokenizeIterator>
+
+
 // <XQDocIterator>
 void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
   thePrinter.startBeginVisit("XQDocIterator", ++theId);

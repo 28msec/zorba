@@ -423,6 +423,19 @@ public:
 };
 
 
+//fn-zorba-string:tokenize
+class fn_zorba_string_tokenize : public function
+{
+public:
+  fn_zorba_string_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

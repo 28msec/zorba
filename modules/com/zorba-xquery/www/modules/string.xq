@@ -63,3 +63,9 @@ declare function string:materialize($s as xs:string) as xs:string external;
  :
  :)
 declare function string:is-streamable($s as xs:string) as xs:boolean external;
+
+(:~
+ :)
+declare function string:tokenize(
+  $s as xs:string,
+  $separator as xs:string) as xs:string* external;

@@ -2229,5 +2229,76 @@ bool StringIsStreamableIterator::nextImpl(
   STACK_END(state);
 }
 
+/**
+ *______________________________________________________________________
+ *
+ * http://www.zorba-xquery.com/modules/string
+ * string:tokenize
+ */
+bool StringTokenizeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  size_t lNewPos = 0;
+
+  StringTokenizeIteratorState* state;
+  DEFAULT_STACK_INIT(StringTokenizeIteratorState, state, planState);
+
+  // init phase, get input string and tokens
+  consumeNext(item, theChildren[0].getp(), planState);
+
+  if (item->isStreamable())
+  {
+    state->theIStream = &item->getStream();
+  }
+  else
+  {
+    state->theIStream = 0;
+    item->getStringValue2(state->theInput);
+  }
+
+  consumeNext(item, theChildren[1].getp(), planState);
+
+  item->getStringValue2(state->theSeparator);
+
+  // working phase, do the tokenization
+  while (true)
+  {
+    if (state->theIStream)
+    {
+    }
+    else
+    {
+      if (state->theNextStartPos == zstring::npos)
+      {
+        break;
+      }
+
+      lNewPos =
+        state->theInput.find(state->theSeparator, state->theNextStartPos);
+      if (lNewPos != zstring::npos)
+      {
+        zstring lSubStr = state->theInput.substr(
+            state->theNextStartPos,
+            lNewPos - state->theNextStartPos);
+        GENV_ITEMFACTORY->createString(result, lSubStr);
+        state->theNextStartPos =
+          lNewPos==state->theInput.length() - state->theSeparator.length()
+          ? zstring::npos
+          : lNewPos + state->theSeparator.length();
+      }
+      else
+      {
+        zstring lSubStr = state->theInput.substr(state->theNextStartPos);
+        GENV_ITEMFACTORY->createString(result, lSubStr);
+        state->theNextStartPos = zstring::npos;
+      }
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

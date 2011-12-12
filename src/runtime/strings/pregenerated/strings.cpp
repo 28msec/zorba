@@ -830,6 +830,48 @@ StringIsStreamableIterator::~StringIsStreamableIterator() {}
 // </StringIsStreamableIterator>
 
 
+// <StringTokenizeIterator>
+const char* StringTokenizeIterator::class_name_str = "StringTokenizeIterator";
+StringTokenizeIterator::class_factory<StringTokenizeIterator>
+StringTokenizeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringTokenizeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringTokenizeIterator::class_versions_count =
+sizeof(StringTokenizeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringTokenizeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringTokenizeIterator::~StringTokenizeIterator() {}
+
+StringTokenizeIteratorState::StringTokenizeIteratorState() {}
+
+StringTokenizeIteratorState::~StringTokenizeIteratorState() {}
+
+
+void StringTokenizeIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theNextStartPos = 0;
+}
+
+void StringTokenizeIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theNextStartPos = 0;
+}
+// </StringTokenizeIterator>
+
+
 
 }
 
