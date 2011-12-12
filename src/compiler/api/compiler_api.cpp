@@ -236,15 +236,19 @@ PlanIter_t XQueryCompiler::compile(
     audit::ScopedRecord& aAuditRecord)
 {
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_TRANSLATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                                         lTimer);
+
     rootExpr = normalize(ast); // also does the translation
   }
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                                         lTimer);
+
     rootExpr = optimize(rootExpr);
   }
 
@@ -254,9 +258,11 @@ PlanIter_t XQueryCompiler::compile(
 
   PlanIter_t plan;
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_CODEGENERATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                                         lTimer);
+
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
 
