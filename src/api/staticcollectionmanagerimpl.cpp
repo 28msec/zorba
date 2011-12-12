@@ -68,6 +68,7 @@ StaticCollectionManagerImpl::StaticCollectionManagerImpl(
   theFactory(aFactory),
   theColDDLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/ddl"),
   theColDMLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/dml"),
+  theIdxDDLNamespace("http://www.zorba-xquery.com/modules/store/static/indexes/ddl"),
   theDiagnosticHandler(aDiagnosticHandler)
 {
   // the context passed as parameter is not used anywhere in here.
@@ -104,6 +105,7 @@ StaticCollectionManagerImpl::initStaticContext(StaticContext_t& aCtx)
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
   lProlog << "import module namespace d = '" << theColDDLNamespace << "';";
+  lProlog << "import module namespace iddl = '" << theIdxDDLNamespace << "';";
   aCtx->loadProlog(lProlog.str(), lHints);
 }
 
@@ -238,6 +240,165 @@ StaticCollectionManagerImpl::isDeclaredCollection(const Item& aQName) const
     lIter->open();
     Item lRes;
     lIter->next(lRes);
+    return lRes.getBooleanValue();
+  }
+  ZORBA_DM_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerImpl::createIndex(const Item& aQName)
+{
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace, "create");
+
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(aQName));
+
+    ItemSequence_t lSeq = theContext->invoke(lFunc, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+  }
+  ZORBA_DM_CATCH
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerImpl::deleteIndex(const Item& aQName)
+{
+  // do a check here in order to get better (non-confusing) error messages
+  if (!isDeclaredIndex(aQName)) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0021_INDEX_NOT_DECLARED,
+    ERROR_PARAMS(aQName.getStringValue()));
+  }
+
+  ZORBA_DM_TRY
+  {
+    if (!isAvailableIndex(aQName)) 
+    {
+      throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS(aQName.getStringValue()));
+    }
+
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace, "delete");
+
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(aQName));
+
+    ItemSequence_t lSeq = theContext->invoke(lFunc, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+  }
+  ZORBA_DM_CATCH
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t
+StaticCollectionManagerImpl::availableIndexes() const
+{
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace,
+                                         "available-indexes");
+
+    std::vector<ItemSequence_t> lArgs;
+    return theContext->invoke(lFunc, lArgs);
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+StaticCollectionManagerImpl::isAvailableIndex(const Item& aQName) const
+{
+  // do a check here in order to get better (non-confusing) error messages
+  if (!isDeclaredIndex(aQName)) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+    ERROR_PARAMS(aQName.getStringValue()));
+  }
+
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace,
+                                         "is-available-index");
+
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(aQName));
+
+    ItemSequence_t lSeq = theContext->invoke(lFunc, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    if (!lIter->next(lRes))
+      return false;
+
+    return lRes.getBooleanValue();
+  }
+  ZORBA_DM_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t
+StaticCollectionManagerImpl::declaredIndexes() const
+{
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace,
+                                         "declared-indexes");
+
+    std::vector<ItemSequence_t> lArgs;
+    return theContext->invoke(lFunc, lArgs);
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+StaticCollectionManagerImpl::isDeclaredIndex(const Item& aQName) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theIdxDDLNamespace,
+                                         "is-declared-index");
+
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(aQName));
+
+    ItemSequence_t lSeq = theContext->invoke(lFunc, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    if (!lIter->next(lRes))
+      return false;
     return lRes.getBooleanValue();
   }
   ZORBA_DM_CATCH
@@ -439,6 +600,132 @@ StaticCollectionManagerSetImpl::isDeclaredCollection(const Item& aQName) const
        ++lIter) 
   {
     if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerSetImpl::createIndex(const Item& aQName)
+{
+  for (MgrSet::iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end();
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredIndex(aQName)) 
+    {
+        (*lIter)->createIndex(aQName);
+        return;
+    }
+  }
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0021_INDEX_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerSetImpl::deleteIndex(const Item& aQName)
+{
+  for (MgrSet::iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end();
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredIndex(aQName)) 
+    {
+        (*lIter)->deleteIndex(aQName);
+        return;
+    }
+  }
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0021_INDEX_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t
+StaticCollectionManagerSetImpl::availableIndexes() const
+{
+  std::vector<ItemSequence_t> lSequences;
+  for (MgrSet::const_iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end();
+       ++lIter)
+  {
+    lSequences.push_back((*lIter)->availableIndexes());
+  }
+  // need to do duplicate elimination because
+  // indexes are coming from static contexts
+  // which might be imported multiple times
+  return new ItemSequenceChainer(lSequences, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+StaticCollectionManagerSetImpl::isAvailableIndex(const Item& aQName) const
+{
+  for (MgrSet::const_iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredIndex(aQName) &&
+        (*lIter)->isAvailableIndex(aQName)) 
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t
+StaticCollectionManagerSetImpl::declaredIndexes() const
+{
+  std::vector<ItemSequence_t> lSequences;
+  for (MgrSet::const_iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
+    lSequences.push_back((*lIter)->declaredIndexes());
+  }
+  // we need to do duplicate elimination of the sequence because
+  // the contexts might contain the declaration of a index
+  // multiple times. This happens if the set of contexts contains
+  // the context that declares the index as well as some
+  // contexts that result from compiling modules that import
+  // the module declaring the index.
+  return new ItemSequenceChainer(lSequences, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+StaticCollectionManagerSetImpl::isDeclaredIndex(const Item& aQName) const
+{
+  for (MgrSet::const_iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredIndex(aQName)) 
     {
       return true;
     }

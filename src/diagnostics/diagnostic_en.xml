@@ -1123,6 +1123,22 @@
          specified.
       </comment>
       <value>$1</value>
+    
+      <entry key="CONCAT">
+        <value>comma expression with updating and non-updating branches</value>
+      </entry>
+
+      <entry key="Generic">
+        <value>updating expression illegal here</value>
+      </entry>
+
+      <entry key="IF">
+        <value>conditional expression with updating and non-updating branch</value>
+      </entry>
+
+      <entry key="UDF_2">
+        <value>"$2": function declared simple but body is updating</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUST0002">
@@ -3147,22 +3163,6 @@
 
     <entry key="XQueryVersionAtLeast10_2">
       <value>"$2": XQuery version must be at least 1.0</value>
-    </entry>
-
-    <entry key="XUST0001_CONCAT">
-      <value>comma expression with updating and non-updating branches</value>
-    </entry>
-
-    <entry key="XUST0001_Generic">
-      <value>updating expression illegal here</value>
-    </entry>
-
-    <entry key="XUST0001_IF">
-      <value>conditional expression with updating and non-updating branch</value>
-    </entry>
-
-    <entry key="XUST0001_UDF_2">
-      <value>"$2": function declared simple but body is updating</value>
     </entry>
 
     <entry key="XUST0002_Transform">

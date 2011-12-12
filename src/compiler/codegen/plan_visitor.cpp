@@ -2085,7 +2085,8 @@ void end_visit(eval_expr& v)
                                 varnames,
                                 vartypes, 
                                 v.get_inner_scripting_kind(),
-                                localBindings));
+                                localBindings,
+                                false));
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -2111,12 +2112,12 @@ void end_visit(debugger_expr& v)
 
   std::vector<PlanIter_t> argvEvalIter;
 
-  ulong numVars = v.var_count();
+  csize numVars = v.var_count();
   std::vector<store::Item_t> varnames(numVars);
   std::vector<xqtref_t> vartypes(numVars);
 
   //create the eval iterator children
-  for (ulong i = 0; i < numVars; i++) {
+  for (csize i = 0; i < numVars; i++) {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
     argvEvalIter.push_back(pop_itstack());
@@ -2150,8 +2151,9 @@ void end_visit(debugger_expr& v)
                                   argvEvalIter,
                                   varnames,
                                   vartypes,
-                                  SIMPLE_EXPR,
-                                  localBindings));
+                                  SEQUENTIAL_FUNC_EXPR,
+                                  localBindings,
+                                  true));
 
   lDebugIterator->setChildren(&argv);
   lDebugIterator->setVariables(varnames, vartypes);
