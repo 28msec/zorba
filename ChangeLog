@@ -1,7 +1,9 @@
 Zorba - The XQuery Processor
 
 version 2.x
-  * Optimization to avoid copying nodes during node-constructor expressions.
+  * No-copy optimization: avoids copying nodes during node-constructor expressions.
+  * Added external function annotations %ann:propagates-input-nodes and 
+    %ann:must-copy-input-nodes to be used by the no-copy optimization.
 	
 version 2.1
 

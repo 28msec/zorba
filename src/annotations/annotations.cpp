@@ -97,6 +97,7 @@ void AnnotationInternal::createBuiltIn()
   // Zorba annotations - optimizer
   //
   ZANN(propagates-input-nodes, propagates_input_nodes);
+  ZANN(must-copy-input-nodes, must_copy_input_nodes);
 
   //
   // Zorba annotations - misc
