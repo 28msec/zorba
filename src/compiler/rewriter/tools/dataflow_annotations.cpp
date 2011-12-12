@@ -812,7 +812,7 @@ void SourceFinder::findNodeSources(
       --i;
 
       // If this method is called to find the sources of an expr within the
-      // body of a function_item. then udfCaller->theFo will be NULL. 
+      // body of a function_item, then udfCaller->theFo will be NULL. 
       if (udfCaller->theFo)
       {
         ZORBA_ASSERT(varExpr->get_udf() == udfCaller->theFo->get_func());

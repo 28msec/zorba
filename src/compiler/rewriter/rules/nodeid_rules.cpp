@@ -1207,6 +1207,11 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     return;
   }
 
+  case debugger_expr_kind:
+  {
+    break;
+  }
+
   case dynamic_function_invocation_expr_kind:
   {
     dynamic_function_invocation_expr* e = 
@@ -1234,11 +1239,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     return;
   }
-
-#if 0
-  case debugger_expr_kind:
-    break;
-#endif
 
   case castable_expr_kind:
   case cast_expr_kind:
