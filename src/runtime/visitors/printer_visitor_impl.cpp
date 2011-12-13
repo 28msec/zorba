@@ -1209,7 +1209,23 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
 
 #undef TYPED_VAL_CMP
 
-  PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
+  void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
+  {
+    thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
+    printCommons(  &a, theId );
+    if (a.isCached())
+    {
+      thePrinter.addAttribute("cached", "true");
+    }
+    thePrinter.endBeginVisit( theId);
+  }
+
+  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   PRINTER_VISITOR_DEFINITION (ExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (OrIterator)
