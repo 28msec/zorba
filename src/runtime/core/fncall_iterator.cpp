@@ -159,7 +159,8 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(*thePlanState);
   }
-  theCacheHits.clear();
+
+  theArgValues.clear();
 }
 
 
@@ -210,6 +211,7 @@ bool UDFunctionCallIterator::isCached() const
   return theUDF->cacheResults();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -218,6 +220,7 @@ void UDFunctionCallIterator::createCache(
     UDFunctionCallIteratorState* state)
 {
   store::Index_t lIndex = theUDF->getCache();
+
   if (!lIndex && theUDF->cacheResults())
   {
     const signature& sig = theUDF->getSignature();
@@ -230,14 +233,19 @@ void UDFunctionCallIterator::createCache(
     lSpec.theCollations.resize(numArgs);
     lSpec.theIsTemp = true;
     lSpec.theIsUnique = true;
+
     for (csize i = 0; i < numArgs; ++i)
     {
       lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
     }
+
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
+
     theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
-    state->theCacheHits.reserve(theChildren.size());
+
+    state->theArgValues.reserve(numArgs);
   }
+
   state->theCache = lIndex.getp();
 }
 
@@ -255,10 +263,10 @@ bool UDFunctionCallIterator::probeCache(
     return false;
 
   store::IndexCondition_t lCond =
-    state->theCache->createCondition(store::IndexCondition::POINT_VALUE);
+  state->theCache->createCondition(store::IndexCondition::POINT_VALUE);
 
-  std::vector<store::Iterator_t>::iterator lIter 
-    = state->theArgWrappers.begin();
+  std::vector<store::Iterator_t>::iterator lIter = state->theArgWrappers.begin();
+
   for (; lIter != state->theArgWrappers.end(); ++lIter)
   {
     store::Iterator_t& argWrapper = (*lIter);
@@ -270,11 +278,13 @@ bool UDFunctionCallIterator::probeCache(
     aKey.push_back(lArg);
     lCond->pushItem(lArg);
   }
-  store::IndexProbeIterator_t lCacheHit = 
-    GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
-  lCacheHit->init(lCond);
-  lCacheHit->open();
-  return lCacheHit->next(result);
+
+  store::IndexProbeIterator_t probeIte = 
+  GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
+
+  probeIte->init(lCond);
+  probeIte->open();
+  return probeIte->next(result);
 }
 
 
@@ -298,6 +308,7 @@ void UDFunctionCallIterator::insertCacheEntry(
     }
   }
 }
+
 
 /*******************************************************************************
 
@@ -434,6 +445,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
       const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
+
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
         const ArgVarRefs& argVarRefs = argsRefs[i];
@@ -441,14 +453,15 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         if (state->theCache)
         {
           std::vector<store::Item_t> lParam(1, lKey[i]);
-          state->theCacheHits.push_back(GENV_STORE.createTempSeq(lParam));
-          argWrapper = state->theCacheHits.back()->getIterator();
+          state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
+          argWrapper = state->theArgValues.back()->getIterator();
           argWrapper->open();
         }
         else
         {
           argWrapper = argWraps[i];
         }
+
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
         ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
 
@@ -477,14 +490,14 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       while (consumeNext(result, state->thePlan, *state->thePlanState))
       {
 #ifdef ZORBA_WITH_DEBUGGER
-      DEBUGGER_POP_FRAME;
+        DEBUGGER_POP_FRAME;
 #endif
 
-      insertCacheEntry(state, lKey, result);
-      STACK_PUSH(true, state);
+        insertCacheEntry(state, lKey, result);
+        STACK_PUSH(true, state);
 
 #ifdef ZORBA_WITH_DEBUGGER
-      DEBUGGER_PUSH_FRAME;
+        DEBUGGER_PUSH_FRAME;
 #endif
       }
 

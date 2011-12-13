@@ -53,27 +53,6 @@ bool SimpleTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
-{
-  uint64_t lIndex;
-  try {
-    lIndex = to_xs_unsignedLong(aIndex);
-  } catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
-  }
-  return theItems[lIndex];
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 xs_integer SimpleTempSeq::getSize() 
 {
   return theItems.size();
@@ -312,14 +291,15 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
   case none:
     if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
     {
-      result = (*theTempSeq)[theCurPos];
+      result = theTempSeq->theItems[theCurPos];
       return true;
     }
     break;
+
   case startEnd:
     if ( theCurPos < theEndPos ) 
     {
-      result = (*theTempSeq)[theCurPos];
+      result = theTempSeq->theItems[theCurPos];
       return true;
     }
     break;
@@ -336,17 +316,17 @@ store::Item* SimpleTempSeqIter::next()
 	{
   case none:
     if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
-      return (*theTempSeq)[theCurPos];
+      return theTempSeq->theItems[theCurPos];
     break;
   case startEnd:
     if ( theCurPos < theEndPos ) 
-      return (*theTempSeq)[theCurPos];
+      return theTempSeq->theItems[theCurPos];
     break;
   }
 
   return NULL;
 }
-  
+
 
 void SimpleTempSeqIter::reset()
 {

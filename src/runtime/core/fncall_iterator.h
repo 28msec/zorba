@@ -86,14 +86,14 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
-  PlanIterator                 * thePlan;
-  PlanState                    * thePlanState;
-  uint32_t                       thePlanStateSize;
-  dynamic_context              * theLocalDCtx;
-  bool                           thePlanOpen;
-  std::vector<store::Iterator_t> theArgWrappers;
-  store::Index                 * theCache;
-  std::vector<store::TempSeq_t>  theCacheHits;
+  PlanIterator                   * thePlan;
+  PlanState                      * thePlanState;
+  uint32_t                         thePlanStateSize;
+  dynamic_context                * theLocalDCtx;
+  bool                             thePlanOpen;
+  std::vector<store::Iterator_t>   theArgWrappers;
+  store::Index                   * theCache;
+  std::vector<store::TempSeq_t>    theArgValues;
 
   UDFunctionCallIteratorState();
 
