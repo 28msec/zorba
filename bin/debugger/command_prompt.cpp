@@ -20,7 +20,9 @@
 #include <map>
 #include <iostream>
 
+#ifndef WIN32
 #include <editline/readline.h>
+#endif
 
 #include "command.h"
 
@@ -70,7 +72,13 @@ void
 CommandPrompt::execute()
 {
   for (;;) {
+#ifdef WIN32
+    std::cout << "(xqdb) ";
+    std::string lCommandLine;
+    std::getline(std::cin, lCommandLine);
+#else
     std::string lCommandLine(readline("(xqdb) "));
+#endif
     std::vector<std::string> lArgs;
 
     // split the command into arguments
