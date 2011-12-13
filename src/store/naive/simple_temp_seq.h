@@ -35,6 +35,8 @@ typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 ********************************************************************************/
 class SimpleTempSeq : public store::TempSeq
 {
+  friend class SimpleTempSeqIter;
+
 private:
   std::vector<store::Item_t> theItems;
 
@@ -54,8 +56,6 @@ public:
   void init(store::Iterator_t& iter, bool copy = false);
 
   void append(store::Iterator_t iter, bool copy);
-
-  store::Item_t operator[](xs_integer aIndex);
 
   void getItem(xs_integer position, store::Item_t& res);
 
@@ -102,9 +102,9 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   SimpleTempSeq_t     theTempSeq;
   BorderType          theBorderType;
 
-  uint64_t               theCurPos;
-  uint64_t               theStartPos;
-  uint64_t               theEndPos;
+  uint64_t            theCurPos;
+  uint64_t            theStartPos;
+  uint64_t            theEndPos;
 
  public:
   SimpleTempSeqIter() {}

@@ -382,7 +382,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 ********************************************************************************/
 store::Index* user_function::getCache() const
 {
-  return theCache;
+  return theCache.getp();
 }
 
 
@@ -396,6 +396,7 @@ void user_function::setCache(store::Index* aCache)
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool user_function::cacheResults() const
 {
@@ -407,22 +408,24 @@ bool user_function::cacheResults() const
  only cache recursive (non-sequential, non-updating, deterministic)
  functions with singleton atomic input and output
 ********************************************************************************/
-void user_function::computeResultCaching(XQueryDiagnostics* diag) const
+void user_function::computeResultCaching(XQueryDiagnostics* diag)
 {
   if (theCacheComputed)
   {
     return; 
   }
 
-  struct OnExit {
+  struct OnExit 
+  {
   private:
     bool& theResult;
     bool& theCacheComputed;
 
   public:
     OnExit(bool& aResult, bool& aCacheComputed)
-      : theResult(aResult),
-        theCacheComputed(aCacheComputed) {}
+      :
+      theResult(aResult),
+      theCacheComputed(aCacheComputed) {}
 
     void cache() { theResult = true; }
 
@@ -438,30 +441,26 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 
   // check necessary conditions
   // %ann:cache or not %ann:no-cache
-  if (theAnnotationList && theAnnotationList->contains(AnnotationInternal::zann_nocache))
+  if (theAnnotationList &&
+      theAnnotationList->contains(AnnotationInternal::zann_nocache))
   {
     return;
   }
 
   // was the %ann:cache annotation given explicitly by the user
-  bool lExplicitCacheRequest = theAnnotationList
-    ?theAnnotationList->contains(AnnotationInternal::zann_cache)
-    :false;
+  bool lExplicitCacheRequest = 
+    (theAnnotationList ?
+     theAnnotationList->contains(AnnotationInternal::zann_cache) :
+     false);
 
   if (isVariadic())
   {
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(
-          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-          WARN_PARAMS(
-            getName()->getStringValue(),
-            ZED( ZWST0005_VARIADIC )
-          ),
-          WARN_LOC(theLoc)
-        )
-      );
+        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+        WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_VARIADIC)),
+        WARN_LOC(theLoc)));
     }
     return;
   }
@@ -478,22 +477,17 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(
-          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-          WARN_PARAMS(
-            getName()->getStringValue(),
-            ZED( ZWST0005_RETURN_TYPE ),
-            lRes->toString()
-          ),
-          WARN_LOC(theLoc)
-        )
-      );
+        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+        WARN_PARAMS(getName()->getStringValue(),
+                    ZED(ZWST0005_RETURN_TYPE),
+                    lRes->toString()),
+        WARN_LOC(theLoc)));
     }
     return;
   }
 
-  size_t lArity = theSignature.paramCount();
-  for (size_t i = 0; i < lArity; ++i)
+  csize lArity = theSignature.paramCount();
+  for (csize i = 0; i < lArity; ++i)
   {
     const xqtref_t& lArg = theSignature[i];
     if (!TypeOps::is_subtype(tm,
@@ -504,17 +498,12 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
       if (lExplicitCacheRequest)
       {
         diag->add_warning(
-          NEW_XQUERY_WARNING(
-            zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-            WARN_PARAMS(
-              getName()->getStringValue(),
-              ZED( ZWST0005_PARAM_TYPE ),
-              i+1,
-              lArg->toString()
-            ),
-            WARN_LOC(theLoc)
-          )
-        );
+            NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+            WARN_PARAMS(getName()->getStringValue(),
+                        ZED(ZWST0005_PARAM_TYPE),
+                        i+1,
+                        lArg->toString()),
+            WARN_LOC(theLoc)));
       }
       return;
     }
@@ -526,15 +515,9 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(
-          zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-          WARN_PARAMS(
-            getName()->getStringValue(),
-            ZED( ZWST0005_UPDATING )
-          ),
-          WARN_LOC(theLoc)
-        )
-      );
+        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+        WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_UPDATING)),
+        WARN_LOC(theLoc)));
     }
     return;
   }
@@ -544,15 +527,11 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(
-          zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
-          WARN_PARAMS(
-            getName()->getStringValue(),
-            (isSequential()?"sequential":"non-deterministic")
-          ),
-          WARN_LOC(theLoc)
-        )
-      );
+        NEW_XQUERY_WARNING(zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
+        WARN_PARAMS(getName()->getStringValue(),
+                    (isSequential()?"sequential":"non-deterministic")),
+        WARN_LOC(theLoc)));
+
       lExit.cache();
     }
     return;
@@ -567,6 +546,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag) const
 
   lExit.cache();
 }
+
 
 /*******************************************************************************
 
