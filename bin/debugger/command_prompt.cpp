@@ -20,6 +20,8 @@
 #include <map>
 #include <iostream>
 
+#include <editline/readline.h>
+
 #include "command.h"
 
 
@@ -68,9 +70,7 @@ void
 CommandPrompt::execute()
 {
   for (;;) {
-    std::cout << "(xqdb) ";
-    std::string lCommandLine;
-    std::getline(std::cin, lCommandLine);
+    std::string lCommandLine(readline("(xqdb) "));
     std::vector<std::string> lArgs;
 
     // split the command into arguments

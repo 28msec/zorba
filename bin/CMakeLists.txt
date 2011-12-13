@@ -16,13 +16,18 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
 IF (ZORBA_WITH_DEBUGGER)
+  IF (NOT WIN32)
+    FIND_PACKAGE (Libedit REQUIRED)
+    INCLUDE_DIRECTORIES (${LIBEDIT_INCLUDE_DIRS})
+  ENDIF (NOT WIN32)
+
   SET (DEBUG_CLIENT_SRCS
     debugger/main.cpp
     debugger/command_prompt.cpp
     debugger/command_line_handler.cpp
     debugger/event_handler.cpp
   )
-  ZORBA_GENERATE_EXE ("xqdb" "${DEBUG_CLIENT_SRCS}" "" "xqdb" "bin")
+  ZORBA_GENERATE_EXE ("xqdb" "${DEBUG_CLIENT_SRCS}" "${LIBEDIT_LIBRARIES}" "xqdb" "bin")
 ENDIF (ZORBA_WITH_DEBUGGER)
 
 SET(SRCS
