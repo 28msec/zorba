@@ -437,7 +437,7 @@ void GroupByIterator::matVarsAndGroupBy(
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
 
       // FIXME are those settings right? I think copy is correct 
-      (*nonGroupTuple)[i]->append(iterWrapper, false);
+      (*nonGroupTuple)[i]->append(iterWrapper);
 
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
@@ -454,7 +454,7 @@ void GroupByIterator::matVarsAndGroupBy(
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
 
       // FIXME are those settings (no-copy and no-lazy) right? 
-      store::TempSeq_t tempSeq = GENV_STORE.createTempSeq(iterWrapper, false, false); 
+      store::TempSeq_t tempSeq = GENV_STORE.createTempSeq(iterWrapper, false); 
 
       nonGroupTuple->push_back(tempSeq);
 

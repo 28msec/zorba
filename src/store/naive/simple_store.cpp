@@ -1484,25 +1484,20 @@ bool SimpleStore::getPathInfo(
   Creates a new TempSeq. The instance can be used, e.g. for variable bindings
 
   @param iterator   The source for the XMDInstance
-  @param copyNodes  If true, all nodes are copied before they are saved in the
-                    temp sequence.
   @param lazy       Hint for the store. If possible a XMDInstance should be
                     evaluated lazily. For XQueryP it might be necassary to set
                     this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(
-    store::Iterator_t& iterator,
-    bool copyNodes,
-    bool lazy)
+TempSeq_t SimpleStore::createTempSeq(const store::Iterator_t& iterator, bool lazy)
 {
   if(lazy)
   {
     //tempSeq = new SimpleTempSeq(iterator, copyNodes);
-    return new SimpleLazyTempSeq(iterator, copyNodes);
+    return new SimpleLazyTempSeq(iterator);
   }
   else
   {
-    return new SimpleTempSeq(iterator, copyNodes);
+    return new SimpleTempSeq(iterator);
   }
 }
 
@@ -1512,7 +1507,6 @@ TempSeq_t SimpleStore::createTempSeq(
 ********************************************************************************/
 TempSeq_t SimpleStore::createTempSeq(bool lazy)
 {
-  TempSeq_t tempSeq;
   if (lazy)
   {
     return new SimpleLazyTempSeq();
@@ -1528,27 +1522,43 @@ TempSeq_t SimpleStore::createTempSeq(bool lazy)
   Creates a temp seq initialized by the given vector.
   @param item_v - The vector to use to initialize the seq.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
+TempSeq_t SimpleStore::createTempSeq(std::vector<store::Item_t>& items)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(item_v);
-  return tempSeq;
+  return new SimpleTempSeq(items);
 }
 
+
+/*******************************************************************************
+  Creates a temp seq initialized by the given item.
+********************************************************************************/
+TempSeq_t SimpleStore::createTempSeq(store::Item_t& item)
+{
+  return new SimpleTempSeq(item);
+}
+
+
 #ifndef ZORBA_NO_FULL_TEXT
-void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) {
+void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) 
+{
   theStemmerProvider = p;
 }
 
-void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) {
+
+void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) 
+{
   theTokenizerProvider = p;
 }
 
-internal::StemmerProvider const* SimpleStore::getStemmerProvider() const {
+
+internal::StemmerProvider const* SimpleStore::getStemmerProvider() const 
+{
   return theStemmerProvider ?
     theStemmerProvider : &internal::StemmerProvider::get_default();
 }
 
-TokenizerProvider const* SimpleStore::getTokenizerProvider() const {
+
+TokenizerProvider const* SimpleStore::getTokenizerProvider() const 
+{
   return theTokenizerProvider ?
     theTokenizerProvider : &default_tokenizer_provider();
 }
