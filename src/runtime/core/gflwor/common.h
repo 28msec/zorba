@@ -418,7 +418,7 @@ inline void createTempSeq(
     const bool aLazyEval)
 {
   store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, aPlanState);
-  aTempSeqResult = GENV_STORE.createTempSeq(iterWrapper, false, aLazyEval);
+  aTempSeqResult = GENV_STORE.createTempSeq(iterWrapper, aLazyEval);
 }
   
 
