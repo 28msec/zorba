@@ -681,8 +681,8 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
-  if (a.getTargetPos() > 0)
-    thePrinter.addAttribute("targetPos", a.getTargetPos());
+  if (a.getTargetPos() > Integer(0))
+    thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
 
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
