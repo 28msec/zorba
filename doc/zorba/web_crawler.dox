@@ -10,7 +10,7 @@ web crawler script
 <br/>
 The idea is to crawl through the pages of a website and store a list with external pages and internal pages and check if they work or not.
 This example uses Zorba's http module for accessing the webpages, and the html module for converting the html to xml.
-The complete code can be found in the test directory of the html convertor module.
+The complete code can be found in the test directory of the html convertor module (link_crawler2.xq2).
 
 \code
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
@@ -25,8 +25,8 @@ The distinction between internal and external links is made by comparing the URI
 Change this variable to point to your website, or a subdirectory on your website.
 
 \code
-declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/html/index.html";
-declare variable $uri-host as xs:string := "http://www.zorba-xquery.com/site2/";
+declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/";
+declare variable $uri-host as xs:string := "http://www.zorba-xquery.com";
 
 declare function local:is-internal($x as xs:string) as xs:boolean
 {
@@ -38,7 +38,7 @@ declare function local:is-internal($x as xs:string) as xs:boolean
 The crawling starts from the URI pointed by $top-uri.
 
 Visited links are stored as nodes in two maps, one for internal pages and one for external pages.
-The keys are the URIs, and the values are the strings "broken" or "clean".
+The keys are the URIs, and the values are the strings "broken" or "clean", plus error codes if processing failed.
 The maps are used to avoid parsing the same page twice.
 
 \code
@@ -65,6 +65,16 @@ You can add or remove tags to suit your website needs.<br/>
 The spaces in the url links are trimmed and normalized, and the fragment part is ignored.
 
 \code
+declare variable $local:tidy-options := <options xmlns="http://www.zorba-xquery.com/modules/converters/html-options" >
+                                         <tidyParam name="output-xml" value="yes" />
+                                         <tidyParam name="doctype" value="omit" />
+                                         <tidyParam name="quote-nbsp" value="no" />
+                                         <tidyParam name="char-encoding" value="utf8" />
+                                         <tidyParam name="newline" value="LF" />
+                                         <tidyParam name="tidy-mark" value="no" />
+                                         <tidyParam name="new-inline-tags" value="nav header section article footer xqdoc:custom d c options json-param" />
+                                        </options>;
+
 declare %ann:sequential function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string?
 {
    variable $absuri;
@@ -73,7 +83,9 @@ declare %ann:sequential function local:get-real-link($href as xs:string, $start-
    }
    catch *
    { 
-     map:insert($local:processed-external-links, fn:concat("malformed, referenced in page ", $start-uri), $href);
+     map:insert($local:processed-external-links, (<FROM>{$start-uri}</FROM>, 
+                                                  <MESSAGE>malformed</MESSAGE>,
+                                                  <RESULT>broken</RESULT>), $href);
    }
    $absuri
 };
@@ -88,17 +100,6 @@ declare %ann:sequential function local:get-out-links-parsed($content as node()*,
 return  local:get-real-link($y, $uri))
 };
 
-declare function local:tidy-options()
-{<options xmlns="http://www.zorba-xquery.com/modules/converters/html-options" >
-                                         <tidyParam name="output-xml" value="yes" />
-                                         <tidyParam name="doctype" value="omit" />
-                                         <tidyParam name="quote-nbsp" value="no" />
-                                         <tidyParam name="char-encoding" value="utf8" />
-                                         <tidyParam name="newline" value="LF" />
-                                         <tidyParam name="tidy-mark" value="no" />
-                                         <tidyParam name="new-inline-tags" value="nav header section article footer xqdoc:custom d c options json-param" />
-                                       </options>
-};
 
 declare %ann:sequential function local:map-insert-result($map-name as xs:QName, $url as xs:string, $http-result as item()*) 
 {
@@ -106,12 +107,19 @@ declare %ann:sequential function local:map-insert-result($map-name as xs:QName, 
     then 
       map:insert($map-name, (<STATUS>{fn:string($http-result[1]/@status)}</STATUS>,
                              <MESSAGE>{fn:string($http-result[1]/@message)}</MESSAGE>,
-                             <RESULT>{if(local:alive($http-result)) then "Ok" else "broken"}</RESULT>), $url)
-    else map:insert($map-name, <RESULT>broken</RESULT>, $url)
+                             <RESULT>{if(local:alive($http-result)) 
+                                        then "Ok" 
+                                        else if(local:is-redirect($http-result))
+                                                then "redirect" 
+                                                else "broken"
+                             }</RESULT>), $url);
+    else map:insert($map-name, <RESULT>broken</RESULT>, $url);
+  if(local:is-redirect($http-result)) then
+    map:insert($map-name, <REDIRECT>{fn:string($http-result[1]/httpsch:header[@name = "Location"]/@value)}</REDIRECT>, $url);
+  else {}
 };
 
 declare  %ann:sequential function local:process-internal-link($x as xs:string, $baseUri as xs:string, $n as xs:integer){
-      (: if($n=3) then exit returning (); else {} :)
       if(not(empty(map:get($local:processed-internal-links, $x))))
             then exit returning false();
               else {}
@@ -119,21 +127,30 @@ declare  %ann:sequential function local:process-internal-link($x as xs:string, $
       map:insert($local:processed-internal-links, <FROM>{$baseUri}</FROM>, $x);
        variable $http-call:=();
        try{
-          $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+          $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}" follow-redirect="false"/>, (), ());
        }
        catch * { }
+       if(local:is-redirect($http-call)) then
+       {
+         local:map-insert-result($local:processed-internal-links, $x, $http-call);
+         try{
+            $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+         }
+         catch * { }
+       }
+       else {}
        if( not(local:alive($http-call)))
-                then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
+               then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
                else {}
        
        if(not (local:get-media-type($http-call[1]) = "text/html"))
-                then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
-                else {}
+               then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
+               else {}
        variable $string-content := string($http-call[2]);
        variable $content:=();
 
        try{
-             $content:=html:parse($string-content,local:tidy-options() );
+             $content:=html:parse($string-content,$local:tidy-options );
              local:map-insert-result($local:processed-internal-links, $x, $http-call); 
         }
         catch *
@@ -157,7 +174,7 @@ declare  %ann:sequential function local:process-internal-link($x as xs:string, $
 \endcode
 
 For each parsed link, we store the FROM, STATUS, MESSAGE and RESULT. The RESULT is "Ok" if everything went fine,
-of "broken" if the page couldn't be retrieved or passed, and in this case MESSAGE contains the error message.
+or "broken" if the page couldn't be retrieved or passed, and in this case MESSAGE contains the error message.
 The FROM element contains the parent url for that link.<br/>
 <br/>
 Some html pages have errors, and tidy library is very strict with checking errors. 
@@ -187,14 +204,23 @@ declare  %ann:sequential function local:process-external-link($x as xs:string, $
   map:insert($local:processed-external-links, <FROM>{$baseUri}</FROM>, $x);
   variable $http-call:=();
   try{
-        $http-call:=http:send-request(<httpsch:request method="HEAD" href="{$x}"/>, (), ());
+        $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
         if((count($http-call) ge 1) and 
             fn:not($http-call[1]/@status eq 200)) then
-            $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+        {
+           if(local:is-redirect($http-call)) then
+           {
+             local:map-insert-result($local:processed-external-links, $x, $http-call);
+           }
+           else {} 
+           $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+           local:map-insert-result($local:processed-external-links, $x, $http-call); 
+        }
         else
-          ();
+        {}
   }
-  catch * { }
+  catch * 
+  { $http-call:=();}
   local:map-insert-result($local:processed-external-links, $x, $http-call); 
 };
 
