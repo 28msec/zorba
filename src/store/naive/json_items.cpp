@@ -96,7 +96,7 @@ SimpleJSONArray::accept(JSONVisitor* v) const
 
   for (PairsConstIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
   {
-    (*lIter)->accept(v);
+    static_cast<JSONItem*>(lIter->getp())->accept(v);
   }
 
   v->end(this);
@@ -107,25 +107,32 @@ SimpleJSONArray::accept(JSONVisitor* v) const
 
 *******************************************************************************/
 void
-SimpleJSONArray::push_back(const JSONArrayPair_t& aPair)
+SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
-  store::Item_t lPos;
-  GET_FACTORY().createInteger(lPos, theContent.size() + 1);
-  aPair->setPosition(lPos);
-
-  theContent.push_back(aPair);
+  theContent.push_back(aValue);
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArrayPair::accept(JSONVisitor* v) const
+const store::Item*
+SimpleJSONArray::operator[](xs_integer& aPos) const
 {
-  xs_integer lSize = theContainer->size();
-  v->begin(this, lSize == getPosition()->getIntegerValue());
-  v->end(this, lSize == getPosition()->getIntegerValue());
+  uint64_t lIndex;
+  try {
+    lIndex = to_xs_unsignedLong(aPos);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
+  return theContent[lIndex].getp();
+
 }
 
 } // namespace json

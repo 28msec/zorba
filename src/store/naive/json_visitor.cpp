@@ -60,6 +60,16 @@ JSONPrinterVisitor::begin( const JSONArray* a )
   os << "[";
   eol();
   inc();
+  indent();
+  xs_integer lSize = a->size();
+  for (xs_integer i = 0; i < lSize; ++i)
+  {
+    visit(a->operator[](i));
+    if (i < (lSize - xs_integer(1)))
+    {
+      os << ", ";
+    }
+  }
 }
 
 
@@ -99,31 +109,6 @@ JSONPrinterVisitor::end( const JSONObjectPair* p, bool aLast )
     os << ", ";
   }
   eol();
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void
-JSONPrinterVisitor::begin( const JSONArrayPair* p, bool /* aLast */ )
-{
-  indent();
-  visit(p->getValue());
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void
-JSONPrinterVisitor::end( const JSONArrayPair* p, bool aLast )
-{
-  if (!aLast)
-  {
-    os << ", ";
-    eol();
-  }
 }
 
 

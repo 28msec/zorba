@@ -824,11 +824,6 @@ public:
         store::Item_t& result,
         store::Item_t& name,
         store::Item_t& value) = 0;
-
-  virtual bool createJSONArrayPair(
-        store::Item_t& result,
-        store::Item_t& position,
-        store::Item_t& value) = 0;
 #endif
 };
 
