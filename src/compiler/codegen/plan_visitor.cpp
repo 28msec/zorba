@@ -58,10 +58,12 @@
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/sequences/sequences.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
+#include "runtime/json/json_constructors.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -2997,25 +2999,26 @@ void end_visit(text_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t content = pop_itstack ();
+  PlanIter_t content = pop_itstack();
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
+
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
     isRoot = true;
   }
 
-  switch (v.get_type ())
+  switch (v.get_type())
   {
   case text_expr::text_constructor:
-    push_itstack (new TextIterator(sctx, qloc, content, isRoot));
+    push_itstack(new TextIterator(sctx, qloc, content, isRoot));
     break;
 
   case text_expr::comment_constructor:
-    push_itstack (new CommentIterator (sctx, qloc, content, isRoot));
+    push_itstack(new CommentIterator(sctx, qloc, content, isRoot));
     break;
 
   default:
@@ -3071,6 +3074,36 @@ bool begin_visit(json_pair_expr& v)
 void end_visit(json_pair_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  PlanIter_t name = pop_itstack();
+  PlanIter_t value = pop_itstack();
+
+  bool copyInput;
+
+  expr_kind_t inputExprKind = v.get_value_expr()->get_expr_kind();
+
+  switch (inputExprKind)
+  {
+  case doc_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    copyInput = false;
+  }
+  case json_pair_expr_kind:
+  {
+  }
+  default:
+  {
+    copyInput = true;
+  }
+  }
+
+  push_itstack(new JSONPairIterator(sctx, qloc, name, value, copyInput));
 }
 
 
@@ -3084,6 +3117,28 @@ bool begin_visit(json_object_expr& v)
 void end_visit(json_object_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  std::vector<PlanIter_t> inputs;
+
+  expr* inputExpr = v.get_expr();
+
+  if (inputExpr != NULL)
+  {
+    PlanIter_t inputIter = pop_itstack();
+
+    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
+    {
+      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
+    }
+    else
+    {
+      inputs.push_back(inputIter);
+    }
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONObjectIterator(sctx, qloc, inputs, copyInput));
 }
 
 

@@ -58,8 +58,10 @@ protected:
     PUL        = 0x41, 
     FUNCTION   = 0x81,
     LIST       = 0x101,
-    ERROR_     = 0x201,
-    JSONIQ     = 0x402
+#ifdef ZORBA_WITH_JSON
+    JSONIQ     = 0x201,
+#endif
+    ERROR_     = 0x401
   };
 
   typedef union 
@@ -146,6 +148,31 @@ public:
    */
   bool
   isFunction() const;
+
+  /**
+   * @return a string representation of the item's kind
+   */
+  zstring printKind() const;
+
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON pair item
+   */
+  virtual bool 
+  isJSONPair() const;
+
+  /**
+   *  @return  "true" if the item is a JSON object item
+   */
+  virtual bool 
+  isJSONObject() const;
+
+  /**
+   *  @return  "true" if the item is a JSON array item
+   */
+  virtual bool 
+  isJSONArray() const;
+#endif
 
   /**
    *  @return  (dynamic) XQuery type of the item
@@ -411,7 +438,8 @@ public:
 
   /**
    * Helper method for numeric atomic items
-   * @return true, if containing number is not-a-number (possible for floating-point numbers)
+   * @return true, if containing number is not-a-number (possible for
+   *         floating-point numbers)
    */
   virtual bool
   isNaN() const;
@@ -595,31 +623,6 @@ public:
   virtual const Item_t
   getFunctionName() const;
 
-#if 0
-  /**
-   * Make a copy of the xml tree rooted at this node and place the copied
-   * tree at a given position under a given node.
-   *
-   * @param parent   The node P under which the copied tree is to be placed.
-   *                 P may be NULL, in which case the copied tree becomes a
-   *                 new standalone xml tree.
-   * @param pos      The position under P where the copied tree is to be placed.
-   *                 If "this" is an attribute node, pos is a position among the
-   *                 attributes of P; otherwise it is a position among the 
-   *                 children of P. If is greater or equal to the current number
-   *                 of attributes/children in P, then the copied tree is appended
-   *                 to P's attributes/children.
-   * @param copymode Encapsulates the construction-mode and copy-namespace-mode
-   *                 components of the query's static context. 
-   * @return         A pointer to the root node of the copied tree, or to this
-   *                 node if no copy was actually done. 
-   */
-  virtual Item* copy(
-        Item* parent,
-        vsize_t pos,
-        const CopyMode& copymode) const;
-#endif
-
   /**
    * Make a copy of the xml tree rooted at this node and place the copied
    * tree as the last child of a given node.
@@ -632,9 +635,8 @@ public:
    * @return         A pointer to the root node of the copied tree, or to this
    *                 node if no copy was actually done. 
    */
-  virtual Item* copy(
-        Item* parent,
-        const CopyMode& copymode) const;
+  virtual Item* 
+  copy(Item* parent, const CopyMode& copymode) const;
 
   /**
    * An optimization method used to indicate to the store that the construction
@@ -800,7 +802,8 @@ public:
   /**
    * @return the kind of the json item
    */
-  virtual store::StoreConsts::JSONItemKind getJSONItemKind() const;
+  virtual store::StoreConsts::JSONItemKind 
+  getJSONItemKind() const;
 
   /**
    * @return the pairs of a json object or json array

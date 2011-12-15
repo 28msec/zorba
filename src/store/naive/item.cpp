@@ -230,6 +230,65 @@ bool Item::isFunction() const
 }
 
 
+#ifdef ZORBA_WITH_JSON
+
+bool Item::isJSONItem() const
+{
+  return (theUnion.itemKind == JSONIQ); 
+}
+
+
+bool Item::isJSONPair() const
+{
+  return false;
+}
+
+
+bool Item::isJSONObject() const
+{
+  return false;
+}
+
+
+bool Item::isJSONArray() const
+{
+  return false;
+}
+
+#endif
+
+
+zstring Item::printKind() const
+{
+  if (isNode())
+    return "node";
+
+  switch (theUnion.itemKind)
+  {
+  case ATOMIC:
+    return "atomic";
+
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ:
+    return "json";
+#endif
+
+  case FUNCTION:
+    return "function";
+
+  case PUL:
+    return "pul";
+
+  case ERROR_:
+    return "error";
+
+  default:
+    return "unknown";
+  }
+}
+
+
+
 Item* Item::getBaseItem() const
 {
   return NULL;
@@ -1266,11 +1325,6 @@ Item* Item::copy(
 
 
 #ifdef ZORBA_WITH_JSON
-bool Item::isJSONItem() const
-{
-  return ((theUnion.itemKind & JSONIQ) == JSONIQ); 
-}
-
 
 store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {

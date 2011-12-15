@@ -2295,6 +2295,16 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+    <!--////////// JSONIQ ///////////////////////////////////////////-->
+
+    <diagnostic code="JSDY0001">
+      <value>"$1" item cannot appear as input to JSON object constructor</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0002">
+      <value>JSON object cannot appear as input to an "$1" constructor</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->

@@ -742,6 +742,10 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0009;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0010;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0001;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0002;
+
 } // namespace zerr
 
 namespace zwarn {

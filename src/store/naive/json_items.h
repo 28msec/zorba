@@ -105,6 +105,8 @@ class JSONObject : public JSONItem
 public:
   virtual ~JSONObject() {}
 
+  bool isJSONObject() const { return true; }
+
   virtual void
   add(const JSONObjectPair_t& aPair) = 0;
 
@@ -204,6 +206,8 @@ class JSONArray : public JSONItem
 public:
   virtual ~JSONArray() {}
 
+  bool isJSONArray() const { return true; }
+
 #if 0
   // accessors
   virtual store::Iterator_t
@@ -287,6 +291,8 @@ class JSONObjectPair : public JSONItem
 public:
   virtual ~JSONObjectPair() {}
 
+  bool isJSONObject() const { return true; }
+
   virtual void
   setName(const store::Item_t& aName) = 0;
 
@@ -323,16 +329,22 @@ protected:
 public:
   SimpleJSONObjectPair() {}
 
-  SimpleJSONObjectPair(
-      const store::Item_t& aName,
-      const store::Item_t& aValue
-    )
-    : theName(aName),
-      theValue(aValue),
-      theContainer(0) {}
+  SimpleJSONObjectPair(const store::Item_t& aName, const store::Item_t& aValue)
+    :
+    theName(aName),
+    theValue(aValue),
+    theContainer(0)
+  {
+  }
 
   virtual ~SimpleJSONObjectPair() {}
 
+  zstring getStringValue() const { return theValue->getStringValue(); }
+
+  void getStringValue2(zstring& val) const { theValue->getStringValue2(val); }
+
+  void appendStringValue(zstring& buf) const { theValue->appendStringValue(buf); }
+  
   void
   setName(const store::Item_t& aName) { theName = aName; }
 

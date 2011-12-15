@@ -31,7 +31,7 @@ namespace zorba
 
 
 /*******************************************************************************
- JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
+  JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
 ********************************************************************************/
 class json_pair_expr : public expr 
 {

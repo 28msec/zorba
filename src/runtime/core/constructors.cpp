@@ -18,6 +18,7 @@
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -420,7 +421,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         {
           // Remove empty text nodes, as per 3.8.3.1 Computed Element Constructors
           // http://www.w3.org/TR/xquery-30/#id-computedElements
-          if (child->getNodeKind() == store::StoreConsts::textNode && child->getStringValue().empty())
+          if (child->getNodeKind() == store::StoreConsts::textNode &&
+              child->getStringValue().empty())
             continue;
           else
             break;
@@ -434,6 +436,18 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (!child->isNode())
         {
+#ifdef ZORBA_WITH_JSON
+          if (child->isJSONItem()) 
+          {
+            if (child->getJSONItemKind() == store::StoreConsts::jsonObject)
+            {
+              RAISE_ERROR(zerr::JSDY0002, loc, ERROR_PARAMS("element"));
+            }
+            else if (child->getJSONItemKind() == store::StoreConsts::jsonArray)
+            {
+            }
+          }
+#endif
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
         }
