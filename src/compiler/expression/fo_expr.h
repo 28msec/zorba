@@ -83,7 +83,11 @@ public:
 
   expr* get_arg(ulong i) const { return theArgs[i].getp(); }
 
+  const std::vector<expr_t>& get_args() const {return theArgs;}
+
   void set_arg(ulong i, expr* e) { theArgs[i] = e; }
+
+  void add_arg(expr_t e);
 
   void compute_scripting_kind();
 

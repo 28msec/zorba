@@ -866,58 +866,71 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
-  if (flwor == NULL || flwor->is_general())
+  if (flwor == NULL)
     return NULL;
 
   bool modified = false;
 
-  if_expr* ifReturnExpr = NULL;
-  expr* elseExpr = NULL;
-  expr_t condExpr;
-  expr_t thenExpr;
-
-  if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
-  {
-    ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
-    condExpr = ifReturnExpr->get_cond_expr();
-    thenExpr = ifReturnExpr->get_then_expr();
-    elseExpr = ifReturnExpr->get_else_expr();
-  }
-
   expr* whereExpr = NULL;
-
   if(!flwor->is_general())
     whereExpr = flwor->get_where();
 
-  expr_t nWhereExpr = condExpr;
-  if(whereExpr != NULL)
+  if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
   {
-    nWhereExpr = new fo_expr(whereExpr->get_sctx(),
-                          whereExpr->get_loc(),
-                          GET_BUILTIN_FUNCTION(OP_AND_N),
-                          condExpr,
-                          whereExpr);
-  }
+    if_expr* ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
 
+    expr_t condExpr = ifReturnExpr->get_cond_expr();
+    expr_t thenExpr = ifReturnExpr->get_then_expr();
+    expr* elseExpr = ifReturnExpr->get_else_expr();
 
-  // "for $x in ... return if (ce) then te else ()" -->
-  // "for $x in ... where ce return te"
-  if (ifReturnExpr != NULL &&
-      !condExpr->is_sequential() &&
-      (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
-      !elseExpr->isNonDiscardable() &&
-      TypeOps::is_empty(tm, *elseExpr->get_return_type()))
-  {
-    if(flwor->is_general())
+    expr_t newWhereExpr = condExpr;
+
+    if(!flwor->is_general())
     {
+
+      if(whereExpr->get_expr_kind() == fo_expr_kind &&
+          static_cast<fo_expr*>(whereExpr)->get_func() ==
+              GET_BUILTIN_FUNCTION(OP_AND_N))
+      {
+
+        newWhereExpr = whereExpr;
+        static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(condExpr);
+      }
+      else
+      {
+
+        newWhereExpr = new fo_expr(whereExpr->get_sctx(),
+                                whereExpr->get_loc(),
+                                GET_BUILTIN_FUNCTION(OP_AND_N),
+                                condExpr,
+                                whereExpr);
+
+      }
 
     }
-    else
+
+
+    // "for $x in ... return if (ce) then te else ()" -->
+    // "for $x in ... where ce return te"
+    if (!condExpr->is_sequential() &&
+        (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
+        !elseExpr->isNonDiscardable() &&
+        TypeOps::is_empty(tm, *elseExpr->get_return_type()))
     {
-      flwor->set_where(nWhereExpr);
+
+      if(flwor->is_general())
+      {
+        flwor->add_where(condExpr);
+      }
+      else
+      {
+        flwor->set_where(newWhereExpr);
+      }
+
       flwor->set_return_expr(thenExpr);
+      modified = true;
     }
-    modified = true;
+
   }
 
   expr_t posExpr;
@@ -929,7 +942,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // referenced more than once?
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
-  if (whereExpr != NULL &&
+  if (!flwor->is_general() &&
+      whereExpr != NULL &&
       ! flwor->has_sequential_clauses() &&
       is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
       expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)

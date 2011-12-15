@@ -38,7 +38,7 @@ void fo_expr::accept(expr_visitor& v)
 {
   if (v.begin_visit(*this))
   {
-    accept_children(v); 
+    accept_children(v);
   }
 
   v.end_visit(*this);
@@ -147,6 +147,11 @@ const store::Item* fo_expr::get_fname() const
   return theFunction->getName();
 }
 
+void fo_expr::add_arg(expr_t e)
+{
+  theArgs.push_back(e);
+  compute_scripting_kind();
+}
 
 void fo_expr::compute_scripting_kind()
 {
@@ -179,7 +184,7 @@ void fo_expr::compute_scripting_kind()
                                  ERROR_PARAMS(ZED(XUST0001_CONCAT)),
                                  ERROR_LOC(theArgs[i]->get_loc()));
         }
-        
+
         if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
         {
           throw XQUERY_EXCEPTION(err::XUST0001,
@@ -248,7 +253,7 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == 
+  if (get_func()->getKind() ==
       FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
