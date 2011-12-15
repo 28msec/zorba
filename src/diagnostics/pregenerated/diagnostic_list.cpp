@@ -1091,6 +1091,12 @@ ZorbaErrorCode XSST0009( "XSST0009" );
 ZorbaErrorCode XSST0010( "XSST0010" );
 
 
+ZorbaErrorCode JSDY0001( "JSDY0001" );
+
+
+ZorbaErrorCode JSDY0002( "JSDY0002" );
+
+
 } // namespace zerr
 
 namespace zwarn {
