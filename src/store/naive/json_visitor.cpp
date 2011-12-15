@@ -60,6 +60,7 @@ JSONPrinterVisitor::begin( const JSONArray* a )
   os << "[";
   eol();
   inc();
+  indent();
   xs_integer lSize = a->size();
   for (xs_integer i = 0; i < lSize; ++i)
   {

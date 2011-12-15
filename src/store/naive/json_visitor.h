@@ -48,9 +48,6 @@ public:
   virtual void begin( const JSONObjectPair*, bool aLast ) = 0;
   virtual void end( const JSONObjectPair*, bool aLast ) = 0;
 
-  virtual void begin( const JSONArrayPair*, bool aLast ) = 0;
-  virtual void end( const JSONArrayPair*, bool aLast ) = 0;
-
   virtual void visit( const zorba::store::Item* ) = 0;
 };
 
@@ -90,9 +87,6 @@ public:
 
   virtual void begin( const JSONObjectPair*, bool aLast );
   virtual void end( const JSONObjectPair*, bool aLast );
-
-  virtual void begin( const JSONArrayPair*, bool aLast );
-  virtual void end( const JSONArrayPair*, bool aLast );
 
   virtual void visit( const zorba::store::Item* );
 protected:
