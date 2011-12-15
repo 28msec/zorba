@@ -2441,10 +2441,8 @@ xs_long IntegerItem::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
   }
 }
 
