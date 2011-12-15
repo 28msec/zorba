@@ -221,10 +221,14 @@ public:
 #endif
 
   virtual void
-  push_back(const JSONArrayPair_t& aPair) = 0;
+  push_back(const store::Item_t& aValue) = 0;
 
   virtual xs_integer
   size() const = 0;
+
+  virtual const store::Item*
+  operator[](xs_integer&) const = 0;
+
 
 };
 
@@ -236,7 +240,7 @@ public:
 class SimpleJSONArray : public JSONArray
 {
 protected:
-  typedef std::vector<JSONArrayPair_t> Pairs;
+  typedef std::vector<store::Item_t> Pairs;
   typedef Pairs::const_iterator PairsConstIter;
   typedef Pairs::iterator PairsIter;
 
@@ -265,11 +269,13 @@ public:
   accept(JSONVisitor*) const;
 
   virtual void
-  push_back(const JSONArrayPair_t& aPair);
+  push_back(const store::Item_t& aValue);
 
   virtual xs_integer
   size() const { return theContent.size(); }
 
+  virtual const store::Item*
+  operator[](xs_integer&) const;
 };
 
 
@@ -347,86 +353,6 @@ public:
 
   virtual void
   accept(JSONVisitor*) const {}
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class JSONArrayPair : public JSONItem
-{
-public:
-  virtual ~JSONArrayPair() {}
-
-  virtual void
-  setPosition(const store::Item_t& aPos) = 0;
-
-  virtual void
-  setValue(const store::Item_t& aValue) = 0;
-
-  virtual void
-  setContainer(JSONArray* aArray) = 0;
-
-  virtual store::Item*
-  getPosition() const = 0;
-
-  virtual store::Item*
-  getValue() const = 0;
-
-  virtual store::Item*
-  getContainer() const = 0;
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class SimpleJSONArrayPair : public JSONArrayPair
-{
-protected:
-  store::Item_t thePosition;
-  store::Item_t theValue;
-  JSONArray*    theContainer;
-
-public:
-  SimpleJSONArrayPair(
-      const store::Item_t& aValue,
-      JSONArray*           aContainer
-    )
-    : theValue(aValue),
-      theContainer(aContainer) {}
-
-  SimpleJSONArrayPair(
-      const store::Item_t& aPosition,
-      const store::Item_t& aValue
-    )
-    : thePosition(aPosition),
-      theValue(aValue),
-      theContainer(0) {}
-
-
-  virtual ~SimpleJSONArrayPair() {}
-
-  void
-  setPosition(const store::Item_t& aPos) { thePosition = aPos; }
-
-  void
-  setValue(const store::Item_t& aValue) { theValue = aValue; }
-
-  void
-  setContainer(JSONArray* aArray) { theContainer = aArray; }
-
-  store::Item*
-  getPosition() const { return thePosition.getp(); }
-
-  store::Item*
-  getValue() const { return theValue.getp(); }
-
-  store::Item*
-  getContainer() const { return theContainer; }
-
-  virtual void
-  accept(JSONVisitor*) const;
 };
 
 } // namespace json

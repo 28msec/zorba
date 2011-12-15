@@ -191,15 +191,7 @@ JSONLoader::addValue(
   }
 
   JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast.getp());
-  assert(lArray);
-
-  JSONArrayPair_t lArrayPair(
-      new SimpleJSONArrayPair(
-        aValue,
-        lArray
-      )
-    );
-  lArray->push_back(lArrayPair);
+  lArray->push_back(aValue);
   
 }
 

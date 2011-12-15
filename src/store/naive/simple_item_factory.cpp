@@ -2055,18 +2055,6 @@ bool BasicItemFactory::createJSONObjectPair(
   return true;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-bool BasicItemFactory::createJSONArrayPair(
-        store::Item_t& result,
-        store::Item_t& position,
-        store::Item_t& value)
-{
-  result = new json::SimpleJSONArrayPair(position, value);
-  return true;
-}
 #endif
 
 } // namespace simplestore
