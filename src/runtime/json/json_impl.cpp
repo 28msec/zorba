@@ -17,6 +17,8 @@
 
 #include <sstream>
 
+#include <zorba/diagnostic_list.h>
+
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
@@ -131,7 +133,6 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
   istringstream iss;
-  zstring json_zstring;
   string json_string;
 
   PlanIteratorState *state;
@@ -142,137 +143,197 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     if ( cur_item->isStreamable() ) {
       is = &cur_item->getStream();
     } else {
+      zstring json_zstring;
       cur_item->getStringValue2( json_zstring );
+      // This string copying is inefficient, but I can't see another way.
       json_string = json_zstring.str();
       iss.str( json_string );
       is = &iss;
     }
 
-    { // local scope
-    state_stack_type state_stack;
+    try {
+      state_stack_type state_stack;
 
-    store::Item_t junk_item, value_item;
-    store::Item_t att_name, element_name, type_name;
+      store::Item_t junk_item, value_item;
+      store::Item_t att_name, element_name, type_name;
 
-    zstring base_uri;
-    item_stack_type item_stack;
-    bool needs_type_attribute = false;
-    bool next_string_is_key = false;
-    store::NsBindings ns_bindings;
-    zstring value;
+      zstring base_uri;
+      item_stack_type item_stack;
+      bool needs_type_attribute = false;
+      bool next_string_is_key = false;
+      store::NsBindings ns_bindings;
+      zstring value;
 
-    json::parser p( *is );
-    json::token t;
-    while ( p.next( &t ) ) {
-      if ( !result ) {
-        GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "json" );
-        type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-        GENV_ITEMFACTORY->createElementNode(
-          cur_item, nullptr,
-          element_name, type_name, false, false, ns_bindings, base_uri
-        );
-        result = cur_item;
-        needs_type_attribute = true;
-      }
+      json::parser p( *is );
+      p.set_loc(
+        loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
+      );
+      json::token t;
 
-      switch ( t.get_type() ) {
-
-        case '[':
-          PUSH_ITEM( cur_item );
-          ADD_TYPE_ATTRIBUTE( "array" );
-          ADD_ITEM_ELEMENT( "array" );
-          PUSH_STATE( in_array );
-          break;
-
-        case '{':
-          PUSH_ITEM( cur_item );
-          ADD_TYPE_ATTRIBUTE( "object" );
-          ADD_ITEM_ELEMENT( "object" );
-          PUSH_STATE( in_object );
-          next_string_is_key = true;
-          break;
-
-        case ']':
-        case '}':
-          POP_ITEM();
-          POP_STATE();
-          break;
-
-        case ',':
-          next_string_is_key = (state_stack.top() == in_object);
-          break;
-
-        case json::token::number:
-          ADD_TYPE_ATTRIBUTE( "number" );
-          ADD_ITEM_ELEMENT( "number" );
-          value = t.get_value();
-          GENV_ITEMFACTORY->createTextNode(
-            junk_item, cur_item, value
+      while ( p.next( &t ) ) {
+        if ( !result ) {
+          GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "json" );
+          type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+          GENV_ITEMFACTORY->createElementNode(
+            cur_item, nullptr,
+            element_name, type_name, false, false, ns_bindings, base_uri
           );
-          break;
+          result = cur_item;
+          needs_type_attribute = true;
+        }
 
-        case json::token::string:
-          ADD_TYPE_ATTRIBUTE( "string" );
-          value = t.get_value();
-          ascii::replace_all( value, "\"", 1, "\\\"", 2 );
+        switch ( t.get_type() ) {
 
-          if ( next_string_is_key ) {
-            // <pair name="..." ...>
-            GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "pair" );
-            type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-            GENV_ITEMFACTORY->createElementNode(
-              cur_item, item_stack.top(),
-              element_name, type_name, false, false, ns_bindings, base_uri
-            );
+          case '[':
+            PUSH_ITEM( cur_item );
+            ADD_TYPE_ATTRIBUTE( "array" );
+            ADD_ITEM_ELEMENT( "array" );
+            PUSH_STATE( in_array );
+            break;
 
-            GENV_ITEMFACTORY->createQName( att_name, "", "", "name" );
-            type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-            GENV_ITEMFACTORY->createString( value_item, value );
-            GENV_ITEMFACTORY->createAttributeNode(
-              junk_item, cur_item, att_name, type_name, value_item
-            );
-            needs_type_attribute = true;
-            next_string_is_key = false;
-          } else {
-            ADD_ITEM_ELEMENT( "string" );
+          case '{':
+            PUSH_ITEM( cur_item );
+            ADD_TYPE_ATTRIBUTE( "object" );
+            ADD_ITEM_ELEMENT( "object" );
+            PUSH_STATE( in_object );
+            next_string_is_key = true;
+            break;
+
+          case ']':
+          case '}':
+            POP_ITEM();
+            POP_STATE();
+            break;
+
+          case ',':
+            next_string_is_key = (state_stack.top() == in_object);
+            break;
+
+          case json::token::number:
+            ADD_TYPE_ATTRIBUTE( "number" );
+            ADD_ITEM_ELEMENT( "number" );
+            value = t.get_value();
             GENV_ITEMFACTORY->createTextNode(
               junk_item, cur_item, value
             );
-          }
-          break;
+            break;
 
-        case 'F':
-          ADD_TYPE_ATTRIBUTE( "boolean" );
-          ADD_ITEM_ELEMENT( "boolean" );
-          value = "false";
-          GENV_ITEMFACTORY->createTextNode(
-            junk_item, cur_item, value
-          );
-          break;
+          case json::token::string:
+            ADD_TYPE_ATTRIBUTE( "string" );
+            value = t.get_value();
+  #if 0
+            ascii::replace_all( value, "\"", 1, "\\\"", 2 );
+            ascii::replace_all( value, "\\", 1, "\\\\", 2 );
+            ascii::replace_all( value, "\b", 1, "\\b", 2 );
+            ascii::replace_all( value, "\f", 1, "\\f", 2 );
+            ascii::replace_all( value, "\n", 1, "\\n", 2 );
+            ascii::replace_all( value, "\r", 1, "\\r", 2 );
+            ascii::replace_all( value, "\t", 1, "\\t", 2 );
+  #endif
 
-        case 'T':
-          ADD_TYPE_ATTRIBUTE( "boolean" );
-          ADD_ITEM_ELEMENT( "boolean" );
-          value = "true";
-          GENV_ITEMFACTORY->createTextNode(
-            junk_item, cur_item, value
-          );
-          break;
+            if ( next_string_is_key ) {
+              // <pair name="..." ...>
+              GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "pair" );
+              type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+              GENV_ITEMFACTORY->createElementNode(
+                cur_item, item_stack.top(),
+                element_name, type_name, false, false, ns_bindings, base_uri
+              );
 
-        case json::token::json_null:
-          ADD_TYPE_ATTRIBUTE( "null" );
-          ADD_ITEM_ELEMENT( "null" );
-          break;
+              GENV_ITEMFACTORY->createQName( att_name, "", "", "name" );
+              type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+              GENV_ITEMFACTORY->createString( value_item, value );
+              GENV_ITEMFACTORY->createAttributeNode(
+                junk_item, cur_item, att_name, type_name, value_item
+              );
+              needs_type_attribute = true;
+              next_string_is_key = false;
+            } else {
+              ADD_ITEM_ELEMENT( "string" );
+              GENV_ITEMFACTORY->createTextNode(
+                junk_item, cur_item, value
+              );
+            }
+            break;
 
-        case ':':
-        case json::token::none:
-          break;
+          case 'F':
+            ADD_TYPE_ATTRIBUTE( "boolean" );
+            ADD_ITEM_ELEMENT( "boolean" );
+            value = "false";
+            GENV_ITEMFACTORY->createTextNode(
+              junk_item, cur_item, value
+            );
+            break;
 
-        default:
-          assert( false );
-      } // switch
-    } // while
-    } // local scope
+          case 'T':
+            ADD_TYPE_ATTRIBUTE( "boolean" );
+            ADD_ITEM_ELEMENT( "boolean" );
+            value = "true";
+            GENV_ITEMFACTORY->createTextNode(
+              junk_item, cur_item, value
+            );
+            break;
+
+          case json::token::json_null:
+            ADD_TYPE_ATTRIBUTE( "null" );
+            ADD_ITEM_ELEMENT( "null" );
+            break;
+
+          case ':':
+          case json::token::none:
+            break;
+
+          default:
+            assert( false );
+        } // switch
+      } // while
+    }
+    catch ( json::illegal_character const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0001_ILLEGAL_CHARACTER,
+        ERROR_PARAMS( e.get_char() ),
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::illegal_codepoint const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0002_ILLEGAL_CODEPOINT,
+        ERROR_PARAMS( e.get_codepoint() ),
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::illegal_escape const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0003_ILLEGAL_ESCAPE,
+        ERROR_PARAMS( e.get_escape() ),
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::illegal_literal const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0004_ILLEGAL_LITERAL,
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::illegal_number const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0005_ILLEGAL_NUMBER,
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::unexpected_token const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0006_UNEXPECTED_TOKEN,
+        ERROR_PARAMS( e.get_token() ),
+        ERROR_LOC( e.get_loc() )
+      );
+    }
+    catch ( json::unterminated_string const &e ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZJPE0007_UNTERMINATED_STRING,
+        ERROR_LOC( e.get_loc() )
+      );
+    }
 
 #if DEBUG_JSON
     cout << "----- RESULT -----\n" << result->show() << endl;
@@ -285,13 +346,57 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static void find_attribute( store::Item_t const &element,
+                            char const *wanted_att_name,
+                            zstring *att_value ) {
+  store::Iterator_t i( element->getAttributes() );
+  bool found = false;
+  i->open();
+  store::Item_t att_item;
+  while ( i->next( att_item ) ) {
+    store::Item const *const att_name = att_item->getNodeName();
+    if ( att_name->getStringValue() == wanted_att_name ) {
+      att_item->getStringValue2( *att_value );
+      found = true;
+      break;
+    }
+  }
+  i->close();
+  if ( !found )
+    throw 0;
+}
+
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
+  store::Item_t cur_item;
+  store::Item *name_item;
+  zstring type_att_value;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
-  STACK_PUSH( false, state );
+  if ( consumeNext( cur_item, theChildren[0], planState ) ) {
+    switch ( cur_item->getNodeKind() ) {
+      case store::StoreConsts::documentNode:
+      case store::StoreConsts::elementNode:
+        break;
+      default:
+        throw 0;
+    }
 
+    name_item = cur_item->getNodeName();
+    // test name_item
+
+    find_attribute( cur_item, "type", &type_att_value );
+    if ( type_att_value == "array" )
+      /* TODO */;
+    else if ( type_att_value == "object" )
+      /* TODO */;
+    else
+      throw 0;
+
+    STACK_PUSH( false, state );
+  }
   STACK_END( state );
 }
 

@@ -332,6 +332,13 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
 #endif
+  { "ZJPE0001", "'$1': illegal JSON character" },
+  { "ZJPE0002", "\"$1\": illegal Unicode code-point" },
+  { "ZJPE0003", "'\\$1': illegal JSON character escape" },
+  { "ZJPE0004", "illegal JSON literal" },
+  { "ZJPE0005", "illegal JSON number" },
+  { "ZJPE0006", "\"$1\": unexpected JSON token" },
+  { "ZJPE0007", "unterminated JSON string" },
   { "ZOSE0001", "\"$1\": file not found" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
@@ -494,6 +501,8 @@ extern entry const dict_en[] = {
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
+  { "~JSON parser", "JSON parser" },
+  { "~JSON serialization", "JSON serialization" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },

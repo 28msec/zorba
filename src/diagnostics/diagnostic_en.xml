@@ -2307,6 +2307,30 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+   <!--////////// JSON Parse Errors ////////////////////////////////////////-->
+
+    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
+      <value>'$1': illegal JSON character</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+      <value>"$1": illegal Unicode code-point</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+      <value>'\\$1': illegal JSON character escape</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+      <value>illegal JSON literal</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+      <value>illegal JSON number</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+      <value>"$1": unexpected JSON token</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+      <value>unterminated JSON string</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3262,6 +3286,14 @@
 
     <entry key="Zorba warning">
       <value>Zorba warning</value>
+    </entry>
+
+    <entry key="JSON parser">
+      <value>JSON parser</value>
+    </entry>
+
+    <entry key="JSON serialization">
+      <value>JSON serialization</value>
     </entry>
 
     <entry key="dynamic error">

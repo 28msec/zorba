@@ -31,7 +31,7 @@
 
 <!--
 /*******************************************************************************
-********************************************************************************/
+*******************************************************************************/
 -->
 <zorba:iterator name="JSONSerializeInternal" arity="nary">
 
@@ -39,20 +39,12 @@
     Function to serialize json/jsonml xdm to string
   </zorba:description>
 
-  <!--
-  <zorba:state>
-    <zorba:member type="xs_integer" name="theCurrCounter" brief=""/>
-  </zorba:state>
-  -->
-
   <zorba:function isDeterministic="true">
-
     <zorba:signature localname="serialize-internal" prefix="fn-zorba-json">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
-
   </zorba:function>
 
 </zorba:iterator>
