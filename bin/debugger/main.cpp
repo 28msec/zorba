@@ -26,9 +26,21 @@
 
 #include "command_prompt.h"
 #include "command_line_handler.h"
+#include "process_listener.h"
 
 using namespace zorba;
 using namespace zorba::debugger;
+
+
+void
+onExitProcess(ExitCode aExitCode) {
+  //if (aExitCode != -1) {
+  //  std::cout << "Zorba has exited with code: " << aExitCode << std::endl;
+  //}
+  std::cout << "Terminating debugger client."<< std::endl;
+  // TODO: and the memory?
+  exit(aExitCode);
+}
 
 int
 startZorba(std::string& aExec, std::vector<std::string>& aArgs) 
@@ -38,7 +50,6 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
   // start a process on Windows
 
   DWORD iReturnVal = 0;
-  DWORD dwExitCode = 0;
 
   std::wstring lExec;
   std::wstring lArgs;
@@ -81,7 +92,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 
   if (lResult) {
     // Watch the process
-    dwExitCode = WaitForSingleObject(piProcessInfo.hProcess, 0);
+    ProcessListener* lPl = new ProcessListener(piProcessInfo.hProcess, &onExitProcess);
   }
   else {
     // CreateProcess failed
@@ -150,9 +161,15 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
     if (pID < 0) {
       std::cerr << "Failed to fork Zorba" << std::endl;
       return pID;
-    } else {
-      return 0;
     }
+    
+    // pID > 0
+
+    // Watch the process
+    //ProcessListener* lPl =
+    new ProcessListener(pID, &onExitProcess);
+
+    return 0;
   }
 #endif
 }
@@ -298,19 +315,19 @@ _tmain(int argc, _TCHAR* argv[])
         return lResult;
       }
     } else {
-      std::cout << "Waiting for an incomming Zorba connection..." << std::endl;
+      std::cout << "Listening for an incomming Zorba connection on port " << lPort << "..." << std::endl;
     }
 
     // **************************************************************************
     // start the debugger command line
 
-    LockFreeQueue<std::size_t> lQueue;
-    LockFreeQueue<bool> lContEvent;
-    EventHandler lEventHandler(lQueue, lContEvent);
+    LockFreeQueue<std::size_t> lIdQueue;
+    LockFreeQueue<bool> lQuitQueue;
+    EventHandler lEventHandler(lIdQueue, lQuitQueue);
     lEventHandler.init();
 
     CommandPrompt lCommandPrompt;
-    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
+    CommandLineHandler lCommandLineHandler(lPort, lIdQueue, lQuitQueue, lEventHandler, lCommandPrompt);
 
     lCommandLineHandler.execute();
 

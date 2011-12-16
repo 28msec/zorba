@@ -23,6 +23,7 @@ IF (ZORBA_WITH_DEBUGGER)
 
   SET (DEBUG_CLIENT_SRCS
     debugger/main.cpp
+    debugger/process_listener.cpp
     debugger/command_prompt.cpp
     debugger/command_line_handler.cpp
     debugger/event_handler.cpp
