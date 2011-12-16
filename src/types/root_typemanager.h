@@ -166,27 +166,26 @@ public:
    * Pre-allocate XQType objects for the following JSONTest sequence types:
    *
    * N(), N()?, N()+, N()*, where N is one of json-item, object, array, pair,
-   * object-pair, or array pair.
+   * or object-pair.
    */
 #define JSON_DECL(basename) \
-    xqtref_t basename##_ONE;\
-    xqtref_t basename##_QUESTION; \
-    xqtref_t basename##_STAR; \
-    xqtref_t basename##_PLUS;\
+    xqtref_t basename##_TYPE_ONE;\
+    xqtref_t basename##_TYPE_QUESTION; \
+    xqtref_t basename##_TYPE_STAR; \
+    xqtref_t basename##_TYPE_PLUS;\
 
   JSON_DECL(JSON_ITEM);
   JSON_DECL(JSON_OBJECT);
   JSON_DECL(JSON_ARRAY);
   JSON_DECL(JSON_PAIR);
   JSON_DECL(JSON_OBJECT_PAIR);
-  JSON_DECL(JSON_ARRAY_PAIR);
 
 #undef JSON_DECL
 
   /**
    * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
    */
-  static const XQType* JSON_TYPES_MAP[6][4];
+  static const XQType* JSON_TYPES_MAP[4][4];
 
 #endif // ZORBA_WITH_JSON
 

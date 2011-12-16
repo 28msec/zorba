@@ -2295,6 +2295,11 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+    <!--
+  </namespace>
+
+  <namespace prefix="jerr">
+  -->
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
     <diagnostic code="JSDY0001">
@@ -2303,6 +2308,9 @@
 
     <diagnostic code="JSDY0002">
       <value>JSON object cannot appear as input to an "$1" constructor</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0020">
     </diagnostic>
 
   </namespace>

@@ -520,14 +520,8 @@ bool TypeOps::is_subtype(
 
       case store::StoreConsts::jsonObject:
       case store::StoreConsts::jsonArray:
-      case store::StoreConsts::jsonObjectPair:
-      case store::StoreConsts::jsonArrayPair:
-        return (subKind == supKind);
-
       case store::StoreConsts::jsonPair:
-        return (subKind == store::StoreConsts::jsonPair ||
-                subKind == store::StoreConsts::jsonArrayPair ||
-                subKind == store::StoreConsts::jsonObjectPair);
+        return (subKind == supKind);
 
       default:
         ZORBA_ASSERT(false);
@@ -776,14 +770,8 @@ bool TypeOps::is_subtype(
 
       case store::StoreConsts::jsonObject:
       case store::StoreConsts::jsonArray:
-      case store::StoreConsts::jsonObjectPair:
-      case store::StoreConsts::jsonArrayPair:
-        return (subKind == supKind);
-
       case store::StoreConsts::jsonPair:
-        return (subKind == store::StoreConsts::jsonPair ||
-                subKind == store::StoreConsts::jsonArrayPair ||
-                subKind == store::StoreConsts::jsonObjectPair);
+        return (subKind == supKind);
 
       default:
         ZORBA_ASSERT(false);
@@ -980,10 +968,10 @@ xqtref_t TypeOps::union_type(
         if (kind1 >= store::StoreConsts::jsonObject &&
             kind2 >= store::StoreConsts::jsonObject)
         {
-          return GENV_TYPESYSTEM.JSON_OBJECT_ONE;
+          return GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE;
         }
    
-        return GENV_TYPESYSTEM.JSON_ITEM_ONE;
+        return GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE;
       }
 #endif
       default:

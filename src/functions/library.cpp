@@ -68,6 +68,10 @@
 
 #include "functions/func_function_item_iter.h"
 
+#ifdef ZORBA_WITH_JSON
+# include "functions/func_jsoniq_functions.h"
+#endif
+
 
 
 namespace zorba
@@ -138,6 +142,10 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_apply(sctx);
 
   populate_context_fetch(sctx);
+
+#ifdef ZORBA_WITH_JSON
+  populate_context_jsoniq_functions(sctx);
+#endif
 
   ar.set_loading_hardcoded_objects(false);
 }

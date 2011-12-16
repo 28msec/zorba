@@ -1380,6 +1380,15 @@ Item::getValue() const
   );
 }
 
+xs_integer
+Item::getSize() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
 #endif // ZORBA_WITH_JSON
 
 

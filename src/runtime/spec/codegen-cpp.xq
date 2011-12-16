@@ -95,7 +95,7 @@ declare function local:process($doc,
 
             if (exists($iter/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif")
+              concat($gen:newline, "#endif", $gen:newline)
             else 
               ""
             )
@@ -275,7 +275,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
           ($gen:newline,
            if (exists($iter/@preprocessorGuard))
            then
-             concat($gen:newline, $iter/@preprocessorGuard)
+             concat($gen:newline, $iter/@preprocessorGuard, $gen:newline)
            else 
              "",
            $gen:indent,
@@ -336,7 +336,12 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
               '),', $gen:newline, gen:indent(4), 
               'FunctionConsts::', gen:function-kind($sig) ,');',
               $gen:newline, $gen:newline, $gen:indent,
-            '}', $gen:newline, $gen:newline
+            '}', $gen:newline, $gen:newline,
+             if (exists($iter/@preprocessorGuard))
+             then
+               concat($gen:newline, "#endif", $gen:newline)
+             else 
+               ""
             ),
         ''),
       '')

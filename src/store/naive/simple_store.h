@@ -391,6 +391,11 @@ protected:
 
   void setTokenizerProvider(TokenizerProvider const*);
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+  store::Item_t parseJSON(std::istream& stream);
+
+#endif
 };
 
 } // namespace store

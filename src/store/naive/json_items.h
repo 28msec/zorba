@@ -89,7 +89,12 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
+  JSONItem() : store::Item(JSONIQ) {}
+
   virtual ~JSONItem() {}
+
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const { return store::StoreConsts::jsonItem; }
 
   virtual void
   accept(JSONVisitor*) const = 0;
@@ -109,6 +114,12 @@ public:
 
   virtual void
   add(const JSONObjectPair_t& aPair) = 0;
+
+  virtual xs_integer
+  getSize() const = 0;
+
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const { return store::StoreConsts::jsonObject; }
 
 #if 0
   // accessors
@@ -165,6 +176,9 @@ public:
   void
   add(const JSONObjectPair_t& aPair);
 
+  xs_integer
+  getSize() const { return thePairs.size(); }
+
 #if 0
   // accessors
   virtual store::Iterator_t
@@ -208,6 +222,9 @@ public:
 
   bool isJSONArray() const { return true; }
 
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const { return store::StoreConsts::jsonArray; }
+
 #if 0
   // accessors
   virtual store::Iterator_t
@@ -228,7 +245,7 @@ public:
   push_back(const store::Item_t& aValue) = 0;
 
   virtual xs_integer
-  size() const = 0;
+  getSize() const = 0;
 
   virtual const store::Item*
   operator[](xs_integer&) const = 0;
@@ -276,7 +293,7 @@ public:
   push_back(const store::Item_t& aValue);
 
   virtual xs_integer
-  size() const { return theContent.size(); }
+  getSize() const { return theContent.size(); }
 
   virtual const store::Item*
   operator[](xs_integer&) const;
@@ -313,6 +330,9 @@ public:
 
   virtual void
   accept(JSONVisitor*) const {}
+
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const { return store::StoreConsts::jsonPair; }
 };
 
 

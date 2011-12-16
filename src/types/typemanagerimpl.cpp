@@ -1064,11 +1064,6 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::JSON_PAIR_TYPE:
     return create_json_type(store::StoreConsts::jsonPair, q);
 
-  case IdentTypes::JSON_OBJECT_PAIR_TYPE:
-    return create_json_type(store::StoreConsts::jsonPair, q);
-
-  case IdentTypes::JSON_ARRAY_PAIR_TYPE:
-    return create_json_type(store::StoreConsts::jsonArrayPair, q);
 #endif // #ifdef ZORBA_WITH_JSON
 
   case IdentTypes::ITEM_TYPE:
