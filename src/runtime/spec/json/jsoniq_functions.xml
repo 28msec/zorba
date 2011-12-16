@@ -52,12 +52,18 @@
 
 <zorba:iterator name="JSONNamesIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
   <zorba:function isDeterministic="true">
     <zorba:signature localname="names" prefix="fn-jsoniq">
       <zorba:param>object()</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="thePairs" brief=""/>
+  </zorba:state>
+
 </zorba:iterator>
 
 <zorba:iterator name="JSONNameIterator" arity="nary"
@@ -72,12 +78,17 @@
 
 <zorba:iterator name="JSONPairsIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
   <zorba:function isDeterministic="true">
     <zorba:signature localname="pairs" prefix="fn-jsoniq">
       <zorba:param>json-item()</zorba:param>
       <zorba:output>pair()*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="thePairs" brief=""/>
+  </zorba:state>
 </zorba:iterator>
 
 <zorba:iterator name="JSONSizeIterator" arity="nary"
@@ -98,6 +109,10 @@
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theValues" brief=""/>
+  </zorba:state>
 </zorba:iterator>
 
 <zorba:iterator name="JSONValueIterator" arity="nary"

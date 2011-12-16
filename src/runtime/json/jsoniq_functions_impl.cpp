@@ -26,6 +26,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include <zorba/store_consts.h>
 
 namespace zorba {
 
@@ -121,8 +122,22 @@ JSONNamesIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t lInput;
+
+  JSONNamesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONNamesIteratorState, state, planState);
+
+  consumeNext(lInput, theChildren[0].getp(), planState);
+
+  state->thePairs = lInput->pairs();
+  state->thePairs->open();
+
+  while (state->thePairs->next(lInput))
+  {
+    result = lInput->getName();
+    STACK_PUSH (true, state);
+  }
+  state->thePairs = NULL;
 
   STACK_END (state);
 }
@@ -135,8 +150,16 @@ JSONNameIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
+  store::Item_t lInput;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lInput, theChildren[0].getp(), planState);
+
+  result = lInput->getName();
+
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }
@@ -149,8 +172,21 @@ JSONPairsIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t lInput;
+
+  JSONPairsIteratorState* state;
+  DEFAULT_STACK_INIT(JSONPairsIteratorState, state, planState);
+
+  consumeNext(lInput, theChildren[0].getp(), planState);
+
+  state->thePairs = lInput->pairs();
+  state->thePairs->open();
+
+  while (state->thePairs->next(result))
+  {
+    STACK_PUSH (true, state);
+  }
+  state->thePairs = NULL;
 
   STACK_END (state);
 }
@@ -196,8 +232,39 @@ JSONValuesIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t lInput;
+
+  JSONValuesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONValuesIteratorState, state, planState);
+
+  consumeNext(lInput, theChildren[0].getp(), planState);
+
+  if (lInput->getJSONItemKind() == store::StoreConsts::jsonObject)
+  {
+    state->theValues = lInput->pairs();
+    state->theValues->open();
+    while (state->theValues->next(lInput))
+    {
+      result = lInput->getValue();
+      STACK_PUSH (true, state);
+    }
+    state->theValues = NULL;
+  }
+  else if (lInput->getJSONItemKind() == store::StoreConsts::jsonArray)
+  {
+    state->theValues = lInput->values();
+    state->theValues->open();
+    while (state->theValues->next(result))
+    {
+      STACK_PUSH (true, state);
+    }
+    state->theValues = NULL;
+  }
+  else if (lInput->getJSONItemKind() == store::StoreConsts::jsonPair)
+  {
+    result = lInput->getValue();
+    STACK_PUSH (true, state);
+  }
 
   STACK_END (state);
 }
@@ -210,8 +277,16 @@ JSONValueIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
+  store::Item_t lInput;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lInput, theChildren[0].getp(), planState);
+
+  result = lInput->getValue();
+
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }

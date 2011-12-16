@@ -23,6 +23,7 @@
 #include <zorba/config.h>
 #include "atomic_items.h"
 #include "store/api/item_handle.h"
+#include "store/api/iterator.h"
 
 
 namespace zorba
@@ -121,11 +122,8 @@ public:
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonObject; }
 
-#if 0
   // accessors
-  virtual store::Iterator_t
-  pairs() const;
-
+#if 0
   bool getBooleanValue() const { return true; }
 
   virtual Item*
@@ -170,6 +168,26 @@ protected:
 
   Pairs thePairs;
 
+  class PairIterator : public store::Iterator
+  {
+    protected:
+      const Pairs& thePairs;
+      PairsConstIter theIter;
+
+    public:
+      PairIterator(const Pairs& aPairs) : thePairs(aPairs) {}
+
+      virtual ~PairIterator();
+
+      virtual void open();
+
+      virtual bool next(store::Item_t&);
+
+      virtual void reset();
+
+      virtual void close();
+  };
+
 public:
   virtual ~SimpleJSONObject() {}
 
@@ -179,11 +197,10 @@ public:
   xs_integer
   getSize() const { return thePairs.size(); }
 
-#if 0
-  // accessors
-  virtual store::Iterator_t
+  store::Iterator_t
   pairs() const;
 
+#if 0
   bool getBooleanValue() const { return true; }
 
   virtual Item*

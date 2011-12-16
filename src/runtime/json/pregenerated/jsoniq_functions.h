@@ -125,18 +125,31 @@ public:
  * 
  * Author: 
  */
-class JSONNamesIterator : public NaryBaseIterator<JSONNamesIterator, PlanIteratorState>
+class JSONNamesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t thePairs; //
+
+  JSONNamesIteratorState();
+
+  ~JSONNamesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONNamesIterator : public NaryBaseIterator<JSONNamesIterator, JSONNamesIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONNamesIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONNamesIterator,
-    NaryBaseIterator<JSONNamesIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONNamesIterator, JSONNamesIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<JSONNamesIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<JSONNamesIterator, JSONNamesIteratorState>*)this);
   }
 
   JSONNamesIterator(
@@ -144,7 +157,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONNamesIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONNamesIterator, JSONNamesIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONNamesIterator();
@@ -197,18 +210,31 @@ public:
  * 
  * Author: 
  */
-class JSONPairsIterator : public NaryBaseIterator<JSONPairsIterator, PlanIteratorState>
+class JSONPairsIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t thePairs; //
+
+  JSONPairsIteratorState();
+
+  ~JSONPairsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONPairsIterator : public NaryBaseIterator<JSONPairsIterator, JSONPairsIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONPairsIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONPairsIterator,
-    NaryBaseIterator<JSONPairsIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONPairsIterator, JSONPairsIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<JSONPairsIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<JSONPairsIterator, JSONPairsIteratorState>*)this);
   }
 
   JSONPairsIterator(
@@ -216,7 +242,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONPairsIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONPairsIterator, JSONPairsIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONPairsIterator();
@@ -269,18 +295,31 @@ public:
  * 
  * Author: 
  */
-class JSONValuesIterator : public NaryBaseIterator<JSONValuesIterator, PlanIteratorState>
+class JSONValuesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theValues; //
+
+  JSONValuesIteratorState();
+
+  ~JSONValuesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONValuesIterator : public NaryBaseIterator<JSONValuesIterator, JSONValuesIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONValuesIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONValuesIterator,
-    NaryBaseIterator<JSONValuesIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONValuesIterator, JSONValuesIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<JSONValuesIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<JSONValuesIterator, JSONValuesIteratorState>*)this);
   }
 
   JSONValuesIterator(
@@ -288,7 +327,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONValuesIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONValuesIterator, JSONValuesIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONValuesIterator();
