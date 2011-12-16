@@ -323,7 +323,7 @@ public:
    *
    * @return Returns said code-point.
    */
-  token::value_type codepoint() const {
+  token::value_type get_codepoint() const {
     return codepoint_;
   }
 
@@ -466,6 +466,9 @@ private:
  */
 class parser {
 public:
+  typedef lexer::line_type line_type;
+  typedef lexer::column_type column_type;
+
   /**
    * Constructs a %parser on the given istream.
    *
@@ -481,6 +484,17 @@ public:
    * @throws exception upon error.
    */
   bool next( token *result );
+
+  /**
+   * Sets the file location.
+   *
+   * @param file The source file name.
+   * @param line The source line number.
+   * @param col  The source column number.
+   */
+  void set_loc( char const *file, line_type line, column_type col ) {
+    lexer_.set_loc( file, line, col );
+  }
 
 private:
   enum state {

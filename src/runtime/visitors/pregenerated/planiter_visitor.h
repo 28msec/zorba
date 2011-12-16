@@ -251,30 +251,10 @@ namespace zorba{
 
     class FunctionAnnotationsIterator;
 
-#ifdef ZORBA_WITH_JSON
-    class JSONFlattenIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONParseIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONNamesIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONNameIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONPairsIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONSizeIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONValuesIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONValueIterator;
-#endif
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -951,38 +931,12 @@ public:
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
 
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONFlattenIterator& ) = 0;
-    virtual void endVisit   ( const JSONFlattenIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONParseIterator& ) = 0;
-    virtual void endVisit   ( const JSONParseIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONNamesIterator& ) = 0;
-    virtual void endVisit   ( const JSONNamesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONNameIterator& ) = 0;
-    virtual void endVisit   ( const JSONNameIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONPairsIterator& ) = 0;
-    virtual void endVisit   ( const JSONPairsIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONSizeIterator& ) = 0;
-    virtual void endVisit   ( const JSONSizeIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONValuesIterator& ) = 0;
-    virtual void endVisit   ( const JSONValuesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONValueIterator& ) = 0;
-    virtual void endVisit   ( const JSONValueIterator& ) = 0;
-#endif
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
+
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
 
