@@ -81,8 +81,8 @@ class ZORBA_DLL_PUBLIC StoreConsts
   {
     jsonItem       = 0,
     jsonObject     = 1,
-    jsonArray      = 3,
-    jsonPair       = 4
+    jsonArray      = 2,
+    jsonPair       = 3
   };
 
 
