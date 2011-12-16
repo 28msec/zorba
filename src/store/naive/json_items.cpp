@@ -18,6 +18,7 @@
 #include "json_visitor.h"
 #include "simple_item_factory.h"
 #include "simple_store.h"
+#include "item_iterator.h"
 
 namespace zorba
 {
@@ -96,7 +97,15 @@ SimpleJSONArray::accept(JSONVisitor* v) const
 
   for (PairsConstIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
   {
-    static_cast<JSONItem*>(lIter->getp())->accept(v);
+    JSONItem* lItem = dynamic_cast<JSONItem*>(lIter->getp());
+    if (lItem)
+    {
+      lItem->accept(v);
+    }
+    else
+    {
+      v->visit(lIter->getp());
+    }
   }
 
   v->end(this);
@@ -132,7 +141,12 @@ SimpleJSONArray::operator[](xs_integer& aPos) const
       );
   }
   return theContent[lIndex].getp();
+}
 
+store::Iterator_t
+SimpleJSONArray::values() const
+{
+  return new ItemIterator(theContent, false);
 }
 
 } // namespace json

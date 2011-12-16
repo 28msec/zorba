@@ -66,10 +66,6 @@ JSONFlattenIteratorState::~JSONFlattenIteratorState() {}
 void JSONFlattenIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
-
-void JSONFlattenIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </JSONFlattenIterator>
 
 #endif

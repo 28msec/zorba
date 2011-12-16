@@ -60,8 +60,7 @@ int runLoaderTest(int argc, char* argv[])
     << "  }" << std::endl
     << "}";
     json << "{ \"foo\": true, \"bar\": false }";
-  //json << "[ \"foo\", \"bar\" ]";
-  //json << "{ \"foo\": { \"bar\" : false } }";
+    json << "[ \"foo\", \"bar\", [ \"blub\" ] ]";
 
   JSONLoader lLoader(json);
 

@@ -812,6 +812,12 @@ public:
   pairs() const;
 
   /**
+   * @return the values of a json array
+   */
+  virtual Iterator_t
+  values() const;
+
+  /**
    * defined on JSONObject and JSONArray
    * @return the pair with given name or index, respectively
    */

@@ -20,16 +20,16 @@
     jsoniq:flatten function
   </zorba:description>
 
-  <zorba:state>
-    <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
-  </zorba:state>
-
   <zorba:function isDeterministic="true">
     <zorba:signature localname="flatten" prefix="fn-jsoniq">
       <zorba:param>array()</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state generateReset="false">
+    <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
+  </zorba:state>
     
 </zorba:iterator>
 

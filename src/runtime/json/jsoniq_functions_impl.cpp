@@ -31,13 +31,52 @@ namespace zorba {
 
 /*******************************************************************************
 ********************************************************************************/
+void JSONFlattenIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  while (!theStack.empty())
+  {
+    theStack.pop();
+  }
+}
+
 bool
 JSONFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t lCurr;
+  bool lFoundArray = false;
+
+  JSONFlattenIteratorState* state;
+  DEFAULT_STACK_INIT(JSONFlattenIteratorState, state, planState);
+
+  consumeNext(lCurr, theChildren[0].getp(), planState);
+
+  state->theStack.push(lCurr->values());
+  state->theStack.top()->open();
+
+  while (!state->theStack.empty())
+  {
+    while (state->theStack.top()->next(result))
+    {
+      if (result->isJSONArray())
+      {
+        state->theStack.push(result->values());
+        state->theStack.top()->open();
+        lFoundArray = true;
+        break;
+      }
+      STACK_PUSH( true, state );
+    }
+    if (lFoundArray)
+    {
+      lFoundArray = false;
+      continue;
+    }
+    state->theStack.top()->close();
+    state->theStack.pop();
+  }
 
   STACK_END (state);
 }

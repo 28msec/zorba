@@ -218,6 +218,8 @@ public:
 class JSONArray : public JSONItem
 {
 public:
+  JSONArray() : JSONItem() {}
+
   virtual ~JSONArray() {}
 
   bool isJSONArray() const { return true; }
@@ -250,6 +252,8 @@ public:
   virtual const store::Item*
   operator[](xs_integer&) const = 0;
 
+  store::Iterator_t
+  values() const = 0;
 
 };
 
@@ -297,6 +301,9 @@ public:
 
   virtual const store::Item*
   operator[](xs_integer&) const;
+
+  store::Iterator_t
+  values() const;
 };
 
 
