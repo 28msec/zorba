@@ -1103,6 +1103,9 @@ ZorbaErrorCode JSDY0001( "JSDY0001" );
 ZorbaErrorCode JSDY0002( "JSDY0002" );
 
 
+ZorbaErrorCode JSDY0020( "JSDY0020" );
+
+
 ZorbaErrorCode JSDY0040( "JSDY0040" );
 
 

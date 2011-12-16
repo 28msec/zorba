@@ -19,6 +19,7 @@
 #include "simple_item_factory.h"
 #include "store_defs.h"
 #include "simple_store.h"
+#include "diagnostics/diagnostic.h"
 #include <cassert>
 #include <vector>
 
@@ -160,9 +161,41 @@ JSONLoader::next( )
     }
     return lRootItem;
   }
-  catch (zorba::json::exception& e)
+  catch (zorba::json::unterminated_string& e)
   {
-    std::cerr << e.what() << " at " << e.get_loc() << std::endl;
+    throw ZORBA_EXCEPTION(
+      zerr::JSDY0040,
+      ERROR_PARAMS(
+        e.get_loc().line(), e.get_loc().column(),
+        ZED(JSDY0040_unterminated_string)
+      )
+    );
+  }
+  catch (zorba::json::unexpected_token& e)
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::JSDY0040,
+      ERROR_PARAMS(
+        e.get_loc().line(), e.get_loc().column(),
+        ZED(JSDY0040_unexpected_token),
+        e.get_token()
+      )
+    );
+  }
+  catch (zorba::json::illegal_number& e)
+  {
+  }
+  catch (zorba::json::illegal_literal& e)
+  {
+  }
+  catch (zorba::json::illegal_escape& e)
+  {
+  }
+  catch (zorba::json::illegal_codepoint& e)
+  {
+  }
+  catch (zorba::json::illegal_character& e)
+  {
   }
   return NULL;
 }
