@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifdef ZORBA_WITH_JSON
+
 #include "stdafx.h"
 
 #include <sstream>
@@ -293,3 +295,4 @@ JSONValueIterator::nextImpl(
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
+#endif /* ZORBA_WITH_JSON */

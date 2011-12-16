@@ -804,6 +804,7 @@ ostream& pi_expr::put(ostream& os) const
 }
 
 
+#ifdef ZORBA_WITH_JSON
 ostream& json_pair_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_pair_expr);
@@ -827,6 +828,7 @@ ostream& json_array_expr::put(ostream& os) const
   theContentExpr->put(os);
   END_PUT();
 }
+#endif
 
 
 ostream& insert_expr::put(ostream& os) const
