@@ -326,7 +326,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     catch ( json::unexpected_token const &e ) {
       throw XQUERY_EXCEPTION(
         zerr::ZJPE0006_UNEXPECTED_TOKEN,
-        ERROR_PARAMS( ZED(JSON_UNEXPECTED_TOKEN), e.get_token(), "" ),
+        ERROR_PARAMS( ZED( JSON_UNEXPECTED_TOKEN ), e.get_token(), "" ),
         ERROR_LOC( e.get_loc() )
       );
     }

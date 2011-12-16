@@ -2365,7 +2365,7 @@
      <value>$1</value>
    </diagnostic>
    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
-     <value>$1</value>
+     <value>$1 foo</value>
    </diagnostic>
    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
      <value>$1</value>
@@ -3320,7 +3320,7 @@
       <value>Zorba warning</value>
     </entry>
 
-    <entry key="JSON parser">
+    <entry key="JSON parser error">
       <value>JSON parser</value>
     </entry>
 
@@ -3480,25 +3480,31 @@
       <value>specifying both $2 and $3 is an error</value>
     </entry>
 
-    <entry name="JSON_ILLEGAL_CHARACTER">
+    <entry key="JSON_ILLEGAL_CHARACTER">
       <value>'$2': illegal JSON character${ at 3}</value>
     </entry>
-    <entry name="JSON_ILLEGAL_CODEPOINT">
+
+    <entry key="JSON_ILLEGAL_CODEPOINT">
       <value>"$2": illegal Unicode code-point${ at 3}</value>
     </entry>
-    <entry name="JSON_ILLEGAL_ESCAPE">
+
+    <entry key="JSON_ILLEGAL_ESCAPE">
       <value>'\\$2': illegal JSON character escape${ at 3}</value>
     </entry>
-    <entry name="JSON_ILLEGAL_LITERAL">
+
+    <entry key="JSON_ILLEGAL_LITERAL">
       <value>illegal JSON literal${ at 2}</value>
     </entry>
-    <entry name="JSON_ILLEGAL_NUMBER">
+
+    <entry key="JSON_ILLEGAL_NUMBER">
       <value>illegal JSON number${ at 2}</value>
     </entry>
-    <entry ame="JSON_UNEXPECTED_TOKEN">
+
+    <entry key="JSON_UNEXPECTED_TOKEN">
       <value>"$2": unexpected JSON token${ at 3}</value>
     </entry>
-    <entry name="JSON_UNTERMINATED_STRING">
+
+    <entry key="JSON_UNTERMINATED_STRING">
       <value>unterminated JSON string${ at 2}</value>
     </entry>
 
