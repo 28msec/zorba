@@ -348,7 +348,8 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 static void find_attribute( store::Item_t const &element,
                             char const *wanted_att_name,
-                            zstring *att_value ) {
+                            zstring *att_value,
+                            QueryLoc const &loc ) {
   store::Iterator_t i( element->getAttributes() );
   bool found = false;
   i->open();
@@ -362,8 +363,51 @@ static void find_attribute( store::Item_t const &element,
     }
   }
   i->close();
-  if ( !found )
-    throw 0;
+  if ( !found ) {
+    store::Item const *const element_name = element->getNodeName();
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
+      ERROR_PARAMS( element_name->getStringValue(), wanted_att_name ),
+      ERROR_LOC( loc )
+    );
+  }
+}
+
+static void get_type_attribute( store::Item_t const &element,
+                                zstring *att_value,
+                                bool allow_all_types,
+                                QueryLoc const &loc ) {
+  find_attribute( element, "type", att_value, loc );
+  if ( !(*att_value == "array"
+      || *att_value == "object"
+      || ( allow_all_types &&
+          (  *att_value == "boolean"
+          || *att_value == "null"
+          || *att_value == "number"
+          || *att_value == "string"
+          )
+         )
+        )
+  )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0004_BAD_ATTRIBUTE_VALUE,
+      ERROR_PARAMS( att_value, "type" ),
+      ERROR_LOC( loc )
+    );
+}
+
+inline bool is_element( store::Item_t const &item ) {
+  return  item->isNode() &&
+          item->getNodeKind() == store::StoreConsts::elementNode;
+}
+
+static void serialize_json_element( store::Item_t const &element ) {
+}
+
+static void serialize_pair_element( store::Item_t const &element ) {
+}
+
+static void serialize_item_element( store::Item_t const &element ) {
 }
 
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
@@ -381,19 +425,31 @@ bool JSONSerializeInternal::nextImpl( store::Item_t& result,
       case store::StoreConsts::elementNode:
         break;
       default:
-        throw 0;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE,
+          ERROR_LOC( loc )
+        );
     }
 
     name_item = cur_item->getNodeName();
-    // test name_item
+    if ( name_item->getStringValue() != "json" )
+      throw XQUERY_EXCEPTION(
+        zerr::ZJSE0003_BAD_ELEMENT,
+        ERROR_PARAMS( name_item->getStringValue(), "json" ),
+        ERROR_LOC( loc )
+      );
 
-    find_attribute( cur_item, "type", &type_att_value );
+    find_attribute( cur_item, "type", &type_att_value, loc );
     if ( type_att_value == "array" )
       /* TODO */;
     else if ( type_att_value == "object" )
       /* TODO */;
     else
-      throw 0;
+      throw XQUERY_EXCEPTION(
+        zerr::ZJSE0004_BAD_ATTRIBUTE_VALUE,
+        ERROR_PARAMS( type_att_value, "type" ),
+        ERROR_LOC( loc )
+      );
 
     STACK_PUSH( false, state );
   }

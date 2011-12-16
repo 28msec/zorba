@@ -2331,6 +2331,24 @@
       <value>unterminated JSON string</value>
     </diagnostic>
 
+   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+
+    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
+      <value>JSON serialization requires document or element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
+      <value>element "$1" missing required "$2" attribute</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0003" name="BAD_ELEMENT">
+      <value>"$1": illegal element; must be "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0004" name="BAD_ATTRIBUTE_VALUE">
+      <value>"$1": illegal value for attribute "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
+      <value>"$1": illegal child element of "$2"; must be "$3"</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
