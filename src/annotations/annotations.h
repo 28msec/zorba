@@ -55,6 +55,8 @@ public:
     zann_nonassignable,
     zann_sequential,
     zann_nonsequential,
+    zann_cache,
+    zann_nocache,
     zann_variadic,
     zann_streamable,
     zann_unique,

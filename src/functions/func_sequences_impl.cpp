@@ -261,15 +261,28 @@ PlanIter_t fn_subsequence::codegen(
   {
     xs_double dpos = static_cast<const const_expr*>(posExpr)->
                       get_val()->getDoubleValue().round();
-    long pos = static_cast<long>(dpos.getNumber());
+    xs_integer ipos(dpos.getNumber());
 
     xs_double dlen = static_cast<const const_expr*>(lenExpr)->
                       get_val()->getDoubleValue().round();
-    long len = static_cast<long>(dlen.getNumber());
+    xs_integer ilen(dlen.getNumber());
+
+    xs_long pos;
+    xs_long len;
+
+    try
+    {
+      pos = to_xs_long(ipos);
+      len = to_xs_long(ilen);
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-    ulong numSteps = pathExpr->numSteps();
+    csize numSteps = pathExpr->numSteps();
 
     if (pos > 0 && len == 1 && numSteps == 2)
     {
@@ -281,6 +294,7 @@ PlanIter_t fn_subsequence::codegen(
     }
   }
 
+ done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
@@ -319,15 +333,22 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
-    xs_long pos = static_cast<const const_expr*>(posExpr)->
-                      get_val()->getLongValue();
+    xs_long pos;
+    xs_long len;
 
-    xs_long len = static_cast<const const_expr*>(lenExpr)->
-                      get_val()->getLongValue();
+    try
+    {
+      pos = static_cast<const const_expr*>(posExpr)->get_val()->getLongValue();
+      len = static_cast<const const_expr*>(lenExpr)->get_val()->getLongValue();
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-    ulong numSteps = pathExpr->numSteps();
+    csize numSteps = pathExpr->numSteps();
 
     if (pos > 0 && len == 1 && numSteps == 2)
     {
@@ -367,6 +388,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     }
   }
 
+ done:
   return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
 }
 
@@ -402,20 +424,31 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   if (posExpr->get_expr_kind() == const_expr_kind)
   {
     store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
-    xs_long pos = posItem->getLongValue();
+
+    xs_integer pos = posItem->getIntegerValue();;
 
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {
       const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-      ulong numSteps = pathExpr->numSteps();
+      csize numSteps = pathExpr->numSteps();
 
-      if (pos > 0 && numSteps == 2)
+      if (pos > Integer(0) && numSteps == 2)
       {
+        xs_long pos2;
+        try
+        {
+          pos2 = posItem->getLongValue();
+        }
+        catch (std::range_error&)
+        {
+          goto done;
+        }
+
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
 
-        if (input->setTargetPos(pos-1))
+        if (input->setTargetPos(pos2 - 1))
           return aArgs[0];
       }
     }
@@ -457,6 +490,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
       return aArgs[0];
   }
 
+ done:
   return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
 }
 

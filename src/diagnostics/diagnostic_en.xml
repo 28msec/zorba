@@ -1135,6 +1135,22 @@
          specified.
       </comment>
       <value>$1</value>
+    
+      <entry key="CONCAT">
+        <value>comma expression with updating and non-updating branches</value>
+      </entry>
+
+      <entry key="Generic">
+        <value>updating expression illegal here</value>
+      </entry>
+
+      <entry key="IF">
+        <value>conditional expression with updating and non-updating branch</value>
+      </entry>
+
+      <entry key="UDF_2">
+        <value>"$2": function declared simple but body is updating</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUST0002">
@@ -1718,6 +1734,10 @@
       <value>key with type $1 not subtype or castable to target type $2 of map ($3)</value>
     </diagnostic>
 
+    <diagnostic code="ZXQD0006" name="INVALID_UTF8_BYTE_SEQUENCE">
+      <value>"$1": invalid UTF-8 byte sequence</value>
+    </diagnostic>
+
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">
@@ -2007,6 +2027,10 @@
 
     <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
       <value>"$1": index range-value probe has search keys with incompatible types</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0035" name="INDEX_GENERAL_INSERT">
+      <value>"$1": index inserting more than one key not allowed for general index</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
@@ -2335,6 +2359,37 @@
 
     <diagnostic code="ZWST0004" name="AMBIGUOUS_SEQUENTIAL_FLWOR">
       <value>Sequential FLWOR expr may not have the semantics you expect</value>
+    </diagnostic>
+
+    <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
+      <comment>
+        This warning is raised if the user explicitly enables caching
+        of function results (using the %ann:cache annotation) but the function
+        is updating or its parameter and return types are not subtypes of
+        xs:anyAtomicType.
+      </comment>
+      <value>"$1": function caching not possible; $2</value>
+      <entry key="RETURN_TYPE">
+        <value>return type ($3) is not subtype of xs:anyAtomicType</value>
+      </entry>
+      <entry key="PARAM_TYPE">
+        <value>type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType</value>
+      </entry>
+      <entry key="UPDATING">
+        <value>function is updating</value>
+      </entry>
+      <entry key="VARIADIC">
+        <value>function is variadic</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
+      <comment>
+        This warning is raised if the user explicitly enables caching
+        of function results (using the %ann:cache annotation) and the function
+        is annotated as sequential or nondeterministic.
+      </comment>
+      <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
     </diagnostic>
 
   </namespace>
@@ -3165,22 +3220,6 @@
 
     <entry key="XQueryVersionAtLeast10_2">
       <value>"$2": XQuery version must be at least 1.0</value>
-    </entry>
-
-    <entry key="XUST0001_CONCAT">
-      <value>comma expression with updating and non-updating branches</value>
-    </entry>
-
-    <entry key="XUST0001_Generic">
-      <value>updating expression illegal here</value>
-    </entry>
-
-    <entry key="XUST0001_IF">
-      <value>conditional expression with updating and non-updating branch</value>
-    </entry>
-
-    <entry key="XUST0001_UDF_2">
-      <value>"$2": function declared simple but body is updating</value>
     </entry>
 
     <entry key="XUST0002_Transform">
