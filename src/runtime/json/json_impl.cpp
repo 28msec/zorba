@@ -24,10 +24,11 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/json_parser.h"
+#include "util/stl_util.h"
 
 #define JSON_NS "http://www.zorba-xquery.com/modules/converters/json"
 
-#define DEBUG_JSON 1
+#define DEBUG_JSON 0
 
 using namespace std;
 
@@ -37,11 +38,10 @@ namespace zorba {
 
 enum state {
   in_array,
-  in_object,
-  needs_type_attribute
+  in_object
 };
 
-typedef stack<store::Item_t> item_stack_type;
+typedef stack<store::Item*> item_stack_type;
 typedef stack<int> state_stack_type;
 
 #if DEBUG_JSON
@@ -49,82 +49,87 @@ typedef stack<int> state_stack_type;
 ostream& operator<<( ostream &o, state s ) {
   static char const *const string_of[] = {
     "in_array",
-    "in_object",
-    "needs_type_attribute"
+    "in_object"
   };
   return o << string_of[ s ];
 }
 
 # define PUSH_ITEM(I)                                                     \
-    if (0) ; else {                                                       \
+    do {                                                                  \
       cout << __LINE__ << ":PUSH_ITEM( " << (I)->show() << " )" << endl;  \
-      item_stack.push( I );                                               \
-    }
+      item_stack.push( (I).getp() );                                      \
+    } while (0)
 
-# define POP_ITEM() \
-    cout << __LINE__ << ":POP_ITEM()" << endl
+# define POP_ITEM()                               \
+    do {                                          \
+      cout << __LINE__ << ":POP_ITEM()" << endl;  \
+      cur_item = ztd::pop_stack( item_stack );    \
+    } while (0)
 
 # define PUSH_STATE(S) \
-    if (0) ; else {                                               \
+    do {                                                          \
       cout << __LINE__ << ":PUSH_STATE( " << (S) << " )" << endl; \
       state_stack.push( S );                                      \
-    }
+    } while (0)
 
-# define POP_STATE() \
-    cout << __LINE__ << ":POP_STATE()" << endl
+# define POP_STATE()                              \
+    do {                                          \
+      cout << __LINE__ << ":POP_STATE()" << endl; \
+      state_stack.pop();                          \
+    } while (0)                                   \
 
 #else
 
-# define PUSH_ITEM(I)   item_stack.push( I )
-# define POP_ITEM()     item_stack.pop()
+# define PUSH_ITEM(I)   item_stack.push( (I).getp() )
+# define POP_ITEM()     cur_item = ztd::pop_stack( item_stack );
 # define PUSH_STATE(S)  state_stack.push( S )
-# define POP_STATE()    state_stack.pop()
+# define POP_STATE()    state_stack.pop();
 
 #endif /* DEBUG_JSON */
 
-static void add_type_attribute( store::Item *i, state_stack_type &state_stack,
-                                char const *value ) {
-  if ( !state_stack.empty() && state_stack.top() == needs_type_attribute ) {
-    store::Item_t junk_item, att_name, type_name, value_item;
-    GENV_ITEMFACTORY->createQName( att_name, "", "", "type" );
-    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    zstring value_string( value );
-    GENV_ITEMFACTORY->createString( value_item, value_string );
-    GENV_ITEMFACTORY->createAttributeNode(
-      junk_item, i, att_name, type_name, value_item
-    );
-    POP_STATE();
-  }
+static void add_type_attribute( store::Item *parent, char const *value ) {
+  store::Item_t junk_item, att_name, type_name, value_item;
+  GENV_ITEMFACTORY->createQName( att_name, "", "", "type" );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  zstring value_string( value );
+  GENV_ITEMFACTORY->createString( value_item, value_string );
+  GENV_ITEMFACTORY->createAttributeNode(
+    junk_item, parent, att_name, type_name, value_item
+  );
 }
 
-#define ADD_TYPE_ATTRIBUTE(T) \
-  add_type_attribute( item_stack.top().getp(), state_stack, T )
+#define ADD_TYPE_ATTRIBUTE(T)             \
+  do {                                    \
+    if ( needs_type_attribute ) {         \
+      add_type_attribute( cur_item, T );  \
+      needs_type_attribute = false;       \
+    }                                     \
+  } while (0)
 
 static void add_item_element( item_stack_type &item_stack,
                               state_stack_type &state_stack,
+                              store::Item_t &cur_item,
                               char const *type ) {
   if ( !state_stack.empty() && state_stack.top() == in_array ) {
-    store::Item_t new_item, element_name, type_name;
+    store::Item_t element_name, type_name;
     zstring base_uri;
     store::NsBindings ns_bindings;
     GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "item" );
     type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     GENV_ITEMFACTORY->createElementNode(
-      new_item, item_stack.top().getp(),
+      cur_item, item_stack.top(),
       element_name, type_name, false, false, ns_bindings, base_uri
     );
-    PUSH_ITEM( new_item );
-    PUSH_STATE( needs_type_attribute );
-    ADD_TYPE_ATTRIBUTE( type );
+    add_type_attribute( cur_item.getp(), type );
   }
 }
 
 #define ADD_ITEM_ELEMENT(T) \
-  add_item_element( item_stack, state_stack, T );
+  add_item_element( item_stack, state_stack, cur_item, T );
 
 bool JSONParseInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
-  store::Item_t cur_item, result_item;
+  store::Item_t cur_item;
   istringstream iss;
   zstring json_zstring;
   string json_string;
@@ -132,7 +137,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
-  if ( consumeNext( cur_item, theChildren[0].getp(), planState ) ) {
+  if ( consumeNext( cur_item, theChildren[0], planState ) ) {
     istream *is;
     if ( cur_item->isStreamable() ) {
       is = &cur_item->getStream();
@@ -150,7 +155,8 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     store::Item_t att_name, element_name, type_name;
 
     zstring base_uri;
-    stack<store::Item_t> item_stack;
+    item_stack_type item_stack;
+    bool needs_type_attribute = false;
     bool next_string_is_key = false;
     store::NsBindings ns_bindings;
     zstring value;
@@ -158,26 +164,28 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     json::parser p( *is );
     json::token t;
     while ( p.next( &t ) ) {
-      if ( !result_item ) {
+      if ( !result ) {
         GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "json" );
         type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(
-          result_item, nullptr,
+          cur_item, nullptr,
           element_name, type_name, false, false, ns_bindings, base_uri
         );
-        PUSH_ITEM( result_item );
-        PUSH_STATE( needs_type_attribute );
+        result = cur_item;
+        needs_type_attribute = true;
       }
 
       switch ( t.get_type() ) {
 
         case '[':
+          PUSH_ITEM( cur_item );
           ADD_TYPE_ATTRIBUTE( "array" );
           ADD_ITEM_ELEMENT( "array" );
           PUSH_STATE( in_array );
           break;
 
         case '{':
+          PUSH_ITEM( cur_item );
           ADD_TYPE_ATTRIBUTE( "object" );
           ADD_ITEM_ELEMENT( "object" );
           PUSH_STATE( in_object );
@@ -199,7 +207,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           ADD_ITEM_ELEMENT( "number" );
           value = t.get_value();
           GENV_ITEMFACTORY->createTextNode(
-            junk_item, item_stack.top().getp(), value
+            junk_item, cur_item, value
           );
           break;
 
@@ -213,7 +221,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
             GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "pair" );
             type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
             GENV_ITEMFACTORY->createElementNode(
-              cur_item, item_stack.top().getp(),
+              cur_item, item_stack.top(),
               element_name, type_name, false, false, ns_bindings, base_uri
             );
 
@@ -223,15 +231,14 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
             GENV_ITEMFACTORY->createAttributeNode(
               junk_item, cur_item, att_name, type_name, value_item
             );
-            PUSH_ITEM( cur_item );
-            PUSH_STATE( needs_type_attribute );
+            needs_type_attribute = true;
+            next_string_is_key = false;
           } else {
             ADD_ITEM_ELEMENT( "string" );
             GENV_ITEMFACTORY->createTextNode(
-              junk_item, item_stack.top().getp(), value
+              junk_item, cur_item, value
             );
           }
-          next_string_is_key = false;
           break;
 
         case 'F':
@@ -239,7 +246,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           ADD_ITEM_ELEMENT( "boolean" );
           value = "false";
           GENV_ITEMFACTORY->createTextNode(
-            junk_item, item_stack.top().getp(), value
+            junk_item, cur_item, value
           );
           break;
 
@@ -248,7 +255,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           ADD_ITEM_ELEMENT( "boolean" );
           value = "true";
           GENV_ITEMFACTORY->createTextNode(
-            junk_item, item_stack.top().getp(), value
+            junk_item, cur_item, value
           );
           break;
 
@@ -268,10 +275,10 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     } // local scope
 
 #if DEBUG_JSON
-    cout << "----- RESULT -----\n" << result_item->show() << endl;
+    cout << "----- RESULT -----\n" << result->show() << endl;
 #endif /* DEBUG_JSON */
 
-    STACK_PUSH( result_item, state );
+    STACK_PUSH( !!result, state );
   } // if ( consumeNext( ...
   STACK_END( state );
 }

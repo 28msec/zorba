@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 -->
 <zorba:iterators
   xmlns:zorba="http://www.zorba-xquery.com"
@@ -11,7 +11,7 @@
 
 <!--
 /*******************************************************************************
-********************************************************************************/
+*******************************************************************************/
 -->
 <zorba:iterator name="JSONParseInternal" arity="nary">
 
@@ -19,22 +19,14 @@
     function for parsing strings into json-xdm
   </zorba:description>
 
-  <!--
-  <zorba:state>
-    <zorba:member type="xs_integer" name="theSeqLength" brief=""/>
-  </zorba:state>
-  -->
-
   <zorba:function isDeterministic="true">
-
     <zorba:signature localname="parse-internal" prefix="fn-zorba-json">
-      <zorba:param>xs:string</zorba:param> 
+      <zorba:param>xs:string</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>element()*</zorba:output>
     </zorba:signature>
-
   </zorba:function>
-    
+
 </zorba:iterator>
 
 <!--
@@ -62,7 +54,7 @@
     </zorba:signature>
 
   </zorba:function>
-    
+
 </zorba:iterator>
 
 </zorba:iterators>

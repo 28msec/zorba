@@ -17,6 +17,7 @@
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
+#include "stl_util.h"
 #include "string_util.h"
 #include "utf8_util.h"
 

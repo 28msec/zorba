@@ -1,4 +1,4 @@
-<json type="object">
+<json xmlns="http://www.zorba-xquery.com/modules/converters/json" type="object">
   <pair name="firstName" type="string">John</pair>
   <pair name="lastName" type="string">Smith</pair>
   <pair name="address" type="object">
