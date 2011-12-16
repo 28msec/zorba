@@ -45,6 +45,7 @@
 #include "store/naive/loader.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
+#include "store/naive/json_items.h"
 #include "store/naive/dataguide.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_item_factory.h"
@@ -1534,6 +1535,34 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
   TempSeq_t tempSeq = new SimpleTempSeq(item_v);
   return tempSeq;
 }
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::populateJSONArray(
+    store::Item* array,
+    store::Iterator* iter,
+    const store::CopyMode& copymode)
+{
+  store::Item_t item;
+
+  assert(array->isJSONArray());
+
+  json::JSONArray* array2 = static_cast<json::JSONArray*>(array);
+
+  while (iter->next(item))
+  {
+    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      item = item->copy(NULL, copymode);
+
+    array2->push_back(item);
+  }
+}
+
+#endif
+
 
 #ifndef ZORBA_NO_FULL_TEXT
 void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) {

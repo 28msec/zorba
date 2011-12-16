@@ -17,9 +17,11 @@
 
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
+#include "store/api/store.h"
 
 #include "runtime/json/json_constructors.h"
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "system/globalenv.h"
 
@@ -46,14 +48,21 @@ END_SERIALIZABLE_CLASS_VERSIONS(JSONPairIterator)
 JSONPairIterator::JSONPairIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& name,
-    PlanIter_t& value,
+    PlanIter_t& nameIter,
+    PlanIter_t& valueIter,
     bool copyInput)
   :
   BinaryBaseIterator<JSONPairIterator,
-                     PlanIteratorState>(sctx, loc, name, value),
+                     PlanIteratorState>(sctx, loc, nameIter, valueIter),
   theCopyInput(copyInput)
 {
+  if (valueIter->isConstructor())
+  {
+    // Note: translator makes sure that valueIter is not another pair constructor
+    assert(dynamic_cast<JSONPairIterator*>(valueIter.getp()) == NULL);
+
+    theCopyInput = false;
+  }
 }
 
 
@@ -78,7 +87,7 @@ bool JSONPairIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   consumeNext(name, theChild0, planState);
   consumeNext(value, theChild1, planState);
 
-  while (value->isJSONPair())
+  if (value->isJSONPair())
   {
     value = value->getValue();
   }
@@ -109,8 +118,7 @@ JSONObjectIterator::JSONObjectIterator(
     std::vector<PlanIter_t>& content,
     bool copyInput)
   :
-  NaryBaseIterator<JSONObjectIterator,
-                   PlanIteratorState>(sctx, loc, content)
+  NaryBaseIterator<JSONObjectIterator, PlanIteratorState>(sctx, loc, content)
 {
   csize numChildren = theChildren.size();
 
@@ -158,13 +166,10 @@ bool JSONObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
       while (consumeNext(child, theChildren[i], planState))
       {
-        if (!child->isJSONItem() || 
-            child->getJSONItemKind() != store::StoreConsts::jsonPair)
-        {
-          RAISE_ERROR(zerr::JSDY0001, loc, ERROR_PARAMS(child->printKind()));
-          
-          child->copy(result, copymode);
-        }
+        assert(child->isJSONItem() && 
+               child->getJSONItemKind() == store::StoreConsts::jsonObjectPair);
+
+        child->copy(result, copymode);
       }
     }
   }
@@ -189,31 +194,74 @@ NARY_ACCEPT(JSONObjectIterator);
 JSONArrayIterator::JSONArrayIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& content)
+    std::vector<PlanIter_t>& content,
+    bool copyInput)
   :
-  UnaryBaseIterator<JSONArrayIterator,
-                    PlanIteratorState>(sctx, loc, content)
+  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>(sctx, loc, content)
 {
+  csize numChildren = theChildren.size();
+
+  theCopyInputs.resize(numChildren);
+
+  for (csize i = 0; i < numChildren; ++i)
+  {
+    if (theChildren[i]->isConstructor())
+    {
+      // Note: translator makes sure that a content expr is not a pair constructor
+      assert(dynamic_cast<JSONPairIterator*>(theChildren[i].getp()) == NULL);
+
+      theCopyInputs[i] = false;
+    }
+    else
+    {
+      theCopyInputs[i] = copyInput;
+    }
+  }
 }
 
 
 void JSONArrayIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, 
-  (UnaryBaseIterator<JSONArrayIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<JSONArrayIterator, PlanIteratorState>*)this);
+
+  //ar & theCopyInputs; // TODO
 }
 
 
 bool JSONArrayIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::CopyMode copymode;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  try
+  {
+    GENV_ITEMFACTORY->createJSONArray(result);
+
+    for (csize i = 0; i < theChildren.size(); ++i)
+    {
+      copymode.set(theCopyInputs[i], true, true, true);
+
+      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i], planState);
+
+      GENV_STORE.populateJSONArray(result, iter, copymode);
+    }
+  }
+  catch (XQueryException& e)
+  {
+    result = NULL;
+    set_source(e, loc, false);
+    throw;
+  }
+
+  STACK_PUSH(true, state);
   STACK_END(state);
 }
 
 
-UNARY_ACCEPT(JSONArrayIterator);
+NARY_ACCEPT(JSONArrayIterator);
 
 
 }

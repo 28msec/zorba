@@ -263,6 +263,7 @@ public:
 
   virtual store::Iterator_t listMapNames();
 
+
   /*****************************************************************************
   
   *****************************************************************************/
@@ -349,6 +350,15 @@ public:
         bool lazy);
 
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
+
+#ifdef ZORBA_WITH_JSON
+  /* ----------------------- JSON Array  Management --------------------------*/
+
+  void populateJSONArray(
+      store::Item* array,
+      store::Iterator* iter,
+      const store::CopyMode& copymode);
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const* getStemmerProvider() const;

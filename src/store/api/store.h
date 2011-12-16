@@ -48,7 +48,7 @@ public:
   virtual ~Store() { }
 
 
-  /*---------------------------- Zorba Engine Internal ----------------------------*/
+  /*-------------------------- Zorba Engine Internal -------------------------*/
 
   /**
    *  Get the item factory used by this store.
@@ -61,6 +61,8 @@ public:
   virtual IteratorFactory* getIteratorFactory() const = 0;
 
   SYNC_CODE(virtual Lock& getGlobalLock() = 0;)
+
+  /*----------------------------- Temp Sequences -----------------------------*/
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
@@ -87,7 +89,7 @@ public:
    */
   virtual TempSeq_t createTempSeq(bool lazy) = 0;
 
-  /* ----------------------- Node Reference Management -------------------------*/
+  /* ---------------------- Node Reference Management ------------------------*/
 
   /**
    * Computes the reference of the given node.
@@ -294,7 +296,7 @@ public:
   virtual Iterator_t listIndexNames() = 0;
 
 
-  /* ------------------ Integrity Constraints Management ------------------- */
+  /* ------------------- Integrity Constraints Management ------------------- */
 
   /**
    * Lists all active integrity constraints.
@@ -306,11 +308,20 @@ public:
    */
   virtual IC* getIC(const Item* icQName)  = 0;
 
-  /* ------------------------ Map Management ---------------------------*/
+  /* --------------------------- Map Management ------------------------------*/
 
   virtual Index* getMap(const Item* aQName) const = 0;
 
   virtual Iterator_t listMapNames() = 0;
+
+#ifdef ZORBA_WITH_JSON
+  /* ----------------------- JSON Array  Management --------------------------*/
+
+  virtual void populateJSONArray(
+      Item* array,
+      Iterator* iter,
+      const store::CopyMode& copymode) = 0;
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   /* ------------------------ Full-Text -------------------------------------*/
