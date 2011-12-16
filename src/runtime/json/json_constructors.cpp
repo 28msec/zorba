@@ -166,8 +166,7 @@ bool JSONObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
       while (consumeNext(child, theChildren[i], planState))
       {
-        assert(child->isJSONItem() && 
-               child->getJSONItemKind() == store::StoreConsts::jsonPair);
+        assert(child->isJSONPair());
 
         child->copy(result, copymode);
       }
