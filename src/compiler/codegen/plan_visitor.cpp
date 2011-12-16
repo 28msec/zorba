@@ -3075,35 +3075,10 @@ void end_visit(json_pair_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t name = pop_itstack();
-  PlanIter_t value = pop_itstack();
+  PlanIter_t nameIter = pop_itstack();
+  PlanIter_t valueIter = pop_itstack();
 
-  bool copyInput;
-
-  expr_kind_t inputExprKind = v.get_value_expr()->get_expr_kind();
-
-  switch (inputExprKind)
-  {
-  case doc_expr_kind:
-  case elem_expr_kind:
-  case attr_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  case json_object_expr_kind:
-  case json_array_expr_kind:
-  {
-    copyInput = false;
-  }
-  case json_pair_expr_kind:
-  {
-  }
-  default:
-  {
-    copyInput = true;
-  }
-  }
-
-  push_itstack(new JSONPairIterator(sctx, qloc, name, value, copyInput));
+  push_itstack(new JSONPairIterator(sctx, qloc, nameIter, valueIter, true));
 }
 
 
@@ -3152,6 +3127,28 @@ bool begin_visit(json_array_expr& v)
 void end_visit(json_array_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  std::vector<PlanIter_t> inputs;
+
+  expr* inputExpr = v.get_expr();
+
+  if (inputExpr != NULL)
+  {
+    PlanIter_t inputIter = pop_itstack();
+
+    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
+    {
+      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
+    }
+    else
+    {
+      inputs.push_back(inputIter);
+    }
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONArrayIterator(sctx, qloc, inputs, copyInput));
 }
 
 #endif // ZORBA_WITH_JSON
