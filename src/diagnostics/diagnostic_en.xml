@@ -3306,12 +3306,12 @@
       <value>Zorba warning</value>
     </entry>
 
-    <entry key="JSON parser">
-      <value>JSON parser</value>
+    <entry key="JSON parser error">
+      <value>JSON parser error</value>
     </entry>
 
-    <entry key="JSON serialization">
-      <value>JSON serialization</value>
+    <entry key="JSON serialization error">
+      <value>JSON serialization error</value>
     </entry>
 
     <entry key="dynamic error">
