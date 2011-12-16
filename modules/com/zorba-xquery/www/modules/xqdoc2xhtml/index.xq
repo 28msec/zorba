@@ -1374,9 +1374,9 @@ declare %private function xqdoc2html:module-function-summary($functions)
             <td>
               <tt>{
                 if ($isDeprecated) then
-                  <span class="functName"><del><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></del></span>
+                  <span class="functName"><del><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></del></span>
                 else
-                  <span class="functName"><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></span>
+                  <span class="functName"><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></span>
               }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
