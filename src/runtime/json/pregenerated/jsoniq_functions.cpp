@@ -66,10 +66,6 @@ JSONFlattenIteratorState::~JSONFlattenIteratorState() {}
 void JSONFlattenIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
-
-void JSONFlattenIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </JSONFlattenIterator>
 
 #endif
@@ -128,6 +124,18 @@ void JSONNamesIterator::accept(PlanIterVisitor& v) const {
 
 JSONNamesIterator::~JSONNamesIterator() {}
 
+JSONNamesIteratorState::JSONNamesIteratorState() {}
+
+JSONNamesIteratorState::~JSONNamesIteratorState() {}
+
+
+void JSONNamesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONNamesIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONNamesIterator>
 
 #endif
@@ -186,6 +194,18 @@ void JSONPairsIterator::accept(PlanIterVisitor& v) const {
 
 JSONPairsIterator::~JSONPairsIterator() {}
 
+JSONPairsIteratorState::JSONPairsIteratorState() {}
+
+JSONPairsIteratorState::~JSONPairsIteratorState() {}
+
+
+void JSONPairsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONPairsIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONPairsIterator>
 
 #endif
@@ -244,6 +264,18 @@ void JSONValuesIterator::accept(PlanIterVisitor& v) const {
 
 JSONValuesIterator::~JSONValuesIterator() {}
 
+JSONValuesIteratorState::JSONValuesIteratorState() {}
+
+JSONValuesIteratorState::~JSONValuesIteratorState() {}
+
+
+void JSONValuesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONValuesIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONValuesIterator>
 
 #endif

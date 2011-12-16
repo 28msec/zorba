@@ -97,9 +97,17 @@ JSONLoader::next( )
             }
             else
             {
-              JSONObjectPair* lOPair = cast<JSONObjectPair>(lStack.back());
-              lOPair->setValue(lItem);
-              lStack.pop_back();
+              JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lStack.back().getp());
+              if (lOPair)
+              {
+                lOPair->setValue(lItem);
+                lStack.pop_back();
+              }
+              else
+              {
+                JSONArray* lArray = dynamic_cast<JSONArray*>(lStack.back().getp());
+                lArray->push_back(lItem);
+              }
             }
 
             break;
