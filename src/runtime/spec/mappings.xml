@@ -32,6 +32,10 @@
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>
 
+    <zorba:namespace uri="http://www.jsoniq.org/functions"
+                     define="JSONIQ_FN_NS"
+                     prefix="fn-jsoniq"/>
+
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
       define="ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS"
@@ -189,6 +193,10 @@
     <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
     <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
     <zorba:type zorbaType="ANY_FUNCTION">function()</zorba:type>
+    <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
+    <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
+    <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
+    <zorba:type zorbaType="JSON_PAIR">pair()</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->

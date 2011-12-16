@@ -839,6 +839,13 @@ public:
   virtual store::Item*
   getValue() const;
 
+  /**
+   * defined on JSONObject JSONArray
+   * @return the number of pairs or values in the object or array, resp.
+   */
+  virtual xs_integer
+  getSize() const;
+
 #endif // ZORBA_WITH_JSON
 
 

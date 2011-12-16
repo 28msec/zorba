@@ -159,7 +159,7 @@ bool JSONObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       while (consumeNext(child, theChildren[i], planState))
       {
         if (!child->isJSONItem() || 
-            child->getJSONItemKind() != store::StoreConsts::jsonObjectPair)
+            child->getJSONItemKind() != store::StoreConsts::jsonPair)
         {
           RAISE_ERROR(zerr::JSDY0001, loc, ERROR_PARAMS(child->printKind()));
           

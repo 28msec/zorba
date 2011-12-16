@@ -65,6 +65,10 @@
 #include "runtime/full_text/stemmer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
+#ifdef ZORBA_WITH_JSON
+#  include "store/naive/json_loader.h"
+#endif
+
 namespace zorba
 {
 
@@ -1550,6 +1554,15 @@ TokenizerProvider const* SimpleStore::getTokenizerProvider() const {
     theTokenizerProvider : &default_tokenizer_provider();
 }
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+store::Item_t
+SimpleStore::parseJSON(std::istream& stream)
+{
+  json::JSONLoader lLoader(stream);
+  return lLoader.next();
+}
+#endif /* ZORBA_WITH_JSON */
 
 } // namespace store
 } // namespace zorba

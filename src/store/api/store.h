@@ -344,6 +344,11 @@ public:
   virtual TokenizerProvider const* getTokenizerProvider() const = 0;
 
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+  virtual Item_t parseJSON(std::istream& stream) = 0;
+
+#endif
 };
 
 } // namespace store

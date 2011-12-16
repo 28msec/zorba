@@ -196,7 +196,7 @@ const int RootTypeManager::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
  
 
 #ifdef ZORBA_WITH_JSON
-const XQType* RootTypeManager::JSON_TYPES_MAP[6][4];
+const XQType* RootTypeManager::JSON_TYPES_MAP[4][4];
 #endif
 
 
@@ -439,37 +439,35 @@ RootTypeManager::RootTypeManager()
 #ifdef ZORBA_WITH_JSON
 
 #define JSON_TYPE_DEFN(basename, kind)                                      \
-  basename##_ONE = new JSONXQType(this,                                     \
+  basename##_TYPE_ONE = new JSONXQType(this,                                     \
                                   kind,                                     \
                                   TypeConstants::QUANT_ONE,                 \
                                   true);                                    \
                                                                             \
-  basename##_QUESTION = new JSONXQType(this,                                \
+  basename##_TYPE_QUESTION = new JSONXQType(this,                                \
                                        kind,                                \
                                        TypeConstants::QUANT_QUESTION,       \
                                        true);                               \
                                                                             \
-  basename##_STAR = new JSONXQType(this,                                    \
+  basename##_TYPE_STAR = new JSONXQType(this,                                    \
                                    kind,                                    \
                                    TypeConstants::QUANT_STAR,               \
                                    true);                                   \
                                                                             \
-  basename##_PLUS = new JSONXQType(this,                                    \
+  basename##_TYPE_PLUS = new JSONXQType(this,                                    \
                                    kind,                                    \
                                    TypeConstants::QUANT_PLUS,               \
                                    true);                                   \
                                                                             \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_ONE.getp();   \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_QUESTION.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_STAR.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_STAR] = basename##_STAR.getp();
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_STAR] = basename##_TYPE_STAR.getp();
 
   JSON_TYPE_DEFN(JSON_ITEM, store::StoreConsts::jsonItem);
   JSON_TYPE_DEFN(JSON_OBJECT, store::StoreConsts::jsonObject);
   JSON_TYPE_DEFN(JSON_ARRAY, store::StoreConsts::jsonArray);
   JSON_TYPE_DEFN(JSON_PAIR, store::StoreConsts::jsonPair);
-  JSON_TYPE_DEFN(JSON_OBJECT_PAIR, store::StoreConsts::jsonObjectPair);
-  JSON_TYPE_DEFN(JSON_ARRAY_PAIR, store::StoreConsts::jsonArrayPair);
 
 #undef JSON_TYPE_DEFN
 #endif // ZORBA_WITH_JSON
@@ -554,21 +552,20 @@ RootTypeManager::~RootTypeManager()
 #ifdef ZORBA_WITH_JSON
 
 #define DELETE_JSON_TYPE(tname)    \
-  delete tname##_ONE.getp();       \
-  delete tname##_QUESTION.getp();  \
-  delete tname##_STAR.getp();      \
-  delete tname##_PLUS.getp();      \
-  tname##_ONE.setNull();           \
-  tname##_QUESTION.setNull();      \
-  tname##_STAR.setNull();          \
-  tname##_PLUS.setNull();          \
+  delete tname##_TYPE_ONE.getp();       \
+  delete tname##_TYPE_QUESTION.getp();  \
+  delete tname##_TYPE_STAR.getp();      \
+  delete tname##_TYPE_PLUS.getp();      \
+  tname##_TYPE_ONE.setNull();           \
+  tname##_TYPE_QUESTION.setNull();      \
+  tname##_TYPE_STAR.setNull();          \
+  tname##_TYPE_PLUS.setNull();          \
 
   DELETE_JSON_TYPE(JSON_ITEM)
   DELETE_JSON_TYPE(JSON_OBJECT)
   DELETE_JSON_TYPE(JSON_ARRAY)
   DELETE_JSON_TYPE(JSON_PAIR)
   DELETE_JSON_TYPE(JSON_OBJECT_PAIR)
-  DELETE_JSON_TYPE(JSON_ARRAY_PAIR)
 
 #undef DELETE_JSON_TYPE
 #endif // // ZORBA_WITH_JSON

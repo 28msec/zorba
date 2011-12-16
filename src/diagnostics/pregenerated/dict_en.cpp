@@ -97,6 +97,7 @@ extern entry const dict_en[] = {
 #endif
   { "JSDY0001", "\"$1\" item cannot appear as input to JSON object constructor" },
   { "JSDY0002", "JSON object cannot appear as input to an \"$1\" constructor" },
+  { "JSDY0020", "" },
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },

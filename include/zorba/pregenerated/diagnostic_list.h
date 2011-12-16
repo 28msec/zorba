@@ -746,6 +746,8 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0001;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0002;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0020;
+
 } // namespace zerr
 
 namespace zwarn {
