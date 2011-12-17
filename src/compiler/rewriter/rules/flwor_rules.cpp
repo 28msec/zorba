@@ -892,9 +892,26 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           static_cast<fo_expr*>(whereExpr)->get_func() ==
               GET_BUILTIN_FUNCTION(OP_AND_N))
       {
-
-        newWhereExpr = whereExpr;
-        static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(condExpr);
+        if(condExpr->get_expr_kind() == fo_expr_kind &&
+            static_cast<fo_expr*>(condExpr.getp())->get_func() ==
+                GET_BUILTIN_FUNCTION(OP_AND_N))
+        {
+          newWhereExpr = whereExpr;
+          static_cast<fo_expr*>(newWhereExpr.getp())->add_args(
+              static_cast<fo_expr*>(condExpr.getp())->get_args());
+        }
+        else
+        {
+          newWhereExpr = whereExpr;
+          static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(condExpr);
+        }
+      }
+      else if(condExpr->get_expr_kind() == fo_expr_kind &&
+          static_cast<fo_expr*>(condExpr.getp())->get_func() ==
+              GET_BUILTIN_FUNCTION(OP_AND_N))
+      {
+        newWhereExpr = condExpr;
+        static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(whereExpr);
       }
       else
       {

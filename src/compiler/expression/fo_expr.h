@@ -89,6 +89,8 @@ public:
 
   void add_arg(expr_t e);
 
+  void add_args(const std::vector<expr_t> &args);
+
   void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;

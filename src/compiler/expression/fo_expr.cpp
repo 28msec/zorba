@@ -153,6 +153,12 @@ void fo_expr::add_arg(expr_t e)
   compute_scripting_kind();
 }
 
+void fo_expr::add_args(const std::vector<expr_t> &args)
+{
+  theArgs.insert(theArgs.end(), args.begin(), args.end());
+  compute_scripting_kind();
+}
+
 void fo_expr::compute_scripting_kind()
 {
   const function* func = get_func();
