@@ -335,16 +335,14 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void find_attribute( store::Item_t const &element,
-                            char const *wanted_att_name,
-                            zstring *att_value ) {
+static void get_attribute_value( store::Item_t const &element,
+                                 char const *att_name, zstring *att_value ) {
   store::Iterator_t i( element->getAttributes() );
   bool found = false;
   i->open();
   store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    store::Item const *const att_name = att_item->getNodeName();
-    if ( att_name->getStringValue() == wanted_att_name ) {
+    if ( att_item->getNodeName()->getStringValue() == att_name ) {
       att_item->getStringValue2( *att_value );
       found = true;
       break;
@@ -354,14 +352,14 @@ static void find_attribute( store::Item_t const &element,
   if ( !found )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
-      ERROR_PARAMS( element->getNodeName()->getStringValue(), wanted_att_name )
+      ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
     );
 }
 
 static json::type get_json_type( store::Item_t const &element,
                                  bool allow_all_types = true ) {
   zstring att_value;
-  find_attribute( element, "type", &att_value );
+  get_attribute_value( element, "type", &att_value );
   if ( att_value == "array" )
     return json::array;
   if ( att_value == "object" )
@@ -425,7 +423,7 @@ static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
     );
 
   zstring name_att_value;
-  find_attribute( element, "name", &name_att_value );
+  get_attribute_value( element, "name", &name_att_value );
   json::type const t = get_json_type( element );
 
   o << "<pair name=\"" << name_att_value
