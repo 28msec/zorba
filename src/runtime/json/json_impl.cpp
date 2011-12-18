@@ -485,7 +485,6 @@ static void serialize_children( store::Item_t const &parent,
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
   store::Item_t cur_item;
-  bool did_it = false;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
@@ -509,14 +508,13 @@ bool JSONSerializeInternal::nextImpl( store::Item_t& result,
       // This string copying is inefficient, but I can't see another way.
       zstring temp( oss.str() );
       GENV_ITEMFACTORY->createString( result, temp );
-      did_it = true;
     }
     catch ( ZorbaException &e ) {
       set_source( e, loc );
       throw;
     }
   } // if ( consumeNext( ...
-  STACK_PUSH( did_it, state );
+  STACK_PUSH( !!result, state );
   STACK_END( state );
 }
 
