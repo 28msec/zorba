@@ -382,11 +382,6 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
-inline bool is_element( store::Item_t const &item ) {
-  return  item->isNode() &&
-          item->getNodeKind() == store::StoreConsts::elementNode;
-}
-
 static void serialize_children( store::Item_t const &parent,
                                 json::type parent_type, ostream &o );
 
