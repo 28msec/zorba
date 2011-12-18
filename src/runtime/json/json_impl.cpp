@@ -503,6 +503,7 @@ bool JSONSerializeInternal::nextImpl( store::Item_t& result,
       switch ( cur_item->getNodeKind() ) {
         case store::StoreConsts::documentNode:
           serialize_children( cur_item, json::none, oss );
+          break;
         case store::StoreConsts::elementNode:
           serialize_json_element( cur_item, oss );
           break;
