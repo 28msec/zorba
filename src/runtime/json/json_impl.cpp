@@ -129,6 +129,18 @@ static void add_item_element( item_stack_type &item_stack,
 #define ADD_ITEM_ELEMENT(T) \
   add_item_element( item_stack, state_stack, cur_item, T );
 
+static void escape_chars( zstring *s ) {
+  ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
+  ascii::replace_all( *s, "\\", 1, "\\\\", 2 );
+  ascii::replace_all( *s, "\b", 1, "\\b", 2 );
+  ascii::replace_all( *s, "\f", 1, "\\f", 2 );
+  ascii::replace_all( *s, "\n", 1, "\\n", 2 );
+  ascii::replace_all( *s, "\r", 1, "\\r", 2 );
+  ascii::replace_all( *s, "\t", 1, "\\t", 2 );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool JSONParseInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
@@ -380,6 +392,28 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
+static void serialize_begin( json::type t, ostream &o ) {
+  switch ( t ) {
+    case json::array : o << '['; break;
+    case json::object: o << '{'; break;
+    default          : /* suppress warning */;
+  }
+}
+
+static void serialize_end( json::type t, ostream &o ) {
+  switch ( t ) {
+    case json::array : o << ']'; break;
+    case json::object: o << '}'; break;
+    default          : /* suppress warning */;
+  }
+}
+
+static void serialize_string( zstring const &s, ostream &o ) {
+  zstring temp( s );
+  escape_chars( &temp );
+  o << '"' << temp << '"';
+}
+
 static void serialize_children( store::Item_t const &parent,
                                 json::type parent_type, ostream &o );
 
@@ -393,10 +427,9 @@ static void serialize_json_element( store::Item_t const &element, ostream &o ) {
 
   json::type const t = get_json_type( element, false );
 
-  o << "<json type=\"" << json::type_string_of[ t ]
-    << "\" xmlns=\"" JSON_NS "\">";
+  serialize_begin( t, o );
   serialize_children( element, t, o );
-  o << "</json>";
+  serialize_end( t, o );
 }
 
 static void serialize_item_element( store::Item_t const &element, ostream &o ) {
@@ -409,9 +442,9 @@ static void serialize_item_element( store::Item_t const &element, ostream &o ) {
 
   json::type const t = get_json_type( element );
 
-  o << "<item type=\"" << json::type_string_of[ t ] << "\">";
+  serialize_begin( t, o );
   serialize_children( element, t, o );
-  o << "</item>";
+  serialize_end( t, o );
 }
 
 static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
@@ -426,60 +459,74 @@ static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
   get_attribute_value( element, "name", &name_att_value );
   json::type const t = get_json_type( element );
 
-  o << "<pair name=\"" << name_att_value
-    << "\" type=\"" << json::type_string_of[ t ] << "\">";
+  serialize_string( name_att_value, o );
+  o << ':';
+  serialize_begin( t, o );
   serialize_children( element, t, o );
-  o << "</pair>";
+  serialize_end( t, o );
 }
 
 static void serialize_children( store::Item_t const &parent,
                                 json::type parent_type, ostream &o ) {
-  store::Iterator_t i = parent->getChildren();
-  i->open();
-  store::Item_t child;
-  while ( i->next( child ) ) {
-    switch ( child->getNodeKind() ) {
+  if ( parent_type == json::null )
+    o << "null";
+  else {
+    bool first = true;
+    store::Iterator_t i = parent->getChildren();
+    i->open();
+    store::Item_t child;
+    while ( i->next( child ) ) {
+      if ( first )
+        first = false;
+      else
+        o << ',';
 
-      case store::StoreConsts::elementNode:
-        switch ( parent_type ) {
-          case json::none:
-            serialize_json_element( child, o );
-          case json::array:
-            serialize_item_element( child, o );
-            break;
-          case json::object:
-            serialize_pair_element( child, o );
-            break;
-          default:
-            throw XQUERY_EXCEPTION(
-              zerr::ZJSE0006_NO_ELEMENT_CHILD,
-              ERROR_PARAMS( json::type_string_of[ parent_type ] )
-            );
-        }
-        break;
+      switch ( child->getNodeKind() ) {
 
-      case store::StoreConsts::textNode:
-        switch ( parent_type ) {
-          case json::boolean:
-          case json::number:
-          case json::string:
-            // TODO: should the string be parsed for validity?
-            o << child->getStringValue();
-            break;
-          default:
-            throw XQUERY_EXCEPTION(
-              zerr::ZJSE0007_NO_TEXT_CHILD,
-              ERROR_PARAMS( json::type_string_of[ parent_type ] )
-            );
-        }
-        break;
+        case store::StoreConsts::elementNode:
+          switch ( parent_type ) {
+            case json::none:
+              serialize_json_element( child, o );
+              break;
+            case json::array:
+              serialize_item_element( child, o );
+              break;
+            case json::object:
+              serialize_pair_element( child, o );
+              break;
+            default:
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0006_NO_ELEMENT_CHILD,
+                ERROR_PARAMS( json::type_string_of[ parent_type ] )
+              );
+          }
+          break;
 
-      default:
-        // do nothing
-        break;
-    } // switch
-  } // while
-  i->close();
+        case store::StoreConsts::textNode:
+          switch ( parent_type ) {
+            case json::boolean:
+            case json::number:
+              // TODO: should the string be parsed for validity?
+              o << child->getStringValue();
+              break;
+            case json::string:
+              serialize_string( child->getStringValue(), o );
+              break;
+            default:
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0007_NO_TEXT_CHILD,
+                ERROR_PARAMS( json::type_string_of[ parent_type ] )
+              );
+          }
+          break;
+
+        default:
+          // do nothing
+          break;
+      } // switch
+    } // while
+    i->close();
+  }
 }
 
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
