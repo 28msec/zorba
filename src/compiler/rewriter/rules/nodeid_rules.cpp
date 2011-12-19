@@ -124,9 +124,9 @@ expr_t MarkConsumerNodeProps::apply(
   case block_expr_kind :
   {
     block_expr* seqExpr = static_cast<block_expr *>(node);
-    ulong numChildren = seqExpr->size();
+    csize numChildren = seqExpr->size();
 
-    for (ulong i = 0; i < numChildren-1; ++i)
+    for (csize i = 0; i < numChildren-1; ++i)
     {
       expr_t& child = (*seqExpr)[i];
       set_ignores_sorted_nodes(child.getp(), ANNOTATION_TRUE);
@@ -163,6 +163,7 @@ expr_t MarkConsumerNodeProps::apply(
   }
 
   case var_decl_expr_kind :
+  case var_set_expr_kind :
   {
     break;
   }
@@ -193,7 +194,7 @@ expr_t MarkConsumerNodeProps::apply(
     // Process the clauses in reverse order so that by the time we reach the
     // definition of a LET var, we know if the LET var sequence must be in
     // doc order and/or without duplicates.
-    ulong i = flwor->num_clauses();
+    csize i = flwor->num_clauses();
     for (; i > 0; --i)
     {
       flwor_clause* clause = flwor->get_clause(i-1);
@@ -248,9 +249,9 @@ expr_t MarkConsumerNodeProps::apply(
         // apply the rule recursively on the orderby exprs
         orderby_clause* oc = static_cast<orderby_clause*>(clause);
       
-        ulong numExprs = oc->num_columns();
+        csize numExprs = oc->num_columns();
       
-        for (ulong i = 0; i < numExprs; ++i)
+        for (csize i = 0; i < numExprs; ++i)
         {
           apply(rCtx, oc->get_column_expr(i), modified);
         }
@@ -376,9 +377,9 @@ expr_t MarkConsumerNodeProps::apply(
     
     FunctionConsts::FunctionKind fkind = f->getKind();
     
-    ulong numArgs = fo->num_args();
+    csize numArgs = fo->num_args();
     
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       expr* arg = fo->get_arg(i);
         

@@ -174,6 +174,8 @@ public:
 
   bool insert(store::Item_t& key, store::Item_t& node);
 
+  bool insert(store::IndexKey*& key, store::Item_t& value);
+
   virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
 };
 

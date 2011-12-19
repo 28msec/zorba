@@ -43,15 +43,19 @@ namespace zorba { namespace simplestore {
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
-  theQNamePool(qnPool)
+  theQNamePool(qnPool),
+  theTrueItem(NULL),
+  theFalseItem(NULL)
 {
 }
 
 
 BasicItemFactory::~BasicItemFactory()
 {
+  theFalseItem = NULL;
+  theTrueItem  = NULL;
   theQNamePool = NULL;
-  theUriPool = NULL;
+  theUriPool   = NULL;
 }
 
 
@@ -421,7 +425,22 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  result = new BooleanItem(value);
+  if (value)
+  {
+    if (!theTrueItem)
+    {
+      theTrueItem = new BooleanItem(true);
+    }
+    result = theTrueItem;
+  }
+  else
+  {
+    if (!theFalseItem)
+    {
+      theFalseItem = new BooleanItem(false);
+    }
+    result = theFalseItem;
+  }
   return true;
 }
 

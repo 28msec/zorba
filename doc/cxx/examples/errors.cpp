@@ -139,12 +139,12 @@ error_example_6(Zorba* aZorba)
     // make sure that the warning zwarn::ZWST0002 is turned
     // into an error
     StaticContext_t lCtx = aZorba->createStaticContext();
-    lCtx->declareOption(lQName, "ZWST0002");
+    lCtx->declareOption(lQName, "ZWST0003");
 
     std::ostringstream s;
-    s << "declare namespace unknown = 'unknown-annotation';" << std::endl
-      << "declare %unknown:test variable $var := 3;" << std::endl
-      << "$var" << std::endl;
+    s << "declare namespace z = 'http://www.zorba-xquery.com/annotations';" << std::endl
+      << "declare %z:sequential function local:foo() { 1 };" << std::endl
+      << "local:foo()" << std::endl;
     XQuery_t lQuery = aZorba->compileQuery(s.str(), lCtx); 
 
     std::cout << lQuery << std::endl;

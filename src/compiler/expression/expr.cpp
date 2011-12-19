@@ -1388,7 +1388,7 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 eval_expr::eval_expr(
     static_context* sctx,
     const QueryLoc& loc, 
-    expr_t e,
+    const expr_t& e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
@@ -1402,7 +1402,7 @@ eval_expr::eval_expr(
 
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
+  serialize_baseclass(ar, (namespace_context_base_expr*)this);
   ar & theExpr;
   ar & theVars;
   ar & theArgs;
@@ -1440,7 +1440,7 @@ expr_t eval_expr::clone(substitution_t& s) const
                                                theInnerScriptingKind,
                                                theNSCtx.getp());
 
-  for (ulong i = 0; i < theVars.size(); ++i)
+  for (csize i = 0; i < theVars.size(); ++i)
   {
     var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
     assert(cloneVar != NULL);
@@ -1458,42 +1458,17 @@ expr_t eval_expr::clone(substitution_t& s) const
 debugger_expr::debugger_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aChild,
-    std::list<GlobalBinding> aGlobals,
+    const expr_t& aChild,
     namespace_context* nsCtx,
     bool aIsVarDeclaration)
   :
   namespace_context_base_expr(sctx, loc, debugger_expr_kind, nsCtx),
   theExpr(aChild),
-  theGlobals(aGlobals),
   theIsVarDeclaration(aIsVarDeclaration)
 {
-  theScriptingKind = aChild->get_scripting_detail();
+  compute_scripting_kind();
 }
 
-void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVariables)
-{
-  std::set<const store::Item*> lQNames;
-  checked_vector<var_expr_t>::reverse_iterator it;
-  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-  {
-    if ( lQNames.find((*it)->get_name()) == lQNames.end() )
-    {
-      lQNames.insert( (*it)->get_name() );
-      var_expr_t lValue = (*it);
-      var_expr_t lVariable(new var_expr(theSctx,
-                                        theLoc,
-                                        var_expr::eval_var,
-                                        lValue->get_name() ) );
-      lVariable->set_type( lValue->get_type() );
-      add_var(lVariable, lValue.getp());
-    }
-  }
-}
-
-void debugger_expr::compute_scripting_kind()
-{
-}
 
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -1501,8 +1476,13 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
   ar & theVars;
   ar & theArgs;
-  ar & theGlobals;
   ar & theIsVarDeclaration;
+}
+
+
+void debugger_expr::compute_scripting_kind()
+{
+  theScriptingKind = theExpr->get_scripting_detail();
 }
 #endif
 

@@ -11,7 +11,7 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
-    
+
 <zorba:header>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/schema_types.h</zorba:include>
@@ -57,7 +57,8 @@
     <zorba:member type="xs_unsignedInt" name="theIterator"
                   brief="the current iterator"/>
     <zorba:member type="checked_vector&lt;xs_unsignedInt&gt;" name="theResult"
-                  brief="the resulting vector"/>
+      brief="the resulting vector"/>
+    <zorba:member type="std::istream*" name="theStream" />
   </zorba:state>
 
 </zorba:iterator>
@@ -181,7 +182,7 @@
       fn:substring
   </zorba:description>
 
-  <zorba:function>
+  <zorba:function specializable="true">
     <zorba:signature localname="substring" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:double</zorba:param>
@@ -192,6 +193,28 @@
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:double</zorba:param>
       <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="SubstringIntOptIterator">
+
+  <zorba:description author="Zorba Team">
+      fn:substring
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="substring_int" prefix="op">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="substring_int" prefix="op">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>

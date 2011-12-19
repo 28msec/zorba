@@ -15,7 +15,15 @@
  */
 #include "stdafx.h"
 
+#include "common/shared_types.h"
+#include "types/typeops.h"
+
+#include "functions/function.h"
+#include "functions/function_impl.h"
+
 #include "functions/func_strings.h"
+
+#include "system/globalenv.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -28,19 +36,24 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_concat::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
 BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
-    expr* fo, 
-    ulong input) const 
+    expr* fo,
+    ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
+function* fn_substring::specialize( static_context* sctx,
+    const std::vector<xqtref_t>& argTypes) const
+{
+    return NULL;
+}
 
 }
 

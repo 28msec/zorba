@@ -98,6 +98,7 @@
 #endif
 
 #include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/library.h"
 
 #include "types/typeops.h"
@@ -633,6 +634,41 @@ void end_visit(var_decl_expr& v)
                                          varExpr->get_name(),
                                          varExpr->is_external(),
                                          singleItem));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool begin_visit(var_set_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(var_set_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  const var_expr* varExpr = v.get_var_expr();
+
+  xqtref_t exprType = v.get_expr()->get_return_type();
+
+  PlanIter_t exprIter = pop_itstack();
+
+  CtxVarAssignIterator* iter = 
+  new CtxVarAssignIterator(sctx,
+                           qloc,
+                           varExpr->get_unique_id(),
+                           varExpr->get_name(),
+                           (varExpr->get_kind() == var_expr::local_var),
+                           exprIter);
+  
+  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    iter->setSingleItem();
+
+  push_itstack(iter);
 }
 
 
@@ -2050,7 +2086,8 @@ void end_visit(eval_expr& v)
                                 varnames,
                                 vartypes, 
                                 v.get_inner_scripting_kind(),
-                                localBindings));
+                                localBindings,
+                                false));
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -2076,12 +2113,12 @@ void end_visit(debugger_expr& v)
 
   std::vector<PlanIter_t> argvEvalIter;
 
-  ulong numVars = v.var_count();
+  csize numVars = v.var_count();
   std::vector<store::Item_t> varnames(numVars);
   std::vector<xqtref_t> vartypes(numVars);
 
   //create the eval iterator children
-  for (ulong i = 0; i < numVars; i++) {
+  for (csize i = 0; i < numVars; i++) {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
     argvEvalIter.push_back(pop_itstack());
@@ -2115,8 +2152,9 @@ void end_visit(debugger_expr& v)
                                   argvEvalIter,
                                   varnames,
                                   vartypes,
-                                  SIMPLE_EXPR,
-                                  localBindings));
+                                  SEQUENTIAL_FUNC_EXPR,
+                                  localBindings,
+                                  true));
 
   lDebugIterator->setChildren(&argv);
   lDebugIterator->setVariables(varnames, vartypes);
@@ -2239,7 +2277,7 @@ void end_visit(fo_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  const function* func = v.get_func();
+  function* func = v.get_func();
 
   std::vector<PlanIter_t> argv;
 
@@ -2283,45 +2321,12 @@ void end_visit(fo_expr& v)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setInUpdateExpr();
       }
     }
-#if 0
     else if (func->isUdf())
     {
-      const user_function* udf = static_cast<const user_function*>(func);
-
-      if (udf->isExiting())
-      {
-        TypeManager* tm = v.get_type_manager();
-
-        const xqtref_t& udfType = udf->getSignature().returnType();
-
-        expr* body = udf->getBody();
-
-        std::vector<expr*> exitExprs;
-        ulong numExitExprs;
-        ulong i;
-
-        body->get_exprs_of_kind(exit_expr_kind, exitExprs);
-
-        for (i = 0; i < numExitExprs; ++i)
-        {
-          if (!TypeOps::is_subtype(tm,
-                                   *exitExprs[i]->get_return_type(),
-                                   *udfType,
-                                   loc))
-            break;
-        }
-
-        if (i < numExitExprs)
-        {
-          UDFunctionCallIterator* udfIter = 
-          dynamic_cast<UDFunctionCallIterator*>(iter.getp());
-
-          ZORBA_ASSERT(udfIter != NULL);
-          udfIter->setCheckType();
-        }
-      }
+      // need to computeResultCaching here for iterprint to work
+      user_function* udf = static_cast<user_function*>(func);
+      udf->computeResultCaching(theCCB->theXQueryDiagnostics);
     }
-#endif
   }
   else
   {

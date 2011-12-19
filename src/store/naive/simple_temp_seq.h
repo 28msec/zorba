@@ -35,55 +35,54 @@ typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 ********************************************************************************/
 class SimpleTempSeq : public store::TempSeq
 {
+  friend class SimpleTempSeqIter;
+
 private:
-  std::vector<store::Item_t> theItems;
+  std::vector<store::Item*> theItems; // ref-counting is done manually
+
+private:
+  void clear();
 
 public:
   SimpleTempSeq() { }
 
-  SimpleTempSeq(const std::vector<store::Item_t>& items) : theItems(items) {}
+  SimpleTempSeq(store::Item_t& item) 
+  {
+    theItems.push_back(NULL);
+    theItems[0] = item.release();
+  }
 
-  SimpleTempSeq(store::Iterator_t& iter, bool copy = false);
+  SimpleTempSeq(std::vector<store::Item_t>& items);
+
+  SimpleTempSeq(const store::Iterator_t& iter)
+  {
+    init(iter);
+  }
 
   virtual ~SimpleTempSeq();
 
+  void init(const store::Iterator_t& iter);
+
+  void append(const store::Iterator_t& iter);
+
+  void purge();
+
+  void purgeUpTo(xs_integer upTo);
+
   bool empty();
   
-  xs_integer getSize();
-
-  void init(store::Iterator_t& iter, bool copy = false);
-
-  void append(store::Iterator_t iter, bool copy);
-
-  store::Item_t operator[](xs_integer aIndex);
+  xs_integer getSize() const;
 
   void getItem(xs_integer position, store::Item_t& res);
 
   bool containsItem(xs_integer position);
 
-  store::Iterator_t getIterator();
+  store::Iterator_t getIterator() const;
 
   store::Iterator_t getIterator(
-        xs_integer startPos,
-        xs_integer endPos,
-        bool streaming = false);
-
-  store::Iterator_t getIterator(
-        xs_integer startPos,
-        store::Iterator_t function,
-        const std::vector<store::Iterator_t>& var,
-        bool streaming = false );
-
-  store::Iterator_t getIterator(
-        const std::vector<xs_integer>& positions,
-        bool streaming = false);
-
-  store::Iterator_t getIterator(
-        store::Iterator_t positions,
-        bool streaming = false);
-  
-  void purge();
-  void purgeUpTo(xs_integer upTo );
+      xs_integer startPos,
+      xs_integer endPos,
+      bool streaming = false) const;
 };
 
 
@@ -99,24 +98,24 @@ class SimpleTempSeqIter : public store::TempSeqIterator
     startEnd
   };
 
-  SimpleTempSeq_t     theTempSeq;
-  BorderType          theBorderType;
+  SimpleTempSeq_t                      theTempSeq;
+  BorderType                           theBorderType;
 
-  uint64_t               theCurPos;
-  uint64_t               theStartPos;
-  uint64_t               theEndPos;
+  std::vector<store::Item*>::iterator  theIte;
+  std::vector<store::Item*>::iterator  theBegin;
+  std::vector<store::Item*>::iterator  theEnd;
 
  public:
   SimpleTempSeqIter() {}
 
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
+  SimpleTempSeqIter(const SimpleTempSeq* aTempSeq);
 
   SimpleTempSeqIter(
-      SimpleTempSeq_t aTempSeq,
+      const SimpleTempSeq* aTempSeq,
       xs_integer startPos,
       xs_integer endPos);
 
-  virtual ~SimpleTempSeqIter();
+  ~SimpleTempSeqIter() {}
 
   void init(const store::TempSeq_t& seq);
 

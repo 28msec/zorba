@@ -182,6 +182,7 @@ var_expr* DynamicContextImpl::get_var_expr(
   return var;
 }
 
+
 /****************************************************************************//**
 
 ********************************************************************************/
@@ -592,6 +593,7 @@ DynamicContextImpl::addExternalFunctionParameter (
   return false;
 }
 
+
 /****************************************************************************//**
 
 ********************************************************************************/
@@ -605,6 +607,38 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
   }
   ZORBA_DCTX_CATCH
   return 0;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool 
+DynamicContextImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
+{
+  ZORBA_DCTX_TRY
+  {
+    if(theQuery->isBoundVariable(aNamespace, aLocalname))
+      return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool
+DynamicContextImpl::isBoundContextItem() const
+{
+  ZORBA_DCTX_TRY
+  {
+    String varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
+    if(theQuery->isBoundVariable("", varName))
+      return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
 }
 
 } // namespace zorba

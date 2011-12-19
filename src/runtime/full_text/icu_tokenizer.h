@@ -55,8 +55,8 @@ private:
   typedef std::unique_ptr<RuleBasedBreakIterator> rbbi_ptr;
 
   locale::iso639_1::type const lang_;
-  rbbi_ptr word_;
-  rbbi_ptr sent_;
+  rbbi_ptr word_it_;
+  rbbi_ptr sent_it_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
