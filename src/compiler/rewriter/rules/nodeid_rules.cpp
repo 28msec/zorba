@@ -24,6 +24,7 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "types/typeimpl.h"
@@ -410,18 +411,34 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
   
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind :
+  {
+    break;
+  }
+  case json_object_expr_kind :
+  {
+    json_object_expr* e = static_cast<json_object_expr *>(node);
+    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_TRUE);
+    break;
+  }
+  case json_array_expr_kind :
+  {
+    json_array_expr* e = static_cast<json_array_expr *>(node);
+    e->get_expr()->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+    break;
+  }
+#endif
+
   case attr_expr_kind :
   case elem_expr_kind :
   case pi_expr_kind :
   case text_expr_kind :
   case doc_expr_kind :
 
-  case axis_step_expr_kind :
-  case const_expr_kind :
   case extension_expr_kind :  // TODO
   case flowctl_expr_kind :    // TODO
   case gflwor_expr_kind :     // TODO
-  case match_expr_kind :
   case name_cast_expr_kind :  // TODO
   case trycatch_expr_kind :   // TODO
   case validate_expr_kind :   // TODO
@@ -451,12 +468,19 @@ expr_t MarkConsumerNodeProps::apply(
       if (rCtx.theIsInOrderedMode)
         (*iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
 
-      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
       
       iter.next();
     }
 
     break;
+  }
+
+  case const_expr_kind :
+  case axis_step_expr_kind :
+  case match_expr_kind :
+  {
+    return NULL;
   }
 
   default:

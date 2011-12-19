@@ -171,7 +171,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
     FTSelection::pos_filter_list_t *pos_filter_list;
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
     ft_anyall_mode::type ft_anyall_value;
-    json_test::type json_test_value;
 };
 
 
@@ -284,8 +283,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
-/* Decimal format tokens */
-/* --------------------- */
+    /* Decimal format tokens */
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
 %token GROUPING_SEPARATOR               "'grouping-separator'"
@@ -510,7 +508,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                            "'words'"
 
 /* Data Definition Facility */
-/* ------------------------ */
+
 %token COLLECTION                       "'collection'"
 %token CONSTOPT                         "'const'"
 %token APPEND_ONLY                      "'append-only'"
@@ -540,10 +538,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* JSON */
 /* ---- */
 %token ARRAY                            "'array'"
-%token ARRAY_PAIR                       "'array-pair'"
 %token JSON_ITEM                        "'json-item'"
 %token OBJECT                           "'object'"
-%token OBJECT_PAIR                      "'object-pair'"
 %token PAIR                             "'pair'"
 
 /* Byte Order Marks                  */
@@ -554,8 +550,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %type <expr> LeadingSlash
 
+/* placeholder node for reducing UNRECOGNIZED and generating an error */
+/* ---------------------------- */
+// %type <node> UnrecognizedToken
+
+
 /* left-hand sides: syntax only */
 /* ---------------------------- */
+
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> Annotation
@@ -858,15 +860,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
+%type <expr> opt_Expr
 %type <expr> JSONConstructor
 %type <expr> JSONArrayConstructor
 %type <expr> JSONObjectConstructor
 %type <expr> JSONPairConstructor
-%type <json_test_value> JSONTest
-%type <json_test_value> JSONItemTest
-%type <json_test_value> JSONObjectTest JSONObjectPairTest
-%type <json_test_value> JSONArrayTest JSONArrayPairTest
-%type <json_test_value> JSONPairTest
+%type <node> JSONTest
+%type <node> JSONItemTest
+%type <node> JSONObjectTest
+%type <node> JSONArrayTest
+%type <node> JSONPairTest
 
 %type <fnsig> FunctionSig
 %type <varnametype> VarNameAndType
@@ -929,7 +932,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc TO
 
 %nonassoc JSON_REDUCE
-%nonassoc COLON
+%left COLON
 
 /*_____________________________________________________________________
  *
@@ -3488,7 +3491,8 @@ opt_FTIgnoreOption :
     ;
 
 
-RangeExpr :
+RangeExpr 
+  :
     JSONPairConstructor %prec RANGE_REDUCE
     {
       $$ = $1;
@@ -3500,12 +3504,14 @@ RangeExpr :
 ;
 
 
-JSONPairConstructor :
+JSONPairConstructor
+  :
     AdditiveExpr %prec JSON_REDUCE
     {
       $$ = $1;
     }
-  | AdditiveExpr COLON AdditiveExpr
+  |   
+    AdditiveExpr COLON AdditiveExpr
     {
       $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
     }
@@ -4947,7 +4953,7 @@ ItemType :
         }
     |   JSONTest
         {
-            $$ = new JSON_Test( LOC(@$), $1 );
+            $$ = $1;
         }
     ;
 
@@ -6294,16 +6300,20 @@ FTIgnoreOption :
 /********** JSON *************************************************************/
 
 JSONConstructor
-    :   JSONArrayConstructor
-        {
-          $$ = $1;
-        }
-    |   JSONObjectConstructor
-        {
-          $$ = $1;
-        }
-    ;
+  :
+    JSONArrayConstructor
+    {
+      $$ = $1;
+    }
+  | 
+    JSONObjectConstructor
+    {
+      $$ = $1;
+    }
+;
 
+
+/*
 JSONArrayConstructor :
         LBRACK RBRACK
         {
@@ -6321,75 +6331,96 @@ JSONObjectConstructor
             $$ = new JSON_ObjectConstructor( LOC( @$ ), $1 );
         }
     ;
+*/
+
+
+JSONArrayConstructor
+  :
+    LBRACK opt_Expr RBRACK
+    {
+      $$ = new JSON_ArrayConstructor(LOC(@$), $2);
+    }
+;
+
+
+JSONObjectConstructor
+  :
+    LBRACE opt_Expr RBRACE
+    {
+      $$ = new JSON_ObjectConstructor(LOC(@$), $2);
+    }
+;
+
+
+opt_Expr
+  :   
+    {
+      $$ = NULL;
+    }
+  |
+    Expr
+    {
+      $$ = $1;
+    }
+;
+
 
 JSONTest
-    :   JSONItemTest
-        {
-            $$ = $1;
-        }
-    |   JSONObjectTest
-        {
-            $$ = $1;
-        }
-    |   JSONArrayTest
-        {
-            $$ = $1;
-        }
-    |   JSONPairTest
-        {
-            $$ = $1;
-        }
-    |   JSONObjectPairTest
-        {
-            $$ = $1;
-        }
-    |   JSONArrayPairTest
-        {
-            $$ = $1;
-        }
-    ;
+  :
+    JSONItemTest
+    {
+      $$ = $1;
+    }
+  |
+    JSONObjectTest
+    {
+      $$ = $1;
+    }
+  |
+    JSONArrayTest
+    {
+      $$ = $1;
+    }
+  |
+    JSONPairTest
+    {
+      $$ = $1;
+    }
+;
+
 
 JSONItemTest
-    :   JSON_ITEM LPAR RPAR
-        {
-            $$ = json_test::json_item;
-        }
-    ;
+  :
+    JSON_ITEM LPAR RPAR
+    {
+      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+    }
+;
 
 JSONObjectTest
-    :   OBJECT LPAR RPAR
-        {
-            $$ = json_test::object;
-        }
-    ;
+  :
+    OBJECT LPAR RPAR
+    {
+      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+    }
+;
 
 JSONArrayTest
-    :   ARRAY LPAR RPAR
-        {
-            $$ = json_test::array;
-        }
-    ;
+  :
+    ARRAY LPAR RPAR
+    {
+      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+    }
+;
 
 JSONPairTest
-    :   PAIR LPAR RPAR
-        {
-            $$ = json_test::pair;
-        }
-    ;
+  :
+    PAIR LPAR RPAR
+    {
+      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonPair);
+    }
+;
 
-JSONObjectPairTest
-    :   OBJECT_PAIR LPAR RPAR
-        {
-            $$ = json_test::object_pair;
-        }
-    ;
-
-JSONArrayPairTest
-    :   ARRAY_PAIR LPAR RPAR
-        {
-            $$ = json_test::array_pair;
-        }
-    ;
 
 
 /*_______________________________________________________________________
@@ -6634,6 +6665,10 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
+|   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+|   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); } 
+|   PAIR                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pair"))); }
+|   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
     ;
 
 // [196]

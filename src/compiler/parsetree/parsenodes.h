@@ -25,8 +25,9 @@
 #include <typeinfo>
 #include <vector>
 
+#include <zorba/store_consts.h>
+
 #include "compiler/parser/ft_types.h"
-#include "compiler/parser/json_types.h"
 #include "compiler/parsetree/parsenode_base.h"
 
 #include "store/api/item.h"
@@ -6441,10 +6442,8 @@ protected:
 class JSON_ArrayConstructor : public JSON_Constructor 
 {
 public:
-  JSON_ArrayConstructor(
-    QueryLoc const&,
-    exprnode const*
-  );
+  JSON_ArrayConstructor(QueryLoc const&, exprnode const*);
+
   ~JSON_ArrayConstructor();
 
   exprnode const* get_expr() const { return expr_; }
@@ -6459,29 +6458,29 @@ private:
 
 class JSON_ObjectConstructor : public JSON_Constructor 
 {
+private:
+  const exprnode* const expr_;
+
 public:
-  JSON_ObjectConstructor(
-    QueryLoc const&,
-    exprnode const*
-  );
+  JSON_ObjectConstructor(QueryLoc const&, exprnode const*);
+
   ~JSON_ObjectConstructor();
 
-  exprnode const* get_expr() const { return expr_; }
+  const exprnode* get_expr() const { return expr_; }
 
-  // inherited
-  void accept( parsenode_visitor& ) const;
-
-private:
-  exprnode const *const expr_;
+  void accept(parsenode_visitor&) const;
 };
 
-class JSON_PairConstructor : public JSON_Constructor {
+
+class JSON_PairConstructor : public JSON_Constructor 
+{
+private:
+  exprnode const *const expr1_;
+  exprnode const *const expr2_;
+
 public:
-  JSON_PairConstructor(
-    QueryLoc const&,
-    exprnode const*,
-    exprnode const*
-  );
+  JSON_PairConstructor(QueryLoc const&, exprnode const*,  exprnode const*);
+
   ~JSON_PairConstructor();
 
   exprnode const* get_expr1() const { return expr1_; }
@@ -6489,22 +6488,21 @@ public:
 
   // inherited
   void accept( parsenode_visitor& ) const;
-
-private:
-  exprnode const *const expr1_;
-  exprnode const *const expr2_;
 };
 
-class JSON_Test : public parsenode {
-public:
-  JSON_Test( QueryLoc const&, json_test::type jt );
 
-  json_test::type get() const { return jt_; }
+class JSON_Test : public parsenode 
+{
 
-  // inherited
-  void accept( parsenode_visitor& ) const;
 private:
-  json_test::type jt_;
+  store::StoreConsts::JSONItemKind jt_;
+
+public:
+  JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind jt);
+
+  store::StoreConsts::JSONItemKind get_kind() const { return jt_; }
+
+  void accept(parsenode_visitor&) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

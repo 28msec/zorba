@@ -363,7 +363,6 @@ public:
       std::istream& stream,
       internal::diagnostic::location* relative_error_loc
     ) = 0;
-
 #endif
 };
 

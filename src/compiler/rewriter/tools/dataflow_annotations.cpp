@@ -211,6 +211,17 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case pi_expr_kind:
     compute_pi_expr(static_cast<pi_expr *>(e));
     break;
+
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+  }
+#endif
     
   case dynamic_function_invocation_expr_kind: // TODO
   case function_item_expr_kind: // TODO

@@ -372,6 +372,12 @@ public:
      - F(I) = error
 
   4. Put F(I) in the output sequence.
+
+  theFnQName:
+  -----------
+  Stores the QName of the function, if the promote expr is used to cast the
+  function's body to its result type
+  
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {

@@ -550,6 +550,18 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "keys" { return token::KEYS; }
 
 
+  /*______________________________________________________________________
+   |
+   |  JSONIQ tokens
+   |______________________________________________________________________*/
+
+"object" { return token::OBJECT; }
+"array" { return token::OBJECT; }
+"pair" { return token::PAIR; }
+"json-item" { return token::JSON_ITEM; }
+
+
+
     /*______________________________________________________________________
      |
      | FT tokens

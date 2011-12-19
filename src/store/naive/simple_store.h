@@ -406,7 +406,6 @@ protected:
       std::istream& stream,
       internal::diagnostic::location* relative_error_loc
     );
-
 #endif
 };
 

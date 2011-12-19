@@ -46,6 +46,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
@@ -696,10 +697,12 @@ TranslatorImpl(
   }
 }
 
-~TranslatorImpl() {
+
+~TranslatorImpl() 
+{
 #ifndef ZORBA_NO_FULL_TEXT
-  while ( !theFTNodeStack.empty() )
-    delete ztd::pop_stack( theFTNodeStack );
+  while (!theFTNodeStack.empty())
+    delete ztd::pop_stack(theFTNodeStack);
 #endif
 }
 
@@ -10590,11 +10593,15 @@ void end_visit(const InlineFunction& v, void* aState)
 
 /*******************************************************************************
   JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
+
+  The 1st AdditiveExpr must return exactly one string.
+  The 2nd AdditiveExpr must contain exactly one item of any kind. If that item
+  is another pair, it is unboxed.
 ********************************************************************************/
 void* begin_visit(const JSON_PairConstructor& v) 
 {
   TRACE_VISIT ();
-#ifdef ZORBA_WITH_JSON
+#ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
 #endif
   return no_state;
@@ -10603,6 +10610,31 @@ void* begin_visit(const JSON_PairConstructor& v)
 void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  expr_t valueExpr = pop_nodestack();
+  expr_t nameExpr = pop_nodestack();
+
+  nameExpr = wrap_in_atomization(nameExpr);
+  nameExpr = new promote_expr(theRootSctx,
+                              nameExpr->get_loc(), 
+                              nameExpr, 
+                              GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                              NULL);
+
+  if (valueExpr->get_expr_kind() == json_pair_expr_kind)
+    valueExpr = static_cast<json_pair_expr*>(valueExpr.getp())->get_value_expr();
+
+  valueExpr = new promote_expr(theRootSctx,
+                               valueExpr->get_loc(), 
+                               valueExpr,
+                               GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+                               NULL);
+
+  json_pair_expr* jp = new json_pair_expr(theRootSctx, loc, nameExpr, valueExpr);
+
+  push_nodestack(jp);
+#endif
 }
 
 
@@ -10610,14 +10642,57 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
   JSONConstructor ::= ObjectConstructor | ArrayConstructor
 ********************************************************************************/
 
+/*******************************************************************************
+  ObjectConstructor ::= "{" Expr? "}"
+
+  The Expr must return a sequence of zero or more pairs
+********************************************************************************/
+void* begin_visit(const JSON_ObjectConstructor& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  expr_t contentExpr;
+
+  if (v.get_expr() != NULL)
+  {
+    contentExpr = pop_nodestack();
+
+    contentExpr = new treat_expr(theRootSctx,
+                                 contentExpr->get_loc(),
+                                 contentExpr,
+                                 GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR,
+                                 err::XPTY0004,
+                                 true,
+                                 NULL);
+  }
+
+  json_object_expr* jo = new json_object_expr(theRootSctx, loc, contentExpr);
+
+  push_nodestack(jo);
+#endif
+}
+
 
 /*******************************************************************************
   ArrayConstructor ::= "[" Expr? "]"
+
+  The Expr may return a sequence of zero or more items. If any of those items
+  is a pair, it is unboxed.
 ********************************************************************************/
 void* begin_visit(const JSON_ArrayConstructor& v)
 {
   TRACE_VISIT();
-#ifdef ZORBA_WITH_JSON
+#ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
 #endif
   return no_state;
@@ -10630,27 +10705,29 @@ void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
   expr_t contentExpr;
 
   if (v.get_expr() != NULL)
+  {
     contentExpr = pop_nodestack();
 
-  push_nodestack(contentExpr);
+    if (contentExpr->get_function_kind() == FunctionConsts::OP_CONCATENATE_N)
+    {
+      fo_expr* concatExpr = static_cast<fo_expr*>(contentExpr.getp());
+
+      csize numArgs = concatExpr->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (concatExpr->get_arg(i)->get_expr_kind() == json_pair_expr_kind)
+        {
+          json_pair_expr* jp = static_cast<json_pair_expr*>(concatExpr->get_arg(i));
+          concatExpr->set_arg(i, jp->get_value_expr());
+        }
+      }
+    }
+  }
+
+  json_array_expr* ja = new json_array_expr(theRootSctx, loc, contentExpr);
+
+  push_nodestack(ja);
 #endif
-}
-
-
-/*******************************************************************************
-  ObjectConstructor ::= "{" Expr? "}"
-********************************************************************************/
-void* begin_visit(const JSON_ObjectConstructor& v)
-{
-  TRACE_VISIT();
-#ifdef ZORBA_WITH_JSON
-#endif
-  return no_state;
-}
-
-void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT();
 }
 
 
@@ -11634,9 +11711,9 @@ void* begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit (const SequenceType& v, void* /*visit_state*/)
+void end_visit(const SequenceType& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -11656,11 +11733,11 @@ void* begin_visit(const OccurrenceIndicator& v)
   case ParseConstants::occurs_zero_or_more:
     q = TypeConstants::QUANT_STAR; break;
   case ParseConstants::occurs_never:
-    ZORBA_ASSERT (false);
+    ZORBA_ASSERT(false);
   }
 
   if (q != TypeConstants::QUANT_ONE)
-    theTypeStack.push (CTX_TM->create_type (*pop_tstack (), q));
+    theTypeStack.push(CTX_TM->create_type(*pop_tstack(), q));
 
   return no_state;
 }
@@ -11711,7 +11788,54 @@ void* begin_visit(const ItemType& v)
 void end_visit(const ItemType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  theTypeStack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  theTypeStack.push(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+}
+
+
+/*******************************************************************************
+
+  JSONTest
+
+  JSONTest ::= JSONItemTest | JSONObjectTest | JSONArrayTest | JSONPairTest
+
+  JSONItemTest ::= "json-item" "(" ")"
+  JSONObjectTest ::= "object" "(" ")"
+  JSONArrayTest ::= "array" "(" ")"
+  JSONPairTest ::= "pair" "(" ")"
+
+********************************************************************************/
+
+void* begin_visit(const JSON_Test& v) 
+{
+  TRACE_VISIT ();
+#ifdef ZORBA_WITH_JSON
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  switch (v.get_kind())
+  {
+  case store::StoreConsts::jsonPair:
+    theTypeStack.push(rtm.JSON_PAIR_TYPE_ONE);
+    break;
+
+  case store::StoreConsts::jsonObject:
+    theTypeStack.push(rtm.JSON_OBJECT_TYPE_ONE);
+    break;
+
+  case store::StoreConsts::jsonArray:
+    theTypeStack.push(rtm.JSON_ARRAY_TYPE_ONE);
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+#endif /* ZORBA_WITH_JSON */
+  return no_state;
+}
+
+void end_visit(const JSON_Test& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+  // nothing to do
 }
 
 
@@ -13136,13 +13260,15 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTWordsTimes& v) {
+void *begin_visit (const FTWordsTimes& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
+void end_visit (const FTWordsTimes& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftrange *const times = dynamic_cast<ftrange*>( top_ftstack() );
@@ -13153,36 +13279,19 @@ void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTWordsValue& v) {
+void *begin_visit (const FTWordsValue& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
+void end_visit (const FTWordsValue& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//  JSON                                                                      //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-void *begin_visit (const JSON_Test& v ) {
-  TRACE_VISIT ();
-#ifdef ZORBA_WITH_JSON
-  // TODO
-#endif /* ZORBA_WITH_JSON */
-  return no_state;
-}
-
-void end_visit (const JSON_Test& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  // nothing to do
-}
 
 /*******************************************************************************
 

@@ -817,15 +817,17 @@ ostream& json_pair_expr::put(ostream& os) const
 ostream& json_object_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_object_expr);
-  theContentExpr->put(os);
+  if (theContentExpr)
+    theContentExpr->put(os);
   END_PUT();
 }
 
 
 ostream& json_array_expr::put(ostream& os) const
 {
-  BEGIN_PUT(json_object_expr);
-  theContentExpr->put(os);
+  BEGIN_PUT(json_array_expr);
+  if (theContentExpr)
+    theContentExpr->put(os);
   END_PUT();
 }
 #endif

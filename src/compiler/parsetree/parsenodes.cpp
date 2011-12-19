@@ -5647,9 +5647,11 @@ JSON_ArrayConstructor::JSON_ArrayConstructor(
 {
 }
 
+
 JSON_ArrayConstructor::~JSON_ArrayConstructor() {
   delete expr_;
 }
+
 
 void JSON_ArrayConstructor::accept( parsenode_visitor &v ) const
 {
@@ -5657,6 +5659,7 @@ void JSON_ArrayConstructor::accept( parsenode_visitor &v ) const
   ACCEPT( expr_ );
   END_VISITOR();
 }
+
 
 JSON_ObjectConstructor::JSON_ObjectConstructor(
   QueryLoc const &loc,
@@ -5667,9 +5670,11 @@ JSON_ObjectConstructor::JSON_ObjectConstructor(
 {
 }
 
+
 JSON_ObjectConstructor::~JSON_ObjectConstructor() {
   delete expr_;
 }
+
 
 void JSON_ObjectConstructor::accept( parsenode_visitor &v ) const
 {
@@ -5678,21 +5683,25 @@ void JSON_ObjectConstructor::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+
 JSON_PairConstructor::JSON_PairConstructor(
-  QueryLoc const &loc,
-  exprnode const *expr1,
-  exprnode const *expr2
-) :
+    QueryLoc const &loc,
+    exprnode const *expr1,
+    exprnode const *expr2)
+  :
   JSON_Constructor( loc ),
   expr1_( expr1 ),
   expr2_( expr2 )
 {
 }
 
-JSON_PairConstructor::~JSON_PairConstructor() {
+
+JSON_PairConstructor::~JSON_PairConstructor() 
+{
   delete expr1_;
   delete expr2_;
 }
+
 
 void JSON_PairConstructor::accept( parsenode_visitor &v ) const
 {
@@ -5702,16 +5711,15 @@ void JSON_PairConstructor::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
-JSON_Test::JSON_Test(
-  QueryLoc const &loc,
-  json_test::type jt
-) :
-  parsenode( loc ),
-  jt_( jt )
+
+JSON_Test::JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind k) 
+  :
+  parsenode(loc),
+  jt_(k)
 {
 }
 
-void JSON_Test::accept( parsenode_visitor &v ) const
+void JSON_Test::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
