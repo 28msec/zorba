@@ -5,6 +5,7 @@ version 2.2
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Added index management function to the C++ api's StaticCollectionManager.
+  * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
 
 version 2.1
 

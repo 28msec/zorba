@@ -230,19 +230,19 @@ namespace zorba {
       virtual Item
       createCommentNode (
         Item   aParent,
-        String aContent);
+        String &aContent);
 
       virtual Item 
       createPiNode (
         Item   aParent,
-        String aTarget,
-        String aContent,
-        String aBaseUri);
+        String &aTarget,
+        String &aContent,
+        String &aBaseUri);
 
       virtual Item 
       createTextNode(
         Item   parent,
-        String content);
+        String &content);
 
     protected:
       store::ItemFactory* theItemFactory;

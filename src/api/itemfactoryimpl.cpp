@@ -769,10 +769,10 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
 }
 
 
-zorba::Item ItemFactoryImpl::createCommentNode(Item aParent, String aContent)
+zorba::Item ItemFactoryImpl::createCommentNode(Item aParent, String &aContent)
 {
   store::Item_t lItem;
-  zstring lContent = Unmarshaller::getInternalString(aContent);
+  zstring &lContent = Unmarshaller::getInternalString(aContent);
   theItemFactory->createCommentNode(lItem,
                                Unmarshaller::getInternalItem(aParent),
                                lContent);
@@ -780,12 +780,12 @@ zorba::Item ItemFactoryImpl::createCommentNode(Item aParent, String aContent)
 }
 
 
-zorba::Item ItemFactoryImpl::createPiNode(Item aParent, String aTarget, String aContent, String aBaseUri)
+zorba::Item ItemFactoryImpl::createPiNode(Item aParent, String &aTarget, String &aContent, String &aBaseUri)
 {
   store::Item_t lItem;
-  zstring lTarget = Unmarshaller::getInternalString(aTarget);
-  zstring lContent = Unmarshaller::getInternalString(aContent);
-  zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  zstring &lTarget = Unmarshaller::getInternalString(aTarget);
+  zstring &lContent = Unmarshaller::getInternalString(aContent);
+  zstring &lBaseUri = Unmarshaller::getInternalString(aBaseUri);
   theItemFactory->createPiNode(lItem,
                                Unmarshaller::getInternalItem(aParent),
                                lTarget,
@@ -795,7 +795,7 @@ zorba::Item ItemFactoryImpl::createPiNode(Item aParent, String aTarget, String a
 }
 
 
-zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
+zorba::Item ItemFactoryImpl::createTextNode(Item parent, String &content)
 {
   store::Item_t lItem;
   zstring lContent = Unmarshaller::getInternalString(content);

@@ -647,7 +647,7 @@ namespace zorba {
        */
       virtual Item createCommentNode (
             Item   aParent,
-            String aContent) = 0;
+            String &aContent) = 0;
 
       /**
       * Create a new Processing Instruction node N and place it among the
@@ -662,9 +662,9 @@ namespace zorba {
       */
       virtual Item createPiNode (
         Item   aParent,
-        String aTarget,
-        String aContent,
-        String aBaseUri)=0;
+        String &aTarget,
+        String &aContent,
+        String &aBaseUri)=0;
 
       /**
       * Create a new text node N and place it among the
@@ -677,7 +677,7 @@ namespace zorba {
       */
       virtual Item createTextNode(
         Item   parent,
-        String content) = 0;
+        String &content) = 0;
 }; // class ItemFactory
 
 } // namespace zorba
