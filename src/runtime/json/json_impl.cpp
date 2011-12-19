@@ -213,9 +213,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
             ADD_TYPE_ATTRIBUTE( "number" );
             ADD_ITEM_ELEMENT( "number" );
             value = t.get_value();
-            GENV_ITEMFACTORY->createTextNode(
-              junk_item, cur_item, value
-            );
+            GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
             break;
 
           case json::token::string:
@@ -233,7 +231,9 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
             if ( next_string_is_key ) {
               // <pair name="..." ...>
-              GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "pair" );
+              GENV_ITEMFACTORY->createQName(
+                element_name, JSON_NS, "", "pair"
+              );
               type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
               GENV_ITEMFACTORY->createElementNode(
                 cur_item, item_stack.top(),
@@ -246,32 +246,21 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
               GENV_ITEMFACTORY->createAttributeNode(
                 junk_item, cur_item, att_name, type_name, value_item
               );
+
               needs_type_attribute = true;
               next_string_is_key = false;
             } else {
               ADD_ITEM_ELEMENT( "string" );
-              GENV_ITEMFACTORY->createTextNode(
-                junk_item, cur_item, value
-              );
+              GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
             }
             break;
 
           case 'F':
-            ADD_TYPE_ATTRIBUTE( "boolean" );
-            ADD_ITEM_ELEMENT( "boolean" );
-            value = "false";
-            GENV_ITEMFACTORY->createTextNode(
-              junk_item, cur_item, value
-            );
-            break;
-
           case 'T':
             ADD_TYPE_ATTRIBUTE( "boolean" );
             ADD_ITEM_ELEMENT( "boolean" );
-            value = "true";
-            GENV_ITEMFACTORY->createTextNode(
-              junk_item, cur_item, value
-            );
+            value = t.get_type() == 'F' ? "false" : "true";
+            GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
             break;
 
           case json::token::json_null:
@@ -349,16 +338,14 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void find_attribute( store::Item_t const &element,
-                            char const *wanted_att_name,
-                            zstring *att_value ) {
+static void get_attribute_value( store::Item_t const &element,
+                                 char const *att_name, zstring *att_value ) {
   store::Iterator_t i( element->getAttributes() );
   bool found = false;
   i->open();
   store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    store::Item const *const att_name = att_item->getNodeName();
-    if ( att_name->getStringValue() == wanted_att_name ) {
+    if ( att_item->getNodeName()->getStringValue() == att_name ) {
       att_item->getStringValue2( *att_value );
       found = true;
       break;
@@ -366,40 +353,171 @@ static void find_attribute( store::Item_t const &element,
   }
   i->close();
   if ( !found )
-    throw 0;
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
+      ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
+    );
+}
+
+static json::type get_json_type( store::Item_t const &element,
+                                 bool allow_all_types = true ) {
+  zstring att_value;
+  get_attribute_value( element, "type", &att_value );
+  if ( att_value == "array" )
+    return json::array;
+  if ( att_value == "object" )
+    return json::object;
+  if ( allow_all_types ) {
+    if ( att_value == "boolean" )
+      return json::boolean;
+    if ( att_value == "null" )
+      return json::null;
+    if ( att_value == "number" )
+      return json::number;
+    if ( att_value == "string" )
+      return json::string;
+  }
+  throw XQUERY_EXCEPTION(
+    zerr::ZJSE0003_BAD_ATTRIBUTE_VALUE,
+    ERROR_PARAMS( att_value, "type" )
+  );
+}
+
+static void serialize_children( store::Item_t const &parent,
+                                json::type parent_type, ostream &o );
+
+static void serialize_json_element( store::Item_t const &element, ostream &o ) {
+  zstring const element_name( element->getNodeName()->getStringValue() );
+  if ( element_name != "json" )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0004_BAD_ELEMENT,
+      ERROR_PARAMS( element_name, "json" )
+    );
+
+  json::type const t = get_json_type( element, false );
+
+  o << "<json type=\"" << json::type_string_of[ t ]
+    << "\" xmlns=\"" JSON_NS "\">";
+  serialize_children( element, t, o );
+  o << "</json>";
+}
+
+static void serialize_item_element( store::Item_t const &element, ostream &o ) {
+  zstring const element_name( element->getNodeName()->getStringValue() );
+  if ( element_name != "item" )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0005_BAD_CHILD_ELEMENT,
+      ERROR_PARAMS( element_name, "array", "item" )
+    );
+
+  json::type const t = get_json_type( element );
+
+  o << "<item type=\"" << json::type_string_of[ t ] << "\">";
+  serialize_children( element, t, o );
+  o << "</item>";
+}
+
+static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
+  zstring const element_name( element->getNodeName()->getStringValue() );
+  if ( element_name != "pair" )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0005_BAD_CHILD_ELEMENT,
+      ERROR_PARAMS( element_name, "object", "pair" )
+    );
+
+  zstring name_att_value;
+  get_attribute_value( element, "name", &name_att_value );
+  json::type const t = get_json_type( element );
+
+  o << "<pair name=\"" << name_att_value
+    << "\" type=\"" << json::type_string_of[ t ] << "\">";
+  serialize_children( element, t, o );
+  o << "</pair>";
+}
+
+static void serialize_children( store::Item_t const &parent,
+                                json::type parent_type, ostream &o ) {
+  store::Iterator_t i = parent->getChildren();
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getNodeKind() ) {
+
+      case store::StoreConsts::elementNode:
+        switch ( parent_type ) {
+          case json::none:
+            serialize_json_element( child, o );
+          case json::array:
+            serialize_item_element( child, o );
+            break;
+          case json::object:
+            serialize_pair_element( child, o );
+            break;
+          default:
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0006_NO_ELEMENT_CHILD,
+              ERROR_PARAMS( json::type_string_of[ parent_type ] )
+            );
+        }
+        break;
+
+      case store::StoreConsts::textNode:
+        switch ( parent_type ) {
+          case json::boolean:
+          case json::number:
+          case json::string:
+            // TODO: should the string be parsed for validity?
+            o << child->getStringValue();
+            break;
+          default:
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0007_NO_TEXT_CHILD,
+              ERROR_PARAMS( json::type_string_of[ parent_type ] )
+            );
+        }
+        break;
+
+      default:
+        // do nothing
+        break;
+    } // switch
+  } // while
+  i->close();
 }
 
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
   store::Item_t cur_item;
-  store::Item *name_item;
-  zstring type_att_value;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   if ( consumeNext( cur_item, theChildren[0], planState ) ) {
-    switch ( cur_item->getNodeKind() ) {
-      case store::StoreConsts::documentNode:
-      case store::StoreConsts::elementNode:
-        break;
-      default:
-        throw 0;
+    try {
+      ostringstream oss;
+      switch ( cur_item->getNodeKind() ) {
+        case store::StoreConsts::documentNode:
+          serialize_children( cur_item, json::none, oss );
+          break;
+        case store::StoreConsts::elementNode:
+          serialize_json_element( cur_item, oss );
+          break;
+        default:
+          throw XQUERY_EXCEPTION(
+            zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE,
+            ERROR_LOC( loc )
+          );
+      }
+      // This string copying is inefficient, but I can't see another way.
+      zstring temp( oss.str() );
+      GENV_ITEMFACTORY->createString( result, temp );
     }
-
-    name_item = cur_item->getNodeName();
-    // test name_item
-
-    find_attribute( cur_item, "type", &type_att_value );
-    if ( type_att_value == "array" )
-      /* TODO */;
-    else if ( type_att_value == "object" )
-      /* TODO */;
-    else
-      throw 0;
-
-    STACK_PUSH( false, state );
-  }
+    catch ( ZorbaException &e ) {
+      set_source( e, loc );
+      throw;
+    }
+  } // if ( consumeNext( ...
+  STACK_PUSH( !!result, state );
   STACK_END( state );
 }
 
