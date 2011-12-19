@@ -1106,6 +1106,30 @@ ZorbaErrorCode JSDY0002( "JSDY0002" );
 ZorbaErrorCode JSDY0020( "JSDY0020" );
 
 
+ZorbaErrorCode JSDY0040( "JSDY0040" );
+
+
+ZorbaErrorCode ZJPE0001_ILLEGAL_CHARACTER( "ZJPE0001" );
+
+
+ZorbaErrorCode ZJPE0002_ILLEGAL_CODEPOINT( "ZJPE0002" );
+
+
+ZorbaErrorCode ZJPE0003_ILLEGAL_ESCAPE( "ZJPE0003" );
+
+
+ZorbaErrorCode ZJPE0004_ILLEGAL_LITERAL( "ZJPE0004" );
+
+
+ZorbaErrorCode ZJPE0005_ILLEGAL_NUMBER( "ZJPE0005" );
+
+
+ZorbaErrorCode ZJPE0006_UNEXPECTED_TOKEN( "ZJPE0006" );
+
+
+ZorbaErrorCode ZJPE0007_UNTERMINATED_STRING( "ZJPE0007" );
+
+
 } // namespace zerr
 
 namespace zwarn {

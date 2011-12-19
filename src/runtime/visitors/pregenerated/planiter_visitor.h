@@ -251,6 +251,10 @@ namespace zorba{
 
     class FunctionAnnotationsIterator;
 
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
+
 #ifdef ZORBA_WITH_JSON
     class JSONFlattenIterator;
 #endif
@@ -950,6 +954,12 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONFlattenIterator& ) = 0;

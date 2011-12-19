@@ -61,6 +61,10 @@ public:
 
 }
 
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
   CODEGEN_DECL();
 };
 #endif

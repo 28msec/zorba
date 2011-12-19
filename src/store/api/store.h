@@ -359,8 +359,10 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #ifdef ZORBA_WITH_JSON
-  virtual Item_t parseJSON(std::istream& stream) = 0;
-
+  virtual Item_t parseJSON(
+      std::istream& stream,
+      internal::diagnostic::location* relative_error_loc
+    ) = 0;
 #endif
 };
 

@@ -2335,7 +2335,41 @@
     </diagnostic>
 
     <diagnostic code="JSDY0020">
+      <comment>
+        This error maybe raised by the json:size function if the input to
+        the function is a pair. The error message BadArgTypeForFn_2o34o is
+        used with this error.
+      </comment>
     </diagnostic>
+
+    <diagnostic code="JSDY0040">
+      <comment>parser errors raised by the JSONIQLoader</comment>
+      <value>$1</value>
+    </diagnostic>
+
+   <!--////////// JSON Parse Errors ////////////////////////////////////////-->
+
+   <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
+     <value>$1</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+     <value>$1</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+     <value>$1</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+     <value>$1</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+     <value>$1</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+     <value>$1 foo</value>
+   </diagnostic>
+   <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+     <value>$1</value>
+   </diagnostic>
 
   </namespace>
 
@@ -3286,6 +3320,14 @@
       <value>Zorba warning</value>
     </entry>
 
+    <entry key="JSON parser error">
+      <value>JSON parser</value>
+    </entry>
+
+    <entry key="JSON serialization">
+      <value>JSON serialization</value>
+    </entry>
+
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -3436,6 +3478,34 @@
 
     <entry key="ParseFragmentOptionCombinationNotAllowed">
       <value>specifying both $2 and $3 is an error</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_CHARACTER">
+      <value>'$2': illegal JSON character${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_CODEPOINT">
+      <value>"$2": illegal Unicode code-point${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_ESCAPE">
+      <value>'\\$2': illegal JSON character escape${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_LITERAL">
+      <value>illegal JSON literal${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_NUMBER">
+      <value>illegal JSON number${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_TOKEN">
+      <value>"$2": unexpected JSON token${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_UNTERMINATED_STRING">
+      <value>unterminated JSON string${ at 2}</value>
     </entry>
 
   </subvalues>

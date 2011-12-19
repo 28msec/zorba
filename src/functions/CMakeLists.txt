@@ -82,3 +82,9 @@ LIST(APPEND FUNCTIONS_SRCS
     func_reflection.cpp
     func_apply.cpp
 )
+
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND FUNCTIONS_SRCS
+    func_jsoniq_functions_impl.cpp
+  )
+ENDIF (ZORBA_WITH_JSON)

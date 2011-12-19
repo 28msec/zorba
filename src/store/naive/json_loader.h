@@ -33,9 +33,13 @@ class JSONLoader
 {
 protected:
   std::istream& in;
+  internal::diagnostic::location* theRelativeLoc;
 public:
 
-  JSONLoader(std::istream& s);
+  JSONLoader(
+    std::istream& s,
+    internal::diagnostic::location* relative_error_loc
+  );
 
   ~JSONLoader();
 

@@ -379,6 +379,12 @@ namespace zorba {
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
 
+    void beginVisit( const JSONParseInternal& );
+    void endVisit  ( const JSONParseInternal& );
+
+    void beginVisit( const JSONSerializeInternal& );
+    void endVisit  ( const JSONSerializeInternal& );
+
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONFlattenIterator& );
     void endVisit  ( const JSONFlattenIterator& );

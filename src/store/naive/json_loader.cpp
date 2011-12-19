@@ -19,6 +19,7 @@
 #include "simple_item_factory.h"
 #include "store_defs.h"
 #include "simple_store.h"
+#include "diagnostics/diagnostic.h"
 #include <cassert>
 #include <vector>
 
@@ -35,8 +36,12 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-JSONLoader::JSONLoader(std::istream& s)
-  : in(s)
+JSONLoader::JSONLoader(
+    std::istream& s,
+    internal::diagnostic::location* relative_error_loc
+  )
+  : in(s),
+    theRelativeLoc(relative_error_loc)
 {
 }
 
@@ -48,6 +53,53 @@ JSONLoader::~JSONLoader()
 {
 }
 
+#define RAISE_JSON_ERROR_NO_PARAM(msg) \
+  if (theRelativeLoc) \
+  { \
+    throw XQUERY_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          "" \
+        ), \
+        ERROR_LOC(e.get_loc()) \
+     ); \
+  } \
+  else \
+  { \
+    throw ZORBA_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+        ) \
+     ); \
+  } 
+
+#define RAISE_JSON_ERROR_WITH_PARAM(msg, param) \
+  if (theRelativeLoc) \
+  { \
+    throw XQUERY_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          param,  \
+          "" \
+        ), \
+        ERROR_LOC(e.get_loc()) \
+     ); \
+  } \
+  else \
+  { \
+    throw ZORBA_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          param, \
+          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+        ) \
+     ); \
+  } 
 
 /******************************************************************************
 
@@ -69,6 +121,10 @@ JSONLoader::next( )
     std::vector<JSONItem_t> lStack;
 
     parser lParser(in);
+    if (theRelativeLoc)
+    {
+      lParser.set_loc(theRelativeLoc->file(), theRelativeLoc->line(), theRelativeLoc->column()+1);
+    }
 
     token lToken;
 
@@ -160,12 +216,38 @@ JSONLoader::next( )
     }
     return lRootItem;
   }
-  catch (zorba::json::exception& e)
+  catch (zorba::json::unterminated_string& e)
   {
-    std::cerr << e.what() << " at " << e.get_loc() << std::endl;
+    RAISE_JSON_ERROR_NO_PARAM(JSON_UNTERMINATED_STRING)
+  }
+  catch (zorba::json::unexpected_token& e)
+  {
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_UNEXPECTED_TOKEN, e.get_token())
+  }
+  catch (zorba::json::illegal_number& e)
+  {
+    RAISE_JSON_ERROR_NO_PARAM(JSON_ILLEGAL_NUMBER)
+  }
+  catch (zorba::json::illegal_literal& e)
+  {
+    RAISE_JSON_ERROR_NO_PARAM(JSON_ILLEGAL_LITERAL)
+  }
+  catch (zorba::json::illegal_escape& e)
+  {
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_ESCAPE, e.get_escape())
+  }
+  catch (zorba::json::illegal_codepoint& e)
+  {
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_CODEPOINT, e.get_codepoint())
+  }
+  catch (zorba::json::illegal_character& e)
+  {
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_CHARACTER, e.get_char())
   }
   return NULL;
 }
+#undef RAISE_JSON_ERROR_WITH_PARAM
+#undef RAISE_JSON_ERROR_NO_PARAM
 
 void
 JSONLoader::addValue(
