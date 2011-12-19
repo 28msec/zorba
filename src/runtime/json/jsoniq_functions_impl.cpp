@@ -129,7 +129,7 @@ JSONParseIterator::nextImpl(
       // pass the query location of the StringLiteral to the JSON
       // parser such that it can give better error locations.
       // Also, parseJSON already raises an XQueryException with the
-      // location. Hence, no need to catch the exception here
+      // location. Hence, no need to catch and rethrow the exception here
       zorba::internal::diagnostic::location lLoc;
       lLoc = ERROR_LOC(theRelativeLocation);
       result = GENV_STORE.parseJSON(lStr, &lLoc);

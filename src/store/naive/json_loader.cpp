@@ -53,7 +53,30 @@ JSONLoader::~JSONLoader()
 {
 }
 
-#define RAISE_JSON_ERROR(msg, param) \
+#define RAISE_JSON_ERROR_NO_PARAM(msg) \
+  if (theRelativeLoc) \
+  { \
+    throw XQUERY_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          "" \
+        ), \
+        ERROR_LOC(e.get_loc()) \
+     ); \
+  } \
+  else \
+  { \
+    throw ZORBA_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+        ) \
+     ); \
+  } 
+
+#define RAISE_JSON_ERROR_WITH_PARAM(msg, param) \
   if (theRelativeLoc) \
   { \
     throw XQUERY_EXCEPTION( \
@@ -61,8 +84,9 @@ JSONLoader::~JSONLoader()
         ERROR_PARAMS( \
           ZED(msg), \
           param,  \
-          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
-        ) \
+          "" \
+        ), \
+        ERROR_LOC(e.get_loc()) \
      ); \
   } \
   else \
@@ -72,7 +96,7 @@ JSONLoader::~JSONLoader()
         ERROR_PARAMS( \
           ZED(msg), \
           param, \
-          "" \
+          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
         ) \
      ); \
   } 
@@ -194,35 +218,36 @@ JSONLoader::next( )
   }
   catch (zorba::json::unterminated_string& e)
   {
-    RAISE_JSON_ERROR(JSON_UNTERMINATED_STRING, "")
+    RAISE_JSON_ERROR_NO_PARAM(JSON_UNTERMINATED_STRING)
   }
   catch (zorba::json::unexpected_token& e)
   {
-    RAISE_JSON_ERROR(JSON_UNEXPECTED_TOKEN, e.get_token())
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_UNEXPECTED_TOKEN, e.get_token())
   }
   catch (zorba::json::illegal_number& e)
   {
-    RAISE_JSON_ERROR(JSON_ILLEGAL_NUMBER, "")
+    RAISE_JSON_ERROR_NO_PARAM(JSON_ILLEGAL_NUMBER)
   }
   catch (zorba::json::illegal_literal& e)
   {
-    RAISE_JSON_ERROR(JSON_ILLEGAL_LITERAL, "")
+    RAISE_JSON_ERROR_NO_PARAM(JSON_ILLEGAL_LITERAL)
   }
   catch (zorba::json::illegal_escape& e)
   {
-    RAISE_JSON_ERROR(JSON_ILLEGAL_ESCAPE, e.get_escape())
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_ESCAPE, e.get_escape())
   }
   catch (zorba::json::illegal_codepoint& e)
   {
-    RAISE_JSON_ERROR(JSON_ILLEGAL_CODEPOINT, e.get_codepoint())
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_CODEPOINT, e.get_codepoint())
   }
   catch (zorba::json::illegal_character& e)
   {
-    RAISE_JSON_ERROR(JSON_ILLEGAL_CHARACTER, e.get_char())
+    RAISE_JSON_ERROR_WITH_PARAM(JSON_ILLEGAL_CHARACTER, e.get_char())
   }
   return NULL;
 }
-#undef RAISE_JSON_ERROR
+#undef RAISE_JSON_ERROR_WITH_PARAM
+#undef RAISE_JSON_ERROR_NO_PARAM
 
 void
 JSONLoader::addValue(
