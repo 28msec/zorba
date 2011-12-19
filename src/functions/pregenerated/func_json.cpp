@@ -57,7 +57,7 @@ void populate_context_json(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, fn_zorba_json_parse_internal,
-        (createQName("http://www.zorba-xquery.com/modules/converters/json#2","","parse-internal"), 
+        (createQName("http://www.zorba-xquery.com/modules/converters/json","","parse-internal"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_STAR),
@@ -70,7 +70,7 @@ void populate_context_json(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, fn_zorba_json_serialize_internal,
-        (createQName("http://www.zorba-xquery.com/modules/converters/json#2","","serialize-internal"), 
+        (createQName("http://www.zorba-xquery.com/modules/converters/json","","serialize-internal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),

@@ -20,6 +20,7 @@
 #include <zorba/config.h>
 
 #include <exception>
+#include <iostream>
 #include <stack>
 #include <string>
 
@@ -38,6 +39,25 @@ namespace json {
 typedef internal::diagnostic::location location;
 
 ///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A JSON %type is the type of JSON data.  This isn't used by the lexer or
+ * parser implementation at all, but it's handy.
+ */
+enum type {
+  none,   // meaning "not set" as opposed to "null"
+  array,
+  boolean,
+  null,
+  number,
+  object,
+  string
+};
+extern char const *const type_string_of[];
+
+inline std::ostream& operator<<( std::ostream &o, type t ) {
+  return o << type_string_of[ t ];
+}
 
 /**
  * A JSON %token.  Tokens have a type, location at which they were found, and

@@ -2371,6 +2371,30 @@
      <value>$1</value>
    </diagnostic>
 
+   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+
+    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
+      <value>JSON serialization requires document or element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
+      <value>element "$1" missing required "$2" attribute</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
+      <value>"$1": illegal value for attribute "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
+      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
+      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
+      <value>JSON type "$1" can not have a child element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
+      <value>JSON type "$1" can not have a child text node</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3321,11 +3345,11 @@
     </entry>
 
     <entry key="JSON parser error">
-      <value>JSON parser</value>
+      <value>JSON parser error</value>
     </entry>
 
-    <entry key="JSON serialization">
-      <value>JSON serialization</value>
+    <entry key="JSON serialization error">
+      <value>JSON serialization error</value>
     </entry>
 
     <entry key="dynamic error">

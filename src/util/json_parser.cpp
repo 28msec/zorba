@@ -36,7 +36,19 @@ namespace json {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-exception::exception( location const &loc, string const &message ) :
+char const *const type_string_of[] = {
+  "none",
+  "array",
+  "boolean",
+  "null",
+  "number",
+  "object",
+  "string"
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+exception::exception( location const &loc, std::string const &message ) :
   loc_( loc ), message_( message )
 {
 }
@@ -131,6 +143,7 @@ ostream& operator<<( ostream &o, token::type tt ) {
     case token::json_false: o << "false" ; break;
     case token::json_null : o << "null"  ; break;
     case token::json_true : o << "true"  ; break;
+    case token::none      : o << "<none>"; break;
     default               : o << static_cast<char>( tt );
   }
   return o;
@@ -443,7 +456,7 @@ token::type parser::peek_token_debug( int line ) {
 }
 
 void parser::require_token_debug( int line, token::type tt, token *t ) {
-  if ( get_token_debug( line, t ) && t->get_type() != tt )
+  if ( !get_token_debug( line, t ) || t->get_type() != tt )
     throw_unexpected_token( line, *t );
 }
 
@@ -501,11 +514,15 @@ bool parser::get_token( token *t ) {
     peeked_token_.clear();
     return true;
   }
+  t->clear();
   return lexer_.next( t );
 }
 
 bool parser::matches_token( token::type tt, token *t ) {
-  return peek_token() == tt && get_token( t );
+  if ( peek_token() == tt )
+    return get_token( t );
+  *t = peeked_token_;
+  return false;
 }
 
 token::type parser::peek_token() {
@@ -516,7 +533,7 @@ token::type parser::peek_token() {
 
 #if ! DEBUG_JSON_PARSER
 void parser::require_token( token::type tt, token *t ) {
-  if ( GET_TOKEN( t ) && t->get_type() != tt )
+  if ( !get_token( t ) || t->get_type() != tt )
     THROW_UNEXPECTED_TOKEN( *t );
 }
 #endif /* DEBUG_JSON_PARSER */

@@ -347,7 +347,7 @@ const zstring
 static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
 
 const zstring
-static_context::ZORBA_JSON_FN_NS = NS_PRE + "modules/converters/json#2";
+static_context::ZORBA_JSON_FN_NS = NS_PRE + "modules/converters/json";
 
 const zstring
 static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
@@ -453,6 +453,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS);
   }
 

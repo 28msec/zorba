@@ -579,6 +579,19 @@ static void test_unexpected_token() {
 
     ASSERT_EXCEPTION( p.next( &t ), unexpected_token );
   }
+  {
+    char const source[] = "[ 1";
+    istringstream iss( source );
+    parser p( iss );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::begin_array );
+
+    ASSERT_TRUE_AND_NO_EXCEPTION( p.next( &t ) );
+    ASSERT_TRUE( t == token::number );
+
+    ASSERT_EXCEPTION( p.next( &t ), unexpected_token );
+  }
 }
 
 static void test_unterminated_string() {
