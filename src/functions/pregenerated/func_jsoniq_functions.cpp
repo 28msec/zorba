@@ -43,15 +43,6 @@ PlanIter_t fn_jsoniq_flatten::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_parse_json::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONParseIterator(sctx, loc, argv);
-}
 
 #endif
 #ifdef ZORBA_WITH_JSON

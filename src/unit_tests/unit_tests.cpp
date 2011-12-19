@@ -38,9 +38,6 @@ namespace zorba {
      */
     void initializeTestList() {
       libunittests["uri"] = runUriTest;
-#ifdef ZORBA_WITH_JSON
-      libunittests["json_loader"] = runLoaderTest;
-#endif
       libunittests["json_parser"] = json_parser;
 #ifdef ZORBA_WITH_DEBUGGER
 //      libunittests["debugger_protocol"] = runDebuggerProtocolTest;

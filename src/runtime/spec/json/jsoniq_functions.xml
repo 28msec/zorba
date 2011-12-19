@@ -36,7 +36,7 @@
 <zorba:iterator name="JSONParseIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true" generateCodegen="false">
     <zorba:signature localname="parse-json" prefix="fn-jsoniq">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>json-item()?</zorba:output>
@@ -48,6 +48,12 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="QueryLoc" name="aRelativeLocation" />
+  </zorba:constructor>
+
+  <zorba:member type="QueryLoc" name="theRelativeLocation" />
 
 </zorba:iterator>
 

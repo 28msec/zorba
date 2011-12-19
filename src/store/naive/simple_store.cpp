@@ -1599,9 +1599,12 @@ TokenizerProvider const* SimpleStore::getTokenizerProvider() const
 
 #ifdef ZORBA_WITH_JSON
 store::Item_t
-SimpleStore::parseJSON(std::istream& stream)
+SimpleStore::parseJSON(
+    std::istream& stream,
+    internal::diagnostic::location* relative_error_loc
+  )
 {
-  json::JSONLoader lLoader(stream);
+  json::JSONLoader lLoader(stream, relative_error_loc);
   return lLoader.next();
 }
 #endif /* ZORBA_WITH_JSON */

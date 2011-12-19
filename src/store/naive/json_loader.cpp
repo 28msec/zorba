@@ -36,8 +36,12 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-JSONLoader::JSONLoader(std::istream& s)
-  : in(s)
+JSONLoader::JSONLoader(
+    std::istream& s,
+    internal::diagnostic::location* relative_error_loc
+  )
+  : in(s),
+    theRelativeLoc(relative_error_loc)
 {
 }
 
@@ -49,6 +53,29 @@ JSONLoader::~JSONLoader()
 {
 }
 
+#define RAISE_JSON_ERROR(msg, param) \
+  if (theRelativeLoc) \
+  { \
+    throw XQUERY_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          param,  \
+          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+        ) \
+     ); \
+  } \
+  else \
+  { \
+    throw ZORBA_EXCEPTION( \
+        zerr::JSDY0040, \
+        ERROR_PARAMS( \
+          ZED(msg), \
+          param, \
+          "" \
+        ) \
+     ); \
+  } 
 
 /******************************************************************************
 
@@ -70,6 +97,10 @@ JSONLoader::next( )
     std::vector<JSONItem_t> lStack;
 
     parser lParser(in);
+    if (theRelativeLoc)
+    {
+      lParser.set_loc(theRelativeLoc->file(), theRelativeLoc->line(), theRelativeLoc->column()+1);
+    }
 
     token lToken;
 
@@ -163,42 +194,35 @@ JSONLoader::next( )
   }
   catch (zorba::json::unterminated_string& e)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::JSDY0040,
-      ERROR_PARAMS(
-        e.get_loc().line(), e.get_loc().column(),
-        ZED(JSDY0040_unterminated_string)
-      )
-    );
+    RAISE_JSON_ERROR(JSON_UNTERMINATED_STRING, "")
   }
   catch (zorba::json::unexpected_token& e)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::JSDY0040,
-      ERROR_PARAMS(
-        e.get_loc().line(), e.get_loc().column(),
-        ZED(JSDY0040_unexpected_token),
-        e.get_token()
-      )
-    );
+    RAISE_JSON_ERROR(JSON_UNEXPECTED_TOKEN, e.get_token())
   }
   catch (zorba::json::illegal_number& e)
   {
+    RAISE_JSON_ERROR(JSON_ILLEGAL_NUMBER, "")
   }
   catch (zorba::json::illegal_literal& e)
   {
+    RAISE_JSON_ERROR(JSON_ILLEGAL_LITERAL, "")
   }
   catch (zorba::json::illegal_escape& e)
   {
+    RAISE_JSON_ERROR(JSON_ILLEGAL_ESCAPE, e.get_escape())
   }
   catch (zorba::json::illegal_codepoint& e)
   {
+    RAISE_JSON_ERROR(JSON_ILLEGAL_CODEPOINT, e.get_codepoint())
   }
   catch (zorba::json::illegal_character& e)
   {
+    RAISE_JSON_ERROR(JSON_ILLEGAL_CHARACTER, e.get_char())
   }
   return NULL;
 }
+#undef RAISE_JSON_ERROR
 
 void
 JSONLoader::addValue(

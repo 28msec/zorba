@@ -26,6 +26,7 @@
 #include "runtime/json/jsoniq_functions.h"
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorba/internal/diagnostic.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -95,6 +96,8 @@ JSONParseIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t lInput;
+  internal::diagnostic::location lLoc = ERROR_LOC(loc);
+
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -103,14 +106,34 @@ JSONParseIterator::nextImpl(
 
   if (lInput->isStreamable())
   {
-    result = GENV_STORE.parseJSON(lInput->getStream());
+    result = GENV_STORE.parseJSON(lInput->getStream(), 0);
   }
   else
   {
     std::stringstream lStr;
     lStr << lInput->getStringValue();
 
-    result = GENV_STORE.parseJSON(lStr);
+    if (theRelativeLocation == QueryLoc::null)
+    {
+      try
+      {
+        result = GENV_STORE.parseJSON(lStr, 0);
+      } catch (zorba::ZorbaException& e)
+      {
+        set_source(e, theChildren[0]->getLocation());
+        throw;
+      }
+    }
+    else
+    {
+      // pass the query location of the StringLiteral to the JSON
+      // parser such that it can give better error locations.
+      // Also, parseJSON already raises an XQueryException with the
+      // location. Hence, no need to catch the exception here
+      zorba::internal::diagnostic::location lLoc;
+      lLoc = ERROR_LOC(theRelativeLocation);
+      result = GENV_STORE.parseJSON(lStr, &lLoc);
+    }
   }
 
   STACK_PUSH(true, state);

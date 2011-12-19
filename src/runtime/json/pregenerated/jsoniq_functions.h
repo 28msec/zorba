@@ -91,6 +91,8 @@ public:
  */
 class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, PlanIteratorState>
 { 
+protected:
+  QueryLoc theRelativeLocation; //
 public:
   SERIALIZABLE_CLASS(JSONParseIterator);
 
@@ -101,14 +103,18 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<JSONParseIterator, PlanIteratorState>*)this);
+
+    ar & theRelativeLocation;
   }
 
   JSONParseIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    QueryLoc aRelativeLocation)
     : 
-    NaryBaseIterator<JSONParseIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONParseIterator, PlanIteratorState>(sctx, loc, children),
+    theRelativeLocation(aRelativeLocation)
   {}
 
   virtual ~JSONParseIterator();
