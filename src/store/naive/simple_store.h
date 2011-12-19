@@ -343,12 +343,11 @@ public:
 
   store::TempSeq_t createTempSeq(bool lazy);
 
-  store::TempSeq_t createTempSeq(
-        store::Iterator_t& iterator,
-        bool copyNodes ,
-        bool lazy);
+  store::TempSeq_t createTempSeq(const store::Iterator_t& iterator, bool lazy);
 
-  store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
+  store::TempSeq_t createTempSeq(std::vector<store::Item_t>& item_v);
+
+  store::TempSeq_t createTempSeq(store::Item_t& item);
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const* getStemmerProvider() const;

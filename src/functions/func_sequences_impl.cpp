@@ -261,15 +261,28 @@ PlanIter_t fn_subsequence::codegen(
   {
     xs_double dpos = static_cast<const const_expr*>(posExpr)->
                       get_val()->getDoubleValue().round();
-    long pos = static_cast<long>(dpos.getNumber());
+    xs_integer ipos(dpos.getNumber());
 
     xs_double dlen = static_cast<const const_expr*>(lenExpr)->
                       get_val()->getDoubleValue().round();
-    long len = static_cast<long>(dlen.getNumber());
+    xs_integer ilen(dlen.getNumber());
+
+    xs_long pos;
+    xs_long len;
+
+    try
+    {
+      pos = to_xs_long(ipos);
+      len = to_xs_long(ilen);
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-    ulong numSteps = pathExpr->numSteps();
+    csize numSteps = pathExpr->numSteps();
 
     if (pos > 0 && len == 1 && numSteps == 2)
     {
@@ -281,7 +294,204 @@ PlanIter_t fn_subsequence::codegen(
     }
   }
 
+ done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+xqtref_t op_zorba_subsequence_int::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
+{
+  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+}
+
+
+PlanIter_t op_zorba_subsequence_int::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
+{
+  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
+
+  const expr* inputExpr = subseqExpr.get_arg(0);
+
+  const expr* posExpr = subseqExpr.get_arg(1);
+
+  const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
+
+  LetVarIterator* letVarIter;
+  CtxVarIterator* ctxVarIter;
+
+  if (inputExpr->get_expr_kind() == relpath_expr_kind &&
+      posExpr->get_expr_kind() == const_expr_kind &&
+      lenExpr != NULL &&
+      lenExpr->get_expr_kind() == const_expr_kind)
+  {
+    xs_long pos;
+    xs_long len;
+
+    try
+    {
+      pos = static_cast<const const_expr*>(posExpr)->get_val()->getLongValue();
+      len = static_cast<const const_expr*>(lenExpr)->get_val()->getLongValue();
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
+
+    const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
+
+    csize numSteps = pathExpr->numSteps();
+
+    if (pos > 0 && len == 1 && numSteps == 2)
+    {
+      AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
+      assert(input != NULL);
+
+      if (input->setTargetPos(pos-1))
+        return aArgs[0];
+    }
+  }
+  else if ((letVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    const var_expr* inputVar = inputExpr->get_var();
+
+    if (inputVar != NULL &&
+        lenExpr != NULL &&
+        (inputVar->get_kind() == var_expr::let_var ||
+         inputVar->get_kind() == var_expr::win_var ||
+         inputVar->get_kind() == var_expr::non_groupby_var) &&
+        letVarIter->setTargetPosIter(aArgs[1]) &&
+        letVarIter->setTargetLenIter(aArgs[2]))
+    {
+      return aArgs[0];
+    }
+  }
+  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    const var_expr* inputVar = inputExpr->get_var();
+
+    if (inputVar != NULL &&
+        lenExpr != NULL &&
+        !inputVar->is_context_item() &&
+        ctxVarIter->setTargetPosIter(aArgs[1]) &&
+        ctxVarIter->setTargetLenIter(aArgs[2]))
+    {
+      return aArgs[0];
+    }
+  }
+
+ done:
+  return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_sequence_point_access::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
+{
+  return tm->create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
+}
+
+
+PlanIter_t op_zorba_sequence_point_access::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
+{
+  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
+
+  const expr* inputExpr = subseqExpr.get_arg(0);
+
+  const expr* posExpr = subseqExpr.get_arg(1);
+
+  LetVarIterator* inputVarIter;
+  CtxVarIterator* ctxVarIter;
+
+  if (posExpr->get_expr_kind() == const_expr_kind)
+  {
+    store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
+
+    xs_integer pos = posItem->getIntegerValue();;
+
+    if (inputExpr->get_expr_kind() == relpath_expr_kind)
+    {
+      const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
+
+      csize numSteps = pathExpr->numSteps();
+
+      if (pos > Integer(0) && numSteps == 2)
+      {
+        xs_long pos2;
+        try
+        {
+          pos2 = posItem->getLongValue();
+        }
+        catch (std::range_error&)
+        {
+          goto done;
+        }
+
+        AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
+        assert(input != NULL);
+
+        if (input->setTargetPos(pos2 - 1))
+          return aArgs[0];
+      }
+    }
+    else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+    {
+      const var_expr* inputVar = inputExpr->get_var();
+
+      if (inputVar != NULL &&
+          (inputVar->get_kind() == var_expr::let_var ||
+           inputVar->get_kind() == var_expr::win_var ||
+           inputVar->get_kind() == var_expr::non_groupby_var) &&
+          inputVarIter->setTargetPos(pos))
+      {
+        return aArgs[0];
+      }
+    }
+    else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+    {
+      if (ctxVarIter->setTargetPos(pos))
+        return aArgs[0];
+    }
+  }
+  else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    const var_expr* inputVar = inputExpr->get_var();
+
+    if (inputVar != NULL &&
+        (inputVar->get_kind() == var_expr::let_var ||
+         inputVar->get_kind() == var_expr::win_var ||
+         inputVar->get_kind() == var_expr::non_groupby_var) &&
+        inputVarIter->setTargetPosIter(aArgs[1]))
+    {
+      return aArgs[0];
+    }
+  }
+  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    if (ctxVarIter->setTargetPosIter(aArgs[1]))
+      return aArgs[0];
+  }
+
+ done:
+  return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
 }
 
 
@@ -331,182 +541,6 @@ PlanIter_t fn_count::codegen(
   {
     return new FnCountIterator(sctx, loc, argv);
   }
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-xqtref_t op_zorba_subsequence_int::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
-{
-  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
-}
-
-
-PlanIter_t op_zorba_subsequence_int::codegen(
-    CompilerCB* /*cb*/,
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
-{
-  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
-  const expr* inputExpr = subseqExpr.get_arg(0);
-
-  const expr* posExpr = subseqExpr.get_arg(1);
-
-  const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
-
-  LetVarIterator* letVarIter;
-  CtxVarIterator* ctxVarIter;
-
-  if (inputExpr->get_expr_kind() == relpath_expr_kind &&
-      posExpr->get_expr_kind() == const_expr_kind &&
-      lenExpr != NULL &&
-      lenExpr->get_expr_kind() == const_expr_kind)
-  {
-    xs_long pos = static_cast<const const_expr*>(posExpr)->
-                      get_val()->getLongValue();
-
-    xs_long len = static_cast<const const_expr*>(lenExpr)->
-                      get_val()->getLongValue();
-
-    const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
-
-    ulong numSteps = pathExpr->numSteps();
-
-    if (pos > 0 && len == 1 && numSteps == 2)
-    {
-      AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
-      assert(input != NULL);
-
-      if (input->setTargetPos(pos-1))
-        return aArgs[0];
-    }
-  }
-  else if ((letVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
-  {
-    const var_expr* inputVar = inputExpr->get_var();
-
-    if (inputVar != NULL &&
-        lenExpr != NULL &&
-        (inputVar->get_kind() == var_expr::let_var ||
-         inputVar->get_kind() == var_expr::win_var ||
-         inputVar->get_kind() == var_expr::non_groupby_var) &&
-        letVarIter->setTargetPosIter(aArgs[1]) &&
-        letVarIter->setTargetLenIter(aArgs[2]))
-    {
-      return aArgs[0];
-    }
-  }
-  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
-  {
-    const var_expr* inputVar = inputExpr->get_var();
-
-    if (inputVar != NULL &&
-        lenExpr != NULL &&
-        !inputVar->is_context_item() &&
-        ctxVarIter->setTargetPosIter(aArgs[1]) &&
-        ctxVarIter->setTargetLenIter(aArgs[2]))
-    {
-      return aArgs[0];
-    }
-  }
-
-  return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xqtref_t op_zorba_sequence_point_access::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
-{
-  return tm->create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
-}
-
-
-PlanIter_t op_zorba_sequence_point_access::codegen(
-    CompilerCB* /*cb*/,
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
-{
-  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
-  const expr* inputExpr = subseqExpr.get_arg(0);
-
-  const expr* posExpr = subseqExpr.get_arg(1);
-
-  LetVarIterator* inputVarIter;
-  CtxVarIterator* ctxVarIter;
-
-  if (posExpr->get_expr_kind() == const_expr_kind)
-  {
-    store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
-    xs_long pos = posItem->getLongValue();
-
-    if (inputExpr->get_expr_kind() == relpath_expr_kind)
-    {
-      const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
-
-      ulong numSteps = pathExpr->numSteps();
-
-      if (pos > 0 && numSteps == 2)
-      {
-        AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
-        assert(input != NULL);
-
-        if (input->setTargetPos(pos-1))
-          return aArgs[0];
-      }
-    }
-    else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
-    {
-      const var_expr* inputVar = inputExpr->get_var();
-
-      if (inputVar != NULL &&
-          (inputVar->get_kind() == var_expr::let_var ||
-           inputVar->get_kind() == var_expr::win_var ||
-           inputVar->get_kind() == var_expr::non_groupby_var) &&
-          inputVarIter->setTargetPos(pos))
-      {
-        return aArgs[0];
-      }
-    }
-    else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
-    {
-      if (ctxVarIter->setTargetPos(pos))
-        return aArgs[0];
-    }
-  }
-  else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
-  {
-    const var_expr* inputVar = inputExpr->get_var();
-
-    if (inputVar != NULL &&
-        (inputVar->get_kind() == var_expr::let_var ||
-         inputVar->get_kind() == var_expr::win_var ||
-         inputVar->get_kind() == var_expr::non_groupby_var) &&
-        inputVarIter->setTargetPosIter(aArgs[1]))
-    {
-      return aArgs[0];
-    }
-  }
-  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
-  {
-    if (ctxVarIter->setTargetPosIter(aArgs[1]))
-      return aArgs[0];
-  }
-
-  return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
 }
 
 

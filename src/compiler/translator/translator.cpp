@@ -1680,7 +1680,6 @@ void wrap_in_debugger_expr(
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aLoc,
                                                          aExpr,
-                                                         thePrologVars,
                                                          theNSCtx,
                                                          aIsVarDeclaration));
 
@@ -1702,23 +1701,24 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      store::Item* lVarname = (*lIter)->get_name();
+      var_expr* argVar = *lIter;
+
+      store::Item* lVarname = argVar->get_name();
+
       if (lVarname->getStringValue() == "$$dot")
       {
         continue;
       }
 
-      var_expr_t ve = create_var(lBreakable.getLocation(),
-                                 lVarname,
-                                 var_expr::eval_var,
-                                 NULL).dyn_cast<var_expr>();
+      var_expr_t evalVar = create_var(lBreakable.getLocation(),
+                                      lVarname,
+                                      var_expr::eval_var,
+                                      NULL);
 
-      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
-
-      expr_t val = new wrapper_expr(theRootSctx,
-                                    lBreakable.getLocation(),
-                                    rchandle<expr>(lVe));
-      lExpr->add_var(ve, val);
+      expr_t argExpr = new wrapper_expr(theRootSctx,
+                                        lBreakable.getLocation(),
+                                        rchandle<expr>(argVar));
+      lExpr->add_var(evalVar, argExpr);
     }
 
     aExpr = lExpr.release();
@@ -1838,17 +1838,17 @@ void collect_flwor_vars (
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. var_dec_expr(varExpr, initExpr)
+  1. var_decl_expr(varExpr, initExpr)
 
-  2. var_dec_expr(varExpr, initExpr)
+  2. var_decl_expr(varExpr, initExpr)
 
-     In this case, the var_dec_expr will be a NOOP if a value has been assigned
+     In this case, the var_decl_expr will be a NOOP if a value has been assigned
      to the external var via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. var_dec_expr(varExpr)
+  3. var_decl_expr(varExpr)
 
-  4. var_dec_expr(varExpr)
+  4. var_decl_expr(varExpr)
 
      In this case, the variable must be initialized via the c++ api before the
      query is executed, and it is this external intialization that will declare
@@ -3152,7 +3152,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    ulong numParams = (ulong)params->size();
+    csize numParams = params->size();
 
     std::vector<xqtref_t> paramTypes;
 
@@ -3188,12 +3188,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3204,7 +3198,7 @@ void* begin_visit(const VFO_DeclList& v)
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ? 
+    bool isSequential = (theAnnotations ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -3226,9 +3220,9 @@ void* begin_visit(const VFO_DeclList& v)
       if (f.getp() != 0)
       {
         // We make sure that the types of the parameters and the return type
-        // are equal to the one that is declared in the module
+        // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -3367,7 +3361,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-  ulong numParams = v.get_param_count();
+  csize numParams = v.get_param_count();
 
   function* lFunc = lookup_fn(v.get_name(), numParams, loc);
 
@@ -3452,7 +3446,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
       ZORBA_ASSERT(flwor != NULL);
 
-      for (ulong i = 0; i < numParams; ++i)
+      for (csize i = 0; i < numParams; ++i)
       {
         const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3817,23 +3811,9 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                           "\'" + lExpandedQName->getNamespace() + "\'"
-                           : lExpandedQName->getPrefix())
-                    + ":" + lExpandedQName->getLocalName()));
+      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
+                    + ":" + lExpandedQName->getLocalName())));
     }
-  }
-  else
-  {
-    // annotation in unknown namespace -- generate a warning
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(
-        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
-        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                      "\'" + lExpandedQName->getNamespace() + "\'"
-                      : lExpandedQName->getPrefix())
-                      + ":" + lExpandedQName->getLocalName()),
-        WARN_LOC(loc)));
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -4173,12 +4153,12 @@ void* begin_visit(const AST_IndexDecl& v)
   if (theAnnotations)
   {
     if (ZANN_CONTAINS(zann_general_equality) ||
-        ZANN_CONTAINS(zann_general_range)) 
+        ZANN_CONTAINS(zann_general_range))
     {
       index->setGeneral(true);
     }
     if (ZANN_CONTAINS(zann_general_range) ||
-        ZANN_CONTAINS(zann_value_range)) 
+        ZANN_CONTAINS(zann_value_range))
     {
       index->setMethod(IndexDecl::TREE);
     }
@@ -5457,11 +5437,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   if (varType != NULL)
     valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
 
-  push_nodestack(new fo_expr(theRootSctx,
-                             loc,
-                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
-                             ve,
-                             valueExpr));
+  push_nodestack(new var_set_expr(theRootSctx, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve.getp());
 }
@@ -5895,9 +5871,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = expandQueryLoc(
-    v.get_name()->get_location(),
-    domainExpr->get_loc());
+  QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                              domainExpr->get_loc());
+
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
@@ -6004,9 +5980,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     // it's important to insert the debugger before the scope is pushed.
     // Otherwise, the variable in question would already be in scope for
     // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(
-      v.get_name()->get_location(),
-      domainExpr->get_loc());
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                domainExpr->get_loc());
+
     wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
     push_scope();
@@ -7245,7 +7221,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 /*******************************************************************************
   QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
 
-  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle 
+  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle
                      ("," "$" VarName TypeDeclaration? "in" ExprSingle)*
 
   A universally quantified expr is translated into a flwor expr:
@@ -9190,13 +9166,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t condExpr;
   std::vector<expr_t> condOperands(3);
 
-  condOperands[0] = 
+  condOperands[0] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = 
+  condOperands[1] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = 
+  condOperands[2] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
@@ -9695,6 +9671,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
+      case FunctionConsts::FN_SUBSTRING_2:
+      case FunctionConsts::FN_SUBSTRING_3:
       {
         std::reverse(arguments.begin(), arguments.end());
 
@@ -9704,7 +9682,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -9714,7 +9695,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
               TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
@@ -10070,9 +10054,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
@@ -10359,11 +10343,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  try 
+  try
   {
     arity = to_xs_unsignedInt(v.getArity());
   }
-  catch ( std::range_error const& ) 
+  catch ( std::range_error const& )
   {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));

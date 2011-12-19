@@ -133,10 +133,10 @@ public:
 
 public:
   var_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        var_kind k,
-        store::Item* name);
+      static_context* sctx,
+      const QueryLoc& loc,
+      var_kind k,
+      store::Item* name);
 
   ulong get_unique_id() const { return theUniqueId; }
 

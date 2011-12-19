@@ -168,7 +168,15 @@ public:
 
   xqtref_t& returnType() { return theTypes[0]; }
 
-  bool equals(const TypeManager* tm, const signature& s) const;
+  bool equals(
+      const TypeManager* tm,
+      const signature& s,
+      const QueryLoc& loc) const;
+
+  bool subtype(
+      const TypeManager* tm,
+      const signature& s,
+      const QueryLoc& loc) const;
 };
 
 } /* namespace zorba */

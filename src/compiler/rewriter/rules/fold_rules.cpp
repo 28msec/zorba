@@ -225,7 +225,6 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
   }
 
-
   // Process the subexprs of the current expr. If any of the children is 
   // nondiscardable, unfoldable, or contains recursive calls, then the current
   // expr is also nondiscardable, unfoldable, or contains recursive calls.

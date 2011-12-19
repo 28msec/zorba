@@ -813,6 +813,9 @@ namespace zorba {
     void beginVisit( const SubstringIterator& );
     void endVisit  ( const SubstringIterator& );
 
+    void beginVisit( const SubstringIntOptIterator& );
+    void endVisit  ( const SubstringIntOptIterator& );
+
     void beginVisit( const StringLengthIterator& );
     void endVisit  ( const StringLengthIterator& );
 
