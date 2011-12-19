@@ -1,4 +1,4 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json#2";
+import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
 let $json := '{ "a" : 1 }'
 return json:parse( $json )

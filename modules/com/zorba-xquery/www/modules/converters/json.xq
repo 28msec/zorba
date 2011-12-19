@@ -57,7 +57,7 @@ xquery version "3.0";
   : @project data processing/data converters
   :
   :)
-module namespace json = "http://www.zorba-xquery.com/modules/converters/json#2";
+module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
