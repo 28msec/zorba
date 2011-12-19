@@ -798,7 +798,7 @@ zorba::Item ItemFactoryImpl::createPiNode(Item aParent, String &aTarget, String 
 zorba::Item ItemFactoryImpl::createTextNode(Item parent, String &content)
 {
   store::Item_t lItem;
-  zstring lContent = Unmarshaller::getInternalString(content);
+  zstring &lContent = Unmarshaller::getInternalString(content);
   theItemFactory->createTextNode(lItem,
                                  Unmarshaller::getInternalItem(parent),
                                  lContent);
