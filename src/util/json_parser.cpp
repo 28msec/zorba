@@ -36,7 +36,19 @@ namespace json {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-exception::exception( location const &loc, string const &message ) :
+char const *const type_string_of[] = {
+  "none",
+  "array",
+  "boolean",
+  "null",
+  "number",
+  "object",
+  "string"
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+exception::exception( location const &loc, std::string const &message ) :
   loc_( loc ), message_( message )
 {
 }
