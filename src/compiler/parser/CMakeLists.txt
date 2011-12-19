@@ -18,7 +18,6 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 SET(PARSER_SRCS
     ft_types.cpp
     symbol_table.cpp
-    json_types.cpp
     xquery_driver.cpp
     query_loc.cpp
     xqdoc_comment.cpp)

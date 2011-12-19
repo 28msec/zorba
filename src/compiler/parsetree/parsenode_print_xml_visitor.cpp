@@ -29,26 +29,28 @@ namespace zorba {
 #define INDENT_DEC  theIndent -= 2
 #define NL  os << std::endl
 
-class ParseNodePrintXMLVisitor : public parsenode_visitor {
-
+class ParseNodePrintXMLVisitor : public parsenode_visitor 
+{
 protected:
-    int theIndent;
-    std::ostream& os;
+  int            theIndent;
+  std::ostream & os;
 
 public:
 
 ParseNodePrintXMLVisitor(std::ostream &aStream)
-  : theIndent(0),
-    os(aStream)
+  :
+  theIndent(0),
+  os(aStream)
 {
 }
 
+
 void print(const parsenode* p)
 {
-    os << "<?xml version='1.0' ?>" << std::endl;
-    os << "<ParseNodeTree>" << std::endl;
-    p->accept(*this);
-    os << "</ParseNodeTree>" << std::endl;
+  os << "<?xml version='1.0' ?>" << std::endl;
+  os << "<ParseNodeTree>" << std::endl;
+  p->accept(*this);
+  os << "</ParseNodeTree>" << std::endl;
 }
 
 #define IDS \
@@ -61,6 +63,7 @@ void print(const parsenode* p)
     INDENT_INC; NL;                             \
     return no_state;                            \
   }
+
 
 #define NO_END_TAG( cls )                                     \
   void end_visit(const cls& /*n*/, void* /*visit_state*/) {}
@@ -78,27 +81,29 @@ void print(const parsenode* p)
 
 void *begin_visit(const AbbrevForwardStep &n)
 {
-    INDENT;
+  INDENT;
 
-    os << "<AbbrevForwardStep" << IDS;
-    if (n.get_attr_bit ()) os << " attr='true'";
-    os << ">";
+  os << "<AbbrevForwardStep" << IDS;
+  if (n.get_attr_bit ()) os << " attr='true'";
+  os << ">";
 
-    INDENT_INC; NL;
-    return no_state;
+  INDENT_INC; NL;
+  return no_state;
 }
+
 
 void *begin_visit(const CaseClause &n)
 {
-    INDENT;
+  INDENT;
 
-    os << "<CaseClause" << IDS << " var='" << n.get_varname () << "'";
+  os << "<CaseClause" << IDS << " var='" << n.get_varname () << "'";
 
-    os << ">";
+  os << ">";
 
-    INDENT_INC; NL;
-    return no_state;
+  INDENT_INC; NL;
+  return no_state;
 }
+
 
 void *begin_visit(const DefaultNamespaceDecl &n)
 {
@@ -1020,41 +1025,54 @@ BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
 
-void* begin_visit( JSON_ArrayConstructor const &n ) {
+void* begin_visit( JSON_ArrayConstructor const &n ) 
+{
   INDENT;
   os << "<JSON_ArrayConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
+
 END_TAG( JSON_ArrayConstructor )
 
-void* begin_visit( JSON_ObjectConstructor const &n ) {
+
+void* begin_visit( JSON_ObjectConstructor const& n) 
+{
   INDENT;
   os << "<JSON_ObjectConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
+
 END_TAG( JSON_ObjectConstructor )
 
-void* begin_visit( JSON_PairConstructor const &n ) {
+
+void* begin_visit(JSON_PairConstructor const& n) 
+{
   INDENT;
   os << "<JSON_PairConstructor/>";
   INDENT_INC; NL;
   return no_state;
 }
-END_TAG( JSON_PairConstructor )
 
-void* begin_visit( JSON_Test const &n ) {
+END_TAG(JSON_PairConstructor)
+
+
+void* begin_visit(const JSON_Test& n) 
+{
   INDENT;
-  os << "<JSON_Test type=\"" << json_test::string_of[ n.get() ] << "\"/>";
+  os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
   INDENT_INC; NL;
   return no_state;
 }
-END_TAG( JSON_Test )
+
+END_TAG(JSON_Test)
 
 };
 
-void print_parsetree_xml (ostream &os, const parsenode *p) {
+
+void print_parsetree_xml (ostream &os, const parsenode *p) 
+{
   ParseNodePrintXMLVisitor v (os);
   v.print (p);
 }

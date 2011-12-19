@@ -17,14 +17,15 @@
 #ifndef ZORBA_COMPILER_JSON_EXPRS
 #define ZORBA_COMPILER_JSON_EXPRS
 
-#ifdef ZORBA_WITH_JSON
-
 #include <string>
 #include <vector>
 
 #include <zorba/store_consts.h>
 
 #include "compiler/expression/expr_base.h"
+
+#ifdef ZORBA_WITH_JSON
+
 
 namespace zorba 
 {

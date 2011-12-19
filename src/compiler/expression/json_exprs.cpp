@@ -15,6 +15,7 @@
  */
 
 #include "compiler/expression/json_exprs.h"
+#include "compiler/expression/expr_visitor.h"
 
 #ifdef ZORBA_WITH_JSON
 
@@ -62,7 +63,18 @@ void json_pair_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void json_pair_expr::compute_scripting_kind() 
 {
-  return SIMPLE_EXPR;
+  checkNonUpdating(theNameExpr);
+  checkNonUpdating(theValueExpr);
+
+  short nameExprKind = theNameExpr->get_scripting_detail();
+  short valueExprKind =  theValueExpr->get_scripting_detail();
+
+  theScriptingKind = (nameExprKind | valueExprKind);
+
+  theScriptingKind &= ~VACUOUS_EXPR;
+
+  if (is_sequential())
+    theScriptingKind &= ~SIMPLE_EXPR;
 }
 
 
@@ -84,7 +96,7 @@ json_object_expr::json_object_expr(
     const expr_t& content)
   :
   expr(sctx, loc, json_object_expr_kind),
-  theContentExpr(name),
+  theContentExpr(content)
 {
   compute_scripting_kind();
 }
@@ -99,7 +111,18 @@ void json_object_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void json_object_expr::compute_scripting_kind() 
 {
-  return SIMPLE_EXPR;
+  if (theContentExpr)
+  {
+    checkNonUpdating(theContentExpr);
+
+    theScriptingKind = theContentExpr->get_scripting_detail();
+
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+  else
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
 }
 
 
@@ -107,7 +130,9 @@ expr_t json_object_expr::clone(substitution_t& subst) const
 {
   return new json_object_expr(theSctx,
                               get_loc(),
-                              theContentExpr->clone(subst));
+                              (theContentExpr ?
+                               theContentExpr->clone(subst) :
+                               NULL));
 }
 
 
@@ -120,7 +145,7 @@ json_array_expr::json_array_expr(
     const expr_t& content)
   :
   expr(sctx, loc, json_array_expr_kind),
-  theContentExpr(name),
+  theContentExpr(content)
 {
   compute_scripting_kind();
 }
@@ -135,7 +160,18 @@ void json_array_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void json_array_expr::compute_scripting_kind() 
 {
-  return SIMPLE_EXPR;
+  if (theContentExpr)
+  {
+    checkNonUpdating(theContentExpr);
+
+    theScriptingKind = theContentExpr->get_scripting_detail();
+
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+  else
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
 }
 
 

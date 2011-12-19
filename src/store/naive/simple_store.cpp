@@ -1560,6 +1560,9 @@ void SimpleStore::populateJSONArray(
 
   while (iter->next(item))
   {
+    if (item->isJSONPair())
+      item = item->getValue();
+
     if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
       item = item->copy(NULL, copymode);
 
