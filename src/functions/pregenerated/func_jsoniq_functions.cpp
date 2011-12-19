@@ -191,7 +191,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
     DECL_WITH_KIND(sctx, fn_jsoniq_pairs,
         (createQName("http://www.jsoniq.org/functions","","pairs"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_PAIRS_1);
 

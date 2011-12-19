@@ -556,7 +556,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 "object" { return token::OBJECT; }
-"array" { return token::OBJECT; }
+"array" { return token::ARRAY; }
 "pair" { return token::PAIR; }
 "json-item" { return token::JSON_ITEM; }
 

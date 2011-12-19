@@ -504,7 +504,7 @@ bool TypeOps::is_subtype(
 #ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
-      if (subtype.type_kind() != XQType::NODE_TYPE_KIND)
+      if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
         return false;
 
       const JSONXQType& sub = static_cast<const JSONXQType&>(subtype);

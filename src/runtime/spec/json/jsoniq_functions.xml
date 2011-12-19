@@ -89,7 +89,7 @@
 
   <zorba:function isDeterministic="true">
     <zorba:signature localname="pairs" prefix="fn-jsoniq">
-      <zorba:param>json-item()</zorba:param>
+      <zorba:param>object()</zorba:param>
       <zorba:output>pair()*</zorba:output>
     </zorba:signature>
   </zorba:function>

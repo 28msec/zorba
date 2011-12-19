@@ -11825,6 +11825,10 @@ void* begin_visit(const JSON_Test& v)
     theTypeStack.push(rtm.JSON_ARRAY_TYPE_ONE);
     break;
 
+  case store::StoreConsts::jsonItem:
+    theTypeStack.push(rtm.JSON_ITEM_TYPE_ONE);
+    break;
+
   default:
     ZORBA_ASSERT(false);
   }

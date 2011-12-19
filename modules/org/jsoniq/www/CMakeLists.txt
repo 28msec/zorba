@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-ADD_SUBDIRECTORY(expath)
-ADD_SUBDIRECTORY(jsoniq)
+
+IF(ZORBA_WITH_JSON)
+  DECLARE_ZORBA_MODULE(FILE functions.xq VERSION 1.0
+    URI "http://www.jsoniq.org/functions")
+ENDIF(ZORBA_WITH__JSON)
 
