@@ -22,6 +22,7 @@
 #include "cxx_util.h"
 #include "utf8_util.h"
 
+using namespace std;
 #ifndef ZORBA_NO_UNICODE
 U_NAMESPACE_USE
 #endif /* ZORBA_NO_UNICODE */
@@ -148,6 +149,22 @@ size_type length( storage_type const *begin, storage_type const *end ) {
   while ( begin < end && *begin ) {
     begin += char_length( *begin );
     ++len;
+  }
+  return len;
+}
+
+size_type read( istream &i, storage_type **ps ) {
+  char c = i.get();
+  if ( !i.good() || !is_start_byte( c ) )
+    return npos;
+  storage_type *&p = *ps;
+  *p++ = c;
+  size_type const len = char_length( c );
+  for ( size_type n = 1; n < len; ++n ) {
+    c = i.get();
+    if ( !i.good() || !is_continuation_byte( c ) )
+      return npos;
+    *p++ = c;
   }
   return len;
 }
