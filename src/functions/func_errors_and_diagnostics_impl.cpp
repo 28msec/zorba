@@ -19,6 +19,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 #include "zorbamisc/ns_consts.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -33,15 +34,15 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_trace::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
 BoolAnnotationValue fn_trace::ignoresDuplicateNodes(
-    expr* fo, 
-    ulong input) const 
+    expr* fo,
+    ulong input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -68,11 +69,9 @@ PlanIter_t fn_trace::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_trace::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& argTypes) const
+xqtref_t fn_trace::getReturnType(const fo_expr* caller) const
 {
-  return argTypes[0];
+  return caller->get_arg(0)->get_return_type();
 }
 
 } // namespace zorba

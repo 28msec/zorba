@@ -194,7 +194,7 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
+StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
 {
   try
   {
@@ -220,12 +220,11 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
+StaticContextImpl::setDefaultElementAndTypeNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
-    QueryLoc loc;
-    theCtx->set_default_elem_type_ns(lURI, loc);
+    theCtx->set_default_elem_type_ns(lURI, false, QueryLoc::null);
     return true;
   ZORBA_CATCH
   return false;
@@ -236,7 +235,7 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
+StaticContextImpl::getDefaultElementAndTypeNamespace() const
 {
   try
   {
@@ -258,12 +257,12 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
+StaticContextImpl::setDefaultFunctionNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
-    theCtx->set_default_function_ns(lURI, loc);
+    theCtx->set_default_function_ns(lURI, false, loc);
     return true;
   ZORBA_CATCH
   return false;

@@ -18,7 +18,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "functions/func_node_sort_distinct.h"
 #include "functions/function_impl.h"
@@ -28,6 +28,16 @@
 
 namespace zorba 
 {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_node_sort_distinct_base::getReturnType(const fo_expr* caller) const
+{
+  return caller->get_arg(0)->get_return_type(); 
+}
+
 
 /*******************************************************************************
   Let f be "this" function, F be the fo expr representing a call to f, and E be
