@@ -20,8 +20,10 @@
 #include <map>
 #include <iostream>
 
-#ifndef WIN32
-#include <editline/readline.h>
+#include "config.h"
+
+#ifdef ZORBA_HAVE_READLINE_H
+# include <editline/readline.h>
 #endif
 
 #include "command.h"
@@ -72,12 +74,12 @@ void
 CommandPrompt::execute()
 {
   for (;;) {
-#ifdef WIN32
+#ifdef ZORBA_HAVE_READLINE_H
+    std::string lCommandLine(readline("(xqdb) "));
+#else
     std::cout << "(xqdb) ";
     std::string lCommandLine;
     std::getline(std::cin, lCommandLine);
-#else
-    std::string lCommandLine(readline("(xqdb) "));
 #endif
     std::vector<std::string> lArgs;
 
