@@ -396,7 +396,7 @@ static ostream& serialize_begin( ostream &o, json::type t ) {
   }
   return o;
 }
-DEF_OMANIP1( serialize_begin, json::type, t )
+DEF_OMANIP1( serialize_begin, json::type )
 
 static ostream& serialize_end( ostream &o, json::type t ) {
   switch ( t ) {
@@ -406,20 +406,18 @@ static ostream& serialize_end( ostream &o, json::type t ) {
   }
   return o;
 }
-DEF_OMANIP1( serialize_end, json::type, t )
+DEF_OMANIP1( serialize_end, json::type )
 
 static ostream& serialize_string( ostream &o, zstring const &s ) {
   zstring temp( s );
   escape_chars( &temp );
   return o << '"' << temp << '"';
 }
-DEF_OMANIP1( serialize_string, zstring const&, s )
+DEF_OMANIP1( serialize_string, zstring const& )
 
 static ostream& serialize_children( ostream&, store::Item_t const &parent,
                                     json::type parent_type );
-DEF_OMANIP2( serialize_children,
-             store::Item_t const&, parent,
-             json::type, parent_type )
+DEF_OMANIP2( serialize_children, store::Item_t const&, json::type )
 
 static ostream& serialize_json_element( ostream &o,
                                         store::Item_t const &element ) {
@@ -437,7 +435,7 @@ static ostream& serialize_json_element( ostream &o,
     << serialize_children( element, t )
     << serialize_end( t );
 }
-DEF_OMANIP1( serialize_json_element, store::Item_t const&, element )
+DEF_OMANIP1( serialize_json_element, store::Item_t const& )
 
 static ostream& serialize_item_element( ostream &o,
                                         store::Item_t const &element ) {
@@ -455,7 +453,7 @@ static ostream& serialize_item_element( ostream &o,
     << serialize_children( element, t )
     << serialize_end( t );
 }
-DEF_OMANIP1( serialize_item_element, store::Item_t const&, element )
+DEF_OMANIP1( serialize_item_element, store::Item_t const& )
 
 static ostream& serialize_pair_element( ostream &o,
                                         store::Item_t const &element ) {
@@ -476,7 +474,7 @@ static ostream& serialize_pair_element( ostream &o,
     << serialize_children( element, t )
     << serialize_end( t );
 }
-DEF_OMANIP1( serialize_pair_element, store::Item_t const&, element )
+DEF_OMANIP1( serialize_pair_element, store::Item_t const& )
 
 static ostream& serialize_children( ostream &o, store::Item_t const &parent,
                                     json::type parent_type ) {

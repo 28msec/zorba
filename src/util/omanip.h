@@ -75,12 +75,11 @@ private:
  *
  * @param FN_NAME   The name of the existing function.
  * @param ARG1_TYPE The type of the non-ostream argument.
- * @param ARG1_NAME The name of the non-ostream argument.
  */
-#define DEF_OMANIP1(FN_NAME,ARG1_TYPE,ARG1_NAME)      \
-  inline omanip1<ARG1_TYPE>                           \
-  FN_NAME( ARG1_TYPE ARG1_NAME ) {                    \
-    return omanip1<ARG1_TYPE>( FN_NAME, ARG1_NAME );  \
+#define DEF_OMANIP1(FN_NAME,ARG1_TYPE)          \
+  inline omanip1<ARG1_TYPE>                     \
+  FN_NAME( ARG1_TYPE arg1 ) {                   \
+    return omanip1<ARG1_TYPE>( FN_NAME, arg1 ); \
   }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,14 +137,12 @@ private:
  *
  * @param FN_NAME   The name of the existing function.
  * @param ARG1_TYPE The type of the first non-ostream argument.
- * @param ARG1_NAME The name of the first non-ostream argument.
  * @param ARG2_TYPE The type of the second non-ostream argument.
- * @param ARG2_NAME The name of the second non-ostream argument.
  */
-#define DEF_OMANIP2(FN_NAME,ARG1_TYPE,ARG1_NAME,ARG2_TYPE,ARG2_NAME)      \
-  inline omanip2<ARG1_TYPE,ARG2_TYPE>                                     \
-  FN_NAME( ARG1_TYPE ARG1_NAME, ARG2_TYPE ARG2_NAME ) {                   \
-    return omanip2<ARG1_TYPE,ARG2_TYPE>( FN_NAME, ARG1_NAME, ARG2_NAME ); \
+#define DEF_OMANIP2(FN_NAME,ARG1_TYPE,ARG2_TYPE)                \
+  inline omanip2<ARG1_TYPE,ARG2_TYPE>                           \
+  FN_NAME( ARG1_TYPE arg1, ARG2_TYPE arg2 ) {                   \
+    return omanip2<ARG1_TYPE,ARG2_TYPE>( FN_NAME, arg1, arg2 ); \
   }
 
 ///////////////////////////////////////////////////////////////////////////////
