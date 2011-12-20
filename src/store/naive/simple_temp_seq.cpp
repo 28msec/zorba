@@ -56,9 +56,11 @@ bool SimpleTempSeq::empty()
 store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
 {
   uint64_t lIndex;
-  try {
+  try 
+  {
     lIndex = to_xs_unsignedLong(aIndex);
-  } catch (std::range_error& e)
+  }
+  catch (std::range_error& e)
   {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
@@ -86,9 +88,11 @@ xs_integer SimpleTempSeq::getSize()
 void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 {
   uint64_t lPos;
-  try {
+  try 
+  {
     lPos = to_xs_unsignedLong(position);
-  } catch (std::range_error& e)
+  }
+  catch (std::range_error& e)
   {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
@@ -114,9 +118,11 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 bool SimpleTempSeq::containsItem(xs_integer position)
 {
   uint64_t lPos;
-  try {
+  try 
+  {
     lPos = to_xs_unsignedLong(position);
-  } catch (std::range_error& e)
+  }
+  catch (std::range_error& e)
   {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
