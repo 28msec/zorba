@@ -677,7 +677,7 @@ namespace zorba {
       */
       virtual Item createTextNode(
         Item   parent,
-        String &content) = 0;
+        String content) = 0;
 }; // class ItemFactory
 
 } // namespace zorba
