@@ -26,6 +26,8 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/json_parser.h"
+#include "util/omanip.h"
+#include "util/oseparator.h"
 #include "util/stl_util.h"
 
 #define JSON_NS "http://www.zorba-xquery.com/modules/converters/json"
@@ -232,13 +234,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
             ADD_TYPE_ATTRIBUTE( "string" );
             value = t.get_value();
   #if 0
-            ascii::replace_all( value, "\"", 1, "\\\"", 2 );
-            ascii::replace_all( value, "\\", 1, "\\\\", 2 );
-            ascii::replace_all( value, "\b", 1, "\\b", 2 );
-            ascii::replace_all( value, "\f", 1, "\\f", 2 );
-            ascii::replace_all( value, "\n", 1, "\\n", 2 );
-            ascii::replace_all( value, "\r", 1, "\\r", 2 );
-            ascii::replace_all( value, "\t", 1, "\\t", 2 );
+            escape_chars( &value );
   #endif
 
             if ( next_string_is_key ) {
@@ -392,32 +388,41 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
-static void serialize_begin( json::type t, ostream &o ) {
+static ostream& serialize_begin( ostream &o, json::type t ) {
   switch ( t ) {
     case json::array : o << '['; break;
     case json::object: o << '{'; break;
     default          : /* suppress warning */;
   }
+  return o;
 }
+DEF_OMANIP1( serialize_begin, json::type, t )
 
-static void serialize_end( json::type t, ostream &o ) {
+static ostream& serialize_end( ostream &o, json::type t ) {
   switch ( t ) {
     case json::array : o << ']'; break;
     case json::object: o << '}'; break;
     default          : /* suppress warning */;
   }
+  return o;
 }
+DEF_OMANIP1( serialize_end, json::type, t )
 
-static void serialize_string( zstring const &s, ostream &o ) {
+static ostream& serialize_string( ostream &o, zstring const &s ) {
   zstring temp( s );
   escape_chars( &temp );
-  o << '"' << temp << '"';
+  return o << '"' << temp << '"';
 }
+DEF_OMANIP1( serialize_string, zstring const&, s )
 
-static void serialize_children( store::Item_t const &parent,
-                                json::type parent_type, ostream &o );
+static ostream& serialize_children( ostream&, store::Item_t const &parent,
+                                    json::type parent_type );
+DEF_OMANIP2( serialize_children,
+             store::Item_t const&, parent,
+             json::type, parent_type )
 
-static void serialize_json_element( store::Item_t const &element, ostream &o ) {
+static ostream& serialize_json_element( ostream &o,
+                                        store::Item_t const &element ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "json" )
     throw XQUERY_EXCEPTION(
@@ -427,12 +432,15 @@ static void serialize_json_element( store::Item_t const &element, ostream &o ) {
 
   json::type const t = get_json_type( element, false );
 
-  serialize_begin( t, o );
-  serialize_children( element, t, o );
-  serialize_end( t, o );
+  return o
+    << serialize_begin( t )
+    << serialize_children( element, t )
+    << serialize_end( t );
 }
+DEF_OMANIP1( serialize_json_element, store::Item_t const&, element )
 
-static void serialize_item_element( store::Item_t const &element, ostream &o ) {
+static ostream& serialize_item_element( ostream &o,
+                                        store::Item_t const &element ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "item" )
     throw XQUERY_EXCEPTION(
@@ -442,12 +450,15 @@ static void serialize_item_element( store::Item_t const &element, ostream &o ) {
 
   json::type const t = get_json_type( element );
 
-  serialize_begin( t, o );
-  serialize_children( element, t, o );
-  serialize_end( t, o );
+  return o
+    << serialize_begin( t )
+    << serialize_children( element, t )
+    << serialize_end( t );
 }
+DEF_OMANIP1( serialize_item_element, store::Item_t const&, element )
 
-static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
+static ostream& serialize_pair_element( ostream &o,
+                                        store::Item_t const &element ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "pair" )
     throw XQUERY_EXCEPTION(
@@ -459,40 +470,38 @@ static void serialize_pair_element( store::Item_t const &element, ostream &o ) {
   get_attribute_value( element, "name", &name_att_value );
   json::type const t = get_json_type( element );
 
-  serialize_string( name_att_value, o );
-  o << ':';
-  serialize_begin( t, o );
-  serialize_children( element, t, o );
-  serialize_end( t, o );
+  return o
+    << serialize_string( name_att_value ) << ':'
+    << serialize_begin( t )
+    << serialize_children( element, t )
+    << serialize_end( t );
 }
+DEF_OMANIP1( serialize_pair_element, store::Item_t const&, element )
 
-static void serialize_children( store::Item_t const &parent,
-                                json::type parent_type, ostream &o ) {
+static ostream& serialize_children( ostream &o, store::Item_t const &parent,
+                                    json::type parent_type ) {
   if ( parent_type == json::null )
     o << "null";
   else {
-    bool first = true;
+    oseparator sep( "," );
     store::Iterator_t i = parent->getChildren();
     i->open();
     store::Item_t child;
     while ( i->next( child ) ) {
-      if ( first )
-        first = false;
-      else
-        o << ',';
+      o << sep;
 
       switch ( child->getNodeKind() ) {
 
         case store::StoreConsts::elementNode:
           switch ( parent_type ) {
             case json::none:
-              serialize_json_element( child, o );
+              o << serialize_json_element( child );
               break;
             case json::array:
-              serialize_item_element( child, o );
+              o << serialize_item_element( child );
               break;
             case json::object:
-              serialize_pair_element( child, o );
+              o << serialize_pair_element( child );
               break;
             default:
               throw XQUERY_EXCEPTION(
@@ -510,7 +519,7 @@ static void serialize_children( store::Item_t const &parent,
               o << child->getStringValue();
               break;
             case json::string:
-              serialize_string( child->getStringValue(), o );
+              o << serialize_string( child->getStringValue() );
               break;
             default:
               throw XQUERY_EXCEPTION(
@@ -527,6 +536,7 @@ static void serialize_children( store::Item_t const &parent,
     } // while
     i->close();
   }
+  return o;
 }
 
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
@@ -541,10 +551,10 @@ bool JSONSerializeInternal::nextImpl( store::Item_t& result,
       ostringstream oss;
       switch ( cur_item->getNodeKind() ) {
         case store::StoreConsts::documentNode:
-          serialize_children( cur_item, json::none, oss );
+          oss << serialize_children( cur_item, json::none );
           break;
         case store::StoreConsts::elementNode:
-          serialize_json_element( cur_item, oss );
+          oss << serialize_json_element( cur_item );
           break;
         default:
           throw XQUERY_EXCEPTION(
