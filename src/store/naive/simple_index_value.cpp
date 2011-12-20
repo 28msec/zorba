@@ -30,6 +30,21 @@ namespace zorba
 namespace simplestore 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexCompareFunction)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexCompareFunction)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexValue)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexValue)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueHashIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueHashIndex)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueTreeIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueTreeIndex)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -62,6 +77,13 @@ ValueIndexCompareFunction::ValueIndexCompareFunction(
       theCollators[i] = NULL;
     }
   }
+}
+
+void ValueIndexCompareFunction::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theNumColumns;
+  ar & theTimezone;
+  ar & theCollators;
 }
 
 
@@ -195,6 +217,12 @@ ValueIndex::ValueIndex(
 {
 }
 
+void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (IndexImpl*)this);
+  ar & theCompFunction;
+}
+
 
 /******************************************************************************
 
@@ -202,7 +230,6 @@ ValueIndex::ValueIndex(
 ValueIndex::~ValueIndex()
 {
 }
-
 
 /******************************************************************************
 
@@ -285,6 +312,11 @@ ValueHashIndex::ValueHashIndex(
 {
 }
   
+void ValueHashIndex::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (ValueIndex*)this);
+  ar & theMap;
+}
 
 /******************************************************************************
 
@@ -367,7 +399,7 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
 
-  const store::IndexKey* key2 = key;
+  /*const*/ store::IndexKey* key2 = key;
   theMap.insert(key2, valueSet);
   key = NULL; // ownership of the key obj passes to the index.
 
@@ -395,7 +427,8 @@ bool ValueHashIndex::remove(
     ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
-  IndexMap::iterator pos = theMap.find(key);
+  store::IndexKey*  tempkey = (store::IndexKey*)key;
+  IndexMap::iterator pos = theMap.find(tempkey);
 
   if (pos != theMap.end())
   {
@@ -555,6 +588,17 @@ ValueTreeIndex::ValueTreeIndex(
 {
 }
 
+ValueTreeIndex::ValueTreeIndex(::zorba::serialization::Archiver& ar) :
+  ValueIndex(ar),
+  theMap(theCompFunction)
+{
+}
+
+void ValueTreeIndex::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (ValueIndex*)this);
+  ar & theMap;
+}
 
 /******************************************************************************
 
@@ -669,7 +713,8 @@ bool ValueTreeIndex::remove(
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
 
-  IndexMap::iterator pos = theMap.find(key);
+  store::IndexKey* tempkey = (store::IndexKey*)key;
+  IndexMap::iterator pos = theMap.find(tempkey);
 
   if (pos != theMap.end())
   {
@@ -738,7 +783,7 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::initExact()
 {
-  const store::IndexKey& key = thePointCond->theKey;
+  /*const*/ store::IndexKey& key = thePointCond->theKey;
 
   assert(key.size() == theIndex->getNumColumns());
 

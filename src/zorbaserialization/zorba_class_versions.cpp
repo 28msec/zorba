@@ -42,6 +42,7 @@
 #include "zorbatypes/rchandle.h"
 
 #include "common/shared_types.h"
+#include "store/naive/simple_index_value.h"
 
 
 namespace zorba{
@@ -93,6 +94,8 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, PrologOption>, 8)
 
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zorba::store::IndexKey *, zorba::simplestore::ValueIndexValue *>, 9)
+
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ser_ItemPointerHashMapCmp>, 1)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, IndexDecl_t, ser_ItemPointerHashMapCmp>, 2)
@@ -106,6 +109,8 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_Hash
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ser_ItemPointerHashMapCmp>, 7)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, PrologOption, ser_ItemPointerHashMapCmp>, 8)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zorba::store::IndexKey *,zorba::simplestore::ValueIndexValue *,zorba::simplestore::ValueIndexCompareFunction>, 9)
 
 SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)
 END_SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)

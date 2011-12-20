@@ -87,7 +87,7 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
   -----------
   The qnames of the collections accessed by the defining exprs of this index.
 ********************************************************************************/
-class IndexSpecification
+class IndexSpecification : public zorba::serialization::SerializeBaseClass
 {
 public:
   ulong                          theNumKeyColumns;
@@ -103,6 +103,26 @@ public:
   bool                           theIsAutomatic;
 
   std::vector<store::Item_t>     theSources;
+
+public:
+  SERIALIZABLE_CLASS(IndexSpecification);
+  SERIALIZABLE_CLASS_CONSTRUCTOR(IndexSpecification);
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ar &  theNumKeyColumns;
+    ar &  theKeyTypes;
+    ar &  theCollations;
+    ar &  theTimezone;
+
+    ar &  theIsGeneral;
+    ar &  theIsUnique;
+    ar &  theIsSorted;
+    ar &  theIsTemp;
+    ar &  theIsThreadSafe;
+    ar &  theIsAutomatic;
+
+    ar &  theSources;
+  }
 
 public:
   IndexSpecification()
@@ -367,11 +387,20 @@ public:
 
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(Index)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(Index, RCObject);
+  void serialize(::zorba::serialization::Archiver& ar) 
+  {
+    serialize_baseclass(ar, (RCObject*)this);
+  }
+
+public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   long* getSharedRefCounter() const { return NULL; }
 
 public:
+  Index() {}
 
   virtual ~Index() {}
 

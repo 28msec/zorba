@@ -17,6 +17,7 @@
 #define ZORBA_STORE_UTIL_ITEM_VECTOR
 
 #include "store/api/shared_types.h"
+#include "zorbaserialization/template_serializer.h"
 
 
 namespace zorba { namespace store {
@@ -25,7 +26,7 @@ namespace zorba { namespace store {
 /***************************************************************************//**
 
 ********************************************************************************/
-class ItemVector
+class ItemVector : public zorba::serialization::SerializeBaseClass
 {
 public:
   typedef std::vector<Item_t>::const_iterator const_iterator;
@@ -34,6 +35,13 @@ public:
 public:
   std::vector<Item_t> theItems;
 
+public:
+  SERIALIZABLE_CLASS(ItemVector)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(ItemVector);
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ar & theItems;
+  }
 public:
   ItemVector(ulong size = 0) : theItems(size) {}
 
