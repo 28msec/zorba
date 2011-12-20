@@ -90,26 +90,6 @@ public:
 
 
 //fn:data
-class fn_data_3_0 : public function
-{
-public:
-  fn_data_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
-
-  xqtref_t getReturnType(const fo_expr* caller) const;
-
-  bool isMap(ulong producer) const { return producer == 0; }
-
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
-
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
-
-  CODEGEN_DECL();
-};
-
-//fn:data
 class fn_data : public function
 {
 public:

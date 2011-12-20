@@ -160,8 +160,7 @@ public:
 
   virtual short getScriptingKind() const { return SIMPLE_EXPR; }
 
-  virtual xqtref_t getReturnType(
-      const fo_expr* caller) const;
+  virtual xqtref_t getReturnType(const fo_expr* caller) const;
 
   virtual bool accessesDynCtx() const { return false; }
 

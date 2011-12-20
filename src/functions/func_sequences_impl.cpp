@@ -46,7 +46,7 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
 
-  ulong sz = (ulong)caller->num_args();
+  csize sz = caller->num_args();
 
   if (sz == 0)
   {
@@ -56,15 +56,14 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
   {
     xqtref_t t = caller->get_arg(0)->get_return_type();
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (ulong i = 1; i < sz; i++)
+    for (csize i = 1; i < sz; i++)
     {
       t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
+
       TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }
-
-    TypeManager* tm = t->get_manager();
 
     return tm->create_type_x_quant(*t, q);
   }
@@ -186,9 +185,8 @@ xqtref_t fn_remove::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
 
-  return tm->create_type_x_quant(
-      *caller->get_arg(0)->get_return_type(),
-      TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*caller->get_arg(0)->get_return_type(),
+                                 TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -246,12 +244,12 @@ xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
-  if(caller->num_args() > 2 &&
+  if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item =
-      dynamic_cast<const_expr*>(caller->get_arg(2))->get_val();
-    if(len_item->getDoubleValue().round().getNumber() == 1)
+    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+
+    if (len_item->getDoubleValue().round().getNumber() == 1)
       return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
   }
   return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
@@ -314,14 +312,15 @@ xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
-  if(caller->num_args() > 2 &&
+  if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item =
-      dynamic_cast<const_expr*>(caller->get_arg(2))->get_val();
-    if(len_item->getIntegerValue() == Integer(1))
+    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+
+    if (len_item->getIntegerValue() == Integer(1))
       return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
   }
+
   return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
 }
 
@@ -410,9 +409,8 @@ xqtref_t op_zorba_sequence_point_access::getReturnType(
 {
   TypeManager* tm = caller->get_type_manager();
 
-  return tm->create_type(
-      *caller->get_arg(0)->get_return_type(),
-      TypeConstants::QUANT_QUESTION);
+  return tm->create_type(*caller->get_arg(0)->get_return_type(),
+                         TypeConstants::QUANT_QUESTION);
 }
 
 

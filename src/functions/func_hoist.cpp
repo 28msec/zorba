@@ -18,7 +18,7 @@
 #include "functions/func_hoist.h"
 #include "functions/function_impl.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "runtime/core/internal_operators.h"
 
@@ -31,11 +31,9 @@ class zop_hoist : public function
 public:
   zop_hoist(const signature& sig) : function(sig, FunctionConsts::OP_HOIST_1) {}
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const fo_expr* caller) const
   {
-    return arg_types[0];
+    return caller->get_arg(0)->get_return_type();
   }
 
   bool isMap(ulong input) const
@@ -73,11 +71,9 @@ class zop_unhoist : public function
 public:
   zop_unhoist(const signature& sig) : function(sig, FunctionConsts::OP_UNHOIST_1) {}
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const fo_expr* caller) const
   {
-    return arg_types[0];
+    return caller->get_arg(0)->get_return_type();
   }
 
   bool isMap(ulong input) const

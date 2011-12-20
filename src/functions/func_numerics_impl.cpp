@@ -77,7 +77,7 @@ public:
 
   bool isArithmeticFunction() const { return true; }
 
-  xqtref_t getReturnType(const fo_expr* caller)
+  xqtref_t getReturnType(const fo_expr* caller) const
   {
     TypeManager* tm = caller->get_type_manager();
 
@@ -729,32 +729,33 @@ xqtref_t fn_floor::getReturnType(const fo_expr* caller) const
   TypeManager* tm = caller->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
+  const QueryLoc& loc = caller->get_loc();
   const XQType& argType = *(caller->get_arg(0)->get_return_type());
   TypeConstants::quantifier_t quant = argType.get_quantifier();
 
-  if (TypeOps::is_subtype(tm, argType, *rtm.DOUBLE_TYPE_QUESTION))
+  if (TypeOps::is_subtype(tm, argType, *rtm.DOUBLE_TYPE_QUESTION, loc))
   {
     return (quant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE :
             rtm.DOUBLE_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.FLOAT_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.FLOAT_TYPE_QUESTION, loc))
   {
     return (quant == TypeConstants::QUANT_ONE ?
             rtm.FLOAT_TYPE_ONE :
             rtm.FLOAT_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.DECIMAL_TYPE_QUESTION))
-  {
-    return (quant == TypeConstants::QUANT_ONE ?
-            rtm.DECIMAL_TYPE_ONE :
-            rtm.DECIMAL_TYPE_QUESTION);
-  }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.INTEGER_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.INTEGER_TYPE_QUESTION, loc))
   {
     return (quant == TypeConstants::QUANT_ONE ?
             rtm.INTEGER_TYPE_ONE :
             rtm.INTEGER_TYPE_QUESTION);
+  }
+  else if (TypeOps::is_subtype(tm, argType, *rtm.DECIMAL_TYPE_QUESTION, loc))
+  {
+    return (quant == TypeConstants::QUANT_ONE ?
+            rtm.DECIMAL_TYPE_ONE :
+            rtm.DECIMAL_TYPE_QUESTION);
   }
 
   return theSignature.returnType();
