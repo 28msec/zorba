@@ -15,26 +15,29 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
-IF(ZORBA_WITH_DEBUGGER_CLIENT)
-  CONFIGURE_FILE (debug_client/event_handler_init.cpp.in debug_client/event_handler_init.cpp)
-  
-  SET(DEBUG_CLIENT_SRCS
-      debug_client/tuple.h
-      debug_client/main.cpp
-      debug_client/debug_command.h
-      debug_client/debug_command.cpp
-      debug_client/command_line_handler.h
-      debug_client/command_line_handler.cpp
-      debug_client/lock_free_queue.h
-      debug_client/event_handler.h
-      debug_client/event_handler.cpp
-      ${CMAKE_CURRENT_BINARY_DIR}/debug_client/event_handler_init.cpp
+IF (ZORBA_WITH_DEBUGGER_CLIENT)
+  IF (NOT WIN32)
+    FIND_PACKAGE (Libedit)
+    IF (LIBEDIT_FOUND)
+      INCLUDE_DIRECTORIES (${LIBEDIT_INCLUDE_DIRS})
+      SET (LIBEDIT_LIBS ${LIBEDIT_LIBRARIES})
+    ENDIF (LIBEDIT_FOUND)
+  ENDIF (NOT WIN32)
+
+  CHECK_INCLUDE_FILES ("editline/readline.h" ZORBA_HAVE_READLINE_H)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/debugger/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/debugger/config.h)
+  MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/debugger/config.h.cmake --> ${CMAKE_CURRENT_BINARY_DIR}/debugger/config.h")
+  INCLUDE_DIRECTORIES (BEFORE ${CMAKE_CURRENT_BINARY_DIR}/debugger)
+
+  SET (DEBUG_CLIENT_SRCS
+    debugger/main.cpp
+    debugger/command_prompt.cpp
+    debugger/command_line_handler.cpp
+    debugger/event_handler.cpp
   )
   
-  CONFIGURE_FILE (debug_client/message-handler.xq message-handler.xq)
-  
-  ZORBA_GENERATE_EXE("debuggercmd" "${DEBUG_CLIENT_SRCS}" "" "debugger" "bin")
-ENDIF(ZORBA_WITH_DEBUGGER_CLIENT)
+  ZORBA_GENERATE_EXE ("xqdb" "${DEBUG_CLIENT_SRCS}" "${LIBEDIT_LIBS}" "xqdb" "bin")
+ENDIF (ZORBA_WITH_DEBUGGER_CLIENT)
 
 SET(SRCS
   zorbacmd.cpp

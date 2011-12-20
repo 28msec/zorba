@@ -925,17 +925,15 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        if (lProperties.debug()) {
-          Zorba_SerializerOptions lSerOptions =
-              Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-              lProperties.getSerializerParameters());
-          createSerializerOptions(lSerOptions, lProperties);
+        Zorba_SerializerOptions lSerOptions =
+            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
+            lProperties.getSerializerParameters());
+        createSerializerOptions(lSerOptions, lProperties);
 
-          if (!lProperties.hasNoLogo() && !lProperties.debug()) {
-            std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
-          }
-          lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
+        if (!lProperties.hasNoLogo()) {
+          std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
         }
+        lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
       }
       catch (zorba::XQueryException const& qe)
       {

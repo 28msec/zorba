@@ -739,11 +739,17 @@ public:
   //
   const zstring& default_elem_type_ns() const;
 
-  void set_default_elem_type_ns(const zstring& ns, const QueryLoc& loc);
+  void set_default_elem_type_ns(
+      const zstring& ns,
+      bool raiseError,
+      const QueryLoc& loc);
 
   const zstring& default_function_ns() const;
 
-  void set_default_function_ns(const zstring& ns, const QueryLoc& loc);
+  void set_default_function_ns(
+      const zstring& ns,
+      bool raiseError,
+      const QueryLoc& loc);
 
   void bind_ns(
         const zstring& prefix,

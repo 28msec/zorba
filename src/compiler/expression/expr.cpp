@@ -1469,7 +1469,6 @@ debugger_expr::debugger_expr(
   compute_scripting_kind();
 }
 
-
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);

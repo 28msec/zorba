@@ -82,9 +82,9 @@ void root_static_context::init()
     bind_ns(pfx, ns, loc);
   }
 
-  set_default_elem_type_ns(zstring(), loc);   
+  set_default_elem_type_ns(zstring(), true, loc);   
 
-  set_default_function_ns(W3C_FN_NS, loc);
+  set_default_function_ns(W3C_FN_NS, true, loc);
 
   set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 
