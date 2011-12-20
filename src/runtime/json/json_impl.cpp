@@ -26,6 +26,7 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/json_parser.h"
+#include "util/mem_streambuf.h"
 #include "util/omanip.h"
 #include "util/oseparator.h"
 #include "util/stl_util.h"
@@ -147,7 +148,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
   istringstream iss;
-  string json_string;
+  mem_streambuf buf;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
@@ -157,11 +158,11 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
     if ( cur_item->isStreamable() ) {
       is = &cur_item->getStream();
     } else {
-      zstring json_zstring;
-      cur_item->getStringValue2( json_zstring );
-      // This string copying is inefficient, but I can't see another way.
-      json_string = json_zstring.str();
-      iss.str( json_string );
+      zstring s;
+      cur_item->getStringValue2( s );
+      // Doing it this way uses the string data in-place with no copy.
+      buf.set( s.data(), s.size() );
+      iss.ios::rdbuf( &buf );
       is = &iss;
     }
 
@@ -344,9 +345,13 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 ///////////////////////////////////////////////////////////////////////////////
 
 static void assert_json_type( json::type t, zstring const &s ) {
-  // This string copying is inefficient, but I can't see another way.
-  std::string const temp( s.str() );
-  istringstream iss( temp );
+  // Doing it this way uses the string data in-place with no copy.
+  mem_streambuf::char_type *const p =
+    const_cast<mem_streambuf::char_type*>( s.data() );
+  mem_streambuf buf( p, s.size() );
+  istringstream iss;
+  iss.ios::rdbuf( &buf );
+
   json::lexer lex( iss );
   json::token token;
   if ( !lex.next( &token ) || json::map_type( token.get_type() ) != t )
