@@ -415,6 +415,18 @@ public:
    * Returns all keys stored in this index
    */
   virtual KeyIterator_t keys() const = 0;
+
+  /**
+   * Insert the given item in the value set of the given key. If the key is not
+   * in the index already, then the key itself is inserted as well. Return true
+   * if the key was already in the index, false otherwise
+   * The index wil take the ownership of the key if it was not already in the
+   * index.
+   *
+   * @error ZDDY0035 if a key with more than one item is inserted into
+   *  a general index
+   */
+  virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 };
 
 

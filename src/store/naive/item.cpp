@@ -1291,6 +1291,11 @@ bool Item::isStreamable() const
   return false;
 }
 
+bool Item::isSeekable() const
+{
+  return false;
+}
+
 std::istream& Item::getStream()
 {
   throw ZORBA_EXCEPTION(

@@ -556,4 +556,4 @@ DONE_DECLARING_ZORBA_URIS()
 # This dependency is zorba-only related, which is why it's added here
 # and not within zorba-modules, which is for general use in other
 # non-zorba modules.
-ADD_DEPENDENCIES(check_uris gen_diag_modules)
+ADD_DEPENDENCIES(check_core_uris gen_diag_modules)
