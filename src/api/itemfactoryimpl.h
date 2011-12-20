@@ -242,7 +242,7 @@ namespace zorba {
       virtual Item 
       createTextNode(
         Item   parent,
-        String &content);
+        String content);
 
     protected:
       store::ItemFactory* theItemFactory;
