@@ -1139,6 +1139,9 @@ ZorbaErrorCode ZJSE0006_NO_ELEMENT_CHILD( "ZJSE0006" );
 ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD( "ZJSE0007" );
 
 
+ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
+
+
 } // namespace zerr
 
 namespace zwarn {

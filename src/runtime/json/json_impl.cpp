@@ -131,7 +131,7 @@ static void add_item_element( item_stack_type &item_stack,
 #define ADD_ITEM_ELEMENT(T) \
   add_item_element( item_stack, state_stack, cur_item, T );
 
-static void escape_chars( zstring *s ) {
+static void escape_json_chars( zstring *s ) {
   ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
   ascii::replace_all( *s, "\\", 1, "\\\\", 2 );
   ascii::replace_all( *s, "\b", 1, "\\b", 2 );
@@ -182,9 +182,9 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       p.set_loc(
         loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
       );
-      json::token t;
+      json::token token;
 
-      while ( p.next( &t ) ) {
+      while ( p.next( &token ) ) {
         if ( !result ) {
           GENV_ITEMFACTORY->createQName( element_name, JSON_NS, "", "json" );
           type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -196,7 +196,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           needs_type_attribute = true;
         }
 
-        switch ( t.get_type() ) {
+        switch ( token.get_type() ) {
 
           case '[':
             PUSH_ITEM( cur_item );
@@ -226,15 +226,15 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           case json::token::number:
             ADD_TYPE_ATTRIBUTE( "number" );
             ADD_ITEM_ELEMENT( "number" );
-            value = t.get_value();
+            value = token.get_value();
             GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
             break;
 
           case json::token::string:
             ADD_TYPE_ATTRIBUTE( "string" );
-            value = t.get_value();
+            value = token.get_value();
   #if 0
-            escape_chars( &value );
+            escape_json_chars( &value );
   #endif
 
             if ( next_string_is_key ) {
@@ -267,7 +267,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
           case 'T':
             ADD_TYPE_ATTRIBUTE( "boolean" );
             ADD_ITEM_ELEMENT( "boolean" );
-            value = t.get_type() == 'F' ? "false" : "true";
+            value = token.get_type() == 'F' ? "false" : "true";
             GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
             break;
 
@@ -343,6 +343,19 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static void assert_json_type( json::type t, zstring const &s ) {
+  // This string copying is inefficient, but I can't see another way.
+  std::string const temp( s.str() );
+  istringstream iss( temp );
+  json::lexer lex( iss );
+  json::token token;
+  if ( !lex.next( &token ) || json::map_type( token.get_type() ) != t )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0008_BAD_VALUE,
+      ERROR_PARAMS( s, t )
+    );
+}
+
 static void get_attribute_value( store::Item_t const &element,
                                  char const *att_name, zstring *att_value ) {
   store::Iterator_t i( element->getAttributes() );
@@ -408,10 +421,30 @@ static ostream& serialize_end( ostream &o, json::type t ) {
 }
 DEF_OMANIP1( serialize_end, json::type )
 
+static ostream& serialize_boolean( ostream &o, zstring const &s ) {
+  zstring temp;
+  ascii::to_lower( s, &temp );
+  // TODO: should the string be parsed for validity?
+  assert_json_type( json::boolean, s );
+  return o << temp;
+}
+DEF_OMANIP1( serialize_boolean, zstring const& )
+
+static ostream& serialize_number( ostream &o, zstring const &s ) {
+  // TODO: should the string be parsed for validity?
+  assert_json_type( json::number, s );
+  return o << s;
+}
+DEF_OMANIP1( serialize_number, zstring const& )
+
 static ostream& serialize_string( ostream &o, zstring const &s ) {
   zstring temp( s );
-  escape_chars( &temp );
-  return o << '"' << temp << '"';
+  escape_json_chars( &temp );
+  // TODO: should the string be parsed for validity?
+  temp.insert( (zstring::size_type)0, 1, '"' );
+  temp.append( 1, '"' );
+  assert_json_type( json::string, temp );
+  return o << temp;
 }
 DEF_OMANIP1( serialize_string, zstring const& )
 
@@ -512,9 +545,10 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
         case store::StoreConsts::textNode:
           switch ( parent_type ) {
             case json::boolean:
+              o << serialize_boolean( child->getStringValue() );
+              break;
             case json::number:
-              // TODO: should the string be parsed for validity?
-              o << child->getStringValue();
+              o << serialize_number( child->getStringValue() );
               break;
             case json::string:
               o << serialize_string( child->getStringValue() );

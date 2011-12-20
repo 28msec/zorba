@@ -46,6 +46,22 @@ char const *const type_string_of[] = {
   "string"
 };
 
+type map_type( token::type tt ) {
+  switch ( tt ) {
+    case token::string:
+      return string;
+    case token::number:
+      return number;
+    case token::json_false:
+    case token::json_true:
+      return boolean;
+    case token::json_null:
+      return null;
+    default:
+      return none;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 exception::exception( location const &loc, std::string const &message ) :

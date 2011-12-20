@@ -2354,6 +2354,9 @@
     <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
       <value>JSON type "$1" can not have a child text node</value>
     </diagnostic>
+    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+      <value>"$1": illegal value for JSON type "$2"</value>
+    </diagnostic>
 
   </namespace>
 

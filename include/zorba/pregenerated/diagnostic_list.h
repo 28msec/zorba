@@ -774,6 +774,8 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0006_NO_ELEMENT_CHILD;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0008_BAD_VALUE;
+
 } // namespace zerr
 
 namespace zwarn {

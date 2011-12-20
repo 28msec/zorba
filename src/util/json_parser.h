@@ -152,6 +152,14 @@ private:
 };
 
 /**
+ * Map a token's type to a JSON type.
+ *
+ * @param tt The token::type to map.
+ * @return Returns the corresponding JSON type or \c none if \a tt doesn't map.
+ */
+type map_type( token::type tt );
+
+/**
  * Emits the given token type to an ostream.
  *
  * @param o The ostream to emit to.
