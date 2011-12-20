@@ -264,6 +264,7 @@
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
     </zorba:methods>

@@ -1792,6 +1792,7 @@ const zstring& static_context::default_elem_type_ns() const
 ********************************************************************************/
 void static_context::set_default_elem_type_ns(
     const zstring& ns,
+    bool raiseError,
     const QueryLoc& loc)
 {
   if (!theHaveDefaultElementNamespace)
@@ -1799,9 +1800,13 @@ void static_context::set_default_elem_type_ns(
     theDefaultElementNamespace = ns;
     theHaveDefaultElementNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultElementNamespace = ns;
   }
 }
 
@@ -1827,6 +1832,7 @@ const zstring& static_context::default_function_ns() const
 ********************************************************************************/
 void static_context::set_default_function_ns(
    const zstring& ns,
+   bool raiseError,
    const QueryLoc& loc)
 {
   if (!theHaveDefaultFunctionNamespace)
@@ -1834,9 +1840,13 @@ void static_context::set_default_function_ns(
     theDefaultFunctionNamespace = ns;
     theHaveDefaultFunctionNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultFunctionNamespace = ns;
   }
 }
 
