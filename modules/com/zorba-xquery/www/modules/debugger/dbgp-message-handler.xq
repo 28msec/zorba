@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
  :
@@ -16,6 +18,9 @@
 module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler";
 
 import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
+
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "1.0";
 
 
 declare variable $dmh:endl as xs:string := "
