@@ -1981,7 +1981,7 @@ void* import_schema(
       RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
 
     if (prefix->get_default_bit())
-      theSctx->set_default_elem_type_ns(targetNS, loc);
+      theSctx->set_default_elem_type_ns(targetNS, true, loc);
 
     if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
@@ -2658,10 +2658,10 @@ void* begin_visit(DefaultNamespaceDecl const& v)
   switch (v.get_mode())
   {
   case ParseConstants::ns_element_default:
-    theSctx->set_default_elem_type_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_elem_type_ns(v.get_default_namespace(), true, loc);
     break;
   case ParseConstants::ns_function_default:
-    theSctx->set_default_function_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_function_ns(v.get_default_namespace(), true, loc);
     break;
   }
   return NULL;
@@ -10841,35 +10841,29 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
       }
 
       if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
       theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
       theNSCtx->bind_ns(prefix, uri);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(uri, loc);
+        theSctx->set_default_elem_type_ns(uri, true, loc);
     }
     else if (valueExpr == NULL)
     {
       if (ZSTREQ(prefix, "xml"))
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+      }
 
       // unbind the prefix
       zstring empty;
@@ -10877,7 +10871,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       theNSCtx->bind_ns(prefix, empty);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(empty, loc);
+        theSctx->set_default_elem_type_ns(empty, true, loc);
     }
     else
     {
