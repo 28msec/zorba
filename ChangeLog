@@ -8,7 +8,8 @@ version 2.2
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
   * Fixed bug #905050 (setting and getting the context item type via the c++ api)
-	
+  * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
+
 version 2.1
 
 New Features:

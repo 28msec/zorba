@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 #pragma once
+#ifndef ZORBA_DEBUGGER_TUPLE_H
+#define ZORBA_DEBUGGER_TUPLE_H
+
 #include <zorba/config.h>
+
 #if ZORBA_TR1_IN_TR1_SUBDIRECTORY
 # include <tr1/tuple>
 #else
 # include <tuple>
 #endif
+
+#endif // ZORBA_DEBUGGER_TUPLE_H

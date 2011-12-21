@@ -1679,7 +1679,7 @@ expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
 void wrap_in_debugger_expr(
   expr_t& aExpr,
   const QueryLoc& aLoc,
-  bool aAddBreakable = true,
+  bool aIsMainModuleBreakable = false,
   bool aIsVarDeclaration = false)
 {
 #ifdef ZORBA_WITH_DEBUGGER
@@ -1694,9 +1694,7 @@ void wrap_in_debugger_expr(
     // add the breakable expression in the debugger commons as a possible
     // breakpoint location
     Breakable lBreakable(aLoc);
-    if (aAddBreakable) {
-      theCCB->theDebuggerCommons->addBreakable(lBreakable);
-    }
+    theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
     typedef std::vector<var_expr_t> VarExprVector;
@@ -2264,7 +2262,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
   // the main module debug iterator has no location otherwise
   // this would take precedence over a child debug iterator
   // starting in the same line
-  wrap_in_debugger_expr(program, program->get_loc(), false);
+  wrap_in_debugger_expr(program, program->get_loc(), true);
 
   program = wrap_in_globalvar_assign(program);
 
@@ -3743,7 +3741,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
 
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 
@@ -3765,7 +3763,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
 
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 

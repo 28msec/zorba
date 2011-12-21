@@ -204,9 +204,13 @@ public:
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 
+  bool createYearMonthDuration(store::Item_t& result, const char* str, ulong strlen );
+
   bool createYearMonthDuration(store::Item_t& result, xs_yearMonthDuration* value );
 
   bool createDayTimeDuration(store::Item_t& result, xs_dayTimeDuration* value );
+
+  bool createDayTimeDuration(store::Item_t& result, const char* str, ulong strlen );
 
   bool createENTITIES(store::Item_t& result, zstring& value);
 
