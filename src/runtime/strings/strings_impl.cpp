@@ -140,6 +140,7 @@ bool StringToCodepointsIterator::nextImpl(
       p = ec;
 
       if ( utf8::read( *state->theStream, ec ) == utf8::npos )
+      {
         if ( state->theStream->good() ) {
           //
           // If read() failed but the stream state is good, it means that an
@@ -165,6 +166,7 @@ bool StringToCodepointsIterator::nextImpl(
             zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
           );
         }
+      }
       state->theResult.clear();
       state->theResult.push_back( utf8::next_char( p ) );
       
@@ -2296,6 +2298,8 @@ bool StringTokenizeIterator::nextImpl(
 {
   store::Item_t item;
   size_t lNewPos = 0;
+  zstring lToken;
+  zstring lPartialMatch;
 
   StringTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(StringTokenizeIteratorState, state, planState);
@@ -2318,12 +2322,51 @@ bool StringTokenizeIterator::nextImpl(
   item->getStringValue2(state->theSeparator);
 
   // working phase, do the tokenization
-  while (true)
+  if (state->theIStream)
   {
-    if (state->theIStream)
+    while ( !state->theIStream->eof() )
     {
+      utf8::encoded_char_type ec;
+      memset( ec, '\0' , sizeof(ec) );
+      utf8::storage_type *p;
+      p = ec;
+
+      if ( utf8::read( *state->theIStream, ec ) != utf8::npos )
+      {
+        assert(state->theIStream->good()); // otherwise, we got an invalid byte
+
+        if (state->theSeparator.compare(lNewPos, 1, ec) == 0)
+        {
+          if (++lNewPos == state->theSeparator.length())
+          {
+            GENV_ITEMFACTORY->createString(result, lToken);
+            STACK_PUSH(true, state);
+          }
+          else
+          {
+            lPartialMatch.append(ec);
+          }
+        }
+        else
+        {
+          lToken.append(lPartialMatch);
+          lToken.append(ec);
+        }
+      }
+      else
+      {
+        if (!lToken.empty())
+        {
+          GENV_ITEMFACTORY->createString(result, lToken);
+          STACK_PUSH(true, state);
+        }
+        break;
+      }
     }
-    else
+  }
+  else
+  {
+    while (true)
     {
       if (state->theNextStartPos == zstring::npos)
       {
