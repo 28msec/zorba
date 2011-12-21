@@ -67,9 +67,6 @@ class DebuggerRuntime : public Runnable {
   public:
 
     void
-    setQueryRunning();
-
-    void
     setNotSendTerminateEvent();
 
     void
@@ -85,10 +82,13 @@ class DebuggerRuntime : public Runnable {
     // Breakpints
 
     unsigned int
-    addBreakpoint(const QueryLoc& location, bool enabled);
+    addBreakpoint(String& aFileName, int aLine, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
+
+    BreakableVector
+    getBreakpoints();
 
     void
     updateBreakpoint(
@@ -113,13 +113,17 @@ class DebuggerRuntime : public Runnable {
     // Other
 
     void
-    setTheLastContinuationTransactionID(int transactionID);
-
-    int
-    getTheLastContinuationTransactionID();
+    setLastContinuationCommand(int transactionID, std::string commandName);
 
     std::string
-    listSource();
+    listSource(
+      String& fleName,
+      unsigned int beginLine,
+      unsigned int endLine,
+      bool zorbaExtensions);
+
+    std::vector<std::pair<std::string, std::string> >
+    getVariables();
 
     std::vector<std::pair<std::string, std::string> >
     getVariables(bool locals);
@@ -130,15 +134,28 @@ class DebuggerRuntime : public Runnable {
     void runQuery();
 
     void
+    startRuntime();
+
+    void
     resumeRuntime();
-    
+
     void
     terminateRuntime();
     
     void
     detachRuntime();
 
-    void step(StepCommand stepType);
+    void
+    stepIn();
+
+    void
+    stepOver();
+
+    void
+    stepOut();
+
+    DebuggerRuntime*
+    clone();
 
   private:
 
@@ -162,7 +179,7 @@ class DebuggerRuntime : public Runnable {
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
 
-    int                               theLastContinuationTransactionID;
+    std::pair<int, std::string>       theLastContinuationCommand;
   };
 }
 

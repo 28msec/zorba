@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 #pragma once
+#ifndef ZORBA_DEBUGGER_LOCK_FREE_QUEUE_H
+#define ZORBA_DEBUGGER_LOCK_FREE_QUEUE_H
+
 #include <iostream>
 #include <list>
 
-namespace zorba { namespace debugclient {
+
+namespace zorba { namespace debugger {
 
 template<typename T>
 class LockFreeProducer
@@ -80,4 +84,8 @@ bool LockFreeQueue<T>::consume(T &result)
   }
   return false;
 }
-}} // namespace zorba::debugclient
+
+} // namespace zorba
+} // namespace debugger
+
+#endif // ZORBA_DEBUGGER_LOCK_FREE_QUEUE_H

@@ -1671,7 +1671,7 @@ expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
 void wrap_in_debugger_expr(
   expr_t& aExpr,
   const QueryLoc& aLoc,
-  bool aAddBreakable = true,
+  bool aIsMainModuleBreakable = false,
   bool aIsVarDeclaration = false)
 {
 #ifdef ZORBA_WITH_DEBUGGER
@@ -1686,9 +1686,7 @@ void wrap_in_debugger_expr(
     // add the breakable expression in the debugger commons as a possible
     // breakpoint location
     Breakable lBreakable(aLoc);
-    if (aAddBreakable) {
-      theCCB->theDebuggerCommons->addBreakable(lBreakable);
-    }
+    theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
     typedef std::vector<var_expr_t> VarExprVector;
@@ -1981,7 +1979,7 @@ void* import_schema(
       RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
 
     if (prefix->get_default_bit())
-      theSctx->set_default_elem_type_ns(targetNS, loc);
+      theSctx->set_default_elem_type_ns(targetNS, true, loc);
 
     if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
@@ -2246,7 +2244,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
   // the main module debug iterator has no location otherwise
   // this would take precedence over a child debug iterator
   // starting in the same line
-  wrap_in_debugger_expr(program, program->get_loc(), false);
+  wrap_in_debugger_expr(program, program->get_loc(), true);
 
   program = wrap_in_globalvar_assign(program);
 
@@ -2658,10 +2656,10 @@ void* begin_visit(DefaultNamespaceDecl const& v)
   switch (v.get_mode())
   {
   case ParseConstants::ns_element_default:
-    theSctx->set_default_elem_type_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_elem_type_ns(v.get_default_namespace(), true, loc);
     break;
   case ParseConstants::ns_function_default:
-    theSctx->set_default_function_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_function_ns(v.get_default_namespace(), true, loc);
     break;
   }
   return NULL;
@@ -3725,7 +3723,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
 
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 
@@ -3747,7 +3745,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
 
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 
@@ -10841,35 +10839,29 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
       }
 
       if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
       theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
       theNSCtx->bind_ns(prefix, uri);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(uri, loc);
+        theSctx->set_default_elem_type_ns(uri, true, loc);
     }
     else if (valueExpr == NULL)
     {
       if (ZSTREQ(prefix, "xml"))
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+      }
 
       // unbind the prefix
       zstring empty;
@@ -10877,7 +10869,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       theNSCtx->bind_ns(prefix, empty);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(empty, loc);
+        theSctx->set_default_elem_type_ns(empty, true, loc);
     }
     else
     {

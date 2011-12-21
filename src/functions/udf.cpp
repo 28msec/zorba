@@ -158,7 +158,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
 
-  ar & theCache;
+  //+ar & theCache;
   ar & theCacheResults;
   ar & theCacheComputed;
 }

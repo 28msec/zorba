@@ -39,19 +39,19 @@
 #endif /* WIN32 */
 
 // Platform headers
-#cmakedefine ZORBA_HAVE_COLL_H     
+#cmakedefine ZORBA_HAVE_COLL_H
 #cmakedefine ZORBA_HAVE_EXECINFO_H
 #cmakedefine ZORBA_HAVE_FLEXLEXER_H
 #cmakedefine ZORBA_HAVE_ICONV_H
-#cmakedefine ZORBA_HAVE_INTTYPES_H 
-#cmakedefine ZORBA_HAVE_LIMITS_H   
-#cmakedefine ZORBA_HAVE_PTHREAD_H  
-#cmakedefine ZORBA_HAVE_STDINT_H   
-#cmakedefine ZORBA_HAVE_STDLIB_H   
+#cmakedefine ZORBA_HAVE_INTTYPES_H
+#cmakedefine ZORBA_HAVE_LIMITS_H
+#cmakedefine ZORBA_HAVE_PTHREAD_H
+#cmakedefine ZORBA_HAVE_STDINT_H
+#cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
-#cmakedefine ZORBA_HAVE_USTRING_H  
-#cmakedefine ZORBA_HAVE_UTYPES_H   
+#cmakedefine ZORBA_HAVE_USTRING_H
+#cmakedefine ZORBA_HAVE_UTYPES_H
 
 // Platform functions
 #cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION

@@ -203,11 +203,7 @@ declare function local:add-methods($function) as xs:string*
       if (name($meth) eq 'zorba:getReturnType')
       then
         string-join(($gen:newline, $gen:indent,
-                     'xqtref_t getReturnType(',
-                     $gen:newline, $gen:indent, $gen:indent, $gen:indent, $gen:indent,
-                     'const TypeManager* tm,',
-                     $gen:newline, $gen:indent, $gen:indent, $gen:indent, $gen:indent,
-                     'const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
+                     'xqtref_t getReturnType(const fo_expr* caller) const;',
                      $gen:newline), '')
 
       else if (name($meth) eq 'zorba:getScriptingKind')

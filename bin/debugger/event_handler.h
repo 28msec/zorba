@@ -14,33 +14,46 @@
  * limitations under the License.
  */
 #pragma once
+#ifndef ZORBA_DEBUGGER_EVENT_HANDLER_H
+#define ZORBA_DEBUGGER_EVENT_HANDLER_H
+
 #include <string>
 #include <iostream>
+
 #include <zorba/debugger_event_handler.h>
 #include <zorba/static_context.h>
+
 #include "lock_free_queue.h"
 
-namespace zorba {
-  class Zorba;
-}
 
-namespace zorba { namespace debugclient {
-  
-  class EventHandler : public zorba::DebuggerEventHandler
-  {
+namespace zorba { namespace debugger {
+
+class EventHandler : public zorba::DebuggerEventHandler
+{
   public:
-    EventHandler(LockFreeProducer<std::size_t>& aQueue, LockFreeProducer<bool>& aContQueue);
+    EventHandler(
+      LockFreeProducer<std::size_t>& aQueue,
+      LockFreeProducer<bool>& aContQueue);
+
     ~EventHandler();
+
   public:
     virtual void parseMessage(const std::string& aMessage);
+
     virtual void error(unsigned int errcode, const std::string& msg);
+
+    virtual void init();
+
   private:
-    static std::istream* getCurrentDirectory();
     LockFreeProducer<std::size_t>& theIdQueue;
     LockFreeProducer<bool>& theContinueProducer;
     void* theStore;
     Zorba* theZorbaInstance;
     StaticContext_t theStaticContext;
-  };
+
+};
   
-}} // end of namespace zorba::debugclient
+} // namespace zorba
+} // namespace debugger
+
+#endif // ZORBA_DEBUGGER_EVENT_HANDLER_H
