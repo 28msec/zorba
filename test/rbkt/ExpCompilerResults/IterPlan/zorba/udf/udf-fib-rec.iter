@@ -1,0 +1,42 @@
+Iterator tree for main query:
+<UDFunctionCallIterator cached="true">
+  <SingletonIterator value="xs:integer(100)"/>
+</UDFunctionCallIterator>
+
+Iterator tree for local:fib:
+<flwor::FLWORIterator>
+  <ForVariable name="n">
+    <LetVarIterator varname="n"/>
+  </ForVariable>
+  <ReturnClause>
+    <IfThenElseIterator>
+      <TypedValueCompareIterator_INTEGER>
+        <ForVarIterator varname="n"/>
+        <SingletonIterator value="xs:integer(0)"/>
+      </TypedValueCompareIterator_INTEGER>
+      <SingletonIterator value="xs:integer(0)"/>
+      <IfThenElseIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <ForVarIterator varname="n"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </TypedValueCompareIterator_INTEGER>
+        <SingletonIterator value="xs:integer(1)"/>
+        <SpecificNumArithIterator_AddOperation_INTEGER>
+          <UDFunctionCallIterator cached="true">
+            <SpecificNumArithIterator_SubtractOperation_INTEGER>
+              <ForVarIterator varname="n"/>
+              <SingletonIterator value="xs:integer(1)"/>
+            </SpecificNumArithIterator_SubtractOperation_INTEGER>
+          </UDFunctionCallIterator>
+          <UDFunctionCallIterator cached="true">
+            <SpecificNumArithIterator_SubtractOperation_INTEGER>
+              <ForVarIterator varname="n"/>
+              <SingletonIterator value="xs:integer(2)"/>
+            </SpecificNumArithIterator_SubtractOperation_INTEGER>
+          </UDFunctionCallIterator>
+        </SpecificNumArithIterator_AddOperation_INTEGER>
+      </IfThenElseIterator>
+    </IfThenElseIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

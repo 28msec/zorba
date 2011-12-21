@@ -228,8 +228,8 @@ public:
   store::Iterator_t theSourceIter;
   store::Item_t     theItem;
 
-  ulong             thePos;
-  ulong             theLastPos;
+  xs_integer        thePos;
+  xs_integer        theLastPos;
 
 public:
   CtxVarState();
@@ -247,7 +247,7 @@ protected:
   store::Item_t  theVarName;
   bool           theIsLocal;
 
-  xs_long        theTargetPos;
+  xs_integer     theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
 
@@ -276,13 +276,13 @@ public:
 
   bool isLocal() const { return theIsLocal; }
 
-  bool setTargetPos(xs_long v);
+  bool setTargetPos(xs_integer v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xs_long getTargetPos() const { return theTargetPos; }
+  xs_integer getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 
@@ -380,8 +380,8 @@ public:
   store::Iterator_t theSourceIter;
   store::Item_t     theItem;
 
-  ulong             thePos;
-  ulong             theLastPos;
+  xs_integer        thePos;
+  xs_integer        theLastPos;
 
 public:
   LetVarState();
@@ -396,7 +396,7 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
   store::Item_t  theVarName;
-  xs_long        theTargetPos;
+  xs_integer     theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
 
@@ -411,19 +411,19 @@ public:
 
 public:
   LetVarIterator(
-        static_context* sctx,
-        const QueryLoc& loc, 
-        store::Item* name);
+      static_context* sctx,
+      const QueryLoc& loc, 
+      store::Item* name);
 
   ~LetVarIterator() {}
 
-  bool setTargetPos(xs_long v);
+  bool setTargetPos(xs_integer v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xs_long getTargetPos() const { return theTargetPos; }
+  xs_integer getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 

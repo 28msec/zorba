@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+#ifndef ZORBA_SOCKET_STREAMBUF_H
+#define ZORBA_SOCKET_STREAMBUF_H
+
+#include <streambuf>
 
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
@@ -22,27 +25,35 @@
 
 namespace zorba {
   
-  class socket_streambuf : public std::streambuf {
+class SocketStreambuf : public std::streambuf {
   public:
-    socket_streambuf(TCPSocket& aSocket);
-    virtual ~socket_streambuf();
+    SocketStreambuf(TCPSocket& aSocket);
+    virtual ~SocketStreambuf();
+
   protected:
     virtual int sync();
     virtual int underflow();
     virtual int overflow(int c = EOF);
+
   private:
     TCPSocket& theSocket;
     char_type* theInputBuffer;
     char_type* theOutputBuffer;
-  };
+};
   
-  class DebuggerResponse {
-    friend class DebuggerClientImpl;
+class DebuggerResponse {
+  friend class DebuggerClientImpl;
+
   private:
     DebuggerResponse(std::istream& aStream);
+
   public: // API
     bool isInit() const;
+
   private:
     xmlDocPtr theDoc;
-  };
-}
+};
+
+} // namespace zorba
+
+#endif // ZORBA_SOCKET_STREAMBUF_H

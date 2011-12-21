@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "system/globalenv.h"
 
@@ -77,9 +78,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t function::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>&) const
+xqtref_t function::getReturnType(const fo_expr*) const
 {
   return theSignature.returnType();
 }
@@ -121,7 +120,7 @@ void function::setAnnotations(AnnotationList* annotations)
 /*******************************************************************************
 
 ********************************************************************************/
-bool function::isSequential() const 
+bool function::isSequential() const
 {
   return expr::is_sequential(getScriptingKind());
 }
