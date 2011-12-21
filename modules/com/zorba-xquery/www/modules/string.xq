@@ -65,6 +65,20 @@ declare function string:materialize($s as xs:string) as xs:string external;
 declare function string:is-streamable($s as xs:string) as xs:boolean external;
 
 (:~
+ : Returns a sequence of strings constructed by splitting the input wherever the given
+ : separator is found.
+ :
+ : The function is different from fn:tokenize. It doesn't allow
+ : the separator to be a regular expression. This restriction allows for more
+ : performant implementation. Specifically, the function processes
+ : streamable strings as input in a streamable way which is particularly useful
+ : to tokenize huge strings (e.g. if returned by the file module's read-text
+ : function).
+ :
+ : @param $s the input string to tokenize
+ : @param $separator the separator used for splitting the input string $s
+ :
+ : @return a sequence of strings constructed by splitting the input
  :)
 declare function string:tokenize(
   $s as xs:string,
