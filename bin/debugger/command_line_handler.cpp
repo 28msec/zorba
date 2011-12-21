@@ -23,6 +23,9 @@
 # define msleep Sleep
 #endif
 
+#include "command_prompt.h"
+
+
 namespace zorba { namespace debugger {
   
   using namespace ::ZORBA_TR1_NS;
@@ -31,11 +34,11 @@ CommandLineHandler::CommandLineHandler(
   unsigned short port,
   LockFreeConsumer<std::size_t>& aConsumer,
   LockFreeConsumer<bool>& aContinueQueue,
-  EventHandler& aHandler,
-  CommandPrompt& aCommandPrompt)
+  EventHandler* aHandler,
+  CommandPrompt* aCommandPrompt)
   : theConsumer(aConsumer),
     theContinueQueue(aContinueQueue),
-    theClient(DebuggerClient::createDebuggerClient(&aHandler, port, "localhost")),
+    theClient(DebuggerClient::createDebuggerClient(aHandler, port, "localhost")),
     theCommandLine(aCommandPrompt),
     theQuit(false), theTerminated(true), theContinue(false), theWaitFor(0)
   {
@@ -64,10 +67,10 @@ CommandLineHandler::execute()
     if (lCanQuit) {
       theTerminated = true;
     }
-    theCommandLine.execute();
+    theCommandLine->execute();
     while (theContinue) {
       theContinue = false;
-      theCommandLine.execute();
+      theCommandLine->execute();
     }
   } while (!theQuit);
 }
@@ -253,20 +256,20 @@ CommandLineHandler::addCommands()
   typedef tuple<bint, bint, bstring> TUPLE_INT_INT_STR;
 
   // DBGP: status
-  theCommandLine << createCommand<Status>(TUPLE(), "status", *this, "Gets the status of the server");
+  *theCommandLine << createCommand<Status>(TUPLE(), "status", *this, "Gets the status of the server");
 
   // ALIAS: variables (context_get -c -1)
   {
     std::set<std::string> lAliases;
     lAliases.insert("vars");
-    theCommandLine << createCommand<Variables>(TUPLE(), "variables", lAliases, *this, "Gets the variables visible in the current scope");
+    *theCommandLine << createCommand<Variables>(TUPLE(), "variables", lAliases, *this, "Gets the variables visible in the current scope");
   }
 
   // META: quit
-  theCommandLine << createCommand<Quit>(TUPLE(), "quit", *this, "Stops debugging and quits the client");
+  *theCommandLine << createCommand<Quit>(TUPLE(), "quit", *this, "Stops debugging and quits the client");
 
   // DBGP: run
-  theCommandLine << createCommand<Run>(TUPLE(), "run", *this, "Run the query");
+  *theCommandLine << createCommand<Run>(TUPLE(), "run", *this, "Run the query");
 
   // DBGP: breakpoint_set
   {
@@ -279,7 +282,7 @@ CommandLineHandler::addCommands()
     lCommand->addArgument(1, "f", createArgType<TUPLE_STR_STR_INT, std::string, 1>(TUPLE_STR_STR_INT()), "name of the file where to stop", true);
     lCommand->addArgument(2, "l", createArgType<TUPLE_STR_STR_INT, int, 2>(TUPLE_STR_STR_INT()), "line number", true);
       
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: breakpoint_get
@@ -289,7 +292,7 @@ CommandLineHandler::addCommands()
 
     lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "breakpoint ID", true);
       
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: breakpoint_remove
@@ -302,14 +305,14 @@ CommandLineHandler::addCommands()
 
     lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "breakpoint ID", true);
       
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: breakpoint_list
-  theCommandLine << createCommand<BreakpointList>(TUPLE(), "blist", *this, "List all set breakpoints");
+  *theCommandLine << createCommand<BreakpointList>(TUPLE(), "blist", *this, "List all set breakpoints");
 
   // DBGP: stack_depth
-  theCommandLine << createCommand<StackDepth>(TUPLE(), "sdepth", *this, "Get the depth of the stack");
+  *theCommandLine << createCommand<StackDepth>(TUPLE(), "sdepth", *this, "Get the depth of the stack");
 
   // DBGP: stack_get
   {
@@ -318,11 +321,11 @@ CommandLineHandler::addCommands()
 
     lCommand->addArgument(0, "d", createArgType<TUPLE_INT, int, 0>(TUPLE_INT()), "stack frame to show: 0 for current stack frame, N for the main module (optional, all frames are shown if not provided)", false);
 
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: context_names
-  theCommandLine << createCommand<ContextNames>(tuple<>(), "cnames", *this, "Get the names of the avilable contexts");
+  *theCommandLine << createCommand<ContextNames>(tuple<>(), "cnames", *this, "Get the names of the avilable contexts");
   // the DBGP -d arguments for this command is omitted since we always have/return: 0 - Local, 1 - Global
 
   // DBGP: context_get
@@ -333,7 +336,7 @@ CommandLineHandler::addCommands()
     lCommand->addArgument(0, "d", createArgType<TUPLE_INT_INT, int, 0>(TUPLE_INT_INT()), "stack depth (optional, default: 0)", false);
     lCommand->addArgument(0, "c", createArgType<TUPLE_INT_INT, int, 1>(TUPLE_INT_INT()), "context ID: 0 for Local, 1 for Global (optional, default: 0)", false);
 
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: source
@@ -347,7 +350,7 @@ CommandLineHandler::addCommands()
     lCommand->addArgument(1, "e", createArgType<TUPLE_INT_INT_STR, int, 1>(TUPLE_INT_INT_STR()), "end line (optional, default: last line)", false);
     lCommand->addArgument(2, "f", createArgType<TUPLE_INT_INT_STR, std::string, 2>(TUPLE_INT_INT_STR()), "file URI (optional, default: the file in the top-most stack frame during execution, main module otherwise)", false);
 
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: eval
@@ -363,7 +366,7 @@ CommandLineHandler::addCommands()
     // - everything following the fist contiguous set of whitespaces are sent as string
     lCommand->addArgument(0, "c", createArgType<TUPLE_STR, std::string, 0>(TUPLE_STR()), "expression to evaluate", true);
       
-    theCommandLine << lCommand;
+    *theCommandLine << lCommand;
   }
 
   // DBGP: step_in
@@ -371,14 +374,14 @@ CommandLineHandler::addCommands()
     std::set<std::string> lAliases;
     lAliases.insert("step");
     lAliases.insert("s");
-    theCommandLine << createCommand<StepIn>(TUPLE(), "in", lAliases, *this, "Step in");
+    *theCommandLine << createCommand<StepIn>(TUPLE(), "in", lAliases, *this, "Step in");
   }
 
   // DBGP: step_out
   {
     std::set<std::string> lAliases;
     lAliases.insert("finish");
-    theCommandLine << createCommand<StepOut>(TUPLE(), "out", lAliases, *this, "Step out");
+    *theCommandLine << createCommand<StepOut>(TUPLE(), "out", lAliases, *this, "Step out");
   }
 
   // DBGP: step_over
@@ -386,7 +389,7 @@ CommandLineHandler::addCommands()
     std::set<std::string> lAliases;
     lAliases.insert("next");
     lAliases.insert("n");
-    theCommandLine << createCommand<StepOver>(TUPLE(), "over", lAliases, *this, "Step over");
+    *theCommandLine << createCommand<StepOver>(TUPLE(), "over", lAliases, *this, "Step over");
   }
 }
   
