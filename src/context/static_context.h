@@ -273,9 +273,9 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypemgr :
-  ------------
-  If non NULL, then "this" is the root sctx of a module, and theTypemgr stores
+  theTypeMnager :
+  ---------------
+  If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
   declarations, in-scope attribute declarations and in-scope type declarations).
 
@@ -291,8 +291,8 @@ public:
   -----------------------------
   The namespace URI to be used for function qnames whose prefix is empty.
 
-  theCtxItemType :
-  ----------------
+  theContextItemType :
+  --------------------
 
   theVariablesMap :
   -----------------
@@ -504,7 +504,7 @@ protected:
 
   ExternalModuleMap                     * theExternalModulesMap;
 
-  rchandle<TypeManager>                   theTypemgr;
+  rchandle<TypeManager>                   theTypeManager;
 
   NamespaceBindings                     * theNamespaceBindings;
 
@@ -514,7 +514,7 @@ protected:
   zstring                                 theDefaultFunctionNamespace;
   bool                                    theHaveDefaultFunctionNamespace;
 
-  xqtref_t                                theCtxItemType;
+  xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
   
@@ -791,7 +791,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t);
 
   const XQType* get_context_item_type() const;
 

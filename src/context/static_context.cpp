@@ -497,6 +497,7 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -544,6 +545,7 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -596,6 +598,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -893,7 +896,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theOptionMap;
   ar & theExternalModulesMap;
 
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypeManager);
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
@@ -901,7 +904,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultFunctionNamespace;
   ar & theHaveDefaultFunctionNamespace;
 
-  ar & theCtxItemType;
+  ar & theContextItemType;
 
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;     
@@ -1743,13 +1746,13 @@ bool static_context::validateSimpleContent(
 ********************************************************************************/
 void static_context::set_typemanager(rchandle<TypeManager> typemgr)
 {
-  theTypemgr = typemgr;
+  theTypeManager = typemgr;
 }
 
 
 TypeManager* static_context::get_typemanager() const
 {
-  TypeManager* tm = theTypemgr.getp();
+  TypeManager* tm = theTypeManager.getp();
   if (tm != NULL)
   {
     return tm;
@@ -1760,7 +1763,7 @@ TypeManager* static_context::get_typemanager() const
 
 TypeManager* static_context::get_local_typemanager() const
 {
-  return theTypemgr.getp();
+  return theTypeManager.getp();
 }
 
 
@@ -2152,9 +2155,9 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t)
 {
-  theCtxItemType = t;
+  theContextItemType = t;
 }
 
 
@@ -2166,8 +2169,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theCtxItemType != NULL)
-      return theCtxItemType.getp();
+    if (theContextItemType != NULL)
+      return theContextItemType.getp();
 
     sctx = sctx->theParent;
   }
