@@ -806,7 +806,7 @@ bool XQueryImpl::isBoundVariable(
     
     if(var == NULL)
       throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
-            ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+      ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
 
     if (var->hasInitializer())
       return true;

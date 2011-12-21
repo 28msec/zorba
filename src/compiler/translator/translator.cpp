@@ -442,6 +442,9 @@ public:
   theHaveSequentialExitExprs :
   ----------------------------
 
+  theHaveContextItemDecl :
+  ------------------------
+
   theAssignedVars :
   -------------------
 
@@ -576,6 +579,8 @@ protected:
 
   bool                                   theHaveSequentialExitExprs;
 
+  bool                                   theHaveContextItemDecl;
+
   std::vector<std::vector<var_expr*> >   theAssignedVars;
 
   int                                    theTempVarCounter;
@@ -654,6 +659,7 @@ TranslatorImpl(
   thePrologGraph(rootSctx),
   theHaveUpdatingExitExprs(false),
   theHaveSequentialExitExprs(false),
+  theHaveContextItemDecl(false),
   theTempVarCounter(1),
   theIsInIndexDomain(false),
   hadBSpaceDecl(false),
@@ -696,10 +702,12 @@ TranslatorImpl(
   }
 }
 
-~TranslatorImpl() {
+
+~TranslatorImpl() 
+{
 #ifndef ZORBA_NO_FULL_TEXT
-  while ( !theFTNodeStack.empty() )
-    delete ztd::pop_stack( theFTNodeStack );
+  while (!theFTNodeStack.empty())
+    delete ztd::pop_stack(theFTNodeStack);
 #endif
 }
 
@@ -2225,8 +2233,7 @@ void* begin_visit(const MainModule& v)
   var_expr_t var = bind_var(loc,
                             DOT_VARNAME,
                             var_expr::prolog_var,
-                            GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  //var->set_external(true);
+                            theSctx->get_context_item_type());
   var->set_unique_id(1);
 
   //GlobalBinding b(var, NULL, true);
@@ -2242,6 +2249,17 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
   expr_t program = pop_nodestack();
 
   assert(theCCB->theIsEval || !program->is_updating());
+
+  // If an appliaction set a type for the context item via the c++ api, then
+  // create a full declaration for it in order to enforce that type.
+  if (!theHaveContextItemDecl && 
+      theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
+  {
+    var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
+    var->set_external(true);
+    GlobalBinding b(var, NULL, true);
+    declare_var(b, theModulesInfo->theInitExprs);
+  }
 
   // the main module debug iterator has no location otherwise
   // this would take precedence over a child debug iterator
@@ -3858,13 +3876,10 @@ void* begin_visit(const CtxItemDecl& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_PARAMS(
-        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+
+  theHaveContextItemDecl = true;
 
   return no_state;
 }
@@ -3877,9 +3892,18 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_expr() != NULL)
     initExpr = pop_nodestack();
 
-  xqtref_t type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  xqtref_t type;
+
   if (v.get_type() != NULL)
+  {
     type = pop_tstack();
+    theSctx->set_context_item_type(type);
+  }
+  else
+  {
+    type = theSctx->get_context_item_type();
+    assert(type != NULL);
+  }
 
   var_expr_t var;
 

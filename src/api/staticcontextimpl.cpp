@@ -848,7 +848,8 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
   theCtx->set_context_item_type(xqType);
