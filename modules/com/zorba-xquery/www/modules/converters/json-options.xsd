@@ -36,7 +36,7 @@
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
-              <xs:attribute name="type" type="xs:string" use="optional"/>
+                <xs:attribute name="type" type="xs:string" use="optional"/>
               </xs:extension>
             </xs:simpleContent>
           </xs:complexType>
