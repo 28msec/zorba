@@ -43,7 +43,7 @@ To generate a report for submitting to the W3C:
     Note that this assumes your build directory is ../../../build. If
     that is not true, specify the path to your build directory:
 
-    cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit.cmake > zorba-xquts-submission.xml
+    cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit_xquts.cmake > zorba-xquts-submission.xml
 
     The script depends on the XQUTS schema being located in
 
