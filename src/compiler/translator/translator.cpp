@@ -436,6 +436,12 @@ public:
   detect "leaf" udfs, i.e., udfs that do not invoke other udfs. Such udfs are
   inlined by the optimizer.
 
+  theExitExprs:
+  -------------
+  This vector stores the exit_exprs that are encountered during the translation
+  of the body of a UDF. It is used to associated those exot_exprs with the
+  exit_catcher_expr that is added at the top of the UDF body.
+
   theHaveUpdatingExitExprs :
   --------------------------
 
@@ -574,6 +580,8 @@ protected:
 
   PrologGraph                            thePrologGraph;
   PrologGraphVertex                      theCurrentPrologVFDecl;
+
+  std::vector<expr*>                     theExitExprs;
 
   bool                                   theHaveUpdatingExitExprs;
 
@@ -1660,14 +1668,15 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   return flworExpr;
 }
 
-QueryLoc
-expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
+
+QueryLoc expandQueryLoc(const QueryLoc& aLocationFrom, const QueryLoc& aLocationTo)
 {
   QueryLoc lExpandedLocation(aLocationFrom);
   lExpandedLocation.setColumnEnd(aLocationTo.getColumnEnd());
   lExpandedLocation.setLineEnd(aLocationTo.getLineEnd());
   return lExpandedLocation;
 }
+
 
 /*******************************************************************************
   In this expression branch, we create the debugger expressions.
@@ -1917,8 +1926,8 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
   assert(theAssignedVars.size() == 1);
 
   for (std::list<GlobalBinding>::iterator i = thePrologVars.begin();
-      i != thePrologVars.end();
-      ++i)
+       i != thePrologVars.end();
+       ++i)
   {
     declare_var(*i, theModulesInfo->theInitExprs);
   }
@@ -2120,23 +2129,26 @@ import_schema_auto_prefix(
 #endif
 }
 
+
 /******************************************************************************
   Wraps an expression in a validate expression. If the schema URI is a
   non-empty string, the corresponding schema is imported. If the location is
   QueryLoc::null, the wrapped expression's location will be used.
 *******************************************************************************/
-expr_t
-wrap_in_validate_expr_strict(
-  expr* aExpr,
-  std::string aSchemaURI)
+expr_t wrap_in_validate_expr_strict(
+    expr* aExpr,
+    const zstring& aSchemaURI)
 {
   QueryLoc lLoc = aExpr->get_loc();
-  import_schema_auto_prefix(lLoc, zstring(aSchemaURI.c_str()), NULL);
+  import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
 
   store::Item_t qname;
-  return new validate_expr(
-    theRootSctx, lLoc, ParseConstants::val_strict,
-    qname, aExpr, theSctx->get_typemanager());
+  return new validate_expr(theRootSctx,
+                           lLoc,
+                           ParseConstants::val_strict,
+                           qname,
+                           aExpr,
+                           theSctx->get_typemanager());
 }
 
 
@@ -3017,7 +3029,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
-                              zstring(ZORBA_VERSIONING_NS),
+                              static_context::ZORBA_VERSIONING_NS,
                               zstring(""),
                               zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
@@ -3111,7 +3123,17 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
-      theSctx->bind_option( qnameItem, value, opt_decl->get_location() );
+      theSctx->bind_option(qnameItem, value, opt_decl->get_location());
+
+      if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
+          value == "for-serialization-only")
+      {
+        if (qnameItem->getLocalName() == "enable")
+          theCCB->theConfig.for_serialization_only = true;
+        else
+          theCCB->theConfig.for_serialization_only = false;
+      }
+
       continue;
     }
 
@@ -3301,7 +3323,7 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ASSERT(ef != NULL);
 
       f = new external_function(loc,
-                                theSctx,
+                                theRootSctx,
                                 qnameItem->getNamespace(),
                                 sig,
                                 scriptKind,
@@ -3478,7 +3500,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (udf->isExiting())
     {
-      body = new exit_catcher_expr(theRootSctx, loc, body);
+      body = new exit_catcher_expr(theRootSctx, loc, body, theExitExprs);
     }
 
     // Wrap the UDF body to the type-related expr that enforce the declared
@@ -3569,8 +3591,13 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull())
   {
-    //const function* f = theCurrentPrologVFDecl.getFunction();
     //lc->setLazyEval(!f->isSequential());
+
+    const user_function* udf = 
+    static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
+
+    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_udf(udf);
   }
   else
   {
@@ -3769,8 +3796,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     push_nodestack(initExpr);
   }
-  theAnnotations = NULL;
 
+  theAnnotations = NULL;
 }
 
 
@@ -3812,6 +3839,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  bool recognised = false;
+
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
@@ -3830,6 +3859,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
                     + ":" + lExpandedQName->getLocalName())));
     }
+
+    recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -3847,7 +3878,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     }
   }
 
-  theAnnotations->push_back(lExpandedQName, lLiterals);
+  //if (recognised)
+    theAnnotations->push_back(lExpandedQName, lLiterals);
 }
 
 
@@ -5519,6 +5551,8 @@ void end_visit(const ExitExpr& v, void* visit_state)
     theHaveSequentialExitExprs = true;
   }
 
+  expr_t exitExpr = new exit_expr(theRootSctx, loc, childExpr);
+
   if (inUDFBody())
   {
     function* f = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
@@ -5526,9 +5560,10 @@ void end_visit(const ExitExpr& v, void* visit_state)
     user_function* udf = static_cast<user_function*>(f);
 
     udf->setExiting(true);
+    theExitExprs.push_back(exitExpr.getp());
   }
 
-  push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
+  push_nodestack(exitExpr);
 }
 
 
@@ -7452,8 +7487,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -7472,8 +7507,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -10088,7 +10123,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           var_expr::eval_var,
                                           inscopeVars[i]->get_return_type());
 
-          // At this point, the domain expr of an eval var is always another var.
+          // At thgis point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
           expr_t valueExpr = inscopeVars[i].getp();
@@ -10231,9 +10266,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
@@ -10243,14 +10278,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           var_expr::eval_var,
                                           inscopeVars[i]->get_return_type());
 
-          // At this point, the domain expr of an eval var is always another var.
-          // However, that other var may be later inlined, so in general, the domain
-          // expr of an eval var may be any expr.
           expr_t valueExpr = inscopeVars[i].getp();
           evalExpr->add_var(evalVar, valueExpr);
         }
 
-        for (ulong i=0; i<temp_vars.size(); i++)
+        for (csize i = 0; i < temp_vars.size(); ++i)
         {
           var_expr_t evalVar = create_var(loc,
                                           temp_vars[i]->get_name(),
@@ -10389,6 +10421,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (!fn->isUdf())
   {
+    user_function* udf = new user_function(loc,
+                                           fn->getSignature(),
+                                           NULL, // no body for now
+                                           fn->getScriptingKind());
+
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
 
@@ -10396,17 +10433,17 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     {
       var_expr_t argVar = create_temp_var(loc, var_expr::arg_var);
 
+      argVar->set_param_pos(i);
+      argVar->set_udf(udf);
+
       udfArgs[i] = argVar;
       foArgs[i] = argVar.getp();
     }
 
     expr_t body = new fo_expr(theRootSctx, loc, fn, foArgs);
 
-    user_function* udf = new user_function(loc,
-                                           fn->getSignature(),
-                                           body,
-                                           fn->getScriptingKind());
     udf->setArgVars(udfArgs);
+    udf->setBody(body);
 
     fn = udf;
   }
@@ -10487,6 +10524,7 @@ void* begin_visit(const InlineFunction& v)
 
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
+    arg_var->set_param_pos(flwor->num_clauses());
     arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
@@ -10690,12 +10728,16 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   nameExpr = new const_expr(theRootSctx, loc, qnameItem);
 
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
   push_nodestack(new elem_expr(theRootSctx,
                                loc,
                                nameExpr,
                                attrExpr,
                                contentExpr,
-                               theNSCtx));
+                               theNSCtx,
+                               copyNodes));
   pop_elem_scope();
   pop_scope();
 }
@@ -11346,7 +11388,10 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
 
-  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed, copyNodes));
 }
 
 
@@ -11388,7 +11433,15 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), theNSCtx, false);
   }
 
-  push_nodestack (new elem_expr(theRootSctx, loc, nameExpr, contentExpr, theNSCtx));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new elem_expr(theRootSctx,
+                               loc,
+                               nameExpr,
+                               contentExpr,
+                               theNSCtx,
+                               copyNodes));
 }
 
 

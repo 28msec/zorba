@@ -2,6 +2,9 @@ Zorba - The XQuery Processor
 
 version 2.2
 
+  * No-copy optimization: avoids copying nodes during node-constructor expressions.
+  * Added external function annotations %ann:propagates-input-nodes and 
+    %ann:must-copy-input-nodes to be used by the no-copy optimization.
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Added index management function to the C++ api's StaticCollectionManager.
@@ -31,7 +34,7 @@ Optimization:
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
   sequence of integers)
   * Optimization for count(collection()) expressions
-  *	Optimization of the fn:substring function in the case when its $start and $length arguments
+  * Optimization of the fn:substring function in the case when its $start and $length arguments
   are integers
 
 Bug Fixes/Other Changes:

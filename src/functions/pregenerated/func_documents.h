@@ -43,13 +43,17 @@ class zorba_store_documents_put : public function
 {
 public:
   zorba_store_documents_put(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -60,9 +64,11 @@ class zorba_store_documents_remove : public function
 {
 public:
   zorba_store_documents_remove(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
@@ -77,9 +83,11 @@ class zorba_store_documents_document : public function
 {
 public:
   zorba_store_documents_document(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -92,9 +100,11 @@ class zorba_store_documents_available_documents : public function
 {
 public:
   zorba_store_documents_available_documents(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -107,9 +117,11 @@ class zorba_store_documents_is_available_document : public function
 {
 public:
   zorba_store_documents_is_available_document(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

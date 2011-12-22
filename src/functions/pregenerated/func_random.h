@@ -43,9 +43,11 @@ class fn_zorba_random_seeded_random : public function
 {
 public:
   fn_zorba_random_seeded_random(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_zorba_random_random : public function
 {
 public:
   fn_zorba_random_random(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,10 +73,12 @@ class fn_zorba_util_uuid : public function
 {
 public:
   fn_zorba_util_uuid(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 setDeterministic(false);
 
-}
+  }
 
   CODEGEN_DECL();
 };

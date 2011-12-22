@@ -1057,7 +1057,7 @@ FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
          &&
          lState->thePosition < lState->theFunction->getAnnotationList()->size())
   {
-    aResult = lState->theFunction->getAnnotationList()->getAnnotation(lState->thePosition)->getQName();
+    aResult = lState->theFunction->getAnnotationList()->get(lState->thePosition)->getQName();
     STACK_PUSH(true, lState);
     ++lState->thePosition;
   }

@@ -43,9 +43,13 @@ class fn_node_name_3_0 : public function
 {
 public:
   fn_node_name_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -55,9 +59,13 @@ class fn_node_name : public function
 {
 public:
   fn_node_name(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -68,9 +76,13 @@ class fn_nilled : public function
 {
 public:
   fn_nilled(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -81,9 +93,13 @@ class fn_string : public function
 {
 public:
   fn_string(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -94,17 +110,21 @@ class fn_data : public function
 {
 public:
   fn_data(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool isMap(ulong producer) const { return producer == 0; }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
@@ -115,9 +135,13 @@ class fn_base_uri : public function
 {
 public:
   fn_base_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -128,9 +152,13 @@ class fn_document_uri_3_0 : public function
 {
 public:
   fn_document_uri_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -140,9 +168,13 @@ class fn_document_uri : public function
 {
 public:
   fn_document_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -153,9 +185,13 @@ class fn_root : public function
 {
 public:
   fn_root(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

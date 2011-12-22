@@ -30,13 +30,20 @@
 
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
-namespace zorba { 
-class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
+namespace zorba 
+{ 
+
+class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase 
+{
 protected:
-  const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
+  const char** get_all_options() const 
+  {
+    static const char* result [] = 
+      { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
+
     return result;
   }
+
   bool theTraceParsing;
   bool theTraceScanning;
   bool theUseSerializer;
@@ -67,6 +74,8 @@ protected:
   bool theInlineUdf;
   bool theLoopHoisting;
   bool theInferJoins;
+  bool theNoCopyOptim;
+  bool theSerializeOnlyQuery;
   bool theTraceTranslator;
   bool theTraceCodegen;
   bool theTraceFulltext;
@@ -79,7 +88,8 @@ protected:
   std::string theDotPlanFile;
   uint32_t theMaxUdfCallDepth;
 
-  void initialize () {
+  void initialize() 
+  {
     theTraceParsing = false;
     theTraceScanning = false;
     theUseSerializer = false;
@@ -107,6 +117,8 @@ protected:
     theInlineUdf = true;
     theLoopHoisting = true;
     theInferJoins = true;
+    theNoCopyOptim = true;
+    theSerializeOnlyQuery = false;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theTraceFulltext = false;
@@ -115,6 +127,7 @@ protected:
     theIterPlanTest = false;
     theMaxUdfCallDepth = 1024;
   }
+
 public:
   const bool &traceParsing () const { return theTraceParsing; }
   const bool &traceScanning () const { return theTraceScanning; }
@@ -146,6 +159,8 @@ public:
   const bool &inlineUdf () const { return theInlineUdf; }
   const bool &loopHoisting () const { return theLoopHoisting; }
   const bool &inferJoins () const { return theInferJoins; }
+  const bool &noCopyOptim() const { return theNoCopyOptim; }
+  const bool& serializeOnlyQuery() const { return theSerializeOnlyQuery; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
   const bool &traceFulltext () const { return theTraceFulltext; }
@@ -278,6 +293,21 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }        init_val (*argv, theInferJoins, d);
+      }
+      else if (strcmp (*argv, "--no-copy-optim") == 0)
+      {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --no-copy-optim option"; break; }
+        init_val (*argv, theNoCopyOptim, d);
+      }
+      else if (strcmp (*argv, "--serialize-only-query") == 0)
+      {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL)
+        { result = "No value given for --serialize-only-query option"; break; }
+        init_val(*argv, theSerializeOnlyQuery, d);
       }
 #ifndef NDEBUG
       else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {

@@ -43,9 +43,11 @@ class fn_abs : public function
 {
 public:
   fn_abs(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_ceiling : public function
 {
 public:
   fn_ceiling(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,9 +73,11 @@ class fn_floor : public function
 {
 public:
   fn_floor(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
@@ -84,9 +90,11 @@ class fn_round_3_0 : public function
 {
 public:
   fn_round_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -96,9 +104,11 @@ class fn_round : public function
 {
 public:
   fn_round(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -109,9 +119,11 @@ class fn_round_half_to_even : public function
 {
 public:
   fn_round_half_to_even(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -122,9 +134,11 @@ class fn_format_number_3_0 : public function
 {
 public:
   fn_format_number_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -135,9 +149,11 @@ class fn_format_integer_3_0 : public function
 {
 public:
   fn_format_integer_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
