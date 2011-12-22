@@ -219,9 +219,7 @@ void parse( json::parser &p, store::Item_t *result ) {
 
         if ( next_string_is_key ) {
           // <pair name="..." ...>
-          GENV_ITEMFACTORY->createQName(
-            element_name, SNELSON_NS, "", "pair"
-          );
+          GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "pair" );
           type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
           GENV_ITEMFACTORY->createElementNode(
             cur_item, item_stack.top(),
