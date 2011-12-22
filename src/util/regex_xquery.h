@@ -21,6 +21,7 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 #include "util/unicode_util.h"
 
 namespace zorba {
