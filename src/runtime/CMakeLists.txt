@@ -115,6 +115,7 @@ LIST(APPEND RUNTIME_SRCS
   durations_dates_times/DurationsDatesTimesImpl.cpp
   indexing/doc_indexer.cpp
   indexing/index_ddl.cpp
+  json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer_impl.cpp
   sequences/SequencesImpl.cpp
