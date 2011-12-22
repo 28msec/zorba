@@ -2337,7 +2337,7 @@
       <value>JSON serialization requires document or element node</value>
     </diagnostic>
     <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
-      <value>element "$1" missing required "$2" attribute</value>
+      <value>"$1" element missing required "$2" attribute</value>
     </diagnostic>
     <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
       <value>"$1": illegal value for attribute "$2"</value>

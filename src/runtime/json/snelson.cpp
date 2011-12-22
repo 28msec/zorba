@@ -280,11 +280,17 @@ static void assert_json_type( json::type t, zstring const &s ) {
 
   json::lexer lex( iss );
   json::token token;
-  if ( !lex.next( &token ) || json::map_type( token.get_type() ) != t )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0008_BAD_VALUE,
-      ERROR_PARAMS( s, t )
-    );
+  try {
+    if ( lex.next( &token ) && json::map_type( token.get_type() ) == t )
+      return;
+  }
+  catch ( json::exception const& ) {
+    // do nothing
+  }
+  throw XQUERY_EXCEPTION(
+    zerr::ZJSE0008_BAD_VALUE,
+    ERROR_PARAMS( s, t )
+  );
 }
 
 static void get_attribute_value( store::Item_t const &element,
@@ -353,16 +359,12 @@ static ostream& serialize_end( ostream &o, json::type t ) {
 DEF_OMANIP1( serialize_end, json::type )
 
 static ostream& serialize_boolean( ostream &o, zstring const &s ) {
-  zstring temp;
-  ascii::to_lower( s, &temp );
-  // TODO: should the string be parsed for validity?
   assert_json_type( json::boolean, s );
-  return o << temp;
+  return o << s;
 }
 DEF_OMANIP1( serialize_boolean, zstring const& )
 
 static ostream& serialize_number( ostream &o, zstring const &s ) {
-  // TODO: should the string be parsed for validity?
   assert_json_type( json::number, s );
   return o << s;
 }
@@ -371,7 +373,6 @@ DEF_OMANIP1( serialize_number, zstring const& )
 static ostream& serialize_string( ostream &o, zstring const &s ) {
   zstring temp( s );
   escape_json_chars( &temp );
-  // TODO: should the string be parsed for validity?
   temp.insert( (zstring::size_type)0, 1, '"' );
   temp.append( 1, '"' );
   assert_json_type( json::string, temp );
@@ -501,6 +502,8 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
   }
   return o;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 namespace snelson {
 
