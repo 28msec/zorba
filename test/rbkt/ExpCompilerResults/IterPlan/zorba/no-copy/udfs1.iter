@@ -1,3 +1,4 @@
+Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="2" varname="d1">
     <ElementIterator>
@@ -54,3 +55,4 @@ Iterator tree for local:foo:
     </ReturnClause>
   </flwor::FLWORIterator>
 </TreatIterator>
+
