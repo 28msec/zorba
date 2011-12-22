@@ -206,7 +206,7 @@ CHARGROUP_FLAGS_ONECHAR_UNICODE
 
 class CRegexXQuery_charmatch : public IRegexAtom
 {
-  friend CRegexXQuery_parser;
+  friend class CRegexXQuery_parser;
 protected:
   //enum CHARGROUP_t  type;
 public:
@@ -250,7 +250,7 @@ public:
 
 class CRegexXQuery_char_ascii : public CRegexXQuery_charmatch
 {
-  friend CRegexXQuery_parser;
+  friend class CRegexXQuery_parser;
 protected:
   char c;
 public:
