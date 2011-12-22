@@ -44,7 +44,6 @@ class JSONFlattenIteratorState : public PlanIteratorState
 {
 public:
   std::stack<store::Iterator_t> theStack; //
-  store::Item_t theOrigArray; //
 
   JSONFlattenIteratorState();
 
