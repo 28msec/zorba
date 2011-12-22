@@ -20,6 +20,9 @@
 #include "runtime/core/fncall_iterator.h"
 #include "api/unmarshaller.h"
 
+#include "diagnostics/util_macros.h"
+
+
 namespace zorba 
 {
 
@@ -88,11 +91,8 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
     if (theImpl == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND,
-        ERROR_PARAMS( BUILD_STRING( '{', theNamespace, '}', lLocalName ) ),
-        ERROR_LOC( theLoc )
-      );
+      RAISE_ERROR(zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND, theLoc,
+      ERROR_PARAMS(BUILD_STRING( '{', theNamespace, '}', lLocalName)));
     }
   }
 }
@@ -130,7 +130,7 @@ bool external_function::propagatesInputNodes(
 
     for (csize i = 0; i < numLiterals; ++i)
     {
-      if (ann->getLiteral(i)->getLongValue() == input)
+      if (ann->getLiteral(i)->getLongValue() == input + 1)
         return true;
     }
 
@@ -164,7 +164,7 @@ bool external_function::mustCopyInputNodes(
 
     for (csize i = 0; i < numLiterals; ++i)
     {
-      if (ann->getLiteral(i)->getLongValue() == input)
+      if (ann->getLiteral(i)->getLongValue() == input + 1)
         return true;
     }
 

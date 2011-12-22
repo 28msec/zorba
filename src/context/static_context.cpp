@@ -3164,7 +3164,8 @@ void static_context::bind_option(
   
   zstring lNamespace = qname2->getNamespace();
 
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) // starts with zorba options namespace
+  // If option namespace starts with zorba options namespace
+  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) 
   {
     zstring lLocalName = qname2->getLocalName();
 
@@ -3179,10 +3180,9 @@ void static_context::bind_option(
         process_feature_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_feature_option(
-        lCommaFound ? lVal2 : lVal1, 
-        lLocalName == "enable",
-        loc);
+      process_feature_option(lCommaFound ? lVal2 : lVal1, 
+                             lLocalName == "enable",
+                             loc);
     }
     else if (qname2->getNamespace() == ZORBA_OPTION_OPTIM_NS &&
              (lLocalName == "enable" || lLocalName == "disable"))
@@ -3195,10 +3195,9 @@ void static_context::bind_option(
         process_optim_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_optim_option(
-        lCommaFound ? lVal2 : lVal1, 
-        lLocalName == "enable",
-        loc);
+      process_optim_option(lCommaFound ? lVal2 : lVal1, 
+                           lLocalName == "enable",
+                           loc);
     }
     else if (lNamespace == ZORBA_OPTION_WARN_NS &&
              (lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error"))
@@ -3211,7 +3210,7 @@ void static_context::bind_option(
         process_warning_option(lVal1, lLocalName, loc);
         lCommaFound = true;
       }
-      process_warning_option(lCommaFound?lVal2:lVal1, lLocalName, loc);
+      process_warning_option(lCommaFound ? lVal2 : lVal1, lLocalName, loc);
     }
 
     // process zorba-version option
@@ -3226,38 +3225,28 @@ void static_context::bind_option(
         ModuleVersion lOptVersion(ZORBA_VERSIONING_NS + "/corezorba", value);
         if (! lOptVersion.is_valid_version()) 
         {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
-                      ERROR_PARAMS(value), ERROR_LOC( loc ));
+          RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
+          ERROR_PARAMS(value));
         }
+
         ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS + "/corezorba",
                                     ZORBA_VERSION);
+
         if ( ! lZorbaVersion.satisfies(lOptVersion)) 
         {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
-                      ERROR_PARAMS(value, ZORBA_VERSION),
-                      ERROR_LOC( loc ));
+          RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
+          ERROR_PARAMS(value, ZORBA_VERSION));
         }
       }
     }
-    // if the option is in (starts-with) Zorba's own namespace but not known, we raise an error
+
+    // If the option is in (starts-with) Zorba's own namespace but not known,
+    // we raise an error
     else 
     {
-      throw XQUERY_EXCEPTION(
-         zerr::ZXQP0060_OPTION_NOT_KNOWN,
-         ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-         ERROR_LOC( loc )
-       );
+      RAISE_ERROR(zerr::ZXQP0060_OPTION_NOT_KNOWN, loc,
+      ERROR_PARAMS(qname2->getNamespace() + ":" + qname2->getLocalName()));
     }
-  }
-
-  // if the option is in Zorba's own namespace but not known, we raise an error
-  else if ( qname2->getNamespace().find(ZORBA_OPTIONS_NS) == 0 )
-  {
-    throw XQUERY_EXCEPTION(
-       zerr::ZXQP0060_OPTION_NOT_KNOWN,
-       ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-       ERROR_LOC( loc )
-     );
   }
 
   // in any case, we bind the option in the static context such that
@@ -3402,9 +3391,7 @@ void static_context::process_optim_option(
   if (value != "for-serialization-only")
   {
     RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
-    ERROR_PARAMS(value,
-                 ZED(ZDST0060_unknown_localname),
-                 "")); 
+    ERROR_PARAMS(value, ZED(ZDST0060_unknown_localname), value)); 
   }
 }
 
