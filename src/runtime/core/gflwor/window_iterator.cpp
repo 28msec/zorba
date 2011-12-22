@@ -246,8 +246,8 @@ void WindowVars::bindExtern(
 
   if (!thePosOuterVars.empty())
   {
-    GENV_ITEMFACTORY->createInteger ( lItem, Integer( aPosition ) );
-    bindVariables ( lItem, thePosOuterVars, aPlanState );
+    GENV_ITEMFACTORY->createInteger(lItem, Integer(aPosition));
+    bindVariables(lItem, thePosOuterVars, aPlanState);
   }
 }
 
@@ -767,9 +767,7 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
     // Create the temp sequence where to materialize the result of the domain
     // expr (lazily if theLazyEval flag is true).
     iterator = new PlanIteratorWrapper(theInputIter, aPlanState);
-    lState->theDomainSeq = GENV_STORE.createTempSeq(iterator,
-                                                    false,
-                                                    theLazyEval);
+    lState->theDomainSeq = GENV_STORE.createTempSeq(iterator, theLazyEval);
 
     // Its clever to switch quite early to avoid a lot of if-else statements
     if (theWindowType == WindowIterator::SLIDING)

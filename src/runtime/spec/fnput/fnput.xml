@@ -24,7 +24,8 @@
 
     <zorba:methods>
       <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-      <zorba:accessesDynCtx returnValue="true"/>      
+      <zorba:accessesDynCtx returnValue="true"/> 
+      <zorba:mustCopyInputNodes producer="0"/>
     </zorba:methods>
 
   </zorba:function>

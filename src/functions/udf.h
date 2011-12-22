@@ -25,6 +25,12 @@
 namespace zorba 
 {
 
+  namespace store
+  {
+    class Index;
+    typedef rchandle<Index> Index_t;
+  }
+
 
 /*******************************************************************************
   A udf with params $x1, $x2, ..., $xn and a body_expr is translated into a
@@ -78,6 +84,25 @@ namespace zorba
   references of an arg var, these references are "mutually exclusive", ie, 
   at most one of the references will actually be reached during each particular
   execution of the body.
+
+  theCache:
+  ---------
+  Maps the arg values of an invocation to the result of that invocation.
+  If an invocation uses the same arg values as a previous invocation, the cached
+  result is simply returned without re-evaluating the udf.
+
+  theCacheResults:
+  ----------------
+  Tells whether caching should be done for this udf or not.
+
+  theCacheComputed:
+  -----------------
+  Tells whether theCacheResults has been computed already or not.
+  theCacheResults is computed by the computeResultCaching() method, which is
+  invoked during codegen every time a udf call is encountered. The same udf may
+  be invoked multiple times, but the computation of theCacheResults needs to
+  be done only once. So, during the 1st invcocation of computeResultCaching(),
+  theCacheComputed is set to true, and subsequent invocations are noops.
 ********************************************************************************/
 class user_function : public function 
 {
@@ -101,6 +126,10 @@ private:
   PlanIter_t                  thePlan;
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
+
+  store::Index_t              theCache;
+  bool                        theCacheResults;
+  bool                        theCacheComputed;
 
 public:
   SERIALIZABLE_CLASS(user_function)
@@ -150,15 +179,25 @@ public:
 
   bool accessesDynCtx() const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
+
+  BoolAnnotationValue mustCopyNodes(expr* fo, csize input) const;
 
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
+
+  store::Index* getCache() const;
+
+  void setCache(store::Index* aCache);
+
+  bool cacheResults() const;
+
+  void computeResultCaching(XQueryDiagnostics*);
 
   PlanIter_t codegen(
         CompilerCB* cb,

@@ -1,10 +1,13 @@
 declare variable $input-context external;
-let $auction := doc($input-context) return
+
+let $auction := doc($input-context) 
+return
+
 for $i in distinct-values($auction/site/people/person/profile/interest/@category)
 let $p :=
-for $t in $auction/site/people/person
-where $t/profile/interest/@category = $i
-return
+  for $t in $auction/site/people/person
+  where $t/profile/interest/@category = $i
+  return
 <personne>
 <statistiques>
 <sexe>{$t/profile/gender/text()}</sexe>
@@ -24,5 +27,6 @@ return
 </coordonnees>
 <cartePaiement>{$t/creditcard/text()}</cartePaiement>
 </personne>
+
 return <categorie>{<id>{$i}</id>, $p}</categorie>
 

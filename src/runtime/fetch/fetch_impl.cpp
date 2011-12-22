@@ -66,12 +66,14 @@ FetchContentIterator::nextImpl(
   else if ( ! lKindStr.compare("MODULE")) {
     lKind = internal::EntityData::MODULE;
   }
+#ifndef ZORBA_NO_FULL_TEXT
   else if ( ! lKindStr.compare("THESAURUS")) {
     lKind = internal::EntityData::THESAURUS;
   }
   else if ( ! lKindStr.compare("STOP_WORDS")) {
     lKind = internal::EntityData::STOP_WORDS;
   }
+#endif /* ZORBA_NO_FULL_TEXT */
   else {
     throw XQUERY_EXCEPTION(
           zerr::ZXQP0026_INVALID_ENUM_VALUE,

@@ -220,7 +220,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
     // Lookup version of the module
     store::Item_t lMajorOpt;
     GENV.getItemFactory()->createQName(lMajorOpt,
-                                       zstring(ZORBA_VERSIONING_NS),
+                                       static_context::ZORBA_VERSIONING_NS,
                                        zstring(""),
                                        zstring(ZORBA_OPTION_MODULE_VERSION));
     
