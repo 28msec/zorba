@@ -44,11 +44,6 @@ protected:
   store::IndexSpecification       theSpec;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(IndexImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(IndexImpl, store::Index);
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   IndexImpl(const store::Item_t& qname, const store::IndexSpecification& spec);
 
   IndexImpl();

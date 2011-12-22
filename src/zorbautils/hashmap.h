@@ -273,7 +273,7 @@ public:
 
   serializable_HashMap(zorba::serialization::Archiver& ar)
     :
-    zorba::serialization::SerializeBaseClass(), theCompareFunction(ar)
+    zorba::serialization::SerializeBaseClass()
   {
   }
 

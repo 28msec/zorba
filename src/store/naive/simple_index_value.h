@@ -17,9 +17,6 @@
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 
 #include "store/naive/simple_index.h"
-#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-#include "zorbautils/hashmap.h"
-#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include <map>
 
 namespace zorba
@@ -31,17 +28,12 @@ namespace simplestore
 /******************************************************************************
 
 ********************************************************************************/
-class ValueIndexCompareFunction : public zorba::serialization::SerializeBaseClass
+class ValueIndexCompareFunction
 {
 private:
   csize                       theNumColumns;
   long                        theTimezone;
   std::vector<XQPCollator*>   theCollators;
-
-public:
-  SERIALIZABLE_CLASS(ValueIndexCompareFunction)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(ValueIndexCompareFunction);
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ValueIndexCompareFunction(
@@ -73,14 +65,6 @@ class ValueIndexValue : public store::ItemVector
 {
 public:
   ValueIndexValue(ulong size = 0) : store::ItemVector(size) {}
-public:
-  SERIALIZABLE_CLASS(ValueIndexValue)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ValueIndexValue, store::ItemVector);
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (store::ItemVector*)this);
-  }
-
 };
 
 
@@ -93,11 +77,6 @@ class ValueIndex : public IndexImpl
 
 protected:
   ValueIndexCompareFunction   theCompFunction;
-
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(ValueIndex)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(ValueIndex, IndexImpl, theCompFunction);
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   ValueIndex(const store::Item_t& qname, const store::IndexSpecification& spec);
@@ -124,9 +103,9 @@ class ValueHashIndex : public ValueIndex
   friend class SimpleStore;
   friend class ProbeValueHashIndexIterator;
 
-  typedef serializable_HashMap</*const*/ store::IndexKey*,
-                                ValueIndexValue*,
-                                ValueIndexCompareFunction> IndexMap;
+  typedef HashMap<const store::IndexKey*,
+                  ValueIndexValue*,
+                  ValueIndexCompareFunction> IndexMap;
 
 protected:
 
@@ -150,11 +129,6 @@ protected:
 
 private:
   IndexMap  theMap;
-
-public:
-  SERIALIZABLE_CLASS(ValueHashIndex)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(ValueHashIndex, ValueIndex, theMap);
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   ValueHashIndex(
@@ -216,9 +190,9 @@ class ValueTreeIndex : public ValueIndex
   friend class SimpleStore;
   friend class ProbeValueTreeIndexIterator;
 
-  typedef std::pair</*const*/ store::IndexKey*, ValueIndexValue*> IndexMapPair;
+  typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;
 
-  typedef std::map</*const*/ store::IndexKey*,
+  typedef std::map<const store::IndexKey*,
                    ValueIndexValue*,
                    ValueIndexCompareFunction> IndexMap;
 
@@ -238,11 +212,6 @@ private:
   IndexMap          theMap;
 
   SYNC_CODE(Mutex   theMapMutex;)
-
-public:
-  SERIALIZABLE_CLASS(ValueTreeIndex)
-  ValueTreeIndex(::zorba::serialization::Archiver& ar);
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   ValueTreeIndex(

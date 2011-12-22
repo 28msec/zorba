@@ -31,20 +31,9 @@
 
 namespace zorba 
 { 
-namespace store
-{
-  SERIALIZABLE_CLASS_VERSIONS(Index)
-  END_SERIALIZABLE_CLASS_VERSIONS(Index)
-
-  SERIALIZABLE_CLASS_VERSIONS(IndexSpecification)
-  END_SERIALIZABLE_CLASS_VERSIONS(IndexSpecification)
-}
 
 namespace simplestore 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(IndexImpl)
-END_SERIALIZABLE_CLASS_VERSIONS(IndexImpl)
 
 
 
@@ -75,12 +64,6 @@ IndexImpl::~IndexImpl()
 {
 }
 
-void IndexImpl::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (Index*)this);
-  ar & theQname;
-  ar & theSpec;
-}
 
 /******************************************************************************
 

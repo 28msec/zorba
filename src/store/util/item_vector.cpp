@@ -24,10 +24,6 @@ namespace zorba
 namespace store
 {
 
-SERIALIZABLE_CLASS_VERSIONS(ItemVector)
-END_SERIALIZABLE_CLASS_VERSIONS(ItemVector)
-
-
 /******************************************************************************
 
 ********************************************************************************/
