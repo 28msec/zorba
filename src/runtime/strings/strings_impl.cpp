@@ -2333,8 +2333,6 @@ bool StringTokenizeIterator::nextImpl(
 
       if ( utf8::read( *state->theIStream, ec ) != utf8::npos )
       {
-        assert(state->theIStream->good()); // otherwise, we got an invalid byte
-
         if (state->theSeparator.compare(lNewPos, 1, ec) == 0)
         {
           if (++lNewPos == state->theSeparator.length())
@@ -2355,6 +2353,24 @@ bool StringTokenizeIterator::nextImpl(
       }
       else
       {
+        if (state->theIStream->good())
+        {
+          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
+          bool first = true;
+          for ( ; *p; ++p ) {
+            if ( first )
+              first = false;
+            else
+              *b++ = ',';
+            ::strcpy( b, "0x" );          b += 2;
+            ::sprintf( b, "%0hhX", *p );  b += 2;
+          }
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+            ERROR_PARAMS( buf ),
+            ERROR_LOC( loc )
+          );
+        }
         if (!lToken.empty())
         {
           GENV_ITEMFACTORY->createString(result, lToken);
