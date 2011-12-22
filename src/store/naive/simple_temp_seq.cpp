@@ -15,21 +15,32 @@
  */
 #include "stdafx.h"
 
-#include "diagnostics/zorba_exception.h"
+#include "diagnostics/xquery_exception.h"
 #include "zorba/diagnostic_list.h"
 #include "diagnostics/diagnostic.h"
+#include "diagnostics/util_macros.h"
+
 #include "store/api/item.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/api/copymode.h"
 
 namespace zorba { namespace simplestore {
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleTempSeq::SimpleTempSeq(store::Iterator_t& iter, bool copy)
+SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
 {
-  init(iter, copy);
+  theItems.resize(items.size());
+
+  std::vector<store::Item_t>::iterator ite = items.begin();
+  std::vector<store::Item_t>::iterator end = items.end();
+  std::vector<store::Item*>::iterator ite2 = theItems.begin();
+  for (; ite != end; ++ite, ++ite2)
+  {
+    (*ite2) = (*ite).release();
+  }
 }
 
 
@@ -37,6 +48,73 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t& iter, bool copy)
 
 ********************************************************************************/
 SimpleTempSeq::~SimpleTempSeq()
+{
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::clear()
+{
+  std::vector<store::Item*>::iterator ite = theItems.begin();
+  std::vector<store::Item*>::iterator end = theItems.end();
+  for (; ite != end; ++ite)
+  {
+    (*ite)->removeReference();
+  }
+
+  theItems.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::init(const store::Iterator_t& iter)
+{
+  store::Item_t curItem;
+
+  clear();
+
+  while (iter->next(curItem)) 
+  {
+    // TODO ???? Check that the size is less than max(csize, xs_integer)
+    theItems.push_back(NULL);
+    theItems.back() = curItem.release();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::append(const store::Iterator_t& iter)
+{
+  store::Item_t curItem;
+
+  while (iter->next(curItem))
+  {
+    // TODO ???? Check that the size is less than max(csize, xs_integer)
+    theItems.push_back(NULL);
+    theItems.back() = curItem.release();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::purge()
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleTempSeq::purgeUpTo(xs_integer upTo)
 {
 }
 
@@ -46,37 +124,14 @@ SimpleTempSeq::~SimpleTempSeq()
 ********************************************************************************/
 bool SimpleTempSeq::empty()
 {
-  return theItems.size() == 0;
+  return theItems.empty();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
-{
-  uint64_t lIndex;
-  try 
-  {
-    lIndex = to_xs_unsignedLong(aIndex);
-  }
-  catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
-  }
-  return theItems[lIndex];
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xs_integer SimpleTempSeq::getSize() 
+xs_integer SimpleTempSeq::getSize() const
 {
   return theItems.size();
 }
@@ -87,23 +142,20 @@ xs_integer SimpleTempSeq::getSize()
 ********************************************************************************/
 void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 {
-  uint64_t lPos;
+  xs_long pos;
   try 
   {
-    lPos = to_xs_unsignedLong(position);
+    pos = to_xs_long(position);
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
-  if (containsItem(lPos))
+
+  if (0 < pos && pos <= theItems.size())
 	{
-    res = theItems[lPos - 1];
+    res = theItems[pos - 1];
   }
   else
 	{
@@ -117,61 +169,18 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 ********************************************************************************/
 bool SimpleTempSeq::containsItem(xs_integer position)
 {
-  uint64_t lPos;
+  xs_long pos;
   try 
   {
-    lPos = to_xs_unsignedLong(position);
+    pos = to_xs_long(position);
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
-  return theItems.size() >= lPos;
-}
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::init(store::Iterator_t& iter, bool copy)
-{
-  store::CopyMode lCopyMode;
-  store::Item_t curItem;
-
-  theItems.clear();
-
-  while (iter->next(curItem)) 
-  {
-    if (copy && curItem->isNode()) 
-      curItem = curItem->copy(NULL, lCopyMode);
-
-    theItems.push_back(NULL);
-    theItems.back().transfer(curItem);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
-{
-  store::Item_t curItem;
-  store::CopyMode lCopyMode;
-
-  while (iter->next(curItem))
-  {
-    if (copy && curItem->isNode())
-      curItem = curItem->copy(NULL, lCopyMode);
-
-    theItems.push_back(NULL);
-    theItems.back().transfer(curItem);
-  }
+  return 0 < pos && pos <= theItems.size();
 }
 
 
@@ -181,7 +190,7 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
 
   @return Iterator which iterates over the complete TempSeq
 ********************************************************************************/
-store::Iterator_t SimpleTempSeq::getIterator()
+store::Iterator_t SimpleTempSeq::getIterator() const
 {
   return new SimpleTempSeqIter(this);
 }
@@ -197,7 +206,7 @@ store::Iterator_t SimpleTempSeq::getIterator()
 store::Iterator_t SimpleTempSeq::getIterator(
     xs_integer startPos,
     xs_integer endPos,
-    bool streaming)
+    bool streaming) const
 {
   return new SimpleTempSeqIter(this, startPos, endPos);
 }
@@ -205,86 +214,49 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 /*******************************************************************************
 
-********************************************************************************/
-store::Iterator_t SimpleTempSeq::getIterator(
-    xs_integer startPos,
-    store::Iterator_t function,
-    const std::vector<store::Iterator_t>& vars,
-    bool streaming)
-{
-  return store::Iterator_t ( NULL );
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Iterator_t SimpleTempSeq::getIterator(
-    const std::vector<xs_integer>& positions,
-    bool streaming)
-{
-  return store::Iterator_t ( NULL );
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Iterator_t SimpleTempSeq::getIterator(
-    store::Iterator_t positions,
-    bool streaming)
-{
-  return store::Iterator_t(NULL);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::purge()
-{
-
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::purgeUpTo(xs_integer upTo)
-{
-
-}
-
-
-/*******************************************************************************
-
 ********************************************************************************/	
-SimpleTempSeqIter::SimpleTempSeqIter(
-    SimpleTempSeq_t aTempSeq)
+SimpleTempSeqIter::SimpleTempSeqIter(const SimpleTempSeq* aTempSeq)
 	:
-    theTempSeq(aTempSeq),
-    theBorderType(none),
-    theCurPos(-1)
+  theTempSeq(const_cast<SimpleTempSeq*>(aTempSeq)),
+  theBorderType(none)
 {
+  theBegin = theTempSeq->theItems.begin();
+  theEnd = theTempSeq->theItems.end();
 }
 
 
 SimpleTempSeqIter::SimpleTempSeqIter(
-    SimpleTempSeq_t aTempSeq,
+    const SimpleTempSeq* aTempSeq,
     xs_integer startPos,
     xs_integer endPos)
 	:
-		theTempSeq(aTempSeq),
-    theBorderType(startEnd),
-    theCurPos(to_xs_long(startPos) - 2),
-    theStartPos(to_xs_long(startPos)),
-    theEndPos(to_xs_long(endPos))
+  theTempSeq(const_cast<SimpleTempSeq*>(aTempSeq)),
+  theBorderType(startEnd)
 {
-}
+  xs_long start;
+  xs_long end;
 
+  try 
+  {
+    start = to_xs_long(startPos);
+    end = to_xs_long(endPos);
+  }
+  catch (std::range_error& e)
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+  }
 
-SimpleTempSeqIter::~SimpleTempSeqIter()
-{
+  if (start > 0 && end > 0)
+  {
+    theBegin = theTempSeq->theItems.begin() + (start - 1);
+    theEnd = theTempSeq->theItems.begin() + end;
+  }
+  else
+  {
+    theBegin = theTempSeq->theItems.end();
+    theEnd = theTempSeq->theItems.end();
+  }
 }
 
 
@@ -292,44 +264,27 @@ void SimpleTempSeqIter::init(const store::TempSeq_t& aTempSeq)
 {
   theTempSeq = aTempSeq;
   theBorderType = none;
-  theCurPos = -1;
+
+  theBegin = theTempSeq->theItems.begin();
+  theEnd = theTempSeq->theItems.end();
 }
 
 
 void SimpleTempSeqIter::open()
 {
-  switch (theBorderType)
-	{
-  case startEnd:
-    theCurPos = theStartPos - 2;
-    break;
-  case none:
-    theCurPos = -1;
-    break;
-  }
+  theIte = theBegin;
 }
 
 
 bool SimpleTempSeqIter::next(store::Item_t& result)
 {
-  theCurPos++;
-  switch (theBorderType)
-	{
-  case none:
-    if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
-    {
-      result = (*theTempSeq)[theCurPos];
-      return true;
-    }
-    break;
-  case startEnd:
-    if ( theCurPos < theEndPos ) 
-    {
-      result = (*theTempSeq)[theCurPos];
-      return true;
-    }
-    break;
+  if (theIte != theEnd)
+  {
+    result = *theIte;
+    ++theIte;
+    return true;
   }
+
   result = NULL;
   return false;
 }
@@ -337,34 +292,20 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
 
 store::Item* SimpleTempSeqIter::next()
 {
-  theCurPos++;
-  switch (theBorderType)
-	{
-  case none:
-    if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
-      return (*theTempSeq)[theCurPos];
-    break;
-  case startEnd:
-    if ( theCurPos < theEndPos ) 
-      return (*theTempSeq)[theCurPos];
-    break;
+  if (theIte != theEnd)
+  {
+    store::Item* result = *theIte;
+    ++theIte;
+    return result;
   }
 
   return NULL;
 }
-  
+
 
 void SimpleTempSeqIter::reset()
 {
-  switch (theBorderType)
-	{
-  case startEnd:
-    theCurPos = theStartPos - 2;
-    break;
-  case none:
-    theCurPos = -1;
-    break;
-  }
+  theIte = theBegin;
 }
 
 

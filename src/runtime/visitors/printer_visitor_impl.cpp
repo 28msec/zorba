@@ -681,8 +681,8 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
-  if (a.getTargetPos() > 0)
-    thePrinter.addAttribute("targetPos", a.getTargetPos());
+  if (a.getTargetPos() > Integer(0))
+    thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
 
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
@@ -1224,7 +1224,23 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
 
 #undef TYPED_VAL_CMP
 
-  PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
+  void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
+  {
+    thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
+    printCommons(  &a, theId );
+    if (a.isCached())
+    {
+      thePrinter.addAttribute("cached", "true");
+    }
+    thePrinter.endBeginVisit( theId);
+  }
+
+  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   PRINTER_VISITOR_DEFINITION (ExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (OrIterator)

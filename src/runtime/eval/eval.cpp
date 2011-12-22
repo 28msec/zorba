@@ -38,6 +38,8 @@
 
 #include "api/auditimpl.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba {
 
@@ -73,14 +75,16 @@ EvalIterator::EvalIterator(
     const std::vector<xqtref_t>& aVarTypes,
     expr_script_kind_t scriptingKind,
     const store::NsBindings& localBindings,
-    bool doNodeCopy)
+    bool doNodeCopy,
+    bool forDebugger)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),
   theVarTypes(aVarTypes),
   theScriptingKind(scriptingKind),
   theLocalBindings(localBindings),
-  theDoNodeCopy(doNodeCopy)
+  theDoNodeCopy(doNodeCopy),
+  theForDebugger(forDebugger)
 {
 }
 
@@ -107,6 +111,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
   ar & theDoNodeCopy;
+  ar & theForDebugger;
 }
 
 
@@ -218,7 +223,7 @@ void EvalIterator::copyOuterVariables(
   dynamic_context* outerDctx = evalDctx->getParent();
 
   std::vector<var_expr_t> globalVars;
-  outerSctx->get_parent()->getVariables(globalVars, true, true);
+  outerSctx->get_parent()->getVariables(globalVars, theForDebugger, true);
   
   FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
   {
@@ -355,14 +360,17 @@ PlanIter_t EvalIterator::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   std::string lName = evalname.str();
-  zorba::audit::StringAuditor filenameAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lName);
+
+  audit::StringAuditor filenameAudit(sar, audit::XQUERY_COMPILATION_FILENAME, lName);
 
   parsenode_t ast;
+
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(sar,
+                                         audit::XQUERY_COMPILATION_PARSE_DURATION,
+                                         lTimer);
+
     ast = compiler.parse(os, lName);
   }
 
@@ -376,6 +384,31 @@ PlanIter_t EvalIterator::compile(
                                          rootExpr,
                                          maxOuterVarId,
                                          sar);
+  if (theScriptingKind == SIMPLE_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0004, loc, ERROR_PARAMS("eval"));
+    }
+    else if (ccb->isUpdating())
+    {
+      RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), "eval"));
+    }
+  }
+  else if (theScriptingKind == UPDATING_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0003, loc, ERROR_PARAMS("eval_u"));
+    }
+  }
+  else // sequential
+  {
+    if (ccb->isUpdating() && !theForDebugger)
+    {
+      RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS("eval_s"));
+    }
+  }
 
   return rootIter;
 }

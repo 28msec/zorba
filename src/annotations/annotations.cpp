@@ -106,6 +106,9 @@ void AnnotationInternal::createBuiltIn()
 
   ZANN(streamable, streamable);
 
+  ZANN(cache, cache);
+  ZANN(no-cache, nocache);
+
   //
   // Zorba annotations - xqddf
   //
@@ -172,6 +175,10 @@ void AnnotationInternal::createBuiltIn()
   theRuleSet.push_back(
       ZANN(zann_sequential) |
       ZANN(zann_nonsequential));
+
+  theRuleSet.push_back(
+      ZANN(zann_cache) |
+      ZANN(zann_nocache));
 
   theRuleSet.push_back(
       ZANN(fn_private) |
@@ -446,7 +453,6 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     }
   }
 }
-
 
 
 } /* namespace zorba */

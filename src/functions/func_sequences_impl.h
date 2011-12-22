@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ void populate_context_sequences_impl(static_context* sctx);
 /*******************************************************************************
 
 ********************************************************************************/
-class fn_unordered : public function 
+class fn_unordered : public function
 {
 public:
   fn_unordered(const signature& sig)
@@ -40,16 +40,14 @@ public:
   {
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const fo_expr* caller) const
   {
-    return arg_types[0];
+    return caller->get_arg(0)->get_return_type();
   }
 
-  bool isMap(ulong input) const 
+  bool isMap(ulong input) const
   {
-    return true; 
+    return true;
   }
 
   bool mustCopyInputNodes(expr* fo, csize input) const
@@ -94,9 +92,7 @@ public:
   {
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool mustCopyInputNodes(expr* fo, csize input) const
   {
@@ -194,7 +190,7 @@ public:
 class fn_intersect : public function
 {
 public:
-  fn_intersect(const signature& sig) 
+  fn_intersect(const signature& sig)
     :
     function(sig, FunctionConsts::OP_INTERSECT_2)
   {
@@ -243,10 +239,10 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class fn_except: public function 
+class fn_except: public function
 {
 public:
-  fn_except(const signature& sig) 
+  fn_except(const signature& sig)
     :
     function(sig, FunctionConsts::OP_EXCEPT_2)
   {
@@ -327,7 +323,7 @@ public:
 class fn_min : public function
 {
 public:
-  fn_min(const signature& sig) 
+  fn_min(const signature& sig)
     :
     function(sig, FunctionConsts::FN_UNKNOWN)
   {
@@ -353,7 +349,7 @@ public:
 /*******************************************************************************
   Fuction is implemented by translator, who turns it into subsequence(arg, 1, 1)
 ********************************************************************************/
-class fn_head : public function 
+class fn_head : public function
 {
 public:
   fn_head(const signature& sig)
@@ -370,7 +366,7 @@ public:
 /*******************************************************************************
   Fuction is implemented by translator, who turns it into subsequence(arg, 2)
 ********************************************************************************/
-class fn_tail : public function 
+class fn_tail : public function
 {
 public:
   fn_tail(const signature& sig)

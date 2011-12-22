@@ -49,9 +49,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
@@ -131,9 +129,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
@@ -153,6 +149,8 @@ public:
   {
 
   }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
@@ -175,9 +173,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -204,9 +200,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -231,9 +225,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -258,9 +250,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -283,9 +273,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -308,9 +296,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
@@ -331,9 +317,7 @@ public:
 
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool isMap(ulong producer) const { return producer == 0; }
 

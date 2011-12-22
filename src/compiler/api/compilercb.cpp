@@ -138,6 +138,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
+  theIsSequential(false),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
   theConfig(cb.theConfig)

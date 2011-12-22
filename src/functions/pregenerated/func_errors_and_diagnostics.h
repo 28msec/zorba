@@ -80,9 +80,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   CODEGEN_DECL();
 };

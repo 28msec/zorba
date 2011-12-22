@@ -61,15 +61,6 @@ PlanIter_t fn_nilled::codegen(
 }
 
 
-PlanIter_t fn_data_3_0::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnDataIterator(sctx, loc, argv);
-}
 PlanIter_t fn_data::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -175,17 +166,6 @@ void populate_context_accessors(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_STRING_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_data_3_0,
-        (createQName("http://www.w3.org/2005/xpath-functions","","data"), 
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR),
-        FunctionConsts::FN_DATA_0);
 
   }
 

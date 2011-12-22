@@ -63,6 +63,7 @@ protected:
   expr_script_kind_t          theScriptingKind;
   store::NsBindings           theLocalBindings;
   bool                        theDoNodeCopy;
+  bool                        theForDebugger;
 
 public:
   SERIALIZABLE_CLASS(EvalIterator);
@@ -80,7 +81,8 @@ public:
       const std::vector<xqtref_t>& aVarTypes,
       expr_script_kind_t scriptingKind,
       const store::NsBindings& localBindings,
-      bool doNodeCopy);
+      bool doNodeCopy,
+      bool forDebugger);
 
   ~EvalIterator();
 

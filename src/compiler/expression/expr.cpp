@@ -1402,7 +1402,7 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 eval_expr::eval_expr(
     static_context* sctx,
     const QueryLoc& loc, 
-    expr_t e,
+    const expr_t& e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
@@ -1483,7 +1483,7 @@ debugger_expr::debugger_expr(
   theExpr(aChild),
   theIsVarDeclaration(aIsVarDeclaration)
 {
-  theScriptingKind = aChild->get_scripting_detail();
+  compute_scripting_kind();
 }
 
 
@@ -1499,6 +1499,7 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void debugger_expr::compute_scripting_kind()
 {
+  theScriptingKind = theExpr->get_scripting_detail();
 }
 
 #endif

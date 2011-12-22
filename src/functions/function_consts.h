@@ -33,6 +33,8 @@ typedef enum
 
   FN_APPLY_1,
 
+  FN_DATA_0,
+
   FN_HEAD_1,
   FN_TAIL_1,
 

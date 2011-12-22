@@ -127,10 +127,6 @@
   
   <zorba:function>
 
-    <zorba:signature localname="data" prefix="fn" version="3.0">
-      <zorba:output>xs:anyAtomicType*</zorba:output>
-    </zorba:signature>
-
     <zorba:signature localname="data" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -147,7 +143,9 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
+    <zorba:member type="store::Iterator_t" 
+                  name="theTypedValueIter"
+                  defaultValue="NULL" brief=""/>
   </zorba:state>
     
 </zorba:iterator>

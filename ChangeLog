@@ -1,10 +1,14 @@
 Zorba - The XQuery Processor
 
-version 2.x
+version 2.2
+
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
   * Added external function annotations %ann:propagates-input-nodes and 
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
-	
+  * Caching of results for recursive functions with atomic parameter and return types.
+  * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Added index management function to the C++ api's StaticCollectionManager.
+
 version 2.1
 
 New Features:
@@ -79,6 +83,7 @@ Bug Fixes/Other Changes:
   * General index cannot be declared as unique if the type of its key is
   xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
+  * Optimization for count(collection()) expressions
   * Fixed bug #867133 (SWIG PHP build failure on Mac OSX)
   * Fixed bug #872796 (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)

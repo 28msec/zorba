@@ -76,7 +76,7 @@ bool MaterializeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   MaterializeIteratorState* state;
   DEFAULT_STACK_INIT(MaterializeIteratorState, state, planState);
 
-  state->theTempSeq->init(state->theChildWrapper, false);
+  state->theTempSeq->init(state->theChildWrapper);
 
   state->theTempSeqIter = state->theTempSeq->getIterator();
 

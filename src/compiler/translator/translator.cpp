@@ -1710,24 +1710,24 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      store::Item* lVarname = (*lIter)->get_name();
+      var_expr* argVar = *lIter;
+
+      store::Item* lVarname = argVar->get_name();
 
       if (lVarname->getStringValue() == "$$dot")
       {
         continue;
       }
 
-      var_expr_t ve = create_var(lBreakable.getLocation(),
-                                 lVarname,
-                                 var_expr::eval_var,
-                                 NULL).dyn_cast<var_expr>();
+      var_expr_t evalVar = create_var(lBreakable.getLocation(),
+                                      lVarname,
+                                      var_expr::eval_var,
+                                      NULL);
 
-      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
-
-      expr_t val = new wrapper_expr(theRootSctx,
-                                    lBreakable.getLocation(),
-                                    rchandle<expr>(lVe));
-      lExpr->add_var(ve, val);
+      expr_t argExpr = new wrapper_expr(theRootSctx,
+                                        lBreakable.getLocation(),
+                                        rchandle<expr>(argVar));
+      lExpr->add_var(evalVar, argExpr);
     }
 
     aExpr = lExpr.release();

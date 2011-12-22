@@ -42,11 +42,11 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t op_concatenate::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
 {
-  ulong sz = (ulong)arg_types.size();
+  TypeManager* tm = caller->get_type_manager();
+
+  csize sz = caller->num_args();
 
   if (sz == 0)
   {
@@ -54,17 +54,16 @@ xqtref_t op_concatenate::getReturnType(
   }
   else
   {
-    xqtref_t t = arg_types[0];
+    xqtref_t t = caller->get_arg(0)->get_return_type();
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (ulong i = 1; i < sz; i++)
+    for (csize i = 1; i < sz; i++)
     {
-      t = TypeOps::union_type(*t, *arg_types[i], tm);
+      t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
+
       TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }
-
-    TypeManager* tm = t->get_manager();
 
     return tm->create_type_x_quant(*t, q);
   }
@@ -116,11 +115,9 @@ BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, csize input) cons
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_distinct_values::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_distinct_values::getReturnType(const fo_expr* caller) const
 {
-  return arg_types[0];
+  return caller->get_arg(0)->get_return_type();
 }
 
 
@@ -149,6 +146,16 @@ BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+xqtref_t fn_insert_before::getReturnType(const fo_expr* caller) const
+{
+  TypeManager* tm = caller->get_type_manager();
+  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+  xqtref_t insert_type = caller->get_arg(2)->get_return_type();
+
+  return TypeOps::union_type(*list_type, *insert_type, tm);
+}
+
+
 BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
     expr* fo,
     csize input) const
@@ -174,11 +181,12 @@ BoolAnnotationValue fn_insert_before::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_remove::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_remove::getReturnType(const fo_expr* caller) const
 {
-  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  TypeManager* tm = caller->get_type_manager();
+
+  return tm->create_type_x_quant(*caller->get_arg(0)->get_return_type(),
+                                 TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -204,11 +212,9 @@ BoolAnnotationValue fn_remove::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_reverse::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_reverse::getReturnType(const fo_expr* caller) const
 {
-  return arg_types[0];
+  return caller->get_arg(0)->get_return_type();
 }
 
 
@@ -231,11 +237,22 @@ BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_subsequence::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
 {
-  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  TypeManager* tm = caller->get_type_manager();
+  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+
+  //When there is a length argument and it's 1 then we know we will return
+  //a value type T? where the input sequence was type T* or T+
+  if (caller->num_args() > 2 &&
+      caller->get_arg(2)->get_expr_kind() == const_expr_kind)
+  {
+    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+
+    if (len_item->getDoubleValue().round().getNumber() == 1)
+      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+  }
+  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -261,15 +278,28 @@ PlanIter_t fn_subsequence::codegen(
   {
     xs_double dpos = static_cast<const const_expr*>(posExpr)->
                       get_val()->getDoubleValue().round();
-    long pos = static_cast<long>(dpos.getNumber());
+    xs_integer ipos(dpos.getNumber());
 
     xs_double dlen = static_cast<const const_expr*>(lenExpr)->
                       get_val()->getDoubleValue().round();
-    long len = static_cast<long>(dlen.getNumber());
+    xs_integer ilen(dlen.getNumber());
+
+    xs_long pos;
+    xs_long len;
+
+    try
+    {
+      pos = to_xs_long(ipos);
+      len = to_xs_long(ilen);
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-    ulong numSteps = pathExpr->numSteps();
+    csize numSteps = pathExpr->numSteps();
 
     if (pos > 0 && len == 1 && numSteps == 2)
     {
@@ -281,6 +311,7 @@ PlanIter_t fn_subsequence::codegen(
     }
   }
 
+ done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
@@ -288,11 +319,23 @@ PlanIter_t fn_subsequence::codegen(
 /******************************************************************************
 
 *******************************************************************************/
-xqtref_t op_zorba_subsequence_int::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
 {
-  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  TypeManager* tm = caller->get_type_manager();
+  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+
+  //When there is a length argument and it's 1 then we know we will return
+  //a value type T? where the input sequence was type T* or T+
+  if (caller->num_args() > 2 &&
+      caller->get_arg(2)->get_expr_kind() == const_expr_kind)
+  {
+    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+
+    if (len_item->getIntegerValue() == Integer(1))
+      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+  }
+
+  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -319,15 +362,22 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
-    xs_long pos = static_cast<const const_expr*>(posExpr)->
-                      get_val()->getLongValue();
+    xs_long pos;
+    xs_long len;
 
-    xs_long len = static_cast<const const_expr*>(lenExpr)->
-                      get_val()->getLongValue();
+    try
+    {
+      pos = static_cast<const const_expr*>(posExpr)->get_val()->getLongValue();
+      len = static_cast<const const_expr*>(lenExpr)->get_val()->getLongValue();
+    }
+    catch (std::range_error&)
+    {
+      goto done;
+    }
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-    ulong numSteps = pathExpr->numSteps();
+    csize numSteps = pathExpr->numSteps();
 
     if (pos > 0 && len == 1 && numSteps == 2)
     {
@@ -367,6 +417,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     }
   }
 
+ done:
   return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
 }
 
@@ -376,10 +427,12 @@ PlanIter_t op_zorba_subsequence_int::codegen(
 
 ********************************************************************************/
 xqtref_t op_zorba_sequence_point_access::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+    const fo_expr* caller) const
 {
-  return tm->create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  TypeManager* tm = caller->get_type_manager();
+
+  return tm->create_type(*caller->get_arg(0)->get_return_type(),
+                         TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -402,20 +455,31 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   if (posExpr->get_expr_kind() == const_expr_kind)
   {
     store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
-    xs_long pos = posItem->getLongValue();
+
+    xs_integer pos = posItem->getIntegerValue();;
 
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {
       const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
 
-      ulong numSteps = pathExpr->numSteps();
+      csize numSteps = pathExpr->numSteps();
 
-      if (pos > 0 && numSteps == 2)
+      if (pos > Integer(0) && numSteps == 2)
       {
+        xs_long pos2;
+        try
+        {
+          pos2 = posItem->getLongValue();
+        }
+        catch (std::range_error&)
+        {
+          goto done;
+        }
+
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
 
-        if (input->setTargetPos(pos-1))
+        if (input->setTargetPos(pos2 - 1))
           return aArgs[0];
       }
     }
@@ -457,6 +521,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
       return aArgs[0];
   }
 
+ done:
   return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
 }
 
@@ -498,7 +563,7 @@ PlanIter_t fn_count::codegen(
     FnCollectionIterator& collection =
     static_cast<FnCollectionIterator&>(*argv[0]);
 
-    return new CountCollectionIterator(sctx, 
+    return new CountCollectionIterator(sctx,
                                        loc,
                                        collection.getChildren(),
                                        CountCollectionIterator::W3C);
@@ -539,11 +604,11 @@ PlanIter_t fn_unordered::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_zero_or_one::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_zero_or_one::getReturnType(const fo_expr* caller) const
 {
-  xqtref_t srcType = arg_types[0];
+  TypeManager* tm = caller->get_type_manager();
+
+  xqtref_t srcType = caller->get_arg(0)->get_return_type();
 
   return tm->create_type(*TypeOps::prime_type(tm, *srcType),
                          TypeConstants::QUANT_QUESTION);
@@ -573,12 +638,13 @@ PlanIter_t fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_one_or_more::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_one_or_more::getReturnType(const fo_expr* caller) const
 {
-  return tm->create_type(*TypeOps::prime_type(tm, *arg_types[0]),
-                         TypeConstants::QUANT_PLUS);
+  TypeManager* tm = caller->get_type_manager();
+
+  return tm->create_type(
+      *TypeOps::prime_type(tm, *(caller->get_arg(0)->get_return_type())),
+      TypeConstants::QUANT_PLUS);
 }
 
 
@@ -597,14 +663,16 @@ BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, csize input)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_exactly_one_noraise::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_exactly_one_noraise::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
+
+  xqtref_t srcType = caller->get_arg(0)->get_return_type();
+
   if (theRaiseError)
-    return TypeOps::prime_type(tm, *arg_types[0]);
+    return TypeOps::prime_type(tm, *srcType);
   else
-    return function::getReturnType(tm, arg_types);
+    return function::getReturnType(caller);
 }
 
 

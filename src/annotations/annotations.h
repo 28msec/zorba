@@ -57,6 +57,8 @@ public:
     zann_nonsequential,
     zann_propagates_input_nodes,
     zann_must_copy_input_nodes,
+    zann_cache,
+    zann_nocache,
     zann_variadic,
     zann_streamable,
     zann_unique,

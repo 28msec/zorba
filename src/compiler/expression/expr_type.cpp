@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -77,7 +77,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   if (deep)
   {
     ExprIterator iter(this);
-    while (!iter.done()) 
+    while (!iter.done())
     {
       (*iter)->compute_return_type(deep, modified);
       iter.next();
@@ -126,7 +126,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     ulong numClauses = e->num_clauses();
 
-    for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i) 
+    for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
     {
       const flwor_clause* c = e->theClauses[i];
 
@@ -186,7 +186,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       domainExpr = e->get_domain_expr();
       ZORBA_ASSERT(domainExpr != NULL);
-      
+
       xqtref_t domainType = domainExpr->get_return_type();
 
       if (e->theKind == var_expr::for_var)
@@ -256,10 +256,10 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         xqtref_t stepType = sourceType;
 
-        for (ulong i = 1; i < e->size(); ++i) 
+        for (ulong i = 1; i < e->size(); ++i)
         {
           const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
-          
+
           stepType = axis_step_type(theSctx,
                                     axisStep,
                                     static_cast<const NodeXQType*>(stepType.getp()));
@@ -300,7 +300,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     */
     FunctionConsts::FunctionKind funcKind = func->getKind();
 
-    switch (funcKind) 
+    switch (funcKind)
     {
     case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1:
     {
@@ -346,13 +346,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     if (newType == NULL)
     {
-      ulong numArgs = (ulong)e->theArgs.size();
-      std::vector<xqtref_t> types(numArgs);
-
-      for (ulong i = 0; i < numArgs; ++i)
-        types[i] = e->theArgs[i]->get_return_type();
-    
-      newType = e->theFunction->getReturnType(tm, types);
+      newType = e->theFunction->getReturnType(e);
     }
 
     break;
@@ -365,7 +359,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t argType = e->theInputExpr->get_return_type();
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
-    
+
     if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()) &&
         (targetQuant == TypeConstants::QUANT_QUESTION ||
          targetQuant == TypeConstants::QUANT_STAR))
@@ -393,7 +387,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
                              TypeOps::quantifier(*e->theTargetType));
 
-    if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc())) 
+    if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc()))
     {
       newType = tm->create_type(*input_ptype, q);
     }
@@ -430,24 +424,24 @@ void expr::compute_return_type(bool deep, bool* modified)
     // TODO: for nodes, the result would be none
     if (TypeOps::is_equal(tm, *in_ptype, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       return tm->create_type_x_quant(*target_ptype, q);
-  
+
     // decimal --> float
-    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.FLOAT_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.FLOAT_TYPE_ONE))
     {
       if (TypeOps::is_subtype(tm, *in_ptype, *ts.DECIMAL_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
     }
-  
+
     // decimal/float --> double
-    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.DOUBLE_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.DOUBLE_TYPE_ONE))
     {
       if (TypeOps::is_subtype(tm, *in_ptype, *rtm.DECIMAL_TYPE_ONE) ||
           TypeOps::is_subtype(tm, *in_ptype, *rtm.FLOAT_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
     }
-  
+
     // uri --> string
-    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.STRING_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.STRING_TYPE_ONE))
     {
       if (TypeOps::is_subtype(tm, *in_ptype, *rtm.ANY_URI_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
@@ -488,7 +482,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     xqtref_t typeName =
       (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       rtm.ANY_TYPE : 
+       rtm.ANY_TYPE :
        rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
@@ -523,9 +517,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
 
-    switch (e->type) 
+    switch (e->type)
     {
-    case text_expr::text_constructor: 
+    case text_expr::text_constructor:
     {
       xqtref_t t = e->get_text()->get_return_type();
 
@@ -742,7 +736,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   assert(newType != NULL);
 
-  if (modified != NULL && 
+  if (modified != NULL &&
       (theType == NULL || !TypeOps::is_equal(tm, *newType, *theType, get_loc())))
   {
     *modified = true;
@@ -832,7 +826,7 @@ static xqtref_t axis_step_type(
 
     // Only element or doc nodes are reachable via the parent axis.
     if (testNodeKind != store::StoreConsts::documentNode &&
-        testNodeKind != store::StoreConsts::elementNode && 
+        testNodeKind != store::StoreConsts::elementNode &&
         testNodeKind != store::StoreConsts::anyNode)
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
@@ -860,7 +854,7 @@ static xqtref_t axis_step_type(
 
     // Only element or doc nodes are reachable via the ancestor axis.
     if (testNodeKind != store::StoreConsts::documentNode &&
-        testNodeKind != store::StoreConsts::elementNode && 
+        testNodeKind != store::StoreConsts::elementNode &&
         testNodeKind != store::StoreConsts::anyNode)
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
@@ -897,7 +891,7 @@ static xqtref_t axis_step_type(
     {
       return RTM.ANY_NODE_TYPE_STAR;
     }
-    else 
+    else
     {
       // We are looking for attribute, test, pi, or comment ancestor nodes. Only
       // the "self" node may qualify, so we jump to the axis_kind_self case.
@@ -968,7 +962,7 @@ self:
 
   case axis_kind_descendant_or_self:
   {
-    // If we are looking for descendants or self of attribute, test, pi, or 
+    // If we are looking for descendants or self of attribute, test, pi, or
     // comment nodes, only the "self" node may qualify, so we jump to the
     // axis_kind_self case.
     if (inNodeKind == store::StoreConsts::attributeNode ||
@@ -980,7 +974,7 @@ self:
     }
 
     // if we are looking for document or attribute descendants of a node, only
-    // the "self" node may qualify, so we jump to the axis_kind_self case. 
+    // the "self" node may qualify, so we jump to the axis_kind_self case.
     if (testNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::attributeNode)
     {
@@ -1000,7 +994,7 @@ self:
 
     case store::StoreConsts::piNode:
       return RTM.PI_TYPE_STAR;
-      
+
     case store::StoreConsts::commentNode:
       return RTM.COMMENT_TYPE_STAR;
 
@@ -1041,7 +1035,7 @@ self:
 
     case store::StoreConsts::piNode:
       return RTM.PI_TYPE_STAR;
-      
+
     case store::StoreConsts::commentNode:
       return RTM.COMMENT_TYPE_STAR;
 
@@ -1063,7 +1057,7 @@ self:
 
     // only attribute nodes are reachable via the attribute axis.
     if (testKind != match_name_test &&
-        testKind != match_anykind_test && 
+        testKind != match_anykind_test &&
         testKind != match_attr_test &&
         testKind != match_xs_attr_test)
     {
@@ -1127,7 +1121,7 @@ self:
 
     case store::StoreConsts::piNode:
       return RTM.PI_TYPE_STAR;
-      
+
     case store::StoreConsts::commentNode:
       return RTM.COMMENT_TYPE_STAR;
 
@@ -1162,9 +1156,9 @@ static xqtref_t create_axis_step_type(
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  if (untyped) 
+  if (untyped)
   {
-    xqtref_t contentType; 
+    xqtref_t contentType;
     if (nodekind == store::StoreConsts::attributeNode)
       contentType = RTM.UNTYPED_ATOMIC_TYPE_ONE;
     else
@@ -1191,7 +1185,7 @@ static xqtref_t create_axis_step_type(
   }
   else
   {
-    xqtref_t contentType; 
+    xqtref_t contentType;
     if (nodekind == store::StoreConsts::attributeNode)
       contentType = RTM.ANY_SIMPLE_TYPE;
     else
