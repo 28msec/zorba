@@ -34,15 +34,15 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_trace::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const 
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
 BoolAnnotationValue fn_trace::ignoresDuplicateNodes(
-    expr* fo,
-    ulong input) const
+    expr* fo, 
+    csize input) const 
 {
   return fo->getIgnoresDuplicateNodes();
 }

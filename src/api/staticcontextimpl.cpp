@@ -835,7 +835,7 @@ StaticContextImpl::getFunctionAnnotations(
   try
   {
     for (unsigned int i = 0; i < ann_list->size(); i++)
-      aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+      aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
   {
@@ -848,7 +848,8 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
   theCtx->set_context_item_type(xqType);

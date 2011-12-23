@@ -69,6 +69,7 @@
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:isSource returnValue="true"/>
+        <zorba:mustCopyInputNodes/>
       </zorba:methods>
 
     </zorba:function>

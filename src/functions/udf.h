@@ -127,7 +127,7 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache;
+  store::Index_t              theCache; //note: not for serialization
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
@@ -179,9 +179,11 @@ public:
 
   bool accessesDynCtx() const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
+
+  BoolAnnotationValue mustCopyNodes(expr* fo, csize input) const;
 
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
