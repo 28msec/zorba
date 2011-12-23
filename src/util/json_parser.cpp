@@ -237,7 +237,7 @@ bool lexer::next( token *t ) {
       case 'f':
       case 'n':
       case 't':
-        t->type_ = parse_literal( c );
+        t->type_ = parse_literal( c, &t->value_ );
         t->loc_ = cur_loc_;
         return true;
       case '[':
@@ -274,19 +274,22 @@ unicode::code_point lexer::parse_codepoint() {
   return cp;
 }
 
-token::type lexer::parse_literal( char first_c ) {
-  char const *literal;
+token::type lexer::parse_literal( char first_c, token::value_type *value ) {
+  static token::value_type const false_value( "false" );
+  static token::value_type const null_value ( "null"  );
+  static token::value_type const true_value ( "true"  );
+
   token::type tt;
   switch ( first_c ) {
-    case 'f': literal = "false"; tt = token::json_false; break;
-    case 'n': literal = "null" ; tt = token::json_null ; break;
-    case 't': literal = "true" ; tt = token::json_true ; break;
+    case 'f': *value = false_value; tt = token::json_false; break;
+    case 'n': *value = null_value ; tt = token::json_null ; break;
+    case 't': *value = true_value ; tt = token::json_true ; break;
     default : assert( false );
   }
 
   char c;
-  while ( *++literal ) {
-    if ( !get_char( &c ) || c != *literal )
+  for ( char const *s = value->c_str(); *++s; ) {
+    if ( !get_char( &c ) || c != *s )
       throw illegal_literal( cur_loc_ );
   }
   if ( peek_char( &c ) && ascii::is_alnum( c ) )

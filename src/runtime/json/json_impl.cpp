@@ -15,6 +15,7 @@
  */
 #include "stdafx.h"
 
+#include <map>
 #include <sstream>
 
 #include <zorba/diagnostic_list.h>
@@ -24,7 +25,9 @@
 #include "system/globalenv.h"
 #include "util/mem_streambuf.h"
 
+#include "jsonml_array.h"
 #include "snelson.h"
+#include "util.h"
 
 using namespace std;
 
@@ -32,14 +35,40 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+typedef map<zstring,zstring> options_type;
+
+static void get_options( store::Item_t const &options_element,
+                         options_type *options ) {
+  ZORBA_ASSERT( options_element->getNodeKind() == store::StoreConsts::elementNode );
+  store::Iterator_t i = options_element->getChildren();
+  i->open();
+  store::Item_t option;
+  while ( i->next( option ) ) {
+    if ( option->getNodeKind() == store::StoreConsts::elementNode ) {
+      zstring const name( option->getNodeName()->getStringValue() );
+      zstring value;
+      json_util::get_attribute_value( option, "value", &value );
+      (*options)[ name ] = value;
+    }
+  }
+  i->close();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool JSONParseInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
+  options_type options;
   istringstream iss;
   mem_streambuf buf;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
+
+  ZORBA_ASSERT( theChildren.size() == 2 );
+  ZORBA_ASSERT( consumeNext( cur_item, theChildren[1], planState ) );
+  get_options( cur_item, &options );
 
   if ( consumeNext( cur_item, theChildren[0], planState ) ) {
     istream *is;
@@ -59,7 +88,14 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       p.set_loc(
         loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
       );
-      snelson::parse( p, &result );
+      options_type::mapped_type const &format = options[ "json-format" ];
+      ZORBA_ASSERT( !format.empty() );
+      if ( format == "Snelson" )
+        snelson::parse( p, &result );
+      else if ( format == "JsonML-array" )
+        jsonml_array::parse( p, &result );
+      else
+        ZORBA_ASSERT( false );
     }
     catch ( json::illegal_character const &e ) {
       throw XQUERY_EXCEPTION(
@@ -118,17 +154,30 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 bool JSONSerializeInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
   store::Item_t cur_item;
+  options_type options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
+  ZORBA_ASSERT( theChildren.size() == 2 );
+  ZORBA_ASSERT( consumeNext( cur_item, theChildren[1], planState ) );
+  get_options( cur_item, &options );
+
   if ( consumeNext( cur_item, theChildren[0], planState ) ) {
     try {
+      options_type::mapped_type const &format = options[ "json-format" ];
+      ZORBA_ASSERT( !format.empty() );
+
       ostringstream oss;
       switch ( cur_item->getNodeKind() ) {
         case store::StoreConsts::documentNode:
         case store::StoreConsts::elementNode:
-          snelson::serialize( oss, cur_item );
+          if ( format == "Snelson" )
+            snelson::serialize( oss, cur_item );
+          else if ( format == "JsonML-array" )
+            jsonml_array::serialize( oss, cur_item );
+          else
+            ZORBA_ASSERT( false );
           break;
         default:
           throw XQUERY_EXCEPTION(

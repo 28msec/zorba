@@ -125,8 +125,8 @@ public:
   }
 
   /**
-   * Gets the value of this %token, if any.  Only %token types string and
-   * number have a value.
+   * Gets the value of this %token, if any.  Only %token types string, number,
+   * false, null, and true have a value.
    *
    * @return Returns said value or the empty string.
    */
@@ -475,7 +475,7 @@ private:
   bool get_char( char* = nullptr );
   bool peek_char( char* );
   unicode::code_point parse_codepoint();
-  token::type parse_literal( char );
+  token::type parse_literal( char, token::value_type* );
   void parse_number( char, token::value_type* );
   void parse_string( token::value_type* );
 

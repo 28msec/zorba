@@ -32,6 +32,7 @@
 #include "util/stl_util.h"
 
 #include "snelson.h"
+#include "util.h"
 
 #define SNELSON_NS "http://john.snelson.org.uk/parsing-json-into-xquery"
 
@@ -293,19 +294,7 @@ static void assert_json_type( json::type t, zstring const &s ) {
 
 static void get_attribute_value( store::Item_t const &element,
                                  char const *att_name, zstring *att_value ) {
-  store::Iterator_t i( element->getAttributes() );
-  bool found = false;
-  i->open();
-  store::Item_t att_item;
-  while ( i->next( att_item ) ) {
-    if ( att_item->getNodeName()->getStringValue() == att_name ) {
-      att_item->getStringValue2( *att_value );
-      found = true;
-      break;
-    }
-  }
-  i->close();
-  if ( !found )
+  if ( !json_util::get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
       ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )

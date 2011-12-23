@@ -2330,6 +2330,9 @@
     <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
       <value>unterminated JSON string</value>
     </diagnostic>
+    <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
+      <value>"$1": illegal QName</value>
+    </diagnostic>
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 

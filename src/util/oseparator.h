@@ -42,8 +42,8 @@ public:
   /**
    * Reset's the state.
    */
-  void reset() {
-    print_ = false;
+  void print( bool state = false ) {
+    print_ = state;
   }
 
   /**
@@ -88,7 +88,7 @@ public:
     if ( sep.print_ )
       o << sep.sep_;
     else
-      sep.print_ = true;
+      sep.print( true );
     return o;
   }
 
