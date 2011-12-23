@@ -698,7 +698,7 @@ TranslatorImpl(
 }
 
 
-~TranslatorImpl() 
+~TranslatorImpl()
 {
 #ifndef ZORBA_NO_FULL_TEXT
   while (!theFTNodeStack.empty())
@@ -3723,7 +3723,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
@@ -10590,6 +10590,24 @@ void end_visit(const InlineFunction& v, void* aState)
   pop_scope();
 }
 
+void* begin_visit(const JSON_PairList& v)
+{
+  TRACE_VISIT ();
+#ifndef ZORBA_WITH_JSON
+  // TODO: process  the pairs list
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_PairList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  // TODO: process the pairs list
+#endif
+}
+
 
 /*******************************************************************************
   JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
@@ -10598,7 +10616,7 @@ void end_visit(const InlineFunction& v, void* aState)
   The 2nd AdditiveExpr must contain exactly one item of any kind. If that item
   is another pair, it is unboxed.
 ********************************************************************************/
-void* begin_visit(const JSON_PairConstructor& v) 
+void* begin_visit(const JSON_PairConstructor& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_WITH_JSON
@@ -10607,7 +10625,7 @@ void* begin_visit(const JSON_PairConstructor& v)
   return no_state;
 }
 
-void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/) 
+void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -10617,8 +10635,8 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
 
   nameExpr = wrap_in_atomization(nameExpr);
   nameExpr = new promote_expr(theRootSctx,
-                              nameExpr->get_loc(), 
-                              nameExpr, 
+                              nameExpr->get_loc(),
+                              nameExpr,
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
                               NULL);
 
@@ -10626,7 +10644,7 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
     valueExpr = static_cast<json_pair_expr*>(valueExpr.getp())->get_value_expr();
 
   valueExpr = new promote_expr(theRootSctx,
-                               valueExpr->get_loc(), 
+                               valueExpr->get_loc(),
                                valueExpr,
                                GENV_TYPESYSTEM.ITEM_TYPE_ONE,
                                NULL);
@@ -10656,7 +10674,7 @@ void* begin_visit(const JSON_ObjectConstructor& v)
   return no_state;
 }
 
-void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/) 
+void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -11805,7 +11823,7 @@ void end_visit(const ItemType& v, void* /*visit_state*/)
 
 ********************************************************************************/
 
-void* begin_visit(const JSON_Test& v) 
+void* begin_visit(const JSON_Test& v)
 {
   TRACE_VISIT ();
 #ifdef ZORBA_WITH_JSON
@@ -11836,7 +11854,7 @@ void* begin_visit(const JSON_Test& v)
   return no_state;
 }
 
-void end_visit(const JSON_Test& v, void* /*visit_state*/) 
+void end_visit(const JSON_Test& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   // nothing to do
@@ -13264,14 +13282,14 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTWordsTimes& v) 
+void *begin_visit (const FTWordsTimes& v)
 {
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTWordsTimes& v, void* /*visit_state*/) 
+void end_visit (const FTWordsTimes& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -13283,14 +13301,14 @@ void end_visit (const FTWordsTimes& v, void* /*visit_state*/)
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTWordsValue& v) 
+void *begin_visit (const FTWordsValue& v)
 {
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTWordsValue& v, void* /*visit_state*/) 
+void end_visit (const FTWordsValue& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // nothing to do

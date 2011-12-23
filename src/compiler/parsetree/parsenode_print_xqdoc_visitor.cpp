@@ -148,7 +148,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
-     
+
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
         lNamespaceQName, lAnnotationElem, lNamespaceQName,
@@ -169,7 +169,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 
 void print_namespaces()
 {
-  store::Item_t lTypeName; 
+  store::Item_t lTypeName;
   store::Item_t lNamespaceQName, lCustomElem;
   store::Item_t lPrefixQName, lURIQName;
   store::Item_t lNamespace, lAttrValue;
@@ -1159,6 +1159,7 @@ XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
 XQDOC_NO_BEGIN_END_TAG (JSON_ArrayConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSON_ObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSON_PairList)
 XQDOC_NO_BEGIN_END_TAG (JSON_PairConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSON_Test)
 

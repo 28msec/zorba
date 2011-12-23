@@ -5671,6 +5671,14 @@ JSON_ObjectConstructor::JSON_ObjectConstructor(
 }
 
 
+JSON_ObjectConstructor::JSON_ObjectConstructor(QueryLoc const &loc, parsenode* pairlist)
+  :
+  JSON_Constructor( loc )
+{
+  // TODO: the pairlist parameter contains a list of JSON pairs
+}
+
+
 JSON_ObjectConstructor::~JSON_ObjectConstructor() {
   delete expr_;
 }
@@ -5680,6 +5688,18 @@ void JSON_ObjectConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT( expr_ );
+  END_VISITOR();
+}
+
+
+void JSON_PairList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
+  for (; it!=arg_hv.end(); ++it) {
+    const exprnode* e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
   END_VISITOR();
 }
 
@@ -5696,7 +5716,7 @@ JSON_PairConstructor::JSON_PairConstructor(
 }
 
 
-JSON_PairConstructor::~JSON_PairConstructor() 
+JSON_PairConstructor::~JSON_PairConstructor()
 {
   delete expr1_;
   delete expr2_;
@@ -5712,7 +5732,7 @@ void JSON_PairConstructor::accept( parsenode_visitor &v ) const
 }
 
 
-JSON_Test::JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind k) 
+JSON_Test::JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind k)
   :
   parsenode(loc),
   jt_(k)

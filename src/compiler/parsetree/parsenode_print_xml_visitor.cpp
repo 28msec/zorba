@@ -29,7 +29,7 @@ namespace zorba {
 #define INDENT_DEC  theIndent -= 2
 #define NL  os << std::endl
 
-class ParseNodePrintXMLVisitor : public parsenode_visitor 
+class ParseNodePrintXMLVisitor : public parsenode_visitor
 {
 protected:
   int            theIndent;
@@ -821,6 +821,10 @@ BEGIN_END_TAG (WindowClause)
 BEGIN_END_TAG (WindowVarDecl)
 BEGIN_END_TAG (WindowVars)
 
+/////////// JSON //////////////////////////////////////////////////////////////
+
+BEGIN_END_TAG (JSON_PairList)
+
 ////////// Full-text //////////////////////////////////////////////////////////
 
 BEGIN_END_TAG( FTAnd )
@@ -1025,7 +1029,7 @@ BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
 
-void* begin_visit( JSON_ArrayConstructor const &n ) 
+void* begin_visit( JSON_ArrayConstructor const &n )
 {
   INDENT;
   os << "<JSON_ArrayConstructor/>";
@@ -1036,7 +1040,7 @@ void* begin_visit( JSON_ArrayConstructor const &n )
 END_TAG( JSON_ArrayConstructor )
 
 
-void* begin_visit( JSON_ObjectConstructor const& n) 
+void* begin_visit( JSON_ObjectConstructor const& n)
 {
   INDENT;
   os << "<JSON_ObjectConstructor/>";
@@ -1046,8 +1050,7 @@ void* begin_visit( JSON_ObjectConstructor const& n)
 
 END_TAG( JSON_ObjectConstructor )
 
-
-void* begin_visit(JSON_PairConstructor const& n) 
+void* begin_visit(JSON_PairConstructor const& n)
 {
   INDENT;
   os << "<JSON_PairConstructor/>";
@@ -1058,7 +1061,7 @@ void* begin_visit(JSON_PairConstructor const& n)
 END_TAG(JSON_PairConstructor)
 
 
-void* begin_visit(const JSON_Test& n) 
+void* begin_visit(const JSON_Test& n)
 {
   INDENT;
   os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
@@ -1071,7 +1074,7 @@ END_TAG(JSON_Test)
 };
 
 
-void print_parsetree_xml (ostream &os, const parsenode *p) 
+void print_parsetree_xml (ostream &os, const parsenode *p)
 {
   ParseNodePrintXMLVisitor v (os);
   v.print (p);

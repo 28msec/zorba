@@ -250,6 +250,7 @@ class DecimalFormatNode;
 class JSON_ArrayConstructor;
 class JSON_ObjectConstructor;
 class JSON_PairConstructor;
+class JSON_PairList;
 class JSON_Test;
 
 
@@ -6432,14 +6433,14 @@ private:
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-class JSON_Constructor : public exprnode 
+class JSON_Constructor : public exprnode
 {
 protected:
   JSON_Constructor( QueryLoc const &loc ) : exprnode( loc ) { }
 };
 
 
-class JSON_ArrayConstructor : public JSON_Constructor 
+class JSON_ArrayConstructor : public JSON_Constructor
 {
 public:
   JSON_ArrayConstructor(QueryLoc const&, exprnode const*);
@@ -6456,13 +6457,15 @@ private:
 };
 
 
-class JSON_ObjectConstructor : public JSON_Constructor 
+class JSON_ObjectConstructor : public JSON_Constructor
 {
 private:
-  const exprnode* const expr_;
+  const exprnode* expr_;
 
 public:
   JSON_ObjectConstructor(QueryLoc const&, exprnode const*);
+
+  JSON_ObjectConstructor(QueryLoc const&, parsenode*);
 
   ~JSON_ObjectConstructor();
 
@@ -6472,7 +6475,25 @@ public:
 };
 
 
-class JSON_PairConstructor : public JSON_Constructor 
+class JSON_PairList : public parsenode
+{
+  protected:
+    std::vector<rchandle<exprnode> > arg_hv;
+
+  public:
+    JSON_PairList(const QueryLoc& loc_) : parsenode(loc_) { }
+
+    void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
+
+    rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
+
+    ulong size() const { return (ulong)arg_hv.size (); }
+
+    void accept(parsenode_visitor&) const;
+};
+
+
+class JSON_PairConstructor : public JSON_Constructor
 {
 private:
   exprnode const *const expr1_;
@@ -6491,7 +6512,7 @@ public:
 };
 
 
-class JSON_Test : public parsenode 
+class JSON_Test : public parsenode
 {
 
 private:

@@ -28,8 +28,8 @@
 %define "parser_class_name" "xquery_parser"
 %error-verbose
 
-// Expect shift/reduce conflicts
-//%expect 63
+// Expect 3 shift/reduce conflicts
+%expect 3
 
 
 %code requires {
@@ -283,7 +283,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
-    /* Decimal format tokens */
+/* Decimal format tokens */
+/* --------------------- */
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
 %token GROUPING_SEPARATOR               "'grouping-separator'"
@@ -508,7 +509,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                            "'words'"
 
 /* Data Definition Facility */
-
+/* ------------------------ */
 %token COLLECTION                       "'collection'"
 %token CONSTOPT                         "'const'"
 %token APPEND_ONLY                      "'append-only'"
@@ -550,14 +551,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %type <expr> LeadingSlash
 
-/* placeholder node for reducing UNRECOGNIZED and generating an error */
-/* ---------------------------- */
-// %type <node> UnrecognizedToken
-
-
 /* left-hand sides: syntax only */
 /* ---------------------------- */
-
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> Annotation
@@ -860,11 +855,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-%type <expr> opt_Expr
 %type <expr> JSONConstructor
 %type <expr> JSONArrayConstructor
 %type <expr> JSONObjectConstructor
 %type <expr> JSONPairConstructor
+%type <node> JSONPairList
 %type <node> JSONTest
 %type <node> JSONItemTest
 %type <node> JSONObjectTest
@@ -910,7 +905,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // parsenodes: JSON
-%destructor { release_hack( $$ ); } JSONConstructor JSONArrayConstructor JSONObjectConstructor JSONPairConstructor
+%destructor { release_hack( $$ ); } JSONConstructor JSONArrayConstructor JSONObjectConstructor JSONPairConstructor JSONPairList
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -939,16 +934,9 @@ template<typename T> inline void release_hack( T *ref ) {
  * resolve shift-reduce conflict for
  * [50] AdditiveExpr ::= MultiplicativeExpr ( ("+" | "-") MultiplicativeExpr )*
  *_____________________________________________________________________*/
+%nonassoc SEQUENCE_TYPE_REDUCE
 %nonassoc ADDITIVE_REDUCE
-%left PLUS MINUS
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflict for
- * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
- *_____________________________________________________________________*/
-%nonassoc MULTIPLICATIVE_REDUCE
-%left STAR DIV IDIV MOD
+%left PLUS MINUS HOOK
 
 /*_____________________________________________________________________
  *
@@ -972,7 +960,7 @@ template<typename T> inline void release_hack( T *ref ) {
  * [42a] QVarInDeclList ::= QVarInDecl ( "," "$" QVarInDeclList )*
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
-// FIXME COMMA_DOLLAR is not defined anymore
+// TODO: COMMA_DOLLAR is not defined anymore
 %left COMMA_DOLLAR
 %nonassoc UNARY_PREC
 
@@ -981,7 +969,7 @@ template<typename T> inline void release_hack( T *ref ) {
  * resolve shift-reduce conflict for
  * [119] SequenceType ::= ItemType | ItemType OccurrenceIndicator
  *_____________________________________________________________________*/
-%nonassoc SEQUENCE_TYPE_REDUCE
+
 %nonassoc OCCURS_HOOK OCCURS_PLUS OCCURS_STAR
 
 /*_____________________________________________________________________
@@ -991,6 +979,33 @@ template<typename T> inline void release_hack( T *ref ) {
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
 %left SLASH SLASH_SLASH
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
+ *_____________________________________________________________________*/
+%nonassoc MULTIPLICATIVE_REDUCE
+%left STAR DIV IDIV MOD
+
+
+/*_____________________________________________________________________
+ *
+ * resolve various other shift/reduce conflicts
+ *
+ *_____________________________________________________________________*/
+%right LBRACK
+%right LPAR
+%right CATCH
+
+%nonassoc RBRACE
+
+%left AT FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%left DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%left MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
+%left LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
+
+%left COMMA
 
 
 /*
@@ -2087,12 +2102,11 @@ StatementsAndOptionalExprTop :
     {
       $$ = $1;
     }
-  |
-    Statements
+  | Statements
     {
       $$ = $1;
     }
-  |
+  | /* empty */
     {
       $$ =  NULL;
     }
@@ -2104,12 +2118,11 @@ StatementsAndOptionalExpr :
     {
       $$ = $1;
     }
-  |
-    Statements
+  | Statements
     {
       $$ = $1;
     }
-  |
+  | /* empty */
     {
       $$ =  new BlockBody(LOC(@$));
     }
@@ -2401,7 +2414,7 @@ IfStatement :
 
 
 TryStatement :
-    TRY BlockStatement CatchListStatement
+    TRY BlockStatement CatchListStatement %prec CATCH
     {
       $$ = new TryExpr(LOC(@$), $2, $3);
     }
@@ -3490,33 +3503,27 @@ opt_FTIgnoreOption :
         }
     ;
 
+RangeExpr :
+        JSONPairConstructor %prec RANGE_REDUCE
+        {
+            $$ = $1;
+        }
+    |   JSONPairConstructor TO JSONPairConstructor
+        {
+            $$ = new RangeExpr( LOC(@$), $1, $3 );
+        }
+    ;
 
-RangeExpr 
-  :
-    JSONPairConstructor %prec RANGE_REDUCE
-    {
-      $$ = $1;
-    }
-  | JSONPairConstructor TO JSONPairConstructor
-    {
-      $$ = new RangeExpr(LOC(@$), $1, $3);
-    }
-;
-
-
-JSONPairConstructor
-  :
-    AdditiveExpr %prec JSON_REDUCE
-    {
-      $$ = $1;
-    }
-  |   
-    AdditiveExpr COLON AdditiveExpr
-    {
-      $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
-    }
-;
-
+JSONPairConstructor :
+        AdditiveExpr %prec JSON_REDUCE
+        {
+            $$ = $1;
+        }
+    |   AdditiveExpr COLON AdditiveExpr
+        {
+            $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
+        }
+    ;
 
 // [50]
 AdditiveExpr :
@@ -3533,7 +3540,6 @@ AdditiveExpr :
             $$ = new AdditiveExpr( LOC(@$), ParseConstants::op_minus, $1, $3 );
         }
     ;
-
 
 // [51]
 MultiplicativeExpr :
@@ -3566,7 +3572,6 @@ MultiplicativeExpr :
             );
         }
     ;
-
 
 // [52]
 UnionExpr :
@@ -3857,7 +3862,7 @@ Pragma :
 
 // [67]
 PathExpr :
-    LeadingSlash
+    LeadingSlash %prec STEP_REDUCE
     {
       $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
     }
@@ -4133,7 +4138,7 @@ FilterExpr :
      {
        $$ = $1;
      }
-  |  FilterExpr PredicateList
+  |  FilterExpr PredicateList %prec LBRACK
      {
        $$ = new FilterExpr(LOC(@$), $1, dynamic_cast<PredicateList*>($2));
      }
@@ -4209,12 +4214,6 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-        /*
-    |   BlockVarDecl
-        {
-          $$ = $1;
-        }
-        */
     |   BlockExpr
         {
           $$ = $1;
@@ -4866,7 +4865,7 @@ TypeDeclaration :
 
 // [117]
 SequenceType :
-        ItemType // ItemType %prec SEQUENCE_TYPE_REDUCE
+        ItemType %prec SEQUENCE_TYPE_REDUCE
         {
             $$ = new SequenceType( LOC(@$), $1, NULL );
         }
@@ -6083,7 +6082,7 @@ opt_relationship :
     ;
 
 opt_levels :
-        /* empty */
+        /* empty */ %prec AT
         {
             $$ = NULL;
         }
@@ -6281,11 +6280,11 @@ FTScope :
 FTBigUnit :
         SENTENCE
         {
-          $$ = new FTBigUnit( LOC(@$), ft_big_unit::sentence );
+            $$ = new FTBigUnit( LOC(@$), ft_big_unit::sentence );
         }
     |   PARAGRAPH
         {
-          $$ = new FTBigUnit( LOC(@$), ft_big_unit::paragraph );
+            $$ = new FTBigUnit( LOC(@$), ft_big_unit::paragraph );
         }
     ;
 
@@ -6293,80 +6292,61 @@ FTBigUnit :
 FTIgnoreOption :
         WITHOUT CONTENT UnionExpr
         {
-          $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
+            $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
         }
     ;
 
 /********** JSON *************************************************************/
 
-JSONConstructor
-  :
-    JSONArrayConstructor
+JSONConstructor :
+      JSONArrayConstructor
     {
       $$ = $1;
     }
-  | 
-    JSONObjectConstructor
+  | JSONObjectConstructor
     {
       $$ = $1;
     }
 ;
 
-
-/*
 JSONArrayConstructor :
-        LBRACK RBRACK
-        {
-            $$ = new JSON_ArrayConstructor( LOC( @$ ), NULL );
-        }
-    |   LBRACK Expr RBRACK
-        {
-          $$ = new JSON_ArrayConstructor(LOC(@$), $2);
-        }
-    ;
-
-JSONObjectConstructor
-    :   BracedExpr
-        {
-            $$ = new JSON_ObjectConstructor( LOC( @$ ), $1 );
-        }
-    ;
-*/
-
-
-JSONArrayConstructor
-  :
-    LBRACK opt_Expr RBRACK
+    LBRACK RBRACK
+    {
+      $$ = new JSON_ArrayConstructor(LOC(@$), NULL);
+    }
+  | LBRACK Expr RBRACK
     {
       $$ = new JSON_ArrayConstructor(LOC(@$), $2);
     }
 ;
 
-
-JSONObjectConstructor
-  :
-    LBRACE opt_Expr RBRACE
+JSONObjectConstructor :
+    LBRACE JSONPairConstructor RBRACE
+    {
+      $$ = new JSON_ObjectConstructor(LOC(@$), $2);
+    }
+  | LBRACE JSONPairList RBRACE
     {
       $$ = new JSON_ObjectConstructor(LOC(@$), $2);
     }
 ;
 
-
-opt_Expr
-  :   
+JSONPairList :
+    JSONPairConstructor COMMA JSONPairConstructor
     {
-      $$ = NULL;
+      JSON_PairList* jpl = new JSON_PairList(LOC(@$));
+      jpl->push_back($1);
+      jpl->push_back($3);
+      $$ = jpl;
     }
-  |
-    Expr
+  | JSONPairList COMMA JSONPairConstructor
     {
+      static_cast<JSON_PairList*>($1)->push_back($3);
       $$ = $1;
     }
 ;
 
-
-JSONTest
-  :
+JSONTest :
     JSONItemTest
     {
       $$ = $1;
@@ -6389,38 +6369,33 @@ JSONTest
 ;
 
 
-JSONItemTest
-  :
+JSONItemTest :
     JSON_ITEM LPAR RPAR
     {
       $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
     }
 ;
 
-JSONObjectTest
-  :
+JSONObjectTest :
     OBJECT LPAR RPAR
     {
       $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
     }
 ;
 
-JSONArrayTest
-  :
+JSONArrayTest :
     ARRAY LPAR RPAR
     {
       $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
     }
 ;
 
-JSONPairTest
-  :
+JSONPairTest :
     PAIR LPAR RPAR
     {
       $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonPair);
     }
 ;
-
 
 
 /*_______________________________________________________________________
@@ -6665,10 +6640,10 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-|   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
-|   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); } 
-|   PAIR                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pair"))); }
-|   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+    |   PAIR                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pair"))); }
+    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
     ;
 
 // [196]

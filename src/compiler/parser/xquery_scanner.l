@@ -242,10 +242,12 @@ UTF8_MultiByte  ({UTF8_2Bytes}|{UTF8_3Bytes}|{UTF8_4Bytes})
 CommentChars    ([^:]|":"+[^:)])*":)"
 Comment         "(:"{CommentChars}
 blank           [ \t]
-S1              [ \t\r\n\f]
-S               {S1}*
-SP              ({S1}|{Comment})+
-SPNoComment     {S1}+
+WS              [ \t\r\n\f]
+WSstar          {WS}*
+WSplus          {WS}+
+WSOrComment     ({WS}|{Comment})+
+WSOrCommentStar ({WS}|{Comment})*
+
 
   /*_____________________________________________________________________
    |
@@ -806,7 +808,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 }
 
 
-{S} {
+{WSstar} {
   /* eat up whitespace */
 }
 
@@ -888,7 +890,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   }
 }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"(:"       { PUSH_STATE(MODE_EXPR_COMMENT); }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{S}        { /* continue lexing */ }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{WSstar}   { /* continue lexing */ }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR><<EOF>>    { COMP_CONSTR_ROLLBACK(false); }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{CatchAll} { COMP_CONSTR_ROLLBACK(true); }
 
@@ -902,11 +904,11 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_PRAGMA>{QName}{SPNoComment}                    { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
-<MODE_PRAGMA>{StringLiteral}":"{NCName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{QName}{WSplus}                         { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{StringLiteral}":"{NCName}{WSplus}      { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 <MODE_PRAGMA>{QName}"#)"                             { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{StringLiteral}":"{NCName}"#)"          { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
-<MODE_PRAGMA>{S} { /* continue lexing */ }
+<MODE_PRAGMA>{WSplus}                                { /* continue lexing */ }
 
 
   /*______________________________________________________________________
@@ -935,7 +937,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 <MODE_START_TAG>\" { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 <MODE_START_TAG>\' { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 <MODE_START_TAG>"=" { return token::EQUALS; }
-<MODE_START_TAG>{S} { return token::BLANK; }
+<MODE_START_TAG>{WSstar} { return token::BLANK; }
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 <MODE_START_TAG>{CatchAll} { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
@@ -979,7 +981,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 <MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
-<MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
+<MODE_END_TAG>{QName}{WSstar} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 <MODE_END_TAG><<EOF>> { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 
 
@@ -1034,7 +1036,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | instruction name are recognized.
    |______________________________________________________________________*/
 
-<MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
+<MODE_PROCESSING_INSTRUCTION>{WSOrComment} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 <MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
 <MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 

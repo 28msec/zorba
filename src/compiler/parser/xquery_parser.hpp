@@ -146,12 +146,11 @@ namespace zorba {
     FTSelection::pos_filter_list_t *pos_filter_list;
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
     ft_anyall_mode::type ft_anyall_value;
-    json_test::type json_test_value;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -467,26 +466,24 @@ namespace zorba {
      FOREIGN = 561,
      KEYS = 562,
      ARRAY = 563,
-     ARRAY_PAIR = 564,
-     JSON_ITEM = 565,
-     OBJECT = 566,
-     OBJECT_PAIR = 567,
-     PAIR = 568,
-     BYTE_ORDER_MARK_UTF8 = 569,
-     RANGE_REDUCE = 570,
-     JSON_REDUCE = 571,
-     ADDITIVE_REDUCE = 572,
-     MULTIPLICATIVE_REDUCE = 573,
-     UNION_REDUCE = 574,
-     INTERSECT_EXCEPT_REDUCE = 575,
-     QVARINDECLLIST_REDUCE = 576,
-     COMMA_DOLLAR = 577,
-     UNARY_PREC = 578,
-     SEQUENCE_TYPE_REDUCE = 579,
-     OCCURS_STAR = 580,
-     OCCURS_PLUS = 581,
-     OCCURS_HOOK = 582,
-     STEP_REDUCE = 583
+     JSON_ITEM = 564,
+     OBJECT = 565,
+     PAIR = 566,
+     BYTE_ORDER_MARK_UTF8 = 567,
+     RANGE_REDUCE = 568,
+     JSON_REDUCE = 569,
+     SEQUENCE_TYPE_REDUCE = 570,
+     ADDITIVE_REDUCE = 571,
+     UNION_REDUCE = 572,
+     INTERSECT_EXCEPT_REDUCE = 573,
+     QVARINDECLLIST_REDUCE = 574,
+     COMMA_DOLLAR = 575,
+     UNARY_PREC = 576,
+     OCCURS_STAR = 577,
+     OCCURS_PLUS = 578,
+     OCCURS_HOOK = 579,
+     STEP_REDUCE = 580,
+     MULTIPLICATIVE_REDUCE = 581
    };
 
     };
@@ -666,7 +663,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 670 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 667 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
