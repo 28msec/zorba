@@ -12,6 +12,7 @@ version 2.2
     set multiple times via the c++ api).
   * Fixed bug #905050 (setting and getting the context item type via the c++ api)
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
+  * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
 
 version 2.1
 
