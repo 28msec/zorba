@@ -423,11 +423,11 @@ public:
 };
 
 
-//fn-zorba-string:tokenize
-class fn_zorba_string_tokenize : public function
+//fn-zorba-string:split
+class fn_zorba_string_split : public function
 {
 public:
-  fn_zorba_string_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_string_split(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

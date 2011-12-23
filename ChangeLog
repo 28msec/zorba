@@ -9,7 +9,7 @@ version 2.2
     set multiple times via the c++ api).
   * Fixed bug #905050 (setting and getting the context item type via the c++ api)
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
-  * Added tokenize function to the string module that allows for streamable tokenization but doesn't have regular expression
+  * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
 
 version 2.1

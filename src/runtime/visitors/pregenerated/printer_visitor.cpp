@@ -3961,18 +3961,18 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
 // </StringIsStreamableIterator>
 
 
-// <StringTokenizeIterator>
-void PrinterVisitor::beginVisit ( const StringTokenizeIterator& a) {
-  thePrinter.startBeginVisit("StringTokenizeIterator", ++theId);
+// <StringSplitIterator>
+void PrinterVisitor::beginVisit ( const StringSplitIterator& a) {
+  thePrinter.startBeginVisit("StringSplitIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const StringTokenizeIterator& ) {
+void PrinterVisitor::endVisit ( const StringSplitIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </StringTokenizeIterator>
+// </StringSplitIterator>
 
 
 // <XQDocIterator>

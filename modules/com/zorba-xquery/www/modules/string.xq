@@ -75,11 +75,11 @@ declare function string:is-streamable($s as xs:string) as xs:boolean external;
  : to tokenize huge strings (e.g. if returned by the file module's read-text
  : function).
  :
- : @param $s the input string to tokenize
+ : @param $s the input string to split
  : @param $separator the separator used for splitting the input string $s
  :
  : @return a sequence of strings constructed by splitting the input
  :)
-declare function string:tokenize(
+declare function string:split(
   $s as xs:string,
   $separator as xs:string) as xs:string* external;

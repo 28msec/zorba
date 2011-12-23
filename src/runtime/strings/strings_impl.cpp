@@ -2290,9 +2290,9 @@ bool StringIsStreamableIterator::nextImpl(
  *______________________________________________________________________
  *
  * http://www.zorba-xquery.com/modules/string
- * string:tokenize
+ * string:split
  */
-bool StringTokenizeIterator::nextImpl(
+bool StringSplitIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -2301,8 +2301,8 @@ bool StringTokenizeIterator::nextImpl(
   zstring lToken;
   zstring lPartialMatch;
 
-  StringTokenizeIteratorState* state;
-  DEFAULT_STACK_INIT(StringTokenizeIteratorState, state, planState);
+  StringSplitIteratorState* state;
+  DEFAULT_STACK_INIT(StringSplitIteratorState, state, planState);
 
   // init phase, get input string and tokens
   consumeNext(item, theChildren[0].getp(), planState);

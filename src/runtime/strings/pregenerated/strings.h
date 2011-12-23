@@ -1077,11 +1077,11 @@ public:
 
 /**
  * 
- *    string:tokenize
+ *    string:split
  *  
  * Author: Matthias Brantner
  */
-class StringTokenizeIteratorState : public PlanIteratorState
+class StringSplitIteratorState : public PlanIteratorState
 {
 public:
   zstring theSeparator; //separator for the tokenization
@@ -1089,37 +1089,37 @@ public:
   zstring theInput; //the string to tokenize (if the input is not streamable)
   size_t theNextStartPos; //
 
-  StringTokenizeIteratorState();
+  StringSplitIteratorState();
 
-  ~StringTokenizeIteratorState();
+  ~StringSplitIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class StringTokenizeIterator : public NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>
+class StringSplitIterator : public NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(StringTokenizeIterator);
+  SERIALIZABLE_CLASS(StringSplitIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringTokenizeIterator,
-    NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringSplitIterator,
+    NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>*)this);
+    (NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>*)this);
   }
 
-  StringTokenizeIterator(
+  StringSplitIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<StringTokenizeIterator, StringTokenizeIteratorState>(sctx, loc, children)
+    NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~StringTokenizeIterator();
+  virtual ~StringSplitIterator();
 
   void accept(PlanIterVisitor& v) const;
 
