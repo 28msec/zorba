@@ -264,6 +264,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR(GroupByClause)
   void serialize(::zorba::serialization::Archiver& ar)
   {
+    ar & theLocation;
     ar & theGroupingSpecs;
     ar & theNonGroupingSpecs;
   }

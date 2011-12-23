@@ -127,7 +127,7 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache;
+  store::Index_t              theCache; //note: not for serialization
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
