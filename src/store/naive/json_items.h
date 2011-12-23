@@ -328,7 +328,7 @@ class JSONObjectPair : public JSONItem
 public:
   virtual ~JSONObjectPair() {}
 
-  bool isJSONObject() const { return true; }
+  bool isJSONPair() const { return true; }
 
   virtual void
   setName(const store::Item_t& aName) = 0;

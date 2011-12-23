@@ -96,6 +96,10 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
+#ifdef ZORBA_WITH_JSON
+  case serializer::PARAMETER_VALUE_JSON:
+    return ZORBA_SERIALIZATION_METHOD_JSON;
+#endif
   default:
     return ZORBA_SERIALIZATION_METHOD_XML;
   }
@@ -119,6 +123,10 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "text"); break;
   case ZORBA_SERIALIZATION_METHOD_BINARY:
     aInternalSerializer.setParameter("method", "binary"); break;
+#ifdef ZORBA_WITH_JSON
+  case ZORBA_SERIALIZATION_METHOD_JSON:
+    aInternalSerializer.setParameter("method", "json"); break;
+#endif
   }
 
   switch (aSerializerOptions.byte_order_mark)
