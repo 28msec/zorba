@@ -226,7 +226,7 @@ DebuggerCommons::getCurrentStaticContext() const
 }
 
 unsigned int
-DebuggerCommons::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
+DebuggerCommons::addBreakpoint(String& aFileName, unsigned int aLine, bool aEnabled)
 {
   QueryLoc lLocation;
   lLocation.setLineBegin(aLine);
@@ -261,7 +261,6 @@ DebuggerCommons::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
 
     // 2. secondly we hope he gave us part of a path of a file
     lIter = theBreakableIDs.begin();
-    String::size_type lFileNameSize = lFileName.size();
     std::vector<std::pair<QueryLoc, int> > lFoundBreakables;
     zorba::String lFirstBreakablePath;
     while (lIter != theBreakableIDs.end()) {

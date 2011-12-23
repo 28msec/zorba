@@ -45,6 +45,9 @@ class DebuggerCommand {
     bool
     getArg(std::string arg, int& value);
 
+    bool
+    getArg(std::string arg, unsigned int& value);
+
     std::string&
     getName() { return theName; }
 
