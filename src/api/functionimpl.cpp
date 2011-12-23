@@ -63,7 +63,7 @@ void FunctionImpl::getAnnotations(std::vector<Annotation_t>& annotations) const
   try
   {
     for (unsigned int i = 0; i < ann_list->size(); ++i)
-      annotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+      annotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
   {

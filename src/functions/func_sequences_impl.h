@@ -50,6 +50,11 @@ public:
     return true;
   }
 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
   FunctionConsts::AnnotationValue producesSortedNodes() const
   {
     return FunctionConsts::PRESERVE;
@@ -60,9 +65,9 @@ public:
     return FunctionConsts::PRESERVE;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   CODEGEN_DECL();
 };
@@ -89,7 +94,12 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -113,7 +123,12 @@ public:
     theKind = FunctionConsts::FN_EXACTLY_ONE_1;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -132,14 +147,24 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize input) const
+  {
+    return true;
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return true;
   }
 
   CODEGEN_DECL();
@@ -171,17 +196,17 @@ public:
   {
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     if (input == 0)
       return fo->getIgnoresSortedNodes();
@@ -189,12 +214,22 @@ public:
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     if (input == 0)
       return fo->getIgnoresDuplicateNodes();
 
     return ANNOTATION_TRUE;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize input) const
+  {
+    return ANNOTATION_TRUE_FIXED;
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return true;
   }
 
   CODEGEN_DECL();
@@ -213,17 +248,17 @@ public:
   {
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return  producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     if (input == 0)
       return fo->getIgnoresSortedNodes();
@@ -231,12 +266,22 @@ public:
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     if (input == 0)
       return fo->getIgnoresDuplicateNodes();
 
     return ANNOTATION_TRUE;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize input) const
+  {
+    return ANNOTATION_TRUE_FIXED;
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return true;
   }
 
   CODEGEN_DECL();
@@ -258,12 +303,12 @@ public:
                FunctionConsts::FN_MAX_2);
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -287,12 +332,12 @@ public:
                FunctionConsts::FN_MIN_2);
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }

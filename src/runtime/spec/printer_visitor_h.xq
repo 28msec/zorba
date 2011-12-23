@@ -20,7 +20,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
 
-declare %ann:nondeterministic %ann:sequential function local:get-files($files as xs:string) as xs:string
+declare %ann:nondeterministic function local:get-files($files as xs:string) as xs:string
 {
   variable $xml-files as xs:string* := tokenize($files,',');
   variable $temp := for $file in $xml-files

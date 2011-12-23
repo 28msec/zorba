@@ -558,6 +558,7 @@ void XQueryImpl::doCompile(
   // Set the compiler config.
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
+  theCompilerCB->theConfig.for_serialization_only = aHints.for_serialization_only;
   CompilerCB::config::opt_level_t optLevel;
   if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
     optLevel = CompilerCB::config::O0;
@@ -571,10 +572,10 @@ void XQueryImpl::doCompile(
 
 #ifdef ZORBA_WITH_DEBUGGER
   // if the debug mode is set, we force the gflwor, we set the query input stream
-  if (theIsDebugMode) {
+  if (theIsDebugMode) 
+  {
     theCompilerCB->theConfig.force_gflwor = true;
-    theCompilerCB->theDebuggerCommons =
-      new DebuggerCommons(theCompilerCB->theRootSctx);
+    theCompilerCB->theDebuggerCommons = new DebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
 #endif

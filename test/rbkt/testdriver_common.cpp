@@ -25,7 +25,7 @@
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
-
+#include "system/properties.h"
 
 static void set_var(
     DriverContext& driverCtx,
@@ -177,7 +177,8 @@ Zorba_CompilerHints getCompilerHints()
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
     //std::cout << "testdriver is using optimization level O0" << std::endl;
   }
-  else if ( lOptLevel != NULL && strcmp(lOptLevel, "O2") == 0) {
+  else if ( lOptLevel != NULL && strcmp(lOptLevel, "O2") == 0) 
+  {
     lHints.opt_level = ZORBA_OPT_LEVEL_O2;
     //std::cout << "testdriver is using optimization level O2" << std::endl;
   }
@@ -186,6 +187,14 @@ Zorba_CompilerHints getCompilerHints()
     lHints.opt_level = ZORBA_OPT_LEVEL_O1;
     //std::cout << "testdriver is using optimization level O1" << std::endl;
   }
+
+  lHints.for_serialization_only = false;
+
+  if (zorba::Properties::instance()->serializeOnlyQuery())
+  {
+    lHints.for_serialization_only = true;
+  }
+
   return lHints;
 }
 

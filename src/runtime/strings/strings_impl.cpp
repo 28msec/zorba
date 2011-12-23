@@ -135,7 +135,7 @@ bool StringToCodepointsIterator::nextImpl(
     while ( !state->theStream->eof() )
     {
       utf8::encoded_char_type ec;
-      ::bzero( ec, sizeof( ec ) );
+      memset( ec, 0, sizeof( ec ) );
       utf8::storage_type *p;
       p = ec;
 

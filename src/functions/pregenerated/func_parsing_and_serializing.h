@@ -43,9 +43,11 @@ class fn_parse_xml_3_0 : public function
 {
 public:
   fn_parse_xml_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -60,13 +62,17 @@ class fn_serialize_3_0 : public function
 {
 public:
   fn_serialize_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
   bool isSource() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };

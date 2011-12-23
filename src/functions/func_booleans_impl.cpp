@@ -61,12 +61,12 @@ public:
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -603,12 +603,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -635,12 +640,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -715,12 +725,17 @@ class fn_not : public function
 public:
   fn_not(const signature& sig) : function(sig, FunctionConsts::FN_NOT_1) {}
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -748,12 +763,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }

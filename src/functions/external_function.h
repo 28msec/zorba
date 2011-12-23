@@ -65,6 +65,10 @@ public:
 
   bool accessesDynCtx() const;
 
+  bool propagatesInputNodes(expr* fo, csize input) const;
+
+  bool mustCopyInputNodes(expr* fo, csize input) const;
+
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
         static_context* sctx,
