@@ -63,7 +63,7 @@ SimpleJSONObject::PairIterator::~PairIterator() {}
 void
 SimpleJSONObject::PairIterator::open()
 {
-  theIter = thePairs.begin();
+  theIter = theObject->thePairs.begin();
 }
 
 
@@ -73,7 +73,7 @@ SimpleJSONObject::PairIterator::open()
 bool
 SimpleJSONObject::PairIterator::next(store::Item_t& res)
 {
-  if (theIter != thePairs.end())
+  if (theIter != theObject->thePairs.end())
   {
     JSONObjectPair_t lPair = *theIter;
     res = lPair;
@@ -93,7 +93,7 @@ SimpleJSONObject::PairIterator::next(store::Item_t& res)
 void
 SimpleJSONObject::PairIterator::reset()
 {
-  theIter = thePairs.begin();
+  open();
 }
 
 
@@ -103,7 +103,7 @@ SimpleJSONObject::PairIterator::reset()
 void
 SimpleJSONObject::PairIterator::close()
 {
-  theIter = thePairs.end();
+  theIter = theObject->thePairs.end();
 }
 
 
@@ -113,7 +113,7 @@ SimpleJSONObject::PairIterator::close()
 store::Iterator_t
 SimpleJSONObject::pairs() const
 {
-  return new PairIterator(thePairs);
+  return new PairIterator(const_cast<SimpleJSONObject*>(this));
 }
 
 /******************************************************************************
@@ -211,7 +211,7 @@ SimpleJSONArray::operator[](xs_integer& aPos) const
 store::Iterator_t
 SimpleJSONArray::values() const
 {
-  return new ItemIterator(theContent, false);
+  return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
 }
 
 } // namespace json

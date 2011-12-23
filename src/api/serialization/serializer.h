@@ -69,6 +69,9 @@ public:
     PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
     PARAMETER_VALUE_BINARY,
+#ifdef ZORBA_WITH_JSON
+    PARAMETER_VALUE_JSON,
+#endif
 
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
@@ -445,6 +448,35 @@ protected:
 
     void emit_item(store::Item* item);
   };
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class json_emitter                                   //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+  class json_emitter : public emitter
+  {
+  public:
+    json_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
+    void emit_item(store::Item* item);
+
+    void emit_json_item(store::Item* item, int depth);
+
+    void emit_json_object(store::Item* object, int depth);
+
+    void emit_json_array(store::Item* array, int depth);
+
+    void emit_json_pair(store::Item* pair, int depth);
+
+    void emit_json_value(store::Item* value, int depth);
+  };
+
+#endif /* ZORBA_WITH_JSON */
+
 };
 
 

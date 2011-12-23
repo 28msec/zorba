@@ -171,11 +171,11 @@ protected:
   class PairIterator : public store::Iterator
   {
     protected:
-      const Pairs& thePairs;
-      PairsConstIter theIter;
+      SimpleJSONObject_t theObject;
+      PairsConstIter     theIter;
 
     public:
-      PairIterator(const Pairs& aPairs) : thePairs(aPairs) {}
+      PairIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
 
       virtual ~PairIterator();
 
@@ -199,29 +199,6 @@ public:
 
   store::Iterator_t
   pairs() const;
-
-#if 0
-  bool getBooleanValue() const { return true; }
-
-  virtual Item*
-  getType() const;
-
-  // 
-  // convenience accessors pushed down for performance
-  virtual store::Item*
-  lookup(const store::Item_t& name) const;
-
-  bool equals(
-        const store::Item*,
-        long = 0,
-        const XQPCollator* = 0) const;
-
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual store::Item* copy(
-        store::Item* parent,
-        const store::CopyMode&) const;
-#endif
 
   virtual void
   accept(JSONVisitor*) const;
@@ -288,24 +265,43 @@ protected:
 
   Pairs theContent;
 
+  class ValuesIterator : public store::Iterator
+  {
+    protected:
+      SimpleJSONArray_t theArray;
+      PairsConstIter    theIterator;
+
+    public:
+      ValuesIterator(const SimpleJSONArray_t& aArray)
+        : theArray(aArray)
+      {
+      }
+
+      virtual ~ValuesIterator()
+      {
+      }
+
+      virtual void open() { theIterator = theArray->theContent.begin(); }
+      virtual bool next(store::Item_t& res)
+      {
+        if (theIterator == theArray->theContent.end())
+        {
+          return false;
+        }
+        else
+        {
+          res = *(theIterator++);
+          return true;
+        }
+      }
+      virtual void reset() { open(); }
+      virtual void close() { theIterator = theArray->theContent.end(); }
+  };
+
+  friend class ValuesIterator;
+
 public:
   virtual ~SimpleJSONArray() {}
-
-#if 0
-  // accessors
-  virtual store::Iterator_t
-  pairs() const;
-
-  bool getBooleanValue() const { return true; }
-
-  virtual store::Item*
-  getType() const;
-
-  // 
-  // convenience accessors pushed down for performance
-  virtual store::Item*
-  lookup(const store::Item_t& index) const;
-#endif
 
   virtual void
   accept(JSONVisitor*) const;
@@ -332,7 +328,7 @@ class JSONObjectPair : public JSONItem
 public:
   virtual ~JSONObjectPair() {}
 
-  bool isJSONObject() const { return true; }
+  bool isJSONPair() const { return true; }
 
   virtual void
   setName(const store::Item_t& aName) = 0;

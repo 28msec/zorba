@@ -18,7 +18,7 @@
 #include <sstream>
 
 #include <zorba/zorba_string.h>
-
+#include <zorbamisc/ns_consts.h>
 #include "zorbatypes/numconversions.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
@@ -1870,6 +1870,155 @@ void serializer::binary_emitter::emit_item(store::Item* item)
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSONiq emitter                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+/*******************************************************************************
+
+********************************************************************************/
+serializer::json_emitter::json_emitter(
+    serializer* the_serializer,
+    transcoder& the_transcoder)
+  :
+  emitter(the_serializer, the_transcoder)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_item(store::Item* item)
+{
+  // This is method is called only (?) for top-level items.
+  if (item->isJSONItem()) {
+    emit_json_item(item, 0);
+  }
+  else {
+    serializer::emitter::emit_item(item);
+  }
+}
+
+void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
+{
+  // This is called for any item within a JSON array or object, or for a
+  // top-level JSON array or object. So JSON rules for simple types may
+  // apply here.
+  if (item->isJSONObject()) {
+    emit_json_object(item, depth);
+  }
+  else if (item->isJSONArray()) {
+    emit_json_array(item, depth);
+  }
+  else if (item->isJSONPair()) {
+    emit_json_pair(item, depth);
+  }
+  else if (item->isAtomic()) {
+    // QQQ any easier/more direct way to determine simple type?
+    store::Item* type = item->getType();
+    if (!(type->getNamespace().compare(XML_SCHEMA_NS))) {
+      const zstring& tname = type->getLocalName();
+      if (tname == "string") {
+        // QQQ need to escape here
+        tr << '"' << item->getStringValue() << '"';
+      }
+      else if (tname == "double" || tname == "float") {
+        // QQQ need to check for NaN and Inf here
+        tr << item->getStringValue();
+      }
+      else if (tname == "decimal" || tname == "integer") {
+        // QQQ what about int? nonNegativeInteger? etc. Not explicitly
+        // mentioned by JSONiq spec...
+        tr << item->getStringValue();
+      }
+      else {
+        // QQQ output the "JSONiq value" object here
+        tr << "((unknown type " << tname << "))";
+      }
+    }
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
+{
+  store::Item_t pair;
+  store::Iterator_t it = obj->pairs();
+  it->open();
+  bool first = true;
+  if (ser->indent) {
+    tr << "{" <<ser->END_OF_LINE;
+  }
+  else {
+    tr << "{ ";
+  }
+  depth++;
+  while (it->next(pair)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+      if (ser->indent) {
+        tr << ser->END_OF_LINE;
+      }
+    }
+    if (ser->indent) {
+      emit_indentation(depth);
+    }
+    emit_json_pair(pair, depth);
+  }
+  if (ser->indent) {
+    tr << ser->END_OF_LINE;
+    emit_indentation(depth-1);
+    tr << "}";
+  }
+  else {
+    tr << " }";
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
+{
+  store::Item_t member;
+  // QQQ Latest JSONiq spec calls this "members"
+  store::Iterator_t it = array->values();
+  it->open();
+  bool first = true;
+  tr << "[ ";
+  while (it->next(member)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+    }
+    emit_json_item(member, depth);
+  }
+  tr << " ]";
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
+{
+  emit_json_item(pair->getName(), depth);
+  tr << " : ";
+  emit_json_item(pair->getValue(), depth);
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -2009,6 +2158,10 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_TEXT;
     else if (!strcmp(aValue, "binary"))
       method = PARAMETER_VALUE_BINARY;
+#ifdef ZORBA_WITH_JSON
+    else if (!strcmp(aValue, "json"))
+      method = PARAMETER_VALUE_JSON;
+#endif
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
@@ -2163,6 +2316,10 @@ bool serializer::setup(std::ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
+#ifdef ZORBA_WITH_JSON
+  else if (method == PARAMETER_VALUE_JSON)
+    e = new json_emitter(this, *tr);
+#endif
   else
   {
     ZORBA_ASSERT(0);

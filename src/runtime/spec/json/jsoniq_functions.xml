@@ -29,7 +29,6 @@
 
   <zorba:state generateReset="false">
     <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
-    <zorba:member type="store::Item_t" name="theOrigArray" />
   </zorba:state>
     
 </zorba:iterator>

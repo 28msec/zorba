@@ -59,11 +59,6 @@ JSONFlattenIterator::nextImpl(
 
   consumeNext(lCurr, theChildren[0].getp(), planState);
 
-  // need to remember the original array. Otherwise, the content
-  // may be destroyed to early because the iterator returned
-  // by values() doesn't keep the contained items alive.
-  state->theOrigArray = lCurr;
-
   state->theStack.push(lCurr->values());
   state->theStack.top()->open();
 
