@@ -201,7 +201,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
       } else {
         if (aCommand.getName() == "breakpoint_set") {
 
-          int lLineNo;
+          unsigned int lLineNo;
           aCommand.getArg("n", lLineNo);
           std::string lFileNameTmp;
           aCommand.getArg("f", lFileNameTmp);
