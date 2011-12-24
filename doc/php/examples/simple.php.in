@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require '@phpPath@/zorba_api_wrapper.php';
+require '@phpPath@/Zorba/zorba_api_wrapper.php';
 
 function example_1(Zorba $aZorba)
 {
