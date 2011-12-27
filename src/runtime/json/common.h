@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_RUNTIME_JSON_UTIL_H
-#define ZORBA_RUNTIME_JSON_UTIL_H
+#ifndef ZORBA_RUNTIME_JSON_COMMON_H
+#define ZORBA_RUNTIME_JSON_COMMON_H
 
 #include <iostream>
 #include <stack>
@@ -47,12 +47,14 @@ namespace whitespace {
   };
 }
 
-namespace json_util {
-
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace json_util {
 
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
+
+} // namespace json_util
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -92,7 +94,9 @@ std::ostream& operator<<( std::ostream &o, parse_state s );
 # define POP_STATE()    state_stack.pop()
 
 #endif /* ZORBA_DEBUG_JSON */
-} // namespace json_util
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
-#endif /* ZORBA_RUNTIME_JSON_UTIL_H */
+#endif /* ZORBA_RUNTIME_JSON_COMMON_H */
 /* vim:set et sw=2 ts=2: */

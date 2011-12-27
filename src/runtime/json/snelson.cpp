@@ -33,7 +33,6 @@
 #include "util/stl_util.h"
 
 #include "snelson.h"
-#include "util.h"
 
 #define SNELSON_NS "http://john.snelson.org.uk/parsing-json-into-xquery"
 

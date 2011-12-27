@@ -32,7 +32,6 @@
 #include "util/stl_util.h"
 
 #include "jsonml_array.h"
-#include "util.h"
 
 using namespace std;
 

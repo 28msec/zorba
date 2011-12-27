@@ -23,7 +23,7 @@
 #include "store/api/item.h"
 #include "util/json_parser.h"
 
-#include "util.h"
+#include "common.h"
 
 namespace zorba {
 namespace snelson {
