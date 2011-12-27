@@ -111,7 +111,7 @@ const char xqueryx3_0_update_xslt[] =
 " <xsl:variable name=\"RPAREN\" select=\"')'\"/>"
 " <xsl:variable name=\"NEWLINE\">"
 " <xsl:text>"
-"</xsl:text>"
+" </xsl:text><!--my fix-->"
 " </xsl:variable>"
 " <xsl:variable name=\"COMMA\" select=\"','\"/>"
 " <xsl:variable name=\"COMMA_SPACE\" select=\"', '\"/>"
