@@ -20,6 +20,8 @@
 
 #include "util.h"
 
+using namespace std;
+
 namespace zorba {
 namespace json_util {
 
@@ -41,6 +43,20 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   i->close();
   return found;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+#if ZORBA_DEBUG_JSON
+
+ostream& operator<<( ostream &o, parse_state s ) {
+  static char const *const string_of[] = {
+    "in_array",
+    "in_object"
+  };
+  return o << string_of[ s ];
+}
+
+#endif /* ZORBA_DEBUG_JSON */
 
 ///////////////////////////////////////////////////////////////////////////////
 

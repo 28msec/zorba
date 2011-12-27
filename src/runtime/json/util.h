@@ -17,10 +17,27 @@
 #ifndef ZORBA_RUNTIME_JSON_UTIL_H
 #define ZORBA_RUNTIME_JSON_UTIL_H
 
+#include <iostream>
+#include <stack>
+
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "zorbatypes/zstring.h"
 
+#define ZORBA_DEBUG_JSON 0
+
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+typedef std::stack<store::Item*> item_stack_type;
+
+enum parse_state {
+  in_array,
+  in_object
+};
+
+typedef std::stack<int> state_stack_type;
 
 namespace whitespace {
   enum type {
@@ -39,6 +56,42 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if ZORBA_DEBUG_JSON
+
+std::ostream& operator<<( std::ostream &o, parse_state s );
+
+# define PUSH_ITEM(I)                                                     \
+    do {                                                                  \
+      cout << __LINE__ << ":PUSH_ITEM( " << (I)->show() << " )" << endl;  \
+      item_stack.push( (I).getp() );                                      \
+    } while (0)
+
+# define POP_ITEM()                               \
+    do {                                          \
+      cout << __LINE__ << ":POP_ITEM()" << endl;  \
+      cur_item = ztd::pop_stack( item_stack );    \
+    } while (0)
+
+# define PUSH_STATE(S) \
+    do {                                                          \
+      cout << __LINE__ << ":PUSH_STATE( " << (S) << " )" << endl; \
+      state_stack.push( S );                                      \
+    } while (0)
+
+# define POP_STATE()                              \
+    do {                                          \
+      cout << __LINE__ << ":POP_STATE()" << endl; \
+      state_stack.pop();                          \
+    } while (0)                                   \
+
+#else
+
+# define PUSH_ITEM(I)   item_stack.push( (I).getp() )
+# define POP_ITEM()     cur_item = ztd::pop_stack( item_stack )
+# define PUSH_STATE(S)  state_stack.push( S )
+# define POP_STATE()    state_stack.pop()
+
+#endif /* ZORBA_DEBUG_JSON */
 } // namespace json_util
 } // namespace zorba
 #endif /* ZORBA_RUNTIME_JSON_UTIL_H */

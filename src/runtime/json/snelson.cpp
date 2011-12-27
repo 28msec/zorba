@@ -37,64 +37,13 @@
 
 #define SNELSON_NS "http://john.snelson.org.uk/parsing-json-into-xquery"
 
-#define DEBUG_JSON 0
+#define ZORBA_DEBUG_JSON 0
 
 using namespace std;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-enum state {
-  in_array,
-  in_object
-};
-
-typedef stack<store::Item*> item_stack_type;
-typedef stack<int> state_stack_type;
-
-#if DEBUG_JSON
-
-ostream& operator<<( ostream &o, state s ) {
-  static char const *const string_of[] = {
-    "in_array",
-    "in_object"
-  };
-  return o << string_of[ s ];
-}
-
-# define PUSH_ITEM(I)                                                     \
-    do {                                                                  \
-      cout << __LINE__ << ":PUSH_ITEM( " << (I)->show() << " )" << endl;  \
-      item_stack.push( (I).getp() );                                      \
-    } while (0)
-
-# define POP_ITEM()                               \
-    do {                                          \
-      cout << __LINE__ << ":POP_ITEM()" << endl;  \
-      cur_item = ztd::pop_stack( item_stack );    \
-    } while (0)
-
-# define PUSH_STATE(S) \
-    do {                                                          \
-      cout << __LINE__ << ":PUSH_STATE( " << (S) << " )" << endl; \
-      state_stack.push( S );                                      \
-    } while (0)
-
-# define POP_STATE()                              \
-    do {                                          \
-      cout << __LINE__ << ":POP_STATE()" << endl; \
-      state_stack.pop();                          \
-    } while (0)                                   \
-
-#else
-
-# define PUSH_ITEM(I)   item_stack.push( (I).getp() )
-# define POP_ITEM()     cur_item = ztd::pop_stack( item_stack );
-# define PUSH_STATE(S)  state_stack.push( S )
-# define POP_STATE()    state_stack.pop();
-
-#endif /* DEBUG_JSON */
 
 static void add_type_attribute( store::Item *parent, char const *value ) {
   store::Item_t junk_item, att_name, type_name, value_item;
