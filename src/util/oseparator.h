@@ -40,9 +40,12 @@ public:
   }
 
   /**
-   * Reset's the state.
+   * Manually set the print state.
+   *
+   * @state If \c true, the separator will always print; if \c false, the
+   * separator will not print only the next time it is emitted.
    */
-  void print( bool state = false ) {
+  void print( bool state ) {
     print_ = state;
   }
 

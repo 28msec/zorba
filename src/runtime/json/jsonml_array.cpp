@@ -287,7 +287,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
 
 namespace jsonml_array {
 
-void serialize( ostream &o, store::Item_t const &item ) {
+void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   switch ( item->getNodeKind() ) {
     case store::StoreConsts::documentNode: {
       oseparator sep( "," );

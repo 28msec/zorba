@@ -39,7 +39,8 @@ typedef map<zstring,zstring> options_type;
 
 static void get_options( store::Item_t const &options_element,
                          options_type *options ) {
-  ZORBA_ASSERT( options_element->getNodeKind() == store::StoreConsts::elementNode );
+  ZORBA_ASSERT( options_element->getNodeKind() ==
+    store::StoreConsts::elementNode );
   store::Iterator_t i = options_element->getChildren();
   i->open();
   store::Item_t option;
@@ -88,6 +89,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       p.set_loc(
         loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
       );
+
       options_type::mapped_type const &format = options[ "json-format" ];
       ZORBA_ASSERT( !format.empty() );
       if ( format == "Snelson" )
@@ -165,17 +167,28 @@ bool JSONSerializeInternal::nextImpl( store::Item_t& result,
 
   if ( consumeNext( cur_item, theChildren[0], planState ) ) {
     try {
-      options_type::mapped_type const &format = options[ "json-format" ];
-      ZORBA_ASSERT( !format.empty() );
+      options_type::mapped_type const &format_opt = options[ "json-format" ];
+      ZORBA_ASSERT( !format_opt.empty() );
+
+      whitespace::type ws;
+      options_type::mapped_type const &whitespace_opt = options[ "whitespace" ];
+      if ( whitespace_opt.empty() || whitespace_opt == "none" )
+        ws = whitespace::none;
+      else if ( whitespace_opt == "some" )
+        ws = whitespace::some;
+      else if ( whitespace_opt == "indent" )
+        ws = whitespace::indent;
+      else
+        ZORBA_ASSERT( false );
 
       ostringstream oss;
       switch ( cur_item->getNodeKind() ) {
         case store::StoreConsts::documentNode:
         case store::StoreConsts::elementNode:
-          if ( format == "Snelson" )
-            snelson::serialize( oss, cur_item );
-          else if ( format == "JsonML-array" )
-            jsonml_array::serialize( oss, cur_item );
+          if ( format_opt == "Snelson" )
+            snelson::serialize( oss, cur_item, ws );
+          else if ( format_opt == "JsonML-array" )
+            jsonml_array::serialize( oss, cur_item, ws );
           else
             ZORBA_ASSERT( false );
           break;

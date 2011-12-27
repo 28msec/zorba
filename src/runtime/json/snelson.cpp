@@ -25,6 +25,7 @@
 #include "types/root_typemanager.h"
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
+#include "util/indent.h"
 #include "util/json_parser.h"
 #include "util/mem_streambuf.h"
 #include "util/omanip.h"
@@ -325,25 +326,68 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
-static ostream& serialize_begin( ostream &o, json::type t ) {
-  switch ( t ) {
-    case json::array : o << '['; break;
-    case json::object: o << '{'; break;
-    default          : /* suppress warning */;
-  }
+inline ostream& if_dec_indent( ostream &o, whitespace::type ws ) {
+  if ( ws == whitespace::some )
+    o << ' ';
+  else if ( ws == whitespace::indent )
+    o << '\n' << dec_indent;
   return o;
 }
-DEF_OMANIP1( serialize_begin, json::type )
+DEF_OMANIP1( if_dec_indent, whitespace::type )
 
-static ostream& serialize_end( ostream &o, json::type t ) {
+inline ostream& if_inc_indent( ostream &o, whitespace::type ws ) {
+  if ( ws == whitespace::some )
+    o << ' ';
+  else if ( ws == whitespace::indent )
+    o << '\n' << inc_indent;
+  return o;
+}
+DEF_OMANIP1( if_inc_indent, whitespace::type )
+
+inline ostream& if_indent( ostream &o, whitespace::type ws ) {
+  if ( ws == whitespace::indent )
+    o << indent;
+  return o;
+}
+DEF_OMANIP1( if_indent, whitespace::type )
+
+inline ostream& if_space( ostream &o, whitespace::type ws ) {
+  if ( ws )
+    o << ' ';
+  return o;
+}
+DEF_OMANIP1( if_space, whitespace::type )
+
+static ostream& serialize_begin( ostream &o, json::type t,
+                                 whitespace::type ws ) {
   switch ( t ) {
-    case json::array : o << ']'; break;
-    case json::object: o << '}'; break;
-    default          : /* suppress warning */;
+    case json::array :
+      o << '[' << if_space( ws );
+      break;
+    case json::object:
+      o << '{' << if_inc_indent( ws );
+      break;
+    default:
+      /* suppress warning */;
   }
   return o;
 }
-DEF_OMANIP1( serialize_end, json::type )
+DEF_OMANIP2( serialize_begin, json::type, whitespace::type )
+
+static ostream& serialize_end( ostream &o, json::type t, whitespace::type ws ) {
+  switch ( t ) {
+    case json::array:
+      o << if_space( ws ) << ']';
+      break;
+    case json::object:
+      o << if_dec_indent( ws ) << if_indent( ws ) << '}';
+      break;
+    default:
+      /* suppress warning */;
+  }
+  return o;
+}
+DEF_OMANIP2( serialize_end, json::type, whitespace::type )
 
 static ostream& serialize_boolean( ostream &o, zstring const &s ) {
   assert_json_type( json::boolean, s );
@@ -367,12 +411,14 @@ static ostream& serialize_string( ostream &o, zstring const &s ) {
 }
 DEF_OMANIP1( serialize_string, zstring const& )
 
-static ostream& serialize_children( ostream&, store::Item_t const &parent,
-                                    json::type parent_type );
-DEF_OMANIP2( serialize_children, store::Item_t const&, json::type )
+static ostream& serialize_children( ostream&, store::Item_t const&, json::type,
+                                    whitespace::type );
+DEF_OMANIP3( serialize_children, store::Item_t const&, json::type,
+             whitespace::type )
 
 static ostream& serialize_json_element( ostream &o,
-                                        store::Item_t const &element ) {
+                                        store::Item_t const &element,
+                                        whitespace::type ws ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "json" )
     throw XQUERY_EXCEPTION(
@@ -383,14 +429,15 @@ static ostream& serialize_json_element( ostream &o,
   json::type const t = get_json_type( element, false );
 
   return o
-    << serialize_begin( t )
-    << serialize_children( element, t )
-    << serialize_end( t );
+    << serialize_begin( t, ws )
+    << serialize_children( element, t, ws )
+    << serialize_end( t, ws );
 }
-DEF_OMANIP1( serialize_json_element, store::Item_t const& )
+DEF_OMANIP2( serialize_json_element, store::Item_t const&, whitespace::type )
 
 static ostream& serialize_item_element( ostream &o,
-                                        store::Item_t const &element ) {
+                                        store::Item_t const &element,
+                                        whitespace::type ws ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "item" )
     throw XQUERY_EXCEPTION(
@@ -401,14 +448,15 @@ static ostream& serialize_item_element( ostream &o,
   json::type const t = get_json_type( element );
 
   return o
-    << serialize_begin( t )
-    << serialize_children( element, t )
-    << serialize_end( t );
+    << serialize_begin( t, ws )
+    << serialize_children( element, t, ws )
+    << serialize_end( t, ws );
 }
-DEF_OMANIP1( serialize_item_element, store::Item_t const& )
+DEF_OMANIP2( serialize_item_element, store::Item_t const&, whitespace::type )
 
 static ostream& serialize_pair_element( ostream &o,
-                                        store::Item_t const &element ) {
+                                        store::Item_t const &element,
+                                        whitespace::type ws ) {
   zstring const element_name( element->getNodeName()->getStringValue() );
   if ( element_name != "pair" )
     throw XQUERY_EXCEPTION(
@@ -421,19 +469,28 @@ static ostream& serialize_pair_element( ostream &o,
   json::type const t = get_json_type( element );
 
   return o
-    << serialize_string( name_att_value ) << ':'
-    << serialize_begin( t )
-    << serialize_children( element, t )
-    << serialize_end( t );
+    << if_indent( ws ) << serialize_string( name_att_value )
+    << if_space( ws ) << ':' << if_space( ws )
+    << serialize_begin( t, ws )
+    << serialize_children( element, t, ws )
+    << serialize_end( t, ws );
 }
-DEF_OMANIP1( serialize_pair_element, store::Item_t const& )
+DEF_OMANIP2( serialize_pair_element, store::Item_t const&, whitespace::type )
 
 static ostream& serialize_children( ostream &o, store::Item_t const &parent,
-                                    json::type parent_type ) {
+                                    json::type parent_type,
+                                    whitespace::type ws ) {
   if ( parent_type == json::null )
     o << "null";
   else {
-    oseparator sep( "," );
+    oseparator sep;
+    if ( ws == whitespace::none )
+      sep.sep( "," );
+    else if ( ws == whitespace::some || parent_type == json::array )
+      sep.sep( ", " );
+    else
+      sep.sep( ",\n" );
+
     store::Iterator_t i = parent->getChildren();
     i->open();
     store::Item_t child;
@@ -445,13 +502,13 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
         case store::StoreConsts::elementNode:
           switch ( parent_type ) {
             case json::none:
-              o << serialize_json_element( child );
+              o << serialize_json_element( child, ws );
               break;
             case json::array:
-              o << serialize_item_element( child );
+              o << serialize_item_element( child, ws );
               break;
             case json::object:
-              o << serialize_pair_element( child );
+              o << serialize_pair_element( child, ws );
               break;
             default:
               throw XQUERY_EXCEPTION(
@@ -494,13 +551,13 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
 
 namespace snelson {
 
-void serialize( ostream &o, store::Item_t const &item ) {
+void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   switch ( item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
-      o << serialize_children( item, json::none );
+      o << serialize_children( item, json::none, ws );
       break;
     case store::StoreConsts::elementNode:
-      o << serialize_json_element( item );
+      o << serialize_json_element( item, ws );
       break;
     default:
       throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );

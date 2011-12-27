@@ -23,13 +23,15 @@
 #include "store/api/item.h"
 #include "util/json_parser.h"
 
+#include "util.h"
+
 namespace zorba {
 namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void parse( json::parser &p, store::Item_t *result );
-void serialize( std::ostream&, store::Item_t const &item );
+void serialize( std::ostream&, store::Item_t const &item, whitespace::type );
 
 ///////////////////////////////////////////////////////////////////////////////
 

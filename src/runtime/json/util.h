@@ -21,6 +21,15 @@
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
+
+namespace whitespace {
+  enum type {
+    none,
+    some,
+    indent
+  };
+}
+
 namespace json_util {
 
 ///////////////////////////////////////////////////////////////////////////////
