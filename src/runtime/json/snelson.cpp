@@ -36,8 +36,6 @@
 
 #define SNELSON_NS "http://john.snelson.org.uk/parsing-json-into-xquery"
 
-#define ZORBA_DEBUG_JSON 0
-
 using namespace std;
 
 namespace zorba {
