@@ -241,9 +241,10 @@ static void assert_json_type( json::type t, zstring const &s ) {
   );
 }
 
-static void get_attribute_value( store::Item_t const &element,
-                                 char const *att_name, zstring *att_value ) {
-  if ( !json_util::get_attribute_value( element, att_name, att_value ) )
+static void require_attribute_value( store::Item_t const &element,
+                                     char const *att_name,
+                                     zstring *att_value ) {
+  if ( !get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
       ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
@@ -253,7 +254,7 @@ static void get_attribute_value( store::Item_t const &element,
 static json::type get_json_type( store::Item_t const &element,
                                  bool allow_all_types = true ) {
   zstring att_value;
-  get_attribute_value( element, "type", &att_value );
+  require_attribute_value( element, "type", &att_value );
   if ( att_value == "array" )
     return json::array;
   if ( att_value == "object" )
@@ -274,38 +275,6 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
-inline ostream& if_dec_indent( ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::some )
-    o << ' ';
-  else if ( ws == whitespace::indent )
-    o << '\n' << dec_indent;
-  return o;
-}
-DEF_OMANIP1( if_dec_indent, whitespace::type )
-
-inline ostream& if_inc_indent( ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::some )
-    o << ' ';
-  else if ( ws == whitespace::indent )
-    o << '\n' << inc_indent;
-  return o;
-}
-DEF_OMANIP1( if_inc_indent, whitespace::type )
-
-inline ostream& if_indent( ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::indent )
-    o << indent;
-  return o;
-}
-DEF_OMANIP1( if_indent, whitespace::type )
-
-inline ostream& if_space( ostream &o, whitespace::type ws ) {
-  if ( ws )
-    o << ' ';
-  return o;
-}
-DEF_OMANIP1( if_space, whitespace::type )
-
 static ostream& serialize_begin( ostream &o, json::type t,
                                  whitespace::type ws ) {
   switch ( t ) {
@@ -313,7 +282,7 @@ static ostream& serialize_begin( ostream &o, json::type t,
       o << '[' << if_space( ws );
       break;
     case json::object:
-      o << '{' << if_inc_indent( ws );
+      o << '{' << if_space_or_newline( ws ) << if_inc_indent( ws );
       break;
     default:
       /* suppress warning */;
@@ -328,7 +297,8 @@ static ostream& serialize_end( ostream &o, json::type t, whitespace::type ws ) {
       o << if_space( ws ) << ']';
       break;
     case json::object:
-      o << if_dec_indent( ws ) << if_indent( ws ) << '}';
+      o << if_space_or_newline( ws ) << if_dec_indent( ws )
+        << if_indent( ws ) << '}';
       break;
     default:
       /* suppress warning */;
@@ -413,7 +383,7 @@ static ostream& serialize_pair_element( ostream &o,
     );
 
   zstring name_att_value;
-  get_attribute_value( element, "name", &name_att_value );
+  require_attribute_value( element, "name", &name_att_value );
   json::type const t = get_json_type( element );
 
   return o

@@ -43,12 +43,12 @@ static void get_options( store::Item_t const &options_element,
     store::StoreConsts::elementNode );
   store::Iterator_t i = options_element->getChildren();
   i->open();
-  store::Item_t option;
-  while ( i->next( option ) ) {
-    if ( option->getNodeKind() == store::StoreConsts::elementNode ) {
-      zstring const name( option->getNodeName()->getStringValue() );
+  store::Item_t option_item;
+  while ( i->next( option_item ) ) {
+    if ( option_item->getNodeKind() == store::StoreConsts::elementNode ) {
+      zstring const name( option_item->getNodeName()->getStringValue() );
       zstring value;
-      json_util::get_attribute_value( option, "value", &value );
+      get_attribute_value( option_item, "value", &value );
       (*options)[ name ] = value;
     }
   }

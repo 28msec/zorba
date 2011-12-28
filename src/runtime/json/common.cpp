@@ -15,15 +15,13 @@
  */
 #include "stdafx.h"
 
-#include "store/api/item.h"
 #include "store/api/iterator.h"
 
-#include "util.h"
+#include "common.h"
 
 using namespace std;
 
 namespace zorba {
-namespace json_util {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +58,5 @@ ostream& operator<<( ostream &o, parse_state s ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace json_util
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

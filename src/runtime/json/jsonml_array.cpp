@@ -165,11 +165,15 @@ void parse( json::parser &p, store::Item_t *result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static ostream& serialize_attributes( ostream &o,
-                                      store::Item_t const &element,
-                                      oseparator &sep ) {
+static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
+                                      oseparator &sep, whitespace::type ws ) {
   bool emitted_attributes = false;
-  oseparator att_sep( "," );
+  oseparator att_sep;
+  switch ( ws ) {
+    case whitespace::none  : att_sep.sep( ","   ); break;
+    case whitespace::some  : att_sep.sep( ", "  ); break;
+    case whitespace::indent: att_sep.sep( ",\n" ); break;
+  }
 
   store::Iterator_t i( element->getAttributes() );
   i->open();
@@ -179,42 +183,60 @@ static ostream& serialize_attributes( ostream &o,
     if ( att_name == "xmlns" )
       continue;
     if ( !emitted_attributes ) {
-      sep.print( true );
-      o << sep << '{';
+      o << sep << if_newline( ws ) << if_indent( ws ) << '{'
+        << if_inc_indent( ws );
       emitted_attributes = true;
     }
-    o << att_sep << '"' << att_name
-      << "\":\"" << att_item->getStringValue() << '"';
+    bool const was_printing = att_sep.printing();
+    o << att_sep;
+    if ( was_printing )
+      o << if_indent( ws );
+    else
+      o << if_space( ws );
+    
+    o << '"' << att_name << '"'
+      << if_space( ws ) << ':' << if_space( ws )
+      << '"' << att_item->getStringValue() << '"';
   }
   i->close();
   if ( emitted_attributes )
-    o << '}';
+    o << if_space( ws ) << '}' << if_dec_indent( ws );
   return o;
 }
-DEF_OMANIP2( serialize_attributes, store::Item_t const&, oseparator& )
+DEF_OMANIP3( serialize_attributes, store::Item_t const&, oseparator&,
+             whitespace::type )
 
 static ostream& serialize_children( ostream&, store::Item_t const &parent,
-                                    oseparator& );
-DEF_OMANIP2( serialize_children, store::Item_t const&, oseparator& )
+                                    oseparator&, whitespace::type );
+DEF_OMANIP3( serialize_children, store::Item_t const&, oseparator&,
+             whitespace::type )
 
-static ostream& serialize_element( ostream &o, store::Item_t const &element ) {
-  oseparator sep( "," );
-  o << "[\"" << element->getNodeName()->getStringValue() << '"'
-    << serialize_attributes( element, sep )
-    << serialize_children( element, sep ) << ']';
+static ostream& serialize_element( ostream &o, store::Item_t const &element,
+                                   oseparator &sep, whitespace::type ws ) {
+  if ( sep.printing() )
+    o << if_newline( ws );
+  sep.printing( true );
+  o << if_indent( ws ) << '[' << if_space( ws )
+    << '"' << element->getNodeName()->getStringValue() << '"'
+    << if_inc_indent( ws )
+    << serialize_attributes( element, sep, ws )
+    << serialize_children( element, sep, ws )
+    << if_space( ws ) << ']'
+    << if_dec_indent( ws );
   return o;
 }
-DEF_OMANIP1( serialize_element, store::Item_t const& )
+DEF_OMANIP3( serialize_element, store::Item_t const&, oseparator&,
+             whitespace::type )
 
 static ostream& serialize_children( ostream &o, store::Item_t const &parent,
-                                    oseparator &sep ) {
+                                    oseparator &sep, whitespace::type ws ) {
   store::Iterator_t i( parent->getChildren() );
   i->open();
   store::Item_t child;
   while ( i->next( child ) ) {
     switch ( child->getNodeKind() ) {
       case store::StoreConsts::elementNode:
-        o << sep << serialize_element( child );
+        o << sep << serialize_element( child, sep, ws );
         break;
       case store::StoreConsts::textNode:
         o << sep << '"' << child->getStringValue() << '"';
@@ -232,14 +254,17 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
 namespace jsonml_array {
 
 void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
+  oseparator sep;
+  if ( ws )
+    sep.sep( ", " );
+  else
+    sep.sep( "," );
   switch ( item->getNodeKind() ) {
-    case store::StoreConsts::documentNode: {
-      oseparator sep( "," );
-      o << serialize_children( item, sep );
+    case store::StoreConsts::documentNode:
+      o << serialize_children( item, sep, ws );
       break;
-    }
     case store::StoreConsts::elementNode:
-      o << serialize_element( item );
+      o << serialize_element( item, sep, ws );
       break;
     default:
       throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
