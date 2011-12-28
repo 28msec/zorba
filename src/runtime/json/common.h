@@ -89,7 +89,8 @@ inline std::ostream& if_space( std::ostream &o, whitespace::type ws ) {
 }
 DEF_OMANIP1( if_space, whitespace::type )
 
-inline std::ostream& if_space_or_newline( std::ostream &o, whitespace::type ws ) {
+inline std::ostream& if_space_or_newline( std::ostream &o,
+                                          whitespace::type ws ) {
   if ( ws == whitespace::some )
     o << ' ';
   else
