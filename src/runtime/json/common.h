@@ -56,37 +56,21 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
 
 typedef std::ostream& (*std_omanip_type)(std::ostream&);
 
-inline std::ostream& if_do( std::ostream &o, whitespace::type ws,
-                            std_omanip_type fn ) {
-  if ( ws == whitespace::indent )
+inline std::ostream& if_do( std::ostream &o, bool expr, std_omanip_type fn ) {
+  if ( expr )
     o << fn;
   return o;
 }
-DEF_OMANIP2( if_do, whitespace::type, std_omanip_type )
+DEF_OMANIP2( if_do, bool, std_omanip_type )
 
-inline std::ostream& if_newline( std::ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::indent )
-    o << '\n';
+#define if_indent(WS,FN) if_do( (WS) == whitespace::indent, FN )
+
+inline std::ostream& if_emit( std::ostream &o, bool expr, char c ) {
+  if ( expr )
+    o << c;
   return o;
 }
-DEF_OMANIP1( if_newline, whitespace::type )
-
-inline std::ostream& if_space( std::ostream &o, whitespace::type ws ) {
-  if ( ws )
-    o << ' ';
-  return o;
-}
-DEF_OMANIP1( if_space, whitespace::type )
-
-inline std::ostream& if_space_or_newline( std::ostream &o,
-                                          whitespace::type ws ) {
-  if ( ws == whitespace::some )
-    o << ' ';
-  else
-    o << if_newline( ws );
-  return o;
-}
-DEF_OMANIP1( if_space_or_newline, whitespace::type )
+DEF_OMANIP2( if_emit, bool, char )
 
 ///////////////////////////////////////////////////////////////////////////////
 

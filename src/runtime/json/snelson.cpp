@@ -273,14 +273,24 @@ static json::type get_json_type( store::Item_t const &element,
   );
 }
 
+inline std::ostream& if_space_or_newline( std::ostream &o,
+                                          whitespace::type ws ) {
+  if ( ws == whitespace::some )
+    o << ' ';
+  else
+    o << if_emit( ws == whitespace::indent, '\n' );
+  return o;
+}
+DEF_OMANIP1( if_space_or_newline, whitespace::type )
+
 static ostream& serialize_begin( ostream &o, json::type t,
                                  whitespace::type ws ) {
   switch ( t ) {
     case json::array :
-      o << '[' << if_space( ws );
+      o << '[' << if_emit( ws, ' ' );
       break;
     case json::object:
-      o << '{' << if_space_or_newline( ws ) << if_do( ws, inc_indent );
+      o << '{' << if_space_or_newline( ws ) << if_indent( ws, inc_indent );
       break;
     default:
       /* suppress warning */;
@@ -292,11 +302,11 @@ DEF_OMANIP2( serialize_begin, json::type, whitespace::type )
 static ostream& serialize_end( ostream &o, json::type t, whitespace::type ws ) {
   switch ( t ) {
     case json::array:
-      o << if_space( ws ) << ']';
+      o << if_emit( ws, ' ' ) << ']';
       break;
     case json::object:
-      o << if_space_or_newline( ws ) << if_do( ws, dec_indent )
-        << if_do( ws, indent ) << '}';
+      o << if_space_or_newline( ws ) << if_indent( ws, dec_indent )
+        << if_indent( ws, indent ) << '}';
       break;
     default:
       /* suppress warning */;
@@ -385,8 +395,8 @@ static ostream& serialize_pair_element( ostream &o,
   json::type const t = get_json_type( element );
 
   return o
-    << if_do( ws, indent ) << serialize_string( name_att_value )
-    << if_space( ws ) << ':' << if_space( ws )
+    << if_indent( ws, indent ) << serialize_string( name_att_value )
+    << if_emit( ws, ' ' ) << ':' << if_emit( ws, ' ' )
     << serialize_begin( t, ws )
     << serialize_children( element, t, ws )
     << serialize_end( t, ws );

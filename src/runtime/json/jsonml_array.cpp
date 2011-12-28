@@ -183,24 +183,26 @@ static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
     if ( att_name == "xmlns" )
       continue;
     if ( !emitted_attributes ) {
-      o << sep << if_newline( ws ) << if_do( ws, indent ) << '{'
-        << if_do( ws, inc_indent );
+      o << sep
+        << if_emit( ws == whitespace::indent, '\n' )
+        << if_indent( ws, indent ) << '{'
+        << if_indent( ws, inc_indent );
       emitted_attributes = true;
     }
     bool const was_printing = att_sep.printing();
     o << att_sep;
     if ( was_printing )
-      o << if_do( ws, indent );
+      o << if_indent( ws, indent );
     else
-      o << if_space( ws );
+      o << if_emit( ws, ' ' );
     
     o << '"' << att_name << '"'
-      << if_space( ws ) << ':' << if_space( ws )
+      << if_emit( ws, ' ' ) << ':' << if_emit( ws, ' ' )
       << '"' << att_item->getStringValue() << '"';
   }
   i->close();
   if ( emitted_attributes )
-    o << if_space( ws ) << '}' << if_do( ws, dec_indent );
+    o << if_emit( ws, ' ' ) << '}' << if_indent( ws, dec_indent );
   return o;
 }
 DEF_OMANIP3( serialize_attributes, store::Item_t const&, oseparator&,
@@ -214,15 +216,15 @@ DEF_OMANIP3( serialize_children, store::Item_t const&, oseparator&,
 static ostream& serialize_element( ostream &o, store::Item_t const &element,
                                    oseparator &sep, whitespace::type ws ) {
   if ( sep.printing() )
-    o << if_newline( ws );
+    o << if_emit( ws == whitespace::indent, '\n' );
   sep.printing( true );
-  o << if_do( ws, indent ) << '[' << if_space( ws )
+  o << if_indent( ws, indent ) << '[' << if_emit( ws, ' ' )
     << '"' << element->getNodeName()->getStringValue() << '"'
-    << if_do( ws, inc_indent )
+    << if_indent( ws, inc_indent )
     << serialize_attributes( element, sep, ws )
     << serialize_children( element, sep, ws )
-    << if_space( ws ) << ']'
-    << if_do( ws, dec_indent );
+    << if_emit( ws, ' ' ) << ']'
+    << if_indent( ws, dec_indent );
   return o;
 }
 DEF_OMANIP3( serialize_element, store::Item_t const&, oseparator&,
