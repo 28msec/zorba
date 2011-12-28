@@ -1,65 +1,42 @@
+(:
+ : Copyright 2006-2009 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+ :)
+
 xquery version "3.0";
 
- (:
-  : Copyright 2006-2009 The FLWOR Foundation.
-  :
-  : Licensed under the Apache License, Version 2.0 (the "License");
-  : you may not use this file except in compliance with the License.
-  : You may obtain a copy of the License at
-  :
-  : http://www.apache.org/licenses/LICENSE-2.0
-  :
-  : Unless required by applicable law or agreed to in writing, software
-  : distributed under the License is distributed on an "AS IS" BASIS,
-  : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  : See the License for the specific language governing permissions and
-  : limitations under the License.
-  :)
-
  (:~
-  : <p>In order to enable JSON processing with XQuery, Zorba implements a set
-  : of functions that open XQuery developers the door to process JSON
-  : data. Specifically, this module provides two types of functions. Functions
-  : to:
-  : <ul>
-  :   <li>parse JSON and convert it to XDM and</li>
-  :   <li>serialize XDM in order to output JSON.</li>
-  : </ul>
-  : </p>
+  : Using this module, you can parse JSON data into XML, manipulate it like any
+  : other XML data using XQuery, and serialize the result back as JSON.
   :
-  : <p>Both types of functions are available to parse and serialize two
-  : types of XDM-JSON mappings:<ul><li>the first mapping called in this document
-  : <strong>simple XDM-JSON</strong> has been
-  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">
-  : proposed by John Snelson</a></li><li>the second mapping is called
-  : <a href="http://jsonml.org/">JsonML</a></li></ul>In the following, we
-  : briefly describe both mappings.</p>
+  : There are many ways to represent JSON data in XML, some loss-less ("round
+  : tripable") and some lossy ("one way").  Loss-less representations preserve
+  : the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
+  : representations convert all data to strings.
   :
-  : <h2>Simple XDM-JSON Mapping</h2>
-  : <ul><li>In order to process JSON with XQuery, Zorba implements a mapping between
-  : JSON and XML that was initially proposed by John Snelson in his article
-  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery"
-  : target="_blank">Parsing JSON into XQuery</a></li></ul>
-  :
-  : <h2>JsonML Mapping</h2>
-  : <ul>
-  : <li><a href="http://jsonml.org/" target="_blank">JSonML</a> (JSON Markup Language)
-  : is an application of the JSON format.</li>
-  : <li>The purpose of JSonML is to provide a compact format for transporting
-  : XML-based markup as JSon. In contrast to the <strong>simple XDM-JSON</strong> mapping described above
-  : <strong>JsonML</strong> allows a lossless conversion back and forth.</li></ul>
-  :
-  : @see <a href="http://john.snelson.org.uk/parsing-json-into-xquery">Mapping proposed by John Snelson</a>
-  : @see <a href="http://jsonml.org" target="_blank">JSonML</a>
-  : @project data processing/data converters
-  :
+  : For a loss-less representation, Zorba implements that proposed by
+  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery>John Snelson</a>;
+  : for a lossy representation, Zorba implements
+  : <a href="http://jsonml.org/">JsonML</a> (the array form).
   :)
 
 module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-import schema namespace json-options = "http://www.zorba-xquery.com/modules/converters/json-options";
+import schema namespace json-options =
+  "http://www.zorba-xquery.com/modules/converters/json-options";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
@@ -67,43 +44,51 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Parses a JSON string and returns an XDM instance according to either one of
- : the mappings described above.
+ : Parses JSON data from a string and returns an XDM instance using one of the
+ : representations described above.
  :
- : @param $json a sequence of valid JSON strings
- : @param $options a set of name and value pairs that provide options
- :        to configure the JSON mapping process that have to be validated against the
- :        "http://www.zorba-xquery.com/modules/converters/json-options" schema.
- : @return  a sequence of nodes according to either one of the mappings described above.
- : @error err:XQDY0027 if $options can not be validated against the json-options schema
- : @error json:ParseError if the JSON string passed as parameter is not
- :    valid JSON.
+ : @param $json The JSON data to parse.
+ : @param $options The parsing options.
+ : @return said XDM instance.
+ : @error err:XQDY0027 if \a $options can not be validated against the \c
+ : json-options schema.
+ : @error ZJPE0001 if \a $json contains an illegal JSON character.
+ : @error ZJPE0002 if \a $json contains an illegal Unicode code-point.
+ : @error ZJPE0003 if \a $json contains an illegal JSON character escape.
+ : @error ZJPE0004 if \a $json contains an illegal JSON literal.
+ : @error ZJPE0005 if \a $json contains an illegal JSON number.
+ : @error ZJPE0007 if \a $json contains an unterminated string.
+ : @error ZJPE0008 if \a $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?,
   $options as element(json-options:options)
-) as element(*, xs:untyped)*
+) as element(*,xs:untyped)*
 {
   let $validated-options := if ( schema:is-validated( $options ) ) then
-                                $options
-                              else
-                                validate { $options }
+                              $options
+                            else
+                              validate { $options }
   return json:parse-internal( $json, $validated-options )
 };
 
 (:~
- : This function parses a JSON string and returns an XDM instance according
- : to simple XDM-JSON mapping described above.
+ : Parses JSON data from a string and returns an XDM instance using the Snelson
+ : representation described above.
  :
- : @param $json a sequence of valid JSON strings.
- : @return a sequence of nodes according to Simple XDM-JSON mapping described above.
- : @error json:ParseError if the JSON string passed as parameter is not
- :    valid JSON.
- : @example test_json/Queries/converters/jansson/parse_json_11.xq
+ : @param $json The JSON data to parse.
+ : @return said XDM instance.
+ : @error ZJPE0001 if \a $json contains an illegal JSON character.
+ : @error ZJPE0002 if \a $json contains an illegal Unicode code-point.
+ : @error ZJPE0003 if \a $json contains an illegal JSON character escape.
+ : @error ZJPE0004 if \a $json contains an illegal JSON literal.
+ : @error ZJPE0005 if \a $json contains an illegal JSON number.
+ : @error ZJPE0007 if \a $json contains an unterminated string.
+ : @error ZJPE0008 if \a $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?
-) as element(*, xs:untyped)*
+) as element(*,xs:untyped)*
 {
   json:parse-internal(
     $json,
@@ -116,18 +101,23 @@ declare function json:parse(
 };
 
 (:~
- : The serialize function takes a sequence of nodes as parameter and
- : transforms each element into a valid JSON string according to one of the
- : mappings described above.
+ : Serializes an XDM into JSON using one of the representations described
+ : above.
  :
- : @param $xml a sequence of nodes.
- : @param $options a set of name and value pairs that provide options
- :        to configure the JSON mapping process that have to be validated against the
- :        "http://www.zorba-xquery.com/modules/converters/json-options" schema.
+ : @param $xml The XDM to serialize.
+ : @param $options The serializing options.
  : @return a JSON string.
- : @error err:XQDY0027 if $options can not be validated against the json-options schema
- : @error json:InvalidXDM if the input $xml is not a valid XDM
- :  representation of JSON or JSON ML.
+ : @error err:XQDY0027 if $options can not be validated against the \c
+ : json-options schema.
+ : @error ZJSE0001 if \a $xml is not a document or element node.
+ : @error ZJSE0002 if \a $xml contains an element that is missing a required
+ : attribute.
+ : @error ZJSE0003 if \a $xml contains an attribute having an illegal value.
+ : @error ZJSE0004 if \a $xml contains an illegal element.
+ : @error ZJSE0005 if \a $xml contains an illegal child element for a JSON type.
+ : @error ZJSE0006 if \a $xml contains an illegal child element.
+ : @error ZJSE0007 if \a $xml contains an illegal text node.
+ : @error ZJSE0008 if \a $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*,
@@ -142,15 +132,20 @@ declare function json:serialize(
 };
 
 (:~
- : The serialize function takes a sequence of nodes as parameter and
- : transforms each element into a valid JSON string according to the
- : Simple XDM-JSON mapping described above
+ : Serializes an XDM into JSON using one of the representations described
+ : above.
  :
- : @param $xml a sequence of nodes.
+ : @param $xml The XDM to serialize.
  : @return a JSON string.
- : @error json:InvalidXDM if the input $xml is not a valid XDM
- :  representation of JSON or JSON ML.
- : @example test_json/Queries/converters/jansson/serialize_json_18.xq
+ : @error ZJSE0001 if \a $xml is not a document or element node.
+ : @error ZJSE0002 if \a $xml contains an element that is missing a required
+ : attribute.
+ : @error ZJSE0003 if \a $xml contains an attribute having an illegal value.
+ : @error ZJSE0004 if \a $xml contains an illegal element.
+ : @error ZJSE0005 if \a $xml contains an illegal child element for a JSON type.
+ : @error ZJSE0006 if \a $xml contains an illegal child element.
+ : @error ZJSE0007 if \a $xml contains an illegal text node.
+ : @error ZJSE0008 if \a $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*
