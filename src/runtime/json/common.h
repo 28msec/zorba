@@ -54,26 +54,15 @@ namespace whitespace {
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
-inline std::ostream& if_dec_indent( std::ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::indent )
-    o << dec_indent;
-  return o;
-}
-DEF_OMANIP1( if_dec_indent, whitespace::type )
+typedef std::ostream& (*std_omanip_type)(std::ostream&);
 
-inline std::ostream& if_inc_indent( std::ostream &o, whitespace::type ws ) {
+inline std::ostream& if_do( std::ostream &o, whitespace::type ws,
+                            std_omanip_type fn ) {
   if ( ws == whitespace::indent )
-    o << inc_indent;
+    o << fn;
   return o;
 }
-DEF_OMANIP1( if_inc_indent, whitespace::type )
-
-inline std::ostream& if_indent( std::ostream &o, whitespace::type ws ) {
-  if ( ws == whitespace::indent )
-    o << indent;
-  return o;
-}
-DEF_OMANIP1( if_indent, whitespace::type )
+DEF_OMANIP2( if_do, whitespace::type, std_omanip_type )
 
 inline std::ostream& if_newline( std::ostream &o, whitespace::type ws ) {
   if ( ws == whitespace::indent )

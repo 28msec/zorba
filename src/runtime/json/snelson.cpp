@@ -280,7 +280,7 @@ static ostream& serialize_begin( ostream &o, json::type t,
       o << '[' << if_space( ws );
       break;
     case json::object:
-      o << '{' << if_space_or_newline( ws ) << if_inc_indent( ws );
+      o << '{' << if_space_or_newline( ws ) << if_do( ws, inc_indent );
       break;
     default:
       /* suppress warning */;
@@ -295,8 +295,8 @@ static ostream& serialize_end( ostream &o, json::type t, whitespace::type ws ) {
       o << if_space( ws ) << ']';
       break;
     case json::object:
-      o << if_space_or_newline( ws ) << if_dec_indent( ws )
-        << if_indent( ws ) << '}';
+      o << if_space_or_newline( ws ) << if_do( ws, dec_indent )
+        << if_do( ws, indent ) << '}';
       break;
     default:
       /* suppress warning */;
@@ -385,7 +385,7 @@ static ostream& serialize_pair_element( ostream &o,
   json::type const t = get_json_type( element );
 
   return o
-    << if_indent( ws ) << serialize_string( name_att_value )
+    << if_do( ws, indent ) << serialize_string( name_att_value )
     << if_space( ws ) << ':' << if_space( ws )
     << serialize_begin( t, ws )
     << serialize_children( element, t, ws )
