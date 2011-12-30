@@ -38,19 +38,25 @@ int test_1(zorba::Zorba* zorba)
     std::ostringstream resultStream;
 
     {
-      zorba::TypeIdentifier_t type =
-      zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
-                                             "integer");
-
-      zorba::Item ctxValue = zorba->getItemFactory()->createString("foo");
-
       zorba::StaticContext_t sctx = zorba->createStaticContext();
+
+      zorba::TypeIdentifier_t type = sctx->getContextItemStaticType();
+      zorba::IdentTypes::kind_t kind = type->getKind();
+      if (kind != zorba::IdentTypes::ITEM_TYPE)
+      {
+        return 10;
+      }
+
+      type = zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
+                                                    "integer");
       sctx->setContextItemStaticType(type);
 
       zorba::XQuery_t query = zorba->compileQuery(queryStream, sctx);
 
       Zorba_SerializerOptions serOptions;
       serOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+
+      zorba::Item ctxValue = zorba->getItemFactory()->createString("foo");
 
       zorba::DynamicContext* dctx = query->getDynamicContext();
       dctx->setContextItem(ctxValue);

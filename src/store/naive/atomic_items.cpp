@@ -461,11 +461,13 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
-  try {
+  try 
+  {
     xs_double const doubleValue(theValue.c_str());
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& ) 
+  {
     result = NULL;
     return false;
   }

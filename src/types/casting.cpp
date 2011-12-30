@@ -1689,7 +1689,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*sourceType, aTargetType, loc};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throw XQUERY_EXCEPTION( err::XPST0051, ERROR_PARAMS( aTargetType ) );
+    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(aTargetType));
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1728,7 +1728,7 @@ bool GenericCast::castToAtomic(
     CastFunc lCastFunc = theCastMatrix[theMapping[sourceTypeCode]]
                                       [theMapping[targetTypeCode]];
     if (lCastFunc == 0)
-      throw TYPE_EXCEPTION( err::XPTY0004, lErrorInfo );
+      throw TYPE_EXCEPTION(err::XPTY0004, lErrorInfo);
 
     valid = (*lCastFunc)(result,
                          lItem,
@@ -1816,8 +1816,7 @@ bool GenericCast::castToAtomic(
   if (targetTypeCode == TypeConstants::XS_NOTATION ||
       targetTypeCode == TypeConstants::XS_ANY_ATOMIC)
   {
-    RAISE_ERROR(err::XPST0080, loc,
-    ERROR_PARAMS(*errorInfo.theTargetType));
+    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(*errorInfo.theTargetType));
   }
 
   if (sourceTypeCode == TypeConstants::XS_ANY_ATOMIC)
@@ -1893,8 +1892,7 @@ void castToUserDefinedType(
     throw TYPE_EXCEPTION(err::FORG0001, lErrorInfo);
   }
 
-  const UserDefinedXQType* udt =
-    static_cast<const UserDefinedXQType*>(aTargetType);
+  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
 
   switch ( udt->getTypeCategory() )
   {
@@ -1909,8 +1907,7 @@ void castToUserDefinedType(
                                                   baseItem,
                                                   NULL,
                                                   loc);
-
-    if ( hasResult )
+    if (hasResult)
     {
       store::Item_t typeName = udt->get_qname();
       GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
