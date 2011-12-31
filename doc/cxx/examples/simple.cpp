@@ -33,14 +33,14 @@ example_1(Zorba* aZorba)
 
   std::cout << lQuery << std::endl;
 
-	return true;
+  return true;
 }
 
 
 bool
 example_2(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->compileQuery("1+2");
+  XQuery_t lQuery = aZorba->compileQuery("1+2");
 
   Iterator_t lIterator = lQuery->iterator();
   lIterator->open();
@@ -53,7 +53,7 @@ example_2(Zorba* aZorba)
 
   lIterator->close();
 
-	return true;
+  return true;
 }
 
 
@@ -61,7 +61,7 @@ bool
 example_3(Zorba* aZorba)
 {
 
-	XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
+  XQuery_t lQuery = aZorba->compileQuery("1 div 0");
   try {
     std::cout << lQuery << std::endl;
   } catch ( ZorbaException& e ) {
@@ -69,7 +69,7 @@ example_3(Zorba* aZorba)
     return true;
   }
 
-	return false;
+  return false;
 }
 
 
@@ -125,9 +125,7 @@ example_6(Zorba* aZorba)
 bool
 example_7()
 {
-
   std::cout << Zorba::version() << std::endl;
-
   return true;
 }
 
@@ -246,7 +244,8 @@ example_11( Zorba * aZorba )
 bool
 example_12(Zorba* aZorba)
 {
-	XQuery_t lQuery = aZorba->compileQuery("<a><b attr='1'/><b attr='2'/></a>");
+  XQuery_t lQuery = aZorba->compileQuery
+      ("<a xmlns:foo='http://www.zorba-xquery.com/'><b attr='1' xmlns:bar='http://www.zorba-xquery.com/uri2'/><b attr='2'/></a>");
 
   Iterator_t lIterator = lQuery->iterator();
   lIterator->open();
@@ -263,16 +262,22 @@ example_12(Zorba* aZorba)
       Item lNodeName;
       lChild.getNodeName(lNodeName);
       std::cout << "node name " << lNodeName.getStringValue() << std::endl;
-      Iterator_t lAttrIter = lChild.getAttributes();
-      
-      lAttrIter->open();
 
+      Iterator_t lAttrIter = lChild.getAttributes();
+      lAttrIter->open();
       Item lAttr;
       while (lAttrIter->next(lAttr)) 
       {
         std::cout << "  attribute value " << lAttr.getStringValue() << std::endl;
       }
       lAttrIter->close();
+
+      Item::NsBindings lBindings;
+      lChild.getNamespaceBindings(lBindings, Item::ONLY_LOCAL_NAMESPACES);
+      for (Item::NsBindings::const_iterator ite = lBindings.begin();
+           ite != lBindings.end(); ++ite) {
+        std::cout << "  namespace binding " << ite->first << "->" << ite->second << std::endl;
+      }
     }
     lChildIter->close();
   }

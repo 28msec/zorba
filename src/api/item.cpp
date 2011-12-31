@@ -380,6 +380,28 @@ Item::getAttributes() const
   return NULL;
 }
 
+void
+Item::getNamespaceBindings(NsBindings& aBindings, NsScoping aNsScoping) const
+{
+  ITEM_TRY
+      SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+      store::NsBindings lStoreBindings;
+      // We cheat and just cast the NsScoping enum. Will need to change this
+      // if the API and Store enums get out of sync.
+      m_item->getNamespaceBindings(lStoreBindings,
+        static_cast<store::StoreConsts::NsScoping>(aNsScoping));
+      store::NsBindings::iterator ite = lStoreBindings.begin();
+      store::NsBindings::iterator end = lStoreBindings.end();
+      for (; ite != end; ++ite) {
+        zstring& prefix = ite->first;
+        zstring& nsuri = ite->second;
+        aBindings.push_back(std::pair<String, String>(prefix.str(), nsuri.str()));
+      }
+
+  ITEM_CATCH
+}
+
 Item
 Item::getParent() const
 {
