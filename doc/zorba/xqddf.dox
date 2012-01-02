@@ -1,45 +1,5 @@
 /** \page xqddf XQuery Data Definition Facility
 
-<ul>
-  <li> Table of Contents </li>
-  <ul>
-    <li> \ref intro </li>
-    <li> \ref collections </li>
-    <ul>
-      <li> \ref collections_in_action </li>
-      <li> \ref collection_declaration </li>
-      <li> \ref creating_collections </li>
-      <li> \ref accessing_collections </li>
-      <li> \ref updating_collections </li>
-      <li> \ref destroying_collections </li>
-    </ul>
-    <li> \ref indexes</li>
-    <ul>
-      <li> \ref indexes_in_action </li>
-      <li> \ref index_declaration </li>
-      <li> \ref index_creation </li>
-      <li> \ref index_deletion </li>
-      <li> \ref index_probing </li>
-      <li> \ref index_maintenance </li>
-    </ul>
-    <li> \ref integrity_constraints</li>
-    <ul>
-      <li> \ref ic_declaration</li>
-      <ul>
-        <li> \ref ic_entity_integrity</li>
-        <li> \ref ic_domain_integrity</li>
-        <li> \ref ic_referential_integrity</li>
-      </ul>
-      <li> \ref ic_life_cycle</li>
-    </ul>
-    <li> \ref extensions_xquf_updates_routines </li>
-    <li> \ref error_summary </li>
-  </ul>
-</ul>
-
-
-\section intro The Zorba Data Definition Facility
-
 Zorba extends the XQuery language with support for collections, indexes, and
 integrity constraints. This is accomplished via a combination of new prolog
 declarations, new kinds of expressions or extensions to existing expressions,
