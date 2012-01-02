@@ -151,7 +151,7 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
   you need a working Visual Studio (Express) installation (2008, 2010).
 - If you want to compile Zorba using Visual Studio 2008,
   you will need to install the
-  <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&displaylang=en" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
+  <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
 - Make sure that the libraries required for Zorba
   are built with the same version of Visual Studio that you use.
 - The Windows version of some required packages
