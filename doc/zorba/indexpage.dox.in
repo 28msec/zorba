@@ -20,8 +20,8 @@
 
 \section generalarchitecture General Architecture
   - \ref data_lifecycle
-  - \ref dlexamples
-  - \ref dlzorbastore
+    - \ref dlexamples
+    - \ref dlzorbastore
   - \ref schema_lifecycle
   - \ref uriresolvers
   - \ref data_converters
