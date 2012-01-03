@@ -194,9 +194,15 @@ int serializer::emitter::emit_expanded_string(
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
-      // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
+      // raise an error iff (1) the serialization format is XML 1.0 and 
+      // (2) the given character is an invalid XML 1.0 character
+      if (ser &&
+          ser->method == PARAMETER_VALUE_XML &&
+          ser->version == "1.0" &&
+          !xml::is_valid(cp))
+      {
         throw XQUERY_EXCEPTION( err::FOCH0001, ERROR_PARAMS( cp ) );
+      }
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
