@@ -12,7 +12,8 @@ version 2.2
   * Added index management function to the C++ api's StaticCollectionManager.
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
-  * Fixed bug #905050 (setting and getting the context item type via the c++ api)
+  * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
+  * Fixed bug #905050 (setting and getting the context item type via the c++ api).
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
 

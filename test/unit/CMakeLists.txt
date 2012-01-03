@@ -28,8 +28,10 @@ DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarB"
   
 #belongs to test external_function.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main3.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main3.xq)
 
 #belongs to test no_folding.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod1.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod1.xq)
