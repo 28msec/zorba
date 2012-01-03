@@ -72,16 +72,18 @@ public:
 
   virtual function* optimize(const expr* self, expr* child) const;
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize input) const;
+
+  virtual bool mustCopyInputNodes(expr* fo, csize input) const
   {
-    return arg_types[0]; 
+    return true;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   CODEGEN_DECL();
 };

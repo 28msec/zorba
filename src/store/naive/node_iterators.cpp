@@ -45,7 +45,14 @@ bool ChildrenIteratorImpl::next(store::Item_t& result)
     return false;
   }
 
-  result = (*theIte);
+  if ((*theIte)->isConnectorNode())
+  {
+    result = static_cast<ConnectorNode*>(*theIte)->getNode();
+  }
+  else
+  {
+    result = (*theIte);
+  }
 
   ++theIte;
 
@@ -68,7 +75,14 @@ bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
     return false;
   }
 
-  result = (*theIte);
+  if ((*theIte)->isConnectorNode())
+  {
+    result = static_cast<ConnectorNode*>(*theIte)->getNode();
+  }
+  else
+  {
+    result = (*theIte);
+  }
 
   ++theIte;
 
@@ -91,7 +105,13 @@ bool AttributesIteratorImpl::next(store::Item_t& result)
     return false;
   }
 
-  AttributeNode* attr = static_cast<AttributeNode*>(*theIte);
+  store::Item* node = ((*theIte)->isConnectorNode() ?
+                       static_cast<ConnectorNode*>(*theIte)->getNode() :
+                       (*theIte));
+
+  assert(node->getNodeKind() == store::StoreConsts::attributeNode);
+
+  AttributeNode* attr = static_cast<AttributeNode*>(node);
 
   while (attr->isHidden())
   {
@@ -103,7 +123,13 @@ bool AttributesIteratorImpl::next(store::Item_t& result)
       return false;
     }
 
-    attr = static_cast<AttributeNode*>(*theIte);
+    node = ((*theIte)->isConnectorNode() ?
+            static_cast<ConnectorNode*>(*theIte)->getNode() :
+            (*theIte));
+
+    assert(node->getNodeKind() == store::StoreConsts::attributeNode);
+
+    attr = static_cast<AttributeNode*>(node);
   }
 
   ++theIte;
@@ -140,7 +166,7 @@ bool StoreNodeDistinctIterator::next(store::Item_t& result)
     }
     else if (theCheckOnly)
     {
-      throw ZORBA_EXCEPTION( zerr::ZSTR0045_DUPLICATE_NODE_ERROR );
+      throw ZORBA_EXCEPTION(zerr::ZSTR0045_DUPLICATE_NODE_ERROR);
     }
   }
 }
@@ -285,8 +311,8 @@ void StoreNodeSortIterator::reset()
   // Do not reset the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
 
-  ulong numNodes = (ulong)theNodes.size();
-  for (ulong i = 0; i < numNodes; i++)
+  csize numNodes = theNodes.size();
+  for (csize i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];
     n->removeReference();
@@ -302,8 +328,8 @@ void StoreNodeSortIterator::close()
   // Do not close the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
 
-  ulong numNodes = (ulong)theNodes.size();
-  for (ulong i = 0; i < numNodes; i++)
+  csize numNodes = theNodes.size();
+  for (csize i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];
     n->removeReference();

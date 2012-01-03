@@ -1,0 +1,375 @@
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(false)"/>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)"/>
+
+Iterator tree for const-folded expr:
+<NameCastIterator>
+  <SingletonIterator value="xs:string(L)"/>
+</NameCastIterator>
+
+Iterator tree for const-folded expr:
+<NameCastIterator>
+  <SingletonIterator value="xs:string(L)"/>
+</NameCastIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<QNameIterator>
+  <SingletonIterator value="xs:string(http://www.w3.org/2001/XMLSchema)"/>
+  <SingletonIterator value="xs:string(string)"/>
+</QNameIterator>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)"/>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="co">
+    <SingletonIterator value="xs:integer(0)"/>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="xs:integer" quant="">
+    <CtxVarIterator varid="2" varname="co" varkind="global"/>
+  </TreatIterator>
+  <CtxVarDeclareIterator varid="3" varname="map1">
+    <SingletonIterator value="xs:QName(,,map-co)"/>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="4" varname="str">
+    <SingletonIterator value="xs:QName(http://www.w3.org/2001/XMLSchema,,string)"/>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="5" varname="input">
+    <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+      <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+        <FnDocIterator>
+          <SingletonIterator value="xs:string(books.xml)"/>
+        </FnDocIterator>
+      </ChildAxisIterator>
+    </ChildAxisIterator>
+  </CtxVarDeclareIterator>
+  <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+    <CtxVarIterator varid="5" varname="input" varkind="global"/>
+  </TreatIterator>
+  <SequentialIterator>
+    <ApplyIterator>
+      <MapCreateIterator>
+        <PromoteIterator type="xs:QName">
+          <FnDataIterator>
+            <CtxVarIterator varid="3" varname="map1" varkind="global"/>
+          </FnDataIterator>
+        </PromoteIterator>
+        <PromoteIterator type="xs:QName">
+          <FnDataIterator>
+            <CtxVarIterator varid="4" varname="str" varkind="global"/>
+          </FnDataIterator>
+        </PromoteIterator>
+      </MapCreateIterator>
+    </ApplyIterator>
+    <CtxVarDeclareIterator varid="6" varname="DG">
+      <UDFunctionCallIterator>
+        <TreatIterator quant="+">
+          <CtxVarIterator varid="5" varname="input" varkind="global"/>
+        </TreatIterator>
+        <SingletonIterator value="xs:boolean(true)"/>
+        <SingletonIterator value="xs:string()"/>
+      </UDFunctionCallIterator>
+    </CtxVarDeclareIterator>
+    <ApplyIterator>
+      <MapDestroyIterator>
+        <PromoteIterator type="xs:QName">
+          <FnDataIterator>
+            <CtxVarIterator varid="3" varname="map1" varkind="global"/>
+          </FnDataIterator>
+        </PromoteIterator>
+      </MapDestroyIterator>
+    </ApplyIterator>
+    <CtxVarIterator varid="6" varname="DG" varkind="local"/>
+  </SequentialIterator>
+</SequentialIterator>
+
+Iterator tree for local:collapseNodesSameName:
+<flwor::FLWORIterator>
+  <LetVariable name="x" materialize="true">
+    <LetVarIterator varname="x"/>
+  </LetVariable>
+  <ForVariable name="e">
+    <LetVarIterator varname="e"/>
+  </ForVariable>
+  <ForVariable name="s">
+    <LetVarIterator varname="s"/>
+  </ForVariable>
+  <MaterializeClause>
+    <MaterializeForVariable inputVar="s : "/>
+    <MaterializeForVariable inputVar="e : "/>
+    <MaterializeLetVariable inputVar="x : "/>
+  </MaterializeClause>
+  <ReturnClause>
+    <SequentialIterator>
+      <CtxVarDeclareIterator varid="1" varname="label"/>
+      <CtxVarDeclareIterator varid="2" varname="f">
+        <LetVarIterator varname="x" targetPos="1"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="3" varname="n">
+        <NodeNameIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+            <CtxVarIterator varid="2" varname="f" varkind="local"/>
+          </TreatIterator>
+        </NodeNameIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="4" varname="s2">
+        <ConcatStrIterator>
+          <ForVarIterator varname="s"/>
+          <ConcatStrIterator>
+            <SingletonIterator value="xs:string(/)"/>
+            <FunctionTraceIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="x">
+                  <PromoteIterator type="xs:QName">
+                    <FnDataIterator>
+                      <CtxVarIterator varid="3" varname="n" varkind="local"/>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </ForVariable>
+                <LetVariable name="y" materialize="true">
+                  <NamespaceUriFromQNameIterator>
+                    <ForVarIterator varname="x"/>
+                  </NamespaceUriFromQNameIterator>
+                </LetVariable>
+                <ReturnClause>
+                  <IfThenElseIterator>
+                    <FnEmptyIterator>
+                      <LetVarIterator varname="y"/>
+                    </FnEmptyIterator>
+                    <LocalNameFromQNameIterator>
+                      <ForVarIterator varname="x"/>
+                    </LocalNameFromQNameIterator>
+                    <ConcatStrIterator>
+                      <LetVarIterator varname="y"/>
+                      <ConcatStrIterator>
+                        <SingletonIterator value="xs:string(/)"/>
+                        <LocalNameFromQNameIterator>
+                          <ForVarIterator varname="x"/>
+                        </LocalNameFromQNameIterator>
+                      </ConcatStrIterator>
+                    </ConcatStrIterator>
+                  </IfThenElseIterator>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FunctionTraceIterator>
+          </ConcatStrIterator>
+        </ConcatStrIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="5" varname="a">
+        <NodeSortIterator distinct="true" ascending="true">
+          <AttributeAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+            <LetVarIterator varname="x"/>
+          </AttributeAxisIterator>
+        </NodeSortIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="6" varname="c">
+        <NodeSortIterator distinct="true" ascending="true">
+          <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+            <LetVarIterator varname="x"/>
+          </ChildAxisIterator>
+        </NodeSortIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="7" varname="ca">
+        <UDFunctionCallIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="5" varname="a" varkind="local"/>
+          </TreatIterator>
+          <SingletonIterator value="xs:boolean(false)"/>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </UDFunctionCallIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="8" varname="cc">
+        <UDFunctionCallIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="6" varname="c" varkind="local"/>
+          </TreatIterator>
+          <SingletonIterator value="xs:boolean(true)"/>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </UDFunctionCallIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarAssignIterator varid="1" varname="label" varkind="local">
+        <TreatIterator type="xs:integer" quant="?">
+          <MapGetIterator>
+            <PromoteIterator type="xs:QName">
+              <FnDataIterator>
+                <CtxVarIterator varid="3" varname="map1" varkind="global"/>
+              </FnDataIterator>
+            </PromoteIterator>
+            <PromoteIterator type="xs:anyAtomicType">
+              <FnDataIterator>
+                <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </MapGetIterator>
+        </TreatIterator>
+      </CtxVarAssignIterator>
+      <IfThenElseIterator>
+        <FnEmptyIterator>
+          <CtxVarIterator varid="1" varname="label" varkind="local"/>
+        </FnEmptyIterator>
+        <SequentialIterator>
+          <CtxVarAssignIterator varid="2" varname="co" varkind="global">
+            <SpecificNumArithIterator_AddOperation_INTEGER>
+              <CtxVarIterator varid="2" varname="co" varkind="global"/>
+              <SingletonIterator value="xs:integer(1)"/>
+            </SpecificNumArithIterator_AddOperation_INTEGER>
+          </CtxVarAssignIterator>
+          <CtxVarAssignIterator varid="1" varname="label" varkind="local">
+            <CtxVarIterator varid="2" varname="co" varkind="global"/>
+          </CtxVarAssignIterator>
+          <ApplyIterator>
+            <MapInsertIterator>
+              <PromoteIterator type="xs:QName">
+                <FnDataIterator>
+                  <CtxVarIterator varid="3" varname="map1" varkind="global"/>
+                </FnDataIterator>
+              </PromoteIterator>
+              <CtxVarIterator varid="2" varname="co" varkind="global"/>
+              <PromoteIterator type="xs:anyAtomicType">
+                <FnDataIterator>
+                  <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </MapInsertIterator>
+          </ApplyIterator>
+        </SequentialIterator>
+        <FnConcatIterator/>
+      </IfThenElseIterator>
+      <IfThenElseIterator>
+        <ForVarIterator varname="e"/>
+        <IfThenElseIterator>
+          <FnEmptyIterator>
+            <CtxVarIterator varid="6" varname="c" varkind="local"/>
+          </FnEmptyIterator>
+          <ElementIterator copyInputNodes="false">
+            <NameCastIterator>
+              <FnDataIterator>
+                <CtxVarIterator varid="3" varname="n" varkind="local"/>
+              </FnDataIterator>
+            </NameCastIterator>
+            <EnclosedIterator attr_cont="false">
+              <FnConcatIterator>
+                <AttributeIterator qname="xs:QName(,,L)">
+                  <EnclosedIterator attr_cont="true">
+                    <CtxVarIterator varid="1" varname="label" varkind="local"/>
+                  </EnclosedIterator>
+                </AttributeIterator>
+                <CtxVarIterator varid="7" varname="ca" varkind="local"/>
+              </FnConcatIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <NameCastIterator>
+              <FnDataIterator>
+                <CtxVarIterator varid="3" varname="n" varkind="local"/>
+              </FnDataIterator>
+            </NameCastIterator>
+            <EnclosedIterator attr_cont="false">
+              <FnConcatIterator>
+                <AttributeIterator qname="xs:QName(,,L)">
+                  <EnclosedIterator attr_cont="true">
+                    <CtxVarIterator varid="1" varname="label" varkind="local"/>
+                  </EnclosedIterator>
+                </AttributeIterator>
+                <CtxVarIterator varid="7" varname="ca" varkind="local"/>
+                <CtxVarIterator varid="8" varname="cc" varkind="local"/>
+              </FnConcatIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+        </IfThenElseIterator>
+        <AttributeIterator>
+          <NameCastIterator>
+            <FnDataIterator>
+              <CtxVarIterator varid="3" varname="n" varkind="local"/>
+            </FnDataIterator>
+          </NameCastIterator>
+          <EnclosedIterator attr_cont="true">
+            <CtxVarIterator varid="1" varname="label" varkind="local"/>
+          </EnclosedIterator>
+        </AttributeIterator>
+      </IfThenElseIterator>
+    </SequentialIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for local:collapseNodes:
+<flwor::FLWORIterator>
+  <LetVariable name="x" materialize="true">
+    <LetVarIterator varname="x"/>
+  </LetVariable>
+  <ForVariable name="e">
+    <LetVarIterator varname="e"/>
+  </ForVariable>
+  <ForVariable name="s">
+    <LetVarIterator varname="s"/>
+  </ForVariable>
+  <MaterializeClause>
+    <MaterializeForVariable inputVar="e : "/>
+    <MaterializeForVariable inputVar="s : "/>
+    <MaterializeLetVariable inputVar="x : "/>
+  </MaterializeClause>
+  <ReturnClause>
+    <IfThenElseIterator>
+      <FnEmptyIterator>
+        <LetVarIterator varname="x"/>
+      </FnEmptyIterator>
+      <FnConcatIterator/>
+      <flwor::FLWORIterator>
+        <ForVariable name="y">
+          <LetVarIterator varname="x"/>
+        </ForVariable>
+        <LetVariable name="n" materialize="true">
+          <NodeNameIterator>
+            <ForVarIterator varname="y"/>
+          </NodeNameIterator>
+        </LetVariable>
+        <GroupByClause>
+          <Spec>
+            <LetVarIterator varname="n"/>
+            <GroupVariable/>
+          </Spec>
+          <Spec>
+            <ForVarIterator varname="y"/>
+            <NonGroupVariable/>
+          </Spec>
+        </GroupByClause>
+        <MaterializeClause>
+          <MaterializeLetVariable inputVar="y : "/>
+          <OrderBySpec>
+            <FnStringIterator>
+              <ForVarIterator varname="n"/>
+            </FnStringIterator>
+          </OrderBySpec>
+        </MaterializeClause>
+        <ReturnClause>
+          <UDFunctionCallIterator>
+            <TreatIterator quant="+">
+              <LetVarIterator varname="y"/>
+            </TreatIterator>
+            <ForVarIterator varname="e"/>
+            <ForVarIterator varname="s"/>
+          </UDFunctionCallIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </IfThenElseIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

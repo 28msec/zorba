@@ -43,9 +43,11 @@ class fn_zorba_xqdoc_xqdoc : public function
 {
 public:
   fn_zorba_xqdoc_xqdoc(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_zorba_xqdoc_xqdoc_content : public function
 {
 public:
   fn_zorba_xqdoc_xqdoc_content(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

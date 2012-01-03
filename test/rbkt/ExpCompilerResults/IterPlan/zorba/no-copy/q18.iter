@@ -1,0 +1,38 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <ForVariable name="i">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <FnDocIterator>
+              <PromoteIterator type="xs:string">
+                <FnDataIterator>
+                  <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </FnDocIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ForVariable>
+    <ReturnClause>
+      <FunctionTraceIterator>
+        <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+          <SingletonIterator value="xs:decimal(2.20371)"/>
+          <PromoteIterator type="xs:decimal">
+            <FnDataIterator>
+              <FnZeroOrOneIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="i"/>
+                </ChildAxisIterator>
+              </FnZeroOrOneIterator>
+            </FnDataIterator>
+          </PromoteIterator>
+        </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+      </FunctionTraceIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

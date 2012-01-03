@@ -54,7 +54,9 @@
 #include "api/auditimpl.h"
 
 #include "api/uri_resolver_wrappers.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -326,13 +328,13 @@ const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
 
 const zstring
-static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
+static_context::ZORBA_XQDOC_FN_NS = ZORBA_NS_PREFIX + "modules/xqdoc";
 
 const zstring
-static_context::ZORBA_RANDOM_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/random";
+static_context::ZORBA_RANDOM_FN_NS = ZORBA_NS_PREFIX + "modules/random";
 
 const zstring
-static_context::ZORBA_INTROSP_SCTX_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/introspection/sctx";
+static_context::ZORBA_INTROSP_SCTX_FN_NS = NS_PRE + "modules/introspection/sctx";
 
 const zstring
 static_context::ZORBA_REFLECTION_FN_NS = NS_PRE + "modules/reflection";
@@ -363,6 +365,24 @@ static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
 
 const zstring
 static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
+
+/***************************************************************************//**
+  Options-related namespaces
+********************************************************************************/
+const zstring 
+static_context::ZORBA_OPTIONS_NS = ZORBA_NS_PREFIX + "options";
+
+const zstring 
+static_context::ZORBA_OPTION_WARN_NS = static_context::ZORBA_OPTIONS_NS + "/warnings";
+
+const zstring 
+static_context::ZORBA_OPTION_FEATURE_NS = static_context::ZORBA_OPTIONS_NS + "/features";
+
+const zstring 
+static_context::ZORBA_OPTION_OPTIM_NS = static_context::ZORBA_OPTIONS_NS + "/optimizer";
+
+const zstring 
+static_context::ZORBA_VERSIONING_NS = static_context::ZORBA_OPTIONS_NS + "/versioning";
 
 
 /***************************************************************************//**
@@ -497,6 +517,7 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -544,6 +565,7 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -596,6 +618,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -893,7 +916,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theOptionMap;
   ar & theExternalModulesMap;
 
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypeManager);
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
@@ -901,7 +924,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultFunctionNamespace;
   ar & theHaveDefaultFunctionNamespace;
 
-  ar & theCtxItemType;
+  ar & theContextItemType;
 
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;     
@@ -1743,13 +1766,13 @@ bool static_context::validateSimpleContent(
 ********************************************************************************/
 void static_context::set_typemanager(rchandle<TypeManager> typemgr)
 {
-  theTypemgr = typemgr;
+  theTypeManager = typemgr;
 }
 
 
 TypeManager* static_context::get_typemanager() const
 {
-  TypeManager* tm = theTypemgr.getp();
+  TypeManager* tm = theTypeManager.getp();
   if (tm != NULL)
   {
     return tm;
@@ -1760,7 +1783,7 @@ TypeManager* static_context::get_typemanager() const
 
 TypeManager* static_context::get_local_typemanager() const
 {
-  return theTypemgr.getp();
+  return theTypeManager.getp();
 }
 
 
@@ -1792,6 +1815,7 @@ const zstring& static_context::default_elem_type_ns() const
 ********************************************************************************/
 void static_context::set_default_elem_type_ns(
     const zstring& ns,
+    bool raiseError,
     const QueryLoc& loc)
 {
   if (!theHaveDefaultElementNamespace)
@@ -1799,9 +1823,13 @@ void static_context::set_default_elem_type_ns(
     theDefaultElementNamespace = ns;
     theHaveDefaultElementNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultElementNamespace = ns;
   }
 }
 
@@ -1827,6 +1855,7 @@ const zstring& static_context::default_function_ns() const
 ********************************************************************************/
 void static_context::set_default_function_ns(
    const zstring& ns,
+   bool raiseError,
    const QueryLoc& loc)
 {
   if (!theHaveDefaultFunctionNamespace)
@@ -1834,9 +1863,13 @@ void static_context::set_default_function_ns(
     theDefaultFunctionNamespace = ns;
     theHaveDefaultFunctionNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultFunctionNamespace = ns;
   }
 }
 
@@ -2142,9 +2175,9 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t)
 {
-  theCtxItemType = t;
+  theContextItemType = t;
 }
 
 
@@ -2156,8 +2189,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theCtxItemType != NULL)
-      return theCtxItemType.getp();
+    if (theContextItemType != NULL)
+      return theContextItemType.getp();
 
     sctx = sctx->theParent;
   }
@@ -3144,39 +3177,53 @@ void static_context::bind_option(
   
   zstring lNamespace = qname2->getNamespace();
 
-
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) // starts with zorba options namespace
+  // If option namespace starts with zorba options namespace
+  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) 
   {
     zstring lLocalName = qname2->getLocalName();
 
-    if ( lNamespace == ZORBA_OPTION_FEATURE_NS &&
-         ( lLocalName == "enable" || lLocalName == "disable" ) )
+    if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
+        (lLocalName == "enable" || lLocalName == "disable"))
     {
       zstring lVal1 = value;
       zstring lVal2;
       bool lCommaFound = false;
-      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
       {
         process_feature_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_feature_option(
-        lCommaFound?lVal2:lVal1, 
-        lLocalName == "enable",
-        loc);
+      process_feature_option(lCommaFound ? lVal2 : lVal1, 
+                             lLocalName == "enable",
+                             loc);
     }
-    else if ( lNamespace == ZORBA_OPTION_WARN_NS &&
-              ( lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error" ) )
+    else if (qname2->getNamespace() == ZORBA_OPTION_OPTIM_NS &&
+             (lLocalName == "enable" || lLocalName == "disable"))
     {
       zstring lVal1 = value;
       zstring lVal2;
       bool lCommaFound = false;
-      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
+      {
+        process_optim_option(lVal1, lLocalName == "enable", loc);
+        lCommaFound = true;
+      }
+      process_optim_option(lCommaFound ? lVal2 : lVal1, 
+                           lLocalName == "enable",
+                           loc);
+    }
+    else if (lNamespace == ZORBA_OPTION_WARN_NS &&
+             (lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error"))
+    {
+      zstring lVal1 = value;
+      zstring lVal2;
+      bool lCommaFound = false;
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
       {
         process_warning_option(lVal1, lLocalName, loc);
         lCommaFound = true;
       }
-      process_warning_option( lCommaFound?lVal2:lVal1, lLocalName, loc);
+      process_warning_option(lCommaFound ? lVal2 : lVal1, lLocalName, loc);
     }
 
     // process zorba-version option
@@ -3188,39 +3235,31 @@ void static_context::bind_option(
       {
         // Re-use "ModuleVersion" class since it does 98% of the work for us;
         // just use a fake URI
-        ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
-        if (! lOptVersion.is_valid_version()) {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
-                      ERROR_PARAMS(value), ERROR_LOC( loc ));
+        ModuleVersion lOptVersion(ZORBA_VERSIONING_NS + "/corezorba", value);
+        if (! lOptVersion.is_valid_version()) 
+        {
+          RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
+          ERROR_PARAMS(value));
         }
-        ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
+
+        ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS + "/corezorba",
                                     ZORBA_VERSION);
-        if ( ! lZorbaVersion.satisfies(lOptVersion)) {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
-                      ERROR_PARAMS(value, ZORBA_VERSION),
-                      ERROR_LOC( loc ));
+
+        if ( ! lZorbaVersion.satisfies(lOptVersion)) 
+        {
+          RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
+          ERROR_PARAMS(value, ZORBA_VERSION));
         }
       }
     }
-    // if the option is in (starts-with) Zorba's own namespace but not known, we raise an error
+
+    // If the option is in (starts-with) Zorba's own namespace but not known,
+    // we raise an error
     else 
     {
-      throw XQUERY_EXCEPTION(
-         zerr::ZXQP0060_OPTION_NOT_KNOWN,
-         ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-         ERROR_LOC( loc )
-       );
+      RAISE_ERROR(zerr::ZXQP0060_OPTION_NOT_KNOWN, loc,
+      ERROR_PARAMS(qname2->getNamespace() + ":" + qname2->getLocalName()));
     }
-  }
-
-  // if the option is in Zorba's own namespace but not known, we raise an error
-  else if ( qname2->getNamespace().find(ZORBA_OPTIONS_NS) == 0 )
-  {
-    throw XQUERY_EXCEPTION(
-       zerr::ZXQP0060_OPTION_NOT_KNOWN,
-       ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-       ERROR_LOC( loc )
-     );
   }
 
   // in any case, we bind the option in the static context such that
@@ -3258,8 +3297,11 @@ static_context::parse_and_expand_qname(
   return lQName;
 }
 
-void
-static_context::process_warning_option(
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_warning_option(
   const zstring& value,
   const zstring& name,
   const QueryLoc& loc)
@@ -3314,48 +3356,58 @@ static_context::process_warning_option(
   }
 }
 
-void
-static_context::process_feature_option(
-  const zstring& value,
-  bool  enable,
-  const QueryLoc& loc)
-{
-  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_FEATURES_NS, loc );
 
-  if ( lQName->getNamespace() != ZORBA_FEATURES_NS )
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_feature_option(
+    const zstring& value,
+    bool enable,
+    const QueryLoc& loc)
+{
+  store::Item_t featureName = parse_and_expand_qname(value, ZORBA_FEATURES_NS, loc);
+
+  if (featureName->getNamespace() != ZORBA_FEATURES_NS)
   {
-    throw XQUERY_EXCEPTION(
-        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-        ERROR_PARAMS (
-          lQName->getStringValue(),
-          ZED( ZDST0060_unknown_namespace ),
-          lQName->getNamespace()
-        ), 
-        ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(featureName->getStringValue(),
+                 ZED(ZDST0060_unknown_namespace),
+                 featureName->getNamespace())); 
   }
 
   feature::kind k;
-  if ( feature::kind_for(lQName->getLocalName().c_str(), k) )
+  if (feature::kind_for(featureName->getLocalName().c_str(), k))
   {
-    if ( enable )
-      set_feature( k );
+    if (enable)
+      set_feature(k);
     else
-      unset_feature( k );
+      unset_feature(k);
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-        ERROR_PARAMS (
-          lQName->getStringValue(),
-          ZED( ZDST0060_unknown_localname ),
-          lQName->getLocalName()
-        ), 
-        ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(featureName->getStringValue(),
+                 ZED(ZDST0060_unknown_localname),
+                 featureName->getLocalName())); 
   }
 }
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_optim_option(
+    const zstring& value,
+    bool enable,
+    const QueryLoc& loc)
+{
+  if (value != "for-serialization-only")
+  {
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(value, ZED(ZDST0060_unknown_localname), value)); 
+  }
+}
+
 
 /***************************************************************************//**
 
@@ -3383,7 +3435,7 @@ bool static_context::lookup_option(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  Auditing                                                                    //
+//  Auditing                                                                   //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 

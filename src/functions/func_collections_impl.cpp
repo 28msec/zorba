@@ -173,6 +173,14 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes::codegen(
 }
 
 
+bool zorba_store_collections_static_dml_apply_insert_nodes::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -185,6 +193,14 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_first::codegen(
 {
   return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool zorba_store_collections_static_dml_apply_insert_nodes_first::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -203,6 +219,14 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_last::codegen(
 }
 
 
+bool zorba_store_collections_static_dml_apply_insert_nodes_last::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -218,6 +242,15 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_before::codegen
 }
 
 
+bool 
+zorba_store_collections_static_dml_apply_insert_nodes_before::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -230,6 +263,15 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_after::codegen(
 {
   return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool 
+zorba_store_collections_static_dml_apply_insert_nodes_after::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -312,7 +354,7 @@ PlanIter_t zorba_store_collections_static_ddl_available_collections::codegen(
 ********************************************************************************/
 BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }
@@ -323,7 +365,7 @@ BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresSort
 ********************************************************************************/
 BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }

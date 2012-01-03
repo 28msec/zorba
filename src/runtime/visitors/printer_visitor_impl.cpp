@@ -681,8 +681,8 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
-  if (a.getTargetPos() > 0)
-    thePrinter.addAttribute("targetPos", a.getTargetPos());
+  if (a.getTargetPos() > Integer(0))
+    thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
 
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
@@ -818,11 +818,13 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " <<
-      inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -853,10 +855,13 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -906,7 +911,10 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     ForVarIterator* iter = static_cast<ForVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : ";
+
+    if (! Properties::instance()->noTreeIds())
+      str1 <<  iter;
   }
   else
   {
@@ -914,11 +922,14 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     LetVarIterator* iter = static_cast<LetVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : " ;
+
+    if (! Properties::instance()->noTreeIds())
+      str1 << iter;
   }
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1127,12 +1138,14 @@ void PrinterVisitor::beginVisit(const CastIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastIterator&) {
+void PrinterVisitor::endVisit(const CastIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const PromoteIterator& a) {
+void PrinterVisitor::beginVisit(const PromoteIterator& a) 
+{
   thePrinter.startBeginVisit("PromoteIterator", ++theId);
   std::ostringstream lStream;
   TypeOps::serialize(lStream, *a.thePromoteType);
@@ -1141,12 +1154,14 @@ void PrinterVisitor::beginVisit(const PromoteIterator& a) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const PromoteIterator&) {
+void PrinterVisitor::endVisit(const PromoteIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const CastableIterator& a) {
+void PrinterVisitor::beginVisit(const CastableIterator& a) 
+{
   thePrinter.startBeginVisit("CastableIterator", ++theId);
   std::ostringstream lStream;
   TypeOps::serialize(lStream, *a.theCastType);
@@ -1232,7 +1247,40 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION (AndIterator)
   PRINTER_VISITOR_DEFINITION (CompareIterator)
   PRINTER_VISITOR_DEFINITION (AtomicValuesEquivalenceIterator)
-  PRINTER_VISITOR_DEFINITION (ElementIterator)
+
+  void PrinterVisitor::beginVisit(const DocumentIterator& a)
+  {
+    thePrinter.startBeginVisit("DocumentIterator", ++theId);
+    if (!a.copyInputNodes())
+    {
+      thePrinter.addAttribute("copyInputNodes", "false");
+    }
+    printCommons(&a, theId);
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const DocumentIterator&)
+  {                            
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit(); 
+  }
+
+  void PrinterVisitor::beginVisit(const ElementIterator& a)
+  {
+    thePrinter.startBeginVisit("ElementIterator", ++theId);
+    if (!a.copyInputNodes())
+    {
+      thePrinter.addAttribute("copyInputNodes", "false");
+    }
+    printCommons(&a, theId);
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const ElementIterator&)
+  {                            
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit(); 
+  }
 
   void PrinterVisitor::beginVisit(const AttributeIterator& a)
   {
@@ -1251,8 +1299,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
     thePrinter.endEndVisit();
   }
 
-  PRINTER_VISITOR_DEFINITION (DocumentIterator)
-  PRINTER_VISITOR_DEFINITION (DocumentContentIterator)
   PRINTER_VISITOR_DEFINITION (CommentIterator)
   PRINTER_VISITOR_DEFINITION (PiIterator)
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
