@@ -11,12 +11,12 @@
   - <a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a>
 
 \section apis APIs
-  - <a href="../../cxx/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">C++ API</a>
-  - <a class="el" href="../../c/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">C API</a>
-  - <a class="el" href="../../java/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">Java API</a>
-  - <a class="el" href="../../python/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">Python API</a>
-  - <a class="el" href="../../ruby/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">Ruby API</a>
-  - <a class="el" href="../../php/html/index.html?version=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}">PHP API</a>
+  - <a href="../../cxx/html/index.html">C++ API</a>
+  - <a class="el" href="../../c/html/index.html">C API</a>
+  - <a class="el" href="../../java/html/index.html">Java API</a>
+  - <a class="el" href="../../python/html/index.html">Python API</a>
+  - <a class="el" href="../../ruby/html/index.html">Ruby API</a>
+  - <a class="el" href="../../php/html/index.html">PHP API</a>
 
 \section generalarchitecture General Architecture
   - \ref data_lifecycle
