@@ -101,6 +101,28 @@ var_expr::var_expr(
 /*******************************************************************************
 
 ********************************************************************************/
+var_expr::var_expr(const var_expr& source)
+  :
+  expr(source),
+  theUniqueId(0),
+  theKind(source.theKind),
+  theName(source.theName),
+  theDeclaredType(source.theDeclaredType),
+  theFlworClause(NULL),
+  theCopyClause(NULL),
+  theParamPos(source.theParamPos),
+  theUDF(source.theUDF),
+  theIsExternal(source.theIsExternal),
+  theIsPrivate(source.theIsPrivate),
+  theIsMutable(source.theIsMutable),
+  theHasInitializer(source.theHasInitializer)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void var_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
