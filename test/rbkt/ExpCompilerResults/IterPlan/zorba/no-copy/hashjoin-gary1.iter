@@ -1,0 +1,227 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<ElementIterator copyInputNodes="false">
+  <SingletonIterator value="xs:QName(,,institutions)"/>
+  <EnclosedIterator attr_cont="false">
+    <flwor::FLWORIterator>
+      <LetVariable name="y" materialize="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
+          <flwor::FLWORIterator>
+            <ForVariable name="$$dot">
+              <FnDocIterator>
+                <SingletonIterator value="xs:string(../hashjoins/min_ic1980.xml)"/>
+              </FnDocIterator>
+            </ForVariable>
+            <ForVariable name="$$dot">
+              <flwor::FLWORIterator>
+                <ForVariable name="$$dot">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,ipeds)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$dot"/>
+                  </ChildAxisIterator>
+                </ForVariable>
+                <WhereClause>
+                  <CompareIterator>
+                    <FnDataIterator>
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,year)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="$$dot"/>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                    <SingletonIterator value="xs:integer(1980)"/>
+                  </CompareIterator>
+                </WhereClause>
+                <ReturnClause>
+                  <ForVarIterator varname="$$dot"/>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </ForVariable>
+            <WhereClause>
+              <CompareIterator>
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,file)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$dot"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+                <SingletonIterator value="xs:string(ic1980)"/>
+              </CompareIterator>
+            </WhereClause>
+            <ReturnClause>
+              <ForVarIterator varname="$$dot"/>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </ChildAxisIterator>
+      </LetVariable>
+      <ReturnClause>
+        <SequentialIterator>
+          <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$opt_temp_2">
+                <LetVarIterator varname="y"/>
+              </ForVariable>
+              <ReturnClause>
+                <GeneralIndexEntryBuilderIterator>
+                  <ForVarIterator varname="$$opt_temp_2"/>
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,unitid)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$opt_temp_2"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </GeneralIndexEntryBuilderIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </CreateInternalIndexIterator>
+          <flwor::FLWORIterator>
+            <ForVariable name="i">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inst)" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,institutions)" typename="*" nill allowed="0">
+                  <FnDocIterator>
+                    <SingletonIterator value="xs:string(../hashjoins/base.xml)"/>
+                  </FnDocIterator>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </ForVariable>
+            <LetVariable name="unitid" materialize="true">
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,unitid)" typename="*" nill allowed="0">
+                <ForVarIterator varname="i"/>
+              </AttributeAxisIterator>
+            </LetVariable>
+            <LetVariable name="$$opt_temp_1" materialize="true">
+              <HoistIterator>
+                <AttributeAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$dot">
+                      <NodeSortIterator distinct="true" ascending="true">
+                        <ProbeIndexPointGeneralIterator>
+                          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                          <FnDataIterator>
+                            <LetVarIterator varname="unitid"/>
+                          </FnDataIterator>
+                        </ProbeIndexPointGeneralIterator>
+                      </NodeSortIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ForVarIterator varname="$$dot"/>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </AttributeAxisIterator>
+              </HoistIterator>
+            </LetVariable>
+            <ReturnClause>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,inst)"/>
+                <AttributeIterator qname="xs:QName(,,unitid)">
+                  <EnclosedIterator attr_cont="true">
+                    <FnDataIterator>
+                      <LetVarIterator varname="unitid"/>
+                    </FnDataIterator>
+                  </EnclosedIterator>
+                </AttributeIterator>
+                <EnclosedIterator attr_cont="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="j">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,year)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="i"/>
+                      </ChildAxisIterator>
+                    </ForVariable>
+                    <LetVariable name="year" materialize="true">
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="j"/>
+                      </AttributeAxisIterator>
+                    </LetVariable>
+                    <LetVariable name="$$opt_temp_0" materialize="true">
+                      <HoistIterator>
+                        <CompareIterator>
+                          <FnDataIterator>
+                            <LetVarIterator varname="year"/>
+                          </FnDataIterator>
+                          <SingletonIterator value="xs:integer(1980)"/>
+                        </CompareIterator>
+                      </HoistIterator>
+                    </LetVariable>
+                    <ReturnClause>
+                      <ElementIterator copyInputNodes="false">
+                        <SingletonIterator value="xs:QName(,,year)"/>
+                        <AttributeIterator qname="xs:QName(,,name)">
+                          <EnclosedIterator attr_cont="true">
+                            <FnDataIterator>
+                              <LetVarIterator varname="year"/>
+                            </FnDataIterator>
+                          </EnclosedIterator>
+                        </AttributeIterator>
+                        <EnclosedIterator attr_cont="false">
+                          <flwor::FLWORIterator>
+                            <ForVariable name="k">
+                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,file)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="j"/>
+                              </ChildAxisIterator>
+                            </ForVariable>
+                            <LetVariable name="file" materialize="true">
+                              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="k"/>
+                              </AttributeAxisIterator>
+                            </LetVariable>
+                            <ReturnClause>
+                              <ElementIterator copyInputNodes="false">
+                                <SingletonIterator value="xs:QName(,,file)"/>
+                                <AttributeIterator qname="xs:QName(,,name)">
+                                  <EnclosedIterator attr_cont="true">
+                                    <FnDataIterator>
+                                      <LetVarIterator varname="file"/>
+                                    </FnDataIterator>
+                                  </EnclosedIterator>
+                                </AttributeIterator>
+                                <EnclosedIterator attr_cont="false">
+                                  <IfThenElseIterator>
+                                    <AndIterator>
+                                      <UnhoistIterator>
+                                        <LetVarIterator varname="$$opt_temp_0"/>
+                                      </UnhoistIterator>
+                                      <CompareIterator>
+                                        <FnDataIterator>
+                                          <LetVarIterator varname="file"/>
+                                        </FnDataIterator>
+                                        <SingletonIterator value="xs:string(ic1980)"/>
+                                      </CompareIterator>
+                                    </AndIterator>
+                                    <UnhoistIterator>
+                                      <LetVarIterator varname="$$opt_temp_1"/>
+                                    </UnhoistIterator>
+                                    <FnConcatIterator/>
+                                  </IfThenElseIterator>
+                                </EnclosedIterator>
+                              </ElementIterator>
+                            </ReturnClause>
+                          </flwor::FLWORIterator>
+                        </EnclosedIterator>
+                      </ElementIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </EnclosedIterator>
+              </ElementIterator>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </SequentialIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </EnclosedIterator>
+</ElementIterator>
+

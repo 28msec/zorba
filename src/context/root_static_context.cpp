@@ -78,7 +78,7 @@ void root_static_context::init()
       "xml", XML_NS,
       "xs", XML_SCHEMA_NS,
       "xsi", XSI_NS,
-      "zerr", ZORBA_ERR_NS,
+      //"zerr", ZORBA_ERR_NS,
       NULL, NULL
     };
 

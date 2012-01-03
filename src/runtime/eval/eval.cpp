@@ -75,6 +75,7 @@ EvalIterator::EvalIterator(
     const std::vector<xqtref_t>& aVarTypes,
     expr_script_kind_t scriptingKind,
     const store::NsBindings& localBindings,
+    bool doNodeCopy,
     bool forDebugger)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
@@ -82,6 +83,7 @@ EvalIterator::EvalIterator(
   theVarTypes(aVarTypes),
   theScriptingKind(scriptingKind),
   theLocalBindings(localBindings),
+  theDoNodeCopy(doNodeCopy),
   theForDebugger(forDebugger)
 {
 }
@@ -108,6 +110,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarTypes;
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
+  ar & theDoNodeCopy;
   ar & theForDebugger;
 }
 
@@ -159,6 +162,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
     evalCCB->theIsEval = true;
     evalCCB->theRootSctx = evalSctx;
+    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
     (evalCCB->theSctxMap)[1] = evalSctx;
 
     state->ccb.reset(evalCCB);
@@ -376,11 +380,10 @@ PlanIter_t EvalIterator::compile(
 
   expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,
-                                         false, // do not apply pul
+                                         false, // do not apply PUL
                                          rootExpr,
                                          maxOuterVarId,
                                          sar);
-
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (ccb->isSequential())

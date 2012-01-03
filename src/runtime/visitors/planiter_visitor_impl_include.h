@@ -100,7 +100,6 @@ class AndIterator;
   class FnMinMaxIterator;
   class TextIterator;
   class DocumentIterator;
-  class DocumentContentIterator;
   class CastIterator;
   class NameCastIterator;
   class CastableIterator;

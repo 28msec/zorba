@@ -31,8 +31,6 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (DocumentIterator);
 
-  PLAN_ITER_VISITOR (DocumentContentIterator);
-
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 
   PLAN_ITER_VISITOR (ExtFunctionCallIterator);

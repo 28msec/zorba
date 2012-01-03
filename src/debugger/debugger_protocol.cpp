@@ -158,4 +158,16 @@ DebuggerCommand::getArg(std::string aArg, int& aValue) {
   }
 }
 
+bool
+DebuggerCommand::getArg(std::string aArg, unsigned int& aValue) {
+  std::map<std::string, std::string>::iterator lElem = theArgs.find(aArg); 
+  if (lElem == theArgs.end()) {
+    return false;
+  } else {
+    std::stringstream lSs(lElem->second);
+    lSs >> aValue;
+    return true;
+  }
+}
+
 } // namespace zorba
