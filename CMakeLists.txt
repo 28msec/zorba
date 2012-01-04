@@ -16,6 +16,7 @@ PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+
 # overwriting the source and binary directories with the current zorba ones
 # this is usefull for other projects reusing zorba as a subcomponent
 SET(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
