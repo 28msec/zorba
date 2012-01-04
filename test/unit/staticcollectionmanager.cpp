@@ -225,6 +225,37 @@ staticcollectionamanger3(zorba::Zorba* z)
   return true;
 }
 
+
+bool
+staticcollectionamanger4(zorba::Zorba* z)
+{
+  std::ifstream lIn("main_invoke.xq");
+
+  zorba::XQuery_t lQuery = z->createQuery();
+  Zorba_CompilerHints lHints;
+  lQuery->compile(lIn, lHints);
+
+  size_t i = 0;
+
+  StaticCollectionManager* lMgr = lQuery->getStaticCollectionManager();
+
+  zorba::ItemSequence_t lSeq = lMgr->declaredCollections();
+  zorba::Iterator_t lIter = lSeq->getIterator();
+  lIter->open();
+  zorba::Item lName;
+  while (lIter->next(lName))
+  {
+    if (!lMgr->isAvailableCollection(lName))
+    {
+      lMgr->createCollection(lName);
+      std::cout << "created collection " << lName.getStringValue() << std::endl;
+      ++i;
+    }
+  }
+
+  return i == 1;
+}
+
 int
 staticcollectionmanager(int argc, char* argv[])
 {
@@ -244,6 +275,11 @@ staticcollectionmanager(int argc, char* argv[])
   std::cout << "executing example 3" << std::endl;
   if (!staticcollectionamanger3(z))
     return 3;
+  std::cout << std::endl;
+
+  std::cout << "executing example 4" << std::endl;
+  if (!staticcollectionamanger4(z))
+    return 4;
   std::cout << std::endl;
 
   return 0;
