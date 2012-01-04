@@ -273,10 +273,12 @@ example_12(Zorba* aZorba)
       lAttrIter->close();
 
       Item::NsBindings lBindings;
-      lChild.getNamespaceBindings(lBindings, Item::ONLY_LOCAL_NAMESPACES);
+      lChild.getNamespaceBindings(lBindings,
+                                  store::StoreConsts::ONLY_LOCAL_NAMESPACES);
       for (Item::NsBindings::const_iterator ite = lBindings.begin();
            ite != lBindings.end(); ++ite) {
-        std::cout << "  namespace binding " << ite->first << "->" << ite->second << std::endl;
+        std::cout << "  namespace binding " << ite->first
+                  << "->" << ite->second << std::endl;
       }
     }
     lChildIter->close();

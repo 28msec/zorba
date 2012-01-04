@@ -19,6 +19,7 @@
 #include <iostream>
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/store_consts.h>
 #include <vector>
 
 namespace zorba {
@@ -303,13 +304,10 @@ public:
     * @throw ZorbaException if an error occured, e.g. the Item is not of type element.
     */
   typedef std::vector<std::pair<String, String> > NsBindings;
-  enum NsScoping {
-    ALL_NAMESPACES,
-    ONLY_LOCAL_NAMESPACES,
-    ONLY_PARENT_NAMESPACES
-  };
   void
-  getNamespaceBindings(NsBindings& aBindings, NsScoping aNsScoping = ALL_NAMESPACES) const;
+  getNamespaceBindings(NsBindings& aBindings,
+    store::StoreConsts::NsScoping aNsScoping = store::StoreConsts::ALL_NAMESPACES)
+    const;
 
   /** \brief Get parent of this (node) Item.
    *
