@@ -378,7 +378,8 @@ _tmain(int argc, _TCHAR* argv[])
     //tCommandLineHandler.execute();
 
 #ifndef WIN32
-    wait();
+    int lStatus;
+    wait(&lStatus);
 #endif
 
     delete theClient;
