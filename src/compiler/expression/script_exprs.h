@@ -380,6 +380,8 @@ public:
       const expr_t& inExpr,
       std::vector<expr*>& exitExprs);
 
+  ~exit_catcher_expr();
+
   expr* get_expr() const { return theExpr.getp(); }
 
   std::vector<expr*>::const_iterator exitExprsBegin() const 
