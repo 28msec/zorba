@@ -461,11 +461,13 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
-  try {
+  try 
+  {
     xs_double const doubleValue(theValue.c_str());
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& ) 
+  {
     result = NULL;
     return false;
   }
@@ -2441,10 +2443,8 @@ xs_long IntegerItem::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
   }
 }
 

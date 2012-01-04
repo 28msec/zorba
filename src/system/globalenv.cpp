@@ -60,7 +60,9 @@ using namespace zorba;
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
+/*******************************************************************************
 
+********************************************************************************/
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
@@ -74,11 +76,14 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_store = store;
 
-  m_globalEnv->m_rootStaticContext = new root_static_context();
-  m_globalEnv->m_rootStaticContext->init();
-  RCHelper::addReference(m_globalEnv->m_rootStaticContext);
+  m_globalEnv->theRootTypeManager = new RootTypeManager;
+  RCHelper::addReference(m_globalEnv->theRootTypeManager);
 
-  BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
+  m_globalEnv->theRootStaticContext = new root_static_context();
+  RCHelper::addReference(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theRootStaticContext->init();
+
+  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
 
   AnnotationInternal::createBuiltIn();
 
@@ -104,6 +109,9 @@ void GlobalEnvironment::init(store::Store* store)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 // destroy all components that were initialized in init 
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
@@ -125,8 +133,11 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference(m_globalEnv->m_rootStaticContext);
-  m_globalEnv->m_rootStaticContext = 0;
+  RCHelper::removeReference(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theRootStaticContext = 0;
+
+  RCHelper::removeReference(m_globalEnv->theRootTypeManager);
+  m_globalEnv->theRootTypeManager = 0;
 
   AnnotationInternal::destroyBuiltIn();
 
@@ -152,6 +163,10 @@ void GlobalEnvironment::destroy()
 
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void GlobalEnvironment::destroyStatics()
 {
   // release resources aquired by the mapm library
@@ -161,20 +176,31 @@ void GlobalEnvironment::destroyStatics()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 GlobalEnvironment::GlobalEnvironment()
   :
   m_store(0), 
-  m_rootStaticContext(0),
+  theRootTypeManager(NULL),
+  theRootStaticContext(0),
   m_compilerSubSys(0)
 {
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 GlobalEnvironment::~GlobalEnvironment()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void GlobalEnvironment::init_icu()
 {
   // initialize the icu library
@@ -239,21 +265,23 @@ void GlobalEnvironment::cleanup_icu()
 }
 
 
-static_context& GlobalEnvironment::getRootStaticContext()
+RootTypeManager& GlobalEnvironment::getRootTypeManager() const
 {
-  return *m_rootStaticContext;
+  return *theRootTypeManager;
 }
 
 
-RootTypeManager& GlobalEnvironment::getRootTypeManager()
+static_context& GlobalEnvironment::getRootStaticContext() const
 {
-  return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
+  return *theRootStaticContext;
 }
 
-bool GlobalEnvironment::isRootStaticContextInitialized()
+
+bool GlobalEnvironment::isRootStaticContextInitialized() const
 {
-  return m_rootStaticContext != NULL;
+  return theRootStaticContext != NULL;
 }
+
 
 store::Store& GlobalEnvironment::getStore()
 {

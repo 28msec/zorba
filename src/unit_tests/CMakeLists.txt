@@ -17,9 +17,3 @@ SET(UNIT_TEST_SRCS
   unit_tests.cpp
   test_uri.cpp
 )
-
-IF(ZORBA_WITH_DEBUGGER)
-  LIST(APPEND UNIT_TEST_SRCS
-#    test_debugger_protocol.cpp
-  )
-ENDIF(ZORBA_WITH_DEBUGGER)

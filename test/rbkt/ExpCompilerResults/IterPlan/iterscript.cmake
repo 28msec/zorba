@@ -12,22 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#$TESTFILE is a filepath relative to the test/rbkt/ExpCompilerResults/IterPlan dir.
+
 STRING (LENGTH ${TESTFILE} testfile_length)
 MATH (EXPR testfile_length "${testfile_length} - 5")
-STRING (SUBSTRING ${TESTFILE} 0 ${testfile_length} test_file)
+STRING (SUBSTRING ${TESTFILE} 0 ${testfile_length} testname)
     
-SET (APITEST_OUT_DIR ${CMAKE_ZORBA_BINARY_DIR}/test/rbkt/CompilerResults/IterPlan/${test_file}.spec)
-GET_FILENAME_COMPONENT (APITEST_OUT_PATH ${APITEST_OUT_DIR} PATH)
+SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/rbkt/CompilerResults/IterPlan/${testname}.spec)
+
+GET_FILENAME_COMPONENT (APITEST_OUT_DIRPATH ${APITEST_OUT_FILEPATH} PATH)
     
-FILE (MAKE_DIRECTORY ${APITEST_OUT_PATH})
+FILE (MAKE_DIRECTORY ${APITEST_OUT_DIRPATH})
     
 EXECUTE_PROCESS (
   COMMAND
     ${APITEST_PATH}
     --iter-plan-test
     --print-iterator-tree
-    --no-tree-ids ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${test_file}.xq
-  OUTPUT_FILE ${APITEST_OUT_DIR}
+    --no-tree-ids 
+    ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${testname}.xq
+  OUTPUT_FILE ${APITEST_OUT_FILEPATH}
 ) 
     
 FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/rbkt/itertest.xq itertest_xq_path)
@@ -36,9 +40,9 @@ EXECUTE_PROCESS (
   COMMAND
     ${ZORBA_EXE}
     -f -q ${itertest_xq_path}
-    -e testfile:=${TESTFILE} 
     -e apitest-path:=${APITEST_PATH}
-    -e query-result:=${APITEST_OUT_DIR} 
+    -e testname:=${testname}
+    -e result-filepath:=${APITEST_OUT_FILEPATH} 
     -z method=text
   OUTPUT_VARIABLE out_var
 )

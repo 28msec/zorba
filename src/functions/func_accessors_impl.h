@@ -42,6 +42,11 @@ public:
               FunctionConsts::FN_NAME_1);
   }
 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
   CODEGEN_DECL();
 };
 

@@ -1,5 +1,22 @@
 Zorba - The XQuery Processor
 
+version 2.2
+
+  * No-copy optimization: avoids copying nodes during node-constructor expressions.
+  * Added external function annotations %ann:propagates-input-nodes and 
+    %ann:must-copy-input-nodes to be used by the no-copy optimization.
+  * Caching of results for recursive functions with atomic parameter and return types.
+  * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Fixed bug 909126 (bug in cloning of var_expr)
+  * Fixed bug in destruction of exit_catcher_expr
+  * Added index management function to the C++ api's StaticCollectionManager.
+  * Fixed bug #905041 (allow for the default element and function namespaces to be
+    set multiple times via the c++ api).
+  * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
+  * Fixed bug #905050 (setting and getting the context item type via the c++ api).
+  * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
+  * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
+
 version 2.1
 
 New Features:
@@ -8,7 +25,7 @@ New Features:
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
-  * Modified C++ API to add isSequential, getExternalVariables, and 
+  * Modified C++ API to add isSequential, getExternalVariables, isBoundContextItem and 
   isBoundExternalVariable Functions
   * Collection allows to retrieve information about the type
   and the annotations of a static collection.
@@ -21,7 +38,7 @@ Optimization:
   * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
   sequence of integers)
   * Optimization for count(collection()) expressions
-  *	Optimization of the fn:substring function in the case when its $start and $length arguments
+  * Optimization of the fn:substring function in the case when its $start and $length arguments
   are integers
 
 Bug Fixes/Other Changes:
@@ -38,6 +55,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #3290122 (ZDST0003 needs collection name)
   * Fixed bug #3406272 (merging of adjacent text nodes must be done after all
     updates have been applied).
+  * Don't raise warnings for unknown annotations.
   * Fixed bug #3409344 (during detach, if the node being detached is the root of
     its tree, it should be detached from the tree as well; otherwise memory
     corruption will occur)
@@ -60,10 +78,20 @@ Bug Fixes/Other Changes:
   * Fixed bug #867262 (allow reuse of iterator over ExtFuncArgItemSequence)
   * Fixed bug #869024 (segmentation fault with node-reference)
   * Fixed bug #869025 (segmentation fault with node-reference)
+  * New node-reference module. References can be obtained for any node, and
+	different nodes cannot have the same identifier.
+  * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
+  * Added undo for node revalidation
+  * Optimization for count(collection()) expressions
+  * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
+  * Fixed bug #872799 (validate-in-place can set incorrect types)
+  * Fixed bug #855715 (Invalid escaped characters in regex not caught)
+  * Fixed bug #868325 (fn:analyze-string fails with some recursive subgroups)
   * Fixed bug #872697 (segmentation fault with validation of NMTOKENS)
   * General index cannot be declared as unique if the type of its key is
   xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
+  * Optimization for count(collection()) expressions
   * Fixed bug #867133 (SWIG PHP build failure on Mac OSX)
   * Fixed bug #872796 (validate-in-place can interfere with other update primitives)
   * Fixed bug #872799 (validate-in-place can set incorrect types)
@@ -72,7 +100,10 @@ Bug Fixes/Other Changes:
   * Fixed bug #862089 (Split binary/xq install directories for modules) by
   splitting "module path" into separate URI and Library paths
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
+  * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
+  * Fixed bug #897616 (Fix the generation of the XQFTTS report results for
+  W3C)
 
 version 2.0.3
   * Fixed bug #867662 ("nullptr" warning)

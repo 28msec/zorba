@@ -171,8 +171,10 @@ public:
   enum Kind {
     SCHEMA,
     MODULE,
+#ifndef ZORBA_NO_FULL_TEXT
     THESAURUS,
     STOP_WORDS,
+#endif /* ZORBA_NO_FULL_TEXT */
     COLLECTION,
     DOCUMENT,
     SOME_CONTENT
@@ -191,6 +193,7 @@ private:
   Kind const theKind;
 };
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * @brief The class containing additional data for URIMappers and URLResolvers
  * when mapping/resolving a Thesaurus URI.
@@ -207,6 +210,7 @@ public:
 private:
   locale::iso639_1::type const theLang;
 };
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /**
  * @brief Interface for URL resolving.

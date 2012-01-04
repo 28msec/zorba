@@ -73,8 +73,8 @@ void AnnotationInternal::createBuiltIn()
 
 #define ZANN(a, b)                                                     \
   GENV_ITEMFACTORY->createQName(qname, ZORBA_ANNOTATIONS_NS, "", #a);  \
-  id = zann_##b;                                                      \
-  theAnnotId2NameMap[id] = qname;                                     \
+  id = zann_##b;                                                       \
+  theAnnotId2NameMap[id] = qname;                                      \
   theAnnotName2IdMap.insert(qname, id);
 
 
@@ -94,11 +94,20 @@ void AnnotationInternal::createBuiltIn()
   ZANN(nonsequential, nonsequential);
 
   //
+  // Zorba annotations - optimizer
+  //
+  ZANN(propagates-input-nodes, propagates_input_nodes);
+  ZANN(must-copy-input-nodes, must_copy_input_nodes);
+
+  //
   // Zorba annotations - misc
   //
   ZANN(variadic, variadic);
 
   ZANN(streamable, streamable);
+
+  ZANN(cache, cache);
+  ZANN(no-cache, nocache);
 
   //
   // Zorba annotations - xqddf
@@ -168,6 +177,10 @@ void AnnotationInternal::createBuiltIn()
       ZANN(zann_nonsequential));
 
   theRuleSet.push_back(
+      ZANN(zann_cache) |
+      ZANN(zann_nocache));
+
+  theRuleSet.push_back(
       ZANN(fn_private) |
       ZANN(fn_public));
 
@@ -191,7 +204,7 @@ void AnnotationInternal::createBuiltIn()
 
 
 /*******************************************************************************
-  Static method, called from GlobalEnvironment::init()
+  Static method, called from GlobalEnvironment::destroy()
 ********************************************************************************/
 void AnnotationInternal::destroyBuiltIn()
 {
@@ -328,12 +341,38 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal* AnnotationList::getAnnotation(csize index) const
+AnnotationInternal* AnnotationList::get(csize index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index].getp();
   else
     return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationInternal* AnnotationList::get(AnnotationInternal::AnnotationId id) const
+{
+  for (ListConstIter_t ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
+  {
+    if ((*ite)->getId() == id)
+      return (*ite).getp();
+  }
+
+  return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
+{
+  return (get(id) != NULL);
 }
 
 
@@ -354,23 +393,6 @@ void AnnotationList::push_back(
   }
 
   theAnnotationList.push_back(new AnnotationInternal(qname, lLiterals));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
-{
-  for (ListConstIter_t ite = theAnnotationList.begin();
-       ite != theAnnotationList.end();
-       ++ite)
-  {
-    if ((*ite)->getId() == id)
-      return true;
-  }
-
-  return false;
 }
 
 
@@ -431,7 +453,6 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     }
   }
 }
-
 
 
 } /* namespace zorba */

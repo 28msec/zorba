@@ -19,6 +19,8 @@
 
 #include "functions/function_impl.h"
 
+#include "compiler/expression/fo_expr.h"
+
 #include "system/globalenv.h"
 
 
@@ -40,16 +42,19 @@ public:
   {
   }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -58,11 +63,9 @@ public:
 };
 
 
-xqtref_t op_enclosed_expr::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t op_enclosed_expr::getReturnType(const fo_expr* caller) const
 {
-  xqtref_t argType = arg_types[0];
+  xqtref_t argType = caller->get_arg(0)->get_return_type();
 
   if (argType->type_kind() == XQType::NODE_TYPE_KIND)
     return argType;

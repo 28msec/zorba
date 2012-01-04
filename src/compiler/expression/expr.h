@@ -117,7 +117,7 @@ public:
 
   order_type_t get_type() const { return theType; }
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -157,7 +157,7 @@ public:
         expr_t,
         rchandle<TypeManager>);
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   const store::Item* get_type_name() const { return theTypeName; }
 
@@ -557,6 +557,7 @@ class doc_expr : public expr
 
 protected:
   expr_t theContent;
+  bool   theCopyInputNodes;
 
 public:
   SERIALIZABLE_CLASS(doc_expr)
@@ -564,9 +565,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
+  doc_expr(static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
 
-  const expr* getContent() const { return theContent.getp(); }
+  expr* getContent() const { return theContent.getp(); }
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
+
+  void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
 
@@ -613,7 +618,8 @@ protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
   expr_t theContent;
-  
+  bool   theCopyInputNodes;
+
 public:
   SERIALIZABLE_CLASS(elem_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, namespace_context_base_expr)
@@ -623,23 +629,29 @@ public:
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t aQNameExpr,
-        expr_t aAttrs,
-        expr_t aContent,
-        const namespace_context* aNSCtx);
+        expr* qnameExpr,
+        expr* attrs,
+        expr* content,
+        const namespace_context* nsCtx,
+        bool copyNodes);
   
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
-        expr_t aQNameExpr,
-        expr_t aContent,
-        const namespace_context* aNSCtx);
+        expr* qnameExpr,
+        expr* content,
+        const namespace_context* nsCtx,
+        bool copyNodes);
   
-  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
+  expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  const expr* getContent() const { return theContent.getp(); }
+  expr* getContent() const { return theContent.getp(); }
 
-  const expr* getAttrs() const { return theAttrs; }
+  expr* getAttrs() const { return theAttrs.getp(); }
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
+
+  void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
   
@@ -696,9 +708,9 @@ public:
     expr_t aQNameExpr,
     expr_t aValueExpr);
 
-  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
+  expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  const expr* getValueExpr() const { return theValueExpr.getp(); }
+  expr* getValueExpr() const { return theValueExpr.getp(); }
 
   const store::Item* getQName() const;
 
@@ -738,10 +750,10 @@ public:
 
 public:
   text_expr(
-        static_context* sctx,
-        const QueryLoc&,
-        text_constructor_type,
-        expr_t);
+      static_context* sctx,
+      const QueryLoc&,
+      text_constructor_type,
+      expr_t);
 
   expr* get_text() const { return theContentExpr.getp(); }
 
@@ -777,9 +789,9 @@ public:
 public:
   pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
  
-  const expr* get_target_expr() const { return theTargetExpr.getp(); }
+  expr* get_target_expr() const { return theTargetExpr.getp(); }
 
-  const expr* get_content_expr() const { return theContentExpr.getp(); }
+  expr* get_content_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
   
@@ -883,7 +895,7 @@ public:
 
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
-  const expr* get_expr() const { return theExpr; }
+  expr* get_expr() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -918,7 +930,9 @@ public:
 
 ********************************************************************************/
 class catch_clause;
+
 typedef rchandle<catch_clause> catch_clause_t;
+
 
 class catch_clause : public SimpleRCObject 
 {
@@ -990,15 +1004,15 @@ public:
 
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
-  expr* get_catch_expr(ulong i) const { return theCatchExprs[i].getp(); }
+  expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
 
   void add_catch_expr(expr_t e);
 
   void add_clause(catch_clause_t cc);
   
-  uint32_t clause_count() const { return (uint32_t)theCatchClauses.size(); }
+  csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
+  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 
@@ -1135,10 +1149,27 @@ public:
   There is no syntax corresponding to the eval_expr. Instead, an eval_expr is
   created by the translator whenever a call to the eval() function is reached.
 
-  theExpr  : The expr that computes the query string to be evaluated by eval.
-  theVars  : There is one eval var for each non-global var that is in scope
-             where the call to the eval function appears at.
-  theArgs  : The domain expr of each eval var.
+  theExpr:
+  --------
+  The expr that computes the query string to be evaluated by eval.
+
+  theVars:
+  --------
+  There is one "eval" var for each non-global var that is in scope where the call
+  to the eval function appears at.
+
+  theArgs:
+  --------
+  The domain expr of each eval var. Initially, the domain expr of an eval var
+  is always another var. However, that other var may be later inlined, so in
+  general, the domain expr of an eval var may be any expr.
+
+  theInnerScriptingKind:
+  ----------------------
+
+  theDoNodeCopy:
+  --------------
+
 ********************************************************************************/
 class eval_expr : public namespace_context_base_expr
 {
@@ -1147,9 +1178,10 @@ class eval_expr : public namespace_context_base_expr
 
 protected:
   expr_t                      theExpr;
-  checked_vector<var_expr_t>  theVars;
+  std::vector<var_expr_t>     theVars;
   std::vector<expr_t>         theArgs;
   expr_script_kind_t          theInnerScriptingKind;
+  bool                        theDoNodeCopy;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
@@ -1160,17 +1192,17 @@ public:
   eval_expr(
       static_context* sctx,
       const QueryLoc& loc, 
-      expr_t e,
+      const expr_t& e,
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
 
   expr* get_expr() const { return theExpr.getp(); }
 
-  expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
+  expr* get_arg_expr(csize i) { return theArgs[i].getp(); }
 
-  ulong var_count() const { return (ulong)theVars.size(); }
+  csize var_count() const { return theVars.size(); }
 
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
+  const var_expr* get_var(csize i) const { return theVars[i]; }
 
   void add_var(const var_expr_t& var, const expr_t& arg) 
   {
@@ -1179,6 +1211,10 @@ public:
   }
 
   expr_script_kind_t get_inner_scripting_kind() const;
+
+  bool getNodeCopy() const { return theDoNodeCopy; }
+
+  void setNodeCopy(bool v) { theDoNodeCopy = true; }
 
   void compute_scripting_kind();
 
@@ -1193,6 +1229,19 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
 /***************************************************************************//**
   debugger expression
+
+  theExpr:
+  --------
+  The wrapped expr
+
+  theVars:
+  --------
+
+  theArgs:
+  --------
+
+  theIsVarDeclaration:
+  --------------------
 ********************************************************************************/
 class debugger_expr : public namespace_context_base_expr
 {
@@ -1203,7 +1252,6 @@ private:
   expr_t                      theExpr;
   checked_vector<var_expr_t>  theVars;
   std::vector<expr_t>         theArgs;
-  std::list<GlobalBinding>    theGlobals;
   bool                        theIsVarDeclaration;
 
 public:
@@ -1213,16 +1261,13 @@ public:
 
 public:
   debugger_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr_t aChild,
-    std::list<GlobalBinding> aGlobals,
-    namespace_context* nsCtx,
-    bool aIsVarDeclaration);
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& aChild,
+      namespace_context* nsCtx,
+      bool aIsVarDeclaration);
 
   expr* get_expr() const { return theExpr.getp(); }
-
-  std::list<GlobalBinding> getGlobals() const { return theGlobals; }
 
   bool isVarDeclaration() const { return theIsVarDeclaration; }
 
@@ -1230,9 +1275,9 @@ public:
 
   std::ostream& put(std::ostream&) const;
 
-  ulong var_count() const { return (ulong)theVars.size(); }
+  csize var_count() const { return theVars.size(); }
 
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
+  const var_expr* get_var(csize i) const { return theVars[i]; }
 
   void add_var(const var_expr_t& var, const expr_t& arg) 
   {
@@ -1241,9 +1286,6 @@ public:
   }
 
   void compute_scripting_kind();
-
-private:
-  void store_local_variables(checked_vector<var_expr_t>& aScopedVariables);
 };
 #endif
 

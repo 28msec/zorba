@@ -17,7 +17,7 @@
 
 #include "system/globalenv.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "functions/func_booleans_impl.h"
 #include "functions/function_impl.h"
@@ -61,12 +61,12 @@ public:
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -128,9 +128,7 @@ public:
 
   bool isValueComparisonFunction() const { return true; }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   function* specialize(
         static_context* sctx,
@@ -138,19 +136,22 @@ public:
 };
 
 
-xqtref_t ValueOpComparison::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
+  const QueryLoc& loc = caller->get_loc();
+
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
   for (int i = 0; i < 2; i++)
   {
-    if (TypeOps::is_equal(tm, *empty, *arg_types[i], QueryLoc::null))
+    if (TypeOps::is_equal(tm, *empty, *caller->get_arg(i)->get_return_type(), loc))
       return empty;
 
-    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+    TypeConstants::quantifier_t aq = 
+    TypeOps::quantifier(*caller->get_arg(i)->get_return_type());
+
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
       quant = TypeConstants::QUANT_QUESTION;
@@ -602,12 +603,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -634,12 +640,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -714,12 +725,17 @@ class fn_not : public function
 public:
   fn_not(const signature& sig) : function(sig, FunctionConsts::FN_NOT_1) {}
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -747,12 +763,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }

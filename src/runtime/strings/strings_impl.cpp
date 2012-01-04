@@ -120,22 +120,76 @@ bool StringToCodepointsIterator::nextImpl(
 
   if (consumeNext(item, theChildren [0].getp(), planState ))
   {
-    item->getStringValue2(inputStr);
-
-    if (!inputStr.empty())
+    if(!item->isStreamable())
     {
-      utf8::to_codepoints(inputStr, &state->theResult);
+      item->getStringValue2(inputStr);
+    }
+    else
+    {
+      state->theStream = &item->getStream();
+    }
+  }
 
-      while (state->theIterator < state->theResult.size())
-      {
-        GENV_ITEMFACTORY->createInteger(
-          result,
-          Integer(state->theResult[state->theIterator])
-        );
+  if ( state->theStream )
+  {
+    while ( !state->theStream->eof() )
+    {
+      utf8::encoded_char_type ec;
+      memset( ec, 0, sizeof( ec ) );
+      utf8::storage_type *p;
+      p = ec;
 
-        STACK_PUSH(true, state );
-        state->theIterator = state->theIterator + 1;
-      }
+      if ( utf8::read( *state->theStream, ec ) == utf8::npos )
+        if ( state->theStream->good() ) {
+          //
+          // If read() failed but the stream state is good, it means that an
+          // invalid byte was encountered.
+          //
+          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
+          bool first = true;
+          for ( ; *p; ++p ) {
+            if ( first )
+              first = false;
+            else
+              *b++ = ',';
+            ::strcpy( b, "0x" );          b += 2;
+            ::sprintf( b, "%0hhX", *p );  b += 2;
+          }
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+            ERROR_PARAMS( buf ),
+            ERROR_LOC( loc )
+          );
+        } else {
+          throw XQUERY_EXCEPTION(
+            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
+          );
+        }
+      state->theResult.clear();
+      state->theResult.push_back( utf8::next_char( p ) );
+      
+      GENV_ITEMFACTORY->createInteger(
+        result,
+        Integer(state->theResult[0])
+      );
+
+      STACK_PUSH(true, state );
+      state->theIterator = state->theIterator + 1;
+    }
+  }
+  else if (!inputStr.empty())
+  {
+    utf8::to_codepoints(inputStr, &state->theResult);
+
+    while (state->theIterator < state->theResult.size())
+    {
+      GENV_ITEMFACTORY->createInteger(
+        result,
+        Integer(state->theResult[state->theIterator])
+      );
+
+      STACK_PUSH(true, state );
+      state->theIterator = state->theIterator + 1;
     }
   }
   STACK_END (state);
@@ -146,6 +200,7 @@ void StringToCodepointsIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theIterator = 0;
+  theStream   = 0;
   theResult.clear();
 }
 
@@ -1830,7 +1885,7 @@ static void addGroupElement(store::Item_t &parent,
     GENV_ITEMFACTORY->createString(strid_item, zstrid);
     store::Item_t id_attrib_item;
     GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
-    if(match_startg < 0)
+    if((match_startg < 0) || (match_startg < match_endgood))
       continue;
     match_endgood = match_endg;
     if((i+1)<nr_pattern_groups)
