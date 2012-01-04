@@ -17,6 +17,7 @@
 #include <cassert>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
 
 #ifdef WIN32
 # include <windows.h>
