@@ -273,9 +273,9 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypemgr :
-  ------------
-  If non NULL, then "this" is the root sctx of a module, and theTypemgr stores
+  theTypeMnager :
+  ---------------
+  If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
   declarations, in-scope attribute declarations and in-scope type declarations).
 
@@ -291,8 +291,8 @@ public:
   -----------------------------
   The namespace URI to be used for function qnames whose prefix is empty.
 
-  theCtxItemType :
-  ----------------
+  theContextItemType :
+  --------------------
 
   theVariablesMap :
   -----------------
@@ -427,22 +427,23 @@ public:
   static const zstring DOT_POS_VAR_NAME;
   static const zstring DOT_SIZE_VAR_NAME;
 
-  static const zstring W3C_NS_PREFIX;
-  static const zstring ZORBA_NS_PREFIX;
 
   //
   // W3C namespaces
   //
+  static const zstring W3C_NS_PREFIX; // http://www.w3.org/
+
   static const zstring W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
-  //
-  // http://www.w3.org/2005/xpath-functions
-  //
-  static const zstring W3C_FN_NS;
+  static const zstring W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
 
   //
-  // Namespaces of external modules declaring zorba builtin functions
+  // Zorba namespaces
   //
+
+  static const zstring ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
+
+  // Namespaces of external modules declaring zorba builtin functions
   static const zstring ZORBA_MATH_FN_NS;
   static const zstring ZORBA_BASE64_FN_NS;
   static const zstring ZORBA_NODEREF_FN_NS;
@@ -467,19 +468,21 @@ public:
   static const zstring ZORBA_NODE_FN_NS;
   static const zstring ZORBA_XML_FN_NS;
 
-  //
   // Namespaces of virtual modules declaring zorba builtin functions
-  //
   static const zstring ZORBA_UTIL_FN_NS;
   static const zstring ZORBA_SCRIPTING_FN_NS;
 
-  //
   // Namespaces of virtual modules declaring internal builtin functions of
   // XQUERY or zorba. Internal functions are not visible to xquery programs.
-  //
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
 
+  // options-related namepsaces
+  static const zstring ZORBA_OPTIONS_NS;
+  static const zstring ZORBA_OPTION_WARN_NS;
+  static const zstring ZORBA_OPTION_FEATURE_NS;
+  static const zstring ZORBA_OPTION_OPTIM_NS;
+  static const zstring ZORBA_VERSIONING_NS;
 
 protected:
   static_context                        * theParent;
@@ -504,7 +507,7 @@ protected:
 
   ExternalModuleMap                     * theExternalModulesMap;
 
-  rchandle<TypeManager>                   theTypemgr;
+  rchandle<TypeManager>                   theTypeManager;
 
   NamespaceBindings                     * theNamespaceBindings;
 
@@ -514,7 +517,7 @@ protected:
   zstring                                 theDefaultFunctionNamespace;
   bool                                    theHaveDefaultFunctionNamespace;
 
-  xqtref_t                                theCtxItemType;
+  xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
   
@@ -791,7 +794,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t);
 
   const XQType* get_context_item_type() const;
 
@@ -900,6 +903,11 @@ public:
 
 protected:
   void process_feature_option(
+    const zstring& value,
+    bool  enable,
+    const QueryLoc& loc);
+
+  void process_optim_option(
     const zstring& value,
     bool  enable,
     const QueryLoc& loc);

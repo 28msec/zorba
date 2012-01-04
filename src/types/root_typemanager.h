@@ -33,7 +33,7 @@ namespace zorba {
 ********************************************************************************/
 class RootTypeManager : public TypeManagerImpl 
 {
-  friend class root_static_context;
+  friend class GlobalEnvironment;
   friend class TypeOps;
   friend class TypeManagerImpl;
   friend class AtomicXQType;

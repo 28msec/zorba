@@ -43,9 +43,11 @@ class op_zorba_read_line : public function
 {
 public:
   op_zorba_read_line(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -58,9 +60,11 @@ class fn_zorba_util_print : public function
 {
 public:
   fn_zorba_util_print(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

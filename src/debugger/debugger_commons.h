@@ -238,7 +238,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
   public:
 
     unsigned int
-    addBreakpoint(String& fileName, int line, bool enabled);
+    addBreakpoint(String& fileName, unsigned int line, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
@@ -383,7 +383,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     store::Item_t                                   theEvalItem;
     bool                                            theExecEval;
     bool                                            theStepping;
-    unsigned int                                    theMainModuleBreakableId;
+    unsigned int                                   theMainModuleBreakableId;
   };
 
 }

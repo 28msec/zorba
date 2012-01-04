@@ -1,0 +1,41 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <FnCountIterator>
+    <flwor::FLWORIterator>
+      <ForVariable name="i">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+              <FnDocIterator>
+                <PromoteIterator type="xs:string">
+                  <FnDataIterator>
+                    <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                  </FnDataIterator>
+                </PromoteIterator>
+              </FnDocIterator>
+            </ChildAxisIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </ForVariable>
+      <WhereClause>
+        <CompareIterator>
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+                <ForVarIterator varname="i"/>
+              </ChildAxisIterator>
+            </ChildAxisIterator>
+          </FnDataIterator>
+          <SingletonIterator value="xs:integer(40)"/>
+        </CompareIterator>
+      </WhereClause>
+      <ReturnClause>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <ForVarIterator varname="i"/>
+        </ChildAxisIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </FnCountIterator>
+</SequentialIterator>
+

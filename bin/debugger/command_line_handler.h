@@ -23,11 +23,12 @@
 #include <zorba/debugger_client.h>
 
 #include "command.h"
-#include "command_prompt.h"
 #include "event_handler.h"
 
 
 namespace zorba { namespace debugger {
+
+  class CommandPrompt;
 
   enum Commands {
     Status,
@@ -62,8 +63,8 @@ class CommandLineHandler
       unsigned short port,
       LockFreeConsumer<std::size_t>& aConsumer,
       LockFreeConsumer<bool>& aContinueQueue,
-      EventHandler& aHandler,
-      CommandPrompt& aCommandPrompt);
+      EventHandler* aHandler,
+      CommandPrompt* aCommandPrompt);
 
     ~CommandLineHandler();
 
@@ -112,7 +113,7 @@ class CommandLineHandler
     LockFreeConsumer<std::size_t>&  theConsumer;
     LockFreeConsumer<bool>&         theContinueQueue;
     DebuggerClient*                 theClient;
-    CommandPrompt&                  theCommandLine;
+    CommandPrompt*                  theCommandLine;
     bool                            theQuit;
     bool                            theTerminated;
     bool                            theContinue;

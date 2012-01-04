@@ -39,7 +39,7 @@ public:
 
   NsBindingsContext(NsBindingsContext* parent);
 
-  NsBindingsContext(ulong numBindings);
+  NsBindingsContext(csize numBindings);
 
   NsBindingsContext(const store::NsBindings& bindings);
 

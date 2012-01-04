@@ -43,13 +43,17 @@ class fn_zorba_schema_validate_in_place : public function
 {
 public:
   fn_zorba_schema_validate_in_place(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -60,9 +64,13 @@ class fn_zorba_util_schema_type : public function
 {
 public:
   fn_zorba_util_schema_type(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -73,9 +81,13 @@ class fn_zorba_schema_schema_type : public function
 {
 public:
   fn_zorba_schema_schema_type(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -86,9 +98,13 @@ class fn_zorba_schema_is_validated : public function
 {
 public:
   fn_zorba_schema_is_validated(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

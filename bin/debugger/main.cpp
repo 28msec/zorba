@@ -26,9 +26,72 @@
 
 #include "command_prompt.h"
 #include "command_line_handler.h"
+#include "process_listener.h"
 
 using namespace zorba;
 using namespace zorba::debugger;
+
+class XqdbClient {
+
+  public:
+
+    XqdbClient(unsigned int aPort)
+    {
+      theIdQueue = new LockFreeQueue<std::size_t>();
+      theQuitQueue = new LockFreeQueue<bool>();
+      theEventHandler = new EventHandler(*theIdQueue, *theQuitQueue);
+      theEventHandler->init();
+
+      theCommandPrompt = new CommandPrompt();
+      theCommandLineHandler = new CommandLineHandler(aPort, *theIdQueue, *theQuitQueue, theEventHandler, theCommandPrompt);
+    }
+
+    ~XqdbClient()
+    {
+      if (theCommandLineHandler) {
+        delete theCommandLineHandler;
+      }
+      if (theCommandPrompt) {
+        delete theCommandPrompt;
+      }
+      if (theEventHandler) {
+        delete theEventHandler;
+      }
+
+      delete theIdQueue;
+      delete theQuitQueue;
+    }
+
+    void start()
+    {
+      theCommandLineHandler->execute();
+    }
+
+  private:
+
+    LockFreeQueue<std::size_t>* theIdQueue;
+    LockFreeQueue<bool>*        theQuitQueue;
+
+    EventHandler*       theEventHandler;
+    CommandPrompt*      theCommandPrompt;
+    CommandLineHandler* theCommandLineHandler;
+};
+
+
+XqdbClient* theClient;
+
+
+void
+onExitProcess(ExitCode aExitCode) {
+  //if (aExitCode != -1) {
+  //  std::cout << "Zorba has exited with code: " << aExitCode << std::endl;
+  //}
+  std::cout << "Terminating debugger client."<< std::endl;
+  // TODO: and the memory?
+
+  delete theClient;
+  exit(aExitCode);
+}
 
 int
 startZorba(std::string& aExec, std::vector<std::string>& aArgs) 
@@ -38,7 +101,6 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
   // start a process on Windows
 
   DWORD iReturnVal = 0;
-  DWORD dwExitCode = 0;
 
   std::wstring lExec;
   std::wstring lArgs;
@@ -81,7 +143,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 
   if (lResult) {
     // Watch the process
-    dwExitCode = WaitForSingleObject(piProcessInfo.hProcess, 0);
+    ProcessListener* lPl = new ProcessListener(piProcessInfo.hProcess, &onExitProcess);
   }
   else {
     // CreateProcess failed
@@ -150,9 +212,15 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
     if (pID < 0) {
       std::cerr << "Failed to fork Zorba" << std::endl;
       return pID;
-    } else {
-      return 0;
     }
+    
+    // pID > 0
+
+    // Watch the process
+    //ProcessListener* lPl =
+    new ProcessListener(pID, &onExitProcess);
+
+    return 0;
   }
 #endif
 }
@@ -298,30 +366,27 @@ _tmain(int argc, _TCHAR* argv[])
         return lResult;
       }
     } else {
-      std::cout << "Waiting for an incomming Zorba connection..." << std::endl;
+      std::cout << "Listening for an incomming Zorba connection on port " << lPort << "..." << std::endl;
     }
 
     // **************************************************************************
     // start the debugger command line
 
-    LockFreeQueue<std::size_t> lQueue;
-    LockFreeQueue<bool> lContEvent;
-    EventHandler lEventHandler(lQueue, lContEvent);
-    lEventHandler.init();
+    theClient =  new XqdbClient(lPort);
+    theClient->start();
 
-    CommandPrompt lCommandPrompt;
-    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandPrompt);
-
-    lCommandLineHandler.execute();
+    //tCommandLineHandler.execute();
 
 #ifndef WIN32
     wait();
 #endif
 
+    delete theClient;
+
   } catch (...) {
+    delete theClient;
     return -1;
   }
 
   return 0;
 }
-

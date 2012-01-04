@@ -630,7 +630,7 @@ ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
 
   for (csize i = 0; i < n; ++i)
   {
-    delete m_extArgs[i];
+    m_extArgs[i]->removeReference();
   }
 }
 
@@ -737,6 +737,8 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   for(ulong i = 0; i < n; ++i)
   {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
+    // the iterator does not have exlcusive ownership over the sequences
+    state->m_extArgs[i]->addReference();
   }
 }
 

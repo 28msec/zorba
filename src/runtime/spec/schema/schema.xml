@@ -56,14 +56,18 @@
   <zorba:description author="Zorba Team">iterator backing the validate-updating function</zorba:description>
 
   <zorba:function>
+
     <zorba:signature localname="validate-in-place" prefix="fn-zorba-schema">
       <zorba:param>node()</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>
+
     <zorba:methods>
       <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
       <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="true"/>
     </zorba:methods>
+
   </zorba:function>
  
 </zorba:iterator>
@@ -81,6 +85,11 @@
       <zorba:param>item()</zorba:param>
       <zorba:output>xs:QName?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
   <zorba:function>
@@ -88,6 +97,11 @@
       <zorba:param>item()</zorba:param>
       <zorba:output>xs:QName?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -105,6 +119,11 @@
       <zorba:param>node()</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>

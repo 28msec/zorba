@@ -38,15 +38,37 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
+PlanIter_t fn_string::codegen(
+      CompilerCB* /*cb*/,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const
+{
+  return new FnStringIterator(sctx, loc, argv, true);
+}
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
+}
+
+
+bool fn_data::mustCopyInputNodes(expr* fo, csize input) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  return (sctx->construction_mode() != StaticContextConsts::cons_preserve);
 }
 
 
@@ -148,20 +170,6 @@ PlanIter_t fn_name_func::codegen(
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
   return new FnStringIterator(sctx, loc, lVec, true);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_string::codegen(
-      CompilerCB* /*cb*/,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
-{
-  return new FnStringIterator(sctx, loc, argv, true);
 }
 
 

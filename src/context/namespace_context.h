@@ -49,7 +49,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  namespace_context(const static_context* sctx) : m_sctx(const_cast<static_context*>(sctx)) { }
+  namespace_context(const static_context* sctx) 
+    :
+    m_sctx(const_cast<static_context*>(sctx))
+  {
+  }
 
   namespace_context(const static_context* sctx, store::NsBindings& bindings);
 

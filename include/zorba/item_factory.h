@@ -327,6 +327,34 @@ namespace zorba {
       createDuration ( short aYear, short aMonths, short aDays,
                        short aHours, short aMinutes, double aSeconds ) = 0;
 
+      /** \brief Creates a dayTimeDuration Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aValue String lexical representation of the duration.
+       * @return the dayTimeDuration Item.
+       */
+      virtual Item
+      createDayTimeDuration( const String& aValue ) = 0;
+
+      /** \brief Creates a yearMonthDuration Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aValue String lexical representation of the duration.
+       * @return the yearMonthDuration Item.
+       */
+      virtual Item
+      createYearMonthDuration( const String& aValue ) = 0;
+
+      /** \brief Creates a documentNode Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aBaseUri String representation of the Base URI.
+       * @param aDocUri String representation of the Document URI.
+       * @return the documentNode Item.
+       */
+      virtual Item
+      createDocumentNode( const String& aBaseUri, const String& aDocUri ) = 0;
+
       /** \brief creates a float item
        *         see [http://www.w3.org/tr/xmlschema-2/#float]
        *
@@ -607,6 +635,36 @@ namespace zorba {
         Item aNodeName,
         Item aTypeName,
         std::vector<Item> aTypedValue) = 0;
+
+      /**
+       * Create a new comment node N and place it as the last child of a given
+       * parent node. If no parent is given, N becomes the root (and single node)
+       * of a new XML tree.
+       *
+       * @param parent  The parent P of the new node; may be NULL.
+       * @param content The content of the new node.
+       * @return        The new node N created by this method
+       */
+      virtual Item createCommentNode (
+            Item   aParent,
+            String &aContent) = 0;
+
+      /**
+      * Create a new Processing Instruction node N and place it among the
+      * children of a given parent node. If no parent is given, N becomes the
+      * root (and single node) of a new XML tree.
+      *
+      * @param aParent  The parent P of the new node; may be NULL.
+      * @param aTarget  The Target of the new node.
+      * @param aContent The Content of the new node.
+      * @param aBaseUri The Base URI of the new node, may be NULL.
+      * @return         The new node N created by this method
+      */
+      virtual Item createPiNode (
+        Item   aParent,
+        String &aTarget,
+        String &aContent,
+        String &aBaseUri)=0;
 
       /**
       * Create a new text node N and place it among the
