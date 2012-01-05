@@ -15,6 +15,8 @@ version 2.2
   * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
   * Fixed bug #905050 (setting and getting the context item type via the c++ api).
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
+  * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
+    support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
 
 version 2.1
