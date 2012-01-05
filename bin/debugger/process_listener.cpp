@@ -19,7 +19,6 @@
 #include <iostream>
 
 #ifdef ZORBA_HAVE_PTHREAD_H
-# include <sys/wait.h>
 # include <cassert>
 #endif
 

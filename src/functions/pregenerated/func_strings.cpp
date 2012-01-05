@@ -320,6 +320,16 @@ PlanIter_t fn_zorba_string_is_streamable::codegen(
   return new StringIsStreamableIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_string_split::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StringSplitIterator(sctx, loc, argv);
+}
+
 void populate_context_strings(static_context* sctx)
 {
   {
@@ -887,6 +897,19 @@ void populate_context_strings(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_STRING_IS_STREAMABLE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_string_split,
+        (createQName("http://www.zorba-xquery.com/modules/string","","split"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_STRING_SPLIT_2);
 
   }
 
