@@ -1,5 +1,5 @@
 <?php
-$prefix = '@phpLibPrefix@';
+$libPrefix = '@phpLibPrefix@';
 $file = file_get_contents('@phpAPIPath@/zorba_api.php');
 $file = str_replace('class Iterator {', 'class IteratorImpl {', $file);
 $file = str_replace('extends Iterator {', 'extends IteratorImpl {', $file);
@@ -18,9 +18,9 @@ if(!extension_loaded('zorba_api')) {
     if(!dl('php_zorba_api.dll')) return;
   } else {
     if(PHP_SHLIB_SUFFIX === 'PHP_SHLIB_SUFFIX' || PHP_SHLIB_SUFFIX === 'dylib') {
-      if(!dl('$prefix'.'zorba_api.so')) return;
+      if(!dl('$libPrefix'.'zorba_api.so')) return;
     } else {
-      if(!dl('$prefix'.'zorba_api.' . PHP_SHLIB_SUFFIX)) return;
+      if(!dl('$libPrefix'.'zorba_api.' . PHP_SHLIB_SUFFIX)) return;
     }
   }
 }
