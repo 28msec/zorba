@@ -101,6 +101,28 @@ var_expr::var_expr(
 /*******************************************************************************
 
 ********************************************************************************/
+var_expr::var_expr(const var_expr& source)
+  :
+  expr(source),
+  theUniqueId(0),
+  theKind(source.theKind),
+  theName(source.theName),
+  theDeclaredType(source.theDeclaredType),
+  theFlworClause(NULL),
+  theCopyClause(NULL),
+  theParamPos(source.theParamPos),
+  theUDF(source.theUDF),
+  theIsExternal(source.theIsExternal),
+  theIsPrivate(source.theIsPrivate),
+  theIsMutable(source.theIsMutable),
+  theHasInitializer(source.theHasInitializer)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void var_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -222,6 +244,7 @@ void var_expr::remove_set_expr(expr* e)
 {
   assert(theKind == local_var || theKind == prolog_var);
 
+  bool found = false;
   std::vector<expr*>::iterator ite = theSetExprs.begin();
   std::vector<expr*>::iterator end = theSetExprs.end();
   for (; ite != end; ++ite)
@@ -229,11 +252,12 @@ void var_expr::remove_set_expr(expr* e)
     if (*ite == e)
     {
       theSetExprs.erase(ite);
+      found = true;
       break;
     }
   }
 
-  assert(ite != end);
+  ZORBA_ASSERT(found);
 }
 
 

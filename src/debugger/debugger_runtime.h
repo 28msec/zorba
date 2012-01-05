@@ -82,7 +82,7 @@ class DebuggerRuntime : public Runnable {
     // Breakpints
 
     unsigned int
-    addBreakpoint(String& aFileName, int aLine, bool enabled);
+    addBreakpoint(String& aFileName, unsigned int aLine, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);

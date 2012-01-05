@@ -451,8 +451,7 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if (consumeNext(item0, theChild0.getp(), planState) ||
           consumeNext(item1, theChild1.getp(), planState))
       {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(NoSeqInValueComp)));
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqInValueComp)));
       }
     }
   }

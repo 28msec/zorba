@@ -158,7 +158,7 @@ DebuggerRuntime::runQuery()
 // Breakpoints
 
 unsigned int
-DebuggerRuntime::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
+DebuggerRuntime::addBreakpoint(String& aFileName, unsigned int aLine, bool aEnabled)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   DebuggerCommons* lCommons = getDebbugerCommons();
