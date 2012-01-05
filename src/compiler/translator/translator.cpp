@@ -1307,25 +1307,12 @@ void normalize_fo(fo_expr* foExpr)
     if (qname != NULL)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(
-        qname->getStringValue(),
-        "index",
-        n-1,
-        "multiple of 6"
-      )
-      );
+      ERROR_PARAMS(qname->getStringValue(), "index", n-1, "multiple of 6"));
     }
     else
     {
-      RAISE_ERROR(
-          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-          ERROR_PARAMS(
-            "anonymous",
-            "index",
-            n-1,
-            "multiple of 6"
-          )
-      );
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
     }
   }
 
@@ -5275,10 +5262,7 @@ void* begin_visit(const BlockBody& v)
 
   if ( !theSctx->is_feature_set(feature::scripting) )
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(v.get_location()));
   }
 
   bool topLevel = v.isTopLevel();
@@ -5626,9 +5610,9 @@ void end_visit(const Expr& v, void* /*visit_state*/)
   }
 
   fo_expr_t concatExpr = new fo_expr(theRootSctx,
-                                     loc,
-                                     op_concatenate,
-                                     args);
+                                  loc,
+                                  op_concatenate,
+                                  args);
   normalize_fo(concatExpr.getp());
 
   push_nodestack(concatExpr.getp());
@@ -10590,30 +10574,26 @@ void end_visit(const InlineFunction& v, void* aState)
   pop_scope();
 }
 
-void* begin_visit(const JSON_PairList& v)
-{
-  TRACE_VISIT ();
-#ifndef ZORBA_WITH_JSON
-  // TODO: process  the pairs list
-#endif
-  return no_state;
-}
 
-void end_visit(const JSON_PairList& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-#ifdef ZORBA_WITH_JSON
-  // TODO: process the pairs list
-#endif
-}
+/*******************************************************************************
+  JSONConstructor ::= DirectObjectConstructor |
+                      DirectArrayConstructor |
+                      ComputedObjectConstructor | 
+                      ComputedArrayConstructor |
+                      ComputedPairConstructor
+********************************************************************************/
 
 
 /*******************************************************************************
-  JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
+  ComputedPairConstructor ::= "pair" "{" ExprSingle ":" ExprSingle "}"
 
-  The 1st AdditiveExpr must return exactly one string.
-  The 2nd AdditiveExpr must contain exactly one item of any kind. If that item
+  DirectPairConstructor ::= ExprSingle ":" ExprSingle
+
+  The DirectPairConstructor production can appear only on the RHS of a 
+  DirectObjectConstructor
+
+  The 1st ExprSingle must return exactly one string.
+  The 2nd ExprSingle must contain exactly one item of any kind. If that item
   is another pair, it is unboxed.
 ********************************************************************************/
 void* begin_visit(const JSON_PairConstructor& v)
@@ -10657,11 +10637,14 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONConstructor ::= ObjectConstructor | ArrayConstructor
-********************************************************************************/
+  DirectObjectConstructor ::= "{" DirectObjectContent "}"
 
-/*******************************************************************************
-  ObjectConstructor ::= "{" Expr? "}"
+  DirectObjectContent ::= DirectPairConstructor+
+
+  DirectPairConstructor ::= ExprSingle ":" ExprSingle
+
+
+  ComputedObjectConstructor ::= "{" Expr? "}"
 
   The Expr must return a sequence of zero or more pairs
 ********************************************************************************/
@@ -10685,18 +10668,55 @@ void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    contentExpr = new treat_expr(theRootSctx,
-                                 contentExpr->get_loc(),
-                                 contentExpr,
-                                 GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR,
-                                 err::XPTY0004,
-                                 true,
-                                 NULL);
+    //if (v.isComputed())
+    {
+      contentExpr = new treat_expr(theRootSctx,
+                                   contentExpr->get_loc(),
+                                   contentExpr,
+                                   GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR,
+                                   err::XPTY0004,
+                                   true,
+                                   NULL);
+    }
   }
 
   json_object_expr* jo = new json_object_expr(theRootSctx, loc, contentExpr);
 
   push_nodestack(jo);
+#endif
+}
+
+
+void* begin_visit(const JSON_DirectObjectContent& v)
+{
+  TRACE_VISIT();
+
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+
+  return no_state;
+}
+
+void end_visit(const JSON_DirectObjectContent& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  csize numPairs = v.size();
+  std::vector<expr_t> pairs(numPairs);
+  
+  for (csize i = numPairs; i > 0; --i)
+  {
+    pairs[i-1] = pop_nodestack();
+  }
+
+  expr_t concatExpr = new fo_expr(theRootSctx,
+                                  loc,
+                                  op_concatenate,
+                                  pairs);
+
+  push_nodestack(concatExpr);
 #endif
 }
 

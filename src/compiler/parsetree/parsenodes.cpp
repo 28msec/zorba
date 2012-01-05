@@ -5639,75 +5639,72 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 ////////// JSON ///////////////////////////////////////////////////////////////
 
 JSON_ArrayConstructor::JSON_ArrayConstructor(
-  QueryLoc const &loc,
-  exprnode const *expr
-) :
-  JSON_Constructor( loc ),
-  expr_( expr )
+    const QueryLoc& loc,
+    const exprnode* expr)
+  :
+  JSON_Constructor(loc),
+  expr_(expr)
 {
 }
 
 
-JSON_ArrayConstructor::~JSON_ArrayConstructor() {
+JSON_ArrayConstructor::~JSON_ArrayConstructor() 
+{
   delete expr_;
 }
 
 
-void JSON_ArrayConstructor::accept( parsenode_visitor &v ) const
+void JSON_ArrayConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT( expr_ );
+  ACCEPT(expr_);
   END_VISITOR();
 }
 
 
 JSON_ObjectConstructor::JSON_ObjectConstructor(
-  QueryLoc const &loc,
-  exprnode const *expr
-) :
-  JSON_Constructor( loc ),
-  expr_( expr )
-{
-}
-
-
-JSON_ObjectConstructor::JSON_ObjectConstructor(QueryLoc const &loc, parsenode* pairlist)
+    const QueryLoc& loc,
+    const exprnode* expr)
   :
-  JSON_Constructor( loc )
+  JSON_Constructor(loc),
+  expr_(expr)
 {
-  // TODO: the pairlist parameter contains a list of JSON pairs
 }
 
 
-JSON_ObjectConstructor::~JSON_ObjectConstructor() {
+JSON_ObjectConstructor::~JSON_ObjectConstructor() 
+{
   delete expr_;
 }
 
 
-void JSON_ObjectConstructor::accept( parsenode_visitor &v ) const
+void JSON_ObjectConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT( expr_ );
+  ACCEPT(expr_);
   END_VISITOR();
 }
 
 
-void JSON_PairList::accept(parsenode_visitor& v) const
+void JSON_DirectObjectContent::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
-  for (; it!=arg_hv.end(); ++it) {
+
+  vector<rchandle<exprnode> >::const_iterator it = thePairs.begin();
+  for (; it != thePairs.end(); ++it) 
+  {
     const exprnode* e_p = &**it;
-    ACCEPT_CHK (e_p);
+    ACCEPT_CHK(e_p);
   }
+
   END_VISITOR();
 }
 
 
 JSON_PairConstructor::JSON_PairConstructor(
-    QueryLoc const &loc,
-    exprnode const *expr1,
-    exprnode const *expr2)
+    const QueryLoc& loc,
+    const exprnode* expr1,
+    const exprnode* expr2)
   :
   JSON_Constructor( loc ),
   expr1_( expr1 ),

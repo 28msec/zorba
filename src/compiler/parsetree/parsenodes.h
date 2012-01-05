@@ -6436,24 +6436,23 @@ private:
 class JSON_Constructor : public exprnode
 {
 protected:
-  JSON_Constructor( QueryLoc const &loc ) : exprnode( loc ) { }
+  JSON_Constructor(const QueryLoc& loc) : exprnode(loc) { }
 };
 
 
 class JSON_ArrayConstructor : public JSON_Constructor
 {
+private:
+  const exprnode* expr_;
+
 public:
-  JSON_ArrayConstructor(QueryLoc const&, exprnode const*);
+  JSON_ArrayConstructor(const QueryLoc&, const exprnode*);
 
   ~JSON_ArrayConstructor();
 
-  exprnode const* get_expr() const { return expr_; }
+  const exprnode* get_expr() const { return expr_; }
 
-  // inherited
   void accept( parsenode_visitor& ) const;
-
-private:
-  exprnode const *const expr_;
 };
 
 
@@ -6463,9 +6462,7 @@ private:
   const exprnode* expr_;
 
 public:
-  JSON_ObjectConstructor(QueryLoc const&, exprnode const*);
-
-  JSON_ObjectConstructor(QueryLoc const&, parsenode*);
+  JSON_ObjectConstructor(const QueryLoc& loc, const exprnode* input);
 
   ~JSON_ObjectConstructor();
 
@@ -6475,46 +6472,44 @@ public:
 };
 
 
-class JSON_PairList : public parsenode
+class JSON_DirectObjectContent : public exprnode
 {
-  protected:
-    std::vector<rchandle<exprnode> > arg_hv;
+protected:
+  std::vector<rchandle<exprnode> > thePairs;
 
-  public:
-    JSON_PairList(const QueryLoc& loc_) : parsenode(loc_) { }
+public:
+  JSON_DirectObjectContent(const QueryLoc& loc) : exprnode(loc) { }
 
-    void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
+  void push_back(rchandle<exprnode> pair) { thePairs.push_back(pair); }
 
-    rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
+  rchandle<exprnode> operator[](csize i) const { return thePairs[i]; }
 
-    ulong size() const { return (ulong)arg_hv.size (); }
+  csize size() const { return thePairs.size(); }
 
-    void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
 class JSON_PairConstructor : public JSON_Constructor
 {
 private:
-  exprnode const *const expr1_;
-  exprnode const *const expr2_;
+  const exprnode * expr1_;
+  const exprnode * expr2_;
 
 public:
-  JSON_PairConstructor(QueryLoc const&, exprnode const*,  exprnode const*);
+  JSON_PairConstructor(const QueryLoc&, const exprnode*, const exprnode*);
 
   ~JSON_PairConstructor();
 
-  exprnode const* get_expr1() const { return expr1_; }
-  exprnode const* get_expr2() const { return expr2_; }
+  const exprnode* get_expr1() const { return expr1_; }
+  const exprnode* get_expr2() const { return expr2_; }
 
-  // inherited
   void accept( parsenode_visitor& ) const;
 };
 
 
 class JSON_Test : public parsenode
 {
-
 private:
   store::StoreConsts::JSONItemKind jt_;
 

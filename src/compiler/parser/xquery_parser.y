@@ -856,10 +856,19 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* JSON-related */
 /* ------------ */
 %type <expr> JSONConstructor
-%type <expr> JSONArrayConstructor
-%type <expr> JSONObjectConstructor
-%type <expr> JSONPairConstructor
-%type <node> JSONPairList
+
+%type <expr> JSONComputedPairConstructor
+
+%type <expr> JSONComputedObjectConstructor
+
+%type <expr> JSONComputedArrayConstructor
+
+%type <expr> JSONDirectArrayConstructor
+
+%type <expr> JSONDirectObjectConstructor
+%type <expr> JSONDirectObjectContent
+%type <expr> JSONDirectPairConstructor
+
 %type <node> JSONTest
 %type <node> JSONItemTest
 %type <node> JSONObjectTest
@@ -905,7 +914,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // parsenodes: JSON
-%destructor { release_hack( $$ ); } JSONConstructor JSONArrayConstructor JSONObjectConstructor JSONPairConstructor JSONPairList
+%destructor { release_hack( $$ ); } JSONConstructor JSONComputedPairConstructor JSONComputedArrayConstructor JSONComputedObjectConstructor JSONDirectArrayConstructor JSONDirectObjectConstructor JSONDirectObjectContent JSONDirectPairConstructor 
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -925,9 +934,6 @@ template<typename T> inline void release_hack( T *ref ) {
  *_____________________________________________________________________*/
 %nonassoc RANGE_REDUCE
 %nonassoc TO
-
-%nonassoc JSON_REDUCE
-%left COLON
 
 /*_____________________________________________________________________
  *
@@ -3504,24 +3510,13 @@ opt_FTIgnoreOption :
     ;
 
 RangeExpr :
-        JSONPairConstructor %prec RANGE_REDUCE
+        AdditiveExpr %prec RANGE_REDUCE
         {
             $$ = $1;
         }
-    |   JSONPairConstructor TO JSONPairConstructor
+    |   AdditiveExpr TO AdditiveExpr
         {
             $$ = new RangeExpr( LOC(@$), $1, $3 );
-        }
-    ;
-
-JSONPairConstructor :
-        AdditiveExpr %prec JSON_REDUCE
-        {
-            $$ = $1;
-        }
-    |   AdditiveExpr COLON AdditiveExpr
-        {
-            $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
         }
     ;
 
@@ -6299,17 +6294,62 @@ FTIgnoreOption :
 /********** JSON *************************************************************/
 
 JSONConstructor :
-      JSONArrayConstructor
+    JSONDirectArrayConstructor
     {
       $$ = $1;
     }
-  | JSONObjectConstructor
+  | JSONDirectObjectConstructor
+    {
+      $$ = $1;
+    }
+  | JSONComputedObjectConstructor
+    {
+      $$ = $1;
+    }
+  | JSONComputedArrayConstructor
+    {
+      $$ = $1;
+    }
+  | JSONComputedPairConstructor
     {
       $$ = $1;
     }
 ;
 
-JSONArrayConstructor :
+
+JSONComputedPairConstructor :
+    PAIR LBRACE ExprSingle COLON ExprSingle RBRACE
+    {
+      $$ = new JSON_PairConstructor(LOC(@$), $3, $5);
+    }
+;
+
+
+JSONComputedObjectConstructor :
+    OBJECT LBRACE Expr RBRACE
+    {
+      $$ = new JSON_ObjectConstructor(LOC(@$), $3);
+    }
+  | OBJECT LBRACE RBRACE
+    {
+      $$ = new JSON_ObjectConstructor(LOC(@$), NULL);
+    }
+;
+
+
+JSONComputedArrayConstructor :
+    ARRAY LBRACE RBRACE
+    {
+      $$ = new JSON_ArrayConstructor(LOC(@$), NULL);
+    }
+  | ARRAY LBRACE Expr RBRACE
+    {
+      $$ = new JSON_ArrayConstructor(LOC(@$), $3);
+    }
+;
+
+
+JSONDirectArrayConstructor :
     LBRACK RBRACK
     {
       $$ = new JSON_ArrayConstructor(LOC(@$), NULL);
@@ -6320,31 +6360,36 @@ JSONArrayConstructor :
     }
 ;
 
-JSONObjectConstructor :
-    LBRACE JSONPairConstructor RBRACE
-    {
-      $$ = new JSON_ObjectConstructor(LOC(@$), $2);
-    }
-  | LBRACE JSONPairList RBRACE
+
+JSONDirectObjectConstructor :
+    LBRACE JSONDirectObjectContent RBRACE
     {
       $$ = new JSON_ObjectConstructor(LOC(@$), $2);
     }
 ;
 
-JSONPairList :
-    JSONPairConstructor COMMA JSONPairConstructor
+
+JSONDirectObjectContent :
+    JSONDirectPairConstructor
     {
-      JSON_PairList* jpl = new JSON_PairList(LOC(@$));
+      JSON_DirectObjectContent* jpl = new JSON_DirectObjectContent(LOC(@$));
       jpl->push_back($1);
-      jpl->push_back($3);
       $$ = jpl;
     }
-  | JSONPairList COMMA JSONPairConstructor
+  | JSONDirectObjectContent COMMA JSONDirectPairConstructor
     {
-      static_cast<JSON_PairList*>($1)->push_back($3);
+      static_cast<JSON_DirectObjectContent*>($1)->push_back($3);
       $$ = $1;
     }
 ;
+
+JSONDirectPairConstructor :
+    ExprSingle COLON ExprSingle
+    {
+      $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
+    }
+;
+
 
 JSONTest :
     JSONItemTest
@@ -6389,6 +6434,7 @@ JSONArrayTest :
       $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
     }
 ;
+
 
 JSONPairTest :
     PAIR LPAR RPAR
