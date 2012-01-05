@@ -246,6 +246,8 @@ public:
       const var_expr_t& varExpr,
       const expr_t& initExpr);
 
+  ~var_decl_expr();
+
   var_expr* get_var_expr() const { return theVarExpr.getp(); }
 
   expr* get_init_expr() const { return theInitExpr.getp(); }

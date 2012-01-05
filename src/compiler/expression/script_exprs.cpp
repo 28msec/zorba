@@ -264,6 +264,15 @@ var_decl_expr::var_decl_expr(
 }
 
 
+var_decl_expr::~var_decl_expr()
+{
+  // Note: var_expr objs for global vars live longer than their associated
+  // var_decl_expr, because such var_expr objs are also registered in the sctx.
+  if (theInitExpr)
+    theVarExpr->remove_set_expr(this);
+}
+
+
 void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
