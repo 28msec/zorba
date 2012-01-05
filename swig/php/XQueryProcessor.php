@@ -1,6 +1,82 @@
 <?php
 require_once 'Zorba/zorba_api_wrapper.php';
 
+class XQueryCompilerException extends Exception{}
+class XQueryProcessorException extends Exception{}
+
+/**
+ * Iterate over an instance of the XML Data Model (i.e, a sequence of items).
+ * This class implements the SPL Iterator interface.
+ *
+ * The following code snippet iterates over a small sequence of items.
+ * <code>
+ * <?php
+ * require_once 'Zorba/XQueryProcessor.php';
+ *
+ * $xquery = new XQueryProcessor();
+ * $xquery->importQuery('(1, 2, 3)');
+ * 
+ * $iterator = $xquery->getIterator();
+ * foreach($it as $key => $value) {
+ *   echo $value."\n";
+ * }
+ * ?>
+ * </code>
+ */
+class XQueryIterator implements Iterator {
+
+  private $xquery   = null;
+  private $iterator = null;
+  private $item     = null;
+  private $position = 0;
+  private $valid    = false;
+
+  public function __construct(XQuery $xquery)
+  {
+	  $this->xquery = $xquery;
+    $this->item = Item::createEmptyItem();
+  }
+
+  public function __destruct()
+  {
+    $this->xquery->destroy();
+  }
+
+  public function rewind()
+  {
+    if ($this->iterator != null) {
+      $this->iterator->close();
+      $this->iterator->destroy();
+    }
+    
+    $this->position = 0;
+    $this->iterator = $this->xquery->iterator(); 
+    $this->iterator->open();
+    $this->valid    = $this->iterator->next($this->item);
+  }
+
+  public function current()
+  {
+    return $this->item->serialize();
+  }
+
+  public function key()
+  {
+    return $this->position;
+  }
+
+  public function next()
+  {
+    ++$this->position;
+    $this->valid = $this->iterator->next($this->item);
+  }
+
+  public function valid()
+  {
+    return $this->valid;
+  }
+}
+
 /**
  * The XQueryProcessor class allows to invoke
  * <a href="http://www.zorba-xquery.com">Zorba XQuery Processor</a>.  
@@ -36,7 +112,7 @@ class XQueryProcessor {
   private $variables = array();
 
   /**
-   * Creates a Zorba instance.
+   * Creates an XQueryProcessor instance.
    */
   public function __construct(){
     $this->store = InMemoryStore::getInstance();
@@ -44,7 +120,7 @@ class XQueryProcessor {
   }
 
   /**
-   * Shutdowns Zorba instance.
+   * Shutdowns the XQueryProcessor instance.
    */
   public function __destruct() {
     $this->zorba->shutdown();
@@ -81,6 +157,9 @@ class XQueryProcessor {
    * @return ZorbaXQueryProcessor instance.
    */ 
   public function importQuery($query) {
+	if(!is_string($query)) {
+		throw new XQueryProcessorException('The query parameter must be a string. For instance: XQueryProcessor->importQuery("1+1")');
+	}
     $this->query = $query;
     return $this;
   }
@@ -160,53 +239,88 @@ class XQueryProcessor {
     if($count == 2) {
       $name  = func_get_arg(0);
       $value = func_get_arg(1);
-      $value = $this->getItem($value);
       $this->variables['_'][$name] = $value;
     } else {
       $ns  = func_get_arg(0);
       $name  = func_get_arg(1);
       $value = func_get_arg(2);
-      $value = $this->getItem($value);
       $this->variables[$ns][$name] = $value;
     }
     return $this;
-  }
-  
-  private function getItem($value) {
-    
-    $itemFactory = $this->zorba->getItemFactory();
-    
-    if($value instanceof Item) {
-      //Do nothing
-    } else if($value instanceof DOMDocument or $value instanceof SimpleXMLElement) { 
-      $value = $this->parseXML($value->saveXML());
-    } else if(is_string($value)) {
-      $value = $itemFactory->createString($value);
-    } else if(is_int($value)) {
-      $value = $itemFactory->createInteger($value);
-    } else if(is_bool($value)) {
-      $value = $itemFactory->createBoolean($value);
-    } else if(is_float($value)) {
-      $value = $itemFactory->createFloat($value);
-    } else if(is_long($value)) {
-      $value = $itemFactory->createLong($value);
-    } else  {
-      throw new Exception("Unsupported variable type: ".gettype($value));
-    }
-    
-    assert($value instanceof Item);
-    
-    return $value;
-  }
+  } 
   
   /**
+   * Execute the Query.
+   *
+   * @return Query result.
+   */
+  public function execute() {
+    //Execute
+    $query = $this->compile();
+    $result = $query->execute();
+    $query->destroy();
+    return $result;
+  }
+
+  public function getIterator() {
+    return new XQueryIterator($this->compile());
+  }  
+	/**
+	 * 
+	 */
+	private function compile()
+	{
+	  if(!is_string($this->query)) {
+		throw new XQueryCompilerException('No Query Imported. Use XQueryProcessor->importQuery($query).');
+	  }
+	  //Compile Query
+	  $query = $this->zorba->compileQuery($this->query);
+	  //Set Variables
+	  $dctx = $query->getDynamicContext();
+	  foreach($this->variables as $ns => $variables){
+        foreach($variables as $name => $value) {
+          if($ns == "_") $ns = "";
+          $param = $this->zorba->compileQuery(".");
+          $value = $this->getItem($value);
+          $param->getDynamicContext()->setContextItem($value);
+          $dctx->setVariable($ns, $name, $param->iterator());
+	    }
+      }
+	  return $query;
+	}
+	
+	private function getItem($value) {
+      $itemFactory = $this->zorba->getItemFactory();
+
+      if($value instanceof DOMDocument or $value instanceof SimpleXMLElement) { 
+        $value = $this->parseXML($value->saveXML());
+      } else if(is_string($value)) {
+        $value = $itemFactory->createString($value);
+      } else if(is_int($value)) {
+        $value = $itemFactory->createInteger($value);
+      } else if(is_bool($value)) {
+        $value = $itemFactory->createBoolean($value);
+      } else if(is_float($value)) {
+        $value = $itemFactory->createFloat($value);
+      } else if(is_long($value)) {
+        $value = $itemFactory->createLong($value);
+      } else  {
+        throw new XQueryCompilerException("Unsupported variable type: ".gettype($value));
+      }
+
+      assert($value instanceof Item);
+
+      return $value;
+    }
+
+  /**
    * Parse an XML string to an XQuery Item.
-   * 
+   * This function is used internally only. 
    * @param $xml string XML string to parse.
    *
    * @return Item instance.
    */
-  public function parseXML($xml)
+  private function parseXML($xml)
   {
     $lDataManager = $this->zorba->getXmlDataManager();
     $lDocMgr = $lDataManager->getDocumentManager();
@@ -220,59 +334,6 @@ class XQueryProcessor {
     $iter->destroy();
     
     return $doc;  
-  }
-  
-  /**
-   * Parse an XML document from its URI to an XQuery Item.
-   * 
-   * @param $uri string URI of the XML document to parse.
-   *
-   * @return Item instance.
-   */
-  public function parseXMLfromURI($uri)
-  {
-    $this->parseXML($uri);
-  }
-
-  private function prepareQuery() {
-    if($this->query == null) {
-      throw new Exception("No Query Imported");
-    }
-    //Compile Query
-    $query = $this->zorba->compileQuery($this->query);
-    //Set Variables
-    $dctx = $query->getDynamicContext();
-    foreach($this->variables as $ns => $variables){
-      foreach($variables as $name => $value) {
-        if($ns == "_") $ns = "";
-        $param = $this->zorba->compileQuery(".");
-        $param->getDynamicContext()->setContextItem($value);
-        $dctx->setVariable($ns, $name, $param->iterator());
-    }
-    }
-    return $query;
-  }
-  
-  /**
-   * Execute the Query.
-   *
-   * @return Query result.
-   */
-  public function execute() {
-    //Execute
-    $query = $this->prepareQuery();
-    $result = $query->execute();
-    $query->destroy();
-    return $result;
-  }
-  
-  /**
-   * Execute the query and store its results to 
-   * the given URI.
-   */
-  public function executeToURI($uri) {
-    $result = $this->execute();
-    return file_put_contents($uri, $result);
   }
 }
 ?>

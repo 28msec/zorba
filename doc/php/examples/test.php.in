@@ -25,8 +25,11 @@ function omitXMLDecl($xml)
 
 function assertEquality($test, $reference, $label)
 {
-  
-  if($test == $reference) {
+  $test = omitXMLDecl($test);
+  echo "=====================================\n";
+  var_dump($test);
+  var_dump($reference);
+  if($test != $reference) {
     throw new Exception(
        "Test "
      . $label
@@ -48,9 +51,10 @@ $query = <<<'XQ'
 declare variable $foo as xs:string external;
 declare variable $bar as xs:integer external;
 declare variable $doc1 as document-node() external;
-declare variable $doc2 as document-node() external;
+declare variable $doc2-str as xs:string external;
+declare variable $doc2 as document-node() := parse-xml($doc2-str);
 
-$foo, $bar, $doc1, $doc2
+$foo, $bar, $doc1 , $doc2
 XQ;
 
 $xquery->importQuery($query);
@@ -61,9 +65,48 @@ $xquery->setVariable("bar", 3);
 $doc = simplexml_load_string('<root />');
 $xquery->setVariable("doc1", $doc);
 
-$doc = $xquery->parseXML("<root />");
-$xquery->setVariable("doc2", $doc);
+$doc = "<root />";
+$xquery->setVariable("doc2-str", $doc);
 
 $result = trim($xquery->execute());
-assertEquality($result,  "bar 3<root /><root />", "Scalar Types");
+assertEquality($result,  "bar 3<root/><root/>", "Test PHP Types Mapping");
+
+/* Test 3 */
+$xquery->importQuery("(1, 2, <foo bar='bar' />)");
+$it = $xquery->getIterator();
+
+foreach($it as $pos => $value) {
+  switch($pos) {
+    case 0:
+      assertEquality($value, "1", "Consume the item at position {$pos}");
+    break;
+    case 1:
+      assertEquality($value, "2", "Consume the item at position {$pos}");
+    break;
+    case 3:
+      assertEquality($value, '<foo bar="bar"/>', "Consume the item at position {$pos}");
+    break;
+  }
+}
+
+//Let's do it again
+$it = $xquery->getIterator();
+
+foreach($it as $pos => $value) {
+  switch($pos) {
+    case 0:
+      assertEquality($value, "1", "Consume the item at position {$pos}");
+    break;
+    case 1:
+      assertEquality($value, "2", "Consume the item at position {$pos}");
+    break;
+    case 3:
+      assertEquality($value, '<foo bar="bar"/>', "Consume the item at position {$pos}");
+    break;
+  }
+}
+
+//Try the same query with execute
+$result = $xquery->execute();
+assertEquality($result, "1 2<foo bar=\"bar\"/>", "Execute To URI");
 ?>
