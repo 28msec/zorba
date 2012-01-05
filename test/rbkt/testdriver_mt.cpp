@@ -704,9 +704,10 @@ void usage()
   std::cerr << "\nusage: testdriver_mt -b <bucket> [options]       OR" << std::endl
             << "       testdriver_mt -p <path-to-bucket> [options]" << std::endl
             << "Options:" << std::endl
-            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q]" << std::endl
+            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q] [-w3c]" << std::endl
             << "  [-k <known-failures file>] [-o <report logfile>]" << std::endl
-            << "  -q - Quiet; only a summary report will be displayed." << std::endl;
+            << "  -q - Quiet; only a summary report will be displayed." << std::endl
+            << "  -w3c means that the output also contains a XML report that can be used in the W3C conformance reports generation." << std::endl;
   exit(1);
 }
 
@@ -727,10 +728,14 @@ _tmain(int argc, _TCHAR* argv[])
   std::string refsDir;
   std::string modulePath;
   std::string reportFilename = "mt.log";
+  std::string XMLreportFilename = "Test.xml";
   std::string reportFilepath;
+  std::string XMLreportFilepath;
   std::string knownFailuresFilepath;
+	std::string testExtension = ".xq";
   bool haveKnownFailures = false;
   bool quiet = false;
+  bool generateW3CData = false;
 
   fs::path path;
   std::set<std::string> knownFailures;
@@ -790,6 +795,10 @@ _tmain(int argc, _TCHAR* argv[])
     else if (!strcmp(argv[arg], "-q"))
     {
       quiet = true;
+    }
+    else if (!strcmp(argv[arg], "-w3c"))
+    {
+      generateW3CData = true;
     }
     else if (!strcmp(argv[arg], "--module-path"))
     {
@@ -852,12 +861,19 @@ _tmain(int argc, _TCHAR* argv[])
   {
     ulong pos;
     if ((pos = refsDir.find("XQueryX")) != std::string::npos)
+		{
       refsDir = refsDir.erase(pos, 8);
+			testExtension = ".xqx";
+		}
     else if ((pos = refsDir.find("XQuery")) != std::string::npos)
       refsDir = refsDir.erase(pos, 7);
   }
 
   reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
+  if(generateW3CData)
+  {
+	XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
+  }
 
   //
   // Make sure the directories exist. For the results dir, if it doesn't exist,
@@ -912,7 +928,7 @@ _tmain(int argc, _TCHAR* argv[])
         continue;
       }
 
-      if (fs::extension(queryPath) != ".xq")
+      if (fs::extension(queryPath) != testExtension)
       {
         //std::cerr << "Found no-query file " << queryPath.string() << std::endl;
         continue;
@@ -1023,7 +1039,7 @@ _tmain(int argc, _TCHAR* argv[])
   // on regressions/progressions or not. Also keep a running list of
   // failed tests.
   //
-  std::ostringstream report;
+  std::ostringstream report, XMLreport;
   std::ostringstream failedTests;
   long numFailures = 0;
   long numRegressions = 0;
@@ -1066,10 +1082,21 @@ _tmain(int argc, _TCHAR* argv[])
                << queryName.file_string() << std::endl;
       }
     }
+    if(generateW3CData)
+    {
+      std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
+      XMLreport << "<Test Status='" << status << "'><Name>" << queryName.file_string() << "</Name></Test>" << std::endl;
+    }
   }
 
   std::ofstream reportFile(reportFilepath.c_str());
   reportFile << report.str();
+  
+  if(generateW3CData)
+  {
+	std::ofstream w3cReportFile(XMLreportFilepath.c_str());
+	w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Site><Testing>" << std::endl << XMLreport.str() << "</Testing></Site>" << std::endl;
+  }
 
   // Don't use theOutput here - this is the summary we always want to
   // see

@@ -424,7 +424,7 @@ ostream& trycatch_expr::put( ostream& os) const
   return os;
 }
 
-ostream& eval_expr::put( ostream& os) const
+ostream& eval_expr::put(ostream& os) const
 {
   BEGIN_PUT( eval_expr );
   for (ulong i = 0; i < theArgs.size(); i++)
@@ -438,15 +438,15 @@ ostream& eval_expr::put( ostream& os) const
   END_PUT();
 }
 
-ostream& function_trace_expr::put( ostream& os) const
+ostream& function_trace_expr::put(ostream& os) const
 {
-  BEGIN_PUT( function_trace_expr );
-  theExpr->put (os);
+  BEGIN_PUT(function_trace_expr);
+  theExpr->put(os);
   END_PUT();
 }
 
 
-ostream& apply_expr::put( ostream& os) const
+ostream& apply_expr::put(ostream& os) const
 {
   BEGIN_PUT(apply_expr);
   theExpr->put(os);
@@ -454,32 +454,46 @@ ostream& apply_expr::put( ostream& os) const
 }
 
 
-ostream& var_decl_expr::put( ostream& os) const
+ostream& var_decl_expr::put(ostream& os) const
 {
-  BEGIN_PUT( var_decl_expr );
+  BEGIN_PUT(var_decl_expr);
+
   theVarExpr->put(os);
   if (theInitExpr)
     theInitExpr->put(os);
+
   END_PUT();
 }
 
 
-ostream& if_expr::put( ostream& os) const
+ostream& var_set_expr::put(ostream& os) const
 {
-  BEGIN_PUT( if_expr );
+  BEGIN_PUT(var_set_expr);
+
+  theVarExpr->put(os);
+  theExpr->put(os);
+
+  END_PUT();
+}
+
+
+ostream& if_expr::put(ostream& os) const
+{
+  BEGIN_PUT(if_expr);
   theCondExpr->put(os);
   PUT_SUB("THEN", theThenExpr);
   PUT_SUB("ELSE", theElseExpr);
   END_PUT();
 }
 
-ostream& fo_expr::put( ostream& os) const
+
+ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
   BEGIN_PUT2( qname->getStringValue() << "/" << num_args() );
-  ulong numArgs = (ulong)theArgs.size();
+  csize numArgs = theArgs.size();
 
-  for (ulong i = 0; i < numArgs; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     theArgs[i]->put(os);
   }
@@ -747,31 +761,45 @@ ostream& order_expr::put(ostream& os) const
 
 ostream& elem_expr::put(ostream& os) const
 {
-  BEGIN_PUT( elem_expr );
+  BEGIN_PUT(elem_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
+
   if (theAttrs != NULL)
     theAttrs->put(os);
+
   if (theContent != NULL)
     theContent->put(os);
+
   END_PUT();
 }
 
-ostream& doc_expr::put( ostream& os) const
+
+ostream& doc_expr::put(ostream& os) const
 {
-  BEGIN_PUT( doc_expr );
+  BEGIN_PUT(doc_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   theContent->put(os);
+
   END_PUT();
 }
 
-ostream& attr_expr::put( ostream& os) const
+
+ostream& attr_expr::put(ostream& os) const
 {
-  BEGIN_PUT( attr_expr );
+  BEGIN_PUT(attr_expr);
 
-  theQNameExpr->put (os);
+  theQNameExpr->put(os);
   PUT_SUB( "=", theValueExpr );
+
   END_PUT();
 }
+
 
 ostream& text_expr::put(ostream& os) const
 {
@@ -808,7 +836,7 @@ ostream& replace_expr::put( ostream& os) const
 {
   BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);
-  PUT_SUB( ",", theReplaceExpr );
+  PUT_SUB( ",", theSourceExpr );
   END_PUT();
 }
 
@@ -816,7 +844,7 @@ ostream& rename_expr::put(ostream& os) const
 {
   BEGIN_PUT(rename_expr);
   theTargetExpr->put(os);
-  PUT_SUB(",", theNameExpr);
+  PUT_SUB(",", theSourceExpr);
   END_PUT();
 }
 

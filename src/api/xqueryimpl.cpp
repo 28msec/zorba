@@ -46,6 +46,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
+#include "api/vectoriterator.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -54,6 +55,7 @@
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/expression/var_expr.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
@@ -61,8 +63,10 @@
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/util/flowctl_exception.h"
 
+#include "store/api/temp_seq.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
@@ -554,6 +558,7 @@ void XQueryImpl::doCompile(
   // Set the compiler config.
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
+  theCompilerCB->theConfig.for_serialization_only = aHints.for_serialization_only;
   CompilerCB::config::opt_level_t optLevel;
   if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
     optLevel = CompilerCB::config::O0;
@@ -567,10 +572,10 @@ void XQueryImpl::doCompile(
 
 #ifdef ZORBA_WITH_DEBUGGER
   // if the debug mode is set, we force the gflwor, we set the query input stream
-  if (theIsDebugMode) {
+  if (theIsDebugMode) 
+  {
     theCompilerCB->theConfig.force_gflwor = true;
-    theCompilerCB->theDebuggerCommons =
-      new DebuggerCommons(theCompilerCB->theRootSctx);
+    theCompilerCB->theDebuggerCommons = new DebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
 #endif
@@ -729,6 +734,97 @@ XQueryImpl::getStaticCollectionManager() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
+{
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    std::vector<var_expr_t> lVars;
+
+    std::map<short, static_context_t>::const_iterator lIte = 
+    theCompilerCB->theSctxMap.begin();
+
+    std::map<short, static_context_t>::const_iterator lEnd = 
+    theCompilerCB->theSctxMap.end();
+
+    for(; lIte != lEnd; ++lIte)
+    {
+      lIte->second.getp()->getVariables(lVars, false, false, true);
+    }
+    
+    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
+    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
+    std::vector<store::Item_t> lExVars;
+   
+    for(; lVarIte != lVarEnd; ++lVarIte)
+    { 
+      lExVars.push_back((*lVarIte)->get_name());
+    } 
+
+   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+
+    aVarsIter = vIter; 
+    
+  }
+  QUERY_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQueryImpl::isBoundVariable(
+    const String& aNamespace,
+    const String& aLocalname) const
+{
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    var_expr* var = NULL;
+
+    zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
+    zstring& localName = Unmarshaller::getInternalString(aLocalname);
+    
+    store::Item_t qname;
+    GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
+    
+    std::map<short, static_context_t>& lMap = theCompilerCB->theSctxMap;
+    std::map<short, static_context_t>::const_iterator lIte = lMap.begin();
+    std::map<short, static_context_t>::const_iterator lEnd = lMap.end();
+
+    for (; lIte != lEnd; ++lIte)
+    {
+      var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+      
+      if(var)
+        break;
+    }
+    
+    if(var == NULL)
+      throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
+      ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+
+    if (var->hasInitializer())
+      return true;
+    
+    ulong varId = var->get_unique_id();
+
+    if (theDynamicContext->is_set_variable(varId))
+      return true;
+
+    return false;
+  }
+  QUERY_CATCH
+  return true;
+}
+
+
+/*******************************************************************************
   Give to the caller read-only access to the static context of the query
 ********************************************************************************/
 const StaticContext* XQueryImpl::getStaticContext() const
@@ -764,6 +860,25 @@ bool XQueryImpl::isUpdating() const
     checkCompiled();
 
     return theCompilerCB->isUpdating();
+  }
+  QUERY_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+ Return true, if the root expr of the query is a sequential expr.
+********************************************************************************/
+bool XQueryImpl::isSequential() const
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    return theCompilerCB->isSequential();
   }
   QUERY_CATCH
   return false;
@@ -866,7 +981,6 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
   QUERY_CATCH
   return false;
 }
-
 
 
 /*******************************************************************************

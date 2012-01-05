@@ -31,8 +31,6 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (DocumentIterator);
 
-  PLAN_ITER_VISITOR (DocumentContentIterator);
-
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 
   PLAN_ITER_VISITOR (ExtFunctionCallIterator);
@@ -357,4 +355,5 @@ PLAN_ITER_VISITOR(ExitCatcherIterator);
 PLAN_ITER_VISITOR(FlowCtlIterator);
 
 PLAN_ITER_VISITOR(CountCollectionIterator);
+
 /* vim:set et sw=2 ts=2: */

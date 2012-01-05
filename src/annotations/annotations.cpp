@@ -15,21 +15,17 @@
  */
 #include "stdafx.h"
 
-#include <cmath>
-
 #include "annotations/annotations.h"
-#include "system/globalenv.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
-#include "context/static_context.h"
-#include "context/static_context_consts.h"
 #include "compiler/expression/expr.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -38,90 +34,283 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 END_SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 
-SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
-
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
 END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
+
+
+std::vector<store::Item_t> 
+AnnotationInternal::theAnnotId2NameMap;
+
+ItemHandleHashMap<AnnotationInternal::AnnotationId> 
+AnnotationInternal::theAnnotName2IdMap(0, NULL, 64, false);
+
+std::vector<AnnotationInternal::RuleBitSet> 
+AnnotationInternal::theRuleSet;
+
+
+/*******************************************************************************
+  Static method, called from GlobalEnvironment::init()
+********************************************************************************/
+void AnnotationInternal::createBuiltIn()
+{
+  store::Item_t qname;
+  AnnotationId id;
+
+  theAnnotId2NameMap.resize(zann_end);
+
+  //
+  // W3C annotations
+  //
+  GENV_ITEMFACTORY->createQName(qname, static_context::W3C_FN_NS, "fn", "public");
+  id = fn_public;
+  theAnnotId2NameMap[id] = qname;
+  theAnnotName2IdMap.insert(qname, id);
+
+  GENV_ITEMFACTORY->createQName(qname, static_context::W3C_FN_NS, "fn", "private");
+  id = fn_private;
+  theAnnotId2NameMap[id] = qname;
+  theAnnotName2IdMap.insert(qname, id);
+
+#define ZANN(a, b)                                                     \
+  GENV_ITEMFACTORY->createQName(qname, ZORBA_ANNOTATIONS_NS, "", #a);  \
+  id = zann_##b;                                                       \
+  theAnnotId2NameMap[id] = qname;                                      \
+  theAnnotName2IdMap.insert(qname, id);
+
+
+  //
+  // Zorba annotations - deterministic/nondeterministic
+  //
+  ZANN(deterministic, deterministic);
+  ZANN(nondeterministic, nondeterministic);
+
+  //
+  // Zorba annotations - xquery scripting
+  //
+  ZANN(assignable, assignable);
+  ZANN(nonassignable, nonassignable);
+
+  ZANN(sequential, sequential);
+  ZANN(nonsequential, nonsequential);
+
+  //
+  // Zorba annotations - optimizer
+  //
+  ZANN(propagates-input-nodes, propagates_input_nodes);
+  ZANN(must-copy-input-nodes, must_copy_input_nodes);
+
+  //
+  // Zorba annotations - misc
+  //
+  ZANN(variadic, variadic);
+
+  ZANN(streamable, streamable);
+
+  ZANN(cache, cache);
+  ZANN(no-cache, nocache);
+
+  //
+  // Zorba annotations - xqddf
+  //
+  ZANN(unique, unique);
+  ZANN(nonunique, nonunique);
+
+  ZANN(value-equality, value_equality);
+  ZANN(general-equality, general_equality);
+  ZANN(value-range, value_range);
+  ZANN(general-range, general_range);
+
+  ZANN(automatic, automatic);
+  ZANN(manual, manual);
+
+  ZANN(mutable, mutable);
+  ZANN(queue, queue);
+  ZANN(append-only, append_only);
+  ZANN(const, const);
+
+  ZANN(ordered, ordered);
+  ZANN(unordered, unordered);
+
+  ZANN(read-only-nodes, read_only_nodes);
+  ZANN(mutable-nodes, mutable_nodes);
+
+#undef ZANN
+
+  // create a set of rules to detect conflicts between annotations
+#define ZANN(a) \
+  ( 1 << static_cast<uint64_t>(AnnotationInternal::a) )
+
+  theRuleSet.push_back(
+       ZANN(zann_unique) |
+       ZANN(zann_nonunique));
+
+  theRuleSet.push_back(
+      ZANN(zann_value_equality) |
+      ZANN(zann_general_equality) |
+      ZANN(zann_value_range) |
+      ZANN(zann_general_range));
+
+  theRuleSet.push_back(
+      ZANN(zann_automatic) |
+      ZANN(zann_manual));
+
+  theRuleSet.push_back(
+      ZANN(zann_mutable) |
+      ZANN(zann_queue) |
+      ZANN(zann_append_only) |
+      ZANN(zann_const));
+
+  theRuleSet.push_back(
+      ZANN(zann_ordered) |
+      ZANN(zann_unordered));
+
+  theRuleSet.push_back(
+      ZANN(zann_assignable) |
+      ZANN(zann_nonassignable));
+
+  theRuleSet.push_back(
+      ZANN(zann_deterministic) |
+      ZANN(zann_nondeterministic));
+
+  theRuleSet.push_back(
+      ZANN(zann_sequential) |
+      ZANN(zann_nonsequential));
+
+  theRuleSet.push_back(
+      ZANN(zann_cache) |
+      ZANN(zann_nocache));
+
+  theRuleSet.push_back(
+      ZANN(fn_private) |
+      ZANN(fn_public));
+
+  theRuleSet.push_back(
+      ZANN(zann_unordered) |
+      ZANN(zann_queue));
+
+  theRuleSet.push_back(
+      ZANN(zann_unordered) |
+      ZANN(zann_append_only));
+
+  theRuleSet.push_back(
+      ZANN(zann_queue) |
+      ZANN(zann_append_only));
+
+  theRuleSet.push_back(
+      ZANN(zann_read_only_nodes) |
+      ZANN(zann_mutable_nodes));
+#undef ZANN
+}
+
+
+/*******************************************************************************
+  Static method, called from GlobalEnvironment::destroy()
+********************************************************************************/
+void AnnotationInternal::destroyBuiltIn()
+{
+  theAnnotId2NameMap.clear();
+  theAnnotName2IdMap.clear();
+}
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal::AnnotationInternal(const store::Item_t& aExpandedQName)
-  :
-  theQName(aExpandedQName)
+AnnotationInternal::AnnotationId AnnotationInternal::lookup(
+    const store::Item_t& qname)
 {
+  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.find(qname);
+
+  if (ite == theAnnotName2IdMap.end())
+    return zann_end;
+
+  return (*ite).second;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+store::Item* AnnotationInternal::lookup(AnnotationInternal::AnnotationId id)
+{
+  assert(id < zann_end);
+  assert(id < theAnnotId2NameMap.size());
+
+  return theAnnotId2NameMap[id].getp();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationInternal::AnnotationInternal(const store::Item_t& qname)
+  :
+  theId(zann_end),
+  theQName(qname)
+{
+  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.find(qname);
+  if (ite != theAnnotName2IdMap.end())
+    theId = (*ite).second;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 AnnotationInternal::AnnotationInternal(
-  const store::Item_t& aExpandedQName,
-  const std::vector<AnnotationLiteral_t>& aLiteralList)
+  const store::Item_t& qname,
+  std::vector<store::Item_t>& literals)
   :
-  theQName(aExpandedQName),
-  theLiteralList(aLiteralList)
+  theId(zann_end),
+  theQName(qname)
 {
+  theLiterals.swap(literals);
+
+  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.find(qname);
+  if (ite != theAnnotName2IdMap.end())
+    theId = (*ite).second;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void AnnotationInternal::serialize(::zorba::serialization::Archiver& ar)
 {
+  SERIALIZE_ENUM(AnnotationId, theId);
   ar & theQName;
-  ar & theLiteralList;
+  ar & theLiterals;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const store::Item* AnnotationInternal::getQName() const
 {
   return theQName.getp();
 }
 
 
-unsigned int AnnotationInternal::getNumLiterals() const
-{
-  return (unsigned int)theLiteralList.size();
-}
+/*******************************************************************************
 
-
-const AnnotationLiteral* AnnotationInternal::getLiteral(unsigned int index) const
+********************************************************************************/
+csize AnnotationInternal::getNumLiterals() const
 {
-  if (index < theLiteralList.size())
-    return theLiteralList[index];
-  else
-    return NULL;
+  return theLiterals.size();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void AnnotationLiteral::serialize(::zorba::serialization::Archiver& ar)
+store::Item* AnnotationInternal::getLiteral(csize index) const
 {
-  ar & theLiteral;
-}
-
-
-AnnotationLiteral::AnnotationLiteral(const store::Item_t& aLiteralValue)
-  : theLiteral(aLiteralValue)
-{
-}
-
-
-store::Item_t AnnotationLiteral::getLiteralItem() const
-{
-  return theLiteral;
-}
-
-
-AnnotationInternal* AnnotationList::getAnnotation(unsigned int index) const
-{
-  if (index < theAnnotationList.size())
-    return theAnnotationList[index].getp();
+  if (index < theLiterals.size())
+    return theLiterals[index].getp();
   else
     return NULL;
 }
-
 
 
 /*******************************************************************************
@@ -152,42 +341,58 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-void AnnotationList::push_back(
-    const store::Item_t& aExpQName,
-    const std::vector<rchandle<const_expr> >& aLiterals)
+AnnotationInternal* AnnotationList::get(csize index) const
 {
-  std::vector<AnnotationLiteral_t> lLiterals;
-
-  for (std::vector<rchandle<const_expr> >::const_iterator it = aLiterals.begin();
-       it != aLiterals.end();
-       ++it)
-  {
-    lLiterals.push_back(new AnnotationLiteral((*it)->get_val()));
-  }
-
-  theAnnotationList.push_back(new AnnotationInternal(aExpQName, lLiterals));
+  if (index < theAnnotationList.size())
+    return theAnnotationList[index].getp();
+  else
+    return NULL;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool AnnotationList::contains(const store::Item_t& aSearchQName) const
+AnnotationInternal* AnnotationList::get(AnnotationInternal::AnnotationId id) const
 {
-  if (aSearchQName.getp() == NULL)
-    return false;
-
-  // sequential search might not be the most efficient but
-  // how many annotations might a function or variable have? 5?
-  for (ListConstIter_t lIter = theAnnotationList.begin();
-       lIter != theAnnotationList.end();
-       ++lIter)
+  for (ListConstIter_t ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
   {
-    if ((*lIter)->getQName()->equals(aSearchQName))
-      return true;
+    if ((*ite)->getId() == id)
+      return (*ite).getp();
   }
 
-  return false;
+  return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
+{
+  return (get(id) != NULL);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnnotationList::push_back(
+    const store::Item_t& qname,
+    const std::vector<rchandle<const_expr> >& literals)
+{
+  std::vector<store::Item_t> lLiterals;
+
+  for (std::vector<rchandle<const_expr> >::const_iterator it = literals.begin();
+       it != literals.end();
+       ++it)
+  {
+    lLiterals.push_back((*it)->get_val());
+  }
+
+  theAnnotationList.push_back(new AnnotationInternal(qname, lLiterals));
 }
 
 
@@ -196,231 +401,58 @@ bool AnnotationList::contains(const store::Item_t& aSearchQName) const
 ********************************************************************************/
 void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
 {
-  static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
-
   // make sure we don't have more annotations then max 64 bit
-  assert( static_cast<uint64_t>(StaticContextConsts::zann_end) <
-          std::numeric_limits<uint64_t>::max() );
+  assert(AnnotationInternal::zann_end < 64);
 
   RuleBitSet lCurrAnn;
 
   // mark and detect duplicates
-  for (ListConstIter_t lIter = theAnnotationList.begin();
-       lIter != theAnnotationList.end();
-       ++lIter)
+  for (ListConstIter_t ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
   {
-    store::Item_t lQName = const_cast<store::Item*>((*lIter)->getQName());
-    StaticContextConsts::annotations_t lAnn = lCtx.lookup_ann(lQName);
+    const store::Item* qname = (*ite)->getQName();
+    AnnotationId id = (*ite)->getId();
 
     // detect duplicate annotations (if we "know" them)
-    if ( lAnn != StaticContextConsts::zann_end && lCurrAnn.test( lAnn ) )
+    if (id != AnnotationInternal::zann_end && lCurrAnn.test(id))
     {
-        throw XQUERY_EXCEPTION(
-            err::XQST0106,
-            ERROR_PARAMS(
-              lQName->getStringValue(),
-              ZED(XQST0106_THE_SAME)
-            ),
-            ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0106, loc,
+      ERROR_PARAMS(qname->getStringValue(), ZED(XQST0106_THE_SAME)));
     }
 
-    lCurrAnn.set( lAnn );
+    lCurrAnn.set(id);
   }
 
   // check rules
-  for ( std::vector<RuleBitSet>::const_iterator lIter = theRuleSet.begin();
-        lIter != theRuleSet.end();
-        ++lIter )
+  std::vector<RuleBitSet>::const_iterator ite = AnnotationInternal::theRuleSet.begin();
+  std::vector<RuleBitSet>::const_iterator end = AnnotationInternal::theRuleSet.end();
+
+  for (; ite != end; ++ite)
   {
-    const RuleBitSet lCurrSet = *lIter;
-    if ( ( lCurrAnn & lCurrSet ).count() >  1 )
+    const RuleBitSet& lCurrSet = *ite;
+
+    if ((lCurrAnn & lCurrSet).count() >  1)
     {
       // build error string to return set of conflicting annotations
       std::ostringstream lProblems;
-      for ( size_t i = 0, j = 0; i < StaticContextConsts::zann_end; ++i )
+      for (csize i = 0, j = 0; i < AnnotationInternal::zann_end; ++i)
       {
-        if ( lCurrSet.test( i ) )
+        if (lCurrSet.test(i))
         {
-          lProblems
-            << lCtx.lookup_ann(
-                static_cast<StaticContextConsts::annotations_t>(i)
-              )->getStringValue()
-            << ((j == lCurrSet.count() - 1) ? "" : ", ");
+          AnnotationId id = static_cast<AnnotationId>(i);
+
+          lProblems << AnnotationInternal::lookup(id)->getStringValue()
+                    << ((j == lCurrSet.count() - 1) ? "" : ", ");
           ++j;
         }
       }
-      throw XQUERY_EXCEPTION(
-          err::XQST0106,
-          ERROR_PARAMS(
-            lProblems.str(),
-            ZED(XQST0106_CONFLICTING)
-          ),
-          ERROR_LOC(loc));
+
+      RAISE_ERROR(err::XQST0106, loc,
+      ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
     }
   }
 }
-
-
-void AnnotationList::createBuiltIn(static_context* aCtx)
-{
-  store::Item_t lTmp;
-
-  //
-  // W3C annotations
-  //
-  GENV_ITEMFACTORY->createQName(lTmp, static_context::W3C_FN_NS, "fn", "public");
-  aCtx->add_ann(StaticContextConsts::fn_public, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, static_context::W3C_FN_NS, "fn", "private");
-  aCtx->add_ann(StaticContextConsts::fn_private, lTmp);
-
-  //
-  // Zorba annotations - deterministic/nondeterministic
-  //
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "deterministic");
-  aCtx->add_ann(StaticContextConsts::zann_deterministic, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "nondeterministic");
-  aCtx->add_ann(StaticContextConsts::zann_nondeterministic, lTmp);
-
-  //
-  // Zorba annotations - xquery scripting
-  //
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "assignable");
-  aCtx->add_ann(StaticContextConsts::zann_assignable, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "nonassignable");
-  aCtx->add_ann(StaticContextConsts::zann_nonassignable, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "sequential");
-  aCtx->add_ann(StaticContextConsts::zann_sequential, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "nonsequential");
-  aCtx->add_ann(StaticContextConsts::zann_nonsequential, lTmp);
-
-  //
-  // Zorba annotations - misc
-  //
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "variadic");
-  aCtx->add_ann(StaticContextConsts::zann_variadic, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "streamable");
-  aCtx->add_ann(StaticContextConsts::zann_streamable, lTmp);
-
-  //
-  // Zorba annotations - xqddf
-  //
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "unique");
-  aCtx->add_ann(StaticContextConsts::zann_unique, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "nonunique");
-  aCtx->add_ann(StaticContextConsts::zann_nonunique, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "value-equality");
-  aCtx->add_ann(StaticContextConsts::zann_value_equality, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "general-equality");
-  aCtx->add_ann(StaticContextConsts::zann_general_equality, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "value-range");
-  aCtx->add_ann(StaticContextConsts::zann_value_range, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "general-range");
-  aCtx->add_ann(StaticContextConsts::zann_general_range, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "automatic");
-  aCtx->add_ann(StaticContextConsts::zann_automatic, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "manual");
-  aCtx->add_ann(StaticContextConsts::zann_manual, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "mutable");
-  aCtx->add_ann(StaticContextConsts::zann_mutable, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "queue");
-  aCtx->add_ann(StaticContextConsts::zann_queue, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "append-only");
-  aCtx->add_ann(StaticContextConsts::zann_append_only, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "const");
-  aCtx->add_ann(StaticContextConsts::zann_const, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "ordered");
-  aCtx->add_ann(StaticContextConsts::zann_ordered, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "unordered");
-  aCtx->add_ann(StaticContextConsts::zann_unordered, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "read-only-nodes");
-  aCtx->add_ann(StaticContextConsts::zann_read_only_nodes, lTmp);
-
-  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "mutable-nodes");
-  aCtx->add_ann(StaticContextConsts::zann_mutable_nodes, lTmp);
-
-  // create a set of rules to detect conflicts between annotations
-#define ZANN(a) \
-  ( 1 << static_cast<uint64_t>(StaticContextConsts:: a) )
-  theRuleSet.push_back(
-       ZANN(zann_unique) |
-       ZANN(zann_nonunique)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_value_equality) |
-      ZANN(zann_general_equality) |
-      ZANN(zann_value_range) |
-      ZANN(zann_general_range)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_automatic) |
-      ZANN(zann_manual)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_mutable) |
-      ZANN(zann_queue) |
-      ZANN(zann_append_only) |
-      ZANN(zann_const)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_ordered) |
-      ZANN(zann_unordered)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_assignable) |
-      ZANN(zann_nonassignable)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_deterministic) |
-      ZANN(zann_nondeterministic)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_sequential) |
-      ZANN(zann_nonsequential)
-    );
-  theRuleSet.push_back(
-      ZANN(fn_private) |
-      ZANN(fn_public)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_unordered) |
-      ZANN(zann_queue)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_unordered) |
-      ZANN(zann_append_only)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_queue) |
-      ZANN(zann_append_only)
-    );
-  theRuleSet.push_back(
-      ZANN(zann_read_only_nodes) |
-      ZANN(zann_mutable_nodes)
-    );
-#undef ZANN
-}
-
-std::vector<AnnotationList::RuleBitSet> AnnotationList::theRuleSet;
 
 
 } /* namespace zorba */

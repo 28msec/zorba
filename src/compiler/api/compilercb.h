@@ -93,6 +93,9 @@ class static_context;
   dummy module (see  XQueryCompiler::createMainModule() method). This flag is
   a copy of the lib_module flag in Zorba_CompilerHints_t.
 
+  - theConfig.for_serialization_only :
+  This flag is a copy of the for_serialization_only flag in Zorba_CompilerHints_t.
+
   - theConfig.parse_cb :
   Pointer to the function to call to print the AST that results from parsing
   the query.
@@ -120,6 +123,7 @@ public:
     bool           force_gflwor;
     opt_level_t    opt_level;
     bool           lib_module;
+    bool           for_serialization_only;
     ast_callback   parse_cb;
     expr_callback  translate_cb;
     expr_callback  optimize_cb;
@@ -139,11 +143,11 @@ public:
   typedef std::map<short, static_context_t> SctxMap;
 
 public:  
-  XQueryDiagnostics*        theXQueryDiagnostics;
+  XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
 
-  static_context*           theRootSctx;
+  static_context          * theRootSctx;
 
 #ifdef ZORBA_WITH_DEBUGGER
   DebuggerCommons*          theDebuggerCommons;
@@ -154,6 +158,8 @@ public:
   bool                      theIsLoadProlog;
 
   bool                      theIsUpdating;
+
+  bool                      theIsSequential;
 
   long                      theTimeout;
 
@@ -180,6 +186,10 @@ public:
   void setIsUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
 
   bool isUpdating() const { return theIsUpdating; }
+
+  void setIsSequential(bool aIsSequential) {theIsSequential = aIsSequential;}
+
+  bool isSequential() const { return theIsSequential;}
 
   static_context* getStaticContext(short id);
 };

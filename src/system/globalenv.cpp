@@ -34,6 +34,7 @@
 #include "types/schema/schema.h"
 #include "context/root_static_context.h"
 #include "context/default_url_resolvers.h"
+#include "context/dynamic_loader.h"
 #include "functions/library.h"
 #include "annotations/annotations.h"
 #include "compiler/api/compiler_api.h"
@@ -59,7 +60,9 @@ using namespace zorba;
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
+/*******************************************************************************
 
+********************************************************************************/
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
@@ -73,12 +76,16 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_store = store;
 
-  m_globalEnv->m_rootStaticContext = new root_static_context();
-  m_globalEnv->m_rootStaticContext->init();
-  RCHelper::addReference (m_globalEnv->m_rootStaticContext);
+  m_globalEnv->theRootTypeManager = new RootTypeManager;
+  RCHelper::addReference(m_globalEnv->theRootTypeManager);
 
-  BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
-  AnnotationList::createBuiltIn(m_globalEnv->m_rootStaticContext);
+  m_globalEnv->theRootStaticContext = new root_static_context();
+  RCHelper::addReference(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theRootStaticContext->init();
+
+  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
+
+  AnnotationInternal::createBuiltIn();
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
@@ -93,16 +100,24 @@ void GlobalEnvironment::init(store::Store* store)
 
   std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
     XQueryCompilerSubsystem::create();
+
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_http_resolver      = new impl::HTTPURLResolver();
+  m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
+
+  m_globalEnv->m_dynamic_loader = 0;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 // destroy all components that were initialized in init 
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
+  delete m_globalEnv->m_dynamic_loader;
+
   delete m_globalEnv->m_http_resolver;
 
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
@@ -118,8 +133,13 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
-  m_globalEnv->m_rootStaticContext = 0;
+  RCHelper::removeReference(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theRootStaticContext = 0;
+
+  RCHelper::removeReference(m_globalEnv->theRootTypeManager);
+  m_globalEnv->theRootTypeManager = 0;
+
+  AnnotationInternal::destroyBuiltIn();
 
   m_globalEnv->m_store = NULL;
 
@@ -133,6 +153,8 @@ void GlobalEnvironment::destroy()
 
   BuiltinFunctionLibrary::destroy();
 
+  AnnotationInternal::destroyBuiltIn();
+
   delete m_globalEnv;
 	m_globalEnv = NULL;
 
@@ -141,6 +163,10 @@ void GlobalEnvironment::destroy()
 
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void GlobalEnvironment::destroyStatics()
 {
   // release resources aquired by the mapm library
@@ -150,20 +176,31 @@ void GlobalEnvironment::destroyStatics()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 GlobalEnvironment::GlobalEnvironment()
   :
   m_store(0), 
-  m_rootStaticContext(0),
+  theRootTypeManager(NULL),
+  theRootStaticContext(0),
   m_compilerSubSys(0)
 {
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 GlobalEnvironment::~GlobalEnvironment()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void GlobalEnvironment::init_icu()
 {
   // initialize the icu library
@@ -228,21 +265,23 @@ void GlobalEnvironment::cleanup_icu()
 }
 
 
-static_context& GlobalEnvironment::getRootStaticContext()
+RootTypeManager& GlobalEnvironment::getRootTypeManager() const
 {
-  return *m_rootStaticContext;
+  return *theRootTypeManager;
 }
 
 
-RootTypeManager& GlobalEnvironment::getRootTypeManager()
+static_context& GlobalEnvironment::getRootStaticContext() const
 {
-  return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
+  return *theRootStaticContext;
 }
 
-bool GlobalEnvironment::isRootStaticContextInitialized()
+
+bool GlobalEnvironment::isRootStaticContextInitialized() const
 {
-  return m_rootStaticContext != NULL;
+  return theRootStaticContext != NULL;
 }
+
 
 store::Store& GlobalEnvironment::getStore()
 {
@@ -265,6 +304,15 @@ store::IteratorFactory* GlobalEnvironment::getIteratorFactory()
 XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {
   return *m_compilerSubSys;
+}
+
+DynamicLoader* GlobalEnvironment::getDynamicLoader() const
+{
+  if (!m_dynamic_loader)
+  {
+    m_dynamic_loader = new DynamicLoader();
+  }
+  return m_dynamic_loader;
 }
 
 #ifdef ZORBA_XQUERYX

@@ -50,7 +50,7 @@ namespace zorba
 
 static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 {
-  if (Properties::instance()->printStaticTypes ())
+  if (Properties::instance()->printStaticTypes())
   {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);
@@ -85,10 +85,10 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 bool expr::is_sequential(short theScriptingKind)
 {
   return (theScriptingKind & (VAR_SETTING_EXPR |
-                             APPLYING_EXPR |
-                             EXITING_EXPR |
-                             BREAKING_EXPR | 
-                             SEQUENTIAL_FUNC_EXPR)) != 0;
+                              APPLYING_EXPR |
+                              EXITING_EXPR |
+                              BREAKING_EXPR | 
+                              SEQUENTIAL_FUNC_EXPR)) != 0;
 }
 
 
@@ -526,6 +526,52 @@ bool expr::containsRecursiveCall() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getWillBeSerialized() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
+}
+
+
+void expr::setWillBeSerialized(BoolAnnotationValue v)
+{
+  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
+  theFlags1 |= (v << WILL_BE_SERIALIZED);
+}
+
+
+bool expr::willBeSerialized() const
+{
+  BoolAnnotationValue v = getWillBeSerialized();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether the expr must produce nodes that belong to 
+  "standalone" trees or not. A tree is standalone if it does not contain 
+  references to other trees. Such references are created when the optimizer 
+  decides that it is ok to avoid copying the referenced subtree (as would be
+  required by required by a strict implementation of the spec, eg., during 
+  node construction).
+********************************************************************************/
+BoolAnnotationValue expr::getMustCopyNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
+}
+
+
+void expr::setMustCopyNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~MUST_COPY_NODES_MASK;
+  theFlags1 |= (v << MUST_COPY_NODES);
+}
+
+
+/*******************************************************************************
   Return true if the expr does not reference any variables.
 ********************************************************************************/
 bool expr::is_constant() const
@@ -633,11 +679,17 @@ bool expr::contains_node_construction() const
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
+void expr::get_exprs_of_kind(
+    expr_kind_t kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
 {
   if (kind == get_expr_kind())
   {
     exprs.push_back(const_cast<expr*>(this));
+
+    if (!deep)
+      return;
   }
 
   ExprConstIterator iter(this);
@@ -646,7 +698,40 @@ void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
     const expr* ce = iter.get_expr();
     if (ce)
     {
-      ce->get_exprs_of_kind(kind, exprs);
+      ce->get_exprs_of_kind(kind, deep, exprs);
+    }
+
+    iter.next();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::get_fo_exprs_of_kind(
+    FunctionConsts::FunctionKind kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
+{
+  if (get_expr_kind() == fo_expr_kind)
+  {
+    if (static_cast<const fo_expr*>(this)->get_func()->getKind() == kind)
+    {
+      exprs.push_back(const_cast<expr*>(this));
+
+      if (!deep)
+        return;
+    }
+  }
+
+  ExprConstIterator iter(this);
+  while(!iter.done())
+  {
+    const expr* ce = iter.get_expr();
+    if (ce)
+    {
+      ce->get_fo_exprs_of_kind(kind, deep, exprs);
     }
 
     iter.next();
@@ -751,18 +836,25 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   {
     const fo_expr* foExpr = static_cast<const fo_expr *>(this);
     const function* func = foExpr->get_func();
-    ulong numArgs = foExpr->num_args();
+    csize numArgs = foExpr->num_args();
 
-    for (ulong i = 0; i < numArgs; ++i) {
+    for (csize i = 0; i < numArgs; ++i) 
+    {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->isMap(i)) {
-        if (argExpr->is_map_internal(e, found) && found) {
+      if (func->isMap(i)) 
+      {
+        if (argExpr->is_map_internal(e, found) && found) 
+        {
           return true;
-        } else if (found) {
+        }
+        else if (found)
+        {
           return false;
         }
-      } else if (argExpr->contains_expr(e)) {
+      }
+      else if (argExpr->contains_expr(e))
+      {
         return false;
       }
     }
@@ -775,9 +867,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   {
     const flwor_expr* flworExpr = static_cast<const flwor_expr *>(this);
     bool haveOrderBy = false;
-    ulong numClauses = flworExpr->num_clauses();
+    csize numClauses = flworExpr->num_clauses();
 
-    for (ulong i = 0; i < numClauses; ++i)
+    for (csize i = 0; i < numClauses; ++i)
     {
       const flwor_clause* clause = (*flworExpr)[i];
 
@@ -845,8 +937,8 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         const orderby_clause* obc = static_cast<const orderby_clause*>(clause);
 
-        ulong numColumns = obc->num_columns();
-        for (ulong k = 0; k < numColumns; ++k)
+        csize numColumns = obc->num_columns();
+        for (csize k = 0; k < numColumns; ++k)
         {
           if (obc->get_column_expr(k)->contains_expr(e))
             return false;
@@ -858,7 +950,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
       default:
         ZORBA_ASSERT(false);
       }
-    }
+    } // for each clause
 
     if (found)
     {
@@ -971,6 +1063,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     return false; // TODO
 
   case var_decl_expr_kind:
+  case var_set_expr_kind:
   {
     return !contains_expr(e);
   }

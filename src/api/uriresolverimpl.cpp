@@ -37,6 +37,11 @@ namespace zorba {
     }
   }
 
+  void StreamResourceImpl::destroy() const
+  {
+    delete this;
+  }
+
   StreamResource* StreamResource::create(std::istream* aStream,
                                          StreamReleaser aStreamReleaser)
   {

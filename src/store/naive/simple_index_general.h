@@ -30,8 +30,41 @@ namespace simplestore
 class AtomicItem;
 
 
-/**************************************************************************//**
+/******************************************************************************
+  Acts as a comparison function for the hash or tree map that implements a
+  general index.
+********************************************************************************/
+class GeneralIndexCompareFunction
+{
+private:
+  long               theTimezone;
+  const XQPCollator* theCollator;
 
+public:
+  GeneralIndexCompareFunction(long timezone, const std::string& collation);
+
+  ~GeneralIndexCompareFunction();
+
+  const XQPCollator* getCollator() const { return theCollator; }
+
+  uint32_t hash(const store::Item* key) const;
+
+  bool equal(const store::Item* key1, const store::Item* key2) const;
+
+  long compare(const store::Item* key1, const store::Item* key2) const;
+
+  bool operator()(const store::Item* key1, const store::Item* key2) const
+  {
+    return compare(key1, key2) < 0;
+  }
+};
+
+
+/**************************************************************************//**
+  Stores all the domain nodes associated with a key K. For each such node N, a
+  boolean flag is also stored. The flag is true if  K was produced by 
+  casting an untypedAtomic key that was found in the result of the key expr
+  for node N.
 *******************************************************************************/
 class GeneralIndexValue
 {
@@ -50,47 +83,127 @@ protected:
 public:
   GeneralIndexValue(ulong size = 0) : theNodes(size) {}
 
-  void addNode(store::Item_t& node, bool multikey, bool untyped);
-
   void clear() { theNodes.clear(); }
 
   const_iterator begin() { return theNodes.begin(); }
 
   const_iterator end()   { return theNodes.end(); }
+
+  void addNode(store::Item_t& node, bool untyped);
 };
 
 
 /******************************************************************************
 
+  theKeyTypeCode:
+  ---------------
+  The type code for the builtin atomic key type (set to XS_LAST if the index
+  is not typed).
+
+  theCompFunction:
+  ----------------
+  An instance of GeneralIndexCompareFunction that acts as a comparison function
+  for the hash or tree map that implements the index.
+
+  theEmptyKeyNodes:
+  -----------------
+  A vector storing all domain nodes for which the key expr returns the empty
+  sequence.
+
+  theUntypedFlag:
+  ---------------
+  Set to true if there is at least one domain node for which the key expression
+  returns an item with type xs:untypedAtomic and that item is sucessfully cast
+  to an item with a type other than xs:string.
+
+  theMultiKeyFlag:
+  ----------------
+  Set to true if there is at least one domain node for which the key expression
+  returns more than one items.
 *******************************************************************************/
 class GeneralIndex : public IndexImpl
 {
-  friend class SimpleStore;
+  friend class IndexImpl;
+  friend class GeneralHashIndex;
+  friend class GeneralTreeIndex;
+  friend class ProbeGeneralIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
+
+  typedef std::pair<const store::Item*, GeneralIndexValue*> IndexMapPair;
+
+private:
+  static const int64_t        theMaxLong;
+  static const int64_t        theMinLong;
+  static const double         theDoubleMaxLong;
+  static const double         theDoubleMinLong;
 
 protected:
-  IndexCompareFunction        theCompFunction;
+  SchemaTypeCode              theKeyTypeCode;
+
+  GeneralIndexCompareFunction theCompFunction;
+
   std::vector<store::Item_t>  theEmptyKeyNodes;
+
   bool                        theUntypedFlag;
+
   bool                        theMultiKeyFlag;
 
 protected:
-  GeneralIndex(
-      const store::Item_t& qname,
-      const store::IndexSpecification& spec);
+  GeneralIndex(const store::Item_t& name, const store::IndexSpecification& spec);
+
+  virtual ~GeneralIndex();
+
+  bool isTyped() const { return (theKeyTypeCode != XS_LAST); }
+
+  bool insertInMap(
+      store::Item_t& key,
+      store::Item_t& node,
+      SchemaTypeCode targetMap,
+      bool untyped);
+
+  bool probeMap(
+      const store::Item* key,
+      SchemaTypeCode targetMap);
+
+public:
+  const XQPCollator* getCollator(ulong i) const;
+
+  void setMultiKey() { theMultiKeyFlag = true; }
+
+  ulong size() const;
+
+  bool insert(store::Item_t& key, store::Item_t& node);
+
+  bool insert(store::IndexKey*& key, store::Item_t& value);
+
+  virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
 };
 
 
 /******************************************************************************
+  theMaps:
+  --------
+  One hash map for each builtin atomic type T, except from xs:untypedAtomic 
+  and xs:anyAtomicType. TheMaps is indexed by the type code of T.
 
+  theSingleMap:
+  -------------
+  If the keyspec of the index specifies an atomic type T and T is neither
+  xs:untypedAtomic nor xs:anyAtomicType, then theSingleMap points to theMaps
+  entry that corresponds to the builtin base type of T. Otherwise, theSingleMap
+  is NULL.
 *******************************************************************************/
 class GeneralHashIndex : public GeneralIndex
 {
-  friend class SimpleStore;
+  friend class GeneralIndex;
+  friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralHashIndexIterator;
 
-  typedef HashMap<const store::IndexKey*,
+  typedef HashMap<const store::Item*,
                   GeneralIndexValue*,
-                  IndexCompareFunction> IndexMap;
+                  GeneralIndexCompareFunction> IndexMap;
+
+  typedef IndexMap::iterator EntryIterator;
 
   class KeyIterator : public Index::KeyIterator
   {
@@ -108,75 +221,23 @@ private:
   IndexMap  * theMaps[XS_LAST];
   IndexMap  * theSingleMap;
 
-public:
-  ulong size() const;
-
-  Index::KeyIterator_t keys() const;
-
-  bool insert(store::IndexKey*& key, store::Item_t& node, bool multikey);
-
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
-
 protected:
+  bool insertInMap(
+      store::Item_t& key,
+      store::Item_t& node,
+      IndexMap*& targetMap,
+      bool untyped);
+
+public:
   GeneralHashIndex(
-      const store::Item_t& qname,
+      const store::Item_t& name,
       const store::IndexSpecification& spec);
 
   ~GeneralHashIndex();
 
-  bool isTyped() const { return (theSingleMap != NULL); }
+  Index::KeyIterator_t keys() const;
 
-  bool insertInMap(
-      store::IndexKey*& key,
-      store::Item_t& node,
-      IndexMap*& targetMap,
-      bool multikey,
-      bool untyped);
-};
-
-
-/******************************************************************************
-  Iterator to probe a hash-based, general index. The probe itself may be a
-  value probe or a general probe.
-
-  theIndex         : The index to probe
-  theCondition     : The condition to satisfy. May be a POINT_VALUE or 
-                      POINT_GENERAL condition.
-  theProbeKind     : 
-
-  theResultSets    : The node sets associated with the keys that match the 
-                     condition
-  theResultSetsIte :
-  theResultSetsEnd :
-********************************************************************************/
-class ProbeGeneralHashIndexIterator : public store::IndexProbeIterator
-{
-protected:
-  rchandle<GeneralHashIndex>                 theIndex;
-
-  rchandle<IndexPointCondition>              theCondition;
-  store::IndexCondition::Kind                theProbeKind;
-
-  bool                                       theIsUntypedProbe;
-
-  std::vector<GeneralIndexValue*>            theResultSets;
-  std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
-  std::vector<GeneralIndexValue*>::iterator  theResultSetsEnd;
-  GeneralIndexValue::const_iterator          theIte;
-  GeneralIndexValue::const_iterator          theEnd;
-
-public:
-  ProbeGeneralHashIndexIterator(const store::Index_t& index);
-
-  void init(const store::IndexCondition_t& cond);
-
-  void open();
-
-  bool next(store::Item_t& result);
-  
-  void reset();
-
-  void close();
+  bool remove(const store::Item_t& key, store::Item_t& item, bool);
 };
 
 
@@ -185,14 +246,16 @@ public:
 *******************************************************************************/
 class GeneralTreeIndex : public GeneralIndex
 {
-  friend class SimpleStore;
+  friend class GeneralIndex;
+  friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralTreeIndexIterator;
 
-  typedef std::pair<const store::IndexKey*, GeneralIndexValue*> IndexMapPair;
-
-  typedef std::map<const store::IndexKey*,
+  typedef std::map<const store::Item*,
                    GeneralIndexValue*,
-                   IndexCompareFunction> IndexMap;
+                   GeneralIndexCompareFunction> IndexMap;
+
+  typedef IndexMap::const_iterator EntryIterator;
+
 
   class KeyIterator : public Index::KeyIterator
   {
@@ -207,126 +270,152 @@ class GeneralTreeIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  static const int64_t  theMaxLong;
-  static const int64_t  theMinLong;
-  static const double   theDoubleMaxLong;
-  static const double   theDoubleMinLong;
-
-private:
   IndexMap       * theMaps[XS_LAST];
   IndexMap       * theSingleMap;
   SYNC_CODE(Mutex  theMapMutex;)
 
-public:
-  ulong size() const;
-
-  Index::KeyIterator_t keys() const;
-
-  bool insert(store::IndexKey*& key, store::Item_t& node, bool multikey);
-
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
-
 protected:
+  bool insertInMap(
+      store::Item_t& key,
+      store::Item_t& node,
+      IndexMap*& targetMap,
+      bool untyped);
+
+public:
   GeneralTreeIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec);
 
   ~GeneralTreeIndex();
 
-  bool isTyped() const { return (theSingleMap != NULL); }
+  Index::KeyIterator_t keys() const;
 
-  bool insertInMap(
-      store::IndexKey*& key,
-      store::Item_t& node,
-      IndexMap*& targetMap,
-      bool multikey,
-      bool untyped);
+  bool remove(const store::Item_t& key, store::Item_t& item, bool all);
 };
 
 
 /******************************************************************************
-  Iterator to probe a tree-based, general index. The probe itself may be a
-  value probe or a general probe.
+  Iterator to probe a general index.
 
-  theIndex         : The index to probe
-  theCondition     : The condition to satisfy. May be a POINT_VALUE, or 
-                      POINT_GENERAL, or BOX_VALUE, or BOX_GENERAL condition.
-  theProbeKind     : 
+  theIndex:
+  ---------
+  The index to probe
 
-  theResultSets    : The node sets associated with the keys that match the 
-                     condition. This is used for point probes only.
-  theResultSetsIte : Iterator over theResultSets; points to the "current" result
-                     set. This is used for point probes only.
-  theResultSetsEnd : The "end" iterator of theResultSets. This is used for 
-                     point probes only. 
+  theProbeKind: 
+  --------------
+  The kind of condition to satisfy. May be POINT_VALUE, POINT_GENERAL, BOX_VALUE,
+  or BOX_GENERAL.
 
-  theMapBegins     :  A vector that stores an iterator pointing to the 1st 
-                      qualifying entry in each tree that has at least one
-                      qualifying entry. This is used for range probes only.
-  theMapEnds       :  A vector that stores an iterator pointing to the last 
-                      qualifying entry in each tree that has at least one
-                      qualifying entry. This is used for range probes only.
-  theMapIte        :
+  theCondition:
+  -------------
+  The condition to satisfy. 
 
-  theIte           : Iterator over the "current" result set. 
-  theEnd           : The "end" iterator of the "current" result set. 
+  theIsUntypedProbe:
+  ------------------
 
+  theIsFullProbe:
+  ---------------
+  Set to true if the condition is a range condition with no bounds. In this case,
+  domain nodes that appear in the index with their associated "untyped" flag set
+  to true must be skipped from the result because they will be just duplicates
+  (they appear for sure in the STRING map). This is used for range probes only.
+ 
+  theResultSets:
+  --------------
+  The node sets associated with the keys that match the condition. This is used
+  for point probes only.
+
+  theResultSetsIte:
+  -----------------
+  Iterator over theResultSets; points to the "current" result set. This is used
+  for point probes only.
+
+  theResultSetsEnd:
+  -----------------
+  The "end" iterator of theResultSets. This is used for point probes only. 
+
+  theMapBegins:
+  -------------
+  A vector that stores an iterator pointing to the 1st qualifying entry in 
+  each tree that has at least one qualifying entry. This is used for range 
+  probes only.
+
+  theMapEnds:
+  -----------
+  A vector that stores an iterator pointing to the last qualifying entry in 
+  each tree that has at least one qualifying entry. This is used for range 
+  probes only.
+
+  theMapIte:
+  ----------
+
+  theIte:
+  -------
+  For iterating over the domain nodes associated with an index key that satisfies
+  the search condition. These domain nodes are returned as results of "this"
+  probe iterator.
+
+  theEnd:
+  -------
+  For marking the end of an iteration over the domain nodes associated with an
+  index key that satisfies the search condition..
 ********************************************************************************/
-class ProbeGeneralTreeIndexIterator : public store::IndexProbeIterator
+class ProbeGeneralIndexIterator : public store::IndexProbeIterator
 {
+  friend class ProbeGeneralHashIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
+
   typedef std::vector<GeneralIndexValue*> ResultSets;
 
-  typedef GeneralTreeIndex::IndexMap::const_iterator EntryIterator;
+  typedef GeneralTreeIndex::EntryIterator EntryIterator;
 
   typedef std::vector<EntryIterator> EntryIterators;
 
 protected:
-  rchandle<GeneralTreeIndex>                  theIndex;
+  rchandle<GeneralIndex>                theIndex;
 
-  store::IndexCondition::Kind                 theProbeKind;
-  rchandle<IndexPointCondition>               thePointCondition;
-  rchandle<IndexBoxValueCondition>            theBoxValueCondition;
-  rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
-  bool                                        theIsUntypedProbe;
-  bool                                        theIsFullProbe;
+  store::IndexCondition::Kind           theProbeKind;
 
-  ResultSets                                  theResultSets;
-  ResultSets::const_iterator                  theResultSetsIte;
-  ResultSets::const_iterator                  theResultSetsEnd;
+  rchandle<GeneralIndexCondition>       theCondition;
 
-  EntryIterators                              theMapBegins;
-  EntryIterators                              theMapEnds;
+  bool                                  theIsUntypedProbe;
 
-  ulong                                       theCurrentMap;
-  EntryIterator                               theMapIte;
+  bool                                  theIsFullProbe;
 
-  GeneralIndexValue::const_iterator           theIte;
-  GeneralIndexValue::const_iterator           theEnd;
+  ResultSets                            theResultSets;
 
-public:
-  ProbeGeneralTreeIndexIterator(const store::Index_t& index);
+  ResultSets::const_iterator            theResultSetsIte;
 
-  void init(const store::IndexCondition_t& cond);
+  ResultSets::const_iterator            theResultSetsEnd;
 
-  void open();
+  EntryIterators                        theMapBegins;
 
-  bool next(store::Item_t& result);
-  
-  void reset();
+  EntryIterators                        theMapEnds;
 
-  void close();
+  csize                                 theCurrentMap;
+
+  EntryIterator                         theMapIte;
+
+  GeneralIndexValue::const_iterator     theIte;
+  GeneralIndexValue::const_iterator     theEnd;
 
 protected:
-  void initPoint(const store::IndexCondition_t& cond);
+  ProbeGeneralIndexIterator(const store::Index_t& index);
 
-  void initValueBox(const store::IndexCondition_t& cond);
+  void initPoint();
 
-  void initGeneralBox(const store::IndexCondition_t& cond);
+  void initBox();
+
+  bool haveMap(SchemaTypeCode targetMap) const;
+
+  void probeMap(SchemaTypeCode targetMap, const store::Item* key);
 
   void probeMap(
-      GeneralTreeIndex::IndexMap* map,
-      const store::IndexKey* lowerKey,
-      const store::IndexKey* upperKey);
+      const SchemaTypeCode targetMap,
+      const store::Item* lowerKey,
+      const store::Item* upperKey);
+
+  void checkStringKeyType(const AtomicItem* keyItem) const;
 
   void doubleToLongProbe(
       store::Item_t& result,
@@ -334,7 +423,57 @@ protected:
       bool haveLower,
       bool haveUpper) const;
 
-  void checkStringKeyType(AtomicItem* keyItem) const;
+public:
+  void init(const store::IndexCondition_t& cond);
+
+  void open();
+
+  void reset();
+
+  void close();
+
+  bool next(store::Item_t& result);
+};
+
+
+/******************************************************************************
+  Iterator to probe a hash-based, general index. The probe itself may be a
+  value probe or a general probe.
+********************************************************************************/
+class ProbeGeneralHashIndexIterator : public ProbeGeneralIndexIterator
+{
+  friend class ProbeGeneralIndexIterator;
+
+protected:
+  void probeMap(
+    const GeneralHashIndex::IndexMap* targetMap,
+    const store::Item* key);
+
+public:
+  ProbeGeneralHashIndexIterator(const store::Index_t& index);
+};
+
+
+/******************************************************************************
+  Iterator to probe a tree-based, general index. The probe itself may be a
+  value probe or a general probe.
+********************************************************************************/
+class ProbeGeneralTreeIndexIterator : public ProbeGeneralIndexIterator
+{
+  friend class ProbeGeneralIndexIterator;
+
+protected:
+  void probeMap(
+      const GeneralTreeIndex::IndexMap* targetMap,
+      const store::Item* key);
+
+  void probeMap(
+      const GeneralTreeIndex::IndexMap* targetMap,
+      const store::Item* lowerKey,
+      const store::Item* upperKey);
+
+public:
+  ProbeGeneralTreeIndexIterator(const store::Index_t& index);
 };
 
 

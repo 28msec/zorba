@@ -32,63 +32,6 @@ namespace zorba
 
 
 /*******************************************************************************
-  ctxvar-assign(varExpr, initExpr)
-
-  This internal function is used to initialize prolog variables (including the
-  context item, if it is declared in the prolog) that do have an initializing
-  expr, or to assign a value to a prolog or block-local var. During runtime,
-  the function computes the initExpr and stores the resulting value inside the
-  appropriate dynamic ctx (global or local), at the location that is identified
-  by the variable id.
-********************************************************************************/
-class ctx_var_assign : public function
-{
-public:
-  ctx_var_assign(const signature& sig) 
-    :
-    function(sig, FunctionConsts::OP_VAR_ASSIGN_1)
-  {
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  short getScriptingKind() const { return VAR_SETTING_EXPR; }
-
-  CODEGEN_DECL();
-};
-
-
-PlanIter_t ctx_var_assign::codegen(
-    CompilerCB* cb,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
-{
-  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
-
-  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
-
-  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
-
-  xqtref_t exprType = foExpr.get_arg(1)->get_return_type();
-
-  CtxVarAssignIterator* iter = 
-  new CtxVarAssignIterator(sctx,
-                           loc,
-                           varExpr->get_unique_id(),
-                           varExpr->get_name(),
-                           (varExpr->get_kind() == var_expr::local_var),
-                           argv[1]);
-  
-  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
-    iter->setSingleItem();
-
-  return iter;
-}
-
-
-/*******************************************************************************
   ctxvar-get(varExpr)
 
   An "artificial" function that is needed by the optimizer only. During runtime,
@@ -109,6 +52,11 @@ public:
   }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
 
   CODEGEN_DECL();
 };
@@ -141,12 +89,6 @@ PlanIter_t ctx_var_get::codegen(
 void populateContext_VarDecl(static_context* sctx)
 {
   const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
-
-  DECL(sctx, ctx_var_assign,
-       (createQName(zorba_op_ns, "", "ctxvar-assign"),
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-        GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, ctx_var_get,
        (createQName(zorba_op_ns, "", "ctxvar-get"),

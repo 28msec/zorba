@@ -232,6 +232,34 @@ SubstringIterator::~SubstringIterator() {}
 // </SubstringIterator>
 
 
+// <SubstringIntOptIterator>
+const char* SubstringIntOptIterator::class_name_str = "SubstringIntOptIterator";
+SubstringIntOptIterator::class_factory<SubstringIntOptIterator>
+SubstringIntOptIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SubstringIntOptIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SubstringIntOptIterator::class_versions_count =
+sizeof(SubstringIntOptIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SubstringIntOptIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SubstringIntOptIterator::~SubstringIntOptIterator() {}
+
+// </SubstringIntOptIterator>
+
+
 // <StringLengthIterator>
 const char* StringLengthIterator::class_name_str = "StringLengthIterator";
 StringLengthIterator::class_factory<StringLengthIterator>
@@ -800,6 +828,48 @@ void StringIsStreamableIterator::accept(PlanIterVisitor& v) const {
 StringIsStreamableIterator::~StringIsStreamableIterator() {}
 
 // </StringIsStreamableIterator>
+
+
+// <StringSplitIterator>
+const char* StringSplitIterator::class_name_str = "StringSplitIterator";
+StringSplitIterator::class_factory<StringSplitIterator>
+StringSplitIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringSplitIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringSplitIterator::class_versions_count =
+sizeof(StringSplitIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringSplitIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringSplitIterator::~StringSplitIterator() {}
+
+StringSplitIteratorState::StringSplitIteratorState() {}
+
+StringSplitIteratorState::~StringSplitIteratorState() {}
+
+
+void StringSplitIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theNextStartPos = 0;
+}
+
+void StringSplitIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theNextStartPos = 0;
+}
+// </StringSplitIterator>
 
 
 

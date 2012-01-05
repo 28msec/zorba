@@ -72,15 +72,17 @@ public:
    *                   evaluated lazily. For XQueryP it might be necassary to set
    *                   this to false.
    */
-  virtual TempSeq_t createTempSeq(
-        Iterator_t& iterator,
-        bool copyNodes,
-        bool lazy) = 0;
+  virtual TempSeq_t createTempSeq(const Iterator_t& iterator, bool lazy) = 0;
 
   /**
    * Creates a new TempSeq that is initialized with the given vector.
    */
-  virtual TempSeq_t createTempSeq(const std::vector<Item_t>& item_v) = 0;
+  virtual TempSeq_t createTempSeq(std::vector<Item_t>& item_v) = 0;
+
+  /**
+   * Creates a new TempSeq that is initialized with the given vector.
+   */
+  virtual TempSeq_t createTempSeq(Item_t& item) = 0;
 
   /**
    * Creates a new, empty TempSeq.
@@ -115,6 +117,15 @@ public:
    */
   virtual bool getNodeByReference(store::Item_t& result, const zstring& reference) = 0;
 
+  /* ------------------ Structural Information Management ----------------------*/
+
+  /**
+   * Computes the structural information of the passed item.
+   *
+   * @param item XDM item
+   * @return Returns an item of type xs:uri
+   */
+  virtual bool getStructuralInformation(Item_t& result, const Item* node) = 0;
 
   /* --------------------------- Node Id Management ---------------------------*/
 

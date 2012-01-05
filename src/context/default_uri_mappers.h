@@ -31,14 +31,14 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /**
  * @brief URI Mapper which ensures URIs look like they point to files. Helpful
  * for deploying modules both to filesystems and webservers; also the module
  * versioning mapper depends on this.
  */
-class FileizeURIMapper : public impl::URIMapper
+class FileizeURIMapper : public internal::URIMapper
 {
 public:
 
@@ -52,7 +52,7 @@ public:
  * @brief URI Mapper which mangles non-file: URIs to a standardized location on
  * the filesystem, honoring Zorba's module-path.
  */
-class AutoFSURIMapper : public impl::URIMapper
+class AutoFSURIMapper : public internal::URIMapper
 {
 public:
 
@@ -66,13 +66,13 @@ public:
  * @brief A URI mapper which returns a collection
  *        ressource from the store.
  */
-class ZorbaCollectionURIMapper : public impl::URIMapper
+class ZorbaCollectionURIMapper : public internal::URIMapper
 {
 public:
 
   virtual ~ZorbaCollectionURIMapper();
 
-  virtual impl::URIMapper::Kind mapperKind();
+  virtual internal::URIMapper::Kind mapperKind();
 
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
@@ -84,7 +84,7 @@ public:
 /**
  * @brief Module versioning URI Mapper.
  */
-class ModuleVersioningURIMapper : public impl::URIMapper
+class ModuleVersioningURIMapper : public internal::URIMapper
 {
 public:
 

@@ -29,6 +29,7 @@
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/naive/naive_ft_token_iterator.h"
@@ -38,6 +39,7 @@
 #include "zorbatypes/datetime.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "store/naive/ordpath.h"
 
 
 namespace zorba
@@ -45,6 +47,13 @@ namespace zorba
 
 namespace simplestore
 {
+
+
+enum AnyUriTypeCode
+{
+  NON_SPECIALIZED_ANY_URI,
+  STRUCTURAL_INFORMATION_ANY_URI
+};
 
 class AtomicItemTokenizerCallback;
 
@@ -64,7 +73,7 @@ protected:
 public:
   AtomicItem() : store::Item(ATOMIC) { }
 
-  ~AtomicItem() {}
+  virtual ~AtomicItem() {}
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -81,9 +90,6 @@ public:
       bool force,
       bool& lossy) const;
 };
-
-
-typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
 
 /*******************************************************************************
@@ -344,7 +350,7 @@ protected:
   uint16_t     thePrevFree;
 
 public:
-  ~QNameItem();
+  virtual ~QNameItem();
 
   QNameItem* getNormalized() const;
 
@@ -480,6 +486,7 @@ public:
 class AnyUriItem : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class StructuralAnyUriItem;
 
 protected:
   zstring theValue;
@@ -490,6 +497,11 @@ protected:
   AnyUriItem() {}
 
 public:
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return NON_SPECIALIZED_ANY_URI;
+  }
+
   SchemaTypeCode getTypeCode() const { return XS_ANY_URI; }
 
   store::Item* getType( ) const;
@@ -523,6 +535,177 @@ public:
   const zstring& getString() const { return theValue; }
 
   zstring show() const;
+
+  virtual bool
+  isAncestor(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isFollowing(const store::Item_t&) const;
+
+  virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  virtual bool
+  isDescendant(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isPreceding(const store::Item_t&) const;
+
+  virtual bool
+  isChild(const store::Item_t&) const;
+
+  virtual bool
+  isAttribute(const store::Item_t&) const;
+
+  virtual bool
+  isParent(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
+
+  virtual store::Item_t
+  getLevel() const;
+
+  virtual bool
+  isAttribute() const;
+
+  virtual bool
+  isComment() const;
+
+  virtual bool
+  isDocument() const;
+
+  virtual bool
+  isElement() const;
+
+  virtual bool
+  isProcessingInstruction() const;
+
+  virtual bool
+  isText() const;
+
+  virtual bool
+  isSibling(const store::Item_t&) const;
+
+  virtual bool
+  inSameTree(const store::Item_t&) const;
+
+  virtual bool
+  inCollection() const;
+
+  virtual bool
+  inSameCollection(const store::Item_t&) const;
+};
+
+
+/*******************************************************************************
+  class StructuralAnyUriItem
+********************************************************************************/
+class StructuralAnyUriItem : public AnyUriItem
+{
+  friend class BasicItemFactory;
+
+protected:
+  ulong                        theCollectionId;
+  ulong                        theTreeId;
+  store::StoreConsts::NodeKind theNodeKind;
+  OrdPath                      theOrdPath;
+
+protected:
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return STRUCTURAL_INFORMATION_ANY_URI;
+  }
+
+  StructuralAnyUriItem(zstring& value);
+
+  StructuralAnyUriItem(
+      zstring& value,
+      ulong collectionId,
+      ulong treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
+
+  StructuralAnyUriItem() {}
+
+public:
+  bool
+  isAncestor(const store::Item_t&) const;
+
+  bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  bool
+  isFollowing(const store::Item_t&) const;
+
+  bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  bool
+  isDescendant(const store::Item_t&) const;
+
+  bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  bool
+  isPreceding(const store::Item_t&) const;
+
+  bool
+  isChild(const store::Item_t&) const;
+
+  bool
+  isAttribute(const store::Item_t&) const;
+
+  bool
+  isParent(const store::Item_t&) const;
+
+  bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
+
+  store::Item_t
+  getLevel() const;
+
+  bool
+  isAttribute() const;
+
+  bool
+  isComment() const;
+
+  bool
+  isDocument() const;
+
+  bool
+  isElement() const;
+
+  bool
+  isProcessingInstruction() const;
+
+  bool
+  isText() const;
+
+  bool
+  isSibling(const store::Item_t&) const;
+
+  bool
+  inSameTree(const store::Item_t&) const;
+
+  bool
+  inCollection() const;
+
+  bool
+  inSameCollection(const store::Item_t&) const;
 };
 
 
@@ -632,7 +815,7 @@ public:
 
   void setStreamReleaser(StreamReleaser aReleaser);
 
-  ~StreamableStringItem()
+  virtual ~StreamableStringItem()
   {
     if (theStreamReleaser) 
     {
@@ -1093,7 +1276,7 @@ public:
 class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class IndexBoxCondition;
+  friend class IndexConditionImpl;
   friend class AtomicItem;
 
 protected:
@@ -2139,7 +2322,7 @@ protected:
   }
 
 public:
-  ~ErrorItem();
+  virtual ~ErrorItem();
 
   ZorbaException* getError() const { return theError; }
 

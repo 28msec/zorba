@@ -27,6 +27,7 @@
 #include <zorba/empty_sequence.h>
 
 #include "store/api/item_factory.h"
+#include "store/api/temp_seq.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -35,6 +36,7 @@
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
 #include "api/staticcollectionmanagerimpl.h"
+#include "api/vectoriterator.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -46,6 +48,7 @@
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/expression/var_expr.h"
 
 #include "functions/function.h"
 
@@ -191,7 +194,7 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
+StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
 {
   try
   {
@@ -217,12 +220,11 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
+StaticContextImpl::setDefaultElementAndTypeNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
-    QueryLoc loc;
-    theCtx->set_default_elem_type_ns(lURI, loc);
+    theCtx->set_default_elem_type_ns(lURI, false, QueryLoc::null);
     return true;
   ZORBA_CATCH
   return false;
@@ -233,7 +235,7 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
+StaticContextImpl::getDefaultElementAndTypeNamespace() const
 {
   try
   {
@@ -255,12 +257,12 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
+StaticContextImpl::setDefaultFunctionNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
-    theCtx->set_default_function_ns(lURI, loc);
+    theCtx->set_default_function_ns(lURI, false, loc);
     return true;
   ZORBA_CATCH
   return false;
@@ -749,34 +751,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
-
-#ifndef ZORBA_NO_FULL_TEXT
-/*******************************************************************************
-
-********************************************************************************/
-
-void StaticContextImpl::addThesaurusProvider( ThesaurusProvider const *p ) {
-  if ( !theThesaurusProviders[ p ] ) {
-    internal::ThesaurusProviderWrapper *const w =
-      new internal::ThesaurusProviderWrapper( p );
-    theThesaurusProviders[ p ] = w;
-    theCtx->add_thesaurus_provider( w );
-  }
-}
-
-void StaticContextImpl::removeThesaurusProvider( ThesaurusProvider const *p ) {
-  thesaurus_providers_t::iterator const i = theThesaurusProviders.find( p );
-  if ( i != theThesaurusProviders.end() ) {
-    internal::ThesaurusProviderWrapper const *const w = i->second;
-    theThesaurusProviders.erase( i );
-    theCtx->remove_thesaurus_provider( w );
-    delete w;
-  }
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -861,7 +835,7 @@ StaticContextImpl::getFunctionAnnotations(
   try
   {
     for (unsigned int i = 0; i < ann_list->size(); i++)
-      aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+      aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
   {
@@ -874,7 +848,8 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
   theCtx->set_context_item_type(xqType);
@@ -963,29 +938,44 @@ void StaticContextImpl::loadProlog(
   theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
+static void
+toInternalPath(const std::vector<String>& aPublicStrings,
+               std::vector<zstring>& aInternalStrings)
+{
+  for (std::vector<String>::const_iterator lIter = aPublicStrings.begin();
+       lIter != aPublicStrings.end(); ++lIter)
+  {
+    if (lIter->length() != 0)
+    {
+      aInternalStrings.push_back(Unmarshaller::getInternalString(*lIter).c_str());
+      zstring& lPath = aInternalStrings.back();
+      if (lPath[lPath.length() - 1] != *filesystem_path::get_directory_separator())
+      {
+        lPath.append(filesystem_path::get_directory_separator());
+      }
+    }
+  }
+}
 
-void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
+static void
+toPublicPath(const std::vector<zstring>& aInternalStrings,
+             std::vector<String>& aPublicStrings)
+{
+  for (std::vector<zstring>::const_iterator lIter = aInternalStrings.begin();
+       lIter != aInternalStrings.end(); ++lIter)
+  {
+    aPublicStrings.push_back(lIter->c_str());
+  }
+}
+
+void
+StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
 {
   try
   {
-    std::vector<zstring> lModulePaths;
-
-    for (std::vector<String>::const_iterator lIter = aModulePaths.begin();
-         lIter != aModulePaths.end(); ++lIter)
-    {
-      if (lIter->length() != 0)
-      {
-        lModulePaths.push_back(Unmarshaller::getInternalString(*lIter).c_str());
-        zstring& lPath = lModulePaths.back();
-        if (lPath.rfind(filesystem_path::get_directory_separator()) != std::string::npos)
-        {
-          lPath.append(filesystem_path::get_directory_separator());
-        }
-      }
-
-    }
-
-    theCtx->set_module_paths(lModulePaths);
+    std::vector<zstring> lInternalURIPath;
+    toInternalPath(aURIPath, lInternalURIPath);
+    theCtx->set_uri_path(lInternalURIPath);
   }
   catch (ZorbaException const& e)
   {
@@ -993,20 +983,106 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
   }
 }
 
+void
+StaticContextImpl::getURIPath(std::vector<String> &aURIPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalURIPath;
+    theCtx->get_uri_path(lInternalURIPath);
+    toPublicPath(lInternalURIPath, aURIPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getFullURIPath(std::vector<String> &aURIPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalURIPath;
+    theCtx->get_full_uri_path(lInternalURIPath);
+    toPublicPath(lInternalURIPath, aURIPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::setLibPath(const std::vector<String> &aLibPath)
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    toInternalPath(aLibPath, lInternalLibPath);
+    theCtx->set_lib_path(lInternalLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getLibPath(std::vector<String> &aLibPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    theCtx->get_lib_path(lInternalLibPath);
+    toPublicPath(lInternalLibPath, aLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getFullLibPath(std::vector<String> &aLibPath) const
+{
+  try
+  {
+    std::vector<zstring> lInternalLibPath;
+    theCtx->get_full_lib_path(lInternalLibPath);
+    toPublicPath(lInternalLibPath, aLibPath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
+{
+  try
+  {
+    std::vector<zstring> lInternalModulePath;
+    toInternalPath(aModulePaths, lInternalModulePath);
+    theCtx->set_lib_path(lInternalModulePath);
+    theCtx->set_uri_path(lInternalModulePath);
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
 
 void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
   try
   {
-    std::vector<zstring> lModulePaths;
-
-    theCtx->get_module_paths(lModulePaths);
-
-    for (std::vector<zstring>::const_iterator lIter = lModulePaths.begin();
-         lIter != lModulePaths.end(); ++lIter)
-    {
-      aModulePaths.push_back(lIter->c_str());
-    }
+    std::vector<zstring> lInternalModulePath;
+    theCtx->get_lib_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aModulePaths);
+    lInternalModulePath.clear();
+    theCtx->get_uri_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aModulePaths);
   }
   catch (ZorbaException const& e)
   {
@@ -1020,15 +1096,12 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
 {
   try
   {
-    std::vector<zstring> lFullModulePaths;
-
-    theCtx->get_full_module_paths(lFullModulePaths);
-
-    for (std::vector<zstring>::const_iterator lIter = lFullModulePaths.begin();
-         lIter != lFullModulePaths.end(); ++lIter)
-    {
-      aFullModulePaths.push_back(lIter->c_str());
-    }
+    std::vector<zstring> lInternalModulePath;
+    theCtx->get_full_lib_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aFullModulePaths);
+    lInternalModulePath.clear();
+    theCtx->get_full_uri_path(lInternalModulePath);
+    toPublicPath(lInternalModulePath, aFullModulePaths);
   }
   catch (ZorbaException const& e)
   {
@@ -1351,9 +1424,31 @@ StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 
 
 audit::Event*
-StaticContextImpl::getAuditEvent()
+StaticContextImpl::getAuditEvent() const
 {
   return theCtx->get_audit_event();
+}
+
+
+void
+StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
+{
+  ZORBA_TRY
+  std::vector<var_expr_t> lVars;
+  theCtx->getVariables(lVars, true, false, true);
+
+  std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
+  std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
+  std::vector<store::Item_t> lExVars;
+
+  for (; lIte != lEnd; ++lIte) 
+  { 
+    lExVars.push_back(lIte->getp()->get_name());        
+  }
+
+  Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+  aVarsIter = vIter; 
+  ZORBA_CATCH
 }
 
 } /* namespace zorba */

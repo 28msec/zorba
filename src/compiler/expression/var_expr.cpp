@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include "functions/udf.h"
+
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
@@ -83,13 +85,38 @@ var_expr::var_expr(
   theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL),
+  theParamPos(0),
+  theUDF(NULL),
   theIsExternal(false),
   theIsPrivate(false),
-  theIsMutable(true)
+  theIsMutable(true),
+  theHasInitializer(false)
 {
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+var_expr::var_expr(const var_expr& source)
+  :
+  expr(source),
+  theUniqueId(0),
+  theKind(source.theKind),
+  theName(source.theName),
+  theDeclaredType(source.theDeclaredType),
+  theFlworClause(NULL),
+  theCopyClause(NULL),
+  theParamPos(source.theParamPos),
+  theUDF(source.theUDF),
+  theIsExternal(source.theIsExternal),
+  theIsPrivate(source.theIsPrivate),
+  theIsMutable(source.theIsMutable),
+  theHasInitializer(source.theHasInitializer)
+{
 }
 
 
@@ -105,9 +132,12 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theDeclaredType;
   ar & theFlworClause;
   ar & theCopyClause;
+  ar & theParamPos;
+  ar & theUDF;
   ar & theIsPrivate;
   ar & theIsExternal;
   ar & theIsMutable;
+  ar & theHasInitializer;
 }
 
 
@@ -204,6 +234,30 @@ forletwin_clause* var_expr::get_forletwin_clause() const
 for_clause* var_expr::get_for_clause() const
 {
   return dynamic_cast<for_clause*>(theFlworClause);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::remove_set_expr(expr* e) 
+{
+  assert(theKind == local_var || theKind == prolog_var);
+
+  bool found = false;
+  std::vector<expr*>::iterator ite = theSetExprs.begin();
+  std::vector<expr*>::iterator end = theSetExprs.end();
+  for (; ite != end; ++ite)
+  {
+    if (*ite == e)
+    {
+      theSetExprs.erase(ite);
+      found = true;
+      break;
+    }
+  }
+
+  ZORBA_ASSERT(found);
 }
 
 

@@ -31,12 +31,14 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief http: URL Resolver.
  */
-class HTTPURLResolver : public impl::URLResolver
+class HTTPURLResolver : public internal::URLResolver
 {
 public:
 
@@ -47,7 +49,7 @@ public:
 /**
  * @brief file: URL Resolver.
  */
-class FileURLResolver : public impl::URLResolver
+class FileURLResolver : public internal::URLResolver
 {
 public:
 
@@ -57,7 +59,7 @@ public:
 
 /**
  */
-class ZorbaCollectionURLResolver : public impl::URLResolver
+class ZorbaCollectionURLResolver : public internal::URLResolver
 {
 public:
 
@@ -67,12 +69,24 @@ public:
     EntityData const* aEntityData);
 };
 
+#ifndef ZORBA_NO_FULL_TEXT
+
+class ThesaurusURLResolver : public URLResolver
+{
+public:
+  // inherited
+  Resource* resolveURL( zstring const &aUrl, EntityData const* );
+};
+
+#endif /* ZORBA_NO_FULL_TEXT */
+
+///////////////////////////////////////////////////////////////////////////////
+
 } /* namespace zorba::impl */
 
 } /* namespace zorba */
 
 #endif /* ZORBA_DEFAULT_URL_RESOLVERS_H */
-
 /*
  * Local variables:
  * mode: c++

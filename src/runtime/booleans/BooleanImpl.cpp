@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
@@ -324,7 +325,7 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 ********************************************************************************/
 bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem0, lItem1, tItem0, tItem1;
+  store::Item_t item0, item1, tItem0, tItem1;
   bool c0Done = false, c1Done = false, done = false, found = false;
   std::vector<store::Item_t> seq0;
   std::vector<store::Item_t> seq1;
@@ -335,34 +336,34 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (theIsGeneralComparison)
   {
-    if (consumeNext(lItem0, theChild0.getp(), planState))
+    if (consumeNext(item0, theChild0.getp(), planState))
     {
       if (consumeNext(tItem0, theChild0.getp(), planState))
       {
-        seq0.push_back(lItem0);
+        seq0.push_back(item0);
         seq0.push_back(tItem0);
       }
       else
       {
         c0Done = true;
-        if (consumeNext(lItem1, theChild1.getp(), planState))
+        if (consumeNext(item1, theChild1.getp(), planState))
         {
           if (consumeNext(tItem1, theChild1.getp(), planState))
           {
-            seq0.push_back(lItem0);
-            seq1.push_back(lItem1);
+            seq0.push_back(item0);
+            seq1.push_back(item1);
             seq1.push_back(tItem1);
           }
           else
           {
             c1Done = true;
-            found = CompareIterator::generalComparison(loc,
-                                                       lItem0,
-                                                       lItem1,
-                                                       theCompType,
-                                                       theTypeManager,
-                                                       theTimezone,
-                                                       theCollation);
+            found = generalComparison(loc,
+                                      item0,
+                                      item1,
+                                      theCompType,
+                                      theTypeManager,
+                                      theTimezone,
+                                      theCollation);
             done = true;
           }
         }
@@ -383,77 +384,74 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     if (!done)
     {
-      store::Iterator_t lIter0;
-      store::Iterator_t lIter1;
+      store::Iterator_t ite0;
+      store::Iterator_t ite1;
       tSeq0 = GENV_STORE.createTempSeq(seq0);
       tSeq1 = GENV_STORE.createTempSeq(seq1);
 
       if (!c0Done)
       {
-        lIter0 = new PlanIteratorWrapper(theChild0, planState);
-        tSeq0->append(lIter0, false);
+        ite0 = new PlanIteratorWrapper(theChild0, planState);
+        tSeq0->append(ite0);
       }
 
       if (!c1Done)
       {
-        lIter1 = new PlanIteratorWrapper(theChild1, planState);
-        tSeq1->append(lIter1, false);
+        ite1 = new PlanIteratorWrapper(theChild1, planState);
+        tSeq1->append(ite1);
       }
 
-      ulong i0 = 1;
-      while(!found && tSeq0->containsItem(i0))
+      ite0 = tSeq0->getIterator();
+      ite1 = tSeq1->getIterator();
+      ite0->open();
+      ite1->open();
+
+      while (!found && ite0->next(item0))
       {
-        ulong i1 = 1;
-        while(!found && tSeq1->containsItem(i1))
+        while (!found && ite1->next(item1))
         {
-          store::Item_t item0;
-          store::Item_t item1;
-          tSeq0->getItem(i0, item0);
-          tSeq1->getItem(i1, item1);
-          if (CompareIterator::generalComparison(loc,
-                                                 item0,
-                                                 item1,
-                                                 theCompType,
-                                                 theTypeManager,
-                                                 theTimezone,
-                                                 theCollation))
+          store::Item_t tmp = item0;
+
+          if (generalComparison(loc,
+                                tmp,
+                                item1,
+                                theCompType,
+                                theTypeManager,
+                                theTimezone,
+                                theCollation))
           {
             found = true;
+            break;
           }
-          ++i1;
         }
-        ++i0;
+
+        ite1->reset();
       }
     }
 
-    STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
-
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, found), state);
   }
   else
   {
     // value comparison
-    if (consumeNext(lItem0, theChild0.getp(), planState) &&
-        consumeNext(lItem1, theChild1.getp(), planState))
+    if (consumeNext(item0, theChild0.getp(), planState) &&
+        consumeNext(item1, theChild1.getp(), planState))
     {
       STACK_PUSH(GENV_ITEMFACTORY->
                  createBoolean(result,
                                CompareIterator::valueComparison(loc,
-                                                                lItem0,
-                                                                lItem1,
+                                                                item0,
+                                                                item1,
                                                                 theCompType,
                                                                 theTypeManager,
                                                                 theTimezone,
                                                                 theCollation)),
                  state);
 
-      if (consumeNext(lItem0, theChild0.getp(), planState) ||
-          consumeNext(lItem1, theChild1.getp(), planState))
+      if (consumeNext(item0, theChild0.getp(), planState) ||
+          consumeNext(item1, theChild1.getp(), planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqInValueComp)));
       }
     }
   }
@@ -1022,7 +1020,9 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
 
 
 template<TypeConstants::atomic_type_code_t ATC>
-bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& planState) const
+bool TypedValueCompareIterator<ATC>::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lItem0, lItem1;
   bool bRes;

@@ -518,7 +518,7 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(repExpr->theTargetExpr);
-    EXPR_ITER_NEXT(repExpr->theReplaceExpr);
+    EXPR_ITER_NEXT(repExpr->theSourceExpr);
 
     EXPR_ITER_END();
     break;
@@ -531,7 +531,7 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(renExpr->theTargetExpr);
-    EXPR_ITER_NEXT(renExpr->theNameExpr);
+    EXPR_ITER_NEXT(renExpr->theSourceExpr);
 
     EXPR_ITER_END();
     break;
@@ -588,6 +588,15 @@ void ExprIterator::next()
     var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theExpr);
     EXPR_ITER_BEGIN();
     EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+    EXPR_ITER_END();
+    break;
+  }
+
+  case var_set_expr_kind:
+  {
+    var_set_expr* varSetExpr = static_cast<var_set_expr*>(theExpr);
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_NEXT(varSetExpr->theExpr);
     EXPR_ITER_END();
     break;
   }

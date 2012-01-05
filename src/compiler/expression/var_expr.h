@@ -56,21 +56,65 @@ typedef rchandle<var_expr> var_expr_t;
   For vars declared in FOR, LET, or WINDOW clauses, their defining expr is
   stored in the associated clause (see theForletClause data member below).
 
-  theUniqueId    : A unique numeric id for variales whose value is stored in
-                   the dynamic context, ie, prolog and local vars. It is used
-                   as an index into an array that stores the values.
+  theUniqueId:
+  ------------
+  A unique numeric id for variales whose value is stored in the dynamic context,
+  ie, prolog and local vars. It is used as an index into an array that stores
+  the values.
 
-  theKind        : The kind of the variable (see var_kind enum below)
-  theVarName     : The fully expanded qname of the var (qname item)
-  theStaticType  : The static type of the variable
-  theFlworClause : If this is a var declared in flwor clause, theFlworClause
-                   points to the defining clause. That clause also contains
-                   the defining expr for the var and a pointer back to this
-                   var_exr.
-  theCopyClause  : If this is a var declared in a copy clause of a transform
-                   expr, theCopyClause points to that clause. That clause
-                   contains the defining expr for the var and a pointer back
-                   to this var_exr.
+  theKind:
+  --------
+  The kind of the variable (see var_kind enum below)
+
+  theVarName:
+  -----------
+  The fully expanded qname of the var (qname item)
+
+  theDeclaredType:
+  ----------------
+  The type, if any, specified in the declaration of the variable
+
+  theFlworClause:
+  ---------------
+  If this is a var declared in flwor clause, theFlworClause points to the 
+  defining clause. That clause also contains the defining expr for the var
+  and a pointer back to this var_exr.
+
+  theCopyClause:
+  --------------
+  If this is a var declared in a copy clause of a transform expr, theCopyClause
+  points to that clause. That clause contains the defining expr for the var and
+  a pointer back to this var_exr.
+
+  theParamPos:
+  ------------
+  For arg vars, it is the position, within the param list, of parameter that is
+  bound to this arg var.
+  
+  theUDF:
+  -------
+  For arg vars, the corresponding UDF.
+
+  theSetExprs:
+  ------------
+  For global and local vars, this vector contains a pointer to the var_decl_expr
+  for the variable and to each var_set_expr for the same var.
+
+  theIsExternal:
+  --------------
+  Whether this is an external variable or not (for prolog vars only).
+
+  theIsPrivate:
+  -------------
+  Whether this is a private variable or not (for prolog vars only).
+
+  theIsMutable:
+  -------------
+  Whether this is a mutable variable or not (for prolog and local vars).
+
+  theHasInitializer:
+  ------------------
+   Whether the variable has an initializing expr or not (for prolog vars only).
 *******************************************************************************/
 class var_expr : public expr
 {
@@ -108,19 +152,31 @@ public:
   };
 
 protected:
-  ulong          theUniqueId;
+  ulong                 theUniqueId;
 
-  var_kind       theKind;
-  store::Item_t  theName;
-  xqtref_t       theDeclaredType;
+  var_kind              theKind;
 
-  flwor_clause * theFlworClause;
-  copy_clause  * theCopyClause;
+  store::Item_t         theName;
 
-  bool           theIsExternal;
+  xqtref_t              theDeclaredType;
 
-  bool           theIsPrivate; 
-  bool           theIsMutable;
+  flwor_clause        * theFlworClause;
+
+  copy_clause         * theCopyClause;
+
+  csize                 theParamPos;
+
+  user_function       * theUDF;
+
+  std::vector<expr*>    theSetExprs;
+
+  bool                  theIsExternal;
+
+  bool                  theIsPrivate; 
+
+  bool                  theIsMutable;
+
+  bool                  theHasInitializer;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -132,10 +188,12 @@ public:
 
 public:
   var_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        var_kind k,
-        store::Item* name);
+      static_context* sctx,
+      const QueryLoc& loc,
+      var_kind k,
+      store::Item* name);
+
+  var_expr(const var_expr& source);
 
   ulong get_unique_id() const { return theUniqueId; }
 
@@ -154,6 +212,10 @@ public:
   bool is_external() const { return theIsExternal; }
 
   void set_external(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
 
   bool is_mutable() const { return theIsMutable; }
 
@@ -179,6 +241,22 @@ public:
 
   const var_expr* get_pos_var() const;
 
+  csize get_param_pos() const { return theParamPos; }
+
+  void set_param_pos(csize pos) { theParamPos = pos; }
+
+  user_function* get_udf() const { return theUDF; }
+
+  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
+
+  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
+
+  void remove_set_expr(expr* e);
+
+  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+
+  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+  
   bool is_context_item() const;
 
   void compute_scripting_kind();

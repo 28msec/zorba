@@ -22,7 +22,7 @@ To generate a report for submitting to the W3C:
 
 2.  Run a CTest dashboard from your build directory:
 
-    ctest -T test -R w3c_update_testsuite/XQuery or
+    ctest -T test -R w3c_update_testsuite/XQuery -E XQueryX or
     ctest -T test -R w3c_update_testsuite/XQueryX
 
 3.  From this directory (test/rbkt/Scripts/w3c), modify

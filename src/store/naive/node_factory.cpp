@@ -57,8 +57,8 @@ DocumentNode* NodeFactory::createDocumentNode()
 
 DocumentNode* NodeFactory::createDocumentNode(
     XmlTree* tree,
-    zstring& baseUri,
-    zstring& docUri)
+    const zstring& baseUri,
+    const zstring& docUri)
 {
   return new DocumentNode(tree, baseUri, docUri);
 }

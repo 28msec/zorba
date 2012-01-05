@@ -57,13 +57,17 @@ public:
         const zstring& ns,
         const signature& sig,
         short scriptingType,
-        ExternalFunction* impl);
+        ExternalFunction* internal);
 
   ~external_function() { }
 
   short getScriptingKind() const { return theScriptingKind; }
 
   bool accessesDynCtx() const;
+
+  bool propagatesInputNodes(expr* fo, csize input) const;
+
+  bool mustCopyInputNodes(expr* fo, csize input) const;
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,

@@ -586,31 +586,6 @@ public:
   virtual const Item_t
   getFunctionName() const;
 
-#if 0
-  /**
-   * Make a copy of the xml tree rooted at this node and place the copied
-   * tree at a given position under a given node.
-   *
-   * @param parent   The node P under which the copied tree is to be placed.
-   *                 P may be NULL, in which case the copied tree becomes a
-   *                 new standalone xml tree.
-   * @param pos      The position under P where the copied tree is to be placed.
-   *                 If "this" is an attribute node, pos is a position among the
-   *                 attributes of P; otherwise it is a position among the 
-   *                 children of P. If is greater or equal to the current number
-   *                 of attributes/children in P, then the copied tree is appended
-   *                 to P's attributes/children.
-   * @param copymode Encapsulates the construction-mode and copy-namespace-mode
-   *                 components of the query's static context. 
-   * @return         A pointer to the root node of the copied tree, or to this
-   *                 node if no copy was actually done. 
-   */
-  virtual Item* copy(
-        Item* parent,
-        vsize_t pos,
-        const CopyMode& copymode) const;
-#endif
-
   /**
    * Make a copy of the xml tree rooted at this node and place the copied
    * tree as the last child of a given node.
@@ -662,6 +637,12 @@ public:
    *
    */
   virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
   isDescendant(const store::Item_t&) const;
 
   /**
@@ -686,13 +667,91 @@ public:
    *
    */
   virtual bool
+  isAttribute(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
   isParent(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
 
   /**
    *
    */
   virtual store::Item_t
   getLevel() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isSibling(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isAttribute() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isComment() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDocument() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isElement() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isProcessingInstruction() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isText() const;
+
+  /**
+   *
+   */
+  virtual bool
+  inSameTree(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  inCollection() const;
+
+  /**
+   *
+   */
+  virtual bool
+  inSameCollection(const store::Item_t&) const;
 
   /**
    *
@@ -721,6 +780,14 @@ public:
    * @return true only if it is.
    */
   virtual bool isStreamable() const;
+
+  /**
+   * Checks whether the item's content is streamable
+   * and the underlying stream is seekable
+   *
+   * @return true only if it is.
+   */
+  virtual bool isSeekable() const;
 
   /**
    * Gets an istream for the item's content.

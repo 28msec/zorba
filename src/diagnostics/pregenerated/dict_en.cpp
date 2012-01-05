@@ -20,6 +20,7 @@
   */
  
 #include "stdafx.h"
+#include "zorba/config.h"
 #include "diagnostics/dict_impl.h"
 
 namespace zorba {
@@ -231,6 +232,7 @@ extern entry const dict_en[] = {
   { "ZAPI0007", "cannot serialize pul" },
   { "ZAPI0008", "can not execute a non-updating XQuery" },
   { "ZAPI0009", "XQuery not compiled in debug mode" },
+  { "ZAPI0011", "\"$1\": undefined $2" },
   { "ZAPI0014", "\"$1\": invalid argument${: 2}" },
   { "ZAPI0015", "\"$1\": createModule() function not found${: 2}" },
   { "ZAPI0019", "\"$1\": external module already registered" },
@@ -286,7 +288,7 @@ extern entry const dict_en[] = {
   { "ZDDY0022", "\"$1\": index already exists" },
   { "ZDDY0023", "\"$1\": index does not exist" },
   { "ZDDY0024", "\"$1\": index uniqueness violation" },
-  { "ZDDY0025", "${\"1\": }invalid number of arguments in probe" },
+  { "ZDDY0025", "\"$1\": invalid number of arguments to $2 operation; given $3 expected $4" },
   { "ZDDY0026", "\"$1\": index range probe not allowed" },
   { "ZDDY0027", "\"$1\": index multiple creates" },
   { "ZDDY0028", "\"$1\": index domain has duplicate nodes" },
@@ -296,6 +298,7 @@ extern entry const dict_en[] = {
   { "ZDDY0032", "\"$1\": integrity constraint is not activated" },
   { "ZDDY0033", "\"$1\": integrity constraint not met for collection \"$2\"" },
   { "ZDDY0034", "\"$1\": index range-value probe has search keys with incompatible types" },
+  { "ZDDY0035", "\"$1\": index inserting more than one key not allowed for general index" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
@@ -306,6 +309,7 @@ extern entry const dict_en[] = {
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
   { "ZDST0023", "\"$1\": index declaration not allowed in main module" },
   { "ZDST0024", "index multiple property values" },
+  { "ZDST0025", "\"$1\": index cannot be declared as unique" },
   { "ZDST0026", "index invalid property value" },
   { "ZDST0027", "\"$1\": index bad key type" },
   { "ZDST0028", "\"$1\": index not deterministic" },
@@ -337,8 +341,6 @@ extern entry const dict_en[] = {
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
   { "ZSTR0004", "\"$1\": partial key deletion from index \"$2\"" },
-  { "ZSTR0005", "\"$1\": partial key probe into index \"$2\"" },
-  { "ZSTR0006", "for index \"$1\": $2" },
   { "ZSTR0007", "\"$1\": unsupported probe condition for index \"$2\"" },
   { "ZSTR0008", "\"$1\": collection already exists" },
   { "ZSTR0009", "\"$1\": collection not found" },
@@ -359,11 +361,14 @@ extern entry const dict_en[] = {
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
+  { "ZWST0005", "\"$1\": function caching not possible; $2" },
+  { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
   { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
+  { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
   { "ZXQP0002", "\"$1\": assertion failed" },
@@ -663,6 +668,10 @@ extern entry const dict_en[] = {
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },
   { "~ZDST0060_unknown_localname", "unknown localname ($3)" },
   { "~ZDST0060_unknown_namespace", "unknown namespace ($3)" },
+  { "~ZWST0005_PARAM_TYPE", "type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType" },
+  { "~ZWST0005_RETURN_TYPE", "return type ($3) is not subtype of xs:anyAtomicType" },
+  { "~ZWST0005_UPDATING", "function is updating" },
+  { "~ZWST0005_VARIADIC", "function is variadic" },
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },

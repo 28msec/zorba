@@ -22,6 +22,10 @@
 namespace zorba 
 {
 
+class UDFCallChain;
+
+
+
 class DataflowAnnotationsComputer 
 {
 public:
@@ -36,6 +40,7 @@ private:
   void compute_block_expr(block_expr* e);
   void compute_wrapper_expr(wrapper_expr* e);
   void compute_var_expr(var_expr* e);
+  void compute_var_set_expr(var_set_expr* e);
   void compute_flwor_expr(flwor_expr* e);
   void compute_trycatch_expr(trycatch_expr* e);
   void compute_promote_expr(promote_expr* e);
@@ -63,8 +68,37 @@ private:
   bool generic_compute(expr* e);
 };
 
-}
 
+class SourceFinder
+{
+  typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
+  typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
+
+  typedef std::map<user_function*, std::vector<expr*>* > UdfSourcesMap;
+  typedef std::pair<user_function*, std::vector<expr*>* > UdfSourcesPair;
+
+protected:
+  VarSourcesMap                theVarSourcesMap;
+  UdfSourcesMap                theUdfSourcesMap;
+  std::vector<fo_expr*>        theUdfCallPath;
+
+protected:
+  void findNodeSourcesRec(
+      expr* node,
+      std::vector<expr*>& sources,
+      user_function* currentUdf);
+
+public:
+  ~SourceFinder();
+
+  void findNodeSources(
+      expr* inExpr,
+      UDFCallChain* udfChain,
+      std::vector<expr*>& sources);
+};
+
+
+}
 #endif /* ZORBA_DATAFLOW_ANNOTATIONS_H */
 
 /*

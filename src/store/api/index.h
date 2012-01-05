@@ -29,8 +29,6 @@ namespace store
 {
 
 class IndexSpecification;
-class IndexKeyCompareFunction;
-class IndexColumnRange;
 class IndexEntryCreator;
 class Iterator;
 
@@ -40,26 +38,54 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 /***************************************************************************//**
   Specification for creating a value or general index.
 
-  theNumKeyColumns: The number of columns in each key.
-  theKeyTypes     : The data types of the key columns. Each type must be a
-                    builtin atomic type, and for sorted indices, it must have
-                    an ordering.
-  theCollations   : The names (uris) of the collations to use when comparing the
-                    string columns of two keys. The size of this vector is equal
-                    to theNumKeyColumns; if a type of a key column is not string,
-                    the associated entry in theCollations is the empty string.
-  theTimezone     : The timezone is needed to compare date/time key values.
-  theIsGeneral    : Whether the index is "general" or not.
-  theIsUnique     : Whether the index is unique, i.e., there is exactly one
-                    value associated with each key.
-  theIsSorted     : Whether the index is sorted by its key values or not.
-  theIsTemp       : Whether the index is temporary or not.
-  theIsThreadSafe : Whether the index can be shared among multiple threads or not
-  theIsAutomatic  : Whether the index must be maintained during/after each apply-
-                    updates or not.
+  theNumKeyColumns: 
+  -----------------
+  The number of columns in each key.
 
-  theSources      : The qnames of the collections accessed by the defining exprs
-                    of this index.
+  theKeyTypes:
+  ------------
+  The data types of the key columns. Each type must be a builtin atomic type,
+  and for sorted indices, it must have an ordering.
+
+  theCollations: 
+  --------------
+  The names (uris) of the collations to use when comparing the string columns 
+  of two keys. The size of this vector is equal to theNumKeyColumns; if a type
+  of a key column is not string, the associated entry in theCollations is the 
+  empty string.
+
+  theTimezone:
+  ------------
+  The timezone is needed to compare date/time key values.
+
+  theIsGeneral:
+  -------------
+  Whether the index is "general" or not.
+
+  theIsUnique: 
+  ------------
+  Whether the index is unique, i.e., there is exactly one value associated with
+  each key.
+
+  theIsSorted:
+  ------------
+  Whether the index is sorted by its key values or not.
+
+  theIsTemp:
+  ----------
+  Whether the index is temporary or not.
+
+  theIsThreadSafe:
+  ----------------
+  Whether the index can be shared among multiple threads or not.
+
+  theIsAutomatic:
+  ---------------
+  Whether the index must be maintained during/after each apply- updates or not.
+
+  theSources:
+  -----------
+  The qnames of the collections accessed by the defining exprs of this index.
 ********************************************************************************/
 class IndexSpecification
 {
@@ -389,6 +415,18 @@ public:
    * Returns all keys stored in this index
    */
   virtual KeyIterator_t keys() const = 0;
+
+  /**
+   * Insert the given item in the value set of the given key. If the key is not
+   * in the index already, then the key itself is inserted as well. Return true
+   * if the key was already in the index, false otherwise
+   * The index wil take the ownership of the key if it was not already in the
+   * index.
+   *
+   * @error ZDDY0035 if a key with more than one item is inserted into
+   *  a general index
+   */
+  virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 };
 
 
