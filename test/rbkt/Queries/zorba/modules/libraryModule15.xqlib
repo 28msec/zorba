@@ -4,9 +4,14 @@ module namespace def = "foo:bar";
 
 declare copy-namespaces no-preserve,no-inherit;
 
-declare variable $def:element1 := <element1 xmlns:namespace1="www.namespace1.com"></element1>;
-declare variable $def:element2 := <element2 xmlns:namespace2="www.namespace2.com">{$def:element1}</element2>;
-declare variable $def:element3 := <element3 xmlns:namespace3="www.namespace3.com">{$def:element2}</element3>;
+declare variable $def:element1 := 
+<element1 xmlns:namespace1="www.namespace1.com"></element1>;
+
+declare variable $def:element2 := 
+<element2 xmlns:namespace2="www.namespace2.com">{$def:element1}</element2>;
+
+declare variable $def:element3 := 
+<element3 xmlns:namespace3="www.namespace3.com">{$def:element2}</element3>;
 
 declare function def:init()
 {

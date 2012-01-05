@@ -1237,7 +1237,7 @@ bool FLWORIterator::bindVariable(
     }
 
     store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
-    tmpSeq->init(iterState->theTempSeqIters[varNo], false);
+    tmpSeq->init(iterState->theTempSeqIters[varNo]);
 
     std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
@@ -1420,7 +1420,7 @@ void FLWORIterator::materializeSortTupleAndResult(
   sortTable[numTuples].theDataPos = numTuples;
 
   store::Iterator_t iterWrapper = new PlanIteratorWrapper(theReturnClause, planState);
-  store::TempSeq_t resultSeq = GENV_STORE.createTempSeq(iterWrapper, false, false);
+  store::TempSeq_t resultSeq = GENV_STORE.createTempSeq(iterWrapper, false);
   store::Iterator_t resultIter = resultSeq->getIterator();
 
   resultTable[numTuples].transfer(resultIter);
@@ -1503,9 +1503,9 @@ void FLWORIterator::materializeGroupTuple(
     for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
-      new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
-                                                              planState);
-      (*nongroupVarSequences)[i]->append(iterWrapper, false);
+      new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
+
+      (*nongroupVarSequences)[i]->append(iterWrapper);
 
       nongroupingSpecs[i].reset(planState);
     }
@@ -1521,7 +1521,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
-      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false, false);
+      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false);
 
       nongroupVarSequences->push_back(result);
 

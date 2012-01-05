@@ -43,9 +43,11 @@ class fn_zorba_fetch_content : public function
 {
 public:
   fn_zorba_fetch_content(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -58,9 +60,11 @@ class fn_zorba_fetch_content_type : public function
 {
 public:
   fn_zorba_fetch_content_type(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

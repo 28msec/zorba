@@ -43,9 +43,11 @@ class fn_collection : public function
 {
 public:
   fn_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -60,9 +62,11 @@ class zorba_store_collections_static_dml_collection : public function
 {
 public:
   zorba_store_collections_static_dml_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -87,11 +91,15 @@ class zorba_store_collections_static_dml_index_of : public function
 {
 public:
   zorba_store_collections_static_dml_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -102,13 +110,17 @@ class zorba_store_collections_static_ddl_create : public function
 {
 public:
   zorba_store_collections_static_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -119,13 +131,17 @@ class zorba_store_collections_static_ddl_delete : public function
 {
 public:
   zorba_store_collections_static_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -136,13 +152,17 @@ class zorba_store_collections_static_dml_insert_nodes : public function
 {
 public:
   zorba_store_collections_static_dml_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -153,13 +173,17 @@ class zorba_store_collections_static_dml_insert_nodes_first : public function
 {
 public:
   zorba_store_collections_static_dml_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -170,13 +194,17 @@ class zorba_store_collections_static_dml_insert_nodes_last : public function
 {
 public:
   zorba_store_collections_static_dml_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -187,13 +215,17 @@ class zorba_store_collections_static_dml_insert_nodes_before : public function
 {
 public:
   zorba_store_collections_static_dml_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
   CODEGEN_DECL();
 };
@@ -204,13 +236,17 @@ class zorba_store_collections_static_dml_insert_nodes_after : public function
 {
 public:
   zorba_store_collections_static_dml_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
   CODEGEN_DECL();
 };
@@ -221,13 +257,19 @@ class zorba_store_collections_static_dml_apply_insert_nodes : public function
 {
 public:
   zorba_store_collections_static_dml_apply_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -238,13 +280,19 @@ class zorba_store_collections_static_dml_apply_insert_nodes_first : public funct
 {
 public:
   zorba_store_collections_static_dml_apply_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -255,13 +303,19 @@ class zorba_store_collections_static_dml_apply_insert_nodes_last : public functi
 {
 public:
   zorba_store_collections_static_dml_apply_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -272,13 +326,19 @@ class zorba_store_collections_static_dml_apply_insert_nodes_before : public func
 {
 public:
   zorba_store_collections_static_dml_apply_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
   CODEGEN_DECL();
 };
@@ -289,13 +349,19 @@ class zorba_store_collections_static_dml_apply_insert_nodes_after : public funct
 {
 public:
   zorba_store_collections_static_dml_apply_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
   CODEGEN_DECL();
 };
@@ -306,17 +372,21 @@ class zorba_store_collections_static_dml_delete_nodes : public function
 {
 public:
   zorba_store_collections_static_dml_delete_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -327,13 +397,17 @@ class zorba_store_collections_static_dml_delete_node_first : public function
 {
 public:
   zorba_store_collections_static_dml_delete_node_first(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -344,13 +418,17 @@ class zorba_store_collections_static_dml_delete_node_last : public function
 {
 public:
   zorba_store_collections_static_dml_delete_node_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -361,11 +439,15 @@ class zorba_store_collections_static_dml_collection_name : public function
 {
 public:
   zorba_store_collections_static_dml_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -376,9 +458,11 @@ class zorba_store_collections_static_ddl_is_available_collection : public functi
 {
 public:
   zorba_store_collections_static_ddl_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -391,9 +475,11 @@ class zorba_store_collections_static_ddl_available_collections : public function
 {
 public:
   zorba_store_collections_static_ddl_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -406,9 +492,11 @@ class zorba_store_indexes_static_ddl_is_available_index : public function
 {
 public:
   zorba_store_indexes_static_ddl_is_available_index(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -421,9 +509,11 @@ class zorba_store_indexes_static_ddl_available_indexes : public function
 {
 public:
   zorba_store_indexes_static_ddl_available_indexes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -436,9 +526,11 @@ class zorba_store_integrity_constraints_static_ddl_is_activated_integrity_constr
 {
 public:
   zorba_store_integrity_constraints_static_ddl_is_activated_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -451,9 +543,11 @@ class zorba_store_integrity_constraints_static_ddl_activated_integrity_constrain
 {
 public:
   zorba_store_integrity_constraints_static_ddl_activated_integrity_constraints(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -466,9 +560,11 @@ class zorba_store_collections_static_ddl_is_declared_collection : public functio
 {
 public:
   zorba_store_collections_static_ddl_is_declared_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -479,9 +575,11 @@ class zorba_store_collections_static_ddl_declared_collections : public function
 {
 public:
   zorba_store_collections_static_ddl_declared_collections(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -492,9 +590,11 @@ class zorba_store_indexes_static_ddl_is_declared_index : public function
 {
 public:
   zorba_store_indexes_static_ddl_is_declared_index(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -505,9 +605,11 @@ class zorba_store_indexes_static_ddl_declared_indexes : public function
 {
 public:
   zorba_store_indexes_static_ddl_declared_indexes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -518,9 +620,11 @@ class zorba_store_integrity_constraints_static_ddl_is_declared_integrity_constra
 {
 public:
   zorba_store_integrity_constraints_static_ddl_is_declared_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -531,9 +635,11 @@ class zorba_store_integrity_constraints_static_ddl_declared_integrity_constraint
 {
 public:
   zorba_store_integrity_constraints_static_ddl_declared_integrity_constraints(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

@@ -18,4 +18,4 @@ import module namespace guestbook = "http://www.28msec.com/templates/guestbook/g
 
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
-guestbook:init(), refl:eval("guestbook:list()"), refl:eval("guestbook:window()")
+guestbook:init(), refl:eval-s("guestbook:list()"), refl:eval("guestbook:window()")

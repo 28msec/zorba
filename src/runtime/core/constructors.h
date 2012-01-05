@@ -47,6 +47,7 @@ private:
   bool      theTypePreserve;
   bool      theNsPreserve;
   bool      theNsInherit;
+  bool      theCopyInputNodes;
 
 public:
   SERIALIZABLE_CLASS(DocumentIterator);
@@ -55,25 +56,16 @@ public:
   DocumentIterator,
   UnaryBaseIterator<DocumentIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, 
-    (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
-
-    ar & theTypePreserve;
-    ar & theNsPreserve;
-    ar & theNsInherit;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DocumentIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t& aChild)
-    :
-    UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, aChild)
-  {
-    theTypePreserve = false;//pre initialize things to avoid valgrind warnings during serialization
-    theNsPreserve = false;
-    theNsInherit = false;
-  }
+  DocumentIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& aChild,
+      bool copyInputNodes);
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -81,18 +73,6 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
-
-
-/*********************************************************************************
-
-  DocumentContentIterator checks that the children of a doc node do not include
-  any attribute nodes.
-  
-  theChild:      Iter that produces the content of the document element
-
-*********************************************************************************/
-UNARY_ITER(DocumentContentIterator);
-
 
 
 /*******************************************************************************
@@ -137,6 +117,7 @@ private:
   bool                theTypePreserve;
   bool                theNsPreserve;
   bool                theNsInherit;
+  bool                theCopyInputNodes;
 
 public:
   SERIALIZABLE_CLASS(ElementIterator);
@@ -145,20 +126,7 @@ public:
   ElementIterator,
   NoaryBaseIterator<ElementIterator, ElementIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<ElementIterator,
-                                               ElementIteratorState>*)this);
-    ar & theQNameIter;
-    ar & theAttributesIter;
-    ar & theChildrenIter;
-    ar & theNamespacesIter;
-    ar & theLocalBindings;
-    ar & theIsRoot;
-    ar & theTypePreserve;
-    ar & theNsPreserve;
-    ar & theNsInherit;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ElementIterator (
@@ -168,7 +136,10 @@ public:
       PlanIter_t&         aAttrs,
       PlanIter_t&         aChildren,
       const namespace_context* localBindings,
-      bool                isRoot);
+      bool                isRoot,
+      bool                copyInputNodes);
+
+  bool copyInputNodes() const { return theCopyInputNodes; }
 
   uint32_t getStateSizeOfSubtree() const;
   

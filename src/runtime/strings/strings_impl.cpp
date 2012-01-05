@@ -120,22 +120,78 @@ bool StringToCodepointsIterator::nextImpl(
 
   if (consumeNext(item, theChildren [0].getp(), planState ))
   {
-    item->getStringValue2(inputStr);
-
-    if (!inputStr.empty())
+    if(!item->isStreamable())
     {
-      utf8::to_codepoints(inputStr, &state->theResult);
+      item->getStringValue2(inputStr);
+    }
+    else
+    {
+      state->theStream = &item->getStream();
+    }
+  }
 
-      while (state->theIterator < state->theResult.size())
+  if ( state->theStream )
+  {
+    while ( !state->theStream->eof() )
+    {
+      utf8::encoded_char_type ec;
+      memset( ec, 0, sizeof( ec ) );
+      utf8::storage_type *p;
+      p = ec;
+
+      if ( utf8::read( *state->theStream, ec ) == utf8::npos )
       {
-        GENV_ITEMFACTORY->createInteger(
-          result,
-          Integer(state->theResult[state->theIterator])
-        );
-
-        STACK_PUSH(true, state );
-        state->theIterator = state->theIterator + 1;
+        if ( state->theStream->good() ) {
+          //
+          // If read() failed but the stream state is good, it means that an
+          // invalid byte was encountered.
+          //
+          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
+          bool first = true;
+          for ( ; *p; ++p ) {
+            if ( first )
+              first = false;
+            else
+              *b++ = ',';
+            ::strcpy( b, "0x" );          b += 2;
+            ::sprintf( b, "%0hhX", *p );  b += 2;
+          }
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+            ERROR_PARAMS( buf ),
+            ERROR_LOC( loc )
+          );
+        } else {
+          throw XQUERY_EXCEPTION(
+            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
+          );
+        }
       }
+      state->theResult.clear();
+      state->theResult.push_back( utf8::next_char( p ) );
+      
+      GENV_ITEMFACTORY->createInteger(
+        result,
+        Integer(state->theResult[0])
+      );
+
+      STACK_PUSH(true, state );
+      state->theIterator = state->theIterator + 1;
+    }
+  }
+  else if (!inputStr.empty())
+  {
+    utf8::to_codepoints(inputStr, &state->theResult);
+
+    while (state->theIterator < state->theResult.size())
+    {
+      GENV_ITEMFACTORY->createInteger(
+        result,
+        Integer(state->theResult[state->theIterator])
+      );
+
+      STACK_PUSH(true, state );
+      state->theIterator = state->theIterator + 1;
     }
   }
   STACK_END (state);
@@ -146,6 +202,7 @@ void StringToCodepointsIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theIterator = 0;
+  theStream   = 0;
   theResult.clear();
 }
 
@@ -2247,5 +2304,133 @@ bool StringIsStreamableIterator::nextImpl(
   STACK_END(state);
 }
 
+/**
+ *______________________________________________________________________
+ *
+ * http://www.zorba-xquery.com/modules/string
+ * string:split
+ */
+bool StringSplitIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  size_t lNewPos = 0;
+  zstring lToken;
+  zstring lPartialMatch;
+
+  StringSplitIteratorState* state;
+  DEFAULT_STACK_INIT(StringSplitIteratorState, state, planState);
+
+  // init phase, get input string and tokens
+  consumeNext(item, theChildren[0].getp(), planState);
+
+  if (item->isStreamable())
+  {
+    state->theIStream = &item->getStream();
+  }
+  else
+  {
+    state->theIStream = 0;
+    item->getStringValue2(state->theInput);
+  }
+
+  consumeNext(item, theChildren[1].getp(), planState);
+
+  item->getStringValue2(state->theSeparator);
+
+  // working phase, do the tokenization
+  if (state->theIStream)
+  {
+    while ( !state->theIStream->eof() )
+    {
+      utf8::encoded_char_type ec;
+      memset( ec, '\0' , sizeof(ec) );
+      utf8::storage_type *p;
+      p = ec;
+
+      if ( utf8::read( *state->theIStream, ec ) != utf8::npos )
+      {
+        if (state->theSeparator.compare(lNewPos, 1, ec) == 0)
+        {
+          if (++lNewPos == state->theSeparator.length())
+          {
+            GENV_ITEMFACTORY->createString(result, lToken);
+            STACK_PUSH(true, state);
+          }
+          else
+          {
+            lPartialMatch.append(ec);
+          }
+        }
+        else
+        {
+          lToken.append(lPartialMatch);
+          lToken.append(ec);
+        }
+      }
+      else
+      {
+        if (state->theIStream->good())
+        {
+          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
+          bool first = true;
+          for ( ; *p; ++p ) {
+            if ( first )
+              first = false;
+            else
+              *b++ = ',';
+            ::strcpy( b, "0x" );          b += 2;
+            ::sprintf( b, "%0hhX", *p );  b += 2;
+          }
+          throw XQUERY_EXCEPTION(
+            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+            ERROR_PARAMS( buf ),
+            ERROR_LOC( loc )
+          );
+        }
+        if (!lToken.empty())
+        {
+          GENV_ITEMFACTORY->createString(result, lToken);
+          STACK_PUSH(true, state);
+        }
+        break;
+      }
+    }
+  }
+  else
+  {
+    while (true)
+    {
+      if (state->theNextStartPos == zstring::npos)
+      {
+        break;
+      }
+
+      lNewPos =
+        state->theInput.find(state->theSeparator, state->theNextStartPos);
+      if (lNewPos != zstring::npos)
+      {
+        zstring lSubStr = state->theInput.substr(
+            state->theNextStartPos,
+            lNewPos - state->theNextStartPos);
+        GENV_ITEMFACTORY->createString(result, lSubStr);
+        state->theNextStartPos =
+          lNewPos==state->theInput.length() - state->theSeparator.length()
+          ? zstring::npos
+          : lNewPos + state->theSeparator.length();
+      }
+      else
+      {
+        zstring lSubStr = state->theInput.substr(state->theNextStartPos);
+        GENV_ITEMFACTORY->createString(result, lSubStr);
+        state->theNextStartPos = zstring::npos;
+      }
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -36,23 +36,29 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_concat::ignoresSortedNodes(
     expr* fo,
-    ulong input) const
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }
 
 
 BoolAnnotationValue fn_concat::ignoresDuplicateNodes(
-    expr* fo,
-    ulong input) const
+    expr* fo, 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }
 
-function* fn_substring::specialize( static_context* sctx,
+
+/*******************************************************************************
+
+********************************************************************************/
+function* fn_substring::specialize( 
+    static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-    return NULL;
+  assert(false);
+  return NULL;
 }
 
 }

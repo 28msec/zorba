@@ -393,11 +393,12 @@ public:
 
 public:
   flwor_wincond(
-        static_context* sctx,
-        bool isOnly,
-        const vars& in_vars,
-        const vars& out_vars,
-        expr_t cond);
+      static_context* sctx,
+      bool isOnly,
+      const vars& in_vars,
+      const vars& out_vars,
+      expr_t cond);
+
   ~flwor_wincond();
 
   expr* get_cond() const { return theCondExpr.getp(); }
@@ -470,13 +471,21 @@ public:
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
-  ulong getNumGroupingVars() const { return (ulong)theGroupVars.size(); }
+  csize getNumGroupingVars() const { return theGroupVars.size(); }
 
-  ulong getNumNonGroupingVars() const { return (ulong)theNonGroupVars.size(); }
+  csize getNumNonGroupingVars() const { return theNonGroupVars.size(); }
 
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
+
+  rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
+
+  rebind_list_t::iterator endGroupVars() { return theGroupVars.end(); }
+
+  rebind_list_t::iterator beginNonGroupVars() { return theNonGroupVars.begin(); }
+
+  rebind_list_t::iterator endNonGroupVars() { return theNonGroupVars.end(); }
 
   expr* get_input_for_group_var(const var_expr* var);
 
@@ -520,11 +529,11 @@ public:
 
 public:
   orderby_clause (
-        static_context* sctx,
-        const QueryLoc& loc,
-        bool stable,
-        const std::vector<OrderModifier>& modifiers,
-        const std::vector<expr_t>& orderingExprs);
+      static_context* sctx,
+      const QueryLoc& loc,
+      bool stable,
+      const std::vector<OrderModifier>& modifiers,
+      const std::vector<expr_t>& orderingExprs);
 
   bool is_stable() const { return theStableOrder; }
 
@@ -532,11 +541,15 @@ public:
 
   const std::vector<expr_t>& get_column_exprs() const { return theOrderingExprs; }
 
-  ulong num_columns() const { return (ulong)theOrderingExprs.size(); }
+  std::vector<expr_t>::iterator begin() { return theOrderingExprs.begin(); }
 
-  expr* get_column_expr(ulong i) const { return theOrderingExprs[i].getp(); }
+  std::vector<expr_t>::iterator end() { return theOrderingExprs.end(); }
 
-  void set_column_expr(ulong i, expr_t e) { theOrderingExprs[i] = e; }
+  csize num_columns() const { return theOrderingExprs.size(); }
+
+  expr* get_column_expr(csize i) const { return theOrderingExprs[i].getp(); }
+
+  void set_column_expr(csize i, expr_t e) { theOrderingExprs[i] = e; }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 

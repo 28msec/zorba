@@ -110,6 +110,13 @@ int _tmain(int argc, _TCHAR* argv[])
     chints.opt_level = ZORBA_OPT_LEVEL_O1;
   }
 
+  chints.for_serialization_only = false;
+
+  if (Properties::instance()->serializeOnlyQuery())
+  {
+    chints.for_serialization_only = true;
+  }
+
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
@@ -122,18 +129,22 @@ int _tmain(int argc, _TCHAR* argv[])
   filesystem_path path;
   bool  is_xqueryx = false;
 
-  if (! lProp->inlineQuery()) {
+  if (! lProp->inlineQuery()) 
+  {
     path = lProp->queryFile ();
     path.resolve_relative ();
     std::string fname = path.get_path ();
     if(fname.substr(fname.length()-4) == ".xqx")
       is_xqueryx = true;
     qfile.reset (new ifstream (fname.c_str ()));
-    if (!qfile->good() || qfile->eof()) {
+    if (!qfile->good() || qfile->eof()) 
+    {
       cerr << "no query given or not readable " << fname  << endl;
       return 3;
     }
-  } else {
+  }
+  else 
+  {
     qfile.reset (new istringstream(lProp->query ()));
   }
 
@@ -161,7 +172,8 @@ int _tmain(int argc, _TCHAR* argv[])
   XQuery_t query = zengine->createQuery ();
 
 #ifdef ZORBA_WITH_DEBUGGER
-  if (lProp->debug()) {
+  if (lProp->debug()) 
+  {
     query->setDebugMode(lProp->debug());
     Zorba_CompilerHints lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
@@ -172,9 +184,12 @@ int _tmain(int argc, _TCHAR* argv[])
     query->setFileName(path.get_path());
   }
 
-  try {
+  try 
+  {
     query->compile(*qfile, chints);
-  } catch (ZorbaException& e) {
+  }
+  catch (ZorbaException& e)
+  {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;

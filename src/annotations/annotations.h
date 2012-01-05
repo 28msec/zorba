@@ -55,6 +55,10 @@ public:
     zann_nonassignable,
     zann_sequential,
     zann_nonsequential,
+    zann_propagates_input_nodes,
+    zann_must_copy_input_nodes,
+    zann_cache,
+    zann_nocache,
     zann_variadic,
     zann_streamable,
     zann_unique,
@@ -135,7 +139,7 @@ public:
 class AnnotationList : public SimpleRCObject
 {
 public:
-  typedef  AnnotationInternal::RuleBitSet RuleBitSet;
+  typedef AnnotationInternal::RuleBitSet RuleBitSet;
 
   typedef AnnotationInternal::AnnotationId AnnotationId;
 
@@ -158,13 +162,15 @@ public:
 
   csize size() const { return theAnnotationList.size(); }
 
-  AnnotationInternal* getAnnotation(csize index) const;
+  AnnotationInternal* get(csize index) const;
+
+  AnnotationInternal* get(AnnotationInternal::AnnotationId id) const;
+
+  bool contains(AnnotationInternal::AnnotationId id) const;
 
   void push_back(
       const store::Item_t& qname,
       const std::vector<rchandle<const_expr> >& literals);
-
-  bool contains(AnnotationInternal::AnnotationId id) const;
 
   void checkConflictingDeclarations(const QueryLoc& loc) const;
 };

@@ -24,11 +24,17 @@
   <zorba:description author="Zorba Team">fn:resolve-QName</zorba:description>
 
   <zorba:function>
+
     <zorba:signature localname="resolve-QName" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>element()</zorba:param> <!-- was node() -->
       <zorba:output>xs:QName?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes producer="1"/>
+    </zorba:methods>
+
   </zorba:function>
     
 </zorba:iterator>
@@ -135,11 +141,17 @@
   <zorba:description author="Zorba Team">fn:namespace-uri-for-prefix</zorba:description>
 
   <zorba:function>
+
     <zorba:signature localname="namespace-uri-for-prefix" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>element()</zorba:param> <!-- was node()  -->
       <zorba:output>xs:anyURI?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes producer="1"/>
+    </zorba:methods>
+
   </zorba:function>
     
 </zorba:iterator>
@@ -158,6 +170,11 @@
       <zorba:param>element()</zorba:param> <!-- was node() -->
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
   </zorba:function>
 
   <zorba:state generateInit="false" generateReset="false">
