@@ -25,6 +25,8 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/static_collection_manager.h>
 
+#include "system/properties.h"
+
 using namespace zorba;
 
 bool
@@ -230,6 +232,7 @@ bool
 staticcollectionamanger4(zorba::Zorba* z)
 {
   std::ifstream lIn("main_invoke.xq");
+  assert(lIn.good());
 
   zorba::XQuery_t lQuery = z->createQuery();
   Zorba_CompilerHints lHints;
@@ -261,6 +264,8 @@ staticcollectionmanager(int argc, char* argv[])
 {
   void* store = zorba::StoreManager::getStore();
   zorba::Zorba* z = zorba::Zorba::getInstance(store);
+
+  zorba::Properties::load(0, NULL);
 
   std::cout << "executing example 1" << std::endl;
   if (!staticcollectionamanger1(z))
