@@ -143,7 +143,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 
   if (lResult) {
     // Watch the process
-    ProcessListener* lPl = new ProcessListener(piProcessInfo.hProcess, &onExitProcess);
+    new ProcessListener(piProcessInfo.dwProcessId, &onExitProcess);
   }
   else {
     // CreateProcess failed
