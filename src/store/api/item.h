@@ -818,11 +818,18 @@ public:
   values() const;
 
   /**
-   * defined on JSONObject and JSONArray
-   * @return the pair with given name or index, respectively
+   * defined on JSONObject
+   * @return the pair with given name
    */
   virtual store::Item*
-  lookup(const store::Item_t& name) const;
+  pair(const store::Item_t& name) const;
+
+  /**
+   * defined on JSONArray
+   * @return the value at the given position
+   */
+  virtual store::Item*
+  value(const store::Item_t& aPosition) const;
 
   /**
    * defined on JSONObjectPair

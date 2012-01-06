@@ -96,9 +96,6 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonItem; }
-
-  virtual void
-  accept(JSONVisitor*) const = 0;
 };
 
 
@@ -121,7 +118,6 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonObject; }
-
   // accessors
 #if 0
   bool getBooleanValue() const { return true; }
@@ -158,11 +154,15 @@ protected:
   struct JSONObjectPairComparator
   {
     bool operator() (
-      const JSONObjectPair_t& lhs,
-      const JSONObjectPair_t& rhs) const;
+      const store::Item* lhs,
+      const store::Item* rhs) const;
   };
 
-  typedef std::set<JSONObjectPair_t, JSONObjectPairComparator> Pairs;
+  typedef std::map<
+    store::Item*,
+    JSONObjectPair_t,
+    JSONObjectPairComparator> Pairs;
+
   typedef Pairs::const_iterator PairsConstIter;
   typedef Pairs::iterator PairsIter;
 
@@ -200,8 +200,8 @@ public:
   store::Iterator_t
   pairs() const;
 
-  virtual void
-  accept(JSONVisitor*) const;
+  store::Item*
+  pair(const store::Item_t& name) const;
 };
 
 
@@ -222,21 +222,11 @@ public:
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
 #if 0
-  // accessors
-  virtual store::Iterator_t
-  pairs() const;
-
   bool getBooleanValue() const { return true; }
 
   virtual store::Item*
   getType() const;
-
-  // 
-  // convenience accessors pushed down for performance
-  virtual store::Item*
-  lookup(const store::Item_t& index) const;
 #endif
-
   virtual void
   push_back(const store::Item_t& aValue) = 0;
 
@@ -245,10 +235,6 @@ public:
 
   virtual const store::Item*
   operator[](xs_integer&) const = 0;
-
-  store::Iterator_t
-  values() const = 0;
-
 };
 
 
@@ -304,9 +290,6 @@ public:
   virtual ~SimpleJSONArray() {}
 
   virtual void
-  accept(JSONVisitor*) const;
-
-  virtual void
   push_back(const store::Item_t& aValue);
 
   virtual xs_integer
@@ -315,8 +298,11 @@ public:
   virtual const store::Item*
   operator[](xs_integer&) const;
 
-  store::Iterator_t
+  virtual store::Iterator_t
   values() const;
+
+  virtual store::Item*
+  value(const store::Item_t& aPosition) const;
 };
 
 
@@ -347,9 +333,6 @@ public:
 
   virtual store::Item*
   getContainer() const = 0;
-
-  virtual void
-  accept(JSONVisitor*) const {}
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonPair; }
@@ -402,9 +385,6 @@ public:
 
   store::Item*
   getContainer() const { return theContainer; }
-
-  virtual void
-  accept(JSONVisitor*) const {}
 };
 
 } // namespace json
