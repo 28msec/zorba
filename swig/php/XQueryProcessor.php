@@ -179,7 +179,12 @@ class XQueryProcessor {
    * @return ZorbaXQueryProcessor instance.
    */
   public function importQueryFromURI($filename) {
-    $this->importQuery(file_get_contents($filename));
+    $ctx = null;
+    if(func_num_args() == 2) {
+      $ctx = func_get_arg(1);
+    }
+    $query = file_get_contents($filename, FILE_USE_INCLUDE_PATH, $ctx);
+    $this->importQuery($query);
     return $this;
   }
 
