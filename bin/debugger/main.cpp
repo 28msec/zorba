@@ -214,10 +214,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
       return pID;
     }
     
-    // pID > 0
-
     // Watch the process
-    //ProcessListener* lPl =
     new ProcessListener(pID, &onExitProcess);
 
     return 0;
@@ -374,12 +371,6 @@ _tmain(int argc, _TCHAR* argv[])
 
     theClient =  new XqdbClient(lPort);
     theClient->start();
-
-    //tCommandLineHandler.execute();
-
-#ifndef WIN32
-    wait();
-#endif
 
     delete theClient;
 

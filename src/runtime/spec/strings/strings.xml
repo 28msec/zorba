@@ -729,4 +729,35 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+ * string:tokenize
+********************************************************************************/
+-->
+<zorba:iterator name="StringSplitIterator">
+
+  <zorba:description author="Matthias Brantner">
+    string:split
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="split" prefix="fn-zorba-string">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="zstring" name="theSeparator"
+      brief="separator for the tokenization"/>
+    <zorba:member type="std::istream*" name="theIStream"
+      brief="the remaining string (if the input is streamable)"/>
+    <zorba:member type="zstring" name="theInput"
+      brief="the string to tokenize (if the input is not streamable)"/>
+    <zorba:member type="size_t" name="theNextStartPos" defaultValue="0"/>
+  </zorba:state>
+
+</zorba:iterator>
+
 </zorba:iterators>
