@@ -58,7 +58,6 @@ IF (ZORBA_WITH_JSON)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
     json_items.cpp
     json_loader.cpp
-    json_visitor.cpp
   )
 ENDIF (ZORBA_WITH_JSON)
 

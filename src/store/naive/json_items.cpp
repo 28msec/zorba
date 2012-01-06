@@ -15,7 +15,6 @@
  */
 
 #include "json_items.h"
-#include "json_visitor.h"
 #include "simple_item_factory.h"
 #include "simple_store.h"
 #include "item_iterator.h"
@@ -34,10 +33,10 @@ namespace json
 *******************************************************************************/
 bool
 SimpleJSONObject::JSONObjectPairComparator::operator()(
-    const JSONObjectPair_t& lhs,
-    const JSONObjectPair_t& rhs) const
+    const store::Item* lhs,
+    const store::Item* rhs) const
 {
-  return lhs->getName()->getStringValue().compare(rhs->getName()->getStringValue());
+  return lhs->getStringValue().compare(rhs->getStringValue());
 }
 
 
@@ -47,7 +46,8 @@ SimpleJSONObject::JSONObjectPairComparator::operator()(
 void
 SimpleJSONObject::add(const JSONObjectPair_t& p)
 {
-  thePairs.insert(p);
+  store::Item* lName = p->getName();
+  thePairs.insert(std::make_pair<store::Item*, JSONObjectPair_t>(lName, p));
 }
 
 
@@ -75,7 +75,7 @@ SimpleJSONObject::PairIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->thePairs.end())
   {
-    JSONObjectPair_t lPair = *theIter;
+    JSONObjectPair_t lPair = theIter->second;
     res = lPair;
     ++theIter;
     return true;
@@ -116,64 +116,23 @@ SimpleJSONObject::pairs() const
   return new PairIterator(const_cast<SimpleJSONObject*>(this));
 }
 
-/******************************************************************************
-
-*******************************************************************************/
-void
-SimpleJSONObject::accept(JSONVisitor* v) const
-{
-  v->begin(this);
-
-  size_t i = 1;
-
-  for (PairsConstIter lIter = thePairs.begin(); lIter != thePairs.end(); ++i, ++lIter)
-  {
-    v->begin(*lIter, i == thePairs.size());
-
-    JSONObject* lObject = dynamic_cast<JSONObject*>((*lIter)->getValue());
-    JSONArray* lArray = dynamic_cast<JSONArray*>((*lIter)->getValue());
-    if (lObject)
-    {
-      lObject->accept(v);
-    }
-    else if (lArray)
-    {
-      lArray->accept(v);
-    }
-    else
-    {
-      v->visit((*lIter)->getValue());
-    }
-
-    v->end(*lIter, i == thePairs.size());
-  }
-
-  v->end(this);
-}
-
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::accept(JSONVisitor* v) const
+store::Item*
+SimpleJSONObject::pair(const store::Item_t& name) const
 {
-  v->begin(this);
-
-  for (PairsConstIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
+  PairsConstIter lIter = thePairs.find(name.getp());
+  if (lIter == thePairs.end())
   {
-    JSONItem* lItem = dynamic_cast<JSONItem*>(lIter->getp());
-    if (lItem)
-    {
-      lItem->accept(v);
-    }
-    else
-    {
-      v->visit(lIter->getp());
-    }
+    return 0;
   }
-
-  v->end(this);
+  else
+  {
+    JSONObjectPair_t lPair = lIter->second;
+    return lPair.getp();
+  }
 }
 
 
@@ -212,6 +171,24 @@ store::Iterator_t
 SimpleJSONArray::values() const
 {
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
+}
+
+store::Item*
+SimpleJSONArray::value(const store::Item_t& aPosition) const
+{
+  uint64_t lIndex;
+  try {
+    lIndex = to_xs_unsignedLong(aPosition->getIntegerValue());
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
+  return theContent[lIndex].getp();
 }
 
 } // namespace json

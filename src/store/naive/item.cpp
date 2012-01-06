@@ -1356,7 +1356,16 @@ Item::values() const
 }
 
 store::Item*
-Item::lookup(const store::Item_t& name) const
+Item::pair(const store::Item_t& name) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::value(const store::Item_t& index) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
