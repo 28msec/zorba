@@ -47,7 +47,7 @@ namespace zorba {
     ItemFactory* lFactory = lInstance->getItemFactory();
     Item lNodeName = lFactory->createQName("http://expath.org/ns/http-client", "http", "request");
     Item lEmptyItem;
-    std::vector<std::pair<String, String> > nsPairs;
+    NsBindings nsPairs;
     nsPairs.push_back(std::make_pair(String("xs"), String("http://www.w3.org/2001/XMLSchema")));
     Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
                                                        lFactory->createQName("http://www.w3.org/2001/XMLSchema",
