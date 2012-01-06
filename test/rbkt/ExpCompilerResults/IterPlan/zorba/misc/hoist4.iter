@@ -2,22 +2,22 @@ Iterator tree for main query:
 <flwor::FLWORIterator>
   <ForVariable name="a">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill allowed="0">
-      <ElementIterator>
+      <ElementIterator copyInputNodes="false">
         <SingletonIterator value="xs:QName(,,root)"/>
         <FnConcatIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,foo)"/>
             <AttributeIterator qname="xs:QName(,,id)">
               <SingletonIterator value="xs:string(-1)"/>
             </AttributeIterator>
             <FnConcatIterator>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,boo)"/>
                 <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(1)"/>
                 </AttributeIterator>
               </ElementIterator>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,boo)"/>
                 <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(2)"/>
@@ -25,19 +25,19 @@ Iterator tree for main query:
               </ElementIterator>
             </FnConcatIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,foo)"/>
             <AttributeIterator qname="xs:QName(,,id)">
               <SingletonIterator value="xs:string(-2)"/>
             </AttributeIterator>
             <FnConcatIterator>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,boo)"/>
                 <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(3)"/>
                 </AttributeIterator>
               </ElementIterator>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,boo)"/>
                 <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(4)"/>

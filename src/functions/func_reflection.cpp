@@ -38,6 +38,7 @@ public:
   CODEGEN_DECL();
 };
 
+
 class fn_zorba_invoke_n : public function
 {
 public:
@@ -88,6 +89,7 @@ public:
   CODEGEN_DECL();
 };
 
+
 PlanIter_t fn_zorba_invoke::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -98,6 +100,7 @@ PlanIter_t fn_zorba_invoke::codegen(
   ZORBA_ASSERT(false);
   return NULL;
 }
+
 
 PlanIter_t fn_zorba_invoke_n::codegen(
   CompilerCB*,

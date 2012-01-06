@@ -474,7 +474,11 @@ public:
 
   virtual bool createYearMonthDuration(Item_t& result, xs_yearMonthDuration* value ) = 0;
 
+  virtual bool createYearMonthDuration(Item_t& result, const char* str, ulong strlen ) = 0;
+
   virtual bool createDayTimeDuration(Item_t& result, xs_dayTimeDuration* value ) = 0;
+
+  virtual bool createDayTimeDuration(Item_t& result, const char* str, ulong strlen ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]

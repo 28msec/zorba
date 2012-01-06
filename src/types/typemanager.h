@@ -59,7 +59,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(TypeManager)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TypeManager, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & m_level;

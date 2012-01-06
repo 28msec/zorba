@@ -79,13 +79,13 @@ public:
 
   const store::Item* get_fname() const;
 
-  ulong num_args() const { return (ulong)theArgs.size(); }
+  const std::vector<expr_t>& get_args() const { return theArgs; }
 
-  expr* get_arg(ulong i) const { return theArgs[i].getp(); }
+  csize num_args() const { return theArgs.size(); }
 
-  const std::vector<expr_t>& get_args() const {return theArgs;}
+  expr* get_arg(csize i) const { return theArgs[i].getp(); }
 
-  void set_arg(ulong i, expr* e) { theArgs[i] = e; }
+  void set_arg(csize i, expr* e) { theArgs[i] = e; }
 
   void add_arg(expr_t e);
 

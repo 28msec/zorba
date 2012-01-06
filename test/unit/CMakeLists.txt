@@ -28,8 +28,10 @@ DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarB"
   
 #belongs to test external_function.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main3.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main3.xq)
 
 #belongs to test no_folding.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod1.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod1.xq)
@@ -51,6 +53,13 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection2.xqlib ${CMAKE_CURRENT_BIN
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xq ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xqlib ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xqlib)
 
+# belongs to the staticcollectionmanager test
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_invoke.xq ${CMAKE_CURRENT_BINARY_DIR}/main_invoke.xq)
+
+#belongs to test context_item
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/context_item1.xq ${CMAKE_CURRENT_BINARY_DIR}/context_item1.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/context_item2.xq ${CMAKE_CURRENT_BINARY_DIR}/context_item2.xq)
+
 #belongs to streamable_string
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_1.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_1.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_2.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_2.xq)
@@ -59,6 +68,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string.cpp ${CMAKE_CURRENT
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module1.xq ${CMAKE_CURRENT_BINARY_DIR}/module1.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module2.xq ${CMAKE_CURRENT_BINARY_DIR}/module2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module3.xq ${CMAKE_CURRENT_BINARY_DIR}/module3.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module4.xq ${CMAKE_CURRENT_BINARY_DIR}/module4.xq)
 
 SET(UNIT_TESTS_SRCS
   path_resolver.cpp
@@ -78,6 +88,7 @@ SET(UNIT_TESTS_SRCS
   string_test.cpp
   unique_ptr.cpp
   main_sequential.cpp
+  context_item.cpp
   datetime.cpp
   invoke.cpp
   xquery_functions.cpp

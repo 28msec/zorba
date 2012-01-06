@@ -148,6 +148,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theScriptingKind;
   ar & theIsExiting;
   ar & theIsLeaf;
+  ar & theMutuallyRecursiveUDFs;
   ar & theIsOptimized;
   //ar.set_is_temp_field(true);
   //ar & save_plan;
@@ -156,6 +157,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
+
+  //+ar & theCache;
+  ar & theCacheResults;
+  ar & theCacheComputed;
 }
 
 
@@ -289,9 +294,7 @@ bool user_function::accessesDynCtx() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::ignoresSortedNodes(
-    expr* fo,
-    ulong input) const
+BoolAnnotationValue user_function::ignoresSortedNodes(expr* fo, csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
@@ -305,12 +308,30 @@ BoolAnnotationValue user_function::ignoresSortedNodes(
 ********************************************************************************/
 BoolAnnotationValue user_function::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
 
   return theArgVars[input]->getIgnoresDuplicateNodes();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
+{
+  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
+  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
+
+  if (argMustCopy == ANNOTATION_TRUE)
+  {
+    // The decision depends on the caller
+    return callerMustCopy;
+  }
+
+  return argMustCopy;
 }
 
 
