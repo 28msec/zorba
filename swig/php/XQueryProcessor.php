@@ -288,7 +288,16 @@ class XQueryProcessor {
       }
 	  return $query;
 	}
-	
+
+  /*
+   * Converts a PHP value to an XQuery Item.
+   * - DOMDocument & SimpleXMLElement: document-node()
+   * - String: xs:string
+   * - Integer: xs:integer
+   * - Boolean: xs:boolean
+   * - Float: xs:float
+   * - Long: xs:long
+   */  
 	private function getItem($value) {
       $itemFactory = $this->zorba->getItemFactory();
 
