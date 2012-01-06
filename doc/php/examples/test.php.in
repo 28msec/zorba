@@ -109,4 +109,14 @@ foreach($it as $pos => $value) {
 //Try the same query with execute
 $result = $xquery->execute();
 assertEquality($result, "1 2<foo bar=\"bar\"/>", "Execute To URI");
+
+/* Test 4 */
+$xquery->importQueryFromURI("@phpPath@/test.xq");
+$result = $xquery->execute();
+assertEquality($result, "2", "Test importQueryFromURI");
+
+/* Test 5 */
+//$xquery->importQueryFromURI("http://zorba.s3.amazonaws.com/test.xq");
+//$result = $xquery->execute();
+//assertEquality($result, "2", "Test importQueryFromURI");
 ?>

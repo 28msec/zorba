@@ -38,6 +38,9 @@ ELSE (NOT PHP5_FOUND)
     SWIG_LINK_LIBRARIES (zorba_api ${PHP5_LIBRARY})
   ENDIF (WIN32)
 
+  #Copy test to the build folder
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/test.xq" "${CMAKE_CURRENT_BINARY_DIR}/test.xq")
+
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemFactory.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemFactory.h")
 
