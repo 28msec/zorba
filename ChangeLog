@@ -19,7 +19,7 @@ version 2.2
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
-  * fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
 
 version 2.1
 
