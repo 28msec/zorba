@@ -1205,6 +1205,7 @@ void PULImpl::mergeUpdates(store::Item* other)
     }
 
     thePutList.push_back(otherUpd);
+    otherUpd->thePul = this;
     otherp->thePutList[i] = NULL;
   }
 
