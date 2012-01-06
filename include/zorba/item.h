@@ -33,6 +33,11 @@ namespace serialization
   void operator&(zorba::serialization::Archiver &ar, zorba::Item &obj);
 }
 
+/**
+ * Used for Item::getNamespaceBindings() and ItemFactory::createElementNode().
+ */
+typedef std::vector<std::pair<String, String> > NsBindings;
+
 /** \brief The Zorba Item interface.
  *
  * This class is the Zorba representation of an Item as defined in the
@@ -303,7 +308,6 @@ public:
     * (the default).
     * @throw ZorbaException if an error occured, e.g. the Item is not of type element.
     */
-  typedef std::vector<std::pair<String, String> > NsBindings;
   void
   getNamespaceBindings(NsBindings& aBindings,
     store::StoreConsts::NsScoping aNsScoping = store::StoreConsts::ALL_NAMESPACES)
