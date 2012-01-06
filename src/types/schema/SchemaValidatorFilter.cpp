@@ -1543,13 +1543,19 @@ void SchemaValidatorFilter::error(
   if(!theStrictValidation &&
      errDomain == XMLUni::fgValidityDomain &&
      errType != XMLErrorReporter::ErrType_Fatal &&
-     !( errCode == XMLValid::ElementNotValidForContent ||
+     !( errCode == XMLValid::AttNotDefined ||
+        errCode == XMLValid::AttNotDefinedForElement ||
+        errCode == XMLValid::SimpleTypeHasChild ||
+        errCode == XMLValid::ElementNotValidForContent ||
         errCode == XMLValid::NotEnoughElemsForCM ||
         errCode == XMLValid::EmptyNotValidForContent ||
         errCode == XMLValid::AttNotDefinedForElement ||
         errCode == XMLValid::RequiredAttrNotProvided ||
         errCode == XMLValid::AttributeNotQualified ||
-        errCode == XMLValid::ElementNotQualified) )
+        errCode == XMLValid::ElementNotQualified) &&
+        !(theParentStack &&
+        errCode == XMLValid::ElementNotDefined)
+  )
     return;
 
   theErrorOccurred = true;

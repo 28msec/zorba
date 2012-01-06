@@ -820,7 +820,7 @@ void UpdPut::apply()
     }
     else
     {
-      theTarget = theTarget->copy(NULL, copymode);
+        theTarget = theTarget->copy(NULL, copymode);
     }
 
     store->addNode(targetUri, theTarget);
