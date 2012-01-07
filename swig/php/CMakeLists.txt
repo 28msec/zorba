@@ -66,13 +66,15 @@ ELSE (NOT PHP5_FOUND)
 	ELSE (NOT WIN32 OR CYGWIN)
     IF (MSVC_IDE)
       INSTALL ( FILES 
-        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.php
+        ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
+        ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
         ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
         COMPONENT "php_swig"
         DESTINATION share/php )
     ELSE (MSVC_IDE)
       INSTALL ( FILES 
-        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.php
+        ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
+        ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
         ${CMAKE_CURRENT_BINARY_DIR}/php_zorba_api.dll
         COMPONENT "php_swig"
         DESTINATION share/php )
