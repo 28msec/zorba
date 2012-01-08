@@ -519,7 +519,7 @@ compileAndExecute(
   lHints.for_serialization_only = true;
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
-  if (!Properties::instance()->serializeOnlyQuery())
+  if (Properties::instance()->serializeOnlyQuery() == 0)
   {
     lHints.for_serialization_only = false;
   }

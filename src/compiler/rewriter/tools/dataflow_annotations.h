@@ -71,6 +71,8 @@ private:
 
 class SourceFinder
 {
+  friend class MarkNodeCopyProps;
+
   typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
   typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
 
