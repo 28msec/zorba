@@ -99,6 +99,8 @@ protected:
 
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
 
+  typedef std::map<const zstring,const zstring> EnvVarMap;
+
 protected:
   dynamic_context            * theParent;
 
@@ -112,6 +114,9 @@ protected:
   ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
+
+    //MODIFY
+  EnvVarMap                  * theEnvironmentVariables;
 
 public:
   double                       theDocLoadingUserTime;
@@ -135,6 +140,12 @@ public:
   store::Item_t get_current_date_time() const;
 
   store::Item_t get_current_time_millis() const;
+
+  void set_environment_variables();
+
+  store::Item_t get_environment_variable(const zstring varname) const;
+
+  store::Iterator_t available_environment_variables() const;
 
   void set_implicit_timezone(long tzone_seconds);
 

@@ -35,6 +35,7 @@
 
 #include "util/string_util.h"
 
+#include "runtime/access/access.h"
 #include "runtime/accessors/accessors.h"
 #include "runtime/any_uri/any_uri.h"
 #include "runtime/base64/base64.h"
@@ -107,6 +108,34 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
 }
+
+
+// <FnAvailableEnvironmentVariablesIterator>
+void PrinterVisitor::beginVisit ( const FnAvailableEnvironmentVariablesIterator& a) {
+  thePrinter.startBeginVisit("FnAvailableEnvironmentVariablesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnAvailableEnvironmentVariablesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnAvailableEnvironmentVariablesIterator>
+
+
+// <FnEnvironmentVariableIterator>
+void PrinterVisitor::beginVisit ( const FnEnvironmentVariableIterator& a) {
+  thePrinter.startBeginVisit("FnEnvironmentVariableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnEnvironmentVariableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnEnvironmentVariableIterator>
 
 
 // <NodeNameIterator>

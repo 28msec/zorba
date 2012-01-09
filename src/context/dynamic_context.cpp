@@ -29,6 +29,7 @@
 #include "store/api/store.h"
 #include "store/api/index.h"
 #include "store/api/ic.h"
+#include "store/api/iterator_factory.h"
 
 #include "system/globalenv.h"
 
@@ -122,6 +123,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   theParent(NULL),
   keymap(NULL),
   theAvailableIndices(NULL),
+  theEnvironmentVariables(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
 {
@@ -130,6 +132,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
+    set_environment_variables();
   }
   else
   {
@@ -160,6 +163,9 @@ dynamic_context::~dynamic_context()
     }
     delete keymap;
   }
+
+  if(theEnvironmentVariables)
+    delete theEnvironmentVariables;
 
   if (theAvailableIndices)
     delete theAvailableIndices;
@@ -255,6 +261,103 @@ store::Item_t dynamic_context::get_current_date_time() const
   return theCurrentDateTime;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::set_environment_variables()
+{
+  if(!theEnvironmentVariables)
+    theEnvironmentVariables = new EnvVarMap();
+
+  #if defined (WIN32)
+    LPTCH envVarsCH = GetEnvironmentStrings();
+    LPTSTR envVarsSTR = (LPTSTR) envVarsCH;
+
+    while (*envVarsSTR)
+    {
+      int size = lstrlen(envVarsSTR);
+
+      if(size < 0)
+      {
+        //throw error
+      }
+
+      char * envVar = new char[size+1];
+      WideCharToMultiByte( CP_ACP, 
+                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
+                           envVarsSTR, 
+                           size+1, 
+                           envVar, 
+                           size+1,
+                           NULL,
+                           NULL);
+      zstring envVarZS(envVar);
+
+      int eqPos = envVarZS.find_first_of("=");
+
+      if(eqPos > 0)
+      {
+        zstring varname(envVarZS.substr(0, eqPos));
+        zstring varvalue(envVarZS.substr(eqPos+1, size));
+
+        if (!varname.empty() || !varvalue.empty())
+          theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
+      }
+      
+
+      delete envVar;
+      envVarsSTR += lstrlen(envVarsSTR) + 1;
+    }
+    
+    FreeEnvironmentStrings(envVarsCH);
+    #endif
+}
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t dynamic_context::available_environment_variables() const
+{
+  EnvVarMap::iterator lIte = theEnvironmentVariables->begin();
+  EnvVarMap::iterator lEnd = theEnvironmentVariables->end();
+
+  std::vector<store::Item_t> lVarNames;
+
+  for(;lIte != lEnd; ++lIte)
+  {
+    store::Item_t varname;
+    zstring zsvarname = lIte->first;
+    GENV_ITEMFACTORY->createString(varname, zsvarname);
+    lVarNames.push_back(varname);
+  }
+
+  if(lVarNames.empty())
+  {
+    //throw error
+  }
+
+  return GENV_STORE.createTempSeq(lVarNames)->getIterator(); 
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t dynamic_context::get_environment_variable(const zstring varname) const
+{
+  EnvVarMap::iterator lIter = theEnvironmentVariables->find(varname);
+
+  if(lIter == theEnvironmentVariables->end())
+  {
+    //throw error
+  }
+
+  store::Item_t value;
+  zstring varvalue = lIter->second;
+
+  GENV_ITEMFACTORY->createString(value, varvalue);
+
+  return value;
+}
 
 /*******************************************************************************
 
@@ -616,7 +719,6 @@ bool dynamic_context::addExternalFunctionParam(
   {
     keymap = new ValueMap(8, false);
   }
-
   if (!keymap->insert(aName, val))
   {
     keymap->update(aName, val);

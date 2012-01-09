@@ -995,3 +995,13 @@ declare function fn:string() as xs:string external;
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-string">fn:string</a>
  :)
 declare function fn:string($arg as item()?) as xs:string external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-available-environment-variables">fn:available-environment-variables</a>
+ :)
+declare function fn:available-environment-variables() as xs:string* external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-environment-variable">fn:environment-variable</a>
+ :)
+declare function fn:environment-variable($arg as xs:string) as xs:string? external;
