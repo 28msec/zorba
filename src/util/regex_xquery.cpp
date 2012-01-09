@@ -1169,11 +1169,14 @@ CRegexXQuery_chargroup::CRegexXQuery_chargroup(CRegexXQuery_regex* regex) :
 CRegexXQuery_chargroup::~CRegexXQuery_chargroup()
 {
   delete classsub;
+  std::list<CRegexXQuery_charmatch* >::iterator charmatch_it;
+  for(charmatch_it=chargroup_list.begin(); charmatch_it != chargroup_list.end(); charmatch_it++)
+    delete (*charmatch_it);
 }
 
 void CRegexXQuery_chargroup::addCharMatch(CRegexXQuery_charmatch *charmatch)
 {
-  chargroup_list.push_back(std::unique_ptr<CRegexXQuery_charmatch>(charmatch));
+  chargroup_list.push_back(charmatch);
 }
 void CRegexXQuery_chargroup::addClassSub(CRegexXQuery_chargroup* classsub)
 {
@@ -2400,7 +2403,7 @@ bool CRegexXQuery_endline::match_internal(const char *source, int *start_from_br
 bool CRegexXQuery_chargroup::match_internal(const char *source, int *start_from_branch, int *matched_len)
 {
   *matched_len = 0;
-  std::list<std::unique_ptr<CRegexXQuery_charmatch> >::iterator  cgt_it;
+  std::list<CRegexXQuery_charmatch* >::iterator  cgt_it;
 /*
   if(!source[0])
   {

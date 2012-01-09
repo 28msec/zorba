@@ -372,7 +372,7 @@ private:
     char  c2;
   }chargroup_t;
 */
-  std::list<std::unique_ptr<CRegexXQuery_charmatch> >    chargroup_list;
+  std::list<CRegexXQuery_charmatch* >    chargroup_list;
   CRegexXQuery_chargroup *classsub;
 public:
   //void addMultiChar(char c, CHARGROUP_t multichar_type);
