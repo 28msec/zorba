@@ -2421,7 +2421,7 @@ bool CRegexXQuery_chargroup::match_internal(const char *source, int *start_from_
     if((regex_intern->flags & REGEX_ASCII_MULTILINE) &&
         (chargroup_list.size() == 1) && (chargroup_list.begin()->flags == CHARGROUP_FLAGS_ENDLINE))
     {
-      //*matched_len = 1;
+      // *matched_len = 1;
       return true;
     }
   }
@@ -2470,7 +2470,7 @@ bool CRegexXQuery_wildchar::match_internal(const char *source, int *start_from_b
     return false;
   }
   if((regex_intern->flags & REGEX_ASCII_DOTALL) || 
-    (source[0] != '\n') && (source[0] != '\r'))
+    ((source[0] != '\n') && (source[0] != '\r')))
   {
     *matched_len = myutf8len(source);
     return true;
