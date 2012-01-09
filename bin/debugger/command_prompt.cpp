@@ -20,19 +20,40 @@
 #include <map>
 #include <iostream>
 
-#include "config.h"
-
-#ifdef ZORBA_HAVE_READLINE_H
-# include <editline/readline.h>
-#endif
-
 #include "command.h"
 
 
 namespace zorba { namespace debugger {
 
+#ifdef ZORBA_HAVE_LIBEDIT_H
+const char*
+prompt(EditLine* aEl) {
+  return "(xqdb) ";
+}
+#endif
+
+CommandPrompt::CommandPrompt()
+{
+#ifdef ZORBA_HAVE_LIBEDIT_H
+  theEditLine = el_init("xqdb", stdin, stdout, stderr);
+  theHistory = history_init();
+  HistEvent lHistoryEvent;
+  history(theHistory, &lHistoryEvent, H_SETSIZE, 100);
+
+  el_set(theEditLine, EL_PROMPT, prompt);
+
+  el_set(theEditLine, EL_HIST, history, theHistory);
+  el_set(theEditLine, EL_EDITOR, "emacs");
+#endif
+}
+
 CommandPrompt::~CommandPrompt()
 {
+#ifdef ZORBA_HAVE_LIBEDIT_H
+  history_end(theHistory);
+  el_end(theEditLine);
+#endif
+
   std::map<std::string, UntypedCommand*>::iterator lIter;
   for (lIter = theCommands.begin(); lIter != theCommands.end(); ++lIter) {
     delete lIter->second;
@@ -74,8 +95,11 @@ void
 CommandPrompt::execute()
 {
   for (;;) {
-#ifdef ZORBA_HAVE_READLINE_H
-    std::string lCommandLine(readline("(xqdb) "));
+#ifdef ZORBA_HAVE_LIBEDIT_H
+    const char* lBuf;
+    int lCharsRead = -1;
+    lBuf = el_gets(theEditLine, &lCharsRead);
+    std::string lCommandLine(lBuf, lCharsRead - 1);
 #else
     std::cout << "(xqdb) ";
     std::string lCommandLine;
@@ -94,6 +118,12 @@ CommandPrompt::execute()
         continue;
       }
     }
+#ifdef ZORBA_HAVE_LIBEDIT_H
+    else {
+      HistEvent lHistoryEvent;
+      history(theHistory, &lHistoryEvent, H_ENTER, lCommandLine.c_str());
+    }
+#endif
     theLastArgs = lArgs;
 
     UntypedCommand* lCommand = NULL;
