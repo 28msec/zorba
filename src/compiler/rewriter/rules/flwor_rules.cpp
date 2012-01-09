@@ -959,6 +959,10 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // referenced more than once?
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
+  // TODO: It should also consider cases for inequalites, so in the case of
+  // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
+  // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
+  // case of >= and <= the -1 and +1 are removed for the previous examples.
   if (!flwor->is_general() &&
       whereExpr != NULL &&
       ! flwor->has_sequential_clauses() &&
