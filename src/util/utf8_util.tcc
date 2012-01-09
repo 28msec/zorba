@@ -120,6 +120,8 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
   return true;
 }
 
+#endif /* ZORBA_NO_ICU */
+
 template<class InputStringType,class OutputStringType>
 void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
   InputStringType in_normalized;
@@ -135,6 +137,8 @@ void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
     ascii::back_ascii_inserter( *out )
   );
 }
+
+#ifndef ZORBA_NO_ICU
 
 template<class StringType>
 bool to_string( unicode::char_type const *in, size_type in_len,
