@@ -878,8 +878,8 @@ void SourceFinder::findNodeSourcesRec(
         ite = (theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
       }
 
-      std::vector<expr*>::iterator ite2 = (*ite).second.begin();
-      std::vector<expr*>::iterator end2 = (*ite).second.end();
+      std::vector<expr*>::const_iterator ite2 = (*ite).second.begin();
+      std::vector<expr*>::const_iterator end2 = (*ite).second.end();
       for (; ite2 != end2; ++ite2)
       {
         if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
@@ -910,6 +910,9 @@ void SourceFinder::findNodeSourcesRec(
     {
       if (std::find(sources.begin(), sources.end(), node) == sources.end())
         sources.push_back(node);
+
+      std::vector<expr*> varSources;
+      theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
       return;
     }
