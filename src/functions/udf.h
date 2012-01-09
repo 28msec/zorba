@@ -167,6 +167,8 @@ public:
 
   const std::vector<var_expr_t>& getArgVars() const;
 
+  var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
+
   void setOptimized(bool v) { theIsOptimized = v; }
 
   bool isOptimized() const { return theIsOptimized; }
