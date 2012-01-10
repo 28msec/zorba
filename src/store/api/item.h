@@ -26,6 +26,7 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
+#include "store/api/xs_type_codes.h"
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -237,6 +238,11 @@ public:
   show() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
+
+  /**
+   * @return The numeric code coresponding to the data type of this item.
+   */
+  virtual SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return

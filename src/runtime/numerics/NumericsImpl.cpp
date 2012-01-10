@@ -53,26 +53,26 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<ModOp
 
 SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>, 1);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>, 2);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>, 3);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>, 4);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>, 5);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>, 6);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>, 7);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>, 8);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>, 9);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>, 10);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>, 11);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>, 12);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>, 13);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>, 14);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>, 15);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>, 16);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>, 17);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>, 18);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>, 19);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>, 20);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>, 1);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_FLOAT>, 2);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>, 3);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_INTEGER>, 4);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>, 5);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>, 6);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>, 7);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>, 8);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>, 9);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>, 10);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>, 11);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>, 12);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>, 13);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>, 14);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>, 15);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>, 16);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>, 17);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_FLOAT>, 18);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>, 19);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_INTEGER>, 20);
 
 
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
@@ -85,7 +85,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
+bool AddOperation::compute<store::XS_DOUBLE, store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -99,7 +99,7 @@ bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
 
 
 template<>
-bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+bool AddOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -113,7 +113,7 @@ bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
 
 
 template<>
-bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+bool AddOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -127,7 +127,7 @@ bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
 
 
 template<>
-bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+bool AddOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -144,7 +144,7 @@ bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
   SubtractOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+bool SubtractOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -158,7 +158,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBL
 
 
 template<>
-bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+bool SubtractOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -172,7 +172,7 @@ bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>
 
 
 template<>
-bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+bool SubtractOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -186,7 +186,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECI
 
 
 template<>
-bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+bool SubtractOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -203,7 +203,7 @@ bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTE
   MultiplyOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+bool MultiplyOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -217,7 +217,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBL
 
 
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+bool MultiplyOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -231,7 +231,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>
 
 
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+bool MultiplyOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -245,7 +245,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECI
 
 
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+bool MultiplyOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -262,7 +262,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTE
   DivideOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+bool DivideOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -276,7 +276,7 @@ bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>
 
 
 template<>
-bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+bool DivideOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -290,7 +290,7 @@ bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
 
 
 template<>
-bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+bool DivideOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /*dctx*/,
     const TypeManager* /* tm */,
@@ -309,7 +309,7 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
 
 
 template<>
-bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+bool DivideOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -331,7 +331,7 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
   IntegerDivideOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+bool IntegerDivideOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -371,7 +371,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
 
 
 template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+bool IntegerDivideOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -410,7 +410,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
 
 
 template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+bool IntegerDivideOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -430,7 +430,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
 
 
 template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+bool IntegerDivideOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -453,7 +453,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
   ModOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
 template<>
-bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
+bool ModOperation::compute<store::XS_DOUBLE, store::XS_DOUBLE>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -467,7 +467,7 @@ bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
 
 
 template<>
-bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
+bool ModOperation::compute<store::XS_FLOAT, store::XS_FLOAT>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -481,7 +481,7 @@ bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
 
 
 template<>
-bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>(
+bool ModOperation::compute<store::XS_DECIMAL, store::XS_DECIMAL>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -501,7 +501,7 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
 
 
 template<>
-bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
+bool ModOperation::compute<store::XS_INTEGER, store::XS_INTEGER>(
     store::Item_t& result,
     dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
@@ -625,43 +625,43 @@ bool NumArithIterator<Operation>::computeAtomic(
 
   switch (TypeOps::get_atomic_type_code(*resultType))
   {
-  case TypeConstants::XS_DOUBLE:
+  case store::XS_DOUBLE:
   {
     GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
     GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
     
     res = Operation::template
-          computeSingleType<TypeConstants::XS_DOUBLE>
+          computeSingleType<store::XS_DOUBLE>
           (result, dctx, tm, &aLoc, n0, n1 );
     break;
   }
-  case TypeConstants::XS_FLOAT:
+  case store::XS_FLOAT:
   {
     GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
     GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
     res = Operation::template 
-          computeSingleType<TypeConstants::XS_FLOAT>
+          computeSingleType<store::XS_FLOAT>
           (result, dctx, tm, &aLoc, n0, n1);
     break;
   }
-  case TypeConstants::XS_DECIMAL:
+  case store::XS_DECIMAL:
   {
     GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
     GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
     res = Operation::template
-          computeSingleType<TypeConstants::XS_DECIMAL>
+          computeSingleType<store::XS_DECIMAL>
           (result, dctx, tm, &aLoc,n0, n1);
     break;
   }
-  case TypeConstants::XS_INTEGER:
+  case store::XS_INTEGER:
   {
     GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
     GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
     res = Operation::template 
-          computeSingleType<TypeConstants::XS_INTEGER>
+          computeSingleType<store::XS_INTEGER>
           (result, dctx, tm, &aLoc, n0, n1 );
     break;
   }
@@ -692,7 +692,7 @@ template class NumArithIterator<ModOperation>;
 
 ********************************************************************************/
 
-template< class Operations, TypeConstants::atomic_type_code_t Type >
+template< class Operations, store::SchemaTypeCode Type >
 SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -704,7 +704,7 @@ SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
 }
 
 
-template < class Operation, TypeConstants::atomic_type_code_t Type >
+template < class Operation, store::SchemaTypeCode Type >
 void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
 {
   v.beginVisit(*this);
@@ -716,7 +716,7 @@ void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const
 }
 
 
-template < class Operation, TypeConstants::atomic_type_code_t Type >
+template < class Operation, store::SchemaTypeCode Type >
 bool SpecificNumArithIterator<Operation, Type>::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -751,7 +751,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
 }
 
 
-template < class Operation, TypeConstants::atomic_type_code_t Type >
+template < class Operation, store::SchemaTypeCode Type >
 bool SpecificNumArithIterator<Operation, Type>::compute(
     store::Item_t& result,
     dynamic_context* dctx,
@@ -767,26 +767,26 @@ bool SpecificNumArithIterator<Operation, Type>::compute(
 }
 
   
-template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>;
-template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>;
-template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>;
-template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>;
-template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>;
-template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>;
-template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>;
-template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>;
-template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>;
-template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>;
-template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>;
-template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>;
-template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>;
-template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>;
-template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>;
-template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>;
-template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>;
-template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>;
-template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>;
-template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>;
+template class SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>;
+template class SpecificNumArithIterator<AddOperation, store::XS_FLOAT>;
+template class SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>;
+template class SpecificNumArithIterator<AddOperation, store::XS_INTEGER>;
+template class SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>;
+template class SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>;
+template class SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>;
+template class SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>;
+template class SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>;
+template class SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>;
+template class SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>;
+template class SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>;
+template class SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>;
+template class SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>;
+template class SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>;
+template class SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>;
+template class SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>;
+template class SpecificNumArithIterator<ModOperation, store::XS_FLOAT>;
+template class SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>;
+template class SpecificNumArithIterator<ModOperation, store::XS_INTEGER>;
 
 
 /*******************************************************************************

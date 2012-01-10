@@ -58,11 +58,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DOUBLE>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_FLOAT>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DECIMAL>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_INTEGER>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_STRING>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DECIMAL>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_INTEGER>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
@@ -872,14 +872,8 @@ bool CompareIterator::equal(
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( BadType_23o ), *type0,
-          ZED( NoCompareWithType_4 ), *type1
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
   }
 }
@@ -925,14 +919,8 @@ long CompareIterator::compare(
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( BadType_23o ), *type0,
-            ZED( NoCompareWithType_4 ), *type1
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
     }
     else if (TypeOps::is_subtype(tm, *type1, *type0))
@@ -955,14 +943,8 @@ long CompareIterator::compare(
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( BadType_23o ), *type0,
-            ZED( NoCompareWithType_4 ), *type1
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
     }
   }
@@ -971,14 +953,8 @@ long CompareIterator::compare(
     // For example, two QName items do not have an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( BadType_23o ), *type0,
-          ZED( NoCompareWithType_4 ), *type1
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
     throw;
   }
@@ -992,7 +968,7 @@ long CompareIterator::compare(
 /////////////////////////////////////////////////////////////////////////////////
 
 
-template <TypeConstants::atomic_type_code_t ATC>
+template <store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
@@ -1008,7 +984,7 @@ void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
 }
 
 
-template<TypeConstants::atomic_type_code_t ATC>
+template<store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>
@@ -1019,7 +995,7 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
 }
 
 
-template<TypeConstants::atomic_type_code_t ATC>
+template<store::SchemaTypeCode ATC>
 bool TypedValueCompareIterator<ATC>::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1092,11 +1068,11 @@ bool TypedValueCompareIterator<ATC>::nextImpl(
 }
 
 
-template class TypedValueCompareIterator<TypeConstants::XS_DOUBLE>;
-template class TypedValueCompareIterator<TypeConstants::XS_FLOAT>;
-template class TypedValueCompareIterator<TypeConstants::XS_DECIMAL>;
-template class TypedValueCompareIterator<TypeConstants::XS_INTEGER>;
-template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
+template class TypedValueCompareIterator<store::XS_DOUBLE>;
+template class TypedValueCompareIterator<store::XS_FLOAT>;
+template class TypedValueCompareIterator<store::XS_DECIMAL>;
+template class TypedValueCompareIterator<store::XS_INTEGER>;
+template class TypedValueCompareIterator<store::XS_STRING>;
 
 
 
