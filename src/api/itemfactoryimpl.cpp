@@ -696,7 +696,7 @@ zorba::Item ItemFactoryImpl::createElementNode(
     Item aTypeName,
     bool aHasTypedValue,
     bool aHasEmptyValue,
-    std::vector<std::pair<String, String> > aNsBindings)
+    NsBindings aNsBindings)
 {
   store::Item_t lItem;
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
