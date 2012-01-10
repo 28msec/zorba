@@ -309,8 +309,12 @@ void SimpleStore::shutdown(bool soft)
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
-      for (csize i = 0; i < numTypes; i++)
+      for (csize i = 0; i < numTypes; ++i)
         theSchemaTypeNames[i] = NULL;
+
+      XS_UNTYPED_QNAME = NULL;
+      XS_ANY_QNAME = NULL;
+      XS_ANY_SIMPLE_QNAME = NULL;
 
       delete theQNamePool;
       theQNamePool = NULL;

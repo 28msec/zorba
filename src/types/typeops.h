@@ -164,6 +164,13 @@ public:
   /*
    * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
    */
+  bool is_subtype(
+        store::SchemaTypeCode subtype,
+        store::SchemaTypeCode supertype);
+
+  /*
+   * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
+   */
   static bool is_subtype(
         const TypeManager* tm,
         const XQType& subtype,

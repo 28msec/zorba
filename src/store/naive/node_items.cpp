@@ -4052,7 +4052,7 @@ bool TextNode::isIdInternal() const
 {
   if (isTyped() &&
       getValue()->isAtomic() &&
-      static_cast<AtomicItem*>(getValue())->getTypeCode() == store::XS_ID)
+      getValue()->getTypeCode() == store::XS_ID)
     return true;
 
   return false;
@@ -4082,9 +4082,10 @@ bool TextNode::isIdRefsInternal() const
         else if (dynamic_cast<UserTypedAtomicItem*>(values.getItem(i)) != NULL)
         {
           UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(values.getItem(i));
-          if ( utai->getTypeCode() == store::XS_IDREF )
+          if (utai->getTypeCode() == store::XS_IDREF)
             return true;
-          if ( utai->getBaseItem()->getTypeCode() == store::XS_IDREF )
+
+          if (utai->getBaseItem()->getTypeCode() == store::XS_IDREF)
             return true;
         }
       }

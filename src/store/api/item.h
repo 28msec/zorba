@@ -242,7 +242,7 @@ public:
   /**
    * @return The numeric code coresponding to the data type of this item.
    */
-  SchemaTypeCode getTypeCode() const;
+  virtual SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return

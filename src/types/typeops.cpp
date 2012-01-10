@@ -494,6 +494,17 @@ bool TypeOps::is_equal(
   Returns true iff "subtype" is a subtype of "supertype".
 ********************************************************************************/
 bool TypeOps::is_subtype(
+    store::SchemaTypeCode subtype,
+    store::SchemaTypeCode supertype)
+{
+  return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[subtype][supertype];
+}
+
+
+/*******************************************************************************
+  Returns true iff "subtype" is a subtype of "supertype".
+********************************************************************************/
+bool TypeOps::is_subtype(
     const TypeManager* tm,
     const XQType& subtype,
     const XQType& supertype,
