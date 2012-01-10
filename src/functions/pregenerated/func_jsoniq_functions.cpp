@@ -82,6 +82,30 @@ PlanIter_t fn_jsoniq_pairs::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_pair::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONPairAccessorIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_member::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONMemberAccessorIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_size::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -194,6 +218,40 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_PAIRS_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_pair,
+        (createQName("http://www.jsoniq.org/functions","","pair"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_PAIR_TYPE_QUESTION),
+        FunctionConsts::FN_JSONIQ_PAIR_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_member,
+        (createQName("http://www.jsoniq.org/functions","","member"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
+        FunctionConsts::FN_JSONIQ_MEMBER_2);
 
   }
 

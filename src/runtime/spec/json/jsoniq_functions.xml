@@ -33,6 +33,10 @@
     
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONParseIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
@@ -57,6 +61,10 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONNamesIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
@@ -73,6 +81,10 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONNameIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   <zorba:function isDeterministic="true">
@@ -83,6 +95,10 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONPairsIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
@@ -98,6 +114,44 @@
   </zorba:state>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONPairAccessorIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="pair" prefix="fn-jsoniq">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>pair()?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONMemberAccessorIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="member" prefix="fn-jsoniq">
+      <zorba:param>array()</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONSizeIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   <zorba:function isDeterministic="true">
@@ -108,6 +162,10 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONValuesIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   <zorba:function isDeterministic="true">
@@ -122,6 +180,10 @@
   </zorba:state>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONValueIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   <zorba:function isDeterministic="true">

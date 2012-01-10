@@ -31,6 +31,46 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
+store::Item*
+JSONNull::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[JDM_NULL];
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item*
+JSONObject::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[JDM_OBJECT];
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item*
+JSONArray::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[JDM_ARRAY];
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item*
+JSONObjectPair::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[JDM_PAIR];
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 bool
 SimpleJSONObject::JSONObjectPairComparator::operator()(
     const store::Item* lhs,
@@ -167,12 +207,20 @@ SimpleJSONArray::operator[](xs_integer& aPos) const
   return theContent[lIndex].getp();
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
 store::Iterator_t
 SimpleJSONArray::getMembers() const
 {
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
 store::Item*
 SimpleJSONArray::getMember(const store::Item_t& aPosition) const
 {
@@ -188,7 +236,14 @@ SimpleJSONArray::getMember(const store::Item_t& aPosition) const
         )
       );
   }
-  return theContent[lIndex].getp();
+  if (lIndex == 0 || lIndex >= theContent.size())
+  {
+    return 0;
+  }
+  else
+  {
+    return theContent[lIndex-1].getp();
+  }
 }
 
 } // namespace json

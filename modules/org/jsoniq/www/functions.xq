@@ -40,6 +40,22 @@ declare function j:pairs($o as object()) as pair()* external;
 
 (:~
  :
+ : @param $o
+ : @param $n
+ : @return
+ :)
+declare function j:pair($o as object(), $n as xs:string) as pair()? external;
+
+(:~
+ :
+ : @param $o
+ : @param $n
+ : @return
+ :)
+declare function j:member($o as array(), $p as xs:integer) as item()? external;
+
+(:~
+ :
  : @param $j
  : @return
  :)

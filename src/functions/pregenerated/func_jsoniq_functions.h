@@ -112,6 +112,34 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:pair
+class fn_jsoniq_pair : public function
+{
+public:
+  fn_jsoniq_pair(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:member
+class fn_jsoniq_member : public function
+{
+public:
+  fn_jsoniq_member(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:size
 class fn_jsoniq_size : public function
 {

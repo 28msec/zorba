@@ -130,6 +130,13 @@ enum SchemaTypeCode
 
   ZXSE_TUPLE,
 
+#ifdef ZORBA_WITH_JSON
+  JDM_NULL,
+  JDM_OBJECT,
+  JDM_ARRAY,
+  JDM_PAIR,
+#endif
+
   XS_LAST
 };
 

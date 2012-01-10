@@ -107,6 +107,7 @@ public:
   static const char* XS_URI;
   static const char* XML_URI;
   static const char* ZXSE_URI;
+  static const char* JDM_URI;
 
   static const ulong XML_URI_LEN;
 

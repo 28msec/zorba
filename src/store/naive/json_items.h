@@ -62,6 +62,8 @@ public:
 
   SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
 
+  store::Item* getType() const; 
+
 #if 0
   bool equals(
         const store::Item* other,
@@ -69,8 +71,6 @@ public:
         const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  store::Item* getType() const;
 
   SchemaTypeCode getTypeCode() const;
 #endif
@@ -119,10 +119,10 @@ public:
 
   bool getBooleanValue() const { return true; }
 
-#if 0
   virtual Item*
   getType() const;
 
+#if 0
   bool equals(
         const store::Item*,
         long = 0,
@@ -214,10 +214,9 @@ public:
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
-#if 0
   virtual store::Item*
   getType() const;
-#endif
+
   virtual void
   push_back(const store::Item_t& aValue) = 0;
 
@@ -327,6 +326,9 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonPair; }
+
+  virtual Item*
+  getType() const;
 };
 
 
