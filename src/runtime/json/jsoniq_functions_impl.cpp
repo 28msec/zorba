@@ -59,7 +59,7 @@ JSONFlattenIterator::nextImpl(
 
   consumeNext(lCurr, theChildren[0].getp(), planState);
 
-  state->theStack.push(lCurr->values());
+  state->theStack.push(lCurr->getMembers());
   state->theStack.top()->open();
 
   while (!state->theStack.empty())
@@ -68,7 +68,7 @@ JSONFlattenIterator::nextImpl(
     {
       if (result->isJSONArray())
       {
-        state->theStack.push(result->values());
+        state->theStack.push(result->getMembers());
         state->theStack.top()->open();
         lFoundArray = true;
         break;
@@ -156,7 +156,7 @@ JSONNamesIterator::nextImpl(
 
   consumeNext(lInput, theChildren[0].getp(), planState);
 
-  state->thePairs = lInput->pairs();
+  state->thePairs = lInput->getPairs();
   state->thePairs->open();
 
   while (state->thePairs->next(lInput))
@@ -206,7 +206,7 @@ JSONPairsIterator::nextImpl(
 
   consumeNext(lInput, theChildren[0].getp(), planState);
 
-  state->thePairs = lInput->pairs();
+  state->thePairs = lInput->getPairs();
   state->thePairs->open();
 
   while (state->thePairs->next(result))
@@ -268,7 +268,7 @@ JSONValuesIterator::nextImpl(
 
   if (lInput->getJSONItemKind() == store::StoreConsts::jsonObject)
   {
-    state->theValues = lInput->pairs();
+    state->theValues = lInput->getPairs();
     state->theValues->open();
     while (state->theValues->next(lInput))
     {
@@ -279,7 +279,7 @@ JSONValuesIterator::nextImpl(
   }
   else if (lInput->getJSONItemKind() == store::StoreConsts::jsonArray)
   {
-    state->theValues = lInput->values();
+    state->theValues = lInput->getMembers();
     state->theValues->open();
     while (state->theValues->next(result))
     {

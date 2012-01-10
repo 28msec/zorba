@@ -111,7 +111,7 @@ SimpleJSONObject::PairIterator::close()
 
 *******************************************************************************/
 store::Iterator_t
-SimpleJSONObject::pairs() const
+SimpleJSONObject::getPairs() const
 {
   return new PairIterator(const_cast<SimpleJSONObject*>(this));
 }
@@ -121,7 +121,7 @@ SimpleJSONObject::pairs() const
 
 *******************************************************************************/
 store::Item*
-SimpleJSONObject::pair(const store::Item_t& name) const
+SimpleJSONObject::getPair(const store::Item_t& name) const
 {
   PairsConstIter lIter = thePairs.find(name.getp());
   if (lIter == thePairs.end())
@@ -168,13 +168,13 @@ SimpleJSONArray::operator[](xs_integer& aPos) const
 }
 
 store::Iterator_t
-SimpleJSONArray::values() const
+SimpleJSONArray::getMembers() const
 {
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
 }
 
 store::Item*
-SimpleJSONArray::value(const store::Item_t& aPosition) const
+SimpleJSONArray::getMember(const store::Item_t& aPosition) const
 {
   uint64_t lIndex;
   try {

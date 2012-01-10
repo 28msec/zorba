@@ -73,8 +73,6 @@ public:
   store::Item* getType() const;
 
   SchemaTypeCode getTypeCode() const;
-
-  bool getBooleanValue() const { return false; }
 #endif
 };
 
@@ -118,17 +116,12 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonObject; }
-  // accessors
-#if 0
+
   bool getBooleanValue() const { return true; }
 
+#if 0
   virtual Item*
   getType() const;
-
-  // 
-  // convenience accessors pushed down for performance
-  virtual store::Item*
-  lookup(const store::Item_t& name) const;
 
   bool equals(
         const store::Item*,
@@ -198,10 +191,10 @@ public:
   getSize() const { return thePairs.size(); }
 
   store::Iterator_t
-  pairs() const;
+  getPairs() const;
 
   store::Item*
-  pair(const store::Item_t& name) const;
+  getPair(const store::Item_t& name) const;
 };
 
 
@@ -222,8 +215,6 @@ public:
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
 #if 0
-  bool getBooleanValue() const { return true; }
-
   virtual store::Item*
   getType() const;
 #endif
@@ -299,10 +290,10 @@ public:
   operator[](xs_integer&) const;
 
   virtual store::Iterator_t
-  values() const;
+  getMembers() const;
 
   virtual store::Item*
-  value(const store::Item_t& aPosition) const;
+  getMember(const store::Item_t& aPosition) const;
 };
 
 

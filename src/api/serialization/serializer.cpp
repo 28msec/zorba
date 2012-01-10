@@ -1956,7 +1956,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
 void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 {
   store::Item_t pair;
-  store::Iterator_t it = obj->pairs();
+  store::Iterator_t it = obj->getPairs();
   it->open();
   bool first = true;
   if (ser->indent) {
@@ -1997,8 +1997,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
   store::Item_t member;
-  // QQQ Latest JSONiq spec calls this "members"
-  store::Iterator_t it = array->values();
+  store::Iterator_t it = array->getMembers();
   it->open();
   bool first = true;
   tr << "[ ";
