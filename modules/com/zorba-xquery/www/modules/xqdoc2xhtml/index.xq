@@ -1127,7 +1127,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      if($modVersion = "") then ()
      else
      (<div class="subsubsection">Zorba version for this module:</div>,
-      <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
+      <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information abouth module versioning in Zorba please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
      )
 };
 
