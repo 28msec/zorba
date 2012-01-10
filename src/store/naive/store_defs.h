@@ -56,7 +56,7 @@ namespace simplestore {
 
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
-
+#if 0
 /*******************************************************************************
   !!! ATTENTION: The order of thr enum values within SchemaTypeCode is important.
   !!! DO NOT change this order!!!!
@@ -132,7 +132,7 @@ enum SchemaTypeCode
 
   XS_LAST
 };
-
+#endif
 
 }
 }

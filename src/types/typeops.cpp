@@ -140,7 +140,7 @@ store::Item_t TypeOps::getQName(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
+store::SchemaTypeCode TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
   return (static_cast<const AtomicXQType&>(type)).get_type_code();
@@ -325,15 +325,15 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
   case XQType::ATOMIC_TYPE_KIND:
     switch (static_cast<const AtomicXQType &>(type).get_type_code()) 
     {
-    case TypeConstants::XS_ANY_ATOMIC:
-    case TypeConstants::XS_DATE:
-    case TypeConstants::XS_TIME:
-    case TypeConstants::XS_DATETIME:
-    case TypeConstants::XS_GYEAR_MONTH:
-    case TypeConstants::XS_GYEAR:
-    case TypeConstants::XS_GMONTH_DAY:
-    case TypeConstants::XS_GDAY:
-    case TypeConstants::XS_GMONTH:
+    case store::XS_ANY_ATOMIC:
+    case store::XS_DATE:
+    case store::XS_TIME:
+    case store::XS_DATETIME:
+    case store::XS_GYEAR_MONTH:
+    case store::XS_GYEAR:
+    case store::XS_GMONTH_DAY:
+    case store::XS_GDAY:
+    case store::XS_GMONTH:
       return true;
     default: return false;
     }
@@ -730,7 +730,7 @@ bool TypeOps::is_subtype(
 
       const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
 
-      if (a2.get_type_code() == TypeConstants::XS_ANY_ATOMIC)
+      if (a2.get_type_code() == store::XS_ANY_ATOMIC)
         return true;
 
       xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
