@@ -1121,6 +1121,13 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      else
       (<div class="subsubsection">XQuery version and encoding for this module:</div>,
        <p class="annotationText">xquery version "{$module/xqdoc:comment/xqdoc:custom[@tag='XQuery version']/text()}" encoding "{$module/xqdoc:comment/xqdoc:custom[@tag='encoding']/text()}";</p>)
+     ),
+     let $modVersion := xqdoc2html:get-module-version($moduleUri)
+     return
+     if($modVersion = "") then ()
+     else
+     (<div class="subsubsection">Zorba version for this module:</div>,
+      <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
      )
 };
 
