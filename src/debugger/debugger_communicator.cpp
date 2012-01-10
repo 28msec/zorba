@@ -74,13 +74,17 @@ DebuggerCommunicator::~DebuggerCommunicator()
   }
 }
 
+#ifdef NDEBUG
+# define TIMEOUT 6
+#else
+# define TIMEOUT 60
+#endif
+
 void
 DebuggerCommunicator::connect()
 {
-	for (int i = 0; i < 5 && !theSocket; i++)
-  {
-		try
-    {
+	for (int i = 0; i < TIMEOUT && !theSocket; i++) {
+		try {
 			// Connect to the client on the given host and port
       std::auto_ptr<TCPSocket> lSocket(new TCPSocket(theHost, thePort));
       theSocket = lSocket.release();
@@ -91,10 +95,9 @@ DebuggerCommunicator::connect()
       theResponseQueue = new ResponseQueue(theCommunicatorOutStream);
       theResponseQueue->start();
 		}
-    catch (DebuggerSocketException& /* e */)
-    {
+    catch (DebuggerSocketException& /* e */) {
       // Wait one second before trying to reconnect
-      msleep(100);
+      msleep(1000);
 		}
   }
 }

@@ -487,7 +487,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        //theStopping = true;
+        theStopping = true;
 
         lResponse << "status=\"stopping\" reason=\"ok\"";
         lResponse << ">";

@@ -93,8 +93,9 @@ onExitProcess(ExitCode aExitCode) {
   exit(aExitCode);
 }
 
+
 int
-startZorba(std::string& aExec, std::vector<std::string>& aArgs) 
+startZorba(std::string& aExec, std::vector<std::string>& aArgs, std::auto_ptr<ProcessListener>& aProcessListener) 
 {
 #ifdef WIN32
   // **************************
@@ -143,7 +144,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 
   if (lResult) {
     // Watch the process
-    ProcessListener* lPl = new ProcessListener(piProcessInfo.hProcess, &onExitProcess);
+    aProcessListener.reset(new ProcessListener(piProcessInfo.dwProcessId, &onExitProcess));
   }
   else {
     // CreateProcess failed
@@ -215,7 +216,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
     }
     
     // Watch the process
-    new ProcessListener(pID, &onExitProcess);
+    aProcessListener.reset(new ProcessListener(pID, &onExitProcess));
 
     return 0;
   }
@@ -357,8 +358,11 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start a zorba
 
+    // This is a process listener used to watch the Zorba process termination.
+    std::auto_ptr<ProcessListener> lProcessListener;
+
     if (!lStandalone) {
-      int lResult = startZorba(lZorbaExec, lZorbaArgs);
+      int lResult = startZorba(lZorbaExec, lZorbaArgs, lProcessListener);
       if (lResult) {
         return lResult;
       }
