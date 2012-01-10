@@ -62,6 +62,8 @@ public:
 
   SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
 
+  store::Item* getType() const; 
+
 #if 0
   bool equals(
         const store::Item* other,
@@ -70,11 +72,7 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  store::Item* getType() const;
-
   SchemaTypeCode getTypeCode() const;
-
-  bool getBooleanValue() const { return false; }
 #endif
 };
 
@@ -118,18 +116,13 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonObject; }
-  // accessors
-#if 0
+
   bool getBooleanValue() const { return true; }
 
   virtual Item*
   getType() const;
 
-  // 
-  // convenience accessors pushed down for performance
-  virtual store::Item*
-  lookup(const store::Item_t& name) const;
-
+#if 0
   bool equals(
         const store::Item*,
         long = 0,
@@ -198,10 +191,10 @@ public:
   getSize() const { return thePairs.size(); }
 
   store::Iterator_t
-  pairs() const;
+  getPairs() const;
 
   store::Item*
-  pair(const store::Item_t& name) const;
+  getPair(const store::Item_t& name) const;
 };
 
 
@@ -221,12 +214,9 @@ public:
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
-#if 0
-  bool getBooleanValue() const { return true; }
-
   virtual store::Item*
   getType() const;
-#endif
+
   virtual void
   push_back(const store::Item_t& aValue) = 0;
 
@@ -299,10 +289,10 @@ public:
   operator[](xs_integer&) const;
 
   virtual store::Iterator_t
-  values() const;
+  getMembers() const;
 
   virtual store::Item*
-  value(const store::Item_t& aPosition) const;
+  getMember(const store::Item_t& aPosition) const;
 };
 
 
@@ -336,6 +326,9 @@ public:
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonPair; }
+
+  virtual Item*
+  getType() const;
 };
 
 

@@ -87,6 +87,7 @@ const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* SimpleStore::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
+const char* SimpleStore::JDM_URI = "http://www.jsoniq.org/";
 
 const ulong SimpleStore::XML_URI_LEN = sizeof(SimpleStore::XML_URI);
 
@@ -258,6 +259,13 @@ void SimpleStore::initTypeNames()
 
   f->createQName(theSchemaTypeNames[ZXSE_ERROR], ZXSE_URI, "zxse", "error");
   f->createQName(theSchemaTypeNames[ZXSE_TUPLE], ZXSE_URI, "zxse", "tuple");
+
+#ifdef ZORBA_WITH_JSON
+  f->createQName(theSchemaTypeNames[JDM_NULL], JDM_URI, "jdm", "null");
+  f->createQName(theSchemaTypeNames[JDM_OBJECT], JDM_URI, "jdm", "object");
+  f->createQName(theSchemaTypeNames[JDM_ARRAY], JDM_URI, "jdm", "array");
+  f->createQName(theSchemaTypeNames[JDM_PAIR], JDM_URI, "jdm", "pair");
+#endif
 
   for (ulong i = 0; i < XS_LAST; ++i)
   {

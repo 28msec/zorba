@@ -806,47 +806,44 @@ public:
   getJSONItemKind() const;
 
   /**
+   * (jdm:pairs accessor)
    * @return the pairs of a json object or json array
    */
   virtual Iterator_t
-  pairs() const;
+  getPairs() const;
 
   /**
+   * (jdm:members accessor)
    * @return the values of a json array
    */
   virtual Iterator_t
-  values() const;
+  getMembers() const;
 
   /**
    * defined on JSONObject
+   * (is not an accessor)
    * @return the pair with given name
    */
   virtual store::Item*
-  pair(const store::Item_t& name) const;
+  getPair(const store::Item_t& name) const;
 
   /**
    * defined on JSONArray
+   * (is not an accessor)
    * @return the value at the given position
    */
   virtual store::Item*
-  value(const store::Item_t& aPosition) const;
+  getMember(const store::Item_t& aPosition) const;
 
   /**
-   * defined on JSONObjectPair
+   * defined on JSONObjectPair (jdm:name accessor)
    * @return the name of the json pair
    */
   virtual store::Item*
   getName() const;
 
   /**
-   * defined on JSONArrayPair
-   * @return the position of the json pair in the array
-   */
-  virtual store::Item*
-  getPosition() const;
-
-  /**
-   * defined on JSONObjectPair JSONArrayPair
+   * defined on JSONObjectPair JSONArrayPair (jdm:value accessor)
    * @return the value of the json pair
    */
   virtual store::Item*

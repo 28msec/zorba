@@ -210,6 +210,64 @@ void JSONPairsIteratorState::reset(PlanState& planState) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONPairAccessorIterator>
+const char* JSONPairAccessorIterator::class_name_str = "JSONPairAccessorIterator";
+JSONPairAccessorIterator::class_factory<JSONPairAccessorIterator>
+JSONPairAccessorIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONPairAccessorIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONPairAccessorIterator::class_versions_count =
+sizeof(JSONPairAccessorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONPairAccessorIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONPairAccessorIterator::~JSONPairAccessorIterator() {}
+
+// </JSONPairAccessorIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONMemberAccessorIterator>
+const char* JSONMemberAccessorIterator::class_name_str = "JSONMemberAccessorIterator";
+JSONMemberAccessorIterator::class_factory<JSONMemberAccessorIterator>
+JSONMemberAccessorIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONMemberAccessorIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONMemberAccessorIterator::class_versions_count =
+sizeof(JSONMemberAccessorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONMemberAccessorIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONMemberAccessorIterator::~JSONMemberAccessorIterator() {}
+
+// </JSONMemberAccessorIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONSizeIterator>
 const char* JSONSizeIterator::class_name_str = "JSONSizeIterator";
 JSONSizeIterator::class_factory<JSONSizeIterator>

@@ -265,6 +265,78 @@ public:
  * 
  * Author: 
  */
+class JSONPairAccessorIterator : public NaryBaseIterator<JSONPairAccessorIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONPairAccessorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONPairAccessorIterator,
+    NaryBaseIterator<JSONPairAccessorIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONPairAccessorIterator, PlanIteratorState>*)this);
+  }
+
+  JSONPairAccessorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONPairAccessorIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONPairAccessorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONMemberAccessorIterator : public NaryBaseIterator<JSONMemberAccessorIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONMemberAccessorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONMemberAccessorIterator,
+    NaryBaseIterator<JSONMemberAccessorIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONMemberAccessorIterator, PlanIteratorState>*)this);
+  }
+
+  JSONMemberAccessorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONMemberAccessorIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONMemberAccessorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
 class JSONSizeIterator : public NaryBaseIterator<JSONSizeIterator, PlanIteratorState>
 { 
 public:
