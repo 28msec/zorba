@@ -35,6 +35,7 @@ namespace zorba { namespace debugger {
     Variables,
     Quit,
     Run,
+    Stop,
     BreakpointSet,
     BreakpointGet,
     BreakpointRemove,
@@ -132,10 +133,13 @@ void CommandLineHandler::handle<Quit> (ZORBA_TR1_NS::tuple<>& t);
 
 template<>
 void CommandLineHandler::handle<Run> (ZORBA_TR1_NS::tuple<> &t);
-  
+
+template<>
+void CommandLineHandler::handle<Stop> (ZORBA_TR1_NS::tuple<> &t);
+
 template<>
 void CommandLineHandler::handle<StackDepth> (ZORBA_TR1_NS::tuple<>& t);
-  
+
 template<>
 void CommandLineHandler::handle<BreakpointList> (ZORBA_TR1_NS::tuple<>& aTuple);
   

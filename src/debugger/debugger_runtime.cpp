@@ -89,6 +89,14 @@ DebuggerRuntime::run()
   theWrapper->open();
   thePlanIsOpen = true;
   runQuery();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
+    << "status=\"stopping\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
 }
 
 void
@@ -324,15 +332,6 @@ DebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theExecStatus = QUERY_TERMINATED;
-
-  std::stringstream lResult;
-  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
-    << "status=\"stopping\" "
-    << "reason=\"ok\" "
-    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
-    << "</response>";
-  theCommunicator->send(lResult.str());
-  // TODO: something more here?
 }
 
 

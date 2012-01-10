@@ -78,6 +78,8 @@ DebuggerServer::run()
   init();
 
   std::string lCommand;
+  std::string lCommandName;
+  int lTransactionID = 0;
 
   while (!theStopping &&
       theRuntime->getExecutionStatus() != QUERY_DETACHED) {
@@ -85,6 +87,9 @@ DebuggerServer::run()
     // read next command
     theCommunicator->receive(lCommand);
     DebuggerCommand lCmd = DebuggerCommand(lCommand);
+
+    lCommandName = lCmd.getName();
+    lCmd.getArg("i", lTransactionID);
 
     if (theRuntime->getExecutionStatus() == QUERY_TERMINATED) {
       // clone the existing runtime
@@ -108,6 +113,15 @@ DebuggerServer::run()
   }
 
   theRuntime->terminate();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << lCommandName << "\" "
+    << "status=\"stopped\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << lTransactionID << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
+
   theRuntime->resetRuntime();
   theRuntime->join();
 
@@ -473,10 +487,11 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theStopping = true;
+        //theStopping = true;
 
-        lResponse << "reason=\"ok\" status=\"stopped\" ";
+        lResponse << "status=\"stopping\" reason=\"ok\"";
         lResponse << ">";
+
         theRuntime->terminateRuntime();
 
       } else if (aCommand.getName() == "stack_depth") {
@@ -531,8 +546,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         theRuntime->stepOver();
         return "";
       } else if (aCommand.getName() == "step_out") {
-        ExecutionStatus lStatus = theRuntime->getExecutionStatus();
-        if (lStatus != QUERY_SUSPENDED) {
+        if (theRuntime->getExecutionStatus() != QUERY_SUSPENDED) {
           return buildErrorResponse(lTransactionID, lCmdName, 6, "Can not step out since the execution is not started.");
         }
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());

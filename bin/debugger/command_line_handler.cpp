@@ -131,6 +131,13 @@ CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
 
 template<>
 void
+CommandLineHandler::handle<Stop>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->stop();
+}
+
+template<>
+void
 CommandLineHandler::handle<BreakpointSet>(std::tr1::tuple<bstring, bstring, bint> &aTuple)
 {
   DebuggerClient::BreakpointType lType = DebuggerClient::Line;
@@ -270,6 +277,9 @@ CommandLineHandler::addCommands()
 
   // DBGP: run
   *theCommandLine << createCommand<Run>(TUPLE(), "run", *this, "Run the query");
+
+  // DBGP: stop
+  *theCommandLine << createCommand<Stop>(TUPLE(), "stop", *this, "Stop the query");
 
   // DBGP: breakpoint_set
   {
