@@ -21,6 +21,7 @@
 #include <sys/timeb.h>
 #ifdef UNIX
 #include <sys/time.h>
+#include <unistd.h>
 #endif
 
 #include "store/api/iterator.h"
@@ -54,6 +55,11 @@
 #include <zorba/external_function_parameter.h>
 
 using namespace std;
+
+#ifdef UNIX
+//external variables
+extern char **environ;
+#endif
 
 namespace zorba
 {
@@ -311,7 +317,27 @@ void dynamic_context::set_environment_variables()
     }
     
     FreeEnvironmentStrings(envVarsCH);
+    #else    
+    for(char **env = environ; *env; ++env)
+    {
+      zstring envVarZS(*env);
+      
+      int size = envVarZS.size();
+            
+      int eqPos = envVarZS.find_first_of("=");
+            
+      if(eqPos > 0)
+      {
+        zstring varname(envVarZS.substr(0, eqPos));
+        zstring varvalue(envVarZS.substr(eqPos+1, size));
+                                                  
+        if (!varname.empty() || !varvalue.empty())
+          theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
+      }                                                                   
+    }
+     
     #endif
+    
 }
 /*******************************************************************************
 
