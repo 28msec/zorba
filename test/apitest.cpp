@@ -112,7 +112,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   chints.for_serialization_only = false;
 
-  if (Properties::instance()->serializeOnlyQuery())
+  if (Properties::instance()->serializeOnlyQuery() > 0)
   {
     chints.for_serialization_only = true;
   }
