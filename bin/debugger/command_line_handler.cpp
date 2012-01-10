@@ -116,7 +116,7 @@ CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
       }
     }
   }
-  theWaitFor = theClient->stop();
+  theWaitFor = theClient->stop(true);
   theClient->quit();
   theQuit = true;
 }
@@ -133,7 +133,7 @@ template<>
 void
 CommandLineHandler::handle<Stop>(ZORBA_TR1_NS::tuple<> &t)
 {
-  theWaitFor = theClient->stop();
+  theWaitFor = theClient->stop(false);
 }
 
 template<>

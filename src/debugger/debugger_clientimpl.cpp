@@ -213,10 +213,14 @@ DebuggerClientImpl::step_out()
 }
   
 std::size_t
-DebuggerClientImpl::stop()
+DebuggerClientImpl::stop(bool withQuit)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "stop -i " << id << '\0';
+  *theOutStream << "stop -i " << id;
+  if (!withQuit) {
+    *theOutStream << " -z 1";
+  }
+  *theOutStream << '\0';
   theOutStream->flush();
   return id;
 }

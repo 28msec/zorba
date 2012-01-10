@@ -122,7 +122,7 @@ DebuggerServer::run()
     << "</response>";
   theCommunicator->send(lResult.str());
 
-  theRuntime->resetRuntime();
+  //theRuntime->resetRuntime();
   theRuntime->join();
 
   return true;
@@ -487,7 +487,14 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theStopping = true;
+        // sending the zorba extensions flag, the debugger server will not terminate
+        // when the stop command is sent. This way the zorba debugger client can
+        // perform multiple execution of the same query even when the user terminates
+        // the execution using the stop command.
+        // NOTE: theStopping is controlling the main debugger server loop
+        if (!lZorbaExtensions) {
+          theStopping = true;
+        }
 
         lResponse << "status=\"stopping\" reason=\"ok\"";
         lResponse << ">";

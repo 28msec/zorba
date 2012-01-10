@@ -67,7 +67,6 @@ DebuggerRuntime::DebuggerRuntime(
     theCommunicator(communicator),
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
-    theNotSendTerminateEvent(false),
     thePlanIsOpen(false),
     theSerializer(0),
     theItemHandler(aHandler),
@@ -115,7 +114,6 @@ DebuggerRuntime::resetRuntime()
   theWrapper = theQuery->generateWrapper();
   thePlanIsOpen = false;
   theExecStatus = QUERY_IDLE;
-  theNotSendTerminateEvent = false;
   reset();
 }
 
@@ -499,13 +497,6 @@ DebuggerRuntime::stepOut()
   lCommons->makeStepOut();
 
   resumeRuntime();
-}
-
-
-void
-DebuggerRuntime::setNotSendTerminateEvent()
-{
-  theNotSendTerminateEvent = true;
 }
 
 

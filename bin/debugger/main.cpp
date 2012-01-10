@@ -78,9 +78,6 @@ class XqdbClient {
 };
 
 
-XqdbClient* theClient;
-
-
 void
 onExitProcess(ExitCode aExitCode) {
   //if (aExitCode != -1) {
@@ -89,7 +86,6 @@ onExitProcess(ExitCode aExitCode) {
   std::cout << "Terminating debugger client."<< std::endl;
   // TODO: and the memory?
 
-  delete theClient;
   exit(aExitCode);
 }
 
@@ -373,13 +369,10 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start the debugger command line
 
-    theClient =  new XqdbClient(lPort);
+    std::auto_ptr<XqdbClient> theClient(new XqdbClient(lPort));
     theClient->start();
 
-    delete theClient;
-
   } catch (...) {
-    delete theClient;
     return -1;
   }
 
