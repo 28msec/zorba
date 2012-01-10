@@ -93,7 +93,7 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
 };
 
 
-const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
+const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
 {
   "xs:anyAtomicType",
   "xs:string",
