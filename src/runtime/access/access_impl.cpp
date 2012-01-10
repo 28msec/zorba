@@ -15,8 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+
 
 #include "system/globalenv.h"
 
@@ -87,6 +88,8 @@ namespace zorba {
     {
       varname = item->getString();
       result = planState.theLocalDynCtx->get_environment_variable(varname);
+      //if(result = null) 
+        //throw error
       STACK_PUSH(true, state);
     }
     

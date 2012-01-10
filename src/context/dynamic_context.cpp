@@ -284,11 +284,6 @@ void dynamic_context::set_environment_variables()
     {
       int size = lstrlen(envVarsSTR);
 
-      if(size < 0)
-      {
-        //throw error
-      }
-
       char * envVar = new char[size+1];
       WideCharToMultiByte( CP_ACP, 
                            WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
@@ -359,7 +354,7 @@ store::Iterator_t dynamic_context::available_environment_variables() const
 
   if(lVarNames.empty())
   {
-    //throw error
+    return NULL;
   }
 
   return GENV_STORE.createTempSeq(lVarNames)->getIterator(); 
@@ -374,14 +369,12 @@ store::Item_t dynamic_context::get_environment_variable(const zstring varname) c
 
   if(lIter == theEnvironmentVariables->end())
   {
-    //throw error
+    return NULL;
   }
 
-  store::Item_t value;
+  store::Item_t value; 
   zstring varvalue = lIter->second;
-
   GENV_ITEMFACTORY->createString(value, varvalue);
-
   return value;
 }
 
