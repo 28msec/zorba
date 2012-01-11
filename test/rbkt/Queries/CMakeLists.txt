@@ -171,6 +171,13 @@ FOREACH(TESTFILE ${TESTFILES})
   IF(TESTNAME MATCHES "w3c_testsuite/TestSources/")
     SET (SKIP_TEST 1)
   ENDIF(TESTNAME MATCHES "w3c_testsuite/TestSources/")
+  IF(WIN32)
+    #this test fails on Windows because cannot find ourlib.dll
+    #bug 908062
+    IF(${TESTNAME} MATCHES "test/rbkt/zorba/versioning/link1")
+      SET(SKIP_TEST 1)
+    ENDIF(${TESTNAME} MATCHES "test/rbkt/zorba/versioning/link1")
+  ENDIF(WIN32)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
   IF (NOT ZORBA_WORDNET_FOUND)
@@ -275,15 +282,6 @@ IF(XVERMAJ EQUAL 2)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external1 870991)
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
-
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
-
-  # this is still an expected failure but has been commented out since the
-  # test is now completely disabled because of bug 871335
-  #EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
-
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
 
@@ -308,6 +306,20 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
+
+# Failing windowing tests.
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)
+
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling44 899366)
+
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling14 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling16 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling15 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling18 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)

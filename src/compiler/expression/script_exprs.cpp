@@ -80,6 +80,11 @@ block_expr::block_expr(
 }
 
 
+block_expr::~block_expr()
+{
+}
+
+
 void block_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -264,6 +269,15 @@ var_decl_expr::var_decl_expr(
 }
 
 
+var_decl_expr::~var_decl_expr()
+{
+  // Note: var_expr objs for global vars live longer than their associated
+  // var_decl_expr, because such var_expr objs are also registered in the sctx.
+  if (theInitExpr)
+    theVarExpr->remove_set_expr(this);
+}
+
+
 void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -444,6 +458,17 @@ exit_catcher_expr::exit_catcher_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+exit_catcher_expr::~exit_catcher_expr()
+{
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    static_cast<exit_expr*>(*ite)->setCatcherExpr(NULL);
+  }
 }
 
 

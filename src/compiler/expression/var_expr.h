@@ -193,6 +193,8 @@ public:
       var_kind k,
       store::Item* name);
 
+  var_expr(const var_expr& source);
+
   ulong get_unique_id() const { return theUniqueId; }
 
   void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }

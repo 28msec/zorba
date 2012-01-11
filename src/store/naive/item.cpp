@@ -212,6 +212,15 @@ Item* Item::getBaseItem() const
 }
 
 
+store::SchemaTypeCode Item::getTypeCode() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
+}
+
+
 Item* Item::getType() const
 {
   throw ZORBA_EXCEPTION(

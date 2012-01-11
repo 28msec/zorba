@@ -31,6 +31,9 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
+#include "store/api/xs_type_codes.h"
+
+
 namespace zorba {
 
 class NodeTest;
@@ -70,7 +73,7 @@ public:
   
   virtual ~TypeManager() { }
 
-  virtual TypeManager *get_parent_type_manager() const = 0;
+  virtual TypeManager* get_parent_type_manager() const = 0;
 
   virtual int level() const { return m_level; }
 
@@ -93,7 +96,7 @@ public:
   virtual xqtref_t create_any_simple_type() const = 0;
 
   virtual xqtref_t create_builtin_atomic_type(
-        TypeConstants::atomic_type_code_t type_code,
+        store::SchemaTypeCode type_code,
         TypeConstants::quantifier_t quantifier) const = 0;
 
   virtual xqtref_t create_named_atomic_type(

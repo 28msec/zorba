@@ -127,7 +127,7 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache;
+  store::Index_t              theCache; //note: not for serialization
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
@@ -166,6 +166,8 @@ public:
   void setArgVars(std::vector<var_expr_t>& args);
 
   const std::vector<var_expr_t>& getArgVars() const;
+
+  var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
 
   void setOptimized(bool v) { theIsOptimized = v; }
 
