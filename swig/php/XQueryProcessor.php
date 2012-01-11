@@ -5,7 +5,7 @@ class XQueryCompilerException extends Exception{}
 class XQueryProcessorException extends Exception{}
 
 /**
- * Iterate over an instance of the XML Data Model (i.e, a sequence of items).
+ * Iterate over a sequence of XQuery items.
  * This class implements the SPL Iterator interface.
  *
  * The following code snippet iterates over a small sequence of items.
@@ -78,10 +78,10 @@ class XQueryIterator implements Iterator {
 }
 
 /**
- * The XQueryProcessor class allows to invoke
+ * The XQueryProcessor class allows to invoke the
  * <a href="http://www.zorba-xquery.com">Zorba XQuery Processor</a>.  
  *
- * Instruction to install the extension can be found at <a href=""></a>.
+ * Instructions to install the extension can be found at <a href="http://www.zorba-xquery.com/site2/html/php.html">http://www.zorba-xquery.com/site2/html/php.html</a>.
  *
  * The following code snippet executes a small <em>Hello World</em> program:
  * <code>
@@ -120,7 +120,7 @@ class XQueryProcessor {
   }
 
   /**
-   * Shutdowns the XQueryProcessor instance.
+   * Shuts down the XQueryProcessor instance.
    */
   public function __destruct() {
     $this->zorba->shutdown();
@@ -137,7 +137,7 @@ class XQueryProcessor {
    * 
    * echo $xquery->execute() . '\n';
    * </code>
-   * In the following code snippet, the following code snippets imports and execute an <em>Hello World</em> query:
+   * The following code snippets imports and execute an <em>Hello World</em> query:
    * <code>
    * <?php
    * $xquery = new XQueryProcessor();
@@ -165,17 +165,17 @@ class XQueryProcessor {
   }
 
   /**
-   * Import a query to execute from its filename.
+   * Import a query to execute from a file with the given name.
    * For instance, the following code snippet imports the query file named <em>hello_word.xq</em>:
    * <code>
    * $xquery = new ZorbaXQueryProcessor();
    *
-   * $xquery->importQueryiFromURI('hello_world.xq');
+   * $xquery->importQueryFromURI('hello_world.xq');
    * 
    * echo $xquery->execute() . '\n';
    * </code>
    *
-   * @param  $filename Filename of the query to execute.
+   * @param  $filename Filename containing the query to execute.
    * @return ZorbaXQueryProcessor instance.
    */
   public function importQueryFromURI($filename) {
@@ -189,10 +189,10 @@ class XQueryProcessor {
   }
 
   /**
-   * Set value for an external variable.
+   * Set a value for an external variable.
    *
    * The following code snippet sets the value of the variable
-   * <em>$i</em> with <em>1</em>.
+   * <em>$i</em> with <em>1</em> with type xs:integer.
    * <code>
    * $xquery = new ZorbaXQueryProcessor();
    * 
@@ -209,7 +209,7 @@ class XQueryProcessor {
    * </code>
    *
    * The following code snippet sets the value of the variable <em>$i</em> in
-   * the local namespace with the value <em>1</em>.
+   * the local namespace to the value <em>1</em>.
    * <code>
    * $xquery = new ZorbaXQueryProcessor();
    * 
