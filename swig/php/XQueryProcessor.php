@@ -284,24 +284,28 @@ class XQueryProcessor {
    * @return XQuery compiled query.
 	 */
 	private function compile()
-	{
-	  if(!is_string($this->query)) {
-		throw new XQueryCompilerException('No Query Imported. Use XQueryProcessor->importQuery($query).');
+  {
+    //You need at least to import a query in order to compile it.
+    if(!is_string($this->query)) {
+		  throw new XQueryCompilerException('No Query Imported. Use XQueryProcessor->importQuery($query).');
 	  }
-	  //Compile Query
+    
+    //Compile Query
 	  $query = $this->zorba->compileQuery($this->query);
-	  //Set Variables
+    
+    //Set Variables
 	  $dctx = $query->getDynamicContext();
 	  foreach($this->variables as $ns => $variables){
-        foreach($variables as $name => $value) {
-          if($ns == "_") $ns = "";
-          $param = $this->zorba->compileQuery(".");
-          $value = $this->getItem($value);
-          $param->getDynamicContext()->setContextItem($value);
-          $dctx->setVariable($ns, $name, $param->iterator());
+      foreach($variables as $name => $value) {
+        if($ns == "_") $ns = "";
+        $param = $this->zorba->compileQuery(".");
+        $value = $this->getItem($value);
+        $param->getDynamicContext()->setContextItem($value);
+        $dctx->setVariable($ns, $name, $param->iterator());
 	    }
-      }
-	  return $query;
+    }
+    //Returns an instance of the XQuery class
+    return $query;
 	}
 
   /*
@@ -314,28 +318,28 @@ class XQueryProcessor {
    * - Long: xs:long
    */  
 	private function getItem($value) {
-      $itemFactory = $this->zorba->getItemFactory();
+    $itemFactory = $this->zorba->getItemFactory();
 
-      if($value instanceof DOMDocument or $value instanceof SimpleXMLElement) { 
-        $value = $this->parseXML($value->saveXML());
-      } else if(is_string($value)) {
-        $value = $itemFactory->createString($value);
-      } else if(is_int($value)) {
-        $value = $itemFactory->createInteger($value);
-      } else if(is_bool($value)) {
-        $value = $itemFactory->createBoolean($value);
-      } else if(is_float($value)) {
-        $value = $itemFactory->createFloat($value);
-      } else if(is_long($value)) {
-        $value = $itemFactory->createLong($value);
-      } else  {
-        throw new XQueryCompilerException("Unsupported variable type: ".gettype($value));
-      }
-
-      assert($value instanceof Item);
-
-      return $value;
+    if($value instanceof DOMDocument or $value instanceof SimpleXMLElement) { 
+      $value = $this->parseXML($value->saveXML());
+    } else if(is_string($value)) {
+      $value = $itemFactory->createString($value);
+    } else if(is_int($value)) {
+      $value = $itemFactory->createInteger($value);
+    } else if(is_bool($value)) {
+      $value = $itemFactory->createBoolean($value);
+    } else if(is_float($value)) {
+      $value = $itemFactory->createFloat($value);
+    } else if(is_long($value)) {
+      $value = $itemFactory->createLong($value);
+    } else {
+      throw new XQueryCompilerException("Unsupported variable type: ".gettype($value));
     }
+
+    assert($value instanceof Item);
+
+    return $value;
+  }
 
   /**
    * Parse an XML string to an XQuery Item.
