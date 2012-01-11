@@ -215,6 +215,32 @@ StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
   return "";
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::getDeclaredPrefixes( std::vector<String>& aPrefixes ) const
+{
+  try
+  {
+    store::NsBindings lBindings;
+    theCtx->get_namespace_bindings(lBindings);
+
+    for (store::NsBindings::const_iterator lIter = lBindings.begin();
+         lIter != lBindings.end(); ++lIter)
+    {
+      aPrefixes.push_back(lIter->first.str());
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+}
 
 /*******************************************************************************
 

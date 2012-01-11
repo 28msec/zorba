@@ -103,6 +103,14 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual String
   getNamespaceURIByPrefix( const String& aPrefix ) const = 0;
 
+  /**
+   * \brief Get the list of prefixes declared in this static context.
+   *
+   * @param aPrefixes the list of prefixes is added to this vector
+   */
+  virtual void
+  getDeclaredPrefixes( std::vector<String>& aPrefixes ) const = 0;
+
   /** \brief Set the default element and type namespace
    *         (see http://www.w3.org/TR/xquery/#static_context)
    *
