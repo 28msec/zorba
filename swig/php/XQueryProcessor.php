@@ -267,11 +267,21 @@ class XQueryProcessor {
     return $result;
   }
 
+  /**
+   * Provide an intance of the SPL iterator to iterator over the 
+   * sequence of items produced by the query result.
+   *
+   * @return XQueryIterator
+   */
   public function getIterator() {
     return new XQueryIterator($this->compile());
-  }  
+  }
+
 	/**
-	 * 
+   * Internal method that creates an instance of the
+   * XQuery class from the input parameters (importQuery and setVariable).
+   *
+   * @return XQuery compiled query.
 	 */
 	private function compile()
 	{
