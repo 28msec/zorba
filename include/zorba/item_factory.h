@@ -22,6 +22,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/item.h>
 #include <zorba/streams.h>
 
 namespace zorba {
@@ -607,7 +608,7 @@ namespace zorba {
                         Item aTypeName,
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
-                        std::vector<std::pair<String, String> > aNsBindings) = 0;
+                        NsBindings aNsBindings) = 0;
 
       /**
       * Create a new attribute node N and place it among the

@@ -168,6 +168,13 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_FULL_TEXT)
   ENDIF (ZORBA_NO_FULL_TEXT)
+  IF(WIN32)
+    #this test fails on Windows because cannot find ourlib.dll
+    #bug 908062
+    IF(${TESTNAME} MATCHES "test/rbkt/zorba/versioning/link1")
+      SET(SKIP_TEST 1)
+    ENDIF(${TESTNAME} MATCHES "test/rbkt/zorba/versioning/link1")
+  ENDIF(WIN32)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
   IF (NOT ZORBA_WORDNET_FOUND)
@@ -260,15 +267,6 @@ IF(XVERMAJ EQUAL 2)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external1 870991)
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
-
-  EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
-
-  # this is still an expected failure but has been commented out since the
-  # test is now completely disabled because of bug 871335
-  #EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
-
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
 

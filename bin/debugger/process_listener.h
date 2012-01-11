@@ -21,6 +21,7 @@
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 # include <pthread.h>
+# include <sys/wait.h>
   typedef pthread_t ThreadId;
   typedef pid_t ProcessId;
   typedef int ExitCode;
@@ -28,7 +29,7 @@
 #else
 # include <windows.h>
   typedef DWORD ThreadId;
-  typedef HANDLE ProcessId;
+  typedef DWORD ProcessId;
   typedef DWORD ExitCode;
 # define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif

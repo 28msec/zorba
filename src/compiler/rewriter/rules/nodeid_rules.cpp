@@ -1269,7 +1269,9 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   case while_expr_kind:
   case flowctl_expr_kind:
   case exit_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
+#endif
   default:
     ZORBA_ASSERT(false);
   }

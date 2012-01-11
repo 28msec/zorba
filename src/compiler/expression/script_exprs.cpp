@@ -80,6 +80,11 @@ block_expr::block_expr(
 }
 
 
+block_expr::~block_expr()
+{
+}
+
+
 void block_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);

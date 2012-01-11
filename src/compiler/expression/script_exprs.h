@@ -136,6 +136,8 @@ public:
       std::vector<expr_t>& seq,
       std::vector<var_expr*>* assignedVars);
 
+  ~block_expr();
+
   void add_at(csize pos, const expr_t& arg);
 
   csize size() const { return theArgs.size(); }
