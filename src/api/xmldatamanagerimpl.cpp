@@ -75,7 +75,7 @@ namespace zorba {
 
 ********************************************************************************/
 XmlDataManagerImpl::XmlDataManagerImpl()
-  : 
+  :
   theDocManager(0),
   theColManager(0),
   theW3CColManager(0)
@@ -151,7 +151,7 @@ XmlDataManagerImpl::~XmlDataManagerImpl()
 DocumentManager*
 XmlDataManagerImpl::getDocumentManager() const
 {
-  if (!theDocManager) 
+  if (!theDocManager)
   {
     theDocManager = new DocumentManagerImpl(theContext, theFactory);
     theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
@@ -166,7 +166,7 @@ XmlDataManagerImpl::getDocumentManager() const
 CollectionManager*
 XmlDataManagerImpl::getCollectionManager() const
 {
-  if (!theColManager) 
+  if (!theColManager)
   {
     theColManager = new CollectionManagerImpl(
         theContext,
@@ -185,7 +185,7 @@ XmlDataManagerImpl::getCollectionManager() const
 CollectionManager*
 XmlDataManagerImpl::getW3CCollectionManager() const
 {
-  if (!theW3CColManager) 
+  if (!theW3CColManager)
   {
     theW3CColManager = new CollectionManagerImpl(
         theContext,
@@ -281,7 +281,7 @@ XmlDataManagerImpl::parseXML(
   ZORBA_DM_TRY
   {
     Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
-                                          "parse-xml-fragment");
+                                          "parse");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -316,7 +316,7 @@ XmlDataManagerImpl::parseXML(
   ZORBA_DM_TRY
   {
     Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
-                                          "parse-xml-fragment");
+                                          "parse");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -383,15 +383,15 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
   theDiagnosticHandler = aDiagnosticHandler;
   theUserDiagnosticHandler = true;
 
-  if (theColManager) 
+  if (theColManager)
   {
     theColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  if (theDocManager) 
+  if (theDocManager)
   {
     theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  if (theW3CColManager) 
+  if (theW3CColManager)
   {
     theW3CColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
@@ -401,17 +401,17 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p) 
+void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
-  if ( theStemmerProviderWrapper ) 
+  if ( theStemmerProviderWrapper )
   {
     if ( theStemmerProviderWrapper->get_provider() == p )
       return;
     delete theStemmerProviderWrapper;
     theStemmerProviderWrapper = nullptr;
   }
-  if ( p ) 
+  if ( p )
   {
     theStemmerProviderWrapper = new internal::StemmerProviderWrapper( p );
     theStore->setStemmerProvider( theStemmerProviderWrapper );
@@ -422,7 +422,7 @@ void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlDataManagerImpl::registerTokenizerProvider(TokenizerProvider const *p) 
+void XmlDataManagerImpl::registerTokenizerProvider(TokenizerProvider const *p)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
   theStore->setTokenizerProvider( p );

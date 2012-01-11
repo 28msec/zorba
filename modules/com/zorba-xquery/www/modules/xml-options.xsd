@@ -30,13 +30,13 @@
             <attribute name="value" type="anyURI" use="required"/>
           </complexType>
         </element>
-        <element name="noError" minOccurs="0" maxOccurs="1">
+        <element name="no-error" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="stripWhitespace" minOccurs="0" maxOccurs="1">
+        <element name="strip-boundary-space" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>        
-        <element name="schemaValidate" minOccurs="0" maxOccurs="1">
+        <element name="schema-validate" minOccurs="0" maxOccurs="1">
           <complexType>
             <attribute name="mode" default="strict">
               <simpleType>
@@ -48,40 +48,40 @@
             </attribute>
           </complexType>
         </element>      
-        <element name="DTDValidate" minOccurs="0" maxOccurs="1">
+        <element name="DTD-validate" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="DTDLoad" minOccurs="0" maxOccurs="1">
+        <element name="DTD-load" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="defaultDTDAttributes" minOccurs="0" maxOccurs="1">
+        <element name="default-DTD-attributes" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="parseExternalParsedEntity" minOccurs="0" maxOccurs="1">
+        <element name="parse-external-parsed-entity" minOccurs="0" maxOccurs="1">
           <complexType>
-            <attribute name="skipRootNodes" use="optional">
+            <attribute name="skip-root-nodes" use="optional">
               <simpleType>
                 <restriction base="int">
                   <minInclusive value="0"/>
                 </restriction>
               </simpleType>
             </attribute>            
-            <attribute name="skipTopLevelTextNodes" type="boolean" use="optional"/>
+            <attribute name="skip-top-Level-text-nodes" type="boolean" use="optional"/>
           </complexType>
         </element>
-        <element name="substituteEntities" minOccurs="0" maxOccurs="1">
+        <element name="substitute-entities" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="xincludeSubstitutions" minOccurs="0" maxOccurs="1">
+        <element name="xinclude-substitutions" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="removeRedundantNS" minOccurs="0" maxOccurs="1">
+        <element name="remove-redundant-ns" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="noCDATA" minOccurs="0" maxOccurs="1">
+        <element name="no-CDATA" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="noXIncludeNodes" minOccurs="0" maxOccurs="1">
+        <element name="no-xinclude-nodes" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
 

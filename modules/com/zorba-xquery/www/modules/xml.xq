@@ -68,18 +68,18 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li>
- : &lt;noError/&gt; - if present, the option will disable fatal error processing. Any
+ : &lt;no-error/&gt; - if present, the option will disable fatal error processing. Any
  : failure to parse or validate the input in the requested manner will result
  : in the function returning an empty sequence and no error will raised.
  : </li>
  :
  : <li>
- : &lt;stripWhitespace/&gt; - if present, it will enable LibXml2's XML_PARSE_NOBLANKS option,
+ : &lt;strip-boundary-space/&gt; - if present, it will enable LibXml2's XML_PARSE_NOBLANKS option,
  : which will remove all the blank nodes from the input.
  : </li>
  :
  : <li>
- : &lt;schemaValidate/&gt; - if present, it will request that the input string be Schema 
+ : &lt;schema-validate/&gt; - if present, it will request that the input string be Schema 
  : validated. The element accepts an attribute named "mode" which can have two 
  : values: "strict and "lax". Enabling the option will produce a result that is 
  : equivalent to processing the input with the option disabled, and then copying 
@@ -89,7 +89,7 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li>
- : &lt;DTDValidate/&gt; - the option will enable the DTD-based validation. If this 
+ : &lt;DTD-validate/&gt; - the option will enable the DTD-based validation. If this 
  : option is enabled and the input references a DTD, then the input must be a 
  : well-formed and DTD-valid XML document. The &lt;DTDLoad/&gt; option must be used for
  : external DTD files to be loaded. If the option is enabled and the input does 
@@ -101,17 +101,17 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li> 
- : &lt;DTDLoad/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDLOAD option which
+ : &lt;DTD-load/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDLOAD option which
  : will load the external subset.
  : </li>
  :
  : <li>
- : &lt;defaultDTDAttributes/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDATTR option,
+ : &lt;default-DTD-attributes/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDATTR option,
  : which enables the default DTD attributes.
  : </li>
  :
  : <li>
- : &lt;parseExternalParsedEntity/&gt; - if present, it will enable the processing of XML 
+ : &lt;parse-external-parsed-entity/&gt; - if present, it will enable the processing of XML 
  : external entities. If the option 
  : is enabled, the input must conform to the syntax extParsedEnt (production 
  : [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">
@@ -125,42 +125,43 @@ declare option ver:module-version "2.0";
  : (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
  : This option can not be used together with either the &lt;schemaValidate/&gt; or the &lt;DTDValidate/&gt;
  : option. Doing so will raise a zerr:ZXQD0003 error.
- : The &lt;parseExternalParsedEntity/&gt; option has two parameters, given by attributes. The first
- : attribute is "skipRootNodes" and it can have a non-negative value. Specifying the paramter
+ : The &lt;parse-external-parsed-entity/&gt; option has two parameters, given by attributes. The first
+ : attribute is "skip-root-nodes" and it can have a non-negative value. Specifying the paramter
  : tells the parser to skip the given number of root nodes and return only their children. E.g.
- : skipRootNodes="1" is equivalent to parse-xml($xml-string)/*/* . skipRootNodes="2" is equivalent
- : to parse-xml($xml-string)/*/*/* , etc. The second attribute is "skipTopLevelTextNodes" with a 
+ : skip-root-nodes="1" is equivalent to parse-xml($xml-string)/node()/node() . skip-root-nodes="2" is equivalent
+ : to parse-xml($xml-string)/node()/node()/node() , etc. The second attribute is "skip-top-level-text-nodes" with a 
  : boolean value. Specifying "true" will tell the parser to skip top level text nodes, returning
  : only the top level elements, comments, PIs, etc. This parameter works in combination with
- : the "skipRootNodes" paramter, thus top level text nodes are skipped after "skipRootNodes" has 
+ : the "skip-root-nodes" paramter, thus top level text nodes are skipped after "skip-root-nodes" has 
  : been applied. 
  : </li>
  :
  : <li>
- : &lt;substituteEntities/&gt; - if present, it will enable LibXml2's XML_PARSE_NOENT option,
+ : &lt;substitute-entities/&gt; - if present, it will enable LibXml2's XML_PARSE_NOENT option,
  : which tells the parser to substitute entities.
  : </li>
  :
  : <li>
- : &lt;xincludeSubstitutions/&gt; - if present, it will enable LibXml2's XML_PARSE_XINCLUDE option,
+ : &lt;xinclude-substitutions/&gt; - if present, it will enable LibXml2's XML_PARSE_XINCLUDE option,
  : which will implement the XInclude substitution.
  : </li>
  :
  : <li>
- : &lt;removeRedundantNS/&gt; - if present, it will enable LibXml2's XML_PARSE_NSCLEAN option,
+ : &lt;remove-redundant-ns/&gt; - if present, it will enable LibXml2's XML_PARSE_NSCLEAN option,
  : which will remove redundant namespaces declarations.
  : </li>
  :
  : <li>
- : &lt;noCDATA/&gt; - if present, it will enable LibXml2's XML_PARSE_NOCDATA option,
+ : &lt;no-CDATA/&gt; - if present, it will enable LibXml2's XML_PARSE_NOCDATA option,
  : which will tell the parser to merge CDATA as text nodes.
  : </li>
  :
  : <li>
- : &lt;noXIncludeNodes/&gt; - if present, it will enable LibXml2's XML_PARSE_NOXINCNODE option,
+ : &lt;no-xinclude-nodes/&gt; - if present, it will enable LibXml2's XML_PARSE_NOXINCNODE option,
  : which will tell parser not to generate XINCLUDE START/END nodes.
  : </li>
  :      
+ : </ul>
  :
  :
  : @param $xml-string The string that holds the XML to be parsed. If empty,
@@ -183,7 +184,7 @@ declare option ver:module-version "2.0";
  :
  :)
  
-declare function parse-xml:parse-xml(
+declare function parse-xml:parse(
   $xml-string as xs:string?,
   $options as element()?) as node()* external;
 

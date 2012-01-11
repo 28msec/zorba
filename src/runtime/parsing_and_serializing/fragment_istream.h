@@ -24,11 +24,15 @@
 namespace zorba {
 
 /**
- * A class to hold an input stream for the parse-xml-fragment function
+ * A class to hold an input stream for the parse-xml:parse() function
  * Author: Nicolae Brinza
  */
 class FragmentIStream : public std::istream
 {
+public:
+  static const unsigned int BUFFER_SIZE = 2048;
+  static const unsigned int LOOKAHEAD_BYTES = 3;
+
 public:
   FragmentIStream()
     :
@@ -36,12 +40,13 @@ public:
     theIss(NULL),
     theStream(NULL),
     theBuffer(NULL),
-    buffer_size(0),
+    bytes_in_buffer(0),
     current_offset(0),
     current_element_depth(0),
     root_elements_to_skip(0),
     ctxt(NULL),
     first_start_doc(true),
+    forced_parser_stop(false),
     parsed_nodes_count(0),
     children(NULL)
   {
@@ -68,12 +73,13 @@ public:
     theIss = NULL;
     theStream = NULL;
     theBuffer = NULL;
-    buffer_size = 0;
+    bytes_in_buffer = 0;
     current_offset = 0;
     current_element_depth = 0;
     root_elements_to_skip = 0;
     ctxt = NULL;
     first_start_doc = true;
+    forced_parser_stop = false;
     parsed_nodes_count = 0;
     children = NULL;
   }
@@ -87,12 +93,13 @@ public:
   std::istringstream* theIss;
   std::istream* theStream;
   char* theBuffer;
-  unsigned long buffer_size;
+  unsigned long bytes_in_buffer;
   unsigned long current_offset;
   int current_element_depth;
   int root_elements_to_skip;
   xmlParserCtxtPtr ctxt;
   bool first_start_doc;
+  bool forced_parser_stop;
   int parsed_nodes_count;
   store::Iterator_t children;
 };

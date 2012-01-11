@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_xml_parse_xml::codegen(
+PlanIter_t fn_zorba_xml_parse::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -46,12 +46,12 @@ void populate_context_parse_fragment(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_zorba_xml_parse_xml,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","parse-xml"), 
+    DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
+        (createQName("http://www.zorba-xquery.com/modules/xml","","parse"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_XML_PARSE_XML_2);
+        FunctionConsts::FN_ZORBA_XML_PARSE_2);
 
   }
 

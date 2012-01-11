@@ -267,6 +267,8 @@ public:
         std::istream& xmlStream);
 
 protected:
+  bool fillBuffer(FragmentIStream* theFragmentStream);
+
   unsigned long getCurrentInputOffset() const;
 
   static void checkStopParsing(void* ctx, bool force = false);

@@ -37,7 +37,7 @@ namespace zorba
 {
 
 /*******************************************************************************
-  14.9.1 fn-zorba-xml:parse-xml-fragment
+  14.9.1 fn-zorba-xml:parse
 ********************************************************************************/
 
 store::Item_t getFirstAttribute(store::Item_t node)
@@ -100,11 +100,11 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
 
       props.setBaseUri(attr->getStringValue());
     }
-    else if (child->getNodeName()->getLocalName() == "noError")
+    else if (child->getNodeName()->getLocalName() == "no-error")
       props.setNoError(true);
-    else if (child->getNodeName()->getLocalName() == "stripWhitespace")
+    else if (child->getNodeName()->getLocalName() == "strip-boundary-space")
       props.setStripWhitespace(true);
-    else if (child->getNodeName()->getLocalName() == "schemaValidate")
+    else if (child->getNodeName()->getLocalName() == "schema-validate")
     {
       store::Item_t attr = getFirstAttribute(child);
       if (attr->getStringValue() == "strict")
@@ -112,13 +112,13 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
       else
         props.setSchemaLaxValidate(true);
     }
-    else if (child->getNodeName()->getLocalName() == "DTDValidate")
+    else if (child->getNodeName()->getLocalName() == "DTD-validate")
       props.setDTDValidate(true);
-    else if (child->getNodeName()->getLocalName() == "DTDLoad")
+    else if (child->getNodeName()->getLocalName() == "DTD-load")
       props.setDTDLoad(true);
-    else if (child->getNodeName()->getLocalName() == "defaultDTDAttributes")
+    else if (child->getNodeName()->getLocalName() == "default-DTD-attributes")
       props.setDefaultDTDAttributes(true);
-    else if (child->getNodeName()->getLocalName() == "parseExternalParsedEntity")
+    else if (child->getNodeName()->getLocalName() == "parse-external-parsed-entity")
     {
       props.setParseExternalParsedEntity(true);
       store::Item_t attr;
@@ -126,22 +126,22 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
       attribs->open();
       while (attribs->next(attr))
       {
-        if (attr->getNodeName()->getLocalName() == "skipRootNodes")
+        if (attr->getNodeName()->getLocalName() == "skip-root-nodes")
           props.setSkipRootNodes(ztd::aton<xs_int>(attr->getStringValue().c_str()));
-        else if (attr->getNodeName()->getLocalName() == "skipTopLevelTextNodes")
+        else if (attr->getNodeName()->getLocalName() == "skip-top-level-text-nodes")
           props.setSkipTopLevelTextNodes(true);
       }
       attribs->close();
     }
-    else if (child->getNodeName()->getLocalName() == "substituteEntities")
+    else if (child->getNodeName()->getLocalName() == "substitute-entities")
       props.setSubstituteEntities(true);
-    else if (child->getNodeName()->getLocalName() == "xincludeSubstitutions")
+    else if (child->getNodeName()->getLocalName() == "xinclude-substitutions")
       props.setXincludeSubstitutions(true);
-    else if (child->getNodeName()->getLocalName() == "removeRedundantNS")
+    else if (child->getNodeName()->getLocalName() == "remove-redundant-ns")
       props.setRemoveRedundantNS(true);
-    else if (child->getNodeName()->getLocalName() == "noCDATA")
+    else if (child->getNodeName()->getLocalName() == "no-CDATA")
       props.setNoCDATA(true);
-    else if (child->getNodeName()->getLocalName() == "noXIncludeNodes")
+    else if (child->getNodeName()->getLocalName() == "no-xinclude-nodes")
       props.setNoXIncludeNodes(true);
   }
 
@@ -219,13 +219,13 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
 
       while (state->theFragmentStream.theBuffer == NULL
              ||
-             state->theFragmentStream.current_offset < state->theFragmentStream.buffer_size)
+             state->theFragmentStream.current_offset < state->theFragmentStream.bytes_in_buffer)
       {
         try {
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
         } catch (ZorbaException const& e) {
           if ( ! state->theProperties.getNoError())
-            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml()", e.what()), ERROR_LOC( loc ));
+            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
           else
             result = NULL;
         }
@@ -253,7 +253,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       } catch (ZorbaException const& e) {
         if ( ! state->theProperties.getNoError())
-          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml()", e.what()), ERROR_LOC( loc ));
+          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
         else
           result = NULL;
       }

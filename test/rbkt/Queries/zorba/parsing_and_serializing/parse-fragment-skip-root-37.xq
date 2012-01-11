@@ -1,7 +1,7 @@
 import module namespace z = "http://www.zorba-xquery.com/modules/xml";
 import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-z:parse-xml("<doc>
+z:parse("<doc>
   <foo>0</foo>
   <foo>1</foo>
   <foo>2</foo>
@@ -15,6 +15,6 @@ z:parse-xml("<doc>
   <foo>10</foo>
 </doc>", 
   <opt:options>
-    <opt:parseExternalParsedEntity opt:skipRootNodes="0"/>
+    <opt:parse-external-parsed-entity opt:skip-root-nodes="0"/>
   </opt:options>
 )

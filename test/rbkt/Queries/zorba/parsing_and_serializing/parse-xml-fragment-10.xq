@@ -1,6 +1,6 @@
 import module namespace x = "http://www.zorba-xquery.com/modules/xml";
 
-x:parse-xml("<?xml version='1.0'?>
+x:parse("<?xml version='1.0'?>
 <root>
   <from1>Jani</from1>
   
