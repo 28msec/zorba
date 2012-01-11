@@ -79,6 +79,7 @@ namespace zorba {
   bool FnEnvironmentVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     store::Item_t item;
+    store::Item_t item2;
     zstring varname;
 
     PlanIteratorState* state;
@@ -88,9 +89,12 @@ namespace zorba {
     {
       varname = item->getString();
       result = planState.theLocalDynCtx->get_environment_variable(varname);
-      //if(result = null) 
-        //throw error
-      STACK_PUSH(true, state);
+      if(result)
+      {
+        STACK_PUSH(true, state);
+      }
+      STACK_PUSH(false, state);
+      
     }
     
     STACK_END(state);
