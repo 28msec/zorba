@@ -42,13 +42,18 @@ public:
 
 /****************************************************************************//**
   The 1st child iterator computes the query string, and the next N child
-  iterators compute the domain expression of each of the "using" variables.
+  iterators compute the domain expression of each of the "eval" variables.
 
-  theVarNames : The names of the "using" vars. These will be added to the prolog
-                of the eval query as external var declarations. An error will be
-                raised if the prolog of the eval query declares or imports any 
-                variable with the same name as the name of a "using" variable.
-  theVarTypes : The data types of the "using" vars.
+  theVarNames:
+  ------------
+  The names of the "eval" vars. These will be added to the prolog of the eval 
+  query as external var declarations. If the prolog of the eval query declares
+  or imports any variable with the same name as the name of an eval variable,
+  then the inner var will hide the eval var. Furthermore, if the inner
+
+  theVarTypes:
+  ------------
+  The data types of the "eval" vars.
 ********************************************************************************/
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
@@ -57,6 +62,7 @@ protected:
   std::vector<xqtref_t>       theVarTypes;
   expr_script_kind_t          theScriptingKind;
   store::NsBindings           theLocalBindings;
+  bool                        theDoNodeCopy;
   bool                        theForDebugger;
 
 public:
@@ -75,6 +81,7 @@ public:
       const std::vector<xqtref_t>& aVarTypes,
       expr_script_kind_t scriptingKind,
       const store::NsBindings& localBindings,
+      bool doNodeCopy,
       bool forDebugger);
 
   ~EvalIterator();

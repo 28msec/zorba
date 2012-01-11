@@ -24,6 +24,8 @@
 namespace zorba 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(update_expr_base)
+END_SERIALIZABLE_CLASS_VERSIONS(update_expr_base)
 
 SERIALIZABLE_CLASS_VERSIONS(insert_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(insert_expr)
@@ -54,37 +56,60 @@ DEF_EXPR_ACCEPT (transform_expr)
 /*******************************************************************************
 
 ********************************************************************************/
-insert_expr::insert_expr(
+update_expr_base::update_expr_base(
     static_context* sctx,
     const QueryLoc& loc,
-    store::UpdateConsts::InsertType aType,
-    expr_t aSourceExpr,
-    expr_t aTargetExpr)
+    expr_kind_t kind,
+    const expr_t& targetExpr,
+    const expr_t& sourceExpr)
   :
-	expr(sctx, loc, insert_expr_kind),
-  theType(aType),
-	theSourceExpr(aSourceExpr),
-	theTargetExpr(aTargetExpr)
+	expr(sctx, loc, kind),
+	theTargetExpr(targetExpr),
+  theSourceExpr(sourceExpr)
 {
   compute_scripting_kind();
 }
 
 
-void insert_expr::serialize(::zorba::serialization::Archiver& ar)
+void update_expr_base::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
-  ar & theSourceExpr;
   ar & theTargetExpr;
+  ar & theSourceExpr;
 }
 
 
-void insert_expr::compute_scripting_kind()
+void update_expr_base::compute_scripting_kind()
 {
   theScriptingKind = UPDATING_EXPR;
 
-  checkSimpleExpr(theSourceExpr);
   checkSimpleExpr(theTargetExpr);
+
+  if (theSourceExpr)
+    checkSimpleExpr(theSourceExpr);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+insert_expr::insert_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    store::UpdateConsts::InsertType aType,
+    const expr_t& sourceExpr,
+    const expr_t& targetExpr)
+  :
+	update_expr_base(sctx, loc, insert_expr_kind, targetExpr, sourceExpr),
+  theType(aType)
+{
+}
+
+
+void insert_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (update_expr_base*)this);
+  SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
 }
 
 
@@ -104,30 +129,20 @@ expr_t insert_expr::clone(substitution_t& subst) const
 delete_expr::delete_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aTargetExpr)
+    const expr_t& targetExpr)
   :
-	expr(sctx, loc, delete_expr_kind),
-	theTargetExpr(aTargetExpr)
+	update_expr_base(sctx, loc, delete_expr_kind, targetExpr, NULL)
 {
-  compute_scripting_kind();
 }
 
 
 void delete_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-}
-
-void delete_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATING_EXPR;
-
-  checkSimpleExpr(theTargetExpr);
+  serialize_baseclass(ar, (update_expr_base*)this);
 }
 
 
-expr_t delete_expr::clone (substitution_t& subst) const
+expr_t delete_expr::clone(substitution_t& subst) const
 {
   return new delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
@@ -140,33 +155,19 @@ replace_expr::replace_expr(
     static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::ReplaceType aType,
-    expr_t aTargetExpr,
-    expr_t aReplaceExpr)
+    const expr_t& targetExpr,
+    const expr_t& replaceExpr)
   :
-	expr(sctx, loc, replace_expr_kind),
-  theType(aType),
-	theTargetExpr(aTargetExpr),
-	theReplaceExpr(aReplaceExpr)
+	update_expr_base(sctx, loc, replace_expr_kind, targetExpr, replaceExpr),
+  theType(aType)
 {
-  compute_scripting_kind();
 }
 
 
 void replace_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
+  serialize_baseclass(ar, (update_expr_base*)this);
   SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
-  ar & theTargetExpr;
-  ar & theReplaceExpr;
-}
-
-
-void replace_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATING_EXPR;
-
-  checkSimpleExpr(theTargetExpr);
-  checkSimpleExpr(theReplaceExpr);
 }
 
 
@@ -186,31 +187,17 @@ expr_t replace_expr::clone(substitution_t& subst) const
 rename_expr::rename_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aTargetExpr,
-    expr_t aNameExpr)
+    const expr_t& targetExpr,
+    const expr_t& nameExpr)
   :
-	expr(sctx, loc, rename_expr_kind),
-	theTargetExpr(aTargetExpr),
-	theNameExpr(aNameExpr)
+	update_expr_base(sctx, loc, rename_expr_kind, targetExpr, nameExpr)
 {
-  compute_scripting_kind();
 }
 
 
 void rename_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-  ar & theNameExpr;
-}
-
-
-void rename_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATING_EXPR;
-
-  checkSimpleExpr(theTargetExpr);
-  checkSimpleExpr(theNameExpr);
+  serialize_baseclass(ar, (update_expr_base*)this);
 }
 
 

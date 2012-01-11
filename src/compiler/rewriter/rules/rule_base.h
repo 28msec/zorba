@@ -38,6 +38,7 @@ public:
     MarkConsumerNodeProps,
     MarkProducerNodeProps,
     EliminateNodeOps,
+    MarkNodeCopyProps,
     ReplaceExprWithConstantOneWhenPossible,
     SpecializeOperations,
     EliminateTypeEnforcingOperations,

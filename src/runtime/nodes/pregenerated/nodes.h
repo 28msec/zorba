@@ -208,8 +208,8 @@ public:
   virtual ~FnLangIterator();
 
 public:
-  bool isLangAttr(const store::Item_t& aAttr) const;
-  bool matchesReqLang(const store::Item_t& aLangAttr, const zstring& aRequestLang) const;
+  bool isLangAttr(const store::Item_t&#38; aAttr) const;
+  bool matchesReqLang(const store::Item_t&#38; aLangAttr, const zstring&#38; aRequestLang) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

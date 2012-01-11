@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+#ifndef ZORBA_DEBUGGER_CLIENTIMPL_H
+#define ZORBA_DEBUGGER_CLIENTIMPL_H
 
 #include <string>
 #include <zorba/debugger_client.h>
@@ -21,7 +22,7 @@
 #include "zorbautils/runnable.h"
 
 namespace zorba {
-  class socket_streambuf;
+  class SocketStreambuf;
   class DebuggerEventHandler;
   class DebuggerListener;
   class DebuggerClientImpl;
@@ -48,6 +49,7 @@ namespace zorba {
   public: // API
     virtual void accept();
     virtual std::size_t status();
+    virtual std::size_t variables();
     virtual std::size_t feature_get(const std::string& aFeatureName);
     virtual std::size_t feature_set(const std::string& aFeatureName,
                                     const std::string& aValue);
@@ -55,7 +57,7 @@ namespace zorba {
     virtual std::size_t step_into();
     virtual std::size_t step_out();
     virtual std::size_t step_over();
-    virtual std::size_t stop();
+    virtual std::size_t stop(bool withQuit = true);
     virtual std::size_t detach();
     virtual std::size_t breakpoint_set(BreakpointType aType,
                                        bool aEnabled = true,
@@ -110,12 +112,17 @@ namespace zorba {
                            int aContextId = -1,
                            std::size_t aMaxDataSize = 0);
   private:
-    TCPServerSocket theServerSocket;
-    TCPSocket* theSocket;
-    socket_streambuf* theStreamBuffer;
-    std::iostream* theStream;
+    TCPServerSocket       theServerSocket;
+    TCPSocket*            theSocket;
+    SocketStreambuf*      theInStreamBuffer;
+    SocketStreambuf*      theOutStreamBuffer;
+    std::istream*         theInStream;
+    std::ostream*         theOutStream;
     DebuggerEventHandler* theHandler;
-    DebuggerListener theListener;
-    std::size_t theLastId;
+    DebuggerListener*     theListener;
+    std::size_t           theLastId;
   };
-}
+
+} // namespace zorba
+
+#endif // ZORBA_DEBUGGER_CLIENTIMPL_H

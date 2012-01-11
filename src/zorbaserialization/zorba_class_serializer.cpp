@@ -1080,6 +1080,7 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
         ar & local;
         ar.set_is_temp_field(false);
         obj = internal::SystemDiagnosticBase::find(local);
+        free(local);
         ZORBA_ASSERT(obj);
       }
       else

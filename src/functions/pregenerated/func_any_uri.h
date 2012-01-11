@@ -43,9 +43,11 @@ class fn_resolve_uri : public function
 {
 public:
   fn_resolve_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

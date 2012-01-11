@@ -14,66 +14,79 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+
+#include "socket_streambuf.h"
+
 #include <sstream>
 #include <cstring>
 #include <iostream>
-#include "socket_streambuf.h"
+
 
 namespace zorba {
   
-  static const int BUF_SIZE = 1024;
+static const int BUF_SIZE = 1024;
   
-  socket_streambuf::socket_streambuf(TCPSocket& aSocket)
+SocketStreambuf::SocketStreambuf(TCPSocket& aSocket)
   : theSocket(aSocket)
-  {
-    theInputBuffer = new char_type[BUF_SIZE];
-    theOutputBuffer = new char_type[BUF_SIZE];
-    setg(theInputBuffer, theInputBuffer, theInputBuffer);
-    setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
-  }
-  
-  socket_streambuf::~socket_streambuf()
-  {
-    delete[] theInputBuffer;
-  }
-  
-  int socket_streambuf::sync()
-  {
-#if 0
-    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
-#endif
-    theSocket.send(pbase(), pptr() - pbase());
-    setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
-    return 0;
-  }
-  
-  int socket_streambuf::underflow() {
-    int size = theSocket.recv(theInputBuffer, BUF_SIZE);
-    if (size == 0)
-      return EOF;
-    setg(theInputBuffer, theInputBuffer, theInputBuffer + size);
-    return theInputBuffer[0];
-  }
-  
-  int socket_streambuf::overflow(int c)
-  {
-#if 0
-    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
-#endif
-    theSocket.send(pbase(), pptr() - pbase());
-    setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
-    sputc(c);
-    return 0;
-  }
-  
-  DebuggerResponse::DebuggerResponse(std::istream& aStream)
-  {
-  }
-  
-  bool DebuggerResponse::isInit() const {
-    std::string rootNodeName(reinterpret_cast<const char*>(theDoc->children->name));
-    if (rootNodeName == "init")
-      return true;
-    return false;
-  }
+{
+  theInputBuffer = new char_type[BUF_SIZE];
+  theOutputBuffer = new char_type[BUF_SIZE];
+  setg(theInputBuffer, theInputBuffer, theInputBuffer);
+  setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
 }
+  
+SocketStreambuf::~SocketStreambuf()
+{
+  delete[] theInputBuffer;
+}
+  
+int
+SocketStreambuf::sync()
+{
+#if 0
+    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
+#endif
+  theSocket.send(pbase(), pptr() - pbase());
+  setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
+  return 0;
+}
+  
+int
+SocketStreambuf::underflow()
+{
+  int size = theSocket.recv(theInputBuffer, BUF_SIZE);
+  if (size == 0) {
+    return EOF;
+  }
+  setg(theInputBuffer, theInputBuffer, theInputBuffer + size);
+  return theInputBuffer[0];
+}
+  
+int
+SocketStreambuf::overflow(int c)
+{
+#if 0
+    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
+#endif
+  theSocket.send(pbase(), pptr() - pbase());
+  setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
+  sputc(c);
+  return 0;
+}
+
+
+DebuggerResponse::DebuggerResponse(std::istream& aStream)
+{
+}
+  
+bool
+DebuggerResponse::isInit() const
+{
+  std::string rootNodeName(reinterpret_cast<const char*>(theDoc->children->name));
+  if (rootNodeName == "init") {
+    return true;
+  }
+  return false;
+}
+
+} // namespace zorba

@@ -1,0 +1,39 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <ForVariable name="p">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+        <FnDocIterator>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </FnDocIterator>
+      </ChildAxisIterator>
+    </ForVariable>
+    <ReturnClause>
+      <SpecificNumArithIterator_AddOperation_INTEGER>
+        <SpecificNumArithIterator_AddOperation_INTEGER>
+          <FnCountIterator>
+            <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+              <ForVarIterator varname="p"/>
+            </DescendantAxisIterator>
+          </FnCountIterator>
+          <FnCountIterator>
+            <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,annotation)" typename="*" nill allowed="0">
+              <ForVarIterator varname="p"/>
+            </DescendantAxisIterator>
+          </FnCountIterator>
+        </SpecificNumArithIterator_AddOperation_INTEGER>
+        <FnCountIterator>
+          <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,emailaddress)" typename="*" nill allowed="0">
+            <ForVarIterator varname="p"/>
+          </DescendantAxisIterator>
+        </FnCountIterator>
+      </SpecificNumArithIterator_AddOperation_INTEGER>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

@@ -1,0 +1,126 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <ForVariable name="b">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <FnDocIterator>
+              <PromoteIterator type="xs:string">
+                <FnDataIterator>
+                  <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </FnDocIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ForVariable>
+    <LetVariable name="$$opt_temp_0" materialize="true">
+      <HoistIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="$$dot">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+              <ForVarIterator varname="b"/>
+            </ChildAxisIterator>
+          </ForVariable>
+          <ForVariable name="$$dot">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$dot"/>
+            </ChildAxisIterator>
+          </ForVariable>
+          <WhereClause>
+            <CompareIterator>
+              <FnDataIterator>
+                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="$$dot"/>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+              <SingletonIterator value="xs:string(person51)"/>
+            </CompareIterator>
+          </WhereClause>
+          <ReturnClause>
+            <ForVarIterator varname="$$dot"/>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </HoistIterator>
+    </LetVariable>
+    <WhereClause>
+      <FnExistsIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="pr1">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$dot">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="b"/>
+                </ChildAxisIterator>
+              </ForVariable>
+              <ForVariable name="$$dot">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="$$dot"/>
+                </ChildAxisIterator>
+              </ForVariable>
+              <WhereClause>
+                <CompareIterator>
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$dot"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                  <SingletonIterator value="xs:string(person20)"/>
+                </CompareIterator>
+              </WhereClause>
+              <ReturnClause>
+                <ForVarIterator varname="$$dot"/>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </ForVariable>
+          <ForVariable name="pr2">
+            <UnhoistIterator>
+              <LetVarIterator varname="$$opt_temp_0"/>
+            </UnhoistIterator>
+          </ForVariable>
+          <WhereClause>
+            <FnBooleanIterator>
+              <NodeBeforeIterator>
+                <ForVarIterator varname="pr1"/>
+                <ForVarIterator varname="pr2"/>
+              </NodeBeforeIterator>
+            </FnBooleanIterator>
+          </WhereClause>
+          <ReturnClause>
+            <SingletonIterator value="xs:boolean(true)"/>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </FnExistsIterator>
+    </WhereClause>
+    <ReturnClause>
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,history)"/>
+        <EnclosedIterator attr_cont="false">
+          <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
+              <ForVarIterator varname="b"/>
+            </ChildAxisIterator>
+          </ChildAxisIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

@@ -20,6 +20,9 @@
 #include "common/shared_types.h"
 #include "types/root_typemanager.h"
 
+#include "store/api/xs_type_codes.h"
+
+
 namespace zorba
 {
 	
@@ -43,12 +46,12 @@ class GenericCast
                             store::Item_t&,
                             const store::Item*, 
                             RootTypeManager& aTS,
-                            TypeConstants::atomic_type_code_t aTargetAtomicType,
+                            store::SchemaTypeCode aTargetAtomicType,
                             store::ItemFactory*,
                             const ErrorInfo& aErrorInfo
                         ); 
 private:
-  static const int          theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  static const int          theMapping[store::XS_LAST];
   static const CastFunc     theCastMatrix[23][23];
   static const DownCastFunc theDownCastMatrix[23];
 
