@@ -47,6 +47,7 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
     else if (strcmp(value, "html") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
     else if (strcmp(value, "xhtml") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
     else if (strcmp(value, "text") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+    else if (strcmp(value, "binary") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
 #ifdef ZORBA_WITH_JSON
     else if (strcmp(value, "json") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_JSON;
 #endif

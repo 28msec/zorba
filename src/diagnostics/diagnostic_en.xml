@@ -1828,6 +1828,10 @@
       <value>iterator is closed</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0043" name="CANNOT_SERIALIZE_JSON_ITEM">
+      <value>cannot serialize JSON item using current output method</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0070" name="INVALID_SERIALIZATION_METHOD_FOR_SAX">
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>

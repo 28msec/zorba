@@ -271,17 +271,12 @@ protected:
     void emit_indentation(int depth);
 
 #ifdef ZORBA_WITH_JSON
-
-    void emit_json_item(store::Item* item, int depth);
-
-    void emit_json_object(store::Item* object, int depth);
-
-    void emit_json_array(store::Item* array, int depth);
-
-    void emit_json_pair(store::Item* pair, int depth);
-
-    void emit_json_value(store::Item* value, int depth);
-
+    /**
+     * Outputs a JSON item. This method is called both for top-level JSON
+     * items as well as any items within a JSON object or array, so it may
+     * output simple typed values differently than standard XML serialization.
+     */
+    virtual void emit_json_item(store::Item* item, int depth);
 #endif /* ZORBA_WITH_JSON */
 
   protected:
@@ -319,7 +314,7 @@ protected:
 
   ///////////////////////////////////////////////////////////
   //                                                       //
-  //  class xml_emitter                                    //
+  //  class xml_emitter (for XML and JSONiq output)        //
   //                                                       //
   ///////////////////////////////////////////////////////////
 
@@ -331,6 +326,23 @@ protected:
     virtual void emit_declaration();
 
     virtual void emit_doctype(const zstring& elementName);
+
+#ifdef ZORBA_WITH_JSON
+
+    void emit_json_item(store::Item* item, int depth);
+
+  private:
+
+    void emit_json_object(store::Item* object, int depth);
+
+    void emit_json_array(store::Item* array, int depth);
+
+    void emit_json_pair(store::Item* pair, int depth);
+
+    void emit_json_value(store::Item* value, int depth);
+
+#endif /* ZORBA_WITH_JSON */
+
   };
 
 
@@ -346,6 +358,8 @@ protected:
     xhtml_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
     virtual void emit_node(const store::Item* item, int depth);
+
+    virtual void emit_json_item(store::Item *item, int depth);
   };
 
 

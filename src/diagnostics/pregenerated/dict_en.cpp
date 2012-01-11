@@ -250,6 +250,7 @@ extern entry const dict_en[] = {
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
+  { "ZAPI0043", "cannot serialize JSON item using current output method" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
   { "ZCSE0001", "\"$1\": nonexistent input field" },

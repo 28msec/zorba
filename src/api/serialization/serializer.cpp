@@ -754,122 +754,15 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   return false;
 }
 
-#ifdef ZORBA_WITH_JSON
-
-void serializer::emitter::emit_json_item(store::Item* item, int depth)
-{
-  // This is called for any item within a JSON array or object, or for a
-  // top-level JSON array or object. So JSON rules for simple types may
-  // apply here.
-  if (item->isJSONObject()) {
-    emit_json_object(item, depth);
-  }
-  else if (item->isJSONArray()) {
-    emit_json_array(item, depth);
-  }
-  else if (item->isJSONPair()) {
-    emit_json_pair(item, depth);
-  }
-  else if (item->isAtomic()) {
-    // QQQ any easier/more direct way to determine simple type?
-    store::Item* type = item->getType();
-    if (!(type->getNamespace().compare(XML_SCHEMA_NS))) {
-      const zstring& tname = type->getLocalName();
-      if (tname == "string") {
-        // QQQ need to escape here
-        tr << '"' << item->getStringValue() << '"';
-      }
-      else if (tname == "double" || tname == "float") {
-        // QQQ need to check for NaN and Inf here
-        tr << item->getStringValue();
-      }
-      else if (tname == "decimal" || tname == "integer") {
-        // QQQ what about int? nonNegativeInteger? etc. Not explicitly
-        // mentioned by JSONiq spec...
-        tr << item->getStringValue();
-      }
-      else {
-        // QQQ output the "JSONiq value" object here
-        tr << "((unknown type " << tname << "))";
-      }
-    }
-  }
-}
-
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::emitter::emit_json_object(store::Item* obj, int depth)
+void serializer::emitter::emit_json_item(store::Item *item, int depth)
 {
-  store::Item_t pair;
-  store::Iterator_t it = obj->getPairs();
-  it->open();
-  bool first = true;
-  if (ser->indent) {
-    tr << "{" <<ser->END_OF_LINE;
-  }
-  else {
-    tr << "{ ";
-  }
-  depth++;
-  while (it->next(pair)) {
-    if (first) {
-      first = false;
-    }
-    else {
-      tr << ", ";
-      if (ser->indent) {
-        tr << ser->END_OF_LINE;
-      }
-    }
-    if (ser->indent) {
-      emit_indentation(depth);
-    }
-    emit_json_pair(pair, depth);
-  }
-  if (ser->indent) {
-    tr << ser->END_OF_LINE;
-    emit_indentation(depth-1);
-    tr << "}";
-  }
-  else {
-    tr << " }";
-  }
+  // Default is to throw an exception, so we don't accidentally serialize
+  // JSON into HTML etc.
+  throw ZORBA_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
 }
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::emitter::emit_json_array(store::Item* array, int depth)
-{
-  store::Item_t member;
-  store::Iterator_t it = array->getMembers();
-  it->open();
-  bool first = true;
-  tr << "[ ";
-  while (it->next(member)) {
-    if (first) {
-      first = false;
-    }
-    else {
-      tr << ", ";
-    }
-    emit_json_item(member, depth);
-  }
-  tr << " ]";
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::emitter::emit_json_pair(store::Item* pair, int depth)
-{
-  emit_json_item(pair->getName(), depth);
-  tr << " : ";
-  emit_json_item(pair->getValue(), depth);
-}
-
-#endif /* ZORBA_WITH_JSON */
 
 /*******************************************************************************
 
@@ -915,7 +808,7 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  XML Emitter                                                               //
+//  XML/JSONiq Emitter                                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -994,6 +887,123 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
     tr << ser->END_OF_LINE;
 }
 
+
+#ifdef ZORBA_WITH_JSON
+
+void serializer::xml_emitter::emit_json_item(store::Item* item, int depth)
+{
+  // This is called for any item within a JSON array or object, or for a
+  // top-level JSON array or object. So JSON rules for simple types may
+  // apply here.
+  if (item->isJSONObject()) {
+    emit_json_object(item, depth);
+  }
+  else if (item->isJSONArray()) {
+    emit_json_array(item, depth);
+  }
+  else if (item->isJSONPair()) {
+    emit_json_pair(item, depth);
+  }
+  else if (item->isAtomic()) {
+    // QQQ any easier/more direct way to determine simple type?
+    store::Item* type = item->getType();
+    if (!(type->getNamespace().compare(XML_SCHEMA_NS))) {
+      const zstring& tname = type->getLocalName();
+      if (tname == "string") {
+        // QQQ need to escape here
+        tr << '"' << item->getStringValue() << '"';
+      }
+      else if (tname == "double" || tname == "float") {
+        // QQQ need to check for NaN and Inf here
+        tr << item->getStringValue();
+      }
+      else if (tname == "decimal" || tname == "integer") {
+        // QQQ what about int? nonNegativeInteger? etc. Not explicitly
+        // mentioned by JSONiq spec...
+        tr << item->getStringValue();
+      }
+      else {
+        // QQQ output the "JSONiq value" object here
+        tr << "((unknown type " << tname << "))";
+      }
+    }
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::xml_emitter::emit_json_object(store::Item* obj, int depth)
+{
+  store::Item_t pair;
+  store::Iterator_t it = obj->getPairs();
+  it->open();
+  bool first = true;
+  if (ser->indent) {
+    tr << "{" <<ser->END_OF_LINE;
+  }
+  else {
+    tr << "{ ";
+  }
+  depth++;
+  while (it->next(pair)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+      if (ser->indent) {
+        tr << ser->END_OF_LINE;
+      }
+    }
+    if (ser->indent) {
+      emit_indentation(depth);
+    }
+    emit_json_pair(pair, depth);
+  }
+  if (ser->indent) {
+    tr << ser->END_OF_LINE;
+    emit_indentation(depth-1);
+    tr << "}";
+  }
+  else {
+    tr << " }";
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::xml_emitter::emit_json_array(store::Item* array, int depth)
+{
+  store::Item_t member;
+  store::Iterator_t it = array->getMembers();
+  it->open();
+  bool first = true;
+  tr << "[ ";
+  while (it->next(member)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+    }
+    emit_json_item(member, depth);
+  }
+  tr << " ]";
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::xml_emitter::emit_json_pair(store::Item* pair, int depth)
+{
+  emit_json_item(pair->getName(), depth);
+  tr << " : ";
+  emit_json_item(pair->getValue(), depth);
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -1507,6 +1517,11 @@ void serializer::xhtml_emitter::emit_node(
   }
 }
 
+void serializer::xhtml_emitter::emit_json_item(store::Item *item, int depth)
+{
+  // "Un-override" this method - XHTML doesn't support JSON
+  emitter::emit_json_item(item, depth);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
