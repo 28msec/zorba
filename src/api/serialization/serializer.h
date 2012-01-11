@@ -273,6 +273,20 @@ protected:
      */
     void emit_indentation(int depth);
 
+#ifdef ZORBA_WITH_JSON
+
+    void emit_json_item(store::Item* item, int depth);
+
+    void emit_json_object(store::Item* object, int depth);
+
+    void emit_json_array(store::Item* array, int depth);
+
+    void emit_json_pair(store::Item* pair, int depth);
+
+    void emit_json_value(store::Item* value, int depth);
+
+#endif /* ZORBA_WITH_JSON */
+
   protected:
     bool haveBinding(std::pair<zstring, zstring>& nsBinding) const;
 
@@ -448,35 +462,6 @@ protected:
 
     void emit_item(store::Item* item);
   };
-
-  ///////////////////////////////////////////////////////////
-  //                                                       //
-  //  class json_emitter                                   //
-  //                                                       //
-  ///////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
-
-  class json_emitter : public emitter
-  {
-  public:
-    json_emitter(serializer* the_serializer, transcoder& the_transcoder);
-
-    void emit_item(store::Item* item);
-
-    void emit_json_item(store::Item* item, int depth);
-
-    void emit_json_object(store::Item* object, int depth);
-
-    void emit_json_array(store::Item* array, int depth);
-
-    void emit_json_pair(store::Item* pair, int depth);
-
-    void emit_json_value(store::Item* value, int depth);
-  };
-
-#endif /* ZORBA_WITH_JSON */
-
 };
 
 
