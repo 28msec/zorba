@@ -104,7 +104,7 @@ class XQueryIterator implements Iterator {
  * ?>
  * </code>
  */
-class XQueryProcessor {
+class XQueryProcessor implements IteratorAggregate {
 
   private $store = null;
   private $zorba = null;

@@ -89,10 +89,8 @@ foreach($it as $pos => $value) {
   }
 }
 
-//Let's do it again
-$it = $xquery->getIterator();
-
-foreach($it as $pos => $value) {
+//Let's do it again by leveraging the SPL IteratorAggregate
+foreach($xquery as $pos => $value) {
   switch($pos) {
     case 0:
       assertEquality($value, "1", "Consume the item at position {$pos}");
