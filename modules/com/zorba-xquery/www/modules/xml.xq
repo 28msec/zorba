@@ -74,8 +74,7 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li>
- : &lt;strip-boundary-space/&gt; - if present, it will enable LibXml2's XML_PARSE_NOBLANKS option,
- : which will remove all the blank nodes from the input.
+ : &lt;strip-boundary-space/&gt; - if present, it will enable the removal of blank nodes from the input.
  : </li>
  :
  : <li>
@@ -84,30 +83,28 @@ declare option ver:module-version "2.0";
  : values: "strict and "lax". Enabling the option will produce a result that is 
  : equivalent to processing the input with the option disabled, and then copying 
  : the result using the XQuery "validate strict|lax" expression. This option can not
- : be used together with either the &lt;DTDValidate/&gt; or the &lt;parseExternalParsedEntity/&gt;
+ : be used together with either the &lt;DTD-validate/&gt; or the &lt;parse-external-parsed-entity/&gt;
  : option. Doing so will raise a zerr:ZXQD0003 error.
  : </li>
  :
  : <li>
  : &lt;DTD-validate/&gt; - the option will enable the DTD-based validation. If this 
  : option is enabled and the input references a DTD, then the input must be a 
- : well-formed and DTD-valid XML document. The &lt;DTDLoad/&gt; option must be used for
+ : well-formed and DTD-valid XML document. The &lt;DTD-load/&gt; option must be used for
  : external DTD files to be loaded. If the option is enabled and the input does 
  : not reference a DTD then the option is ignored. If the option is disabled, the 
  : input is not required to reference a DTD and if it does reference a DTD then
  : the DTD is ignored for validation purposes. This option can not
- : be used together with either the &lt;schemaValidate/&gt; or the &lt;parseExternalParsedEntity&gt;
+ : be used together with either the &lt;schema-validate/&gt; or the &lt;parse-external-parsed-entity&gt;
  : option. Doing so will raise a zerr:ZXQD0003 error.
  : </li>
  :
  : <li> 
- : &lt;DTD-load/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDLOAD option which
- : will load the external subset.
+ : &lt;DTD-load/&gt; - if present, it will enable loading of external DTD files.
  : </li>
  :
  : <li>
- : &lt;default-DTD-attributes/&gt; - if present, it will enable LibXml2's XML_PARSE_DTDATTR option,
- : which enables the default DTD attributes.
+ : &lt;default-DTD-attributes/&gt; - if present, it will enable the default DTD attributes.
  : </li>
  :
  : <li>
@@ -123,7 +120,7 @@ declare option ver:module-version "2.0";
  : nodes. If the option is disabled, the input must be a well-formed XML 
  : document conforming to the Document production 
  : (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
- : This option can not be used together with either the &lt;schemaValidate/&gt; or the &lt;DTDValidate/&gt;
+ : This option can not be used together with either the &lt;schema-validate/&gt; or the &lt;DTD-validate/&gt;
  : option. Doing so will raise a zerr:ZXQD0003 error.
  : The &lt;parse-external-parsed-entity/&gt; option has two parameters, given by attributes. The first
  : attribute is "skip-root-nodes" and it can have a non-negative value. Specifying the paramter
@@ -137,28 +134,23 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li>
- : &lt;substitute-entities/&gt; - if present, it will enable LibXml2's XML_PARSE_NOENT option,
- : which tells the parser to substitute entities.
+ : &lt;substitute-entities/&gt; - if present, it will enable the XML entities substitutions.
  : </li>
  :
  : <li>
- : &lt;xinclude-substitutions/&gt; - if present, it will enable LibXml2's XML_PARSE_XINCLUDE option,
- : which will implement the XInclude substitution.
+ : &lt;remove-redundant-ns/&gt; - if present, the parser will remove redundant namespaces declarations.
  : </li>
  :
  : <li>
- : &lt;remove-redundant-ns/&gt; - if present, it will enable LibXml2's XML_PARSE_NSCLEAN option,
- : which will remove redundant namespaces declarations.
+ : &lt;no-CDATA/&gt; - if present, the parser will merge CDATA nodes as text nodes.
  : </li>
  :
  : <li>
- : &lt;no-CDATA/&gt; - if present, it will enable LibXml2's XML_PARSE_NOCDATA option,
- : which will tell the parser to merge CDATA as text nodes.
+ : &lt;xinclude-substitutions/&gt; - if present, it will enable the XInclude substitutions.
  : </li>
  :
  : <li>
- : &lt;no-xinclude-nodes/&gt; - if present, it will enable LibXml2's XML_PARSE_NOXINCNODE option,
- : which will tell parser not to generate XINCLUDE START/END nodes.
+ : &lt;no-xinclude-nodes/&gt; - if present, the parser will not generate XInclude START/END nodes.
  : </li>
  :      
  : </ul>
@@ -181,6 +173,10 @@ declare option ver:module-version "2.0";
  : @error err:XQDY0027 The error will be raised if schema validation was enabled
  :                     and the input document has not passed it or if the parsing options are not
  :                     conformant to the xml-options.xsd schema.
+ :
+ : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-03.xq
+ : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-01.xq
+ : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-07.xq
  :
  :)
  
