@@ -2139,7 +2139,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_BINARY;
 #ifdef ZORBA_WITH_JSON
     else if (!strcmp(aValue, "json"))
-      method = PARAMETER_VALUE_JSON;
+      // The default "XML" serializer is capable of outputting JSON
+      method = PARAMETER_VALUE_XML;
 #endif
     else
       throw XQUERY_EXCEPTION(
@@ -2295,10 +2296,6 @@ bool serializer::setup(std::ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
-#ifdef ZORBA_WITH_JSON
-  else if (method == PARAMETER_VALUE_JSON)
-    e = new xml_emitter(this, *tr);
-#endif
   else
   {
     ZORBA_ASSERT(0);

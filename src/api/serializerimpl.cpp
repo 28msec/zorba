@@ -96,10 +96,6 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
-#ifdef ZORBA_WITH_JSON
-  case serializer::PARAMETER_VALUE_JSON:
-    return ZORBA_SERIALIZATION_METHOD_JSON;
-#endif
   default:
     return ZORBA_SERIALIZATION_METHOD_XML;
   }
@@ -125,7 +121,8 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "binary"); break;
 #ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
-    aInternalSerializer.setParameter("method", "json"); break;
+    // The default Zorba "XML" serializer is capable of outputting JSON
+    aInternalSerializer.setParameter("method", "x,;"); break;
 #endif
   }
 
