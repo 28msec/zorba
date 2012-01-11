@@ -226,6 +226,7 @@ class XQueryProcessor {
    * </code>
    *
    * PHP types are converted to the following XML types:
+   * - <b>DOMDocument</b> & <b>SimpleXMLElement</b>: document-node()
    * - <b>string</b>: xs:string
    * - <b>float</b>: xs:float
    * - <b>long</b>: xs:long
@@ -308,14 +309,11 @@ class XQueryProcessor {
     return $query;
 	}
 
-  /*
+  /**
    * Converts a PHP value to an XQuery Item.
-   * - DOMDocument & SimpleXMLElement: document-node()
-   * - String: xs:string
-   * - Integer: xs:integer
-   * - Boolean: xs:boolean
-   * - Float: xs:float
-   * - Long: xs:long
+   * The mapping between PHP and XQuery types in {@link setVariable}.
+   * 
+   * @see setVariable()
    */  
 	private function getItem($value) {
     $itemFactory = $this->zorba->getItemFactory();
