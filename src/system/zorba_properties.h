@@ -75,7 +75,7 @@ protected:
   bool theLoopHoisting;
   bool theInferJoins;
   bool theNoCopyOptim;
-  bool theSerializeOnlyQuery;
+  int theSerializeOnlyQuery;
   bool theTraceTranslator;
   bool theTraceCodegen;
   bool theTraceFulltext;
@@ -118,7 +118,7 @@ protected:
     theLoopHoisting = true;
     theInferJoins = true;
     theNoCopyOptim = true;
-    theSerializeOnlyQuery = false;
+    theSerializeOnlyQuery = -1;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theTraceFulltext = false;
@@ -160,7 +160,7 @@ public:
   const bool &loopHoisting () const { return theLoopHoisting; }
   const bool &inferJoins () const { return theInferJoins; }
   const bool &noCopyOptim() const { return theNoCopyOptim; }
-  const bool& serializeOnlyQuery() const { return theSerializeOnlyQuery; }
+  const int& serializeOnlyQuery() const { return theSerializeOnlyQuery; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
   const bool &traceFulltext () const { return theTraceFulltext; }
@@ -173,7 +173,8 @@ public:
   const std::string &dotPlanFile () const { return theDotPlanFile; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
 
-  std::string load_argv (int argc, const char **argv) {
+  std::string load_argv (int argc, const char **argv) 
+  {
     if (argv == NULL) return "";
 
     std::string result;
@@ -194,12 +195,14 @@ public:
       else if (strcmp (*argv, "--optimizer") == 0 || strncmp (*argv, "-O", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --optimizer option"; break; }        init_val (*argv, theOptimizer, d);
+        if (*argv == NULL) { result = "No value given for --optimizer option"; break; }
+        init_val (*argv, theOptimizer, d);
       }
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --result-file option"; break; }        init_val (*argv, theResultFile, d);
+        if (*argv == NULL) { result = "No value given for --result-file option"; break; }
+        init_val (*argv, theResultFile, d);
       }
       else if (strcmp (*argv, "--debug-file") == 0) {
         int d = 2;
@@ -368,7 +371,9 @@ public:
     return result;
   }
 
-  const char *get_help_msg () const {
+
+  const char* get_help_msg() const 
+  {
     return
 "--trace-parsing, -p\ntrace parsing\n\n"
 "--trace-scanning, -s\ntrace scanning\n\n"
@@ -400,6 +405,8 @@ public:
 "--inline-udf\ninline functions (1=enabled (default), 0=off)\n\n"
 "--loop-hoisting\nhoist expressions out of loops (1=enabled (default), 0=off)\n\n"
 "--infer-joins\ninfer joins (1=enabled (default), 0=off)\n\n"
+"--no-copy-optim\napply the no-copy optimization (1=enabled (default), 0=off)\n\n"
+"--serialize-only-query\nserialize-only-query (<0=unknown (default), 1=enabled, 0=off)\n\n"
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
@@ -416,14 +423,15 @@ public:
 ;
   }
 
-  static const ZorbaProperties *instance () {
+  static const ZorbaProperties* instance() 
+  {
     static ZorbaProperties result;
     return &result;
   }
 
-  ZorbaProperties () { initialize (); }
-  
+  ZorbaProperties() { initialize (); }
 };
+
 
 }   // namespaces
 
