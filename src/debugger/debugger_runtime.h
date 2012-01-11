@@ -67,9 +67,6 @@ class DebuggerRuntime : public Runnable {
   public:
 
     void
-    setNotSendTerminateEvent();
-
-    void
     resetRuntime();
 
     ExecutionStatus
@@ -173,7 +170,6 @@ class DebuggerRuntime : public Runnable {
     ExecutionStatus                   theExecStatus;
     mutable Lock                      theLock;
     std::set<DebugIterator*>          theBreakpoints;
-    bool                              theNotSendTerminateEvent;
     bool                              thePlanIsOpen;
     serializer*                       theSerializer;
     itemHandler                       theItemHandler;
