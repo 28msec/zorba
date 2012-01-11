@@ -122,7 +122,7 @@ SerializerImpl::setSerializationParameters(
 #ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
     // The default Zorba "XML" serializer is capable of outputting JSON
-    aInternalSerializer.setParameter("method", "x,;"); break;
+    aInternalSerializer.setParameter("method", "xml"); break;
 #endif
   }
 
