@@ -578,6 +578,17 @@ bool UntypedAtomicItem::equals(
 }
 
 
+long UntypedAtomicItem::compare(
+    const Item* other,
+    long timezone,
+    const XQPCollator* aCollation) const
+{
+  // Note: utf8::compare does byte comparison if the collation is null or
+  // requires byte comparison.
+  return utf8::compare(theValue, other->getString(), aCollation);
+}
+
+
 store::Item_t UntypedAtomicItem::getEBV() const
 {
   bool b = ! ( theValue == "" );

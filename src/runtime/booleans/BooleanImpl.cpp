@@ -567,49 +567,43 @@ long CompareIterator::valueCompare(
 void CompareIterator::valueCasting(
     const QueryLoc& loc,
     const TypeManager* tm,
-    store::Item_t& aItem0,
-    store::Item_t& aItem1,
+    store::Item_t& item0,
+    store::Item_t& item1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  xqtref_t type0 = tm->create_value_type(aItem0);
-  xqtref_t type1 = tm->create_value_type(aItem1);
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
   {
-    GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+    GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
 
-    if  (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if  (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
     }
     else
     {
-      if (!GenericCast::promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, loc))
-        castItem1.transfer(aItem1);
+      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
+        castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
   {
-    if (!GenericCast::promote(const_cast<store::Item_t&>(castItem0),
-                              aItem0,
-                              &*rtm.STRING_TYPE_ONE,
-                              tm,
-                              loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
+      castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm, loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+      castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm, loc))
-      castItem1.transfer(aItem1);
+    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+      castItem1.transfer(item1);
   }
 }
 
@@ -750,65 +744,63 @@ long CompareIterator::generalCompare(
 void CompareIterator::generalCasting(
     const QueryLoc& loc,
     const TypeManager* tm,
-    store::Item_t& aItem0,
-    store::Item_t& aItem1,
+    store::Item_t& item0,
+    store::Item_t& item1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
-  xqtref_t type0 = tm->create_value_type(aItem0);
-  xqtref_t type1 = tm->create_value_type(aItem1);
-
-  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
   {
-    if (TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
 
-      GenericCast::promote(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm, loc);
+      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      castItem1.transfer(aItem1);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*type1, tm, NULL, loc);
-      castItem1.transfer(aItem1);
+      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
   {
-    if (TypeOps::is_numeric(tm, *type0))
+    if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      GenericCast::promote(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type0, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      castItem0.transfer(aItem0);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*type0, tm, NULL, loc);
-      castItem0.transfer(aItem0);
+      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      castItem0.transfer(item0);
     }
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm, loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+      castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm, loc))
-      castItem1.transfer(aItem1);
+    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+      castItem1.transfer(item1);
   }
 }
 
