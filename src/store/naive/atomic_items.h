@@ -312,6 +312,11 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const;
 
+  long compare(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* collation = 0) const;
+
   store::Item_t getEBV() const;
 
   zstring getStringValue() const { return theValue; }
@@ -754,8 +759,11 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 };
 
