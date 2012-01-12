@@ -321,13 +321,19 @@ processArguments(
 //
 //  signal(SIGINT, SignalHandler);
 
-BOOL
-WINAPI handler(DWORD aCtrlType)
+BOOL WINAPI
+ctrlC_Handler(DWORD aCtrlType)
 {
   if (CTRL_C_EVENT == aCtrlType) {
     return true;
   }
   return false;
+}
+#else
+void
+ctrlC_Handler(int lParam)
+{
+  //exit(1);
 }
 #endif
 
@@ -340,7 +346,9 @@ _tmain(int argc, _TCHAR* argv[])
 #endif
 {
 #ifdef WIN32
-  SetConsoleCtrlHandler(handler, TRUE);
+  SetConsoleCtrlHandler(ctrlC_Handler, TRUE);
+#else
+  signal(SIGINT, ctrlC_Handler);
 #endif
 
   // **************************************************************************
