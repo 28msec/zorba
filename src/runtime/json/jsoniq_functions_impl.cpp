@@ -75,11 +75,13 @@ JSONFlattenIterator::nextImpl(
       }
       STACK_PUSH( true, state );
     }
+
     if (lFoundArray)
     {
       lFoundArray = false;
       continue;
     }
+
     state->theStack.top()->close();
     state->theStack.pop();
   }
@@ -96,8 +98,6 @@ JSONParseIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t lInput;
-  internal::diagnostic::location lLoc = ERROR_LOC(loc);
-
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -118,7 +118,8 @@ JSONParseIterator::nextImpl(
       try
       {
         result = GENV_STORE.parseJSON(lStr, 0);
-      } catch (zorba::ZorbaException& e)
+      }
+      catch (zorba::ZorbaException& e)
       {
         set_source(e, theChildren[0]->getLocation());
         throw;
@@ -237,7 +238,7 @@ JSONPairAccessorIterator::nextImpl(
 
   result = lInput->getPair(lName);
 
-  STACK_PUSH(result!=0, state);
+  STACK_PUSH(result != 0, state);
 
   STACK_END (state);
 }
@@ -261,7 +262,7 @@ JSONMemberAccessorIterator::nextImpl(
 
   result = lInput->getMember(lPosition);
 
-  STACK_PUSH(result!=0, state);
+  STACK_PUSH(result != 0, state);
 
   STACK_END (state);
 }

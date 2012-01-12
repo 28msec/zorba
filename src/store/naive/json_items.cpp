@@ -225,18 +225,17 @@ store::Item*
 SimpleJSONArray::getMember(const store::Item_t& aPosition) const
 {
   uint64_t lIndex;
-  try {
-    lIndex = to_xs_unsignedLong(aPosition->getIntegerValue());
-  } catch (std::range_error& e)
+  try 
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
+    lIndex = to_xs_unsignedLong(aPosition->getIntegerValue());
   }
-  if (lIndex == 0 || lIndex >= theContent.size())
+  catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+  }
+
+  if (lIndex == 0 || lIndex > theContent.size())
   {
     return 0;
   }
