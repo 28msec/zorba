@@ -80,11 +80,7 @@ class XqdbClient {
 
 void
 onExitProcess(ExitCode aExitCode) {
-  //if (aExitCode != -1) {
-  //  std::cout << "Zorba has exited with code: " << aExitCode << std::endl;
-  //}
-  std::cout << "Terminating debugger client."<< std::endl;
-  // TODO: and the memory?
+  std::cout << "Terminating debugger client." << std::endl;
 
   exit(aExitCode);
 }
@@ -314,6 +310,27 @@ processArguments(
   return true;
 }
 
+#ifdef WIN32
+//#include <signal.h>
+//
+//void
+//SignalHandler(int signal)
+//{
+//  printf("Application aborting...\n");
+//}
+//
+//  signal(SIGINT, SignalHandler);
+
+BOOL
+WINAPI handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    return true;
+  }
+  return false;
+}
+#endif
+
 #ifndef _WIN32_WCE
 int
 main(int argc, char* argv[])
@@ -322,6 +339,10 @@ int
 _tmain(int argc, _TCHAR* argv[])
 #endif
 {
+#ifdef WIN32
+  SetConsoleCtrlHandler(handler, TRUE);
+#endif
+
   // **************************************************************************
   // processing arguments
 
