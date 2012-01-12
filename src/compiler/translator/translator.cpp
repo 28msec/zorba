@@ -10268,42 +10268,62 @@ void end_visit(const ArgList& v, void* /*visit_state*/)
 void* begin_visit(const DynamicFunctionInvocation& v)
 {
   TRACE_VISIT();
-  if ( !theSctx->is_feature_set(feature::hof) )
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
-  }
+
   return no_state;
 }
+
 
 void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
   // Collect the arguments of the dynamic function invocation
+  csize numArgs = 0;
   std::vector<expr_t> arguments;
   if (v.getArgList() != 0)
   {
-    size_t lSize = v.getArgList()->size();
-    for (size_t i = lSize; i > 0; --i)
+    numArgs = v.getArgList()->size();
+    for (csize i = numArgs; i > 0; --i)
     {
       arguments.push_back(pop_nodestack());
     }
   }
 
   // Get the function item expr
-  expr_t lItem = pop_nodestack();
-  ZORBA_ASSERT(lItem != 0);
+  expr_t sourceExpr = pop_nodestack();
+  ZORBA_ASSERT(sourceExpr != 0);
 
-  expr_t lDynFuncInvocation = new dynamic_function_invocation_expr(
+#ifdef ZORBA_WITH_JSON
+  TypeManager* tm = sourceExpr->get_type_manager();
+
+  if (TypeOps::is_subtype(tm,
+                          *sourceExpr->get_return_type(), 
+                          *theRTM.JSON_ARRAY_TYPE_STAR))
+  {
+    ZORBA_ASSERT(numArgs == 1);
+
+    expr_t memberExpr = new fo_expr(theRootSctx,
+                                    loc,
+                                    GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2), 
+                                    sourceExpr,
+                                    arguments[0]);
+    push_nodestack(memberExpr);
+    return;
+  }
+#endif
+
+  if (!theSctx->is_feature_set(feature::hof))
+  {
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, loc,
+    ERROR_PARAMS("higher-order functions (hof)"));
+  }
+
+  expr_t dynFuncInvocation = new dynamic_function_invocation_expr(
                                     theRootSctx,
                                     loc,
-                                    lItem,
+                                    sourceExpr,
                                     arguments);
-  push_nodestack(lDynFuncInvocation);
+  push_nodestack(dynFuncInvocation);
 }
 
 
