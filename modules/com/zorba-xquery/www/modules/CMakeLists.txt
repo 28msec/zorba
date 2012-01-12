@@ -58,7 +58,7 @@ DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
 DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/schema")
-DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.0
+DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
   URI "http://www.zorba-xquery.com/modules/string")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
@@ -103,6 +103,13 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
+
+# debugger client DBGP message handler module
+IF (ZORBA_WITH_DEBUGGER)
+  DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
+    URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
+ENDIF (ZORBA_WITH_DEBUGGER)
+
 
 # error and warning modules
 DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq

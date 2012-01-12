@@ -28,25 +28,17 @@ namespace zorba {
 DebuggerCommand::DebuggerCommand(std::string& aCommand)
   : theData()
 {
-  std::size_t lNameEnd = aCommand.find(" ");
-  theName = aCommand.substr(0, lNameEnd);
-  std::size_t lDataBegin = aCommand.find("--", lNameEnd);
-  std::string lArgs = aCommand.substr(lNameEnd + 1, lDataBegin);
+  // this implements the DBGP command specification:
+  // http://xdebug.org/docs-dbgp.php#ide-to-debugger-engine-communications
 
-  if (lDataBegin != std::string::npos) {
-    lDataBegin += 2;
-    while (lDataBegin < aCommand.size()) {
-      switch (aCommand.at(lDataBegin)) {
-      case ' ':
-      case '\t':
-        ++lDataBegin;
-        continue;
-      default:
-        theData = aCommand.substr(lDataBegin);
-        lDataBegin = aCommand.size();
-      }
-    }
-  }
+  // the debugger client should only send space delimited command
+  // and arguments, therefore we only check for space character
+  std::size_t lNameEnd = aCommand.find(" ");
+
+  // first whitespace delimited token is the command name
+  theName = aCommand.substr(0, lNameEnd);
+
+  std::string lArgs = aCommand.substr(lNameEnd + 1);
 
   bool lFollowsArg = true;
   bool lInArgName = false;
@@ -74,6 +66,26 @@ DebuggerCommand::DebuggerCommand(std::string& aCommand)
           lInArgName = true;
           continue;
         }
+        // we found the encoded data in this message
+        if (lArgName.str() == "") {
+          // DBGP is fuzzy here: can there be whitespaces between "--" and the encoded data?
+          // so, tollerate the whitespaces before data starts
+          std::string::size_type lDataBegin = i + 1;
+          while (++i < lArgs.size()) {
+            switch (lArgs.at(i)) {
+            case ' ':
+            case '\t':
+              continue;
+            default:
+              lDataBegin = i;
+              // force the while to terminate
+              i = lArgs.size();
+            }
+          }
+
+          theData = lArgs.substr(lDataBegin);
+        }
+
       default:
         if (!lInArgName) {
           throw "error reading command";
@@ -136,6 +148,18 @@ DebuggerCommand::getArg(std::string aArg, std::string& aValue) {
 
 bool
 DebuggerCommand::getArg(std::string aArg, int& aValue) {
+  std::map<std::string, std::string>::iterator lElem = theArgs.find(aArg); 
+  if (lElem == theArgs.end()) {
+    return false;
+  } else {
+    std::stringstream lSs(lElem->second);
+    lSs >> aValue;
+    return true;
+  }
+}
+
+bool
+DebuggerCommand::getArg(std::string aArg, unsigned int& aValue) {
   std::map<std::string, std::string>::iterator lElem = theArgs.find(aArg); 
   if (lElem == theArgs.end()) {
     return false;

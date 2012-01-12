@@ -77,7 +77,7 @@ void SequentialIterator::accept(PlanIterVisitor& v) const
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter )
+  for (; lIter != lEnd; ++lIter)
   {
     (*lIter)->accept(v);
   }
@@ -86,27 +86,26 @@ void SequentialIterator::accept(PlanIterVisitor& v) const
 }
 
 
-bool
-SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  ulong i = 0;
+  csize i = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (; i < (ulong)theChildren.size(); ++i) 
+  for (; i < theChildren.size(); ++i) 
   {
     while (consumeNext(result, theChildren[i].getp(), planState))
     {
-      if (i == (ulong)theChildren.size() - 1)
+      if (i == theChildren.size() - 1)
       {
         STACK_PUSH(true, state);
-        i = (ulong)theChildren.size() - 1;
+        i = theChildren.size() - 1;
       }
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

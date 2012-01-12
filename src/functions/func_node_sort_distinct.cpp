@@ -18,7 +18,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "functions/func_node_sort_distinct.h"
 #include "functions/function_impl.h"
@@ -28,6 +28,16 @@
 
 namespace zorba 
 {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_node_sort_distinct_base::getReturnType(const fo_expr* caller) const
+{
+  return caller->get_arg(0)->get_return_type(); 
+}
+
 
 /*******************************************************************************
   Let f be "this" function, F be the fo expr representing a call to f, and E be
@@ -154,7 +164,7 @@ function* op_node_sort_distinct_base::optimize(const expr* self, expr* child) co
 ********************************************************************************/
 BoolAnnotationValue op_node_sort_distinct_base::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   const bool* myActions = action();
 
@@ -176,7 +186,7 @@ BoolAnnotationValue op_node_sort_distinct_base::ignoresSortedNodes(
 ********************************************************************************/
 BoolAnnotationValue op_node_sort_distinct_base::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   const bool* myActions = action();
 
@@ -190,6 +200,26 @@ BoolAnnotationValue op_node_sort_distinct_base::ignoresDuplicateNodes(
   {
     return fo->getIgnoresDuplicateNodes();
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool op_node_sort_distinct_base::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  const bool* myActions = action();
+
+  bool atomics = myActions[NOA];
+
+  if (atomics)
+  {
+    return function::propagatesInputNodes(fo, input);
+  }
+
+  return true;
 }
 
 
@@ -256,12 +286,17 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -287,7 +322,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -319,7 +354,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -352,7 +387,7 @@ public:
     return a;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -388,7 +423,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -421,7 +456,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -452,7 +487,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
@@ -485,7 +520,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }

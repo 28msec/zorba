@@ -120,6 +120,7 @@ namespace StaticContextConsts
     decl_manual
   };
 
+
   enum node_modifier_t
   {
     read_only,

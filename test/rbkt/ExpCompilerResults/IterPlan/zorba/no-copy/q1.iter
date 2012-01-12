@@ -1,0 +1,49 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <ForVariable name="$$dot">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+          <FnDocIterator>
+            <PromoteIterator type="xs:string">
+              <FnDataIterator>
+                <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </FnDocIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ForVariable>
+    <ForVariable name="$$dot">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+        <ForVarIterator varname="$$dot"/>
+      </ChildAxisIterator>
+    </ForVariable>
+    <WhereClause>
+      <CompareIterator>
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+        <SingletonIterator value="xs:string(person0)"/>
+      </CompareIterator>
+    </WhereClause>
+    <ReturnClause>
+      <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

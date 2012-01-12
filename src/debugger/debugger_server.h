@@ -23,6 +23,7 @@
 #include "zorbatypes/zstring.h"
 
 #include "debugger_common.h"
+#include "debugger_commons.h"
 #include "debugger_protocol.h"
 
 
@@ -72,6 +73,18 @@ class DebuggerServer {
     getVariableName(std::string& aFullName);
 
     void
+    buildStackFrame(
+      StackFrame& frame,
+      int stackFrameNumber,
+      std::ostream& stream);
+
+    void
+    buildBreakpoint(
+      Breakable& breakpoint,
+      int breakpointID,
+      std::ostream& stream);
+
+    void
     buildProperty(
       std::string& fullName,
       std::string& name,
@@ -94,7 +107,8 @@ class DebuggerServer {
 
     DebuggerCommunicator* theCommunicator;
     DebuggerRuntime*      theRuntime;
-
+    std::string           theFileName;
+    bool                  theStopping;
   };
 }
 

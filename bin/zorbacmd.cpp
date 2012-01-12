@@ -507,11 +507,23 @@ compileAndExecute(
   Zorba_CompilerHints lHints;
 
   // default is O1 in the Zorba_CompilerHints constructor
-  if (properties.optimizationLevel() == "O0") {
+  if (properties.optimizationLevel() == "O0") 
+  {
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-  } else if (properties.optimizationLevel() == "O2") {
+  }
+  else if (properties.optimizationLevel() == "O2") 
+  {
     lHints.opt_level = ZORBA_OPT_LEVEL_O2;
   }
+
+  lHints.for_serialization_only = true;
+
+#if ZORBACMD_LOAD_SYSTEM_PROPERTIES
+  if (!Properties::instance()->serializeOnlyQuery())
+  {
+    lHints.for_serialization_only = false;
+  }
+#endif
 
   // default is false
   if (properties.libModule())
@@ -791,7 +803,8 @@ _tmain(int argc, _TCHAR* argv[])
     //
     // Print the query if requested
     //
-    if (lProperties.printQuery()) {
+    if (lProperties.printQuery()) 
+    {
       *lOutputStream << "\nQuery number " << queryNo << " :\n";
       std::copy (std::istreambuf_iterator<char> (*qfile),
                  std::istreambuf_iterator<char> (),
@@ -834,8 +847,10 @@ _tmain(int argc, _TCHAR* argv[])
     }
 
     // Parse the query
-    if (lProperties.parseOnly()) {
-      try {
+    if (lProperties.parseOnly()) 
+    {
+      try 
+      {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile) {
           lQuery->setFileName(path.get_path());
@@ -843,7 +858,8 @@ _tmain(int argc, _TCHAR* argv[])
 
         lQuery->parse (*qfile);
       }
-      catch (zorba::ZorbaException const& ze) {
+      catch (zorba::ZorbaException const& ze) 
+      {
         std::cerr << ze << std::endl;
         return 6;
       }
@@ -851,9 +867,12 @@ _tmain(int argc, _TCHAR* argv[])
 
     // Compile and run it if necessary.
     // Print timing information if requested.
-    else if (!debug) {
-      if (compileOnly) {
-        try {
+    else if (!debug) 
+    {
+      if (compileOnly) 
+      {
+        try 
+        {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile) {
             aQuery->setFileName(path.get_path());
@@ -861,7 +880,9 @@ _tmain(int argc, _TCHAR* argv[])
           aQuery->parse(*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::XQueryException const& qe) {
+        }
+        catch (zorba::XQueryException const& qe)
+        {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
@@ -925,17 +946,15 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        if (lProperties.debug()) {
-          Zorba_SerializerOptions lSerOptions =
-              Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-              lProperties.getSerializerParameters());
-          createSerializerOptions(lSerOptions, lProperties);
+        Zorba_SerializerOptions lSerOptions =
+            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
+            lProperties.getSerializerParameters());
+        createSerializerOptions(lSerOptions, lProperties);
 
-          if (!lProperties.hasNoLogo() && !lProperties.debug()) {
-            std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
-          }
-          lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
+        if (!lProperties.hasNoLogo()) {
+          std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
         }
+        lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
       }
       catch (zorba::XQueryException const& qe)
       {

@@ -18,9 +18,3 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   json_parser.cpp
 )
-
-IF(ZORBA_WITH_DEBUGGER)
-  LIST(APPEND UNIT_TEST_SRCS
-#    test_debugger_protocol.cpp
-  )
-ENDIF(ZORBA_WITH_DEBUGGER)

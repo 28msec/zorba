@@ -43,9 +43,13 @@ class fn_resolve_QName : public function
 {
 public:
   fn_resolve_QName(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -56,9 +60,11 @@ class fn_QName : public function
 {
 public:
   fn_QName(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,9 +75,11 @@ class op_QName_equal : public function
 {
 public:
   op_QName_equal(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -82,9 +90,11 @@ class fn_prefix_from_QName : public function
 {
 public:
   fn_prefix_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -95,9 +105,11 @@ class fn_local_name_from_QName : public function
 {
 public:
   fn_local_name_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -108,9 +120,11 @@ class fn_namespace_uri_from_QName : public function
 {
 public:
   fn_namespace_uri_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -121,9 +135,13 @@ class fn_namespace_uri_for_prefix : public function
 {
 public:
   fn_namespace_uri_for_prefix(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
@@ -134,9 +152,13 @@ class fn_in_scope_prefixes : public function
 {
 public:
   fn_in_scope_prefixes(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

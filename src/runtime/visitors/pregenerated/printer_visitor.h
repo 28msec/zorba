@@ -882,6 +882,9 @@ namespace zorba {
     void beginVisit( const StringIsStreamableIterator& );
     void endVisit  ( const StringIsStreamableIterator& );
 
+    void beginVisit( const StringSplitIterator& );
+    void endVisit  ( const StringSplitIterator& );
+
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );
 
