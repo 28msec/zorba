@@ -33,7 +33,7 @@ class XQueryIterator implements Iterator {
 
   public function __construct(XQuery $xquery)
   {
-	  $this->xquery = $xquery;
+    $this->xquery = $xquery;
     $this->item = Item::createEmptyItem();
   }
 
@@ -157,9 +157,9 @@ class XQueryProcessor implements IteratorAggregate {
    * @return ZorbaXQueryProcessor instance.
    */ 
   public function importQuery($query) {
-	if(!is_string($query)) {
-		throw new XQueryProcessorException('The query parameter must be a string. For instance: XQueryProcessor->importQuery("1+1")');
-	}
+    if(!is_string($query)) {
+      throw new XQueryProcessorException('The query parameter must be a string. For instance: XQueryProcessor->importQuery("1+1")');
+    }
     $this->query = $query;
     return $this;
   }
@@ -278,36 +278,36 @@ class XQueryProcessor implements IteratorAggregate {
     return new XQueryIterator($this->compile());
   }
 
-	/**
+  /**
    * Internal method that creates an instance of the
    * XQuery class from the input parameters (importQuery and setVariable).
    *
    * @return XQuery compiled query.
-	 */
-	private function compile()
+   */
+  private function compile()
   {
     //You need at least to import a query in order to compile it.
     if(!is_string($this->query)) {
-		  throw new XQueryCompilerException('No Query Imported. Use XQueryProcessor->importQuery($query).');
-	  }
+      throw new XQueryCompilerException('No Query Imported. Use XQueryProcessor->importQuery($query).');
+    }
     
     //Compile Query
-	  $query = $this->zorba->compileQuery($this->query);
+    $query = $this->zorba->compileQuery($this->query);
     
     //Set Variables
-	  $dctx = $query->getDynamicContext();
-	  foreach($this->variables as $ns => $variables){
+    $dctx = $query->getDynamicContext();
+    foreach($this->variables as $ns => $variables){
       foreach($variables as $name => $value) {
         if($ns == "_") $ns = "";
         $param = $this->zorba->compileQuery(".");
         $value = $this->getItem($value);
         $param->getDynamicContext()->setContextItem($value);
         $dctx->setVariable($ns, $name, $param->iterator());
-	    }
+      }
     }
     //Returns an instance of the XQuery class
     return $query;
-	}
+  }
 
   /**
    * Converts a PHP value to an XQuery Item.
@@ -315,7 +315,7 @@ class XQueryProcessor implements IteratorAggregate {
    * 
    * @see setVariable()
    */  
-	private function getItem($value) {
+  private function getItem($value) {
     $itemFactory = $this->zorba->getItemFactory();
 
     if($value instanceof DOMDocument or $value instanceof SimpleXMLElement) { 
