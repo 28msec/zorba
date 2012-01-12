@@ -380,6 +380,26 @@ Item::getAttributes() const
   return NULL;
 }
 
+void
+Item::getNamespaceBindings(NsBindings& aBindings,
+                           store::StoreConsts::NsScoping aNsScoping) const
+{
+  ITEM_TRY
+      SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+      store::NsBindings lStoreBindings;
+      m_item->getNamespaceBindings(lStoreBindings, aNsScoping);
+      store::NsBindings::iterator ite = lStoreBindings.begin();
+      store::NsBindings::iterator end = lStoreBindings.end();
+      for (; ite != end; ++ite) {
+        zstring& prefix = ite->first;
+        zstring& nsuri = ite->second;
+        aBindings.push_back(std::pair<String, String>(prefix.str(), nsuri.str()));
+      }
+
+  ITEM_CATCH
+}
+
 Item
 Item::getParent() const
 {

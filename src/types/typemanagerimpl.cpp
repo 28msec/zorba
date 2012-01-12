@@ -191,7 +191,7 @@ xqtref_t TypeManagerImpl::create_any_function_type(
   quantifier. The typecode identifies a builtin atomic type.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_builtin_atomic_type(
-    TypeConstants::atomic_type_code_t type_code,
+    store::SchemaTypeCode type_code,
     TypeConstants::quantifier_t quantifier) const
 {
   return *GENV_TYPESYSTEM.m_atomic_typecode_map[type_code][quantifier];
@@ -212,7 +212,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
-  TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
+  store::SchemaTypeCode code;
 
   if (myMap.get(qname, code))
     return create_builtin_atomic_type(code, quantifier);
@@ -323,7 +323,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     // Try to resolve the type name as a builtin atomic type
     RootTypeManager::qnametype_map_t& myMap = RTM.m_atomic_qnametype_map;
 
-    TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
+    store::SchemaTypeCode code = store::XS_LAST;
 
     if (myMap.get(qname, code))
       return create_builtin_atomic_type(code, quant);

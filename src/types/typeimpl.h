@@ -477,24 +477,24 @@ public:
 class AtomicXQType : public XQType
 {
 public:
-   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+   static const char* ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST];
 
 private:
-   TypeConstants::atomic_type_code_t m_type_code;
+   store::SchemaTypeCode m_type_code;
 
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
-    SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
+    SERIALIZE_ENUM(store::SchemaTypeCode, m_type_code);
   }
 
 public:
    AtomicXQType(
-        const TypeManager *manager,
-        TypeConstants::atomic_type_code_t type_code,
+        const TypeManager* manager,
+        store::SchemaTypeCode type_code,
         TypeConstants::quantifier_t quantifier,
         bool builtin = false)
      :
@@ -503,7 +503,7 @@ public:
    {
    }
 
-  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+  store::SchemaTypeCode get_type_code() const { return m_type_code; }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
