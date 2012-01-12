@@ -100,9 +100,9 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // empty sequence => false
     result = negate ^ false;
   }
-  else if (item->isNode())
+  else if (item->isNode() || item->isJSONItem())
   {
-    // node => true
+    // node or json => true
     result = negate ^ true;
   }
   else
