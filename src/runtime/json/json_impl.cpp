@@ -27,7 +27,6 @@
 
 #include "jsonml_array.h"
 #include "snelson.h"
-#include "util.h"
 
 using namespace std;
 
