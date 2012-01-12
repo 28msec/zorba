@@ -21,13 +21,16 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/update_exprs.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
 
-#include "types/typeimpl.h"
+#include "types/typeops.h"
 
 #include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/library.h"
 
 #include "diagnostics/assert.h"
@@ -35,6 +38,7 @@
 
 namespace zorba 
 {
+
 
 #define SORTED_NODES(e) \
 e->setProducesSortedNodes(ANNOTATION_TRUE)
@@ -630,7 +634,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     for (csize i = 1; i < num_steps; ++i) 
     {
-      axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i].getp());
+      axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i]);
       assert(ase != NULL);
 
       reverse_axes = reverse_axes || ase->is_reverse_axis();
@@ -756,7 +760,7 @@ void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
 
 void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
 {
-  default_walk(e);
+ default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
@@ -767,6 +771,493 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+SourceFinder::~SourceFinder()
+{
+  UdfSourcesMap::iterator ite = theUdfSourcesMap.begin();
+  UdfSourcesMap::iterator end = theUdfSourcesMap.end();
+  for (; ite != end; ++ite)
+  {
+    delete ite->second;
+  }
+}
+
+
+/*******************************************************************************
+  If the result of the given expr may contain costructed nodes, find the node-
+  constructor exprs where such nodes may come from. 
+
+  If "node" is inside a UDF, "udfCaller" contains the fo expr that invoked that
+  UDF.
+********************************************************************************/
+void SourceFinder::findNodeSources(
+    expr* node,
+    UDFCallChain* udfCaller,
+    std::vector<expr*>& sources)
+{
+  findNodeSourcesRec(node, sources, NULL);
+
+  for (csize i = 0; i < sources.size(); ++i)
+  {
+    expr* source = sources[i];
+
+    if (source->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* varExpr = static_cast<var_expr*>(source);
+
+      ZORBA_ASSERT(udfCaller != NULL);
+      ZORBA_ASSERT(varExpr->get_kind() == var_expr::arg_var);
+
+      sources.erase(sources.begin() + i);
+      --i;
+
+      // If this method is called to find the sources of an expr within the
+      // body of a function_item, then udfCaller->theFo will be NULL. 
+      if (udfCaller->theFo)
+      {
+        ZORBA_ASSERT(varExpr->get_udf() == udfCaller->theFo->get_func());
+
+        fo_expr* foExpr = udfCaller->theFo;
+        expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
+        std::vector<expr*> argSources;
+        findNodeSources(foArg, udfCaller->thePrev, argSources);
+
+        sources.insert(sources.end(), argSources.begin(), argSources.end());
+      }
+    }
+    else
+    {
+      ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
+                   source->get_expr_kind() == elem_expr_kind);
+    }
+  }
+}
+
+
+void SourceFinder::findNodeSourcesRec(
+    expr* node,
+    std::vector<expr*>& sources,
+    user_function* currentUdf)
+{
+  TypeManager* tm = node->get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t retType = node->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
+    return;
+
+  switch(node->get_expr_kind()) 
+  {
+  case const_expr_kind:
+  {
+    return;
+  }
+
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(node);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_in_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    {
+      VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
+
+      if (ite == theVarSourcesMap.end())
+      {
+        std::vector<expr*> varSources;
+        findNodeSourcesRec(e->get_domain_expr(), varSources, currentUdf);
+
+        ite = (theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
+      }
+
+      std::vector<expr*>::const_iterator ite2 = (*ite).second.begin();
+      std::vector<expr*>::const_iterator end2 = (*ite).second.end();
+      for (; ite2 != end2; ++ite2)
+      {
+        if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
+          sources.push_back(*ite2);
+      }
+
+      return;
+    }
+
+    case var_expr::wincond_in_pos_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::pos_var:
+    case var_expr::score_var:
+    case var_expr::count_var:
+    {
+      return;
+    }
+
+    case var_expr::copy_var:
+    {
+      // A copy var holds a standalone copy of the node produced by its domain
+      // expr. Although such a copy is a constructed tree, it was not constructed
+      // by node-constructor exprs, and as a resylt, a copy var is not a source.
+      return;
+    }
+
+    case var_expr::arg_var:
+    {
+      if (std::find(sources.begin(), sources.end(), node) == sources.end())
+        sources.push_back(node);
+
+      std::vector<expr*> varSources;
+      theVarSourcesMap.insert(VarSourcesPair(e, varSources));
+
+      return;
+    }
+
+    case var_expr::prolog_var: 
+    case var_expr::local_var:
+    {
+      VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
+
+      if (ite == theVarSourcesMap.end())
+      {
+        std::vector<expr*> varSources;
+        theVarSourcesMap.insert(VarSourcesPair(e, varSources));
+
+        std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
+        std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
+
+        for (; ite2 != end2; ++ite2)
+        {
+          expr* setExpr = *ite2;
+
+          if (setExpr->get_expr_kind() == var_decl_expr_kind)
+          {
+            findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
+                               varSources,
+                               currentUdf);
+          }
+          else
+          {
+            assert(setExpr->get_expr_kind() == var_set_expr_kind);
+
+            findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
+                               varSources,
+                               currentUdf);
+          }
+        }
+
+        ite = theVarSourcesMap.find(e);
+        
+        (*ite).second.insert((*ite).second.end(), varSources.begin(), varSources.end());
+      }
+
+      sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
+
+      return;
+    }
+
+    case var_expr::catch_var:
+    {
+      // If in the try clause there is an fn:error that generates nodes, it will 
+      // be (conservatively) treated as a "must copy" function, so all of those
+      // nodes will be in standalone trees.
+      return;
+    }
+
+    case var_expr::eval_var:
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+
+    break;
+  }
+
+  case doc_expr_kind:
+  case elem_expr_kind:
+  {
+    if (std::find(sources.begin(), sources.end(), node) == sources.end())
+      sources.push_back(node);
+
+    std::vector<expr*> enclosedExprs;
+    node->get_fo_exprs_of_kind(FunctionConsts::OP_ENCLOSED_1, false, enclosedExprs);
+
+    std::vector<expr*>::const_iterator ite = enclosedExprs.begin();
+    std::vector<expr*>::const_iterator end = enclosedExprs.end();
+    for (; ite != end; ++ite)
+    {
+      fo_expr* fo = static_cast<fo_expr*>(*ite);
+
+      assert(fo->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1);
+
+      findNodeSourcesRec(fo, sources, currentUdf);
+    }
+
+    return;
+  }
+
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  {
+    return;
+  }
+
+  case relpath_expr_kind:
+  {
+    relpath_expr* e = static_cast<relpath_expr *>(node);
+    findNodeSourcesRec((*e)[0], sources, currentUdf);
+    return;
+  }
+
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+  {
+    flwor_expr* e = static_cast<flwor_expr *>(node);
+
+    // We don't need to drill down to the domain exprs of variables that
+    // are not referenced in the return clause.
+    findNodeSourcesRec(e->get_return_expr(), sources, currentUdf);
+    return;
+  }
+
+  case if_expr_kind:
+  {
+    if_expr* e = static_cast<if_expr *>(node);
+    findNodeSourcesRec(e->get_then_expr(), sources, currentUdf);
+    findNodeSourcesRec(e->get_else_expr(), sources, currentUdf);
+    return;
+  }
+
+  case trycatch_expr_kind:
+  {
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr *>(node);
+    function* f = e->get_func();
+
+    if (f->isUdf())
+    {
+      user_function* udf = static_cast<user_function*>(f);
+ 
+      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
+
+      UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
+
+      std::vector<expr*>* udfSources;
+
+      if (ite == theUdfSourcesMap.end() ||
+          (recursive &&
+           std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e) ==
+           theUdfCallPath.end()))
+      {
+        if (recursive)
+          theUdfCallPath.push_back(e);
+
+        // must do this before calling findNodeSourcesRec in order to break
+        // recursion cycle
+        if (ite == theUdfSourcesMap.end())
+        {
+          udfSources = new std::vector<expr*>;
+          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+        }
+        else
+        {
+          udfSources = (*ite).second;
+        }
+
+        findNodeSourcesRec(udf->getBody(), *udfSources, udf);
+
+        if (recursive)
+          theUdfCallPath.pop_back();
+      }
+      else
+      {
+        udfSources = (*ite).second;
+      }
+
+      csize numUdfSources = udfSources->size();
+
+      for (csize i = 0; i < numUdfSources; ++i)
+      {
+        expr* source = (*udfSources)[i];
+
+        if (source->get_expr_kind() == var_expr_kind)
+        {
+          var_expr* argVar = static_cast<var_expr*>(source);
+
+          ZORBA_ASSERT(argVar->get_kind() == var_expr::arg_var);
+
+          expr* argExpr = e->get_arg(argVar->get_param_pos());
+
+          findNodeSourcesRec(argExpr, sources, currentUdf);
+        }
+        else
+        {
+          if (std::find(sources.begin(), sources.end(), source) == sources.end())
+            sources.push_back(source);
+        }
+      }
+    } // f->isUdf()
+    else
+    {
+      csize numArgs = e->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (f->propagatesInputNodes(e, i))
+        {
+          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
+        }
+      }
+    }
+
+    return;
+  }
+
+  case promote_expr_kind:
+  case treat_expr_kind:
+  case order_expr_kind:
+  case wrapper_expr_kind:
+  case function_trace_expr_kind:
+  case extension_expr_kind:
+  case validate_expr_kind:
+  {
+    break;
+  }
+
+  case transform_expr_kind:
+  {
+    transform_expr* e = static_cast<transform_expr*>(node);
+
+    findNodeSourcesRec(e->getReturnExpr(), sources, currentUdf);
+
+    return;
+  }
+
+  case block_expr_kind:
+  {
+    block_expr* e = static_cast<block_expr*>(node);
+
+    findNodeSourcesRec((*e)[e->size()-1], sources, currentUdf);
+
+    return;
+  }
+
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    return;
+  }
+
+  case apply_expr_kind:
+  {
+    break;
+  }
+
+  case exit_catcher_expr_kind: 
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
+
+    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
+    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
+
+    for (; ite != end; ++ite)
+    {
+      exit_expr* ex = static_cast<exit_expr*>(*ite);
+
+      findNodeSourcesRec(ex->get_expr(), sources, currentUdf);
+    }
+
+    break;
+  }
+
+  case eval_expr_kind:
+  {
+    eval_expr* e = static_cast<eval_expr*>(node);
+    // Make sure that the eval iterator will produce standalone trees.
+    e->setNodeCopy(true);
+    return;
+  }
+
+  case debugger_expr_kind:
+  {
+    break;
+  }
+
+  case dynamic_function_invocation_expr_kind:
+  {
+    // Conservatively assume that the function item that is going to be executed
+    // is going to propagate its inputs, so find the sources in the arguments.
+    // TODO: look for function_item_expr in the subtree to check if this assumption
+    // is really true. 
+    dynamic_function_invocation_expr* e = 
+    static_cast<dynamic_function_invocation_expr*>(node);
+
+    const std::vector<expr_t>& args = e->get_args();
+
+    FOR_EACH(std::vector<expr_t>, ite, args)
+    {
+      std::vector<expr*> sources;
+      findNodeSourcesRec((*ite).getp(), sources, currentUdf);
+    }
+
+    break;
+  }
+
+  case function_item_expr_kind:
+  {
+    //function_item_expr* e = static_cast<function_item_expr*>(node);
+    // TODO
+    return;
+  }
+    
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case name_cast_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case while_expr_kind:
+  case exit_expr_kind:
+  case flowctl_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind:
+#endif
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  ExprIterator iter(node);
+  while(!iter.done()) 
+  {
+    expr* child = (*iter).getp();
+    if (child != NULL) 
+    {
+      findNodeSourcesRec(child, sources, currentUdf);
+    }
+    iter.next();
+  }
 }
 
 }

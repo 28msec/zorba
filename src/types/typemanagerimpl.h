@@ -102,7 +102,7 @@ public:
   xqtref_t create_any_function_type(TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_builtin_atomic_type(
-        TypeConstants::atomic_type_code_t type_code,
+        store::SchemaTypeCode type_code,
         TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_named_atomic_type(

@@ -65,11 +65,17 @@ public:
 
     if (child != NULL && theStart != theEnd)
     {
-      assert(child->getParent() == theParentNode);
+      XmlNode* myChild = ((*theStart)->isConnectorNode() ? 
+                          static_cast<ConnectorNode*>(*theStart)->getNode() :
+                          (*theStart));
 
       while ((*theStart) != child)
       {
         ++theStart;
+
+        myChild = ((*theStart)->isConnectorNode() ? 
+                   static_cast<ConnectorNode*>(*theStart)->getNode() :
+                   (*theStart));
       }
 
       ++theStart;
@@ -87,11 +93,17 @@ public:
 
     if (child != NULL && theStart != theEnd)
     {
-      assert(child->getParent() == theParentNode);
+      XmlNode* myChild = ((*theStart)->isConnectorNode() ? 
+                          static_cast<ConnectorNode*>(*theStart)->getNode() :
+                          (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
+
+        myChild = ((*theStart)->isConnectorNode() ? 
+                   static_cast<ConnectorNode*>(*theStart)->getNode() :
+                   (*theStart));
       }
 
       ++theStart;
@@ -106,7 +118,16 @@ public:
     if (theIte == theEnd)
       return NULL;
 
-    return *theIte++;
+    if ((*theIte)->isConnectorNode())
+    {
+      store::Item* res = static_cast<ConnectorNode*>(*theIte)->getNode();
+      ++theIte;
+      return res;
+    }
+    else
+    {
+      return *theIte++;
+    }
   }
 
 
@@ -158,11 +179,17 @@ public:
 
     if (child != NULL && theStart != theEnd)
     {
-      assert(child->getParent() == theParentNode);
+      XmlNode* myChild = ((*theStart)->isConnectorNode() ? 
+                          static_cast<ConnectorNode*>(*theStart)->getNode() :
+                          (*theStart));
 
       while ((*theStart) != child)
       {
         ++theStart;
+
+        myChild = ((*theStart)->isConnectorNode() ? 
+                   static_cast<ConnectorNode*>(*theStart)->getNode() :
+                   (*theStart));
       }
 
       ++theStart;
@@ -180,11 +207,17 @@ public:
 
     if (child != NULL && theStart != theEnd)
     {
-      assert(child->getParent() == theParentNode);
+      XmlNode* myChild = ((*theStart)->isConnectorNode() ? 
+                          static_cast<ConnectorNode*>(*theStart)->getNode() :
+                          (*theStart));
 
       while ((*theStart) != child)
       {
         ++theStart;
+
+        myChild = ((*theStart)->isConnectorNode() ? 
+                   static_cast<ConnectorNode*>(*theStart)->getNode() :
+                   (*theStart));
       }
 
       ++theStart;
@@ -199,7 +232,16 @@ public:
     if (theIte == theEnd)
       return NULL;
 
-    return *theIte++;
+    if ((*theIte)->isConnectorNode())
+    {
+      store::Item* res = static_cast<ConnectorNode*>(*theIte)->getNode();
+      ++theIte;
+      return res;
+    }
+    else
+    {
+      return *theIte++;
+    }
   }
 
 
@@ -261,7 +303,13 @@ public:
     if (theIte == theEnd)
       return NULL;
 
-    AttributeNode* attr = static_cast<AttributeNode*>(*theIte);
+    store::Item* node = ((*theIte)->isConnectorNode() ?
+                         static_cast<ConnectorNode*>(*theIte)->getNode() :
+                         (*theIte));
+
+    assert(node->getNodeKind() == store::StoreConsts::attributeNode);
+
+    AttributeNode* attr = static_cast<AttributeNode*>(node);
 
     while (attr->isHidden())
     {
@@ -270,7 +318,13 @@ public:
       if (theIte == theEnd)
         return NULL;
 
-      attr = static_cast<AttributeNode*>(*theIte);
+      node = ((*theIte)->isConnectorNode() ?
+              static_cast<ConnectorNode*>(*theIte)->getNode() :
+              (*theIte));
+
+      assert(node->getNodeKind() == store::StoreConsts::attributeNode);
+
+      attr = static_cast<AttributeNode*>(node);
     }
 
     ++theIte;

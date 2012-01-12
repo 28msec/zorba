@@ -762,31 +762,45 @@ ostream& order_expr::put(ostream& os) const
 
 ostream& elem_expr::put(ostream& os) const
 {
-  BEGIN_PUT( elem_expr );
+  BEGIN_PUT(elem_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
+
   if (theAttrs != NULL)
     theAttrs->put(os);
+
   if (theContent != NULL)
     theContent->put(os);
+
   END_PUT();
 }
 
-ostream& doc_expr::put( ostream& os) const
+
+ostream& doc_expr::put(ostream& os) const
 {
-  BEGIN_PUT( doc_expr );
+  BEGIN_PUT(doc_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   theContent->put(os);
+
   END_PUT();
 }
 
-ostream& attr_expr::put( ostream& os) const
+
+ostream& attr_expr::put(ostream& os) const
 {
-  BEGIN_PUT( attr_expr );
+  BEGIN_PUT(attr_expr);
 
-  theQNameExpr->put (os);
+  theQNameExpr->put(os);
   PUT_SUB("=", theValueExpr);
+
   END_PUT();
 }
+
 
 ostream& text_expr::put(ostream& os) const
 {
@@ -852,7 +866,7 @@ ostream& replace_expr::put(ostream& os) const
 {
   BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);
-  PUT_SUB( ",", theReplaceExpr );
+  PUT_SUB( ",", theSourceExpr );
   END_PUT();
 }
 
@@ -860,7 +874,7 @@ ostream& rename_expr::put(ostream& os) const
 {
   BEGIN_PUT(rename_expr);
   theTargetExpr->put(os);
-  PUT_SUB(",", theNameExpr);
+  PUT_SUB(",", theSourceExpr);
   END_PUT();
 }
 

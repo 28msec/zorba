@@ -19,14 +19,17 @@
 #include <map>
 #include <string>
 
+#include <zorba/util/uri.h>
+#include <zorba/zorba_string.h>
+
 #include "compiler/parser/query_loc.h"
 #include "runtime/core/item_iterator.h"
 
 #include "zorbaserialization/serialization_engine.h"
 #include "zorbatypes/zstring.h"
 
-#include "debugger/debugger_common.h"
-#include "debugger/query_locationimpl.h"
+#include "debugger_common.h"
+#include "query_locationimpl.h"
 
 
 struct Zorba_SerializerOptions;
@@ -208,16 +211,6 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     void setPlanState(PlanState* aPlanState);
 
     /**
-    * @brief Sets the current debugger state.
-    *
-    * When the debugger suspends, it saves its state.
-    *
-    * @param aState a pointer to the current debugger state.
-    * @post aState == theDebugIteratorState
-    */
-    void setDebugIteratorState(DebugIteratorState* aState);
-
-    /**
     * @brief Sets a setpoint according to the step out rules.
     *
     * This method sets a breakpoint according to the rules according to
@@ -245,10 +238,13 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
   public:
 
     unsigned int
-    addBreakpoint(const QueryLoc& location, bool enabled);
+    addBreakpoint(String& fileName, unsigned int line, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
+
+    BreakableVector
+    getBreakpoints();
 
     void
     updateBreakpoint(unsigned int id, bool enabled);
@@ -336,7 +332,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     std::string getFilepathOfURI(const std::string& aUri) const;
 
     void
-    addBreakable(Breakable& location);
+    addBreakable(Breakable& location, bool isMainModuleBreakable = false);
 
     void
     pushStackFrame(QueryLoc location, std::string& functionName);
@@ -384,10 +380,10 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     std::vector<DebugIterator*>                     theIteratorStack;
     std::size_t                                     theBreakCondition;
     PlanState*                                      thePlanState;
-    DebugIteratorState*                             theDebugIteratorState;
     store::Item_t                                   theEvalItem;
     bool                                            theExecEval;
     bool                                            theStepping;
+    unsigned int                                   theMainModuleBreakableId;
   };
 
 }

@@ -43,9 +43,11 @@ class fn_zorba_json_parse_internal : public function
 {
 public:
   fn_zorba_json_parse_internal(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_zorba_json_serialize_internal : public function
 {
 public:
   fn_zorba_json_serialize_internal(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

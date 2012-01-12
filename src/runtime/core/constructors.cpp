@@ -17,6 +17,7 @@
 
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
@@ -51,9 +52,6 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(DocumentContentIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DocumentContentIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
 
@@ -78,6 +76,33 @@ END_SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
 /*******************************************************************************
 
 ********************************************************************************/
+DocumentIterator::DocumentIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child,
+    bool copyInputNodes)
+  :
+  UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, child),
+  theTypePreserve(false),
+  theNsPreserve(false),
+  theNsInherit(false),
+  theCopyInputNodes(copyInputNodes)
+{
+}
+
+
+void DocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
+
+  ar & theTypePreserve;
+  ar & theNsPreserve;
+  ar & theNsInherit;
+  ar & theCopyInputNodes;
+}
+
+
 void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<DocumentIterator, PlanIteratorState>::openImpl(planState, offset);
@@ -113,14 +138,19 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   path.push(result);
 
   // Compute the children of the element node
-  copymode.set(true, theTypePreserve, theNsPreserve, theNsInherit);
+  copymode.set(theCopyInputNodes, theTypePreserve, theNsPreserve, theNsInherit);
 
   try
   {
     while (consumeNext(child, theChild, planState))
     {
       ZORBA_FATAL(child->isNode(), "");
-      ZORBA_FATAL(child->getNodeKind() != store::StoreConsts::attributeNode, "");
+
+      if (child->getNodeKind() == store::StoreConsts::attributeNode)
+      {
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(NoAttrNodesInDocument)));
+      }
 
       if (child->getParent() != result.getp())
       {
@@ -157,39 +187,6 @@ UNARY_ACCEPT(DocumentIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  while (true)
-  {
-    if (!consumeNext(result, theChild.getp(), planState))
-      break;
-
-    if (result->isNode() &&
-        result->getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoAttrNodesInDocument ) ),
-        ERROR_LOC( loc )
-      );
-    }
-
-    STACK_PUSH(true, state);
-  }
-
-  STACK_END (state);
-}
-
-
-UNARY_ACCEPT(DocumentContentIterator);
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void ElementIteratorState::init(PlanState&)
 {
 }
@@ -202,13 +199,14 @@ void ElementIteratorState::reset(PlanState&)
 
 
 ElementIterator::ElementIterator (
-    static_context*          sctx,
-    const QueryLoc&          loc,
-    PlanIter_t&              qnameIter,
-    PlanIter_t&              attrsIter,
-    PlanIter_t&              childrenIter,
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& qnameIter,
+    PlanIter_t& attrsIter,
+    PlanIter_t& childrenIter,
     const namespace_context* localBindings,
-    bool                     isRoot)
+    bool isRoot,
+    bool copyInputNodes)
   :
   NoaryBaseIterator<ElementIterator, ElementIteratorState>(sctx, loc),
   theQNameIter(qnameIter),
@@ -218,8 +216,26 @@ ElementIterator::ElementIterator (
   theIsRoot(isRoot),
   theTypePreserve(false),
   theNsPreserve(false),
-  theNsInherit(false)
+  theNsInherit(false),
+  theCopyInputNodes(copyInputNodes)
 {
+}
+
+
+void ElementIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<ElementIterator,
+                           ElementIteratorState>*)this);
+  ar & theQNameIter;
+  ar & theAttributesIter;
+  ar & theChildrenIter;
+  ar & theNamespacesIter;
+  ar & theLocalBindings;
+  ar & theIsRoot;
+  ar & theTypePreserve;
+  ar & theNsPreserve;
+  ar & theNsInherit;
+  ar & theCopyInputNodes;
 }
 
 
@@ -320,20 +336,16 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (nodeName->getLocalName().empty())
   {
-    throw XQUERY_EXCEPTION(
-      err::XQDY0074,
-      ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQDY0074, loc,  ERROR_PARAMS("", ZED(NoEmptyLocalname)));
   }
 
   if (nodeName->getPrefix() == "xmlns" ||
-        nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
-        (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
-        (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
-      throw XQUERY_EXCEPTION(
-        err::XQDY0096, ERROR_PARAMS(nodeName->getStringValue()), ERROR_LOC(loc)
-      );
+      nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
+      (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
+      (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
+  {
+    RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(nodeName->getStringValue()));
+  }
 
   typeName = (theTypePreserve ?
               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME :
@@ -354,9 +366,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // replaced with the explicit one.
     state->baseUri = theSctx->get_base_uri();
     if (state->baseUri.empty())
-      throw XQUERY_EXCEPTION(
-        err::XPST0001, ERROR_PARAMS( "", ZED( BaseURI ) ), ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0001, loc, ERROR_PARAMS("", ZED(BaseURI)));
 
     store::NsBindings bindings;
     theLocalBindings->getAllBindings(bindings);
@@ -387,7 +397,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   path.push(result);
 
   // Compute the attributes and children of the element node
-  copymode.set(true, theTypePreserve, theNsPreserve, theNsInherit);
+  copymode.set(theCopyInputNodes, theTypePreserve, theNsPreserve, theNsInherit);
 
   try
   {
@@ -466,7 +476,9 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         // Else copy the child node if it was not a node constructed by a
         // directly nested constructor
         else if (child->getParent() != result.getp())
+        {
           child->copy(result, copymode);
+        }
 
         valid = consumeNext(child, theChildrenIter, planState);
       }
@@ -551,22 +563,16 @@ AttributeIterator::AttributeIterator(
   {
     if (theQName->getLocalName().empty())
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0074,
-        ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0074, loc,
+      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
     }
 
     if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( theQName->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0044, loc,
+      ERROR_PARAMS(theQName->getStringValue()));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -575,11 +581,8 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( theQName->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0044, loc,
+      ERROR_PARAMS(theQName->getStringValue()));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&

@@ -51,11 +51,20 @@ typedef enum {
  * example_6 in file \link simple.cpp \endlink shows an example
  * how CompilerHints can be used.
  */
-typedef struct Zorba_CompilerHints {
+typedef struct Zorba_CompilerHints 
+{
   /** \brief The optimization level that is used */
   Zorba_opt_level_t opt_level;
   /** \brief Treat the query as a library module */
   bool lib_module;
+
+  /**
+   * \brief By default, this flag is set to false. Applications may set it to
+   * true if they plan to execute the query only via one of the methods that 
+   * serialize the query result.
+   */
+  bool for_serialization_only;
+
 #ifdef __cplusplus
   /** \brief Default constructor for CompilerHints which assigns default values to all hints (C++ only).
    *
@@ -67,7 +76,9 @@ typedef struct Zorba_CompilerHints {
 #endif
 } Zorba_CompilerHints_t;
 
-typedef enum {
+
+typedef enum 
+{
   ZORBA_SERIALIZATION_METHOD_XML,
   ZORBA_SERIALIZATION_METHOD_HTML,
   ZORBA_SERIALIZATION_METHOD_XHTML,
@@ -78,12 +89,16 @@ typedef enum {
 #endif
 } Zorba_serialization_method_t;
 
-typedef enum {
+
+typedef enum 
+{
   ZORBA_BYTE_ORDER_MARK_YES,
   ZORBA_BYTE_ORDER_MARK_NO
 } Zorba_byte_order_mark_t;
 
-typedef enum {
+
+typedef enum 
+{
   ZORBA_ESCAPE_URI_ATTRIBUTES_YES,
   ZORBA_ESCAPE_URI_ATTRIBUTES_NO
 } Zorba_escape_uri_attributes_t;

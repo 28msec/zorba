@@ -34,7 +34,7 @@ namespace json
 store::Item*
 JSONNull::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[JDM_NULL];
+  return GET_STORE().JDM_NULL_QNAME;
 }
 
 
@@ -44,7 +44,7 @@ JSONNull::getType() const
 store::Item*
 JSONObject::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[JDM_OBJECT];
+  return GET_STORE().JDM_OBJECT_QNAME;
 }
 
 
@@ -54,7 +54,7 @@ JSONObject::getType() const
 store::Item*
 JSONArray::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[JDM_ARRAY];
+  return GET_STORE().JDM_ARRAY_QNAME;
 }
 
 
@@ -64,7 +64,7 @@ JSONArray::getType() const
 store::Item*
 JSONObjectPair::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[JDM_PAIR];
+  return GET_STORE().JDM_PAIR_QNAME;
 }
 
 
@@ -94,7 +94,9 @@ SimpleJSONObject::add(const JSONObjectPair_t& p)
 /******************************************************************************
 
 *******************************************************************************/
-SimpleJSONObject::PairIterator::~PairIterator() {}
+SimpleJSONObject::PairIterator::~PairIterator() 
+{
+}
 
 
 /******************************************************************************

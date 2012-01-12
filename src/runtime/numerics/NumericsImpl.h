@@ -23,7 +23,7 @@
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 
-#include "types/typeconstants.h"
+#include "store/api/xs_type_codes.h"
 
 namespace zorba
 {
@@ -95,7 +95,7 @@ public:
   specific operation is passed as the template class param, and the data type
   of the operands is passed as a template const param.
 ********************************************************************************/
-template < class Operation, TypeConstants::atomic_type_code_t Type >
+template < class Operation, store::SchemaTypeCode Type >
 class SpecificNumArithIterator : 
 public BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>
 {

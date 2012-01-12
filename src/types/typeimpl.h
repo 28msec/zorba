@@ -474,10 +474,10 @@ public:
 class AtomicXQType : public XQType
 {
 public:
-   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+   static const char* ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST];
 
 private:
-   TypeConstants::atomic_type_code_t m_type_code;
+   store::SchemaTypeCode m_type_code;
 
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
@@ -487,7 +487,7 @@ public:
 public:
    AtomicXQType(
         const TypeManager* manager,
-        TypeConstants::atomic_type_code_t type_code,
+        store::SchemaTypeCode type_code,
         TypeConstants::quantifier_t quantifier,
         bool builtin = false)
      :
@@ -496,7 +496,7 @@ public:
    {
    }
 
-  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+  store::SchemaTypeCode get_type_code() const { return m_type_code; }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 

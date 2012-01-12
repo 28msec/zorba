@@ -24,6 +24,8 @@
 
 #include "runtime/core/arithmetic_impl.h"
 
+#include "compiler/expression/fo_expr.h"
+
 #include "types/typeops.h"
 
 namespace zorba {
@@ -55,9 +57,7 @@ public:
 
   virtual bool isArithmeticFunction() const { return true; }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
   
   virtual bool specializable() const { return true; }
 
@@ -67,37 +67,40 @@ public:
 };
 
 
-xqtref_t binary_arith_func::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const 
+xqtref_t binary_arith_func::getReturnType(const fo_expr* caller) const 
 {
-  bool numeric0 = TypeOps::is_numeric(tm, *arg_types[0]);
-  bool numeric1 = TypeOps::is_numeric(tm, *arg_types[1]);
+  TypeManager* tm = caller->get_type_manager();
+
+  xqtref_t type0 = caller->get_arg(0)->get_return_type();
+  xqtref_t type1 = caller->get_arg(1)->get_return_type();
+
+  bool numeric0 = TypeOps::is_numeric(tm, *type0);
+  bool numeric1 = TypeOps::is_numeric(tm, *type1);
   ArithmeticConsts::OperationKind arithKind = arithmeticKind();
 
   if (numeric0 && numeric1) 
   {
     return TypeOps::arithmetic_type(tm,
-                                    *arg_types[0],
-                                    *arg_types[1],
+                                    *type0,
+                                    *type1,
                                     arithKind == ArithmeticConsts::DIVISION);
   }
   else if ((numeric0 || numeric1) && 
            (arithKind == ArithmeticConsts::ADDITION ||
             arithKind == ArithmeticConsts::SUBTRACTION))
   {
-    return TypeOps::arithmetic_type(tm, *arg_types[0], *arg_types[1], false);
+    return TypeOps::arithmetic_type(tm, *type0, *type1, false);
   }
            
+  if (type0->is_empty())
+    return type0;
 
-  if (arg_types[0]->is_empty())
-    return arg_types[0];
+  if (type1->is_empty())
+    return type1;
 
-  if (arg_types[1]->is_empty())
-    return arg_types[1];
+  int cnt1 = type0->min_card();
+  int cnt2 = type1->min_card();
 
-  int cnt1 = arg_types[0]->min_card();
-  int cnt2 = arg_types[1]->min_card();
   if (cnt2 < cnt1) cnt1 = cnt2;
 
   return (cnt1 == 0 ?

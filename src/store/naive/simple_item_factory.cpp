@@ -946,6 +946,22 @@ bool BasicItemFactory::createYearMonthDuration(
   return true;
 }
 
+bool BasicItemFactory::createYearMonthDuration(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
+{
+  Duration d;
+  if (Duration::parseYearMonthDuration(str, strlen, d) == 0)
+  {
+    result = new DurationItem(&d);
+    return true;
+  }
+
+  result = NULL;
+  return false;
+}
+
 
 bool BasicItemFactory::createDayTimeDuration(
     store::Item_t& result,
@@ -953,6 +969,23 @@ bool BasicItemFactory::createDayTimeDuration(
 {
   result = new DurationItem(value);
   return true;
+}
+
+
+bool BasicItemFactory::createDayTimeDuration(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
+{
+  Duration d;
+  if (Duration::parseDayTimeDuration(str, strlen, d) == 0)
+  {
+    result = new DurationItem(&d);
+    return true;
+  }
+
+  result = NULL;
+  return false;
 }
 
 

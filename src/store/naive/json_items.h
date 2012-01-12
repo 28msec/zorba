@@ -60,7 +60,7 @@ public:
 
   zstring getStringValue() const { return "null"; }
 
-  SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNTYPED_ATOMIC; }
 
   store::Item* getType() const; 
 

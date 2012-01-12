@@ -21,6 +21,8 @@
 #ifdef WIN32
 # include <windows.h>
 # define sleep(s) Sleep(s*1000)
+#else
+# include <unistd.h>
 #endif
 
 #include <zorba/store_manager.h>

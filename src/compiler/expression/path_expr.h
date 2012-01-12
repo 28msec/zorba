@@ -69,11 +69,11 @@ public:
 
 	void add_back(expr_t step);
 
-  void erase(ulong i) { theSteps.erase(theSteps.begin() + i); }
+  void erase(csize i) { theSteps.erase(theSteps.begin() + i); }
 
-  ulong numSteps() const { return (ulong)theSteps.size(); }
+  csize numSteps() const { return theSteps.size(); }
 
-	const expr_t& operator[](int n) const { return theSteps[n]; }
+  expr* operator[](csize n) const { return theSteps[n].getp(); }
 
   std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
 

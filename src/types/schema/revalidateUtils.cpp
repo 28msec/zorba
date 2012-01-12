@@ -606,11 +606,11 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
   {
     if (schemaType->is_builtin())
     {
-      TypeConstants::atomic_type_code_t schemaTypeCode = 
+      store::SchemaTypeCode schemaTypeCode = 
           TypeOps::get_atomic_type_code(*schemaType);
 
-      if ( schemaTypeCode==TypeConstants::XS_ID ||
-          schemaTypeCode==TypeConstants::XS_IDREF )
+      if ( schemaTypeCode == store::XS_ID ||
+          schemaTypeCode == store::XS_IDREF )
         return false;
       else
         return false; //true;

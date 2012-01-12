@@ -43,9 +43,11 @@ class fn_codepoints_to_string : public function
 {
 public:
   fn_codepoints_to_string(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +58,11 @@ class fn_string_to_codepoints : public function
 {
 public:
   fn_string_to_codepoints(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,9 +73,11 @@ class fn_compare : public function
 {
 public:
   fn_compare(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -82,9 +88,11 @@ class fn_codepoint_equal : public function
 {
 public:
   fn_codepoint_equal(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -95,13 +103,15 @@ class fn_concat : public function
 {
 public:
   fn_concat(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
@@ -112,9 +122,11 @@ class fn_string_join_3_0 : public function
 {
 public:
   fn_string_join_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -124,9 +136,11 @@ class fn_string_join : public function
 {
 public:
   fn_string_join(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -137,9 +151,11 @@ class fn_substring : public function
 {
 public:
   fn_substring(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool specializable() const { return true; }
 
@@ -155,9 +171,11 @@ class op_substring_int : public function
 {
 public:
   op_substring_int(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -168,9 +186,11 @@ class fn_string_length : public function
 {
 public:
   fn_string_length(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -181,9 +201,11 @@ class fn_normalize_space : public function
 {
 public:
   fn_normalize_space(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -194,9 +216,11 @@ class fn_normalize_unicode : public function
 {
 public:
   fn_normalize_unicode(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -207,9 +231,11 @@ class fn_upper_case : public function
 {
 public:
   fn_upper_case(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -220,9 +246,11 @@ class fn_lower_case : public function
 {
 public:
   fn_lower_case(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -233,9 +261,11 @@ class fn_translate : public function
 {
 public:
   fn_translate(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -246,9 +276,11 @@ class fn_encode_for_uri : public function
 {
 public:
   fn_encode_for_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -259,9 +291,11 @@ class fn_iri_to_uri : public function
 {
 public:
   fn_iri_to_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -272,9 +306,11 @@ class fn_escape_html_uri : public function
 {
 public:
   fn_escape_html_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -285,9 +321,11 @@ class fn_contains : public function
 {
 public:
   fn_contains(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -298,9 +336,11 @@ class fn_starts_with : public function
 {
 public:
   fn_starts_with(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -311,9 +351,11 @@ class fn_ends_with : public function
 {
 public:
   fn_ends_with(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -324,9 +366,11 @@ class fn_substring_before : public function
 {
 public:
   fn_substring_before(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -337,9 +381,11 @@ class fn_substring_after : public function
 {
 public:
   fn_substring_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -350,9 +396,11 @@ class fn_matches : public function
 {
 public:
   fn_matches(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -363,9 +411,11 @@ class fn_replace : public function
 {
 public:
   fn_replace(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -376,9 +426,11 @@ class fn_tokenize : public function
 {
 public:
   fn_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -389,9 +441,11 @@ class fn_analyze_string_3_0 : public function
 {
 public:
   fn_analyze_string_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -402,9 +456,11 @@ class fn_zorba_string_materialize : public function
 {
 public:
   fn_zorba_string_materialize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -415,9 +471,26 @@ class fn_zorba_string_is_streamable : public function
 {
 public:
   fn_zorba_string_is_streamable(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-string:split
+class fn_zorba_string_split : public function
+{
+public:
+  fn_zorba_string_split(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
 
   CODEGEN_DECL();
 };

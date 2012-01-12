@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -177,18 +178,15 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  ZORBA_ASSERT(theQuantifier == TypeConstants::QUANT_ONE ||
-               theQuantifier == TypeConstants::QUANT_QUESTION);
+  assert(theQuantifier == TypeConstants::QUANT_ONE ||
+         theQuantifier == TypeConstants::QUANT_QUESTION);
 
   if (!consumeNext(lItem, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_ONE)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( EmptySeqNoCastToTypeWithQuantOne ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(EmptySeqNoCastToTypeWithQuantOne)));
     }
   }
   else
@@ -208,11 +206,8 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (consumeNext(lItem, theChild.getp(), planState))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqCastToTypeWithQuantOneOrQuestion ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqCastToTypeWithQuantOneOrQuestion)));
     }
 
     STACK_PUSH(valid, state);
@@ -344,17 +339,14 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       if (theFnQName.getp())
       {
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(EmptySeqNotAsFunctionResult_23),
-                                            theFnQName->getStringValue(),
-                                            type),
-                               ERROR_LOC(loc));
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(EmptySeqNotAsFunctionResult_23),
+                     theFnQName->getStringValue(),
+                     type));
       }
       else
       {
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(EmptySeqNoPromoteTo), type),
-                               ERROR_LOC(loc));
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(EmptySeqNoPromoteTo), type));
       }
     }
   }
@@ -369,17 +361,14 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                        (theQuantifier == TypeConstants::QUANT_QUESTION ?
                                         "?" : ""));
 
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoSeqTypePromotion_23),
-                                            tmp,
-                                            theFnQName->getStringValue()),
-                               ERROR_LOC(loc));
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(NoSeqTypePromotion_23),
+                     tmp,
+                     theFnQName->getStringValue()));
       }
       else
       {
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoSeqTypePromotion)),
-                               ERROR_LOC(loc));
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqTypePromotion)));
       }
     }
 
@@ -415,28 +404,20 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
       {
-        if ( theFnQName.getp() )
+        if (theFnQName.getp())
         {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoTypePromotion_234 ),
-              tm->create_value_type(lItem)->toSchemaString(),
-              thePromoteType->toSchemaString(),
-              theFnQName->getStringValue()
-            ),
-            ERROR_LOC(loc));
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED( NoTypePromotion_234 ),
+                       tm->create_value_type(lItem)->toSchemaString(),
+                       thePromoteType->toSchemaString(),
+                       theFnQName->getStringValue()));
         }
         else
         {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoTypePromotion_23 ),
-              tm->create_value_type(lItem)->toSchemaString(),
-              thePromoteType->toSchemaString()
-            ),
-            ERROR_LOC(loc));
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED( NoTypePromotion_23 ),
+                       tm->create_value_type(lItem)->toSchemaString(),
+                       thePromoteType->toSchemaString()));
         }
       }
       else

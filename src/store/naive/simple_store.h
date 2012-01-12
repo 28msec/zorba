@@ -67,33 +67,64 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
 
 /*******************************************************************************
-  theSchemaTypeNames     : Maps each enum value from SchemaTypeNames (see
-                           store_defs.h) to its associated QName item.
+  theSchemaTypeNames:
+  -------------------
+  Maps each enum value from SchemaTypeNames (see store/api/xs_types_enum.h) to 
+  its associated QName item.
 
-  theCollectionCounter   : Incremented every time a new collection is created. The
-                           current value of the counter is then assigned as the
-                           id of the new collection.
+  theSchemaTypeCodes:
+  -------------------
 
-  theNamespacePool       :
-  theQNamePool           :
+  theCollectionCounter:
+  ---------------------
+  Incremented every time a new collection is created. The current value of the  
+  counter is then assigned as the id of the new collection.
 
-  theItemFactory         : Factory to create items.
-  theIteratorFactory     : Factory to create iterators.
-  theNodeFactory         : Factory to create node items.
+  theNamespacePool:
+  -----------------
 
-  theDocuments           : A hashmap that for each xml tree that does not belong
-                           to any collection, maps the URI of the tree to the root
-                           node of the tree.
-  theCollections         : Container which contains the collections of the store.
-                           It includes a map that maps the qname of each collection
-                           to the collection's container object.
-  theIndices             : A hashmap that for each index, maps the qname of the
-                           index to the index container object.
-  theICs                 : A hashmap the for each integrity constraint, maps the
-                           qname of the ic to the ic's container object.
-  theReferencesToNodeMap : A hashmap that maps node references to the referenced
-                           nodes
-  theNodeToReferencesMap : A hashmap that maps nodes into their references
+  theQNamePool:
+  -------------
+
+  theItemFactory:
+  ---------------
+  Factory to create items.
+
+  theIteratorFactory:
+  -------------------
+  Factory to create iterators.
+
+  theNodeFactory:
+  ---------------
+  Factory to create node items.
+
+  theDocuments:
+  -------------
+  A hashmap that for each xml tree that does not belong to any collection, maps
+  the URI of the tree to the root node of the tree.
+
+  theCollections:
+  ---------------
+  Container which contains the collections of the store. It includes a map that
+  maps the qname of each collection to the collection's container object.
+
+  theIndices:  
+  -----------
+  A hashmap that for each index, maps the qname of the index to the index 
+  container object.
+  
+  theICs:
+  -------
+  A hashmap the for each integrity constraint, maps the qname of the ic to the
+  ic's container object.
+
+  theReferencesToNodeMap:
+  -----------------------
+  A hashmap that maps node references to the referenced nodes
+
+  theNodeToReferencesMap:
+  -----------------------
+  A hashmap that maps nodes into their references
 
 ********************************************************************************/
 class SimpleStore : public store::Store
@@ -119,7 +150,14 @@ public:
   zstring                       theXmlSchemaNs;
 
   std::vector<store::Item_t>    theSchemaTypeNames;
-  std::map<store::Item*, SchemaTypeCode> theSchemaTypeCodes;
+  std::map<store::Item*, store::SchemaTypeCode> theSchemaTypeCodes;
+  store::Item_t                 XS_UNTYPED_QNAME;
+  store::Item_t                 XS_ANY_QNAME;
+  store::Item_t                 XS_ANY_SIMPLE_QNAME;
+  store::Item_t                 JDM_OBJECT_QNAME;
+  store::Item_t                 JDM_ARRAY_QNAME;
+  store::Item_t                 JDM_PAIR_QNAME;
+  store::Item_t                 JDM_NULL_QNAME;
 
 protected:
   ulong                         theNumUsers;

@@ -43,9 +43,11 @@ class fn_jsoniq_flatten : public function
 {
 public:
   fn_jsoniq_flatten(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -57,9 +59,11 @@ class fn_jsoniq_parse_json : public function
 {
 public:
   fn_jsoniq_parse_json(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -75,9 +79,11 @@ class fn_jsoniq_names : public function
 {
 public:
   fn_jsoniq_names(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -89,9 +95,11 @@ class fn_jsoniq_name : public function
 {
 public:
   fn_jsoniq_name(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -103,9 +111,11 @@ class fn_jsoniq_pairs : public function
 {
 public:
   fn_jsoniq_pairs(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -117,9 +127,11 @@ class fn_jsoniq_pair : public function
 {
 public:
   fn_jsoniq_pair(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -131,9 +143,11 @@ class fn_jsoniq_member : public function
 {
 public:
   fn_jsoniq_member(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -145,9 +159,11 @@ class fn_jsoniq_size : public function
 {
 public:
   fn_jsoniq_size(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -159,9 +175,11 @@ class fn_jsoniq_values : public function
 {
 public:
   fn_jsoniq_values(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -173,9 +191,11 @@ class fn_jsoniq_value : public function
 {
 public:
   fn_jsoniq_value(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
