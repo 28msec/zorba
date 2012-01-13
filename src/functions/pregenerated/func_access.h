@@ -38,6 +38,51 @@ void populate_context_access(static_context* sctx);
 
 
 
+//fn:uri-collection
+class fn_uri_collection : public function
+{
+public:
+  fn_uri_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text
+class fn_unparsed_text : public function
+{
+public:
+  fn_unparsed_text(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text-available
+class fn_unparsed_text_available : public function
+{
+public:
+  fn_unparsed_text_available(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:available-environment-variables
 class fn_available_environment_variables : public function
 {

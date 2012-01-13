@@ -31,6 +31,36 @@ namespace zorba{
 
 
 
+PlanIter_t fn_uri_collection::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnURICollectionIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnUnparsedTextIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text_available::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_available_environment_variables::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -53,6 +83,79 @@ PlanIter_t fn_environment_variable::codegen(
 
 void populate_context_access(static_context* sctx)
 {
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_2);
+
+  }
+
+
   {
     
 

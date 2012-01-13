@@ -15,6 +15,98 @@
 
 <!--
 /*******************************************************************************
+14.8.5 fn:uri-collection
+********************************************************************************/
+-->
+  <zorba:iterator name="FnURICollectionIterator">
+    <zorba:description author="Zorba Team">
+      Returns a sequence of xs:anyURI values representing the document URIs of the 
+      documents in a collection.
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="uri-collection" prefix="fn">
+        <zorba:output>xs:anyURI*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="uri-collection" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:output>xs:anyURI*</zorba:output>
+      </zorba:signature>
+      
+    </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                    brief="flag indicating whether theIterator was opened"/>
+    </zorba:state>
+    
+  </zorba:iterator>
+  
+<!--
+/*******************************************************************************
+14.8.5 fn:unparsed-text
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnUnparsedTextIterator">
+    <zorba:description author="Zorba Team">
+      Summary: The fn:unparsed-text function reads an external resource (for 
+      example, a file) and returns its contents as a string.
+    </zorba:description>
+    
+    <zorba:function>
+      
+      <zorba:signature localname="unparsed-text" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+      
+      <zorba:signature localname="unparsed-text" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+      
+    </zorba:function>
+    
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.5 fn:unparsed-text
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnUnparsedTextAvailableIterator">
+    <zorba:description author="Zorba Team">
+      Because errors in evaluating the fn:unparsed-text function are 
+      non-recoverable, these two functions are provided to allow an application 
+      to determine whether a call with particular arguments would succeed.
+    </zorba:description>
+     
+    <zorba:function>
+      
+      <zorba:signature localname="unparsed-text-available" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+      
+      <zorba:signature localname="unparsed-text-available" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+     
+    </zorba:function>
+    
+  </zorba:iterator> 
+
+<!--
+/*******************************************************************************
   14.8.9 fn:available-environment-variables
 ********************************************************************************/
 -->
@@ -30,7 +122,7 @@
     </zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="available-environment-variables" prefix="fn">
+        <zorba:signature localname="available-environment-variables" prefix="fn">
         <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
       

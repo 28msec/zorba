@@ -20,6 +20,14 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+  FN_URI_COLLECTION_0,
+  FN_URI_COLLECTION_1,
+  FN_UNPARSED_TEXT_1,
+  FN_UNPARSED_TEXT_2,
+  FN_UNPARSED_TEXT_AVAILABLE_1,
+  FN_UNPARSED_TEXT_AVAILABLE_2,
+  FN_AVAILABLE_ENVIRONMENT_VARIABLES_0,
+  FN_ENVIRONMENT_VARIABLE_1,
   FN_NODE_NAME_0,
   FN_NODE_NAME_1,
   FN_NILLED_1,

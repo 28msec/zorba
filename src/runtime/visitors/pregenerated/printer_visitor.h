@@ -47,6 +47,15 @@ namespace zorba {
 
 #include "runtime/visitors/printer_visitor_impl.h"
 
+    void beginVisit( const FnURICollectionIterator& );
+    void endVisit  ( const FnURICollectionIterator& );
+
+    void beginVisit( const FnUnparsedTextIterator& );
+    void endVisit  ( const FnUnparsedTextIterator& );
+
+    void beginVisit( const FnUnparsedTextAvailableIterator& );
+    void endVisit  ( const FnUnparsedTextAvailableIterator& );
+
     void beginVisit( const FnAvailableEnvironmentVariablesIterator& );
     void endVisit  ( const FnAvailableEnvironmentVariablesIterator& );
 
