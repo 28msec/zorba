@@ -91,8 +91,7 @@ EventHandler::parseMessage(const std::string &aMessage)
   } catch (ZorbaException& e) {
     std::cerr << "FATAL: could not execute query: " << std::endl;
     std::cerr << e << std::endl;
-    std::cerr << "This is a bug, please report to zorba-users@lists.sourceforge.net" << std::endl;
-    //theContinueProducer.produce(false);
+    std::cerr << "This is a bug, please report it at http://bugs.launchpad.net/zorba" << std::endl;
   }
 }
   

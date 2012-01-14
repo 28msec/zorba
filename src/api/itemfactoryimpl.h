@@ -213,7 +213,7 @@ namespace zorba {
                         Item aTypeName,
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
-                        std::vector<std::pair<String, String> > aNsBindings);
+                        NsBindings aNsBindings);
 
       virtual Item
       createAttributeNode(Item aParent,
