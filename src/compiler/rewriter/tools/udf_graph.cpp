@@ -114,7 +114,9 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
 
     if (udf != NULL)
     {
-      if (std::find(callChain.begin(), callChain.end(), udf) == callChain.end())
+      std::vector<user_function*>::const_iterator cycle;
+
+      if ((cycle = std::find(callChain.begin(), callChain.end(), udf)) == callChain.end())
       {
         bool found = theNodes.exists(udf);
 
@@ -134,11 +136,11 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
       else
       {
         // A recursive function call.
-        std::vector<user_function*>::const_iterator ite = callChain.begin();
+        std::vector<user_function*>::const_iterator ite = cycle;
         std::vector<user_function*>::const_iterator end = callChain.end();
-        for (++ite; ite != end; ++ite)
+        for (; ite != end; ++ite)
         {
-          (*ite)->addMutuallyRecursiveUDFs(callChain);
+          (*ite)->addMutuallyRecursiveUDFs(callChain, cycle);
         }
       }
     }
