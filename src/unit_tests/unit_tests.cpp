@@ -38,6 +38,9 @@ namespace zorba {
      */
     void initializeTestList() {
       libunittests["uri"] = runUriTest;
+#ifndef ZORBA_NO_UNICODE
+      libunittests["icu_streambuf"] = test_icu_streambuf;
+#endif /* ZORBA_NO_UNICODE */
 #ifdef ZORBA_WITH_DEBUGGER
 //      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
 #endif

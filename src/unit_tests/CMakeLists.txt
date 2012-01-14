@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-                                  
 
 SET(UNIT_TEST_SRCS
   unit_tests.cpp
   test_uri.cpp
 )
+
+IF(NOT ZORBA_NO_UNICODE)
+  LIST(APPEND UNIT_TEST_SRCS
+    test_icu_streambuf.cpp)
+ENDIF(NOT ZORBA_NO_UNICODE)
