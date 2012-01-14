@@ -806,7 +806,9 @@ bool NormalizeUnicodeIterator::nextImpl(
   zstring normForm;
   zstring resStr;
   unicode::normalization::type normType;
+#ifndef ZORBA_NO_ICU
   bool success;
+#endif /* ZORBA_NO_ICU */
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -988,7 +990,7 @@ bool TranslateIterator::nextImpl(
         trans_map[ *map_i ] = *trans_i;
 
       for ( ; map_i != map_end; ++map_i )
-        trans_map[ *map_i ] = ~0;
+        trans_map[ *map_i ] = static_cast<unicode::code_point>( ~0 );
     }
 
     utf8_string<zstring> u_result_string( result_string );
@@ -1003,7 +1005,7 @@ bool TranslateIterator::nextImpl(
       cp_map_type::const_iterator const found_i = trans_map.find( cp );
       if ( found_i != trans_map.end() ) {
         cp = found_i->second;
-        if ( cp == ~0 )
+        if ( cp == static_cast<unicode::code_point>( ~0 ) )
           continue;
       }
       u_result_string += cp;
