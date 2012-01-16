@@ -71,7 +71,7 @@
   <zorba:function isDeterministic="true">
     <zorba:signature localname="names" prefix="fn-jsoniq">
       <zorba:param>object()</zorba:param>
-      <zorba:output>xs:string?</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
 
