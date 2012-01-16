@@ -37,7 +37,12 @@ std::auto_ptr<XqdbClient> theClient;
 
 void
 onExitProcess(ExitCode aExitCode) {
-  std::cout << "Terminating debugger client." << std::endl;
+  std::cout << std::endl << "Terminating debugger client." << std::endl;
+
+  XqdbClient* lClient = theClient.release();
+  if (lClient) {
+    delete lClient;
+  }
 
   exit(aExitCode);
 }
