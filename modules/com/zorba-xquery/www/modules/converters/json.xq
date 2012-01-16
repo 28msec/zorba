@@ -26,7 +26,7 @@ xquery version "3.0";
   : representations convert all data to strings.
   :
   : For a loss-less representation, Zorba implements that proposed by
-  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery>John Snelson</a>;
+  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>;
   : for a lossy representation, Zorba implements
   : <a href="http://jsonml.org/">JsonML</a> (the array form).
   :)
