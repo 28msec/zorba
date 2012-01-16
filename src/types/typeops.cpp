@@ -269,7 +269,8 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     case store::XS_GDAY:
     case store::XS_GMONTH:
       return true;
-    default: return false;
+    default:
+      return false;
     }
     break;
 
@@ -289,7 +290,17 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
 
 
 /*******************************************************************************
+  For atomic, node, json, function and item types --> just set the quant to ONE
 
+  none --> none
+
+  empty -->  none
+
+  xs:any --> item
+
+  xs:untyped --> item
+
+  xs:anySimple --> xs:anyAtomic
 ********************************************************************************/
 xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type) 
 {
@@ -979,20 +990,7 @@ xqtref_t TypeOps::union_type(
 
 #ifdef ZORBA_WITH_JSON
       case XQType::JSON_TYPE_KIND:
-      {
-        const JSONXQType& t1 = static_cast<const JSONXQType&>(type1);
-        const JSONXQType& t2 = static_cast<const JSONXQType&>(type2);
-        store::StoreConsts::JSONItemKind kind1 = t1.get_json_kind();
-        store::StoreConsts::JSONItemKind kind2 = t2.get_json_kind();
-
-        if (kind1 >= store::StoreConsts::jsonObject &&
-            kind2 >= store::StoreConsts::jsonObject)
-        {
-          return GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE;
-        }
-   
         return GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE;
-      }
 #endif
       default:
         break;

@@ -783,11 +783,18 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 
 SourceFinder::~SourceFinder()
 {
-  UdfSourcesMap::iterator ite = theUdfSourcesMap.begin();
-  UdfSourcesMap::iterator end = theUdfSourcesMap.end();
-  for (; ite != end; ++ite)
+  UdfSourcesMap::iterator ite1 = theUdfSourcesMap.begin();
+  UdfSourcesMap::iterator end1 = theUdfSourcesMap.end();
+  for (; ite1 != end1; ++ite1)
   {
-    delete ite->second;
+    delete ite1->second;
+  }
+
+  VarSourcesMap::iterator ite2 = theVarSourcesMap.begin();
+  VarSourcesMap::iterator end2 = theVarSourcesMap.end();
+  for (; ite2 != end2; ++ite2)
+  {
+    delete ite2->second;
   }
 }
 
@@ -879,16 +886,22 @@ void SourceFinder::findNodeSourcesRec(
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
+      std::vector<expr*>* varSources;
+
       if (ite == theVarSourcesMap.end())
       {
-        std::vector<expr*> varSources;
-        findNodeSourcesRec(e->get_domain_expr(), varSources, currentUdf);
+        varSources = new std::vector<expr*>;
+        theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        ite = (theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
+        findNodeSourcesRec(e->get_domain_expr(), *varSources, currentUdf);
+      }
+      else
+      {
+        varSources = (*ite).second;
       }
 
-      std::vector<expr*>::const_iterator ite2 = (*ite).second.begin();
-      std::vector<expr*>::const_iterator end2 = (*ite).second.end();
+      std::vector<expr*>::const_iterator ite2 = (*varSources).begin();
+      std::vector<expr*>::const_iterator end2 = (*varSources).end();
       for (; ite2 != end2; ++ite2)
       {
         if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
@@ -920,7 +933,7 @@ void SourceFinder::findNodeSourcesRec(
       if (std::find(sources.begin(), sources.end(), node) == sources.end())
         sources.push_back(node);
 
-      std::vector<expr*> varSources;
+      std::vector<expr*>* varSources = new std::vector<expr*>;
       theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
       return;
@@ -931,9 +944,11 @@ void SourceFinder::findNodeSourcesRec(
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
+      std::vector<expr*>* varSources;
+
       if (ite == theVarSourcesMap.end())
       {
-        std::vector<expr*> varSources;
+        varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
         std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
@@ -946,7 +961,7 @@ void SourceFinder::findNodeSourcesRec(
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
             findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                               varSources,
+                               *varSources,
                                currentUdf);
           }
           else
@@ -954,17 +969,23 @@ void SourceFinder::findNodeSourcesRec(
             assert(setExpr->get_expr_kind() == var_set_expr_kind);
 
             findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                               varSources,
+                               *varSources,
                                currentUdf);
           }
         }
-
-        ite = theVarSourcesMap.find(e);
-        
-        (*ite).second.insert((*ite).second.end(), varSources.begin(), varSources.end());
+      }
+      else
+      {
+        varSources = (*ite).second;
       }
 
-      sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
+      std::vector<expr*>::const_iterator ite2 = (*varSources).begin();
+      std::vector<expr*>::const_iterator end2 = (*varSources).end();
+      for (; ite2 != end2; ++ite2)
+      {
+        if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
+          sources.push_back(*ite2);
+      }
 
       return;
     }

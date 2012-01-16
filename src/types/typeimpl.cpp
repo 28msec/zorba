@@ -145,7 +145,8 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:hexBinary",
   "xs:anyURI",
   "xs:QName",
-  "xs:NOTATION"
+  "xs:NOTATION",
+  "jdm:null"
 };
 
 

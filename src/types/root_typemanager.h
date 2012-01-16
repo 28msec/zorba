@@ -100,6 +100,19 @@ public:
   ATOMIC_DECL(NOTATION)
 #undef ATOMIC_DECL
 
+#ifdef ZORBA_WITH_JSON
+  /**
+   * Pre-allocate XQType objects for the following sequence types:
+   *
+   * N, N?, N+, N*, where N is the jdm::null atomic type
+   */
+  store::Item_t JDM_NULL_QNAME;
+  xqtref_t JDM_NULL_TYPE_ONE;
+  xqtref_t JDM_NULL_TYPE_QUESTION;
+  xqtref_t JDM_NULL_TYPE_STAR;
+  xqtref_t JDM_NULL_TYPE_PLUS;
+#endif
+
   /**
    *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
    */

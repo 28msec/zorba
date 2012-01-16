@@ -60,7 +60,7 @@ public:
 
   zstring getStringValue() const { return "null"; }
 
-  store::SchemaTypeCode getTypeCode() const { return store::XS_UNTYPED_ATOMIC; }
+  store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
 
   store::Item* getType() const; 
 
@@ -71,8 +71,6 @@ public:
         const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  SchemaTypeCode getTypeCode() const;
 #endif
 };
 

@@ -195,16 +195,14 @@ const store::Item*
 SimpleJSONArray::operator[](xs_integer& aPos) const
 {
   uint64_t lIndex;
-  try {
-    lIndex = to_xs_unsignedLong(aPos);
-  } catch (std::range_error& e)
+  try 
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
+    lIndex = to_xs_unsignedLong(aPos);
+  }
+  catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
   return theContent[lIndex].getp();
 }
