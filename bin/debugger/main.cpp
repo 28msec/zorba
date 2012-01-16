@@ -24,58 +24,15 @@
 
 #include <zorba/config.h>
 
-#include "command_prompt.h"
-#include "command_line_handler.h"
+#include "xqdb_client.h"
 #include "process_listener.h"
+
 
 using namespace zorba;
 using namespace zorba::debugger;
 
-class XqdbClient {
 
-  public:
-
-    XqdbClient(unsigned int aPort)
-    {
-      theIdQueue = new LockFreeQueue<std::size_t>();
-      theQuitQueue = new LockFreeQueue<bool>();
-      theEventHandler = new EventHandler(*theIdQueue, *theQuitQueue);
-      theEventHandler->init();
-
-      theCommandPrompt = new CommandPrompt();
-      theCommandLineHandler = new CommandLineHandler(aPort, *theIdQueue, *theQuitQueue, theEventHandler, theCommandPrompt);
-    }
-
-    ~XqdbClient()
-    {
-      if (theCommandLineHandler) {
-        delete theCommandLineHandler;
-      }
-      if (theCommandPrompt) {
-        delete theCommandPrompt;
-      }
-      if (theEventHandler) {
-        delete theEventHandler;
-      }
-
-      delete theIdQueue;
-      delete theQuitQueue;
-    }
-
-    void start()
-    {
-      theCommandLineHandler->execute();
-    }
-
-  private:
-
-    LockFreeQueue<std::size_t>* theIdQueue;
-    LockFreeQueue<bool>*        theQuitQueue;
-
-    EventHandler*       theEventHandler;
-    CommandPrompt*      theCommandPrompt;
-    CommandLineHandler* theCommandLineHandler;
-};
+std::auto_ptr<XqdbClient> theClient;
 
 
 void
@@ -311,16 +268,6 @@ processArguments(
 }
 
 #ifdef WIN32
-//#include <signal.h>
-//
-//void
-//SignalHandler(int signal)
-//{
-//  printf("Application aborting...\n");
-//}
-//
-//  signal(SIGINT, SignalHandler);
-
 BOOL WINAPI
 ctrlC_Handler(DWORD aCtrlType)
 {
@@ -398,7 +345,7 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start the debugger command line
 
-    std::auto_ptr<XqdbClient> theClient(new XqdbClient(lPort));
+    theClient.reset(new XqdbClient(lPort));
     theClient->start();
 
   } catch (...) {
