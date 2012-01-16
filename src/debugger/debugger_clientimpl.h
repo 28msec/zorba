@@ -57,7 +57,7 @@ namespace zorba {
     virtual std::size_t step_into();
     virtual std::size_t step_out();
     virtual std::size_t step_over();
-    virtual std::size_t stop();
+    virtual std::size_t stop(bool withQuit = true);
     virtual std::size_t detach();
     virtual std::size_t breakpoint_set(BreakpointType aType,
                                        bool aEnabled = true,

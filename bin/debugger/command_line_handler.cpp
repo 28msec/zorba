@@ -116,7 +116,7 @@ CommandLineHandler::handle<Quit>(ZORBA_TR1_NS::tuple<> &t)
       }
     }
   }
-  theWaitFor = theClient->stop();
+  theWaitFor = theClient->stop(true);
   theClient->quit();
   theQuit = true;
 }
@@ -127,6 +127,13 @@ CommandLineHandler::handle<Run>(ZORBA_TR1_NS::tuple<> &t)
 {
   theTerminated = false;
   theWaitFor = theClient->run();
+}
+
+template<>
+void
+CommandLineHandler::handle<Stop>(ZORBA_TR1_NS::tuple<> &t)
+{
+  theWaitFor = theClient->stop(false);
 }
 
 template<>
@@ -270,6 +277,9 @@ CommandLineHandler::addCommands()
 
   // DBGP: run
   *theCommandLine << createCommand<Run>(TUPLE(), "run", *this, "Run the query");
+
+  // DBGP: stop
+  *theCommandLine << createCommand<Stop>(TUPLE(), "stop", *this, "Stop the query");
 
   // DBGP: breakpoint_set
   {

@@ -193,19 +193,18 @@ private:
    * Maps each atomic type code and each quantifier code to a built-in XQType
    * object for that built-in atomic type and quantifier.
    */
-  xqtref_t* m_atomic_typecode_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE]
-                                 [TypeConstants::QUANTIFIER_LIST_SIZE];
+  xqtref_t* m_atomic_typecode_map[store::XS_LAST][TypeConstants::QUANTIFIER_LIST_SIZE];
 
   /**
    * Maps the typecode of a built-in atomic type to its qname.
    */
-  store::Item* m_atomic_typecode_qname_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  store::Item* m_atomic_typecode_qname_map[store::XS_LAST];
 
   /**
    *  Maps the qname of a built-in atomic type to its typecode.
    */
   typedef zorba::HashMap<store::Item*,
-                         TypeConstants::atomic_type_code_t,
+                         store::SchemaTypeCode,
                          qname_hash_equals> qnametype_map_t;
 
   qnametype_map_t m_atomic_qnametype_map;
@@ -215,8 +214,7 @@ private:
    * contains true if T1 is a subtype of T2; otherwise it contains false.
    */
   static const bool 
-  ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE]
-                       [TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  ATOMIC_SUBTYPE_MATRIX[store::XS_LAST][store::XS_LAST];
 
   /**
    * For each quantifier Q, let S(Q) be the following function:
@@ -272,8 +270,7 @@ private:
    * instance, and NO means that the cast is never possible. 
    */
   static const TypeConstants::castable_t 
-  ATOMIC_CAST_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE]
-                    [TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  ATOMIC_CAST_MATRIX[store::XS_LAST][store::XS_LAST];
 
 public:
   ~RootTypeManager();

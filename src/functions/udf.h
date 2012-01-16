@@ -167,11 +167,15 @@ public:
 
   const std::vector<var_expr_t>& getArgVars() const;
 
+  var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
+
   void setOptimized(bool v) { theIsOptimized = v; }
 
   bool isOptimized() const { return theIsOptimized; }
 
-  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
+  void addMutuallyRecursiveUDFs(
+      const std::vector<user_function*>& udfs,
+      const std::vector<user_function*>::const_iterator& cycle);
 
   bool isMutuallyRecursiveWith(const user_function* udf);
 

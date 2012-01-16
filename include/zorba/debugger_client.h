@@ -273,9 +273,13 @@ namespace zorba {
      * This command tells the debug engine, that it should
      * break the execution at the next point possible.
      *
+     * @param withQuit This is a Zorba extension of the DBGP protocol that
+     *    controls if the client should terminate execution and quit (true)
+     *    or only terminate execution but not quit (false). This is used
+     *    by command line clients that implement multiple query runs.
      * @return The id of this request
      */
-    virtual std::size_t stop() = 0;
+    virtual std::size_t stop(bool withQuit) = 0;
     
     /**
      * @brief Send the detach command to the debug engine.

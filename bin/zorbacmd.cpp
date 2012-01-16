@@ -519,7 +519,7 @@ compileAndExecute(
   lHints.for_serialization_only = true;
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
-  if (!Properties::instance()->serializeOnlyQuery())
+  if (Properties::instance()->serializeOnlyQuery() == 0)
   {
     lHints.for_serialization_only = false;
   }
@@ -586,8 +586,6 @@ compileAndExecute(
         std::cerr << ze << std::endl;
         return 12;
       }
-
-      // if (diagnosticHandler.
 
       //
       // Create and populate the dynamic context
@@ -671,19 +669,22 @@ compileAndExecute(
       XmlDataManager* store = zorbaInstance->getXmlDataManager();
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
+
       DocumentManager* lMgr = store->getDocumentManager();
       ItemSequence_t lSeq = lMgr->availableDocuments();
       Iterator_t lIter = lSeq->getIterator();
       lIter->open();
       Item lURI;
-      while (lIter->next(lURI)) {
+      while (lIter->next(lURI)) 
+      {
         lMgr->remove(lURI.getStringValue());
       }
+
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);
 
       timing.stopTimer(TimingInfo::TOTAL_TIMER, i);
     }
-  }
+  } // for each execution
 
   return 0;
 }
@@ -714,7 +715,7 @@ _tmain(int argc, _TCHAR* argv[])
     return 1;
   }
 
-  TimingInfo timing(lProperties.multiple());
+  TimingInfo engineTiming(lProperties.multiple());
 
   bool doTiming = lProperties.timing();
   bool debug = false;
@@ -751,14 +752,14 @@ _tmain(int argc, _TCHAR* argv[])
 
   // Start the engine
 
-  timing.startTimer(TimingInfo::INIT_TIMER, 2);
+  engineTiming.startTimer(TimingInfo::INIT_TIMER, 2);
 
   void* store = zorba::StoreManager::getStore();
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
   {
-  timing.stopTimer(TimingInfo::INIT_TIMER, 2);
+  engineTiming.stopTimer(TimingInfo::INIT_TIMER, 2);
 
   // For each query ...
 
@@ -780,14 +781,14 @@ _tmain(int argc, _TCHAR* argv[])
     if (asFile)
     {
       path.resolve_relative ();
-      qfile.reset (new std::ifstream (path.c_str ()));
+      qfile.reset(new std::ifstream (path.c_str ()));
     }
     else
     {
-      qfile.reset (new std::istringstream(fURI));
+      qfile.reset(new std::istringstream(fURI));
     }
 
-    if ( asFile && (!qfile->good() || qfile->eof()) )
+    if (asFile && (!qfile->good() || qfile->eof()))
     {
       std::cerr << "file {" << fname << "} not found or not readable." << std::endl;
       lProperties.printHelp(std::cout);
@@ -874,19 +875,27 @@ _tmain(int argc, _TCHAR* argv[])
         try 
         {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
-          if (asFile) {
+          if (asFile) 
+          {
             aQuery->setFileName(path.get_path());
           }
+
           aQuery->parse(*qfile);
+
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         }
         catch (zorba::XQueryException const& qe)
         {
-          ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
+          ErrorPrinter::print(qe,
+                              std::cerr,
+                              lProperties.printErrorsAsXml(),
+                              lProperties.indent());
           return 6;
         }
       }
+
+      TimingInfo queryTiming(lProperties.multiple());
 
       int status = compileAndExecute(lZorbaInstance,
                                      lProperties,
@@ -894,8 +903,9 @@ _tmain(int argc, _TCHAR* argv[])
                                      path.get_path(),
                                      *qfile,
                                      *lOutputStream,
-                                     timing);
-      if (status != 0) {
+                                     queryTiming);
+      if (status != 0) 
+      {
         // reset the file handler (in case output option was provided)
         // in order to delete the created output file
         lFileStream.reset();
@@ -903,21 +913,25 @@ _tmain(int argc, _TCHAR* argv[])
         return status;
       }
 
-      if (doTiming) {
-        timing.print(std::cout);
+      if (doTiming) 
+      {
+        queryTiming.print(std::cout);
       }
     }
 
 #ifdef ZORBA_WITH_DEBUGGER
     // Debug the query. Do not allow "compileOnly" flags and inline queries
-    else if (debug) {
-      if (compileOnly) {
+    else if (debug) 
+    {
+      if (compileOnly) 
+      {
         std::cerr << "cannot debug a query if the compileOnly option is specified"
                   << std::endl;
         return 7;
       }
 
-      if (!asFile) {
+      if (!asFile) 
+      {
         std::cerr << "Cannot debug inline queries." << std::endl;
         return 8;
       }
@@ -927,7 +941,8 @@ _tmain(int argc, _TCHAR* argv[])
 
       zorba::XQuery_t lQuery;
 
-      try {
+      try 
+      {
         lQuery = lZorbaInstance->createQuery();
         lQuery->setFileName(lFileName);
         lQuery->setDebugMode(true);
@@ -951,14 +966,19 @@ _tmain(int argc, _TCHAR* argv[])
             lProperties.getSerializerParameters());
         createSerializerOptions(lSerOptions, lProperties);
 
-        if (!lProperties.hasNoLogo()) {
+        if (!lProperties.hasNoLogo()) 
+        {
           std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
         }
+
         lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
       }
       catch (zorba::XQueryException const& qe)
       {
-        ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
+        ErrorPrinter::print(qe,
+                            std::cerr,
+                            lProperties.printErrorsAsXml(),
+                            lProperties.indent());
         return 5;
       }
       catch (zorba::ZorbaException const& ze)
@@ -975,7 +995,7 @@ _tmain(int argc, _TCHAR* argv[])
 
   if (doTiming)
   {
-    timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
+    engineTiming.startTimer(TimingInfo::DEINIT_TIMER, 2);
   }
 
   lZorbaInstance->shutdown();
@@ -983,11 +1003,11 @@ _tmain(int argc, _TCHAR* argv[])
 
   if (doTiming)
   {
-    timing.stopTimer(TimingInfo::DEINIT_TIMER, 2);
+    engineTiming.stopTimer(TimingInfo::DEINIT_TIMER, 2);
 
     std::cout << std::endl << "Engine Shutdown Time     : "
-              << timing.elapsedDeinitWalltime
-              << " (user: " << timing.elapsedDeinitCputime << ")"
+              << engineTiming.elapsedDeinitWalltime
+              << " (user: " << engineTiming.elapsedDeinitCputime << ")"
               << " milliseconds" << std::endl;
   }
   return 0;

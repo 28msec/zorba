@@ -35,7 +35,6 @@ typedef std::map<var_expr *, ulong> VarIdMap;
 typedef std::vector<var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
-typedef std::set<fo_expr*> UdfCalls;
 
 /*******************************************************************************
 
@@ -90,8 +89,6 @@ public:
   ExprVarsMap                * theExprVarsMap;
   std::vector<expr_t>          theFlworStack;
   std::vector<bool>            theInReturnClause;
-
-  UdfCalls                     theProcessedUDFCalls;
 
 public:
   RewriterContext(
