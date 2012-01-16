@@ -178,7 +178,9 @@ public:
 
   bool isOptimized() const { return theIsOptimized; }
 
-  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
+  void addMutuallyRecursiveUDFs(
+      const std::vector<user_function*>& udfs,
+      const std::vector<user_function*>::const_iterator& cycle);
 
   bool isMutuallyRecursiveWith(const user_function* udf);
 

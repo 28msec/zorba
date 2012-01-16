@@ -259,10 +259,12 @@ const std::vector<var_expr_t>& user_function::getArgVars() const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs)
+void user_function::addMutuallyRecursiveUDFs(
+    const std::vector<user_function*>& udfs,
+    const std::vector<user_function*>::const_iterator& cycle)
 {
   theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
-                                  udfs.begin() + 1,
+                                  cycle,
                                   udfs.end());
 }
 
