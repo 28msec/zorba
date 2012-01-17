@@ -79,7 +79,7 @@ public:
   String getNamespaceURIByPrefix( const String& prefix ) const;
 
   void
-  getDeclaredPrefixes( std::vector<String>& aPrefixes ) const;
+  getNamespaceBindings( NsBindings& aBindings ) const;
 
   bool setDefaultElementAndTypeNamespace( const String& URI );
 

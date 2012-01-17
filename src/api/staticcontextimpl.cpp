@@ -219,7 +219,7 @@ StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
 
 ********************************************************************************/
 void
-StaticContextImpl::getDeclaredPrefixes( std::vector<String>& aPrefixes ) const
+StaticContextImpl::getNamespaceBindings( NsBindings& aBindings ) const
 {
   try
   {
@@ -229,7 +229,12 @@ StaticContextImpl::getDeclaredPrefixes( std::vector<String>& aPrefixes ) const
     for (store::NsBindings::const_iterator lIter = lBindings.begin();
          lIter != lBindings.end(); ++lIter)
     {
-      aPrefixes.push_back(lIter->first.str());
+      aBindings.push_back(
+        std::pair<zorba::String, zorba::String>(
+          lIter->first.str(),
+          lIter->second.str()
+        )
+      );
     }
   }
   catch (ZorbaException const& e)

@@ -40,24 +40,24 @@ sctx_test_1(Zorba* const zorba)
 
   lSctx->loadProlog(lProlog.str(), lHints);
 
-  std::vector<String> lPrefixes;
-  lSctx->getDeclaredPrefixes(lPrefixes);
+  NsBindings lBindings;
+  lSctx->getNamespaceBindings(lBindings);
 
   bool lFooFound = false;
 
-  for (std::vector<String>::const_iterator lIter = lPrefixes.begin();
-       lIter != lPrefixes.end(); ++lIter)
+  for (NsBindings::const_iterator lIter = lBindings.begin();
+       lIter != lBindings.end(); ++lIter)
   {
-    std::cout << "prefix: " << *lIter << " bound to "
-      << lSctx->getNamespaceURIByPrefix(*lIter) << std::endl;
+    std::cout << "prefix: " << lIter->first << " bound to "
+      << lIter->second << std::endl;
 
-    if (lIter->compare("foo") == 0)
+    if (lIter->first.compare("foo") == 0)
     {
       lFooFound = true;
     }
   }
 
-  return lFooFound && lPrefixes.size() == 6;
+  return lFooFound && lBindings.size() == 6;
 }
 
 int static_context( int argc, char *argv[] ) {
