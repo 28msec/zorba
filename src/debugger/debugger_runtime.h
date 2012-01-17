@@ -178,9 +178,8 @@ class DebuggerRuntime : public Runnable {
     serializer*                       theSerializer;
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
-    bool*                             theNotBremse;
-
     std::pair<int, std::string>       theLastContinuationCommand;
+    bool*                             theNotBremse;
   };
 }
 

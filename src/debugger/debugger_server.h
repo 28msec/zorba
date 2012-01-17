@@ -63,7 +63,7 @@ class DebuggerServer {
     static BOOL WINAPI
     ctrlC_Handler(DWORD aCtrlType);
 #else
-    void
+    static void
     ctrlC_Handler(int lParam);
 #endif
 

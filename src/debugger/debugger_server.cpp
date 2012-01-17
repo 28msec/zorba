@@ -18,6 +18,9 @@
 #include "debugger_server.h"
 
 #include <sstream>
+#ifndef WIN32
+# include <signal.h>
+#endif
 
 #include <zorba/base64.h>
 #include <zorba/util/uri.h>
@@ -96,7 +99,7 @@ DebuggerServer::run()
   #ifdef WIN32
     SetConsoleCtrlHandler(DebuggerServer::ctrlC_Handler, TRUE);
   #else
-    signal(SIGINT, DebuggerServer::ctrlC_Handler);
+    signal(SIGINT, ctrlC_Handler);
   #endif
 
   theCommunicator->connect();
