@@ -30,18 +30,30 @@ class XQueryIterator implements Iterator {
   private $item     = null;
   private $position = 0;
   private $valid    = false;
-
+  
+  /**
+   * XQueryIterator constructor.
+   * This constructor is used internally only.
+   * 
+   * @param XQuery XQuery object.
+   *
+   * @see XQueryProcessor::getIterator()
+   */
   public function __construct(XQuery $xquery)
   {
     $this->xquery = $xquery;
     $this->item = Item::createEmptyItem();
   }
 
+ 
   public function __destruct()
   {
     $this->xquery->destroy();
   }
-
+  
+  /**
+   * Rewinds back to the first item of the Iterator.
+   */
   public function rewind()
   {
     if ($this->iterator != null) {
@@ -55,22 +67,42 @@ class XQueryIterator implements Iterator {
     $this->valid    = $this->iterator->next($this->item);
   }
 
+  /**
+   * Return the current item serialized as string.
+   *
+   * @return string The current item serialized as string.
+   *
+   */
   public function current()
   {
     return $this->item->serialize();
   }
 
+  /**
+   * Return the position of current item.
+   *
+   * @return interger the position of the current item.
+   */
   public function key()
   {
     return $this->position;
   }
 
+  /**
+   * Move forward to the next item
+   *
+   */
   public function next()
   {
     ++$this->position;
     $this->valid = $this->iterator->next($this->item);
   }
 
+  /**
+   * Checks if there are still items to process.
+   *
+   * @return boolean Returns true if the iterator has still items to process or false otherwise.
+   */
   public function valid()
   {
     return $this->valid;
