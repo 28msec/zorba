@@ -34,6 +34,27 @@
 
 namespace zorba {
 
+bool theNotBremse = false;
+
+#ifdef WIN32
+BOOL WINAPI
+DebuggerServer::ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    theNotBremse = true;
+    return true;
+  }
+  return false;
+}
+#else
+void
+DebuggerServer::ctrlC_Handler(int lParam)
+{
+  theNotBremse = true;
+}
+#endif
+
+
 DebuggerServer::DebuggerServer(
   XQueryImpl*               aQuery,
   Zorba_SerializerOptions&  aSerializerOptions,
@@ -47,7 +68,8 @@ DebuggerServer::DebuggerServer(
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
-    theCommunicator, aHandler, aCallbackData);
+    theCommunicator, aHandler, aCallbackData,
+    &theNotBremse);
 #ifdef WIN32
   theFileName = aQuery->getFileName().str();
 #else
@@ -66,9 +88,17 @@ DebuggerServer::~DebuggerServer()
   delete theCommunicator;
 }
 
+
 bool
 DebuggerServer::run()
 {
+  // add the interrupt handlers to catch Ctrl-C
+  #ifdef WIN32
+    SetConsoleCtrlHandler(DebuggerServer::ctrlC_Handler, TRUE);
+  #else
+    signal(SIGINT, DebuggerServer::ctrlC_Handler);
+  #endif
+
   theCommunicator->connect();
 
   if (!theCommunicator->isConnected()) {

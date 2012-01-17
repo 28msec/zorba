@@ -52,7 +52,8 @@ class DebuggerRuntime : public Runnable {
       Zorba_SerializerOptions&  serializerOptions,
       DebuggerCommunicator* communicator,
       itemHandler aHandler,
-      void* aCallBackData);
+      void* aCallBackData,
+      bool* aNotBremse);
 
     virtual ~DebuggerRuntime();
 
@@ -151,6 +152,9 @@ class DebuggerRuntime : public Runnable {
     void
     stepOut();
 
+    bool
+    getAndClearInterruptBreak();
+
     DebuggerRuntime*
     clone();
 
@@ -174,6 +178,7 @@ class DebuggerRuntime : public Runnable {
     serializer*                       theSerializer;
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
+    bool*                             theNotBremse;
 
     std::pair<int, std::string>       theLastContinuationCommand;
   };
