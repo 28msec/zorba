@@ -184,7 +184,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_jsoniq_names,
         (createQName("http://www.jsoniq.org/functions","","names"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_NAMES_1);
 
   }
