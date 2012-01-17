@@ -6330,6 +6330,10 @@ JSONComputedObjectConstructor :
     {
       $$ = new JSON_ObjectConstructor(LOC(@$), $3);
     }
+  | OBJECT LBRACE JSONDirectObjectContent RBRACE
+    {
+      $$ = new JSON_ObjectConstructor(LOC(@$), $3);
+    }
   | OBJECT LBRACE RBRACE
     {
       $$ = new JSON_ObjectConstructor(LOC(@$), NULL);
