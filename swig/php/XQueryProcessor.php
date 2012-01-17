@@ -137,7 +137,7 @@ class XQueryProcessor implements IteratorAggregate {
    * 
    * echo $xquery->execute() . '\n';
    * </code>
-   * The following code snippets imports and execute an <em>Hello World</em> query:
+   * The following code snippets imports and executes an <em>Hello World</em> query:
    * <code>
    * <?php
    * $xquery = new XQueryProcessor();
