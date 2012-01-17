@@ -10362,6 +10362,20 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     push_nodestack(memberExpr);
     return;
   }
+  else if (TypeOps::is_subtype(tm,
+                               *sourceExpr->get_return_type(), 
+                               *theRTM.JSON_OBJECT_TYPE_STAR))
+  {
+    ZORBA_ASSERT(numArgs == 1);
+
+    expr_t memberExpr = new fo_expr(theRootSctx,
+                                    loc,
+                                    GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2), 
+                                    sourceExpr,
+                                    arguments[0]);
+    push_nodestack(memberExpr);
+    return;
+  }
 #endif
 
   if (!theSctx->is_feature_set(feature::hof))
