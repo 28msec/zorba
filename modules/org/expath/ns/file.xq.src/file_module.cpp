@@ -17,10 +17,11 @@
 #include "file.h"
 #include "file_module.h"
 #include "file_function.h"
+#include <cassert>
 
 namespace zorba { namespace filemodule {
 
-  ItemFactory* FileModule::theFactory = 0;
+  FileModule::BufMap_t FileModule::theStreamBufs;
 
   const char* FileModule::theNamespace = "http://expath.org/ns/file";
 
@@ -32,6 +33,7 @@ FileModule::~FileModule()
     delete lIter->second;
   }
   theFunctions.clear();
+  assert(theStreamBufs.empty());
 }
   
 ExternalFunction*
@@ -39,9 +41,7 @@ FileModule::getExternalFunction(const String& aLocalname)
 {
   ExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (1 == 0) {
-
-    } else if (aLocalname == "create-directory") {
+    if (aLocalname == "create-directory") {
       lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname == "delete-file-impl") {
       lFunc = new DeleteFileImplFunction(this);

@@ -21,13 +21,14 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
+#include <zorba/transcode_streambuf.h>
 
 namespace zorba { namespace filemodule {
 
 class FileModule : public ExternalModule
 {
 private:
-  static ItemFactory* theFactory;
+  mutable ItemFactory* theFactory;
 
 public:
   static const char* theNamespace;
@@ -43,10 +44,29 @@ protected:
   };
   
   typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
-
   FuncMap_t theFunctions;
-  
+
 public:
+  typedef std::map<std::istream*, transcode_streambuf*> BufMap_t;
+  typedef BufMap_t::iterator BufMapIter_t;
+  static BufMap_t  theStreamBufs;
+
+  static void
+  streamReleaser(std::istream* stream)
+  {
+    // reset the original streambuffer and
+    // delete the corresponding transcoding buffer
+    // if there was any
+    BufMapIter_t lIter = theStreamBufs.find(stream);
+    if (lIter != theStreamBufs.end())
+    {
+      stream->rdbuf( lIter->second->orig_streambuf() );
+      delete lIter->second;
+      theStreamBufs.erase(lIter);
+    }
+    delete stream;
+  }
+
   virtual ~FileModule();
   
   virtual String
@@ -58,10 +78,10 @@ public:
   virtual void
   destroy();
 
-  static ItemFactory*
-  getItemFactory()
+  ItemFactory*
+  getItemFactory() const
   {
-    if(!theFactory)
+    if (!theFactory)
     {
       theFactory = Zorba::getInstance(0)->getItemFactory();
     }

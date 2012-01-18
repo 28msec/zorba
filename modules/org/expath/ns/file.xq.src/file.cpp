@@ -28,6 +28,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
 #include <zorba/user_exception.h>
+#include <zorba/transcode_streambuf.h>
 
 #include "file_module.h"
 
@@ -188,6 +189,7 @@ ReadTextFunction::evaluate(
 {
   String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
+  String lEncoding("UTF-8");
 
   // preconditions
   if (!lFile->exists()) {
@@ -198,18 +200,38 @@ ReadTextFunction::evaluate(
   }
 
   if (aArgs.size() == 2) {
-    // since Zorba currently only supports UTF-8 we only call this function
-    // to reject any other encoding requested bu the user
-    getEncodingArg(aArgs, 1);
+    lEncoding = getEncodingArg(aArgs, 1);
   }
   
-  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
-  lFile->openInputStream(*lSeq->theStream, false, true);
+  std::auto_ptr<std::ifstream> lInStream(new std::ifstream());
+  lFile->openInputStream(*lInStream.get(), false, true);
 
-  lSeq->theItem = theModule->getItemFactory()->createStreamableString(
-      *lSeq->theStream, &StreamableItemSequence::streamReleaser);
+  if (lEncoding != "UTF-8")
+  {
+    try {
+      std::auto_ptr<transcode_streambuf> lBuf(new transcode_streambuf(
+          lEncoding.c_str(), lInStream->rdbuf()
+        )
+      );
+      lInStream->std::ios::rdbuf(lBuf.get());
 
-  return ItemSequence_t(lSeq.release());
+      FileModule::theStreamBufs.insert(
+          std::make_pair<std::istream*, transcode_streambuf*>(
+            lInStream.get(), lBuf.release()
+          )
+        );
+    } catch (std::invalid_argument& e)
+    {
+      raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
+    }
+  }
+
+
+  zorba::Item lResult = theModule->getItemFactory()->createStreamableString(
+      *lInStream.release(), &FileModule::streamReleaser
+    );
+
+  return ItemSequence_t(new SingletonItemSequence(lResult));
 }
 
 //*****************************************************************************

@@ -21,6 +21,7 @@
 #include <streambuf>
 #include <string>
 
+#include <zorba/config.h>
 #include <zorba/internal/proxy.h>
 #include <zorba/internal/unique_ptr.h>
 
@@ -61,7 +62,7 @@ typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
  * While %transcode_streambuf does support seeking, the positions are relative
  * to the original byte stream.
  */
-class transcode_streambuf : public std::streambuf {
+class ZORBA_DLL_PUBLIC transcode_streambuf : public std::streambuf {
 public:
   /**
    * Base %exception class.
