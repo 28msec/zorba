@@ -24,67 +24,47 @@
 
 #include <zorba/config.h>
 
-#include "command_prompt.h"
-#include "command_line_handler.h"
+#include "xqdb_client.h"
 #include "process_listener.h"
+
 
 using namespace zorba;
 using namespace zorba::debugger;
 
-class XqdbClient {
 
-  public:
+std::auto_ptr<XqdbClient> theClient;
 
-    XqdbClient(unsigned int aPort)
-    {
-      theIdQueue = new LockFreeQueue<std::size_t>();
-      theQuitQueue = new LockFreeQueue<bool>();
-      theEventHandler = new EventHandler(*theIdQueue, *theQuitQueue);
-      theEventHandler->init();
-
-      theCommandPrompt = new CommandPrompt();
-      theCommandLineHandler = new CommandLineHandler(aPort, *theIdQueue, *theQuitQueue, theEventHandler, theCommandPrompt);
-    }
-
-    ~XqdbClient()
-    {
-      if (theCommandLineHandler) {
-        delete theCommandLineHandler;
-      }
-      if (theCommandPrompt) {
-        delete theCommandPrompt;
-      }
-      if (theEventHandler) {
-        delete theEventHandler;
-      }
-
-      delete theIdQueue;
-      delete theQuitQueue;
-    }
-
-    void start()
-    {
-      theCommandLineHandler->execute();
-    }
-
-  private:
-
-    LockFreeQueue<std::size_t>* theIdQueue;
-    LockFreeQueue<bool>*        theQuitQueue;
-
-    EventHandler*       theEventHandler;
-    CommandPrompt*      theCommandPrompt;
-    CommandLineHandler* theCommandLineHandler;
-};
+// this will make sure the xqdb process will not quit when Ctrl-C is pressed
+#ifdef WIN32
+BOOL WINAPI
+ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    return true;
+  }
+  return false;
+}
+#else
+void
+ctrlC_Handler(int lParam)
+{
+  // an empty sugnal handler on Linux should do the job
+}
+#endif
 
 
+// this handler function is passed the the zorba process listener and will
+// the client if the zorba process terminates
 void
 onExitProcess(ExitCode aExitCode) {
-  //if (aExitCode != -1) {
-  //  std::cout << "Zorba has exited with code: " << aExitCode << std::endl;
-  //}
-  std::cout << "Terminating debugger client."<< std::endl;
-  // TODO: and the memory?
+  std::cout << std::endl << "Terminating debugger client." << std::endl;
+
+#ifndef WIN32
+  XqdbClient* lClient = theClient.release();
+  if (lClient) {
+    delete lClient;
+  }
+#endif
 
   exit(aExitCode);
 }
@@ -322,6 +302,12 @@ int
 _tmain(int argc, _TCHAR* argv[])
 #endif
 {
+#ifdef WIN32
+  SetConsoleCtrlHandler(ctrlC_Handler, TRUE);
+#else
+  signal(SIGINT, ctrlC_Handler);
+#endif
+
   // **************************************************************************
   // processing arguments
 
@@ -369,12 +355,19 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start the debugger command line
 
-    std::auto_ptr<XqdbClient> theClient(new XqdbClient(lPort));
+    theClient.reset(new XqdbClient(lPort));
     theClient->start();
 
   } catch (...) {
     return -1;
   }
+
+#ifndef WIN32
+  XqdbClient* lClient = theClient.release();
+  if (lClient) {
+    delete lClient;
+  }
+#endif
 
   return 0;
 }
