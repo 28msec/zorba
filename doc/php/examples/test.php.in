@@ -47,7 +47,7 @@ $result = $xquery->execute();
 assertEquality($result, '2', "1+1");
 
 /* Test 2 */
-$query = <<<'XQ'
+$query = '
 declare variable $foo as xs:string external;
 declare variable $bar as xs:integer external;
 declare variable $doc1 as document-node() external;
@@ -55,7 +55,7 @@ declare variable $doc2-str as xs:string external;
 declare variable $doc2 as document-node() := parse-xml($doc2-str);
 
 $foo, $bar, $doc1 , $doc2
-XQ;
+';
 
 $xquery->importQuery($query);
 
