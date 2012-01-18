@@ -21,6 +21,9 @@ version 2.2
     support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Added API method Item::getNamespaceBindings().
+  * Added a transcoding streambuffer to the API which allows transcoding arbitrary encodings
+    from and to UTF-8
+  * file:read-text is able to handle arbitrary encodings (fixes bug #867159)
 
 version 2.1
 
