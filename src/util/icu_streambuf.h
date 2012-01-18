@@ -17,8 +17,7 @@
 #ifndef ZORBA_ICU_STREAMBUF_H
 #define ZORBA_ICU_STREAMBUF_H
 
-#include <stdexcept>
-#include <streambuf>
+#include <zorba/transcode_streambuf.h>
 
 #include "util/utf8_util.h"
 
@@ -48,7 +47,7 @@ namespace zorba {
  *      // ...
  *    }
  *    catch ( ... ) {
- *      os.ios::rdbuf( xbuf.orig_streambuf() );
+ *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
  *  }
@@ -57,20 +56,8 @@ namespace zorba {
  * While %icu_streambuf does support seeking, the positions are relative to the
  * original byte stream.
  */
-class icu_streambuf : public std::streambuf {
+class icu_streambuf : public proxy_streambuf {
 public:
-  class exception : public std::exception {
-  public:
-    exception( char const *mesage );
-    ~exception() throw();
-
-    // inherited
-    char const* what() const throw();
-
-  private:
-    std::string message_;
-  };
-
   /**
    * Constructs an %icu_streambuf.
    *
@@ -83,20 +70,6 @@ public:
    * Destructs an %icu_streambuf.
    */
   ~icu_streambuf();
-
-  /**
-   * Clears (resets) the state.
-   */
-  void clear();
-
-  /**
-   * Gets the original streambuf.
-   *
-   * @return Returns said streambuf.
-   */
-  std::streambuf* orig_streambuf() const {
-    return orig_streambuf_;
-  }
 
 protected:
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
@@ -126,8 +99,8 @@ private:
 
   bool const no_conv_;                  // true = no conversion needed
   UConverter *const external_conv_, *const utf8_conv_;
-  std::streambuf *const orig_streambuf_;
 
+  void clear();
   static UConverter* create_conv( char const *charset );
   void resetg();
 

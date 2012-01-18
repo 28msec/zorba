@@ -23,9 +23,9 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 passthru_streambuf::passthru_streambuf( char const*, streambuf *orig ) :
-  orig_streambuf_( orig )
+  proxy_streambuf( orig )
 {
-  if ( !orig_streambuf_ )
+  if ( !orig )
     throw invalid_argument( "null streambuf" );
 }
 
@@ -34,56 +34,56 @@ passthru_streambuf::~passthru_streambuf() {
 }
 
 void passthru_streambuf::imbue( std::locale const &loc ) {
-  orig_streambuf_->pubimbue( loc );
+  original()->pubimbue( loc );
 }
 
 passthru_streambuf::pos_type
 passthru_streambuf::seekoff( off_type o, ios_base::seekdir d,
                              ios_base::openmode m ) {
-  return orig_streambuf_->pubseekoff( o, d, m );
+  return original()->pubseekoff( o, d, m );
 }
 
 passthru_streambuf::pos_type
 passthru_streambuf::seekpos( pos_type p, ios_base::openmode m ) {
-  return orig_streambuf_->pubseekpos( p, m );
+  return original()->pubseekpos( p, m );
 }
 
 streambuf* passthru_streambuf::setbuf( char_type *p, streamsize s ) {
-  orig_streambuf_->pubsetbuf( p, s );
+  original()->pubsetbuf( p, s );
   return this;
 }
 
 streamsize passthru_streambuf::showmanyc() {
-  return orig_streambuf_->in_avail();
+  return original()->in_avail();
 }
 
 int passthru_streambuf::sync() {
-  return orig_streambuf_->pubsync();
+  return original()->pubsync();
 }
 
 passthru_streambuf::int_type passthru_streambuf::overflow( int_type c ) {
-  return orig_streambuf_->sputc( c );
+  return original()->sputc( c );
 }
 
 passthru_streambuf::int_type passthru_streambuf::pbackfail( int_type c ) {
-  return orig_streambuf_->sputbackc( traits_type::to_char_type( c ) );
+  return original()->sputbackc( traits_type::to_char_type( c ) );
 }
 
 passthru_streambuf::int_type passthru_streambuf::uflow() {
-  return orig_streambuf_->sbumpc();
+  return original()->sbumpc();
 }
 
 passthru_streambuf::int_type passthru_streambuf::underflow() {
-  return orig_streambuf_->sgetc();
+  return original()->sgetc();
 }
 
 streamsize passthru_streambuf::xsgetn( char_type *to, streamsize size ) {
-  return orig_streambuf_->sgetn( to, size );
+  return original()->sgetn( to, size );
 }
 
 streamsize passthru_streambuf::xsputn( char_type const *from,
                                        streamsize size ) {
-  return orig_streambuf_->sputn( from, size );
+  return original()->sputn( from, size );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -39,21 +39,6 @@ int const Large_External_Buf_Size = 4096;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-icu_streambuf::exception::exception( char const *message ) :
-  message_( message )
-{
-}
-
-icu_streambuf::exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-char const* icu_streambuf::exception::what() const throw() {
-  return message_.c_str();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 inline void icu_streambuf::buf_type_base::reset() {
   pivot_source_ = pivot_target_ = pivot_buf_;
 }
@@ -66,15 +51,15 @@ inline void icu_streambuf::resetg() {
 }
 
 icu_streambuf::icu_streambuf( char const *charset, streambuf *orig ) :
+  proxy_streambuf( orig ),
   no_conv_(
     !ucnv_compareNames( charset, "UTF-8" ) ||
     !ucnv_compareNames( charset, "ASCII" )
   ),
   external_conv_( no_conv_ ? nullptr : create_conv( charset ) ),
-  utf8_conv_( no_conv_ ? nullptr : create_conv( "UTF-8" ) ),
-  orig_streambuf_( orig )
+  utf8_conv_( no_conv_ ? nullptr : create_conv( "UTF-8" ) )
 {
-  if ( !orig_streambuf_ )
+  if ( !orig )
     throw invalid_argument( "null streambuf" );
   resetg();
 }
@@ -116,22 +101,22 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
 icu_streambuf::pos_type icu_streambuf::seekoff( off_type o, ios_base::seekdir d,
                                                 ios_base::openmode m ) {
   clear();
-  return orig_streambuf_->pubseekoff( o, d, m );
+  return original()->pubseekoff( o, d, m );
 }
 
 icu_streambuf::pos_type icu_streambuf::seekpos( pos_type p,
                                                 ios_base::openmode m ) {
   clear();
-  return orig_streambuf_->pubseekpos( p, m );
+  return original()->pubseekpos( p, m );
 }
 
 streambuf* icu_streambuf::setbuf( char_type *p, streamsize s ) {
-  orig_streambuf_->pubsetbuf( p, s );
+  original()->pubsetbuf( p, s );
   return this;
 }
 
 int icu_streambuf::sync() {
-  return orig_streambuf_->pubsync();
+  return original()->pubsync();
 }
 
 icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
@@ -139,7 +124,7 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   printf( "overflow()\n" );
 #endif
   if ( no_conv_ )
-    return orig_streambuf_->sputc( c );
+    return original()->sputc( c );
 
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
@@ -151,7 +136,7 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   bool const ok = to_external( &from, from + 1, &to, to + sizeof ebuf );
   assert( ok );
   if ( streamsize const n = to - ebuf ) {
-    orig_streambuf_->sputn( ebuf, n );
+    original()->sputn( ebuf, n );
     p_.reset();
   }
 
@@ -173,7 +158,7 @@ bool icu_streambuf::to_external( char_type const **from,
     return false;
   }
   if ( U_FAILURE( err ) )
-    throw exception( u_errorName( err ) );
+    throw transcode_streambuf::exception( u_errorName( err ) );
   return true;
 }
 
@@ -192,7 +177,7 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
     return false;
   }
   if ( U_FAILURE( err ) )
-    throw exception( u_errorName( err ) );
+    throw transcode_streambuf::exception( u_errorName( err ) );
   return true;
 }
 
@@ -201,14 +186,14 @@ icu_streambuf::int_type icu_streambuf::underflow() {
   printf( "underflow()\n" );
 #endif
   if ( no_conv_ )
-    return orig_streambuf_->sgetc();
+    return original()->sgetc();
 
   if ( gptr() >= egptr() ) {
     utf8::storage_type *to = g_.utf8_char_;
     utf8::storage_type const *const to_end = to + sizeof g_.utf8_char_;
 
     while ( true ) {
-      int_type const c = orig_streambuf_->sbumpc();
+      int_type const c = original()->sbumpc();
       if ( traits_type::eq_int_type( c, traits_type::eof() ) )
         return traits_type::eof();
 
@@ -231,7 +216,7 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
   printf( "xsgetn()\n" );
 #endif
   if ( no_conv_ )
-    return orig_streambuf_->sgetn( to, size );
+    return original()->sgetn( to, size );
 
   streamsize return_size = 0;
   char_type *const to_end = to + size;
@@ -248,10 +233,10 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
   while ( size > 0 ) {
     char ebuf[ Large_External_Buf_Size ];
     streamsize const get = min( (streamsize)(sizeof ebuf), size );
-    if ( streamsize const got = orig_streambuf_->sgetn( ebuf, get ) ) {
+    if ( streamsize const got = original()->sgetn( ebuf, get ) ) {
       char const *from = ebuf;
       char_type const *const to_before = to;
-      int_type const peek = orig_streambuf_->sgetc();
+      int_type const peek = original()->sgetc();
       bool const flush = traits_type::eq_int_type( peek, traits_type::eof() );
       to_utf8( &from, from + got, &to, to_end, flush );
       streamsize const n = to - to_before;
@@ -269,7 +254,7 @@ streamsize icu_streambuf::xsputn( char_type const *from, streamsize size ) {
   printf( "xsputn()\n" );
 #endif
   if ( no_conv_ )
-    return orig_streambuf_->sputn( from, size );
+    return original()->sputn( from, size );
 
   streamsize return_size = 0;
   char_type const *const from_end = from + size;
@@ -280,7 +265,7 @@ streamsize icu_streambuf::xsputn( char_type const *from, streamsize size ) {
     char_type const *const from_before = from;
     to_external( &from, from_end, &to, to_end );
     streamsize n = to - ebuf;
-    if ( n && !orig_streambuf_->sputn( ebuf, n ) )
+    if ( n && !original()->sputn( ebuf, n ) )
       break;
     to = ebuf;
     n = from - from_before;

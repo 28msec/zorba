@@ -14,34 +14,35 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_TRANSCODE_STREAMBUF_H
-#define ZORBA_TRANSCODE_STREAMBUF_H
+#ifndef ZORBA_INTERNAL_PROXY_H
+#define ZORBA_INTERNAL_PROXY_H
 
-#include <zorba/config.h>
+namespace zorba {
+namespace internal {
+namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_NO_UNICODE
+/**
+ * \internal
+ * A %proxy<T> is-a \c T that also contains a T* -- a pointer to the original.
+ */
+template<class OriginalType>
+class proxy : public OriginalType {
+public:
+  proxy( OriginalType *p ) : original_( p ) { }
 
-#include "passthru_streambuf.h"
-namespace zorba {
-namespace internal {
-  typedef passthru_streambuf transcode_streambuf;
-}
-}
-
-#else
-
-#include "icu_streambuf.h"
-namespace zorba {
-namespace internal {
-  typedef icu_streambuf transcode_streambuf;
-}
-}
-
-#endif /* ZORBA_NO_UNICODE */
+  OriginalType* original() const {
+    return original_;
+  }
+private:
+  OriginalType *original_;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#endif  /* ZORBA_TRANSCODE_STREAMBUF_H */
+} // namespace ztd
+} // namespace internal
+} // namespace zorba
+#endif  /* ZORBA_INTERNAL_PROXY_H */
 /* vim:set et sw=2 ts=2: */

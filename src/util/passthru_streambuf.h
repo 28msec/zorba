@@ -17,8 +17,7 @@
 #ifndef ZORBA_PASSTHRU_STREAMBUF_H
 #define ZORBA_PASSTHRU_STREAMBUF_H
 
-#include <stdexcept>
-#include <streambuf>
+#include <zorba/transcode_streambuf.h>
 
 namespace zorba {
 
@@ -27,14 +26,8 @@ namespace zorba {
 /**
  * A %passthru_streambuf is-a std::streambuf TODO
  */
-class passthru_streambuf : public std::streambuf {
+class passthru_streambuf : public proxy_streambuf {
 public:
-  /**
-   * Placeholder %exception class -- never thrown.
-   */
-  struct exception : std::exception {
-  };
-
   /**
    * Constructs an %passthru_streambuf.
    *
@@ -47,20 +40,6 @@ public:
    * Destructs an %passthru_streambuf.
    */
   ~passthru_streambuf();
-
-  /**
-   * Clears (resets) the state.
-   */
-  void clear() { }
-
-  /**
-   * Gets the original streambuf.
-   *
-   * @return Returns said streambuf.
-   */
-  std::streambuf* orig_streambuf() const {
-    return orig_streambuf_;
-  }
 
 protected:
   void imbue( std::locale const& );
@@ -77,8 +56,6 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::streambuf *const orig_streambuf_;
-
   // forbid
   passthru_streambuf( passthru_streambuf const& );
   passthru_streambuf& operator=( passthru_streambuf const& );
