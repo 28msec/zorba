@@ -400,11 +400,8 @@ void dynamic_context::unset_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPDY0002,
-      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPDY0002, loc,
+    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
   }
 
   VarValue& var = theVarValues[varid];
@@ -449,22 +446,16 @@ void dynamic_context::get_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    zstring lVarName = static_context::var_name(varname.getp());
-    throw XQUERY_EXCEPTION(
-      err::XPDY0002,
-      ERROR_PARAMS( lVarName, ZED( VariabledUndeclared ) ),
-      ERROR_LOC( loc )
-    );
+    zstring varName = static_context::var_name(varname.getp());
+    RAISE_ERROR(err::XPDY0002, loc,
+    ERROR_PARAMS(varName, ZED(VariabledUndeclared)));
   }
 
   if (theVarValues[varid].theState == VarValue::declared)
   {
-    zstring lVarName = static_context::var_name(varname.getp());
-    throw XQUERY_EXCEPTION(
-      err::XPDY0002,
-      ERROR_PARAMS( lVarName, ZED( VariabledHasNoValue ) ),
-      ERROR_LOC( loc )
-    );
+    zstring varName = static_context::var_name(varname.getp());
+    RAISE_ERROR(err::XPDY0002, loc,
+    ERROR_PARAMS(varName, ZED(VariabledHasNoValue)));
   }
 
   const VarValue& var = theVarValues[varid];
