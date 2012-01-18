@@ -1,0 +1,10 @@
+module namespace foo1 = "http://foo1.com/";
+
+import module namespace foo2 = "http://foo2.com/" at "invoke1_2.xqlib";
+
+declare variable $foo1:var := 2;
+
+declare function foo1:bar()
+{
+  $foo2:var
+};

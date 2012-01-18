@@ -94,6 +94,8 @@ CommandPrompt::printHelp(UntypedCommand* aCommand)
 void
 CommandPrompt::execute()
 {
+  bool lWithOutput = true;
+
   for (;;) {
 #ifdef ZORBA_HAVE_LIBEDIT_H
     const char* lBuf;
@@ -101,10 +103,19 @@ CommandPrompt::execute()
     lBuf = el_gets(theEditLine, &lCharsRead);
     std::string lCommandLine(lBuf, lCharsRead - 1);
 #else
-    std::cout << "(xqdb) ";
+    if (lWithOutput) {
+      std::cout << "(xqdb) ";
+    }
+    lWithOutput = true;
     std::string lCommandLine;
     std::getline(std::cin, lCommandLine);
+    if (std::cin.fail()) {
+      lWithOutput = false;
+      std::cin.clear();
+      continue;
+    }
 #endif
+    
     std::vector<std::string> lArgs;
 
     // split the command into arguments

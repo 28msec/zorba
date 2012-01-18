@@ -11,6 +11,7 @@ version 2.2
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 909126 (bug in cloning of var_expr)
   * Fixed bug in destruction of exit_catcher_expr
   * Types-related optimization for the comparison operators
