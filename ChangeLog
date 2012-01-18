@@ -21,6 +21,8 @@ version 2.2
     support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Added API method Item::getNamespaceBindings().
+  * Added a function to the http://www.zorba-xquery.com/modules/store/static/indexes/dml module which returns
+    the value of all keys contained in an index.
 
 version 2.1
 
