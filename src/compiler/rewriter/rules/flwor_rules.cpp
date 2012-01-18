@@ -963,30 +963,65 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
   // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
   // case of >= and <= the -1 and +1 are removed for the previous examples.
-  if (!flwor->is_general() &&
-      whereExpr != NULL &&
-      ! flwor->has_sequential_clauses() &&
-      is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
-      expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+  ulong num_clauses = flwor->is_general()? flwor->num_clauses() : 1;
+  for (ulong clause_pos = 0;
+      clause_pos < num_clauses;
+      ++clause_pos)
   {
-    function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
-    expr* domainExpr = posVar->get_for_clause()->get_expr();
 
-    std::vector<expr_t> args(2);
-    args[0] = domainExpr;
-    args[1] = posExpr;
+    if(flwor->is_general())
+    {
 
-    rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
-                                           LOC(whereExpr),
-                                           seq_point,
-                                           args);
-    expr_tools::fix_annotations(&*result);
-    for_clause* clause = posVar->get_for_clause();
-    clause->set_expr(&*result);
-    clause->set_pos_var(NULL);
-    flwor->remove_where_clause();
+      flwor_clause* clause = flwor->get_clause(clause_pos);
 
-    modified = true;
+      if(clause->get_kind() == flwor_clause::where_clause)
+      {
+          whereExpr = clause->get_expr();
+      }
+
+    }
+    //no need to do anything for the simple_flwor case
+    //the variable already has been defined near the beginning of the function.
+
+    if (whereExpr != NULL &&
+        ! flwor->has_sequential_clauses() &&
+        is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
+        expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+    {
+      function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
+      expr* domainExpr = posVar->get_for_clause()->get_expr();
+
+      std::vector<expr_t> args(2);
+      args[0] = domainExpr;
+      args[1] = posExpr;
+
+      rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
+                                             LOC(whereExpr),
+                                             seq_point,
+                                             args);
+      expr_tools::fix_annotations(&*result);
+      for_clause* clause = posVar->get_for_clause();
+      clause->set_expr(&*result);
+      clause->set_pos_var(NULL);
+
+      if(flwor->is_general())
+      {
+        flwor->remove_clause(clause_pos);
+        clause_pos--; //the loop will push it back to this position
+                     //which is now taken by the next clause
+      }
+      else
+      {
+        flwor->remove_where_clause();
+      }
+
+      modified = true;
+    }
+
+  //This is necesary to prevent the whole thing being ran multiple times
+  //in the case of the general flwor.
+  whereExpr = NULL;
+
   }
 
   return (modified ? flwor : NULL);
