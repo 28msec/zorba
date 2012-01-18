@@ -73,19 +73,21 @@ public:
   
       GENV_ITEMFACTORY->createQName(lAttrNodeName,
           lBase, "", "attribute");
-  
-      GENV_ITEMFACTORY->createQName(lValueAttrName,
-           "", "", "value");
-  
+
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  
       GENV_ITEMFACTORY->createElementNode(
           lAttrElem, result, lAttrNodeName, lTypeName,
           true, false, lBindings, lBase);
   
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-          lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
+      if (*lIter != NULL)
+      {
+        GENV_ITEMFACTORY->createQName(lValueAttrName,
+             "", "", "value");
+  
+        lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+        GENV_ITEMFACTORY->createAttributeNode(
+            lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
+      }
     }
   }
 }; /* class IndexUtil */

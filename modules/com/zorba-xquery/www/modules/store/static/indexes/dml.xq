@@ -270,19 +270,18 @@ declare updating function idml:refresh-index($name as xs:QName) external;
 
 (:~
  : The keys function returns a sequence of all keys contained in the
- : index with the given name.
+ : index with the given name. Each element has the following structure:
+ :   <pre class="brush: xml;">
+ :   &lt;key xmlns="http://www.zorba-xquery.com/modules/store/static/indexes/dml"&gt;
+ :     &lt;attribute value="key1_value"/&gt;
+ :     &lt;attribute value="key2_value"/&gt;
+ :     &lt;attribute value="key3_value"/&gt;
+ :   &lt;/key&gt;
+ :   </pre>
  :
  : @param $name The QName of the index
  : @return The result of the function is sequence of elements each representing
- :         one key contained in the index. Each element has the following
- :         structure:
- : <pre>
- : &lt;key xmlns="http://www.zorba-xquery.com/modules/store/static/indexes/dml">
- :   &lt;attribute value="key1_value"/>
- :   &lt;attribute value="key2_value"/>
- :   &lt;attribute value="key3_value"/>
- : &lt;/key>
- : </pre>
+ :         one key contained in the index.
  : 
  : Note that the order of the attribute elements reflects the order of
  : the keys in the index specification. Also note that the values in
