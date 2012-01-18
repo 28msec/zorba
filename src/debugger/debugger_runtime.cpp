@@ -61,7 +61,7 @@ DebuggerRuntime::DebuggerRuntime(
   DebuggerCommunicator* communicator,
   itemHandler aHandler,
   void* aCallBackData,
-  bool* aNotBremse)
+  bool* aInterruptBreak)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
@@ -73,7 +73,7 @@ DebuggerRuntime::DebuggerRuntime(
     theItemHandler(aHandler),
     theCallbackData(aCallBackData),
     theLastContinuationCommand(),
-    theNotBremse(aNotBremse)
+    theInterruptBreak(aInterruptBreak)
 {
 }
 
@@ -322,7 +322,7 @@ DebuggerRuntime::resumeRuntime()
   if (theExecStatus != QUERY_SUSPENDED) {
     return;
   }
-  *theNotBremse = false;
+  *theInterruptBreak = false;
   theExecStatus = QUERY_RUNNING;
   resume();
 }
@@ -506,9 +506,9 @@ DebuggerRuntime::stepOut()
 bool
 DebuggerRuntime::getAndClearInterruptBreak()
 {
-  bool lMustBreak = *theNotBremse;
+  bool lMustBreak = *theInterruptBreak;
   if (lMustBreak) {
-    *theNotBremse = false;
+    *theInterruptBreak = false;
   }
   return lMustBreak;
 }
@@ -715,7 +715,7 @@ DebuggerRuntime::clone()
     theCommunicator,
     theItemHandler,
     theCallbackData,
-    theNotBremse);
+    theInterruptBreak);
 
   lNewRuntime->theBreakpoints = theBreakpoints;
   return lNewRuntime;

@@ -48,12 +48,12 @@ class DebuggerRuntime : public Runnable {
 
     DebuggerRuntime(
       XQueryImpl* xqueryImpl,
-      std::ostream& oStream,
+      std::ostream& outStream,
       Zorba_SerializerOptions&  serializerOptions,
       DebuggerCommunicator* communicator,
-      itemHandler aHandler,
-      void* aCallBackData,
-      bool* aNotBremse);
+      itemHandler handler,
+      void* callBackData,
+      bool* interruptBreak);
 
     virtual ~DebuggerRuntime();
 
@@ -179,7 +179,7 @@ class DebuggerRuntime : public Runnable {
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
     std::pair<int, std::string>       theLastContinuationCommand;
-    bool*                             theNotBremse;
+    bool*                             theInterruptBreak;
   };
 }
 

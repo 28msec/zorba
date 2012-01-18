@@ -37,14 +37,18 @@
 
 namespace zorba {
 
-bool theNotBremse = false;
+bool theInterruptBreak = false;
 
+// this will make sure the zorba when run in debug (i.e. with the debugger)
+// will not terminate when Ctrl-C is pressed but trigger a query interruption
+// break through the theInterruptBreak variable that is continuously monitored
+// by the debugger commons through the debugger runtime
 #ifdef WIN32
 BOOL WINAPI
 DebuggerServer::ctrlC_Handler(DWORD aCtrlType)
 {
   if (CTRL_C_EVENT == aCtrlType) {
-    theNotBremse = true;
+    theInterruptBreak = true;
     return true;
   }
   return false;
@@ -53,7 +57,7 @@ DebuggerServer::ctrlC_Handler(DWORD aCtrlType)
 void
 DebuggerServer::ctrlC_Handler(int lParam)
 {
-  theNotBremse = true;
+  theInterruptBreak = true;
 }
 #endif
 
@@ -72,7 +76,7 @@ DebuggerServer::DebuggerServer(
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
     theCommunicator, aHandler, aCallbackData,
-    &theNotBremse);
+    &theInterruptBreak);
 #ifdef WIN32
   theFileName = aQuery->getFileName().str();
 #else

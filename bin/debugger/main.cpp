@@ -34,7 +34,27 @@ using namespace zorba::debugger;
 
 std::auto_ptr<XqdbClient> theClient;
 
+// this will make sure the xqdb process will not quit when Ctrl-C is pressed
+#ifdef WIN32
+BOOL WINAPI
+ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    return true;
+  }
+  return false;
+}
+#else
+void
+ctrlC_Handler(int lParam)
+{
+  // an empty sugnal handler on Linux should do the job
+}
+#endif
 
+
+// this handler function is passed the the zorba process listener and will
+// the client if the zorba process terminates
 void
 onExitProcess(ExitCode aExitCode) {
   std::cout << std::endl << "Terminating debugger client." << std::endl;
@@ -273,23 +293,6 @@ processArguments(
   aStandalone = false;
   return true;
 }
-
-#ifdef WIN32
-BOOL WINAPI
-ctrlC_Handler(DWORD aCtrlType)
-{
-  if (CTRL_C_EVENT == aCtrlType) {
-    return true;
-  }
-  return false;
-}
-#else
-void
-ctrlC_Handler(int lParam)
-{
-  //exit(1);
-}
-#endif
 
 #ifndef _WIN32_WCE
 int
