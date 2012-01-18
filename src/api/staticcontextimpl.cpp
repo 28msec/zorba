@@ -225,14 +225,15 @@ StaticContextImpl::getNamespaceBindings( NsBindings& aBindings ) const
   {
     store::NsBindings lBindings;
     theCtx->get_namespace_bindings(lBindings);
+    aBindings.reserve(aBindings.size() + lBindings.size());
 
     for (store::NsBindings::const_iterator lIter = lBindings.begin();
          lIter != lBindings.end(); ++lIter)
     {
       aBindings.push_back(
         std::pair<zorba::String, zorba::String>(
-          lIter->first.str(),
-          lIter->second.str()
+          Unmarshaller::newString(lIter->first),
+          Unmarshaller::newString(lIter->second)
         )
       );
     }
