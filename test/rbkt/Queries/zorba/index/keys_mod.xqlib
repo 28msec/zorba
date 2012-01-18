@@ -1,0 +1,15 @@
+module namespace keys-lib = "http://www.example.com/";
+
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:unordered collection keys-lib:foo as node()*;
+
+declare %ann:automatic %ann:value-equality index keys-lib:FooIdx
+  on nodes dml:collection(xs:QName("keys-lib:foo"))
+  by xs:integer(./@id) as xs:integer;
+
+declare %ann:automatic %ann:value-range index keys-lib:FooIdx2
+  on nodes dml:collection(xs:QName("keys-lib:foo"))
+  by xs:integer(./@id) as xs:integer;

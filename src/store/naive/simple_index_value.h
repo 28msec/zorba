@@ -198,7 +198,12 @@ class ValueTreeIndex : public ValueIndex
 
   class KeyIterator : public Index::KeyIterator
   {
+  protected:
+    IndexMap::const_iterator   theIterator;
+    const IndexMap           & theMap;
+
   public:
+    KeyIterator(const IndexMap& aMap);
     ~KeyIterator();
 
     void open();

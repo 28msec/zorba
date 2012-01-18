@@ -49,6 +49,7 @@
 #include "runtime/fnput/fnput.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
+#include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/node_position.h"
@@ -1298,6 +1299,20 @@ void PrinterVisitor::endVisit ( const CheckICIterator& ) {
   thePrinter.endEndVisit();
 }
 // </CheckICIterator>
+
+
+// <IndexKeysIterator>
+void PrinterVisitor::beginVisit ( const IndexKeysIterator& a) {
+  thePrinter.startBeginVisit("IndexKeysIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IndexKeysIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IndexKeysIterator>
 
 
 // <StaticNamespacesIterator>

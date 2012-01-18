@@ -23,6 +23,7 @@
 #include "system/globalenv.h"
 
 #include "runtime/store/maps.h"
+#include "runtime/indexing/index_util.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -444,11 +445,6 @@ MapKeysIterator::nextImpl(
   zstring          lBaseURI =
     static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
-  store::Item_t lKeyNodeName;
-  GENV_ITEMFACTORY->createQName(lKeyNodeName,
-      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-      "", "key");
-
   MapKeysIteratorState* state;
   DEFAULT_STACK_INIT(MapKeysIteratorState, state, aPlanState);
 
@@ -477,36 +473,9 @@ MapKeysIterator::nextImpl(
   // </key>
   while (state->theIter->next(lKey))
   {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
-    GENV_ITEMFACTORY->createElementNode(
-        result, NULL, lKeyNodeName, lTypeName,
-        true, false, theNSBindings, lBaseURI);
-
-    for (store::ItemVector::iterator lIter = lKey.begin();
-         lIter != lKey.end();
-         ++lIter)
-    {
-      store::Item_t lAttrElem, lAttrNodeName;
-      store::Item_t lNameAttr, lValueAttr, lValueAttrName;
-
-      GENV_ITEMFACTORY->createQName(lAttrNodeName,
-          static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-          "", "attribute");
-
-      GENV_ITEMFACTORY->createQName(lValueAttrName,
-           "", "", "value");
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
-      GENV_ITEMFACTORY->createElementNode(
-          lAttrElem, result, lAttrNodeName, lTypeName,
-          true, false, theNSBindings, lBaseURI);
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-          lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
-    }
+    IndexUtil::createIndexKeyElement(result, lKey, 
+        static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS
+      );
     STACK_PUSH(true, state);
   }
 
