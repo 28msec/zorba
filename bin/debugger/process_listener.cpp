@@ -62,16 +62,20 @@ ProcessListener::run(void* params)
   ProcessId lPid = lThis->getProcessID();
 
 #ifdef WIN32
-  // wait for the process to exit
-  WaitForSingleObject(lPid, INFINITE);
-
-  // find out the process exit code if possible
-  if (!GetExitCodeProcess(lThis->getProcessID(), &lExitCode)) {
-    lExitCode = -1;
+  HANDLE lProcessHandle = OpenProcess(SYNCHRONIZE, false, lPid);
+  if (lProcessHandle != NULL) {
+    // wait for the process to exit
+    DWORD lResult = WaitForSingleObject(lProcessHandle, INFINITE);
+ 
+    // find out the process exit code if possible
+    if (!GetExitCodeProcess(lProcessHandle, &lExitCode)) {
+      lExitCode = -1;
+    }
+    DWORD dw = GetLastError();
+ 
+    // wait a little for zorba to dump the garbage
+    Sleep(1000);
   }
-
-  // wait a little for zorba to dump the garbage
-  Sleep(1000);
 #else
   int lChildExitStatus;
 

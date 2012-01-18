@@ -66,16 +66,23 @@ public:
   
   /**
    * Promotes the passed item to the passed target type.
-   * @param aItem
-   * @param aTargetType
+   * @param item
+   * @param targetType
    * @return 0 if promotion is not possible else promoted item
    *         if the item type is a subtype of the target type, then
    *         the passed item is returned
    */
   static bool promote(
         store::Item_t& result,
-        store::Item_t& aItem,
-        const XQType* aTargetType,
+        store::Item_t& item,
+        const XQType* targetType,
+        const TypeManager* tm,
+        const QueryLoc& loc);
+
+  static bool promote(
+        store::Item_t& result,
+        store::Item_t& item,
+        store::SchemaTypeCode targetType,
         const TypeManager* tm,
         const QueryLoc& loc);
 
@@ -97,10 +104,23 @@ public:
    */
   static bool castToAtomic(
         store::Item_t& result,
-        store::Item_t& aItem, 
-        const XQType* aTargetType,
+        store::Item_t& item, 
+        const XQType* targetType,
         const TypeManager* tm, 
-        namespace_context* aNCtx,
+        namespace_context* nameCtx,
+        const QueryLoc& loc);
+
+  /**
+   * Executes the casting of the passed item. If the passed item has the same
+   * type or a subtype of the passed targetType, the passed item is directly
+   * returned.
+   */
+  static bool castToAtomic(
+        store::Item_t& result,
+        store::Item_t& item, 
+        store::SchemaTypeCode targetType,
+        const TypeManager* tm, 
+        namespace_context* nameCtx,
         const QueryLoc& loc);
 
   static bool castToSimple(
