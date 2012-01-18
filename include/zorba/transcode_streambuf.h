@@ -81,6 +81,8 @@ public:
    *
    * @param charset The name of the character encoding to convert from/to.
    * @param orig The original streambuf to read/write from/to.
+   * @throws std::invalid_argument if either \a charset is not supported or
+   * \a orig is null.
    */
   transcode_streambuf( char const *charset, std::streambuf *orig );
 
