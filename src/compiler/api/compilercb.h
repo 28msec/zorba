@@ -166,14 +166,14 @@ public:
 
   config                    theConfig;
 
-  rchandle<rclist<user_function*>>    theLocalUdfs;//for plan serializer
+  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
   void prepare_for_serialize();
-  rchandle<rclist<user_function*>>  get_local_udfs();
+  rchandle<rclist<user_function*> >  get_local_udfs();
 
 public:
   CompilerCB(XQueryDiagnostics*, long timeout = -1);

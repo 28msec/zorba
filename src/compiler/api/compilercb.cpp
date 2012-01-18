@@ -182,7 +182,7 @@ void CompilerCB::prepare_for_serialize()
   }
 }
 
-rchandle<rclist<user_function*>>  CompilerCB::get_local_udfs()
+rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
 {
   return theLocalUdfs;
 }
