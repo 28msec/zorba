@@ -1793,16 +1793,33 @@ static void copyUtf8Chars(const char *&sin,
                           int &utf8start,
                           unsigned int &bytestart,
                           int utf8end,
+                          unsigned int byteend,
                           zstring &out)
 {
+#ifndef ZORBA_NO_ICU
   utf8::size_type clen;
-  while(utf8start < utf8end)
+  if(utf8end)
   {
-    clen = utf8::char_length(*sin);
-    out.append(sin, clen);
-    utf8start++;
-    bytestart += clen;
-    sin += clen;
+    while(utf8start < utf8end)
+    {
+      clen = utf8::char_length(*sin);
+      if(clen == 0)
+        clen = 1;
+      out.append(sin, clen);
+      utf8start++;
+      bytestart += clen;
+      sin += clen;
+    }
+  }
+  else
+#endif
+  {
+    if(!utf8end)
+      utf8end = byteend;
+    out.append(sin, utf8end-bytestart);
+    sin += utf8end-bytestart;
+    utf8start = utf8end;
+    bytestart = utf8end;
   }
 }
 
@@ -1810,6 +1827,7 @@ static void addNonMatchElement(store::Item_t &parent,
                                int &match_end1,
                                unsigned int &match_end1_bytes,
                                int match_start2,
+                               unsigned int match_start2_bytes,
                                const char *&strin)
 {
   store::Item_t non_match_elem;
@@ -1831,7 +1849,7 @@ static void addNonMatchElement(store::Item_t &parent,
   //  utf8_it++;
   //  match_end1++;
   //}
-  copyUtf8Chars(strin, match_end1, match_end1_bytes, match_start2, non_match_str);
+  copyUtf8Chars(strin, match_end1, match_end1_bytes, match_start2, match_start2_bytes, non_match_str);
   store::Item_t non_match_text_item;
   GENV_ITEMFACTORY->createTextNode(non_match_text_item, non_match_elem, non_match_str);
 }
@@ -1878,7 +1896,7 @@ static void addGroupElement(store::Item_t &parent,
       //add non-group match text
       zstring                non_group_str;
 
-      copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_startg, non_group_str);
+      copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_startg, 0, non_group_str);
       store::Item_t non_group_text_item;
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
@@ -1917,7 +1935,7 @@ static void addGroupElement(store::Item_t &parent,
     }
     zstring                group_str;
 
-    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, group_str);
+    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, 0, group_str);
     store::Item_t group_text_item;
     GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
   }
@@ -1926,7 +1944,7 @@ static void addGroupElement(store::Item_t &parent,
   {
     zstring                non_group_str;
 
-    copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_end2, non_group_str);
+    copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_end2, 0, non_group_str);
     store::Item_t non_group_text_item;
     GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent, non_group_str);
   }
@@ -2173,7 +2191,7 @@ bool FnAnalyzeStringIterator::nextImpl(
         //construct the fn:non-match
         if(match_start2 > match_end1)
         {
-          addNonMatchElement(result, match_end1, match_end1_bytes, match_start2, instr);
+          addNonMatchElement(result, match_end1, match_end1_bytes, match_start2, 0, instr);
         }
 
         //construct the fn:match
@@ -2229,7 +2247,7 @@ bool FnAnalyzeStringIterator::nextImpl(
       else
       {
         if(match_end1_bytes < streambuf_read)
-          addNonMatchElement(result, match_end1, match_end1_bytes, streambuf_read, instr);
+          addNonMatchElement(result, match_end1, match_end1_bytes, 0, streambuf_read, instr);
         if(is_input_stream && instream->eof())
           reachedEnd = true;
       }
