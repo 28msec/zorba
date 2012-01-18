@@ -682,6 +682,20 @@ void MarkNodeCopyProps::applyInternal(
     {
       user_function* udf = static_cast<user_function*>(f);
 
+#if 0
+      UdfCalls::iterator ite = std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e);
+
+      if (ite == theUdfCallPath.end())
+      {
+        theUdfCallPath.push_back(e);
+
+        UDFCallChain nextUdfCall(e, &udfCaller);
+
+        applyInternal(rCtx, udf->getBody(), nextUdfCall);
+
+        theUdfCallPath.pop_back();
+      }
+#else
       UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
 
       if (ite == theProcessedUDFCalls.end())
@@ -708,6 +722,7 @@ void MarkNodeCopyProps::applyInternal(
           }
         }
       }
+#endif
     } // f->isUdf()
     else
     {
