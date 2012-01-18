@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
  /*
   * THIS FILE IS GENERATED.
   * PLEASE DO NOT EDIT.
   */
-
+ 
 #include "stdafx.h"
 #include "zorba/config.h"
 #include "diagnostics/dict_impl.h"
@@ -365,7 +365,7 @@ extern entry const dict_en[] = {
   { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
-  { "ZXQD0003", "inconsistent options to the parse() function: $1" },
+  { "ZXQD0003", "inconsistent options to the parse-xml() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
   { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
   { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
@@ -442,6 +442,7 @@ extern entry const dict_en[] = {
   { "~BadWordNetPtr_2", "\"$2\": invalid pointer type" },
   { "~BadXMLDocument_2o", "malformed XML document${ at \"2\"}" },
   { "~BadXMLForXQDoc_3", "can not parse as XML for xqdoc: $3" },
+  { "~BadXMLNoOpeningTag", "closing tag without matching opening tag" },
   { "~BadXQueryVersion", "unsupported XQuery version" },
   { "~Base64BadChar", "invalid Base64 character" },
   { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
@@ -734,4 +735,4 @@ DEF_DICT_END(en);
  * Local variables:
  * mode: c++
  * End:
- */
+ */ 

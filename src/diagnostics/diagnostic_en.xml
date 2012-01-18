@@ -2499,6 +2499,10 @@
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
     </entry>
+    
+    <entry key="BadXMLNoOpeningTag">
+      <value>closing tag without matching opening tag</value>
+    </entry>
 
     <entry key="BadXMLForXQDoc_3">
       <value>can not parse as XML for xqdoc: $3</value>

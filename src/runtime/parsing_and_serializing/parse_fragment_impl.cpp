@@ -217,9 +217,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     {
       state->theFragmentStream.root_elements_to_skip = state->theProperties.getSkipRootNodes();
 
-      while (state->theFragmentStream.theBuffer == NULL
-             ||
-             state->theFragmentStream.current_offset < state->theFragmentStream.bytes_in_buffer)
+      while ( ! state->theFragmentStream.stream_is_consumed())
       {
         try {
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
