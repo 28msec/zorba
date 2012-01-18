@@ -50,15 +50,15 @@ declare option ver:module-version "2.0";
  : @param $json The JSON data to parse.
  : @param $options The parsing options.
  : @return said XDM instance.
- : @error err:XQDY0027 if \a $options can not be validated against the \c
+ : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
- : @error ZJPE0001 if \a $json contains an illegal JSON character.
- : @error ZJPE0002 if \a $json contains an illegal Unicode code-point.
- : @error ZJPE0003 if \a $json contains an illegal JSON character escape.
- : @error ZJPE0004 if \a $json contains an illegal JSON literal.
- : @error ZJPE0005 if \a $json contains an illegal JSON number.
- : @error ZJPE0007 if \a $json contains an unterminated string.
- : @error ZJPE0008 if \a $json contains an illegal QName.
+ : @error ZJPE0001 if $json contains an illegal JSON character.
+ : @error ZJPE0002 if $json contains an illegal Unicode code-point.
+ : @error ZJPE0003 if $json contains an illegal JSON character escape.
+ : @error ZJPE0004 if $json contains an illegal JSON literal.
+ : @error ZJPE0005 if $json contains an illegal JSON number.
+ : @error ZJPE0007 if $json contains an unterminated string.
+ : @error ZJPE0008 if $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?,
@@ -78,13 +78,13 @@ declare function json:parse(
  :
  : @param $json The JSON data to parse.
  : @return said XDM instance.
- : @error ZJPE0001 if \a $json contains an illegal JSON character.
- : @error ZJPE0002 if \a $json contains an illegal Unicode code-point.
- : @error ZJPE0003 if \a $json contains an illegal JSON character escape.
- : @error ZJPE0004 if \a $json contains an illegal JSON literal.
- : @error ZJPE0005 if \a $json contains an illegal JSON number.
- : @error ZJPE0007 if \a $json contains an unterminated string.
- : @error ZJPE0008 if \a $json contains an illegal QName.
+ : @error ZJPE0001 if $json contains an illegal JSON character.
+ : @error ZJPE0002 if $json contains an illegal Unicode code-point.
+ : @error ZJPE0003 if $json contains an illegal JSON character escape.
+ : @error ZJPE0004 if $json contains an illegal JSON literal.
+ : @error ZJPE0005 if $json contains an illegal JSON number.
+ : @error ZJPE0007 if $json contains an unterminated string.
+ : @error ZJPE0008 if $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?
@@ -107,17 +107,17 @@ declare function json:parse(
  : @param $xml The XDM to serialize.
  : @param $options The serializing options.
  : @return a JSON string.
- : @error err:XQDY0027 if $options can not be validated against the \c
+ : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
- : @error ZJSE0001 if \a $xml is not a document or element node.
- : @error ZJSE0002 if \a $xml contains an element that is missing a required
+ : @error ZJSE0001 if $xml is not a document or element node.
+ : @error ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
- : @error ZJSE0003 if \a $xml contains an attribute having an illegal value.
- : @error ZJSE0004 if \a $xml contains an illegal element.
- : @error ZJSE0005 if \a $xml contains an illegal child element for a JSON type.
- : @error ZJSE0006 if \a $xml contains an illegal child element.
- : @error ZJSE0007 if \a $xml contains an illegal text node.
- : @error ZJSE0008 if \a $xml contains an illegal value for a JSON type.
+ : @error ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error ZJSE0004 if $xml contains an illegal element.
+ : @error ZJSE0005 if $xml contains an illegal child element for a JSON type.
+ : @error ZJSE0006 if $xml contains an illegal child element.
+ : @error ZJSE0007 if $xml contains an illegal text node.
+ : @error ZJSE0008 if $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*,
@@ -137,15 +137,15 @@ declare function json:serialize(
  :
  : @param $xml The XDM to serialize.
  : @return a JSON string.
- : @error ZJSE0001 if \a $xml is not a document or element node.
- : @error ZJSE0002 if \a $xml contains an element that is missing a required
+ : @error ZJSE0001 if $xml is not a document or element node.
+ : @error ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
- : @error ZJSE0003 if \a $xml contains an attribute having an illegal value.
- : @error ZJSE0004 if \a $xml contains an illegal element.
- : @error ZJSE0005 if \a $xml contains an illegal child element for a JSON type.
- : @error ZJSE0006 if \a $xml contains an illegal child element.
- : @error ZJSE0007 if \a $xml contains an illegal text node.
- : @error ZJSE0008 if \a $xml contains an illegal value for a JSON type.
+ : @error ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error ZJSE0004 if $xml contains an illegal element.
+ : @error ZJSE0005 if $xml contains an illegal child element for a JSON type.
+ : @error ZJSE0006 if $xml contains an illegal child element.
+ : @error ZJSE0007 if $xml contains an illegal text node.
+ : @error ZJSE0008 if $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*
