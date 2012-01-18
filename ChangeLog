@@ -21,6 +21,7 @@ version 2.2
     support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Added API method Item::getNamespaceBindings().
+  * Fixed bug #917981 (disallow declaring same module twice).
 
 version 2.1
 
