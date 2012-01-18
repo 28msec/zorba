@@ -31,6 +31,7 @@
 #include "store/api/item.h"
 #include "store/api/index.h"
 
+#include "compiler/xqddf/value_index.h"
 
 namespace zorba {
 
@@ -56,11 +57,11 @@ IndexKeysIterator::nextImpl(
 
   consumeNext(lQName, theChildren[0].getp(), aPlanState);
 
-  if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
+  if ((indexDecl = theSctx->lookup_index(lQName)) == NULL)
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0021_INDEX_NOT_DECLARED,
-      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_PARAMS( lQName->getStringValue() ),
       ERROR_LOC( loc )
     );
   }
