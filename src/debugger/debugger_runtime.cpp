@@ -67,7 +67,6 @@ DebuggerRuntime::DebuggerRuntime(
     theCommunicator(communicator),
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
-    theNotSendTerminateEvent(false),
     thePlanIsOpen(false),
     theSerializer(0),
     theItemHandler(aHandler),
@@ -89,6 +88,14 @@ DebuggerRuntime::run()
   theWrapper->open();
   thePlanIsOpen = true;
   runQuery();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
+    << "status=\"stopping\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
 }
 
 void
@@ -107,7 +114,6 @@ DebuggerRuntime::resetRuntime()
   theWrapper = theQuery->generateWrapper();
   thePlanIsOpen = false;
   theExecStatus = QUERY_IDLE;
-  theNotSendTerminateEvent = false;
   reset();
 }
 
@@ -158,7 +164,7 @@ DebuggerRuntime::runQuery()
 // Breakpoints
 
 unsigned int
-DebuggerRuntime::addBreakpoint(String& aFileName, int aLine, bool aEnabled)
+DebuggerRuntime::addBreakpoint(String& aFileName, unsigned int aLine, bool aEnabled)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   DebuggerCommons* lCommons = getDebbugerCommons();
@@ -324,15 +330,6 @@ DebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theExecStatus = QUERY_TERMINATED;
-
-  std::stringstream lResult;
-  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
-    << "status=\"stopping\" "
-    << "reason=\"ok\" "
-    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
-    << "</response>";
-  theCommunicator->send(lResult.str());
-  // TODO: something more here?
 }
 
 
@@ -500,13 +497,6 @@ DebuggerRuntime::stepOut()
   lCommons->makeStepOut();
 
   resumeRuntime();
-}
-
-
-void
-DebuggerRuntime::setNotSendTerminateEvent()
-{
-  theNotSendTerminateEvent = true;
 }
 
 

@@ -23,17 +23,19 @@
 #include <zorba/debugger_client.h>
 
 #include "command.h"
-#include "command_prompt.h"
 #include "event_handler.h"
 
 
 namespace zorba { namespace debugger {
+
+  class CommandPrompt;
 
   enum Commands {
     Status,
     Variables,
     Quit,
     Run,
+    Stop,
     BreakpointSet,
     BreakpointGet,
     BreakpointRemove,
@@ -62,8 +64,8 @@ class CommandLineHandler
       unsigned short port,
       LockFreeConsumer<std::size_t>& aConsumer,
       LockFreeConsumer<bool>& aContinueQueue,
-      EventHandler& aHandler,
-      CommandPrompt& aCommandPrompt);
+      EventHandler* aHandler,
+      CommandPrompt* aCommandPrompt);
 
     ~CommandLineHandler();
 
@@ -112,7 +114,7 @@ class CommandLineHandler
     LockFreeConsumer<std::size_t>&  theConsumer;
     LockFreeConsumer<bool>&         theContinueQueue;
     DebuggerClient*                 theClient;
-    CommandPrompt&                  theCommandLine;
+    CommandPrompt*                  theCommandLine;
     bool                            theQuit;
     bool                            theTerminated;
     bool                            theContinue;
@@ -131,10 +133,13 @@ void CommandLineHandler::handle<Quit> (ZORBA_TR1_NS::tuple<>& t);
 
 template<>
 void CommandLineHandler::handle<Run> (ZORBA_TR1_NS::tuple<> &t);
-  
+
+template<>
+void CommandLineHandler::handle<Stop> (ZORBA_TR1_NS::tuple<> &t);
+
 template<>
 void CommandLineHandler::handle<StackDepth> (ZORBA_TR1_NS::tuple<>& t);
-  
+
 template<>
 void CommandLineHandler::handle<BreakpointList> (ZORBA_TR1_NS::tuple<>& aTuple);
   

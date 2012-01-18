@@ -27,7 +27,8 @@ namespace zorba {
 /**
  * An ftcontains_expr is-an expr for the FTContainsExpr.
  */
-class ftcontains_expr : public expr {
+class ftcontains_expr : public expr 
+{
   friend class ExprIterator;
 
 public:

@@ -38,15 +38,37 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
+PlanIter_t fn_string::codegen(
+      CompilerCB* /*cb*/,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const
+{
+  return new FnStringIterator(sctx, loc, argv, true);
+}
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return fo->getIgnoresDuplicateNodes();
+}
+
+
+bool fn_data::mustCopyInputNodes(expr* fo, csize input) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  return (sctx->construction_mode() != StaticContextConsts::cons_preserve);
 }
 
 
@@ -73,13 +95,13 @@ xqtref_t fn_data::getReturnType(const fo_expr* caller) const
     if (nodeKind == store::StoreConsts::piNode ||
         nodeKind == store::StoreConsts::commentNode)
     {
-      return tm->create_builtin_atomic_type(TypeConstants::XS_STRING, q);
+      return tm->create_builtin_atomic_type(store::XS_STRING, q);
     }
 
     if (nodeKind == store::StoreConsts::documentNode ||
         nodeKind == store::StoreConsts::textNode)
     {
-      return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+      return tm->create_builtin_atomic_type(store::XS_UNTYPED_ATOMIC, q);
     }
 
     xqtref_t cType = nType.get_content_type();
@@ -93,7 +115,7 @@ xqtref_t fn_data::getReturnType(const fo_expr* caller) const
       }
       else if (TypeOps::is_equal(tm, *cType, *RTM.UNTYPED_TYPE))
       {
-        return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+        return tm->create_builtin_atomic_type(store::XS_UNTYPED_ATOMIC, q);
       }
       else if (TypeOps::is_subtype(tm, *cType, *RTM.ANY_ATOMIC_TYPE_STAR, loc))
       {
@@ -148,20 +170,6 @@ PlanIter_t fn_name_func::codegen(
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
   return new FnStringIterator(sctx, loc, lVec, true);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_string::codegen(
-      CompilerCB* /*cb*/,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
-{
-  return new FnStringIterator(sctx, loc, argv, true);
 }
 
 

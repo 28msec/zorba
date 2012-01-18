@@ -41,23 +41,28 @@ public:
     return true;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return fo->getIgnoresDuplicateNodes();
   }
 
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const
   {
     return fo->getIgnoresDuplicateNodes();
   }
@@ -81,23 +86,28 @@ public:
     return true;
   }
 
-  bool propagatesSortedNodes(ulong producer) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  bool propagatesSortedNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  bool propagatesDistinctNodes(ulong producer) const
+  bool propagatesDistinctNodes(csize producer) const
   {
     return producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return fo->getIgnoresDuplicateNodes();
   }
 
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const
   {
     return fo->getIgnoresDuplicateNodes();
   }

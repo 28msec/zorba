@@ -660,23 +660,17 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     exit_catcher_expr* e = static_cast<exit_catcher_expr*>(this);
 
-    expr* body = e->theExpr;
-
     newType = e->theExpr->get_return_type();
 
-    std::vector<expr*> exitExprs;
+    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
+    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
 
-    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
-
-    ulong numExitExprs = exitExprs.size();
-    ulong i;
-
-    for (i = 0; i < numExitExprs; ++i)
+    for (; ite != end; ++ite)
     {
-      exit_expr* e = static_cast<exit_expr*>(exitExprs[i]);
+      exit_expr* e = static_cast<exit_expr*>(*ite);
 
       newType = TypeOps::union_type(*newType.getp(),
-                                    *e->get_value()->get_return_type(),
+                                    *e->get_expr()->get_return_type(),
                                     tm);
     }
 

@@ -32,6 +32,7 @@ public:
 
   CompilerCB  * theCompilerCB;
 
+public:
   XQueryCompiler(CompilerCB* aCompilerCB);
     
   virtual ~XQueryCompiler();
@@ -85,14 +86,14 @@ class XQueryCompilerSubsystem
 {
   friend class GlobalEnvironment;
 
- public:
+public:
   XQueryCompilerSubsystem();
 
   virtual ~XQueryCompilerSubsystem();
 
   virtual Rewriter* getDefaultOptimizingRewriter() = 0;
 
- private:
+private:
   static std::auto_ptr<XQueryCompilerSubsystem> create();
 };
 

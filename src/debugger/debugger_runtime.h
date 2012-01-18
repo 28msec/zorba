@@ -67,9 +67,6 @@ class DebuggerRuntime : public Runnable {
   public:
 
     void
-    setNotSendTerminateEvent();
-
-    void
     resetRuntime();
 
     ExecutionStatus
@@ -82,7 +79,7 @@ class DebuggerRuntime : public Runnable {
     // Breakpints
 
     unsigned int
-    addBreakpoint(String& aFileName, int aLine, bool enabled);
+    addBreakpoint(String& aFileName, unsigned int aLine, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
@@ -173,7 +170,6 @@ class DebuggerRuntime : public Runnable {
     ExecutionStatus                   theExecStatus;
     mutable Lock                      theLock;
     std::set<DebugIterator*>          theBreakpoints;
-    bool                              theNotSendTerminateEvent;
     bool                              thePlanIsOpen;
     serializer*                       theSerializer;
     itemHandler                       theItemHandler;

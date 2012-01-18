@@ -43,9 +43,11 @@ class zorba_store_integrity_constraints_static_ddl_activate : public function
 {
 public:
   zorba_store_integrity_constraints_static_ddl_activate(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
@@ -60,9 +62,11 @@ class zorba_store_integrity_constraints_static_ddl_deactivate : public function
 {
 public:
   zorba_store_integrity_constraints_static_ddl_deactivate(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
@@ -77,9 +81,11 @@ class zorba_store_integrity_constraints_static_dml_check_integrity_constraint : 
 {
 public:
   zorba_store_integrity_constraints_static_dml_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

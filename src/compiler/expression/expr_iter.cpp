@@ -518,7 +518,7 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(repExpr->theTargetExpr);
-    EXPR_ITER_NEXT(repExpr->theReplaceExpr);
+    EXPR_ITER_NEXT(repExpr->theSourceExpr);
 
     EXPR_ITER_END();
     break;
@@ -531,7 +531,7 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(renExpr->theTargetExpr);
-    EXPR_ITER_NEXT(renExpr->theNameExpr);
+    EXPR_ITER_NEXT(renExpr->theSourceExpr);
 
     EXPR_ITER_END();
     break;

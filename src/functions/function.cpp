@@ -142,6 +142,53 @@ bool function::isMap(ulong input) const
 
 
 /*******************************************************************************
+  Check whether this function may return a node that belongs to the same tree
+  as a node inside the sequence that is bound to the given input parameter.
+
+  Note: this method is not applicable to udfs.
+********************************************************************************/
+bool function::propagatesInputNodes(expr* fo, csize input) const
+{
+  TypeManager* tm = fo->get_type_manager();
+
+  // This method should be called only if the function may indeed return nodes
+  assert(!TypeOps::is_subtype(tm,
+                              *fo->get_return_type(),
+                              *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+
+  xqtref_t argType = static_cast<fo_expr*>(fo)->get_arg(input)->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *argType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    return false;
+
+  return true; // conservative answer
+}
+
+
+/*******************************************************************************
+  Check whether this function cares whether nodes bound to the given input 
+  parameter belong to "standalone" trees or not. A tree is standalone if it
+  does not contain references to other trees. Such references are created when
+  the optimizer decides that it is ok to avoid copying the referenced subtree
+  (as would be required by required by a strict implementation of the spec,
+  eg. during node construction). 
+
+  Note: this method is not applicable to udfs.
+********************************************************************************/
+bool function::mustCopyInputNodes(expr* fo, csize input) const
+{
+  TypeManager* tm = fo->get_type_manager();
+
+  xqtref_t argType = static_cast<fo_expr*>(fo)->get_arg(input)->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *argType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    return false;
+
+  return true;
+}
+
+
+/*******************************************************************************
   Check whether this function produces, preserves, or eliminates duplicate nodes.
 ********************************************************************************/
 FunctionConsts::AnnotationValue function::producesDistinctNodes() const
@@ -192,7 +239,7 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
   whether the result of this function, at the point where it is called, must
   be in doc order or not.
 ********************************************************************************/
-BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const
+BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
 {
   if (isVariadic() && input > 0)
   {
@@ -218,11 +265,10 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const
   whether the result of this function, at the point where it is called, must
   contain distinct nodes or not.
 ********************************************************************************/
-BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
+BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return ANNOTATION_FALSE;
 }
-
 
 }
 /* vim:set et sw=2 ts=2: */

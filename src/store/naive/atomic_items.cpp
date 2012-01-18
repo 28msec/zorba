@@ -96,7 +96,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   switch (item1->getTypeCode())
   {
-  case XS_UNTYPED_ATOMIC:
+  case store::XS_UNTYPED_ATOMIC:
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(item1);
     try
@@ -111,8 +111,8 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_DOUBLE:
-  case XS_FLOAT:
+  case store::XS_DOUBLE:
+  case store::XS_FLOAT:
   {
     double doubleValue = item1->getDoubleValue().getNumber();
     longValue = static_cast<xs_long>(doubleValue);
@@ -123,7 +123,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_DECIMAL:
+  case store::XS_DECIMAL:
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(item1);
     try
@@ -138,11 +138,11 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_INTEGER:
-  case XS_NON_POSITIVE_INTEGER:
-  case XS_NEGATIVE_INTEGER:
-  case XS_NON_NEGATIVE_INTEGER:
-  case XS_POSITIVE_INTEGER:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
@@ -157,7 +157,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_UNSIGNED_LONG:
+  case store::XS_UNSIGNED_LONG:
   {
     const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
     if ((item->theValue >> 63) == 0)
@@ -197,7 +197,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   switch (item1->getTypeCode())
   {
-  case XS_DECIMAL:
+  case store::XS_DECIMAL:
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(item1);
 
@@ -209,11 +209,11 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_INTEGER:
-  case XS_NON_POSITIVE_INTEGER:
-  case XS_NEGATIVE_INTEGER:
-  case XS_NON_NEGATIVE_INTEGER:
-  case XS_POSITIVE_INTEGER:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
@@ -225,7 +225,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_UNSIGNED_LONG:
+  case store::XS_UNSIGNED_LONG:
   {
     const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
 
@@ -237,16 +237,16 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_UNSIGNED_INT:
-  case XS_UNSIGNED_SHORT:
-  case XS_UNSIGNED_BYTE:
+  case store::XS_UNSIGNED_INT:
+  case store::XS_UNSIGNED_SHORT:
+  case store::XS_UNSIGNED_BYTE:
   {
     doubleValue = getUnsignedIntValue();
     lossy = false;
     break;
   }
 
-  case XS_LONG:
+  case store::XS_LONG:
   {
     const LongItem* item = static_cast<const LongItem*>(item1);
 
@@ -258,9 +258,9 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_INT:
-  case XS_SHORT:
-  case XS_BYTE:
+  case store::XS_INT:
+  case store::XS_SHORT:
+  case store::XS_BYTE:
   {
     doubleValue = item1->getIntValue();
     lossy = false;
@@ -291,7 +291,7 @@ void AtomicItem::coerceToLong(
     bool& negINF,
     bool& posINF) const
 {
-  if (getTypeCode() != XS_DOUBLE && getTypeCode() != XS_FLOAT)
+  if (getTypeCode() != store::XS_DOUBLE && getTypeCode() != store::XS_FLOAT)
   {
     RAISE_ERROR_NO_LOC(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
@@ -461,11 +461,13 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
-  try {
+  try 
+  {
     xs_double const doubleValue(theValue.c_str());
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& ) 
+  {
     result = NULL;
     return false;
   }
@@ -554,7 +556,7 @@ bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 
 store::Item* UntypedAtomicItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
 }
 
 
@@ -573,6 +575,17 @@ bool UntypedAtomicItem::equals(
     return theValue == other->getString();
 
   return (utf8::compare(theValue, other->getString(), collation) == 0);
+}
+
+
+long UntypedAtomicItem::compare(
+    const Item* other,
+    long timezone,
+    const XQPCollator* aCollation) const
+{
+  // Note: utf8::compare does byte comparison if the collation is null or
+  // requires byte comparison.
+  return utf8::compare(theValue, other->getString(), aCollation);
 }
 
 
@@ -628,7 +641,7 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 
 store::Item* QNameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_QNAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_QNAME];
 }
 
 
@@ -763,7 +776,7 @@ bool NotationItem::equals(const store::Item* item,
 
 store::Item* NotationItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NOTATION];
+  return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
 }
 
 
@@ -804,7 +817,7 @@ NotationItem::~NotationItem()
 ********************************************************************************/
 store::Item* AnyUriItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ANY_URI];
+  return GET_STORE().theSchemaTypeNames[store::XS_ANY_URI];
 }
 
 
@@ -1554,7 +1567,7 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 store::Item* StringItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_STRING];
+  return GET_STORE().theSchemaTypeNames[store::XS_STRING];
 }
 
 
@@ -1795,7 +1808,7 @@ void StreamableStringItem::materialize() const
 ********************************************************************************/
 store::Item* NormalizedStringItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING];
+  return GET_STORE().theSchemaTypeNames[store::XS_NORMALIZED_STRING];
 }
 
 
@@ -1813,7 +1826,7 @@ zstring NormalizedStringItem::show() const
 ********************************************************************************/
 store::Item* TokenItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_TOKEN];
+  return GET_STORE().theSchemaTypeNames[store::XS_TOKEN];
 }
 
 
@@ -1831,7 +1844,7 @@ zstring TokenItem::show() const
 ********************************************************************************/
 store::Item* LanguageItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_LANGUAGE];
+  return GET_STORE().theSchemaTypeNames[store::XS_LANGUAGE];
 }
 
 
@@ -1849,7 +1862,7 @@ zstring LanguageItem::show() const
 ********************************************************************************/
 store::Item* NMTOKENItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
+  return GET_STORE().theSchemaTypeNames[store::XS_NMTOKEN];
 }
 
 
@@ -1867,7 +1880,7 @@ zstring NMTOKENItem::show() const
 ********************************************************************************/
 store::Item* NameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_NAME];
 }
 
 
@@ -1885,7 +1898,7 @@ zstring NameItem::show() const
 ********************************************************************************/
 store::Item* NCNameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NCNAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_NCNAME];
 }
 
 
@@ -1903,7 +1916,7 @@ zstring NCNameItem::show() const
 ********************************************************************************/
 store::Item* IDItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ID];
+  return GET_STORE().theSchemaTypeNames[store::XS_ID];
 }
 
 
@@ -1921,7 +1934,7 @@ zstring IDItem::show() const
 ********************************************************************************/
 store::Item* IDREFItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_IDREF];
+  return GET_STORE().theSchemaTypeNames[store::XS_IDREF];
 }
 
 
@@ -1939,7 +1952,7 @@ zstring IDREFItem::show() const
 ********************************************************************************/
 store::Item* ENTITYItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ENTITY];
+  return GET_STORE().theSchemaTypeNames[store::XS_ENTITY];
 }
 
 zstring ENTITYItem::show() const
@@ -1971,33 +1984,33 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-SchemaTypeCode DateTimeItem::getTypeCode() const
+store::SchemaTypeCode DateTimeItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
   case DateTime::GYEARMONTH_FACET:
-    return XS_GYEAR_MONTH;
+    return store::XS_GYEAR_MONTH;
 
   case DateTime::GYEAR_FACET:
-    return XS_GYEAR;
+    return store::XS_GYEAR;
 
   case DateTime::GMONTH_FACET:
-    return XS_GMONTH;
+    return store::XS_GMONTH;
 
   case DateTime::GMONTHDAY_FACET:
-    return XS_GMONTH_DAY;
+    return store::XS_GMONTH_DAY;
 
   case DateTime::GDAY_FACET:
-    return XS_GDAY;
+    return store::XS_GDAY;
 
   case DateTime::DATE_FACET:
-    return XS_DATE;
+    return store::XS_DATE;
 
   case DateTime::TIME_FACET:
-    return XS_TIME;
+    return store::XS_TIME;
 
   case DateTime::DATETIME_FACET:
-    return XS_DATETIME;
+    return store::XS_DATETIME;
 
   default:
     ZORBA_ASSERT(false);
@@ -2168,19 +2181,19 @@ void DurationItem::appendStringValue(zstring& buf) const
 }
 
 
-SchemaTypeCode DurationItem::getTypeCode() const
+store::SchemaTypeCode DurationItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
   case Duration::DURATION_FACET:
-    return XS_DURATION;
+    return store::XS_DURATION;
 
   case Duration::DAYTIMEDURATION_FACET:
-    return XS_DT_DURATION;
+    return store::XS_DT_DURATION;
 
   case Duration::YEARMONTHDURATION_FACET:
   default:
-    return XS_YM_DURATION;
+    return store::XS_YM_DURATION;
   }
 }
 
@@ -2210,7 +2223,7 @@ zstring DurationItem::show() const
 ********************************************************************************/
 store::Item* DoubleItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
+  return GET_STORE().theSchemaTypeNames[store::XS_DOUBLE];
 }
 
 
@@ -2282,7 +2295,7 @@ DoubleItem::hash(long timezone, const XQPCollator* aCollation) const
 ********************************************************************************/
 store::Item* FloatItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_FLOAT];
+  return GET_STORE().theSchemaTypeNames[store::XS_FLOAT];
 }
 
 
@@ -2354,7 +2367,7 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
 
 store::Item* DecimalItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DECIMAL];
+  return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
 }
 
 
@@ -2449,7 +2462,7 @@ xs_long IntegerItem::getLongValue() const
 
 store::Item* IntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
 }
 
 
@@ -2498,7 +2511,7 @@ zstring IntegerItem::show() const
 ********************************************************************************/
 store::Item* NonPositiveIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
 }
 
 zstring NonPositiveIntegerItem::show() const
@@ -2515,7 +2528,7 @@ zstring NonPositiveIntegerItem::show() const
 ********************************************************************************/
 store::Item* NegativeIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NEGATIVE_INTEGER];
 }
 
 
@@ -2533,7 +2546,7 @@ zstring NegativeIntegerItem::show() const
 ********************************************************************************/
 store::Item* NonNegativeIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
 }
 
 
@@ -2551,7 +2564,7 @@ zstring NonNegativeIntegerItem::show() const
 ********************************************************************************/
 store::Item* PositiveIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_POSITIVE_INTEGER];
 }
 
 
@@ -2581,7 +2594,7 @@ xs_integer LongItem::getIntegerValue() const
 
 store::Item* LongItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_LONG];
+  return GET_STORE().theSchemaTypeNames[store::XS_LONG];
 }
 
 
@@ -2642,7 +2655,7 @@ xs_integer IntItem::getIntegerValue() const
 
 store::Item* IntItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_INT];
+  return GET_STORE().theSchemaTypeNames[store::XS_INT];
 }
 
 
@@ -2702,7 +2715,7 @@ xs_integer ShortItem::getIntegerValue() const
 
 store::Item* ShortItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_SHORT];
+  return GET_STORE().theSchemaTypeNames[store::XS_SHORT];
 }
 
 
@@ -2763,7 +2776,7 @@ xs_integer ByteItem::getIntegerValue() const
 
 store::Item* ByteItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BYTE];
+  return GET_STORE().theSchemaTypeNames[store::XS_BYTE];
 }
 
 
@@ -2830,7 +2843,7 @@ xs_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedLongItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_LONG];
 }
 
 
@@ -2897,7 +2910,7 @@ xs_uinteger UnsignedIntItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedIntItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_INT];
 }
 
 
@@ -2964,7 +2977,7 @@ xs_uinteger UnsignedShortItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedShortItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_SHORT];
 }
 
 
@@ -3031,7 +3044,7 @@ xs_uinteger UnsignedByteItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedByteItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_BYTE];
 }
 
 
@@ -3080,7 +3093,7 @@ zstring UnsignedByteItem::show() const
 ********************************************************************************/
 store::Item* BooleanItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
+  return GET_STORE().theSchemaTypeNames[store::XS_BOOLEAN];
 }
 
 
@@ -3137,7 +3150,7 @@ zstring BooleanItem::show() const
 ********************************************************************************/
 store::Item* Base64BinaryItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
+  return GET_STORE().theSchemaTypeNames[store::XS_BASE64BINARY];
 }
 
 
@@ -3179,7 +3192,7 @@ uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) co
 ********************************************************************************/
 store::Item* HexBinaryItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
+  return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
 }
 
 

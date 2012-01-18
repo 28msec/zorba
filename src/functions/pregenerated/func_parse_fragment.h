@@ -43,9 +43,11 @@ class fn_zorba_xml_parse_xml_fragment : public function
 {
 public:
   fn_zorba_xml_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
