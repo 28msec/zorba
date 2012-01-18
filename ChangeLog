@@ -21,6 +21,7 @@ version 2.2
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
+  * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
 
 version 2.1

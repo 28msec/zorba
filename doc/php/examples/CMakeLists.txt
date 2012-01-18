@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2012 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,14 +20,21 @@ IF(PHP5_FOUND)
   MESSAGE(STATUS "PHP Path:" ${phpPath})
   SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php)
   MESSAGE(STATUS "PHP Extension Path: " ${phpExtensionPath})
+  SET(phpIncludePath ${CMAKE_BINARY_DIR}/swig/php)
+  MESSAGE(STATUS "PHP Include Path: " ${phpExtensionPath})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/php.ini.in ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
   MESSAGE(STATUS "Configuration file: " ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/simple.php.in ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   MESSAGE(STATUS "Simple configuration file: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
-  ADD_TEST("php" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test.php.in ${CMAKE_CURRENT_BINARY_DIR}/test.php)
+  MESSAGE(STATUS "PHP test  file configured: " ${CMAKE_CURRENT_BINARY_DIR}/test.php)
+  ADD_TEST("php1" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
+  ADD_TEST("php2" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/test.php)
+  MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/test.php)
   
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/simple.php
+  
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/simple.php ${CMAKE_CURRENT_BINARY_DIR}/test.php
           COMPONENT "php_examples"
           DESTINATION
           share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/php/examples)
