@@ -51,71 +51,60 @@ class SimpleLazyTempSeq : public store::TempSeq
   store::Iterator_t          theIterator;
   bool                       theCopy;
   bool                       theMatFinished;
-  uint64_t                      thePurgedUpTo;
+  xs_long                    thePurgedUpTo;
   
   std::vector<store::Item_t> theItems;
 
  public:
   SimpleLazyTempSeq() { }
 
-  SimpleLazyTempSeq(store::Iterator_t& iter, bool copy = false);
+  SimpleLazyTempSeq(const store::Iterator_t& iter);
 
   virtual ~SimpleLazyTempSeq();
 
-  bool empty();
+  void init(const store::Iterator_t& iter);
 
-  void init(store::Iterator_t& iter, bool copy = false);
+  void append(const store::Iterator_t& iter);
 
-  void append(store::Iterator_t iter, bool copy);
-
-  inline void getItem(xs_integer position, store::Item_t& result);
-
-  inline bool containsItem(xs_integer position);
-
-  store::Iterator_t getIterator();
-
-  store::Iterator_t getIterator(
-        xs_integer startPos,
-        xs_integer endPos,
-        bool streaming = false);
-
-  store::Iterator_t getIterator(
-        xs_integer startPos,
-        store::Iterator_t function,
-        const std::vector<store::Iterator_t>& var,
-        bool streaming = false);
-
-  store::Iterator_t getIterator(
-        const std::vector<xs_integer>& positions,
-        bool streaming = false);
-
-  store::Iterator_t getIterator(
-        store::Iterator_t positions,
-        bool streaming = false);
-        
   void purge();
 
   void purgeUpTo(xs_integer upTo);
 
+  bool empty();
+
+  void getItem(xs_integer position, store::Item_t& result);
+
+  bool containsItem(xs_integer position);
+
+  store::Iterator_t getIterator() const;
+
+  store::Iterator_t getIterator(
+      xs_integer startPos,
+      xs_integer endPos,
+      bool streaming = false) const;
+
  private:
-  inline void matNextItem();
+  void matNextItem();
 };
  
  
+/*******************************************************************************
+
+********************************************************************************/
 class SimpleLazyTempSeqIter : public store::Iterator 
 {
  private:
   SimpleLazyTempSeq_t  theTempSeq;
 
-  uint64_t             theCurPos;
-  uint64_t             theStartPos;
-  uint64_t             theEndPos;
+  xs_long              theCurPos;
+  xs_long              theStartPos;
+  xs_long              theEndPos;
 
  public:
   SimpleLazyTempSeqIter(
-        SimpleLazyTempSeq_t aTempSeq,
-        xs_integer aStartPos,
-        xs_integer aEndPos);
+      const SimpleLazyTempSeq* aTempSeq,
+      xs_integer aStartPos,
+      xs_integer aEndPos);
 
   virtual ~SimpleLazyTempSeqIter();
 
@@ -124,110 +113,6 @@ class SimpleLazyTempSeqIter : public store::Iterator
   void reset();
   void close();
 };
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
-{
-  uint64_t lPos;
-  try {
-    lPos = to_xs_unsignedLong(position);
-  } catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
-  }
-  if ( this->containsItem ( lPos ) ) 
-  {
-    result = theItems[lPos - thePurgedUpTo - 1];
-  }
-  else 
-  {
-    result = NULL;
-  }
-}
-
-
-/*******************************************************************************
-  This method checks if the i-th item in the result sequences of the input
-  iterator is in the queue or not. In general, the item may be missing from
-  the queue because:
-  (a) it has either been purged, or
-  (b) it has not been computed yet, or
-  (c) the result sequence contains less than i items.
- 
-  Case (a) should never arise: it is the user of the lazy temp sequence that
-  decided when and how many items to purge, so he shouldn't come back to ask
-  for an item that has been purged.
-
-  In case (c), the method will compute and buffer any input items that have not
-  been computed already and then return false.
-
-  In case (b), the method will compute and buffer all the items starting after
-  the last computed item and up to the i-th item; then it will return true.
-
-  If the i-th item is already in the queue, the method will simply return true. 
-********************************************************************************/
-inline bool SimpleLazyTempSeq::containsItem(xs_integer position) 
-{
-  uint64_t lPos;
-  try {
-    lPos = to_xs_unsignedLong(position);
-  } catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("access out of bounds " << e.what() << ")")
-        )
-      );
-  }
-  assert(lPos > thePurgedUpTo);
-
-  uint64_t numItemsToBuffer = lPos - thePurgedUpTo;
-
-  while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
-  {
-    matNextItem();
-  }
-
-  return theItems.size() >= numItemsToBuffer;
-}
-
-
-/*******************************************************************************
-  Get the next item (if any) from the input iterator and put it at the end of 
-  the queue.  
-********************************************************************************/
-inline void SimpleLazyTempSeq::matNextItem() 
-{
-  theItems.push_back(NULL);
-
-  store::Item_t& lLocation = theItems.back();
-
-  if (theIterator->next(lLocation)) 
-  {
-    if (theCopy && lLocation->isNode()) 
-    {
-      store::CopyMode lCopyMode;
-      lLocation = lLocation->copy(NULL, lCopyMode);
-    }
-  }
-  else 
-  {
-    // We do not want to have an empty item materialized.
-    theItems.pop_back();
-    theMatFinished = true;
-    theIterator->close();
-  }
-}
 
 
 } // namespace store

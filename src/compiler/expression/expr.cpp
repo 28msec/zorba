@@ -720,10 +720,12 @@ expr_t name_cast_expr::clone(substitution_t& subst) const
 doc_expr::doc_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aContent)
+    expr* aContent,
+    bool copyNodes)
   :
   expr(sctx, loc, doc_expr_kind),
-  theContent(aContent)
+  theContent(aContent),
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 }
@@ -733,6 +735,7 @@ void doc_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theContent;
+  ar & theCopyInputNodes;
 }
 
 
@@ -749,7 +752,11 @@ void doc_expr::compute_scripting_kind()
 
 expr_t doc_expr::clone(substitution_t& subst) const
 {
-  return new doc_expr(theSctx, get_loc(), CLONE(getContent(), subst));
+  doc_expr* clone = new doc_expr(theSctx,
+                                 get_loc(),
+                                 CLONE(getContent(), subst),
+                                 theCopyInputNodes);
+  return clone;
 }
 
 
@@ -759,15 +766,17 @@ expr_t doc_expr::clone(substitution_t& subst) const
 elem_expr::elem_expr(
     static_context* sctx,
     const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aAttrs,
-    expr_t aContent,
-    const namespace_context* aNSCtx)
+    expr* aQNameExpr,
+    expr* attrs,
+    expr* content,
+    const namespace_context* aNSCtx,
+    bool copyNodes)
   :
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
-  theAttrs(aAttrs),
-  theContent(aContent)
+  theAttrs(attrs),
+  theContent(content),
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 
@@ -778,14 +787,16 @@ elem_expr::elem_expr(
 elem_expr::elem_expr(
     static_context* sctx,
     const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aContent,
-    const namespace_context* aNSCtx)
+    expr* aQNameExpr,
+    expr* content,
+    const namespace_context* aNSCtx,
+    bool copyNodes)
   :
   namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
-  theContent(aContent)
+  theContent(content),
+  theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
 
@@ -800,6 +811,7 @@ void elem_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theAttrs;
   ar & theContent;
   ar & theNSCtx;
+  ar & theCopyInputNodes;
 }
 
 
@@ -831,12 +843,14 @@ void elem_expr::compute_scripting_kind()
 
 expr_t elem_expr::clone(substitution_t& subst) const
 {
-  return new elem_expr(theSctx,
-                       get_loc(),
-                       CLONE(getQNameExpr(), subst),
-                       CLONE(getAttrs(), subst),
-                       CLONE(getContent(), subst),
-                       getNSCtx());
+  elem_expr* clone =  new elem_expr(theSctx,
+                                    get_loc(),
+                                    CLONE(getQNameExpr(), subst),
+                                    CLONE(getAttrs(), subst),
+                                    CLONE(getContent(), subst),
+                                    getNSCtx(),
+                                    theCopyInputNodes);
+  return clone;
 }
 
 
@@ -1388,13 +1402,14 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 eval_expr::eval_expr(
     static_context* sctx,
     const QueryLoc& loc, 
-    expr_t e,
+    const expr_t& e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
   namespace_context_base_expr(sctx, loc, eval_expr_kind, nsCtx),
   theExpr(e),
-  theInnerScriptingKind(scriptingKind)
+  theInnerScriptingKind(scriptingKind),
+  theDoNodeCopy(false)
 {
   compute_scripting_kind();
 }
@@ -1407,6 +1422,7 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theVars;
   ar & theArgs;
   SERIALIZE_ENUM(expr_script_kind_t, theInnerScriptingKind);
+  ar & theDoNodeCopy;
 }
 
 
@@ -1439,8 +1455,9 @@ expr_t eval_expr::clone(substitution_t& s) const
                                                theExpr->clone(s),
                                                theInnerScriptingKind,
                                                theNSCtx.getp());
+  new_eval->setNodeCopy(theDoNodeCopy);
 
-  for (ulong i = 0; i < theVars.size(); ++i)
+  for (csize i = 0; i < theVars.size(); ++i)
   {
     var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
     assert(cloneVar != NULL);
@@ -1458,41 +1475,15 @@ expr_t eval_expr::clone(substitution_t& s) const
 debugger_expr::debugger_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aChild,
-    std::list<GlobalBinding> aGlobals,
+    const expr_t& aChild,
     namespace_context* nsCtx,
     bool aIsVarDeclaration)
   :
   namespace_context_base_expr(sctx, loc, debugger_expr_kind, nsCtx),
   theExpr(aChild),
-  theGlobals(aGlobals),
   theIsVarDeclaration(aIsVarDeclaration)
 {
-  theScriptingKind = aChild->get_scripting_detail();
-}
-
-void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVariables)
-{
-  std::set<const store::Item*> lQNames;
-  checked_vector<var_expr_t>::reverse_iterator it;
-  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-  {
-    if ( lQNames.find((*it)->get_name()) == lQNames.end() )
-    {
-      lQNames.insert( (*it)->get_name() );
-      var_expr_t lValue = (*it);
-      var_expr_t lVariable(new var_expr(theSctx,
-                                        theLoc,
-                                        var_expr::eval_var,
-                                        lValue->get_name() ) );
-      lVariable->set_type( lValue->get_type() );
-      add_var(lVariable, lValue.getp());
-    }
-  }
-}
-
-void debugger_expr::compute_scripting_kind()
-{
+  compute_scripting_kind();
 }
 
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
@@ -1501,9 +1492,15 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
   ar & theVars;
   ar & theArgs;
-  ar & theGlobals;
   ar & theIsVarDeclaration;
 }
+
+
+void debugger_expr::compute_scripting_kind()
+{
+  theScriptingKind = theExpr->get_scripting_detail();
+}
+
 #endif
 
 

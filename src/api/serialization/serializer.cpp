@@ -692,11 +692,34 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
   // emit namespace bindings
   store::NsBindings nsBindings;
-
   if (depth == 0)
+  {
     item->getNamespaceBindings(nsBindings);
+  }
   else
-    item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  {
+    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+    item->getNamespaceBindings(nsBindings);
+
+    store::Item* nodeName = item->getNodeName();
+
+    const zstring& prefix = nodeName->getPrefix();
+    const zstring& nsuri = nodeName->getNamespace();
+    if (prefix.empty() && nsuri.empty())
+    {
+      store::NsBindings::const_iterator ite = nsBindings.begin();
+      store::NsBindings::const_iterator end = nsBindings.end();
+
+      for (; ite != end; ++ite)
+      {
+        if (ite->second.empty() && ite->first.empty())
+          break;
+      }
+
+      if (ite == end)
+        nsBindings.push_back(std::pair<zstring, zstring>(prefix, nsuri));
+    }
+  }
 
   csize numBindings = nsBindings.size();
 
@@ -1682,14 +1705,18 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   std::streambuf *  pbuf;
   std::streamsize   read_bytes;
   std::istream& is = item->getStream();
-
-  // prepare the stream
+  std::streampos pos;
   std::ios::iostate const old_exceptions = is.exceptions();
-  is.exceptions( std::ios::badbit | std::ios::failbit );
-  std::streampos const pos = is.tellg();
-  if (pos)
-    is.seekg(0, std::ios::beg);
-  is.exceptions(is.exceptions() & ~std::ios::failbit);
+
+  if (item->isSeekable())
+  {
+    // prepare the stream
+    is.exceptions( std::ios::badbit | std::ios::failbit );
+    pos = is.tellg();
+    if (pos)
+      is.seekg(0, std::ios::beg);
+    is.exceptions(is.exceptions() & ~std::ios::failbit);
+  }
 
   // read bytes and do string expansion
   do
@@ -1703,12 +1730,15 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 
   // restore stream's state
   is.clear();                   // clear eofbit
-  if (pos)
+  if (item->isSeekable())
   {
-    is.exceptions(is.exceptions() | std::ios::failbit);
-    is.seekg(pos, std::ios::beg);
+    if (pos)
+    {
+      is.exceptions(is.exceptions() | std::ios::failbit);
+      is.seekg(pos, std::ios::beg);
+    }
+    is.exceptions(old_exceptions);
   }
-  is.exceptions(old_exceptions);
 }
 
 

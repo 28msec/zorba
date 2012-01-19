@@ -1,0 +1,182 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <LetVariable name="doc" materialize="true">
+      <FnDocIterator>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+          </FnDataIterator>
+        </PromoteIterator>
+      </FnDocIterator>
+    </LetVariable>
+    <LetVariable name="$$opt_temp_1" materialize="true">
+      <HoistIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+          <LetVarIterator varname="doc"/>
+        </ChildAxisIterator>
+      </HoistIterator>
+    </LetVariable>
+    <LetVariable name="$$opt_temp_0" materialize="true">
+      <HoistIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+          <LetVarIterator varname="doc"/>
+        </ChildAxisIterator>
+      </HoistIterator>
+    </LetVariable>
+    <ReturnClause>
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,statistics)"/>
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,total)"/>
+            <FnConcatIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,paper)"/>
+                <EnclosedIterator attr_cont="false">
+                  <FnCountIterator>
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+                        <LetVarIterator varname="doc"/>
+                      </ChildAxisIterator>
+                    </ChildAxisIterator>
+                  </FnCountIterator>
+                </EnclosedIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,author)"/>
+                <EnclosedIterator attr_cont="false">
+                  <FnCountIterator>
+                    <FnDistinctValuesIterator>
+                      <FnDataIterator>
+                        <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                          <LetVarIterator varname="doc"/>
+                        </DescendantAxisIterator>
+                      </FnDataIterator>
+                    </FnDistinctValuesIterator>
+                  </FnCountIterator>
+                </EnclosedIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,conferences)"/>
+            <EnclosedIterator attr_cont="false">
+              <flwor::FLWORIterator>
+                <ForVariable name="conference">
+                  <FnConcatIterator>
+                    <SingletonIterator value="xs:string(EDBT)"/>
+                    <SingletonIterator value="xs:string(ICDT)"/>
+                    <SingletonIterator value="xs:string(ICDE)"/>
+                    <SingletonIterator value="xs:string(PODS)"/>
+                    <SingletonIterator value="xs:string(VLDB)"/>
+                    <SingletonIterator value="xs:string(SIGMOD Conference)"/>
+                  </FnConcatIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,conference)"/>
+                    <FnConcatIterator>
+                      <ElementIterator copyInputNodes="false">
+                        <SingletonIterator value="xs:QName(,,name)"/>
+                        <EnclosedIterator attr_cont="false">
+                          <ForVarIterator varname="conference"/>
+                        </EnclosedIterator>
+                      </ElementIterator>
+                      <ElementIterator copyInputNodes="false">
+                        <SingletonIterator value="xs:QName(,,paper)"/>
+                        <EnclosedIterator attr_cont="false">
+                          <FnCountIterator>
+                            <flwor::FLWORIterator>
+                              <ForVariable name="$$dot">
+                                <UnhoistIterator>
+                                  <LetVarIterator varname="$$opt_temp_0"/>
+                                </UnhoistIterator>
+                              </ForVariable>
+                              <ForVariable name="$$dot">
+                                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
+                                  <ForVarIterator varname="$$dot"/>
+                                </ChildAxisIterator>
+                              </ForVariable>
+                              <WhereClause>
+                                <CompareIterator>
+                                  <FnDataIterator>
+                                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                      <ForVarIterator varname="$$dot"/>
+                                    </ChildAxisIterator>
+                                  </FnDataIterator>
+                                  <ForVarIterator varname="conference"/>
+                                </CompareIterator>
+                              </WhereClause>
+                              <ReturnClause>
+                                <SingletonIterator value="xs:boolean(true)"/>
+                              </ReturnClause>
+                            </flwor::FLWORIterator>
+                          </FnCountIterator>
+                        </EnclosedIterator>
+                      </ElementIterator>
+                      <ElementIterator copyInputNodes="false">
+                        <SingletonIterator value="xs:QName(,,author)"/>
+                        <EnclosedIterator attr_cont="false">
+                          <FnCountIterator>
+                            <FnDistinctValuesIterator>
+                              <FnDataIterator>
+                                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                                  <flwor::FLWORIterator>
+                                    <ForVariable name="$$dot">
+                                      <UnhoistIterator>
+                                        <LetVarIterator varname="$$opt_temp_1"/>
+                                      </UnhoistIterator>
+                                    </ForVariable>
+                                    <ForVariable name="$$dot">
+                                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
+                                        <ForVarIterator varname="$$dot"/>
+                                      </ChildAxisIterator>
+                                    </ForVariable>
+                                    <WhereClause>
+                                      <CompareIterator>
+                                        <FnDataIterator>
+                                          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                            <ForVarIterator varname="$$dot"/>
+                                          </ChildAxisIterator>
+                                        </FnDataIterator>
+                                        <ForVarIterator varname="conference"/>
+                                      </CompareIterator>
+                                    </WhereClause>
+                                    <ReturnClause>
+                                      <ForVarIterator varname="$$dot"/>
+                                    </ReturnClause>
+                                  </flwor::FLWORIterator>
+                                </ChildAxisIterator>
+                              </FnDataIterator>
+                            </FnDistinctValuesIterator>
+                          </FnCountIterator>
+                        </EnclosedIterator>
+                      </ElementIterator>
+                    </FnConcatIterator>
+                  </ElementIterator>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

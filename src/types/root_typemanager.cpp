@@ -260,45 +260,45 @@ RootTypeManager::RootTypeManager()
   GENV.getStore().getItemFactory()->createQName(ZXSE_TUPLE_QNAME, ZXSE_URI, ZXSE_PREFIX, "tuple");
 
   store::Item* tempQN = NULL;
-  TypeConstants::atomic_type_code_t tempCode;
+  store::SchemaTypeCode tempCode;
 
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
   tname##_TYPE_ONE = new AtomicXQType(this,                                     \
-                                      TypeConstants::XS_##tname,                \
+                                      store::XS_##tname,                \
                                       TypeConstants::QUANT_ONE,                 \
                                       true);                                    \
                                                                                 \
   tname##_TYPE_QUESTION = new AtomicXQType(this,                                \
-                                           TypeConstants::XS_##tname,           \
+                                           store::XS_##tname,           \
                                            TypeConstants::QUANT_QUESTION,       \
                                            true);                               \
                                                                                 \
   tname##_TYPE_STAR = new AtomicXQType(this,                                    \
-                                       TypeConstants::XS_##tname,               \
+                                       store::XS_##tname,               \
                                        TypeConstants::QUANT_STAR,               \
                                        true);                                   \
                                                                                 \
   tname##_TYPE_PLUS = new AtomicXQType(this,                                    \
-                                       TypeConstants::XS_##tname,               \
+                                       store::XS_##tname,               \
                                        TypeConstants::QUANT_PLUS,               \
                                        true);                                   \
                                                                                 \
-  m_atomic_typecode_qname_map[TypeConstants::XS_##tname] = XS_##tname##_QNAME;  \
+  m_atomic_typecode_qname_map[store::XS_##tname] = XS_##tname##_QNAME;  \
                                                                                 \
   tempQN = XS_##tname##_QNAME.getp();                                           \
-  tempCode = TypeConstants::XS_##tname;                                         \
+  tempCode = store::XS_##tname;                                         \
   m_atomic_qnametype_map.insert(tempQN, tempCode);                              \
                                                                                 \
-  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_ONE] =  \
+  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_ONE] =  \
     &tname##_TYPE_ONE;                                                          \
                                                                                 \
-  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_QUESTION] = \
+  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_QUESTION] = \
     &tname##_TYPE_QUESTION;                                                     \
                                                                                 \
-  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_STAR] = \
+  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_STAR] = \
     &tname##_TYPE_STAR;                                                         \
                                                                                 \
-  m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_PLUS] = \
+  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_PLUS] = \
     &tname##_TYPE_PLUS;
 
   ATOMIC_TYPE_DEFN(ANY_ATOMIC)

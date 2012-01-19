@@ -24,7 +24,7 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-class  UpdateConsts
+class UpdateConsts
 {
 public:
   typedef enum

@@ -28,6 +28,12 @@
 #include "cxx_util.h"
 #include "stl_util.h"
 
+#ifdef WIN32
+// Windows annoyingly defines these as macros.
+#undef max
+#undef min
+#endif /* WIN32 */
+
 namespace zorba {
 namespace ztd {
 

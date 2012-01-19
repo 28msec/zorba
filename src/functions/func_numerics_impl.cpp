@@ -18,6 +18,8 @@
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 
+#include "compiler/expression/fo_expr.h"
+
 #include "functions/func_numerics.h"
 #include "functions/func_numerics_impl.h"
 
@@ -25,7 +27,7 @@
 
 #include "types/typeops.h"
 
-namespace zorba 
+namespace zorba
 {
 
 #define SPECIALIZE_NUMERIC_ARITH_FUNCTION(kind, type)             \
@@ -67,7 +69,7 @@ PlanIter_t codegen(                                                        \
 class bin_num_arith_func : public function
 {
 public:
-  bin_num_arith_func(const signature& sig, FunctionConsts::FunctionKind kind) 
+  bin_num_arith_func(const signature& sig, FunctionConsts::FunctionKind kind)
     :
     function(sig, kind)
   {
@@ -75,13 +77,13 @@ public:
 
   bool isArithmeticFunction() const { return true; }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const fo_expr* caller) const
   {
+    TypeManager* tm = caller->get_type_manager();
+
     return TypeOps::arithmetic_type(tm,
-                                    *arg_types[0],
-                                    *arg_types[1],
+                                    *(caller->get_arg(0)->get_return_type()),
+                                    *(caller->get_arg(1)->get_return_type()),
                                     arithmeticKind() == ArithmeticConsts::DIVISION);
   }
 };
@@ -90,7 +92,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class specializable_bin_num_arith_func : public bin_num_arith_func 
+class specializable_bin_num_arith_func : public bin_num_arith_func
 {
 public:
   specializable_bin_num_arith_func(
@@ -109,7 +111,7 @@ public:
 
 function* specializable_bin_num_arith_func::specialize(
     static_context* sctx,
-    const std::vector<xqtref_t>& argTypes) const 
+    const std::vector<xqtref_t>& argTypes) const
 {
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
@@ -117,23 +119,23 @@ function* specializable_bin_num_arith_func::specialize(
   if (t0->type_kind() == XQType::ATOMIC_TYPE_KIND &&
       t1->type_kind() == XQType::ATOMIC_TYPE_KIND)
   {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-    
+    store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+    store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
+
     if (tc0 == tc1)
     {
-      switch(tc0) 
+      switch(tc0)
       {
-      case TypeConstants::XS_DOUBLE:
+      case store::XS_DOUBLE:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DOUBLE);
         break;
-      case TypeConstants::XS_DECIMAL:
+      case store::XS_DECIMAL:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DECIMAL);
         break;
-      case TypeConstants::XS_FLOAT:
+      case store::XS_FLOAT:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, FLOAT);
         break;
-      case TypeConstants::XS_INTEGER:
+      case store::XS_INTEGER:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, INTEGER);
         break;
       default:
@@ -149,15 +151,15 @@ function* specializable_bin_num_arith_func::specialize(
   6.2.1 op:numeric-add
 
   op:numeric-add($arg1 as numeric, $arg2 as numeric) as numeric
- 
-  Summary: Backs up the "+" operator and returns the arithmetic sum of 
+
+  Summary: Backs up the "+" operator and returns the arithmetic sum of
   its operands: ($arg1 + $arg2).
- 
+
   Note:
-  For xs:float or xs:double values, if one of the operands is a zero or 
-  a finite number and the other is INF or -INF, INF or -INF is returned. 
-  If both operands are INF, INF is returned. If both operands are -INF, 
-  -INF is returned. If one of the operands is INF and the other is -INF, 
+  For xs:float or xs:double values, if one of the operands is a zero or
+  a finite number and the other is INF or -INF, INF or -INF is returned.
+  If both operands are INF, INF is returned. If both operands are -INF,
+  -INF is returned. If one of the operands is INF and the other is -INF,
   NaN is returned.
 ********************************************************************************/
 class op_numeric_add : public specializable_bin_num_arith_func
@@ -169,7 +171,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::ADDITION;
   }
@@ -178,7 +180,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_add_specific : public bin_num_arith_func
 {
 public:
@@ -186,7 +188,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::ADDITION;
   }
@@ -195,27 +197,27 @@ public:
 };
 
 
-typedef 
-op_numeric_add_specific<TypeConstants::XS_DOUBLE,
-                        FunctionConsts::OP_NUMERIC_ADD_DOUBLE_2> 
+typedef
+op_numeric_add_specific<store::XS_DOUBLE,
+                        FunctionConsts::OP_NUMERIC_ADD_DOUBLE_2>
 op_numeric_add_double;
 
 
-typedef 
-op_numeric_add_specific<TypeConstants::XS_FLOAT,
-                        FunctionConsts::OP_NUMERIC_ADD_FLOAT_2> 
+typedef
+op_numeric_add_specific<store::XS_FLOAT,
+                        FunctionConsts::OP_NUMERIC_ADD_FLOAT_2>
 op_numeric_add_float;
 
 
-typedef 
-op_numeric_add_specific<TypeConstants::XS_DECIMAL,
-                        FunctionConsts::OP_NUMERIC_ADD_DECIMAL_2> 
+typedef
+op_numeric_add_specific<store::XS_DECIMAL,
+                        FunctionConsts::OP_NUMERIC_ADD_DECIMAL_2>
 op_numeric_add_decimal;
 
 
-typedef 
-op_numeric_add_specific<TypeConstants::XS_INTEGER,
-                        FunctionConsts::OP_NUMERIC_ADD_INTEGER_2> 
+typedef
+op_numeric_add_specific<store::XS_INTEGER,
+                        FunctionConsts::OP_NUMERIC_ADD_INTEGER_2>
 op_numeric_add_integer;
 
 
@@ -223,10 +225,10 @@ op_numeric_add_integer;
   6.2.2 op:numeric-subtract
 
   op:numeric-subtract($arg1 as numeric, $arg2 as numeric) as numeric
- 
+
   Summary: Backs up the "-" operator and returns the arithmetic difference of
   its operands: ($arg1 - $arg2).
- 
+
   Note:
   For xs:float or xs:double values, if one of the operands is a zero or a
   finite number and the other is INF or -INF, an infinity of the appropriate
@@ -237,13 +239,13 @@ op_numeric_add_integer;
 class op_numeric_subtract : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_subtract(const signature& sig) 
+  op_numeric_subtract(const signature& sig)
     :
     specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_SUBTRACT_2)
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::SUBTRACTION;
   }
@@ -252,7 +254,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_subtract_specific : public bin_num_arith_func
 {
 public:
@@ -260,7 +262,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::SUBTRACTION;
   }
@@ -269,27 +271,27 @@ public:
 };
 
 
-typedef 
-op_numeric_subtract_specific<TypeConstants::XS_DOUBLE,
-                             FunctionConsts::OP_NUMERIC_SUBTRACT_DOUBLE_2> 
+typedef
+op_numeric_subtract_specific<store::XS_DOUBLE,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_DOUBLE_2>
 op_numeric_subtract_double;
 
 
-typedef 
-op_numeric_subtract_specific<TypeConstants::XS_FLOAT,
-                             FunctionConsts::OP_NUMERIC_SUBTRACT_FLOAT_2> 
+typedef
+op_numeric_subtract_specific<store::XS_FLOAT,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_FLOAT_2>
 op_numeric_subtract_float;
 
 
-typedef 
-op_numeric_subtract_specific<TypeConstants::XS_DECIMAL,
-                             FunctionConsts::OP_NUMERIC_SUBTRACT_DECIMAL_2> 
+typedef
+op_numeric_subtract_specific<store::XS_DECIMAL,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_DECIMAL_2>
 op_numeric_subtract_decimal;
 
 
-typedef 
-op_numeric_subtract_specific<TypeConstants::XS_INTEGER,
-                             FunctionConsts::OP_NUMERIC_SUBTRACT_INTEGER_2> 
+typedef
+op_numeric_subtract_specific<store::XS_INTEGER,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_INTEGER_2>
 op_numeric_subtract_integer;
 
 
@@ -297,10 +299,10 @@ op_numeric_subtract_integer;
    6.2.3 op:numeric-multiply
 
   op:numeric-multiply($arg1 as numeric, $arg2 as numeric) as numeric
- 
+
   Summary: Backs up the "*" operator and returns the arithmetic product of its
   operands: ($arg1 * $arg2).
- 
+
   Note:
   For xs:float or xs:double values, if one of the operands is a zero and the
   other is an infinity, NaN is returned. If one of the operands is a non-zero
@@ -310,13 +312,13 @@ op_numeric_subtract_integer;
 class op_numeric_multiply : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_multiply(const signature& sig) 
+  op_numeric_multiply(const signature& sig)
     :
     specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_MULTIPLY_2)
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::MULTIPLICATION;
   }
@@ -325,7 +327,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_multiply_specific : public bin_num_arith_func
 {
 public:
@@ -333,7 +335,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::MULTIPLICATION;
   }
@@ -343,25 +345,25 @@ public:
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_DOUBLE,
+op_numeric_multiply_specific<store::XS_DOUBLE,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_DOUBLE_2>
 op_numeric_multiply_double;
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_FLOAT,
+op_numeric_multiply_specific<store::XS_FLOAT,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_FLOAT_2>
 op_numeric_multiply_float;
 
 
-typedef 
-op_numeric_multiply_specific<TypeConstants::XS_DECIMAL, 
+typedef
+op_numeric_multiply_specific<store::XS_DECIMAL,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_DECIMAL_2>
 op_numeric_multiply_decimal;
 
 
-typedef 
-op_numeric_multiply_specific<TypeConstants::XS_INTEGER,
+typedef
+op_numeric_multiply_specific<store::XS_INTEGER,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_INTEGER_2>
 op_numeric_multiply_integer;
 
@@ -373,16 +375,16 @@ op_numeric_multiply_integer;
 
   Summary: Backs up the "div" operator and returns the arithmetic quotient of
   its operands: ($arg1 div $arg2).
- 
+
   As a special case, if the types of both $arg1 and $arg2 are xs:integer, then
   the return type is xs:decimal.
- 
+
   Notes:
   For xs:decimal and xs:integer operands, if the divisor is (positive or
-  negative) zero, an error is raised [err:FOAR0001]. For xs:float and 
-  xs:double operands, floating point division is performed as specified 
+  negative) zero, an error is raised [err:FOAR0001]. For xs:float and
+  xs:double operands, floating point division is performed as specified
   in [IEEE 754-1985].
- 
+
   For xs:float or xs:double values, a positive number divided by positive zero
   returns INF. A negative number divided by positive zero returns -INF. Division
   by negative zero returns -INF and INF, respectively. Positive or negative zero
@@ -392,13 +394,13 @@ op_numeric_multiply_integer;
 class op_numeric_divide : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_divide(const signature& sig) 
+  op_numeric_divide(const signature& sig)
     :
     specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_DIVIDE_2)
   {
   }
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::DIVISION;
   }
@@ -407,7 +409,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_divide_specific : public bin_num_arith_func
 {
 public:
@@ -415,7 +417,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::DIVISION;
   }
@@ -425,26 +427,26 @@ public:
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_DOUBLE,
+op_numeric_divide_specific<store::XS_DOUBLE,
                            FunctionConsts::OP_NUMERIC_DIVIDE_DOUBLE_2>
 op_numeric_divide_double;
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_FLOAT,
+op_numeric_divide_specific<store::XS_FLOAT,
                            FunctionConsts::OP_NUMERIC_DIVIDE_FLOAT_2>
 op_numeric_divide_float;
 
 
-typedef 
-op_numeric_divide_specific<TypeConstants::XS_DECIMAL,
-                           FunctionConsts::OP_NUMERIC_DIVIDE_DECIMAL_2> 
+typedef
+op_numeric_divide_specific<store::XS_DECIMAL,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_DECIMAL_2>
 op_numeric_divide_decimal;
 
 
-typedef 
-op_numeric_divide_specific<TypeConstants::XS_INTEGER,
-                           FunctionConsts::OP_NUMERIC_DIVIDE_INTEGER_2> 
+typedef
+op_numeric_divide_specific<store::XS_INTEGER,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_INTEGER_2>
 op_numeric_divide_integer;
 
 
@@ -453,37 +455,37 @@ op_numeric_divide_integer;
   6.2.5 op:numeric-integer-divide
 
   op:numeric-integer-divide($arg1 as numeric, $arg2 as numeric) as xs:integer
- 
+
   Summary: This function backs up the "idiv" operator and performs an integer
   division: that is, it divides the first argument by the second, and returns
   the integer obtained by truncating the fractional part of the result. The
   division is performed so that the sign of the fractional part is the same as
   the sign of the dividend.
- 
+
   If the dividend, $arg1, is not evenly divided by the divisor, $arg2, then
   the quotient is the xs:integer value obtained, ignoring (truncating) any
   remainder that results from the division (that is, no rounding is performed).
   Thus, the semantics " $a idiv $b " are equivalent to " ($a div $b) cast as
   xs:integer" except for error situations.
- 
-  If the divisor is (positive or negative) zero, then an error is raised 
+
+  If the divisor is (positive or negative) zero, then an error is raised
   [err:FOAR0001]. If either operand is NaN or if $arg1 is INF or -INF then
   an error is raised [err:FOAR0002].
- 
+
   Note:
-  The semantics of this function are different from integer division as 
+  The semantics of this function are different from integer division as
   defined in programming languages such as Java and C++.
 ********************************************************************************/
 class op_numeric_integer_divide : public bin_num_arith_func
 {
 public:
-  op_numeric_integer_divide(const signature& sig) 
+  op_numeric_integer_divide(const signature& sig)
     :
     bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_INTEGER_DIVIDE_2)
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::INTEGER_DIVISION;
   }
@@ -497,46 +499,46 @@ public:
   6.2.6 op:numeric-mod
 
   op:numeric-mod($arg1 as numeric, $arg2 as numeric) as numeric
- 
-  Summary: Backs up the "mod" operator. Informally, this function 
-  returns the remainder resulting from dividing $arg1, the dividend, by 
-  $arg2, the divisor. The operation a mod b for operands that are 
-  xs:integer or xs:decimal, or types derived from them, produces a 
-  result such that (a idiv b)*b+(a mod b) is equal to a and the 
-  magnitude of the result is always less than the magnitude of b. This 
-  identity holds even in the special case that the dividend is the 
-  negative integer of largest possible magnitude for its type and the 
-  divisor is -1 (the remainder is 0). It follows from this rule that the 
+
+  Summary: Backs up the "mod" operator. Informally, this function
+  returns the remainder resulting from dividing $arg1, the dividend, by
+  $arg2, the divisor. The operation a mod b for operands that are
+  xs:integer or xs:decimal, or types derived from them, produces a
+  result such that (a idiv b)*b+(a mod b) is equal to a and the
+  magnitude of the result is always less than the magnitude of b. This
+  identity holds even in the special case that the dividend is the
+  negative integer of largest possible magnitude for its type and the
+  divisor is -1 (the remainder is 0). It follows from this rule that the
   sign of the result is the sign of the dividend.
- 
-  For xs:integer and xs:decimal operands, if $arg2 is zero, then an 
+
+  For xs:integer and xs:decimal operands, if $arg2 is zero, then an
   error is raised [err:FOAR0001].
 
   For xs:float and xs:double operands the following rules apply:
    * If either operand is NaN, the result is NaN.
-   * If the dividend is positive or negative infinity, or the divisor 
+   * If the dividend is positive or negative infinity, or the divisor
      is positive or negative zero (0), or both, the result is NaN.
-   * If the dividend is finite and the divisor is an infinity, the 
+   * If the dividend is finite and the divisor is an infinity, the
      result equals the dividend.
-   * If the dividend is positive or negative zero and the divisor is 
+   * If the dividend is positive or negative zero and the divisor is
      finite, the result is the same as the dividend.
-   * In the remaining cases, where neither positive or negative 
-     infinity, nor positive or negative zero, nor NaN is involved, the 
-     result obeys (a idiv b)*b+(a mod b) = a. Division is truncating 
-     division, analogous to integer division, not [IEEE 754-1985] rounding 
-     division i.e. additional digits are truncated, not rounded to the 
+   * In the remaining cases, where neither positive or negative
+     infinity, nor positive or negative zero, nor NaN is involved, the
+     result obeys (a idiv b)*b+(a mod b) = a. Division is truncating
+     division, analogous to integer division, not [IEEE 754-1985] rounding
+     division i.e. additional digits are truncated, not rounded to the
      required precision.
 ********************************************************************************/
 class op_numeric_mod : public bin_num_arith_func
 {
 public:
-  op_numeric_mod(const signature& sig) 
+  op_numeric_mod(const signature& sig)
     :
-    bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_MOD_2) 
+    bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_MOD_2)
   {
   };
 
-  ArithmeticConsts::OperationKind arithmeticKind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::MODULO;
   }
@@ -549,7 +551,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class single_numeric_func : public function 
+class single_numeric_func : public function
 {
 public:
   single_numeric_func(const signature& sig, FunctionConsts::FunctionKind kind)
@@ -558,11 +560,9 @@ public:
   {
   }
 
-  virtual xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const
+  virtual xqtref_t getReturnType(const fo_expr* caller) const
   {
-    return arg_types[0];
+    return caller->get_arg(0)->get_return_type();
   }
 
   virtual bool specializable() const { return true; }
@@ -603,7 +603,7 @@ function* single_numeric_func::specialize(
 
 /*******************************************************************************
   6.2.7 op:numeric-unary-plus
- 
+
   op:numeric-unary-plus($arg as numeric) as numeric
 
   Summary: Backs up the unary "+" operator and returns its operand with the
@@ -661,14 +661,14 @@ PlanIter_t op_double_unary_plus::codegen(
 
 /*******************************************************************************
   6.2.8 op:numeric-unary-minus
- 
+
   op:numeric-unary-minus($arg as numeric) as numeric
 
   Summary: Backs up the unary "-" operator and returns its operand with the
-  sign reverse: (- $arg). 
+  sign reverse: (- $arg).
 
-  For xs:integer and xs:decimal arguments, 0 and 0.0 return 0 and 0.0, 
-  respectively. For xs:float and xs:double arguments, NaN returns NaN, 
+  For xs:integer and xs:decimal arguments, 0 and 0.0 return 0 and 0.0,
+  respectively. For xs:float and xs:double arguments, NaN returns NaN,
   0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns INF.
 ********************************************************************************/
 class op_numeric_unary_minus : public single_numeric_func
@@ -724,38 +724,38 @@ PlanIter_t op_double_unary_minus::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_floor::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& argTypes) const 
+xqtref_t fn_floor::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  const XQType& argType = *argTypes[0];
+  const QueryLoc& loc = caller->get_loc();
+  const XQType& argType = *(caller->get_arg(0)->get_return_type());
   TypeConstants::quantifier_t quant = argType.get_quantifier();
 
-  if (TypeOps::is_subtype(tm, argType, *rtm.DOUBLE_TYPE_QUESTION))
+  if (TypeOps::is_subtype(tm, argType, *rtm.DOUBLE_TYPE_QUESTION, loc))
   {
-    return (quant == TypeConstants::QUANT_ONE ? 
+    return (quant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE :
             rtm.DOUBLE_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.FLOAT_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.FLOAT_TYPE_QUESTION, loc))
   {
-    return (quant == TypeConstants::QUANT_ONE ? 
+    return (quant == TypeConstants::QUANT_ONE ?
             rtm.FLOAT_TYPE_ONE :
             rtm.FLOAT_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.DECIMAL_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.INTEGER_TYPE_QUESTION, loc))
   {
-    return (quant == TypeConstants::QUANT_ONE ? 
-            rtm.DECIMAL_TYPE_ONE :
-            rtm.DECIMAL_TYPE_QUESTION);
-  }
-  else if (TypeOps::is_subtype(tm, argType, *rtm.INTEGER_TYPE_QUESTION))
-  {
-    return (quant == TypeConstants::QUANT_ONE ? 
+    return (quant == TypeConstants::QUANT_ONE ?
             rtm.INTEGER_TYPE_ONE :
             rtm.INTEGER_TYPE_QUESTION);
+  }
+  else if (TypeOps::is_subtype(tm, argType, *rtm.DECIMAL_TYPE_QUESTION, loc))
+  {
+    return (quant == TypeConstants::QUANT_ONE ?
+            rtm.DECIMAL_TYPE_ONE :
+            rtm.DECIMAL_TYPE_QUESTION);
   }
 
   return theSignature.returnType();
@@ -786,7 +786,7 @@ DECL_ARITH(sctx, op, decimal, DECIMAL);                        \
 DECL_ARITH(sctx, op, integer, INTEGER)
 
 
-void populateContext_Numerics(static_context* sctx) 
+void populateContext_Numerics(static_context* sctx)
 {
   const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
   const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
@@ -809,14 +809,14 @@ void populateContext_Numerics(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   /*
-      XPath 2.0 Specification 
+      XPath 2.0 Specification
       http://www.w3.org/TR/xpath20/#id-arithmetic says that:
-      If the atomized operand is an empty sequence, the result 
-      of the arithmetic expression is an empty sequence, and the 
-      implementation need not evaluate the other operand or 
+      If the atomized operand is an empty sequence, the result
+      of the arithmetic expression is an empty sequence, and the
+      implementation need not evaluate the other operand or
       apply the operator.
 
-      Thus the arithmetic operators allow for empty sequences 
+      Thus the arithmetic operators allow for empty sequences
       as parameters and return results, contrary to the signature
       of these functions as described in XQuery and XPath Functions
       Specification.

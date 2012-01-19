@@ -1,4 +1,5 @@
 <?php
+$libPrefix = '@phpLibPrefix@';
 $file = file_get_contents('@phpAPIPath@/zorba_api.php');
 $file = str_replace('class Iterator {', 'class IteratorImpl {', $file);
 $file = str_replace('extends Iterator {', 'extends IteratorImpl {', $file);
@@ -12,16 +13,18 @@ require_once '@phpAPIPath@/zorba_api.php';
 $wrapper = <<<PHP
 <?php
 //Try to load the extension if it's not already loaded.
-if(!extension_loaded('zorba_api')) {
+if(!extension_loaded('zorba_api') && function_exists('dl')) {
   if(strtolower(substr(PHP_OS, 0, 3)) === 'win') {
     if(!dl('php_zorba_api.dll')) return;
   } else {
     if(PHP_SHLIB_SUFFIX === 'PHP_SHLIB_SUFFIX' || PHP_SHLIB_SUFFIX === 'dylib') {
-      if(!dl('zorba_api.so')) return;
+      if(!dl('$libPrefix'.'zorba_api.so')) return;
     } else {
-      if(!dl('zorba_api.' . PHP_SHLIB_SUFFIX)) return;
+      if(!dl('$libPrefix'.'zorba_api.' . PHP_SHLIB_SUFFIX)) return;
     }
   }
+} else if(!extension_loaded('zorba_api')) {
+  throw new Exception('Zorba extension is not loaded');
 }
 PHP;
 
@@ -163,7 +166,7 @@ PHP;
 	}
 }
 
-file_put_contents('zorba_api_wrapper.php', $wrapper);
+file_put_contents('Zorba/zorba_api_wrapper.php', $wrapper);
 
 function getRefParameters(ReflectionMethod $method, array $params) {
 	$result = "";

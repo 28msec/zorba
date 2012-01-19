@@ -284,7 +284,7 @@ private:
 /*******************************************************************************
 
 ********************************************************************************/
-template <TypeConstants::atomic_type_code_t ATC>
+template <store::SchemaTypeCode ATC>
 class TypedValueCompareIterator : public NaryBaseIterator<TypedValueCompareIterator<ATC>,
                                                           PlanIteratorState>
 {

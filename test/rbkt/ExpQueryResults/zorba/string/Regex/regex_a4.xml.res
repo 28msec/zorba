@@ -1,0 +1,1 @@
+<fn:analyze-string-result xmlns:fn="http://www.w3.org/2005/xpath-functions"><fn:match>a<fn:group nr="1"><fn:group nr="2"/><fn:group nr="3">c</fn:group></fn:group></fn:match></fn:analyze-string-result>

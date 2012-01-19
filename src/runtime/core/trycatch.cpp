@@ -524,7 +524,7 @@ TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   try
   {
     lIterator = new PlanIteratorWrapper(theChild, planState);
-    state->theTargetSequence = GENV_STORE.createTempSeq(lIterator, false, false);
+    state->theTargetSequence = GENV_STORE.createTempSeq(lIterator, false);
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
   }

@@ -43,9 +43,11 @@ class zorba_store_data_structure_unordered_map_create : public function
 {
 public:
   zorba_store_data_structure_unordered_map_create(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
@@ -60,9 +62,11 @@ class zorba_store_data_structure_unordered_map_delete : public function
 {
 public:
   zorba_store_data_structure_unordered_map_delete(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
@@ -77,9 +81,11 @@ class zorba_store_data_structure_unordered_map_get : public function
 {
 public:
   zorba_store_data_structure_unordered_map_get(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -92,9 +98,11 @@ class zorba_store_data_structure_unordered_map_insert : public function
 {
 public:
   zorba_store_data_structure_unordered_map_insert(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
@@ -109,9 +117,11 @@ class zorba_store_data_structure_unordered_map_remove : public function
 {
 public:
   zorba_store_data_structure_unordered_map_remove(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
@@ -126,9 +136,11 @@ class zorba_store_data_structure_unordered_map_keys : public function
 {
 public:
   zorba_store_data_structure_unordered_map_keys(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -141,9 +153,11 @@ class zorba_store_data_structure_unordered_map_size : public function
 {
 public:
   zorba_store_data_structure_unordered_map_size(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 
@@ -156,9 +170,11 @@ class zorba_store_data_structure_unordered_map_available_maps : public function
 {
 public:
   zorba_store_data_structure_unordered_map_available_maps(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   bool accessesDynCtx() const { return true; }
 

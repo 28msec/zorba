@@ -29,6 +29,10 @@
         <zorba:output>xs:anyURI</zorba:output>
       </zorba:signature>
       
+      <zorba:methods>
+        <zorba:mustCopyInputNodes value="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
   </zorba:iterator>
@@ -73,7 +77,13 @@
       <zorba:param>node()?</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
+
+      <zorba:methods>
+        <zorba:mustCopyInputNodes value="false"/>
+      </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -95,7 +105,13 @@
       <zorba:param>node()?</zorba:param>
       <zorba:output>xs:anyURI?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -119,6 +135,11 @@
       <zorba:param>node()</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
   </zorba:function>
 
   <zorba:method return="bool" name="isLangAttr" const="true">
@@ -180,26 +201,30 @@
 ********************************************************************************/
 -->
 
-  <zorba:iterator name="FnInnermostIterator">
+<zorba:iterator name="FnInnermostIterator">
 
-    <zorba:description author="Zorba Team">fn:innermost</zorba:description>
+  <zorba:description author="Zorba Team">fn:innermost</zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="innermost" prefix="fn" version="3.0">
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
+  <zorba:function>
+    <zorba:signature localname="innermost" prefix="fn" version="3.0">
+      <zorba:param>node()*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
 
-    </zorba:function>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-    <zorba:state>
-      <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
-                    brief="temporary list of nodes"/>
-      <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
-                    brief="iterator through result sequence"/>
-    </zorba:state>
+  </zorba:function>
 
-  </zorba:iterator>
+  <zorba:state>
+    <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
+                  brief="temporary list of nodes"/>
+    <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
+                  brief="iterator through result sequence"/>
+  </zorba:state>
+
+</zorba:iterator>
 
 <!--
 /*******************************************************************************
@@ -207,26 +232,30 @@
 ********************************************************************************/
 -->
 
-  <zorba:iterator name="FnOutermostIterator">
+<zorba:iterator name="FnOutermostIterator">
 
-    <zorba:description author="Zorba Team">fn:outermost</zorba:description>
+  <zorba:description author="Zorba Team">fn:outermost</zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="outermost" prefix="fn" version="3.0">
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
+  <zorba:function>
+    <zorba:signature localname="outermost" prefix="fn" version="3.0">
+      <zorba:param>node()*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
 
-    </zorba:function>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-    <zorba:state>
-      <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
-                    brief="temporary list of nodes"/>
-      <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
-                    brief="iterator through result sequence"/>
-    </zorba:state>
+  </zorba:function>
 
-  </zorba:iterator>
+  <zorba:state>
+    <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
+                  brief="temporary list of nodes"/>
+    <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
+                  brief="iterator through result sequence"/>
+  </zorba:state>
+
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
@@ -234,201 +263,256 @@
 ********************************************************************************/
 -->
 
-  <zorba:iterator name="FnGenerateIdIterator">
+<zorba:iterator name="FnGenerateIdIterator">
 
-    <zorba:description author="Zorba Team">fn:generate-id</zorba:description>
+  <zorba:description author="Zorba Team">fn:generate-id</zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="generate-id" prefix="fn" version="3.0">
-        <zorba:output>xs:string</zorba:output>
-      </zorba:signature>
-      <zorba:signature localname="generate-id" prefix="fn" version="3.0">
-        <zorba:param>node()?</zorba:param>
-        <zorba:output>xs:string</zorba:output>
-      </zorba:signature>
+  <zorba:function>
+    <zorba:signature localname="generate-id" prefix="fn" version="3.0">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
 
-    </zorba:function>
+    <zorba:signature localname="generate-id" prefix="fn" version="3.0">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-  <!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="IsAncestorIterator">
+  </zorba:function>
 
-    <zorba:description author="Zorba Team"></zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="ancestor-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-  </zorba:iterator>
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="IsDescendantIterator">
+<zorba:iterator name="IsAncestorIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="descendant-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="ancestor-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-  <!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="IsParentIterator">
+  </zorba:function>
 
-    <zorba:description author="Zorba Team"></zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="parent-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-  </zorba:iterator>
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="IsChildIterator">
+<zorba:iterator name="IsDescendantIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="child-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="descendant-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-  <!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="IsFollowingIterator">
+  </zorba:function>
 
-    <zorba:description author="Zorba Team"></zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="following-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-  </zorba:iterator>
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="IsPrecedingIterator">
+<zorba:iterator name="IsParentIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="preceding-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="parent-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsChildIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="child-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsFollowingIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="following-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsPrecedingIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="preceding-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
 
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="IsFollowingSiblingIterator">
+<zorba:iterator name="IsFollowingSiblingIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="following-sibling-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="following-sibling-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
 
-  <!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="IsPrecedingSiblingIterator">
+  </zorba:function>
 
-    <zorba:description author="Zorba Team"></zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="preceding-sibling-of" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-  </zorba:iterator>
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="LevelIterator">
+<zorba:iterator name="IsPrecedingSiblingIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="level" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:integer</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="preceding-sibling-of" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
 
   <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="LeastCommonAncestor">
+<zorba:iterator name="LevelIterator">
 
-    <zorba:description author="Zorba Team"></zorba:description>
+  <zorba:description author="Zorba Team"></zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="least-common-ancestor" prefix="fn-zorba-node">
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>node()?</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="level" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
 
-  </zorba:iterator>
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="LeastCommonAncestor">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="least-common-ancestor" prefix="fn-zorba-node">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>node()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
 
 </zorba:iterators>

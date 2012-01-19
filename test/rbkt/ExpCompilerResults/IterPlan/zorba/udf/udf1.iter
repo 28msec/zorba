@@ -6,21 +6,21 @@ Iterator tree for main query:
   <UDFunctionCallIterator>
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
       <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
-        <ElementIterator>
+        <ElementIterator copyInputNodes="false">
           <SingletonIterator value="xs:QName(,,books)"/>
           <FnConcatIterator>
-            <ElementIterator>
+            <ElementIterator copyInputNodes="false">
               <SingletonIterator value="xs:QName(,,book)"/>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,price)"/>
                 <TextIterator>
                   <SingletonIterator value="xs:string(10)"/>
                 </TextIterator>
               </ElementIterator>
             </ElementIterator>
-            <ElementIterator>
+            <ElementIterator copyInputNodes="false">
               <SingletonIterator value="xs:QName(,,book)"/>
-              <ElementIterator>
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,price)"/>
                 <TextIterator>
                   <SingletonIterator value="xs:string(20)"/>

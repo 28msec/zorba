@@ -81,4 +81,5 @@ LIST(APPEND FUNCTIONS_SRCS
     func_eval.cpp
     func_reflection.cpp
     func_apply.cpp
+    func_serialize_impl.cpp
 )
