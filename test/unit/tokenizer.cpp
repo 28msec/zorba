@@ -71,7 +71,6 @@ public:
 protected:
   // inherited
   void item( Item const&, bool );
-  void tokenize_node_impl( Item const&, iso639_1::type, Callback&, void* );
 
 private:
   typedef std::string token_t;
