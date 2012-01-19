@@ -65,7 +65,10 @@ typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
 class ZORBA_DLL_PUBLIC transcode_streambuf : public std::streambuf {
 public:
   /**
-   * Base %exception class.
+   * Transcoding %exception class.  Instances of this %exception class (or
+   * classes derived form this class) are thrown if there is an error during
+   * transcoding.  For example, you are trying to convert a Unicode character
+   * to ISO-8859-1 that is not supported by that encoding.
    */
   class exception : public std::exception {
   public:
@@ -97,7 +100,7 @@ public:
    * @return Returns said streambuf.
    */
   std::streambuf* orig_streambuf() const {
-    return intern_buf_->original();
+    return proxy_buf_->original();
   }
 
 protected:
@@ -115,7 +118,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::unique_ptr<proxy_streambuf> intern_buf_;
+  std::unique_ptr<proxy_streambuf> proxy_buf_;
 
   // forbid
   transcode_streambuf( transcode_streambuf const& );

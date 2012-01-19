@@ -41,7 +41,7 @@ char const* transcode_streambuf::exception::what() const throw() {
 
 transcode_streambuf::transcode_streambuf( char const *charset,
                                           streambuf *orig ) :
-  intern_buf_( new internal::transcode_streambuf( charset, orig ) )
+  proxy_buf_( new internal::transcode_streambuf( charset, orig ) )
 {
 }
 
@@ -50,56 +50,56 @@ transcode_streambuf::~transcode_streambuf() {
 }
 
 void transcode_streambuf::imbue( std::locale const &loc ) {
-  intern_buf_->pubimbue( loc );
+  proxy_buf_->pubimbue( loc );
 }
 
 transcode_streambuf::pos_type
 transcode_streambuf::seekoff( off_type o, ios_base::seekdir d,
                              ios_base::openmode m ) {
-  return intern_buf_->pubseekoff( o, d, m );
+  return proxy_buf_->pubseekoff( o, d, m );
 }
 
 transcode_streambuf::pos_type
 transcode_streambuf::seekpos( pos_type p, ios_base::openmode m ) {
-  return intern_buf_->pubseekpos( p, m );
+  return proxy_buf_->pubseekpos( p, m );
 }
 
 streambuf* transcode_streambuf::setbuf( char_type *p, streamsize s ) {
-  intern_buf_->pubsetbuf( p, s );
+  proxy_buf_->pubsetbuf( p, s );
   return this;
 }
 
 streamsize transcode_streambuf::showmanyc() {
-  return intern_buf_->in_avail();
+  return proxy_buf_->in_avail();
 }
 
 int transcode_streambuf::sync() {
-  return intern_buf_->pubsync();
+  return proxy_buf_->pubsync();
 }
 
 transcode_streambuf::int_type transcode_streambuf::overflow( int_type c ) {
-  return intern_buf_->sputc( c );
+  return proxy_buf_->sputc( c );
 }
 
 transcode_streambuf::int_type transcode_streambuf::pbackfail( int_type c ) {
-  return intern_buf_->sputbackc( traits_type::to_char_type( c ) );
+  return proxy_buf_->sputbackc( traits_type::to_char_type( c ) );
 }
 
 transcode_streambuf::int_type transcode_streambuf::uflow() {
-  return intern_buf_->sbumpc();
+  return proxy_buf_->sbumpc();
 }
 
 transcode_streambuf::int_type transcode_streambuf::underflow() {
-  return intern_buf_->sgetc();
+  return proxy_buf_->sgetc();
 }
 
 streamsize transcode_streambuf::xsgetn( char_type *to, streamsize size ) {
-  return intern_buf_->sgetn( to, size );
+  return proxy_buf_->sgetn( to, size );
 }
 
 streamsize transcode_streambuf::xsputn( char_type const *from,
                                        streamsize size ) {
-  return intern_buf_->sputn( from, size );
+  return proxy_buf_->sputn( from, size );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
