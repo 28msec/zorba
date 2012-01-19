@@ -17,6 +17,7 @@
 #define ZORBA_SIMPLE_STORE_QNAME_POOL
 
 #include <vector>
+#include <map>
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset.h"
@@ -49,6 +50,9 @@ class StringPool;
   theHashSet     : A hash set mapping qnames (i.e. triplets of strings) to
                    QName slots.
 
+ theWhoNormalizesToMe : theWhoNormalizesToMe[q] is the array of all QNames of 
+                   which q is the normalized QName. This allows to prevent
+                   removing q from the pool if there are QNames pointing to it.
 ********************************************************************************/
 class QNamePool
 {
@@ -101,27 +105,38 @@ protected:
 
   StringPool        * theNamespacePool;
 
+  std::map<const QNameItem*, std::set<const QNameItem*> >
+                      theWhoNormalizesToMe;
+
 public:
   QNamePool(ulong size, StringPool* nspool);
 
   ~QNamePool();
 
-  store::Item_t insert(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        bool        sync = true);
-
-  store::Item_t insert(
-        const zstring& ns,
-        const zstring& pre,
-        const zstring& ln,
-        bool sync = true);
-
+  store::Item_t insert(const char* ns,
+                       const char* pre,
+                       const char* ln,
+                       bool        sync = true);
+  
+  store::Item_t insert(const zstring& ns,
+                       const zstring& pre,
+                       const zstring& ln,
+                       bool sync = true);
+  
   void remove(QNameItem* qn);
 
 protected:
-  QNameItem* cacheInsert(QNameItem*& normVictim);
+  QNameItem* insert_internal(const char* ns,
+                             const char* pre,
+                             const char* ln,
+                             bool sync = true);
+  
+  QNameItem* insert_internal(const zstring& ns,
+                             const zstring& pre,
+                             const zstring& ln,
+                             bool sync = true);
+  
+  QNameItem* cacheInsert();
 
   void cachePin(QNameItem* qn);
 
@@ -133,6 +148,12 @@ protected:
         ulong       prelen,
         ulong       lnlen,
         ulong       hval);
+  
+  bool hasNormalizingBackPointers(const QNameItem* aNormalizedQName);
+  void registerNormalizingBackPointer(const QNameItem* aNormalizedQName,
+                                      const QNameItem* anotherQName);
+  void unregisterNormalizingBackPointer(const QNameItem* aNormalizedQName,
+                                        const QNameItem* anotherQName);
 };
 
 

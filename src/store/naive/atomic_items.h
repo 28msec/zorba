@@ -336,104 +336,112 @@ public:
 ********************************************************************************/
 class QNameItem : public AtomicItem
 {
+  // The QName pool is the only class authorized to edit namespace/prefix/local name.
   friend class QNamePool;
 
 protected:
+  zstring          theNamespace;
+  zstring          thePrefix;
+  zstring          theLocal;
 
-  zstring      theNamespace;
-  zstring      thePrefix;
-  zstring      theLocal;
+  // Points to the corresponding normalized QName in the pool (pool owns this pointer).
+  // The normalized QName is the unique QName in the pool that has the same
+  // namespace and local name ,but no prefix. This allows direct pointer comparison.
+  const QNameItem* theNormalizedQName;
+  
+  bool             isInPool;
 
-  QNameItem_t  theNormQName;
-
-  uint16_t     thePosition;
-  uint16_t     theNextFree;
-  uint16_t     thePrevFree;
+  // Used by the pool.
+  uint16_t         thePosition;
+  uint16_t         theNextFree;
+  uint16_t         thePrevFree;
 
 public:
   virtual ~QNameItem();
 
-  QNameItem* getNormalized() const;
-
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  bool equals(
-        const store::Item* item,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
+  // zorba::store::Item interface.
+  void appendStringValue(zstring& buf) const;
+    
+  bool equals(const store::Item* item,
+              long timezone = 0,
+              const XQPCollator* aCollation = 0) const;
+    
+  store::Item_t getEBV() const;
+    
+  const zstring& getLocalName() const {
+    if (isNormalized()) {
+      return theLocal;
+    } else {
+      return theNormalizedQName->theLocal;
+    }
+  }
+  
   const zstring& getNamespace() const { return theNamespace; }
-
+    
   const zstring& getPrefix() const { return thePrefix; }
-
-  const zstring& getLocalName() const { return getNormalized()->theLocal; }
-
+    
+  zstring getStringValue() const;
+  
+  void getStringValue2(zstring& val) const;
+  
+  store::Item* getType() const;
+    
   store::SchemaTypeCode getTypeCode() const { return store::XS_QNAME; }
 
-  store::Item* getType() const;
-
-  store::Item_t getEBV() const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring& buf) const;
-
-  bool isIdQName() const;
-
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  
+  // Class-specific extensions.
+  // Returns a normalized QNames. Pointer comparison on normalized QNames is
+  // equivalent to using the equals() method.
+  const QNameItem* getNormalized() const { return theNormalizedQName; }
+  
   bool isBaseUri() const;
+  
+  bool isIdQName() const;
 
   zstring show() const;
 
 protected:
-  QNameItem() : thePosition(0), theNextFree(0), thePrevFree(0)
+  QNameItem() : isInPool(true), thePosition(0), theNextFree(0), thePrevFree(0)
   {
   }
 
   void free();
 
-  bool isValid() const { return !theLocal.empty() || theNormQName != NULL; }
+  bool isValid() const {
+    return theNormalizedQName != NULL &&
+        theNormalizedQName->isNormalized() &&
+        theNamespace == theNormalizedQName->theNamespace &&
+        !(!isNormalized() && theLocal.empty());
+  }
 
   bool isInCache() const { return thePosition != 0; }
 
   bool isOverflow() const { return thePosition == 0; }
 
-  bool isNormalized() const { return thePrefix.empty(); }
-
-  void setNormQName(QNameItem* qn)
-  {
-    assert(theLocal.empty() && theNormQName == NULL && !isNormalized());
-
-    theNormQName = qn;
+  bool isNormalized() const {
+    assert(theNormalizedQName != this || thePrefix.empty());
+    return theNormalizedQName == this;
   }
 
-  void unsetNormQName()
+  void initializeAsNormalizedQName(const zstring& aNamespace,
+                                 const zstring& aLocalName)
   {
-    assert(theLocal.empty() && theNormQName != NULL && !isNormalized());
-
-    theNormQName = NULL;
+    theNamespace = aNamespace;
+    thePrefix.clear();
+    theLocal = aLocalName;
+    theNormalizedQName = this;
+    assert(isNormalized());
   }
-
-  QNameItem* detachNormQName()
+  
+  void initializeAsUnnormalizedQName(const QNameItem* aNormalizedQName,
+                                     const zstring& aPrefix)
   {
-    assert(theLocal.empty() && theNormQName != NULL && !isNormalized());
-
-    return theNormQName.release();
-  }
-
-  void setLocalName(const zstring& local)
-  {
-    assert(theLocal.empty() && theNormQName == NULL && isNormalized());
-
-    theLocal = local;
-  }
-
-  void unsetLocalName()
-  {
-    assert(!theLocal.empty() && theNormQName == NULL && isNormalized());
-
+    theNamespace = aNormalizedQName->theNamespace;
+    thePrefix = aPrefix;
     theLocal.clear();
+    theNormalizedQName = aNormalizedQName;
+    assert(!isNormalized());
   }
 };
 

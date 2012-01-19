@@ -615,26 +615,23 @@ QNameItem::~QNameItem()
 {
   if (isValid())
   {
-    assert(theLocal.empty() || theNormQName == NULL);
+    assert(isNormalized() || theLocal.empty());
   }
 }
 
 
 void QNameItem::free()
 {
-  GET_STORE().getQNamePool().remove(this);
-}
-
-
-QNameItem* QNameItem::getNormalized() const
-{
-  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  if (isInPool)
+  {
+      GET_STORE().getQNamePool().remove(this);
+  }
 }
 
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
+  const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
@@ -657,7 +654,8 @@ bool QNameItem::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+  return theNormalizedQName ==
+      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 
@@ -743,8 +741,7 @@ zstring QNameItem::show() const
   res += ")";
   return res;
 }
-
-
+  
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
@@ -769,8 +766,8 @@ bool NotationItem::equals(const store::Item* item,
                           long timezone,
                           const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == 
-          static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return theQName->equals(
+      static_cast<const NotationItem*>(item)->theQName);
 }
 
 

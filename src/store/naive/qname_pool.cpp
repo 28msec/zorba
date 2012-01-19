@@ -66,17 +66,9 @@ QNamePool::~QNamePool()
   ulong n = (ulong)theHashSet.theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
-    if (!theHashSet.theHashTab[i].isFree())
-    {
-      QNameItem* qn = theHashSet.theHashTab[i].theItem;
-
-      // Make sure that the associated normalized QN will not be destroyed here
-      if (!qn->isNormalized())
-        qn->detachNormQName();
-
-      if (theHashSet.theHashTab[i].theItem->isOverflow())
-        delete theHashSet.theHashTab[i].theItem;
-    }
+    if (!theHashSet.theHashTab[i].isFree() &&
+        theHashSet.theHashTab[i].theItem->isOverflow())
+      delete theHashSet.theHashTab[i].theItem;
   }
 
   if (theCache != NULL)
@@ -94,7 +86,8 @@ void QNamePool::remove(QNameItem* qn)
 {
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
-  if (qn->getRefCount() > 0)
+  if (qn->getRefCount() > 0 ||
+      hasNormalizingBackPointers(qn))
     return;
 
   if (qn->isInCache())
@@ -113,9 +106,26 @@ void QNamePool::remove(QNameItem* qn)
     theHashSet.eraseNoSync(qn);
     delete qn;
   }
+  
+  unregisterNormalizingBackPointer(qn->getNormalized(), qn);
 }
 
+store::Item_t QNamePool::insert(const char* ns,
+                                const char* pre,
+                                const char* ln,
+                                bool        sync)
+{
+  return insert_internal(ns, pre, ln, sync);
+}
 
+store::Item_t QNamePool::insert(const zstring& ns,
+                                const zstring& pre,
+                                const zstring& ln,
+                                bool        sync)
+{
+  return insert_internal(ns, pre, ln, sync);
+}
+  
 /*******************************************************************************
   If the pool does not already contain a qname with the given namespace, prefix,
   and local name, then create such a qname, insert it in the pool and return an
@@ -126,16 +136,14 @@ void QNamePool::remove(QNameItem* qn)
   copied internally into zstring objects. So, it's always the caller who is
   resposnible for freeing the given strings.
 ********************************************************************************/
-store::Item_t QNamePool::insert(
+QNameItem* QNamePool::insert_internal(
     const char* ns,
     const char* pre,
     const char* ln,
     bool        sync)
 {
   QNameItem* qn;
-  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  store::Item_t normItem;
   QNameItem* normQName = NULL;
 
   bool normalized = (pre == NULL || *pre == '\0');
@@ -160,13 +168,11 @@ retry:
                                   hval);
     if (entry == 0)
     {
+      // Build a new QName (either new object or in cache).
+      qn = cacheInsert();
       if (normalized)
       {
-        qn = cacheInsert(normVictim);
-
-        qn->theNamespace = pooledNs;
-        qn->thePrefix.clear();
-        qn->setLocalName(zstring(ln));
+        qn->initializeAsNormalizedQName(pooledNs, zstring(ln));
       }
       else
       {
@@ -175,18 +181,12 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
-          normItem = insert(ns, NULL, ln, false);
-
-          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
+          normQName = insert_internal(ns, NULL, ln, false);
 
           goto retry;
         }
-
-        qn = cacheInsert(normVictim);
-
-        qn->theNamespace = normQName->theNamespace;
-        qn->thePrefix = pre;
-        qn->setNormQName(normQName);
+        qn->initializeAsUnnormalizedQName(normQName, pre);
+        registerNormalizingBackPointer(normQName, qn);
       }
 
       bool found;
@@ -211,11 +211,6 @@ retry:
     ZORBA_FATAL(0, "Unexpected exception");
   }
 
-  if (normVictim != NULL)
-  {
-    normVictim->removeReference();
-  }
-
   return qn;
 }
 
@@ -225,16 +220,14 @@ retry:
   and local name, then create such a qname, insert it in the pool and return an
   rchandle to it. Otherwise, return an rchandle to the existing qname. 
 ********************************************************************************/
-store::Item_t QNamePool::insert(
+QNameItem* QNamePool::insert_internal(
     const zstring& ns,
     const zstring& pre,
     const zstring& ln,
     bool sync)
 {
   QNameItem* qn = NULL;
-  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  store::Item_t normItem;
   QNameItem* normQName = NULL;
 
   bool normalized = pre.empty();
@@ -256,13 +249,11 @@ retry:
                                   hval);
     if (entry == 0)
     {
+      // Build a new QName (either new object or in cache).
+      qn = cacheInsert();
       if (normalized)
       {
-        qn = cacheInsert(normVictim);
-
-        qn->theNamespace = pooledNs;
-        qn->thePrefix.clear();
-        qn->setLocalName(ln);
+        qn->initializeAsNormalizedQName(pooledNs, ln);
       }
       else
       {
@@ -271,18 +262,13 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
-          normItem = insert(pooledNs, zstring(), ln, false);
-
-          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
+          normQName = insert_internal(pooledNs, zstring(), ln, false);
 
           goto retry;
         }
 
-        qn = cacheInsert(normVictim);
-      
-        qn->theNamespace = normQName->theNamespace;
-        qn->thePrefix = pre;
-        qn->setNormQName(normQName);
+        qn->initializeAsUnnormalizedQName(normQName, pre);
+        registerNormalizingBackPointer(normQName, qn);
       }
 
       bool found;
@@ -306,12 +292,6 @@ retry:
 
     ZORBA_FATAL(0, "Unexpected exception");
   }
-
-  if (normVictim != NULL)
-  {
-    normVictim->removeReference();
-  }
-
   return qn;
 }
 
@@ -322,10 +302,8 @@ retry:
   slot (if any) is removed from the pool. If the cache free list is empty a new
   QNameItem is allocated from the heap.
 ********************************************************************************/
-QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
+QNameItem* QNamePool::cacheInsert()
 {
-  normVictim = NULL;
-
   if (theFirstFree != 0)
   {
     QNameItem* qn = &theCache[theFirstFree];
@@ -335,28 +313,8 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
     if (qn->isValid())
     {
-      ulong hval = hashfun::h32(qn->getPrefix().c_str(),
-                                hashfun::h32(qn->getLocalName().c_str(),
-                                             hashfun::h32(qn->getNamespace().c_str())));
+      ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
-
-      if (!qn->isNormalized())
-      {
-        // Let NQ be the associated normalized qname. Here, wave the pointer
-        // to NQ and then set that pointer to null, without decrementing NQ's
-        // ref count of the. This way (a) we can decerement NQ's ref counter
-        // *after* releasing theHashSet.theMutex (otherwise, we would run into
-        // a self-deadlock if NQ must be be freed because it is not referenced
-        // from anywhere else), and (b) removeReference is not called
-        // when we overwite the pointer with the new local name.
-        normVictim = qn->detachNormQName();
-      }
-      else
-      {
-        // Unset qn->theLocal so that the assertion in setNormQName() (which is
-        // invoked later by the caller of this method) will not trigger.
-        qn->unsetLocalName();
-      }
     }
 
     qn->theNextFree = qn->thePrevFree = 0;
@@ -428,6 +386,24 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
 
   return NULL;
 }
+  
+bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName)
+{
+  return !theWhoNormalizesToMe[aNormalizedQName].empty();
+}
+void QNamePool::registerNormalizingBackPointer(const QNameItem* aNormalizedQName,
+                                                 const QNameItem* anotherQName)
+{
+  theWhoNormalizesToMe[aNormalizedQName].insert(anotherQName);
+}
+void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aNormalizedQName,
+                                                 const QNameItem* anotherQName)
+{
+  theWhoNormalizesToMe[aNormalizedQName].erase(anotherQName);
+}
+  
+  
+
 
 
 } // namespace store
