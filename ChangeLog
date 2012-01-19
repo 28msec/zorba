@@ -27,7 +27,7 @@ version 2.1
 
 New Features:
   * New node-position module. This module allows to obtain a representation of a node position, which
-    can be used to assess structural relationships with other nodes.   
+    can be used to assess structural relationships with other nodes.
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
