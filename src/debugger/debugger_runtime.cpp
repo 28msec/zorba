@@ -60,7 +60,8 @@ DebuggerRuntime::DebuggerRuntime(
   Zorba_SerializerOptions& serializerOptions,
   DebuggerCommunicator* communicator,
   itemHandler aHandler,
-  void* aCallBackData)
+  void* aCallBackData,
+  bool* aInterruptBreak)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
@@ -71,7 +72,8 @@ DebuggerRuntime::DebuggerRuntime(
     theSerializer(0),
     theItemHandler(aHandler),
     theCallbackData(aCallBackData),
-    theLastContinuationCommand()
+    theLastContinuationCommand(),
+    theInterruptBreak(aInterruptBreak)
 {
 }
 
@@ -320,6 +322,7 @@ DebuggerRuntime::resumeRuntime()
   if (theExecStatus != QUERY_SUSPENDED) {
     return;
   }
+  *theInterruptBreak = false;
   theExecStatus = QUERY_RUNNING;
   resume();
 }
@@ -497,6 +500,17 @@ DebuggerRuntime::stepOut()
   lCommons->makeStepOut();
 
   resumeRuntime();
+}
+
+
+bool
+DebuggerRuntime::getAndClearInterruptBreak()
+{
+  bool lMustBreak = *theInterruptBreak;
+  if (lMustBreak) {
+    *theInterruptBreak = false;
+  }
+  return lMustBreak;
 }
 
 
@@ -700,7 +714,8 @@ DebuggerRuntime::clone()
     theSerializerOptions,
     theCommunicator,
     theItemHandler,
-    theCallbackData);
+    theCallbackData,
+    theInterruptBreak);
 
   lNewRuntime->theBreakpoints = theBreakpoints;
   return lNewRuntime;

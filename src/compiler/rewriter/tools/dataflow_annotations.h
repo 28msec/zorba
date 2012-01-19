@@ -73,8 +73,8 @@ class SourceFinder
 {
   friend class MarkNodeCopyProps;
 
-  typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
-  typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
+  typedef std::map<var_expr*, std::vector<expr*>* > VarSourcesMap;
+  typedef std::pair<var_expr*, std::vector<expr*>* > VarSourcesPair;
 
   typedef std::map<user_function*, std::vector<expr*>* > UdfSourcesMap;
   typedef std::pair<user_function*, std::vector<expr*>* > UdfSourcesPair;
