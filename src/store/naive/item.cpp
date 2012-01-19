@@ -212,6 +212,15 @@ Item* Item::getBaseItem() const
 }
 
 
+store::SchemaTypeCode Item::getTypeCode() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
+}
+
+
 Item* Item::getType() const
 {
   throw ZORBA_EXCEPTION(
@@ -1287,6 +1296,11 @@ const Item_t Item::getFunctionName() const
 }
 
 bool Item::isStreamable() const
+{
+  return false;
+}
+
+bool Item::isSeekable() const
 {
   return false;
 }

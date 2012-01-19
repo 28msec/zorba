@@ -42,11 +42,21 @@ DebuggerServer::DebuggerServer(
   void*                     aCallbackData,
   const std::string&        aHost,
   unsigned short            aPort)
+  : theStopping(false)
 {
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
     theCommunicator, aHandler, aCallbackData);
+#ifdef WIN32
+  theFileName = aQuery->getFileName().str();
+#else
+  // TODO: under Linux, when trying to get the file name of the query
+  //       the call fails because getFileName tries to get a lock that
+  //       is already taken. Therefore the assertion in mutex.cpp:63
+  //       terminates the execution 
+  theFileName = "";
+#endif
 }
 
 
@@ -55,7 +65,6 @@ DebuggerServer::~DebuggerServer()
   delete theRuntime;
   delete theCommunicator;
 }
-
 
 bool
 DebuggerServer::run()
@@ -69,12 +78,32 @@ DebuggerServer::run()
   init();
 
   std::string lCommand;
+  std::string lCommandName;
+  int lTransactionID = 0;
 
-  while (theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
+  while (!theStopping &&
       theRuntime->getExecutionStatus() != QUERY_DETACHED) {
+
     // read next command
     theCommunicator->receive(lCommand);
     DebuggerCommand lCmd = DebuggerCommand(lCommand);
+
+    lCommandName = lCmd.getName();
+    lCmd.getArg("i", lTransactionID);
+
+    if (theRuntime->getExecutionStatus() == QUERY_TERMINATED) {
+      // clone the existing runtime
+      DebuggerRuntime* lNewRuntime = theRuntime->clone();
+
+      // reset and delete the existing runtime
+      theRuntime->terminate();
+      theRuntime->resetRuntime();
+      theRuntime->join();
+      delete theRuntime;
+
+      // and save the new runtime
+      theRuntime = lNewRuntime;
+    }
 
     // process the received command
     std::string lResponse = processCommand(lCmd);
@@ -84,7 +113,16 @@ DebuggerServer::run()
   }
 
   theRuntime->terminate();
-  theRuntime->resetRuntime();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << lCommandName << "\" "
+    << "status=\"stopped\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << lTransactionID << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
+
+  //theRuntime->resetRuntime();
   theRuntime->join();
 
   return true;
@@ -102,8 +140,17 @@ DebuggerServer::init()
   if (!getEnvVar("DBGP_SESSION", lSession)) {
     lSession = "";
   }
+  ThreadId tid = Runnable::self();
   std::stringstream lInitMsg;
-  lInitMsg << "<init appid=\"zorba\" idekey=\"" << lIdeKey << "\" session=\"" + lSession + "\" thread=\"6666\" parent=\"zorba\" language=\"xquery\" protocol_version=\"1.0\" fileuri=\"file://D:/mm.xq\"/>";
+  lInitMsg << "<init appid=\"zorba\" "
+    << "idekey=\"" << lIdeKey << "\" "
+    << "session=\"" + lSession + "\" "
+    << "thread=\"" << tid <<"\" "
+    << "parent=\"zorba\" "
+    << "language=\"XQuery\" "
+    << "protocol_version=\"1.0\" "
+    << "fileuri=\"" << URIHelper::encodeFileURI(theFileName).str() << "\"/>";
+  
   theCommunicator->send(lInitMsg.str());
 }
 
@@ -113,11 +160,19 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 {
   std::stringstream lResponse;
   int lTransactionID;
+  bool lZorbaExtensions = false;
   ExecutionStatus lStatus;
 
   if (aCommand.getArg("i", lTransactionID)) {
     lResponse << "<response command=\"" << aCommand.getName() << "\" transaction_id=\"" << lTransactionID << "\" ";
     lStatus = theRuntime->getExecutionStatus();
+
+    int lExtOpt;
+    if (aCommand.getArg("z", lExtOpt)) {
+      if (lExtOpt) {
+        lZorbaExtensions = true;
+      }
+    }
 
     std::string lCmdName = aCommand.getName();
 
@@ -132,59 +187,52 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           if (aCommand.getArg("d", lBID)) {
             try {
               Breakable lBkp = theRuntime->getBreakpoint(lBID);
-              std::string lFilename = lBkp.getLocation().getFilename().str();
-              lFilename = URIHelper::encodeFileURI(lFilename).str();
-
-              lResponse << "<breakpoint "
-                << "id=\"" << lBID << "\" "
-                << "type=\"line\" "
-                << "state=\"" << (lBkp.isEnabled() ? "enabled" : "disabled") << "\" "
-                << "filename=\"" << lFilename << "\" "
-                << "lineno=\"" << lBkp.getLocation().getLineBegin() << "\" "
-//              << "function=\"FUNCTION\" "
-//              << "exception=\"EXCEPTION\" "
-//              << "hit_value=\"HIT_VALUE\" "
-//              << "hit_condition=\"HIT_CONDITION\" "
-//              << "hit_count=\"HIT_COUNT\" "
-                << ">"
-//              << "<expression>EXPRESSION</expression>"
-              << "</breakpoint>";
-
+              buildBreakpoint(lBkp, lBID, lResponse);
             } catch (std::string& lErr) {
-              return buildErrorResponse(lTransactionID, lCmdName, 4, lErr);
+              return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
             }
           } else {
             // error
           }
         } else {
           // breakpoint_list
+          BreakableVector lBkps = theRuntime->getBreakpoints();
+
+          BreakableVector::iterator lIter = lBkps.begin();
+          int lId = -1;
+          while (lIter != lBkps.end()) {
+            Breakable lBkp = *(lIter++);
+            lId++;
+
+            // this is only a location without a breakpoint set by the user
+            if (!lBkp.isSet()) {
+              continue;
+            }
+
+            buildBreakpoint(lBkp, lId, lResponse);
+          }
         }
       } else {
         if (aCommand.getName() == "breakpoint_set") {
 
-          int lLineNo;
+          unsigned int lLineNo;
           aCommand.getArg("n", lLineNo);
-          std::string lFileName;
-          aCommand.getArg("f", lFileName);
+          std::string lFileNameTmp;
+          aCommand.getArg("f", lFileNameTmp);
+          String lFileName(lFileNameTmp);
+
           std::string lState;
+          bool lEnabled = true;
           if (!aCommand.getArg("s", lState)) {
             lState = "enabled";
           }
-
-          if (lFileName.substr(0, 7) == "file://") {
-            lFileName = URIHelper::decodeFileURI(lFileName).str();
-          }
-
-          QueryLoc lLocation;
-          lLocation.setLineBegin(lLineNo);
-          lLocation.setLineEnd(lLineNo);
-          lLocation.setFilename(lFileName);
+          lEnabled = (lState == "disabled" ? false : true);
+          lState = (lEnabled ? "enabled" : "disabled");
 
           try {
-            bool lEnabled = (lState == "disabled" ? false : true);
-            unsigned int lBID = theRuntime->addBreakpoint(lLocation, lEnabled);
-            lResponse << "state=\"enabled\" id=\"" << lBID << "\" ";
-          } catch (std::string lErr) {
+            unsigned int lBID = theRuntime->addBreakpoint(lFileName, lLineNo, lEnabled);
+            lResponse << "state=\"" << lState << "\" id=\"" << lBID << "\" ";
+          } catch (std::string& lErr) {
             return buildErrorResponse(lTransactionID, lCmdName, 200, lErr);
           }
  
@@ -196,11 +244,14 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           int lHitValue;
 //          bool lHasCondition = false;
 
-          // we can not change the line number of a breakpoint
-          // so we will never read the -n option
+          // since we can not change the line number of a breakpoint, we throw an error for that
+          if (aCommand.getArg("n", lBID)) {
+            return buildErrorResponse(lTransactionID, lCmdName, 208, "A breakpoint line number can not be changed. Omit the -n argument.");
+          }
 
+          // the breakpoint ID must be present or we throw an error
           if (!aCommand.getArg("d", lBID)) {
-            // TODO: throw exception
+            return buildErrorResponse(lTransactionID, lCmdName, 200, "No breakpoint could not be updated: missing breakpoint ID (-d) argument.");
           }
           if (!aCommand.getArg("s", lState)) {
             lState = "enabled";
@@ -216,14 +267,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           try {
             bool lEnabled = (lState == "disabled" ? false : true);
             theRuntime->updateBreakpoint(lBID, lEnabled, lCondition, lHitValue);
-          } catch (std::string lErr) {
-            // TODO: report error
+          } catch (std::string& lErr) {
+            return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
           }
 
         } else if (aCommand.getName() == "breakpoint_remove") {
           int lBID;
           if (aCommand.getArg("d", lBID)) {
-            theRuntime->removeBreakpoint(lBID);
+            try {
+              theRuntime->removeBreakpoint(lBID);
+            } catch (std::string& lErr) {
+              return buildErrorResponse(lTransactionID, lCmdName, 205, lErr);
+            }
           }
         }
 
@@ -253,13 +308,30 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         if (!aCommand.getArg("c", lContextID)) {
           lContextID = 0;
         }
+        // we allow -1 to return the properties (variables) in all contexts
+        if (lContextID < -1 || lContextID > 1) {
+          std::stringstream lErrMsg;
+          lErrMsg << "Context invalid (" << lContextID << ") invalid. Check the context list for a correct ID.";
+          return buildErrorResponse(lTransactionID, lCmdName, 302, lErrMsg.str());
+        }
 
         // currently we only support contexts for the topmost stack frame
         if (lContextDepth == 0) {
 
-          // get the variables either local or global depenging on the context ID
-          std::vector<std::pair<std::string, std::string> > lVariables =
-            theRuntime->getVariables(lContextID == 0 ? true : false);
+          // get the variables depenging on the context ID (all, local, global)
+          std::vector<std::pair<std::string, std::string> > lVariables;
+          switch (lContextID) {
+          case -1: 
+            lVariables = theRuntime->getVariables();
+            break;
+          case 0: 
+            lVariables = theRuntime->getVariables(true);
+            break;
+          case 1: 
+            lVariables = theRuntime->getVariables(false);
+            break;
+          }
+
           std::vector<std::pair<std::string, std::string> >::iterator lIter =
             lVariables.begin();
 
@@ -269,7 +341,17 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
             std::string lName = getVariableName(lFullName);
             buildProperty(lFullName, lName, lIter->second, lResponse);
           }
+        } else {
+          std::stringstream lErrMsg;
+          if (lContextDepth < 0) {
+            lErrMsg << "Invalid stack depth: " << lContextDepth << "";
+            return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
+          } else if (lContextDepth > 0) {
+            lErrMsg << "Invalid stack depth: " << lContextDepth << ". Currently we only support data commands for the top-most stack frame.";
+            return buildErrorResponse(lTransactionID, lCmdName, 301, lErrMsg.str());
+          }
         }
+
       }
 
       break;
@@ -290,6 +372,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           std::string lName = "";
           buildChildProperties(lName, lResults, lResponse);
 
+        } catch (std::string aMessage) {
+          return buildErrorResponse(lTransactionID, lCmdName, 206, aMessage);
         } catch (...) {
           return buildErrorResponse(lTransactionID, lCmdName, 206, "Error while evaluating expression.");
         }
@@ -358,9 +442,9 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     // run
     case 'r':
 
-      if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
-        if (lStatus == QUERY_IDLE) {
+      if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE || lStatus == QUERY_TERMINATED) {
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        if (lStatus == QUERY_IDLE || lStatus == QUERY_TERMINATED) {
           theRuntime->start();
         } else if (lStatus == QUERY_SUSPENDED) {
           theRuntime->resumeRuntime();
@@ -374,12 +458,47 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
     // stack_depth, stack_get, status, stop, step_into, step_over, step_out
     case 's':
 
-      if (aCommand.getName() == "stop") {
-
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
-
-        lResponse << "reason=\"ok\" status=\"stopped\" ";
+      if (aCommand.getName() == "source") {
+        lResponse << "success=\"1\" ";
         lResponse << ">";
+
+        int lBeginLine;
+        if (!aCommand.getArg("b", lBeginLine)) {
+          lBeginLine = 0;
+        }
+        int lEndLine;
+        if (!aCommand.getArg("e", lEndLine)) {
+          lEndLine = 0;
+        }
+        std::string lTmp;
+        if (!aCommand.getArg("f", lTmp)) {
+          lTmp = "";
+        }
+        String lFileName(lTmp);
+
+        // we wrap the source code in CDATA to have it unparsed because it might contain XML
+        lResponse << "<![CDATA[";
+        try {
+          lResponse << theRuntime->listSource(lFileName, lBeginLine, lEndLine, lZorbaExtensions) << std::endl;
+        } catch (std::string& lErr) {
+          return buildErrorResponse(lTransactionID, lCmdName, 100, lErr);
+        }
+        lResponse << "]]>";
+
+      } else if (aCommand.getName() == "stop") {
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        // sending the zorba extensions flag, the debugger server will not terminate
+        // when the stop command is sent. This way the zorba debugger client can
+        // perform multiple execution of the same query even when the user terminates
+        // the execution using the stop command.
+        // NOTE: theStopping is controlling the main debugger server loop
+        if (!lZorbaExtensions) {
+          theStopping = true;
+        }
+
+        lResponse << "status=\"stopping\" reason=\"ok\"";
+        lResponse << ">";
+
         theRuntime->terminateRuntime();
 
       } else if (aCommand.getName() == "stack_depth") {
@@ -389,33 +508,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stack_get") {
 
-        lResponse << ">";
-        std::vector<StackFrameImpl> lFrames = theRuntime->getStackFrames();
+        try {
+          lResponse << ">";
+          std::vector<StackFrameImpl> lFrames = theRuntime->getStackFrames();
 
-        std::vector<StackFrameImpl>::reverse_iterator lRevIter;
-        int i = 0;
-        for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
-          String lFileName(lRevIter->getLocation().getFileName());
-          lFileName = URIHelper::encodeFileURI(lFileName);
-          unsigned int lLB = lRevIter->getLocation().getLineBegin();
-          unsigned int lLE = lRevIter->getLocation().getLineEnd();
-
-          // for the client, the column numbers are 1-based
-          unsigned int lCB = lRevIter->getLocation().getColumnBegin() - 1;
-          // moreover, the column end points to the last character to be selected
-          unsigned int lCE = lRevIter->getLocation().getColumnEnd() - 2;
-
-          lResponse << "<stack "
-            << "level=\"" << i << "\" "
-            << "type=\"" << "file" << "\" "
-            << "filename=\"" << lFileName << "\" "
-            << "lineno=\"" << lLB << "\" "
-            << "where=\"" << lRevIter->getSignature() << "\" "
-            << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
-            << "cmdend=\"" << lLE << ":" << lCE << "\" "
-            << "/>";
+          std::vector<StackFrameImpl>::reverse_iterator lRevIter;
+          int i = 0;
+          for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
+            buildStackFrame(*lRevIter, i, lResponse);
+          }
+        } catch (std::string& lErr) {
+          return buildErrorResponse(lTransactionID, lCmdName, 303, lErr);
         }
-
       } else if (aCommand.getName() == "status") {
 
         ExecutionStatus lStatus = theRuntime->getExecutionStatus();
@@ -425,7 +529,6 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           lStatusStr = "starting";
           break;
         case QUERY_RUNNING:
-        case QUERY_RESUMED:
           lStatusStr = "running";
           break;
         case QUERY_SUSPENDED:
@@ -442,16 +545,19 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           << ">";
 
       } else if (aCommand.getName() == "step_into") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
-        theRuntime->step(STEP_INTO);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        theRuntime->stepIn();
         return "";
       } else if (aCommand.getName() == "step_over") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
-        theRuntime->step(STEP_OVER);
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        theRuntime->stepOver();
         return "";
       } else if (aCommand.getName() == "step_out") {
-        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
-        theRuntime->step(STEP_OUT);
+        if (theRuntime->getExecutionStatus() != QUERY_SUSPENDED) {
+          return buildErrorResponse(lTransactionID, lCmdName, 6, "Can not step out since the execution is not started.");
+        }
+        theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
+        theRuntime->stepOut();
         return "";
       }
 
@@ -481,6 +587,65 @@ DebuggerServer::getVariableName(std::string& aFullName) {
   }
   return lName;
 }
+
+void
+DebuggerServer::buildStackFrame(
+  StackFrame& aFrame,
+  int aSNo,
+  std::ostream& aStream)
+{
+  // the file names in query locations always come as URIs, so decode it
+  String lFileName(aFrame.getLocation().getFileName());
+  if (lFileName.substr(0, 7) == "file://") {
+    lFileName = URIHelper::decodeFileURI(lFileName);
+  }
+
+  unsigned int lLB = aFrame.getLocation().getLineBegin();
+  unsigned int lLE = aFrame.getLocation().getLineEnd();
+
+  // for the client, the column numbers are 1-based
+  unsigned int lCB = aFrame.getLocation().getColumnBegin() - 1;
+  // moreover, the column end points to the last character to be selected
+  unsigned int lCE = aFrame.getLocation().getColumnEnd() - 2;
+
+  aStream << "<stack "
+    << "level=\"" << aSNo << "\" "
+    << "type=\"" << "file" << "\" "
+    << "filename=\"" << lFileName << "\" "
+    << "lineno=\"" << lLB << "\" "
+    << "where=\"" << aFrame.getSignature() << "\" "
+    << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
+    << "cmdend=\"" << lLE << ":" << lCE << "\" "
+    << "/>";
+};
+
+void
+DebuggerServer::buildBreakpoint(
+  Breakable& aBreakpoint,
+  int aBID,
+  std::ostream& aStream)
+{
+  // the file names in query locations always come as URIs, so decode it
+  String lFileName(aBreakpoint.getLocation().getFilename().str());
+  if (lFileName.substr(0, 7) == "file://") {
+    lFileName = URIHelper::decodeFileURI(lFileName);
+  }
+
+  aStream << "<breakpoint "
+    << "id=\"" << aBID << "\" "
+    << "type=\"line\" "
+    << "state=\"" << (aBreakpoint.isEnabled() ? "enabled" : "disabled") << "\" "
+    << "filename=\"" << lFileName << "\" "
+    << "lineno=\"" << aBreakpoint.getLocation().getLineBegin() << "\" "
+//  << "function=\"FUNCTION\" "
+//  << "exception=\"EXCEPTION\" "
+//  << "hit_value=\"HIT_VALUE\" "
+//  << "hit_condition=\"HIT_CONDITION\" "
+//  << "hit_count=\"HIT_COUNT\" "
+    << ">"
+//  << "<expression>EXPRESSION</expression>"
+  << "</breakpoint>";
+};
 
 void
 DebuggerServer::buildProperty(

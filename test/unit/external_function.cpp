@@ -125,6 +125,18 @@ public:
   }
 };
 
+class MySimpleExternalFunction4 : public NonContextualExternalFunction
+{
+public:
+  String getURI() const { return "http://www.zorba-xquery.com/m"; }
+
+  String getLocalName() const { return "bar4"; }
+
+  ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
+  {
+    return args[0];
+  }
+};
 
 class MyExternalModule : public ExternalModule
 {
@@ -132,6 +144,7 @@ protected:
   MySimpleExternalFunction           bar;
   MySimpleExternalFunction2          bar2;
   MySimpleExternalFunction3          bar3;
+  MySimpleExternalFunction4          bar4;
 
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
@@ -140,8 +153,10 @@ public:
   {
     if (aLocalname == "bar")
         return const_cast<MySimpleExternalFunction*>(&bar);
-    if (aLocalname == "bar3")
+    else if (aLocalname == "bar3")
         return const_cast<MySimpleExternalFunction3*>(&bar3);
+    else if (aLocalname == "bar4")
+        return const_cast<MySimpleExternalFunction4*>(&bar4);
     else
         return const_cast<MySimpleExternalFunction2*>(&bar2);
   }
@@ -327,6 +342,42 @@ external_function_test_3(Zorba* aZorba)
   return true;
 }
 
+bool
+external_function_test_4(Zorba* aZorba)
+{
+  try 
+  {
+    std::ifstream lIn("ext_main3.xq");
+    assert(lIn.good());
+    std::ostringstream lOut;
+    MyExternalModule lMod;
+
+    StaticContext_t lSctx = aZorba->createStaticContext();
+    lSctx->registerModule(&lMod);
+
+    {
+      XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
+
+      std::cout << lQuery << std::endl;
+    }
+  } 
+  catch (XQueryException& qe) 
+  {
+    std::cerr << qe << std::endl;
+    return false;
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+  return true;
+}
+
 
 int
 external_function(int argc, char* argv[]) 
@@ -351,6 +402,13 @@ external_function(int argc, char* argv[])
   {
     return 3;
   }
+
+  std::cout << "executing external_function_test_4" << std::endl;
+  if (!external_function_test_4(lZorba))
+  {
+    return 4;
+  }
+
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);

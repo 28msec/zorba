@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html>
   <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
     <meta content="public" http-equiv="CACHE-CONTROL" />
     <meta content="-1" http-equiv="Expires" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/jquery.treeview.css" />
+    <link rel="stylesheet" href="styles/jquery.treeview.css" type="text/css" />
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.js"></script>
@@ -16,25 +16,37 @@
     <link type="text/css" rel="stylesheet" href="styles/shCore.css"/>
     <link type="text/css" rel="stylesheet" href="styles/shThemeDefault.css"/>
     <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css"/>
+<script type="text/javascript">
+//<![CDATA[
+SyntaxHighlighter.all()
+//]]>
+</script>
     <script type="text/javascript">
-      SyntaxHighlighter.all()
-    </script>
-    <script type="text/javascript">
-      jQuery(document).ready(function() {
-          $("#documentation").treeview({
-              control: "#treecontrol",
-              animated: "fast",
-              collapsed: true,
-              unique: false,
-              persist: "cookie"
-          });
-        });
-    </script>
-    <script src="http://www.google.com/js/gweb/analytics/autotrack.js"></script>
-    <script>//
-       new gweb.analytics.AutoTrack({profile: 'UA-4281090-1'});
-    //</script>
-  </head>
+//<![CDATA[
+jQuery(document).ready(function() {
+$("#documentation").treeview({
+control: "#treecontrol",
+animated: "fast",
+collapsed: true,
+unique: false,
+persist: "cookie"
+});
+});
+//]]>
+</script>
+    <script type="text/javascript" src="http://www.google.com/js/gweb/analytics/autotrack.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+new gweb.analytics.AutoTrack({profile: 'UA-4281090-1'});
+//]]>
+</script>
+<style type="text/css">
+/*<![CDATA[*/
+ div.c2 {clear:both;}
+ li.c1 {width:102px !important;}
+/*]]>*/
+</style>
+</head>
   <body>
     <div id="header">
       <div class="innerheader text-left">
@@ -63,8 +75,8 @@
     <div id="main">
       <div id="leftMenu" >
         <div id="treecontrol">
-          <a title="Collapse the entire tree below" href="#"><img src="images/minus.gif" /> Collapse All</a> 
-          <a title="Expand the entire tree below"   href="#"><img src="images/plus.gif" /> Expand All</a>
+          <a title="Collapse the entire tree below" href="#"><img src="images/minus.gif" alt="minus"/> Collapse All</a> 
+          <a title="Expand the entire tree below"   href="#"><img src="images/plus.gif" alt="plus"/> Expand All</a>
         </div>
       </div>
       <div id="rightcontent" />
@@ -89,7 +101,7 @@
                 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
             })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <noscript><p>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></p></noscript>
         <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
       </div>
     </div>

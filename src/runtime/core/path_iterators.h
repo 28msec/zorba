@@ -63,7 +63,7 @@ protected:
   xqtref_t                     theType;
   bool                         theNilledAllowed;
 
-  xs_long                         theTargetPos;
+  xs_long                      theTargetPos;
  
 public:
   AxisIteratorHelper() 

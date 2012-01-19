@@ -125,7 +125,16 @@ namespace zorba {
       virtual Item
       createDuration ( short aYears, short aMonths, short aDays, 
                        short aHours, short aMinutes, double aSeconds );
-    
+
+      virtual Item
+      createDayTimeDuration( const String& aValue );
+
+      virtual Item
+      createYearMonthDuration( const String& aValue );
+
+      virtual Item
+      createDocumentNode( const String& aBaseUri, const String& aDocUri );
+
       virtual Item
       createFloat ( const String& aValue );
     
@@ -204,7 +213,7 @@ namespace zorba {
                         Item aTypeName,
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
-                        std::vector<std::pair<String, String> > aNsBindings);
+                        NsBindings aNsBindings);
 
       virtual Item
       createAttributeNode(Item aParent,
@@ -218,7 +227,20 @@ namespace zorba {
         Item aTypeName,
         std::vector<Item> aTypedValue);
 
-      virtual Item createTextNode(
+      virtual Item
+      createCommentNode (
+        Item   aParent,
+        String &aContent);
+
+      virtual Item 
+      createPiNode (
+        Item   aParent,
+        String &aTarget,
+        String &aContent,
+        String &aBaseUri);
+
+      virtual Item 
+      createTextNode(
         Item   parent,
         String content);
 

@@ -72,7 +72,7 @@ public:
   void send( Item const *item, Tokenizer::Callback &callback ) {
     if ( !empty() ) {
 #     if DEBUG_TOKENIZER
-      cout << "TOKEN: \"" << value_ << "\"\n";
+      cout << "TOKEN: \"" << value_ << "\" (" << pos_ << ',' << sent_ << ',' << para_ << ")\n";
 #     endif
       callback.token(
         value_.data(), value_.size(), lang_, pos_, sent_, para_, item
@@ -137,7 +137,7 @@ ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, Numbers &no ) :
   Locale const &icu_locale = get_icu_locale_for( lang );
   UErrorCode status = U_ZERO_ERROR;
 
-  word_.reset(
+  word_it_.reset(
     dynamic_cast<RuleBasedBreakIterator*>(
       BreakIterator::createWordInstance( icu_locale, status )
     )
@@ -145,7 +145,7 @@ ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, Numbers &no ) :
   if ( U_FAILURE( status ) )
     throw ZORBA_EXCEPTION( zerr::ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
-  sent_.reset(
+  sent_it_.reset(
     dynamic_cast<RuleBasedBreakIterator*>(
       BreakIterator::createSentenceInstance( Locale::getUS(), status )
     )
@@ -211,11 +211,12 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
   // This unicode::string wraps the existing buffer: no copy is made.
   unicode::string const utf16_s( false, utf16_buf, utf16_len );
 
-  word_->setText( utf16_s );
-  unicode::size_type word_start = word_->first(), word_end = word_->next();
+  word_it_->setText( utf16_s );
+  unicode::size_type word_start = word_it_->first();
+  unicode::size_type word_end   = word_it_->next();
 
-  sent_->setText( utf16_s );
-  unicode::size_type sent_end = sent_->first(); sent_end = sent_->next();
+  sent_it_->setText( utf16_s );
+  unicode::size_type sent_end = sent_it_->first(); sent_end = sent_it_->next();
 
   temp_token t( lang );
 
@@ -239,10 +240,11 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
     }
     unique_ptr<utf8::storage_type[]> const auto_utf8_buf( utf8_buf );
 
-    zstring_b utf8_word;
+    zstring_b utf8_word; // used only for debugging & error reporting
     utf8_word.wrap_memory( utf8_buf, utf8_len );
-
-    unicode::size_type const rule_status = word_->getRuleStatus();
+#   if DEBUG_TOKENIZER
+    cout << "GOT: \"" << utf8_word << "\" ";
+#   endif
 
     //
     // "Junk" tokens are whitespace and punctuation -- except some punctuation
@@ -250,10 +252,7 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
     //
     bool is_junk = false;
 
-#   if DEBUG_TOKENIZER
-    cout << "GOT: \"" << utf8_word << "\" ";
-#   endif
-
+    int32_t const rule_status = word_it_->getRuleStatus();
     if ( IS_WORD_BREAK( NONE, rule_status ) ) {
       //
       // "NONE" tokens are what ICU calls whitespace and punctuation.
@@ -301,7 +300,7 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
           default:
             in_wild = false;
         }
-      }
+      } // if ( wildcards )
       is_junk = true;
     }
 
@@ -342,10 +341,10 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
       }
     }
 
-    else {
+    else /* if ( IS_WORD_BREAK( OTHER, rule_status ) ) */ {
       //
-      // "OTHER" tokens are for non-whitespace, non-digits, and non-numbers,
-      // i.e., word tokens.
+      // "OTHER" tokens are for non-whitespace, non-punctuation, and
+      // non-numbers, i.e., word tokens.
       //
 #     if DEBUG_TOKENIZER
       cout << "(OTHER)" << endl;
@@ -362,10 +361,16 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
       t.send( item, callback );
 
 set_token:
+#   if DEBUG_TOKENIZER
+    cout << "at set_token" << endl;
+#   endif
     if ( !is_junk ) {
       if ( in_wild || got_backslash )
         t.append( utf8_buf, utf8_len );
       else {
+#       if DEBUG_TOKENIZER
+        cout << "setting token" << endl;
+#       endif
         t.set(
           utf8_buf, utf8_len, numbers().token, numbers().sent, numbers().para
         );
@@ -374,10 +379,17 @@ set_token:
     }
 
 next:
-    word_start = word_end, word_end = word_->next();
+#   if DEBUG_TOKENIZER
+    cout << "at next" << endl;
+#   endif
+    word_start = word_end, word_end = word_it_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
-      sent_end = sent_->next();
+      sent_end = sent_it_->next();
+      // The addition of the "if" fixes:
+      // https://bugs.launchpad.net/bugs/863320
+#if 0
       if ( sent_end != BreakIterator::DONE )
+#endif
         ++numbers().sent;
     }
   } // while
@@ -387,6 +399,14 @@ next:
       err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar_3 ), '}' )
     );
   t.send( item, callback );
+  // Incrementing "sent" here fixes:
+  // https://bugs.launchpad.net/bugs/897800
+#if 0
+  ++numbers().sent;
+#endif
+#if DEBUG_TOKENIZER
+  cout << "--------------------\n";
+#endif /* DEBUG_TOKENIZER */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

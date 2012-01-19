@@ -28,7 +28,7 @@
 namespace zorba {
 
 class TCPSocket;
-class socket_streambuf;
+class SocketStreambuf;
 
 class DebuggerCommunicator {
 
@@ -96,13 +96,13 @@ class DebuggerCommunicator {
     
 
     TCPSocket*        theSocket;
-    socket_streambuf* theSocketInStream;
-    socket_streambuf* theSocketOutStream;
+    SocketStreambuf*  theSocketInStream;
+    SocketStreambuf*  theSocketOutStream;
     std::istream*     theCommunicatorInStream;
     std::ostream*     theCommunicatorOutStream;
     ResponseQueue*    theResponseQueue;
 };
 
-}//end of namespace
+} //namespace zorba
 
 #endif // ZORBA_DEBUGGER_COMMUNICATOR_H

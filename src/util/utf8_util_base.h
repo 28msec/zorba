@@ -18,6 +18,7 @@
 #define ZORBA_UTF8_UTIL_BASE_H
 
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <stdexcept>
 
@@ -163,6 +164,32 @@ unicode::code_point next_char( OctetIterator &i );
  */
 template<class OctetIterator>
 unicode::code_point prev_char( OctetIterator &i );
+
+/**
+ * Reads bytes from an istream until an entire UTF-8 character has been read.
+ *
+ * @param i The istream to read from.
+ * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
+ * byte sequence.  The pointer is advanced to one byte past the newly read
+ * character.
+ * @return Returns the number of bytes comprising the UTF-8 character (which
+ * equals the number of bytes read) or \c npos if either EOF was reached or the
+ * bytes read are an invalid UTF-8 byte sequence.
+ */
+size_type read( std::istream &i, storage_type **ps );
+
+/**
+ * Reads bytes from an istream until an entire UTF-8 character has been read.
+ *
+ * @param i The istream to read from.
+ * @param p A pointer to what will be the first byte of a UTF-8 byte sequence.
+ * @return Returns the number of bytes comprising the UTF-8 character (which
+ * equals the number of bytes read) or \c npos if either EOF was reached or the
+ * bytes read are an invalid UTF-8 byte sequence.
+ */
+inline size_type read( std::istream &i, storage_type *p ) {
+  return read( i, &p );
+}
 
 ////////// Character access ///////////////////////////////////////////////////
 

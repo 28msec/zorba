@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -109,20 +110,18 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         store::Item_t item;
 
         if (! consumeNext(item, theChildren[0], planState))
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-            ERROR_LOC( loc )
-          );
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+        }
 
         dctx->set_variable(theVarId, theVarName, loc, item);
 
         if (consumeNext(item, theChildren[0], planState))
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-            ERROR_LOC( loc )
-          );
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+        }
       }
       else
       {
@@ -169,11 +168,10 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theSingleItem)
   {
     if (! consumeNext(item, theChild, planState))
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-        ERROR_LOC( loc )
-      );
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+    }
 
     if (theIsLocal)
       planState.theLocalDynCtx->set_variable(theVarId, theVarName, loc, item);
@@ -181,11 +179,10 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
       planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, item);
 
     if (consumeNext(item, theChild, planState))
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-        ERROR_LOC( loc )
-      );
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+    }
   }
   else
   {
@@ -295,9 +292,9 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool CtxVarIterator::setTargetPos(xs_long v)
+bool CtxVarIterator::setTargetPos(xs_integer v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPos = v;
     return true;
@@ -308,7 +305,7 @@ bool CtxVarIterator::setTargetPos(xs_long v)
 
 bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPosIter = v;
     return true;
@@ -319,7 +316,7 @@ bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetLenIter == NULL)
   {
     theTargetLenIter = v;
     return true;
@@ -398,8 +395,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t varSingleItem;
   store::Item_t posItem;
   store::Item_t lenItem;
-  xs_long startPos;
-  xs_long len;
+  xs_integer startPos;
+  xs_integer len;
 
   dynamic_context* dctx = (theIsLocal ?
                            planState.theLocalDynCtx :
@@ -417,13 +414,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
+    startPos = posItem->getIntegerValue();
 
     dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
-      if (startPos == 1)
+      if (startPos == Integer(1))
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -431,9 +428,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      if (startPos > 0)
+      if (startPos > Integer(0))
       {
-        state->theTempSeq->getItem((ulong)startPos, result);
+        state->theTempSeq->getItem(startPos, result);
       }
 
       if (result)
@@ -441,13 +438,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
@@ -460,29 +452,29 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
+    startPos = posItem->getIntegerValue();
 
     if (!consumeNext(lenItem, theTargetLenIter, planState))
     {
       ZORBA_ASSERT(false);
     }
 
-    len = lenItem->getLongValue();
+    len = lenItem->getIntegerValue();
 
-    if (startPos <= 0)
+    if (startPos <= Integer(0))
     {
-      len += startPos - 1;
+      len += startPos - Integer(1);
       startPos = 1;
     }
 
-    state->theLastPos = (ulong)(startPos + len);
-    state->thePos = (ulong)startPos;
+    state->theLastPos = startPos + len;
+    state->thePos = startPos;
 
     dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
-      if (state->thePos == 1 && state->thePos < state->theLastPos)
+      if (state->thePos == Integer(1) && state->thePos < state->theLastPos)
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -498,21 +490,16 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           STACK_PUSH(true, state);
         else
           break;
-        }
+      }
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
-  else if (theTargetPos > 0)
+  else if (theTargetPos > Integer(0))
   {
     result = NULL;
 
@@ -522,7 +509,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (varSingleItem != NULL)
     {
-      if (startPos == 1)
+      if (startPos == Integer(1))
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -530,9 +517,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      if (startPos > 0)
+      if (startPos > Integer(0))
       {
-        state->theTempSeq->getItem((ulong)startPos, result);
+        state->theTempSeq->getItem(startPos, result);
       }
 
       if (result)
@@ -540,13 +527,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPos > 0)
 
@@ -573,17 +555,12 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
 	}
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -696,9 +673,9 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool LetVarIterator::setTargetPos(xs_long v)
+bool LetVarIterator::setTargetPos(xs_integer v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPos = v;
     return true;
@@ -709,7 +686,7 @@ bool LetVarIterator::setTargetPos(xs_long v)
 
 bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPosIter = v;
     return true;
@@ -720,7 +697,7 @@ bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetLenIter == NULL)
   {
     theTargetLenIter = v;
     return true;
@@ -753,9 +730,9 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 
   if (theTargetPosIter == NULL)
   {
-    if (theTargetPos > 0)
+    if (theTargetPos > Integer(0))
     {
-      value->getItem((ulong)theTargetPos, state->theItem);
+      value->getItem(theTargetPos, state->theItem);
     }
     else
     {
@@ -782,9 +759,9 @@ void LetVarIterator::bind(
 
   if (theTargetPosIter == NULL)
   {
-    if (theTargetPos > 0)
+    if (theTargetPos > Integer(0))
     {
-      value->getItem((ulong)(startPos + theTargetPos - 1), state->theItem);
+      value->getItem((Integer(startPos) + theTargetPos - Integer(1)), state->theItem);
     }
     else
     {
@@ -855,8 +832,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t posItem;
   store::Item_t lenItem;
-  xs_long startPos;
-  xs_long len;
+  xs_integer startPos;
+  xs_integer len;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
@@ -870,12 +847,12 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
+    startPos = posItem->getIntegerValue();
 
     if (theTargetLenIter == NULL)
     {
-      if (startPos > 0)
-        state->theTempSeq->getItem((ulong)startPos, result);
+      if (startPos > Integer(0))
+        state->theTempSeq->getItem(startPos, result);
 
       if (result)
         STACK_PUSH(true, state);
@@ -887,16 +864,16 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         ZORBA_ASSERT(false);
       }
 
-      len = lenItem->getLongValue();
+      len = lenItem->getIntegerValue();
 
-      if (startPos <= 0)
+      if (startPos <= Integer(0))
       {
-        len += startPos - 1;
+        len += startPos - Integer(1);
         startPos = 1;
       }
 
-      state->theLastPos = (ulong)(startPos + len);
-      state->thePos = (ulong)startPos;
+      state->theLastPos = startPos + len;
+      state->thePos = startPos;
 
       while (state->thePos < state->theLastPos)
       {
@@ -909,7 +886,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     }
   }
-  else if (theTargetPos > 0)
+  else if (theTargetPos > Integer(0))
   {
     result = state->theItem;
     if (result)

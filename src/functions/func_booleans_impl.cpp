@@ -17,7 +17,7 @@
 
 #include "system/globalenv.h"
 
-#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "functions/func_booleans_impl.h"
 #include "functions/function_impl.h"
@@ -61,12 +61,12 @@ public:
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -101,13 +101,13 @@ function* GenericOpComparison::specialize(
   if (! (TypeOps::is_builtin_atomic(tm, *t0) && TypeOps::is_builtin_atomic(tm, *t1)))
     return NULL;
 
-  TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-  TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+  store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+  store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
 
-  if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC ||
-      tc1 == TypeConstants::XS_UNTYPED_ATOMIC ||
-      tc0 == TypeConstants::XS_ANY_ATOMIC ||
-      tc1 == TypeConstants::XS_ANY_ATOMIC)
+  if (tc0 == store::XS_UNTYPED_ATOMIC ||
+      tc1 == store::XS_UNTYPED_ATOMIC ||
+      tc0 == store::XS_ANY_ATOMIC ||
+      tc1 == store::XS_ANY_ATOMIC)
     return NULL;
 
   return toValueComp(sctx);
@@ -128,9 +128,7 @@ public:
 
   bool isValueComparisonFunction() const { return true; }
 
-  xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   function* specialize(
         static_context* sctx,
@@ -138,19 +136,22 @@ public:
 };
 
 
-xqtref_t ValueOpComparison::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
 {
+  TypeManager* tm = caller->get_type_manager();
+  const QueryLoc& loc = caller->get_loc();
+
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
   for (int i = 0; i < 2; i++)
   {
-    if (TypeOps::is_equal(tm, *empty, *arg_types[i], QueryLoc::null))
+    if (TypeOps::is_equal(tm, *empty, *caller->get_arg(i)->get_return_type(), loc))
       return empty;
 
-    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+    TypeConstants::quantifier_t aq = 
+    TypeOps::quantifier(*caller->get_arg(i)->get_return_type());
+
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
       quant = TypeConstants::QUANT_QUESTION;
@@ -199,26 +200,26 @@ function* ValueOpComparison::specialize(
 
   if (TypeOps::is_builtin_simple(tm, *t0) && TypeOps::is_builtin_simple(tm, *t1))
   {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+    store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
 
     if (tc0 == tc1)
     {
       switch(tc0)
       {
-      case TypeConstants::XS_DOUBLE:
+      case store::XS_DOUBLE:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DOUBLE);
 
-      case TypeConstants::XS_DECIMAL:
+      case store::XS_DECIMAL:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DECIMAL);
 
-      case TypeConstants::XS_FLOAT:
+      case store::XS_FLOAT:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, FLOAT);
 
-      case TypeConstants::XS_INTEGER:
+      case store::XS_INTEGER:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, INTEGER);
 
-      case TypeConstants::XS_STRING:
+      case store::XS_STRING:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, STRING);
 
       default:
@@ -240,7 +241,7 @@ function* ValueOpComparison::specialize(
   class op_value_greater : SpecificValueComparison<CompareConsts::GREATER>
 
   class op_value_greater_double : TypedValueComparison<CompareConsts::GREATER,
-                                                       TypeConstants::XS_DOUBLE>
+                                                       store::XS_DOUBLE>
 
 
 ********************************************************************************/
@@ -265,7 +266,7 @@ public:
 };
 
 
-template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t>
+template<enum CompareConsts::CompareType CC, store::SchemaTypeCode t>
 class TypedValueComparison : public SpecificValueComparison<CC>
 {
 public:
@@ -290,13 +291,13 @@ public:
 #define DECL_SPECIFIC_TYPED_OP( cc, op, t, xqt )                        \
 class op_value_##op##_##t :                                             \
 public TypedValueComparison<CompareConsts::VALUE_##cc,                  \
-                            TypeConstants::XS_##xqt>                    \
+                            store::XS_##xqt>                            \
 {                                                                       \
 public:                                                                 \
   op_value_##op##_##t(const signature& sig)                             \
     :                                                                   \
     TypedValueComparison<CompareConsts::VALUE_##cc,                     \
-                         TypeConstants::XS_##xqt>                       \
+                         store::XS_##xqt>                               \
     (sig, FunctionConsts::OP_VALUE_##cc##_##xqt##_2)                    \
   {                                                                     \
   }                                                                     \
@@ -602,12 +603,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -634,12 +640,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -714,12 +725,17 @@ class fn_not : public function
 public:
   fn_not(const signature& sig) : function(sig, FunctionConsts::FN_NOT_1) {}
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -747,12 +763,17 @@ public:
   {
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return false;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
   {
     return ANNOTATION_TRUE;
   }
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }

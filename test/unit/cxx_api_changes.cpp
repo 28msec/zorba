@@ -226,7 +226,7 @@ cxx_api_changes_test5(Zorba* aZorba)
     std::vector<Item>::const_iterator lEnd = lVars.end();
 
     Item item = aZorba->getItemFactory()->createInt(4);
-
+    
 
     bool isBound1;
     bool isBound2;
@@ -234,10 +234,10 @@ cxx_api_changes_test5(Zorba* aZorba)
     for(; lIte != lEnd; ++lIte)
     {
       Item qname = *lIte;
-      isBound1 = lQuery->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
+      isBound1 = lQuery->getDynamicContext()->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
       Item value = aZorba->getItemFactory()->createString("foo");
       lQuery->getDynamicContext()->setVariable(qname.getStringValue(), value);
-      isBound2 = lQuery->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
+      isBound2 = lQuery->getDynamicContext()->isBoundExternalVariable(qname.getNamespace(), qname.getLocalName());
     }
 
     if (!isBound1 && isBound2)
@@ -258,6 +258,44 @@ cxx_api_changes_test5(Zorba* aZorba)
   return true;
 }
 
+bool
+cxx_api_changes_test6(Zorba* aZorba)
+{
+  try
+  {
+    
+    std::string lIn = "1+1";
+    
+    XQuery_t lQuery = aZorba->compileQuery(lIn);
+
+    Zorba* lZorba = Zorba::getInstance(0);  
+
+    bool isBound1;
+    bool isBound2;
+
+    isBound1 = lQuery->getDynamicContext()->isBoundContextItem();
+
+    Item lContextItem = aZorba->getItemFactory()->createString("foo");
+    lQuery->getDynamicContext()->setContextItem(lContextItem);
+    isBound2 = lQuery->getDynamicContext()->isBoundContextItem();
+
+    if (!isBound1 && isBound2)
+      return true;
+     
+  }
+  catch (XQueryException& qe)
+  {
+    std::cerr << qe << std::endl;
+    return false;
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+  return true;
+}
 
 int
 cxx_api_changes (int argc, char* argv[])
@@ -293,6 +331,12 @@ cxx_api_changes (int argc, char* argv[])
   if (!cxx_api_changes_test5(lZorba))
   {
     return 5;
+  }
+
+  std::cout << "executing cxx_api_changes_test6" << std::endl;
+  if (!cxx_api_changes_test6(lZorba))
+  {
+    return 6;
   }
 
   lZorba->shutdown();

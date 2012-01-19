@@ -1,0 +1,1 @@
+fn:analyze-string("ac", "((a)|(c))+")

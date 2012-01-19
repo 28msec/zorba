@@ -27,7 +27,7 @@ declare function local:create-include() as xs:string
   '#include <vector>',$gen:newline,
   '#include "common/common.h"',$gen:newline,
   '#include "zorbatypes/zorbatypes_decl.h"',$gen:newline,
-  '#include "types/typeconstants.h"',$gen:newline,
+  '#include "store/api/xs_type_codes.h"',$gen:newline,
   '#include "zorbatypes/rchandle.h"',$gen:newline,
   '#include "zorbatypes/zstring.h"',$gen:newline
   ),'')
@@ -47,7 +47,7 @@ declare function local:create-class() as xs:string
  
 
 (:type can be 'fwd-decl' or 'class' :)
-declare %ann:nondeterministic %ann:sequential function local:process-files(
+declare %ann:nondeterministic function local:process-files(
     $files as xs:string, 
     $type as xs:string) as xs:string
 {
@@ -59,7 +59,7 @@ declare %ann:nondeterministic %ann:sequential function local:process-files(
 };
 
 
-declare %ann:nondeterministic %ann:sequential function local:process-file($file, $type as xs:string) as xs:string
+declare %ann:nondeterministic function local:process-file($file, $type as xs:string) as xs:string
 {
   let $doc := fn:parse-xml(file:read-text($file))/zorba:iterators
 
@@ -93,7 +93,7 @@ declare function local:process-iter($iter, $type as xs:string) as xs:string
   )
 };
 
-declare %ann:nondeterministic %ann:sequential function local:create-fwd-decl($files as xs:string) as xs:string
+declare %ann:nondeterministic function local:create-fwd-decl($files as xs:string) as xs:string
 {
   variable $temp := local:process-files($files,'fwd-decl');
 

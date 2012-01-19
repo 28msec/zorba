@@ -284,6 +284,7 @@ class XmlNode : public store::Item
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class ConnectorNode;
 
   friend class PULImpl;
   friend class CollectionPul;
@@ -352,12 +353,19 @@ public:
 
     // For any kind of node. Set if an identifier has been generated for the node
     // (see SimpleStore::getNodeReference() method).
-    HaveReference         = 0x10000
+    HaveReference         = 0x10000,
+
+    IsConnectorNode       = 0x20000
   };
 
 protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
+
+private:
+#ifndef TEXT_ORDPATH
+  static long compareInSameTree(const XmlNode* n1, const XmlNode* n2);
+#endif
 
 protected:
   XmlNode() : theParent(NULL)
@@ -369,13 +377,34 @@ protected:
     theFlags = (uint32_t)k;
   }
 
-
   XmlNode(
       XmlTree* tree,
       InternalNode* parent,
       store::StoreConsts::NodeKind nodeKind);
 
+  virtual void getBaseURIInternal(zstring& uri, bool& local) const;
+
+  void attach(InternalNode* parent, csize pos);
+
+  void detach();
+
+  void destroy(bool removeType);
+
+  bool disconnect(csize& pos);
+
+  void connect(InternalNode* node, csize pos);
+
+#ifndef ZORBA_NO_FULL_TEXT
+  virtual void tokenize( XmlNodeTokenizerCallback& );
+#endif
+
+private:
+  void setTree(const XmlTree* t);
+
+  void destroyInternal(bool removeType);
+
 public:
+
 #ifndef NDEBUG
   virtual ~XmlNode();
 #else
@@ -401,10 +430,11 @@ public:
 
   const store::Collection* getCollection() const
   {
+    assert(!isConnectorNode());
     return reinterpret_cast<const store::Collection*>(getTree()->getCollection());
   }
 
-  void getDocumentURI(zstring& uri) const
+  virtual void getDocumentURI(zstring& uri) const
   {
     ;
   }
@@ -419,11 +449,13 @@ public:
       long timezone = 0,
       const XQPCollator* aCollation = 0) const
   {
+    assert(!isConnectorNode());
     return this == other;
   }
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
+    assert(!isConnectorNode());
     XmlNode* node = const_cast<XmlNode*>(this);
     return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
   }
@@ -432,31 +464,42 @@ public:
 
   void getBaseURI(zstring& uri) const
   {
+    assert(!isConnectorNode());
     bool local = false;
     getBaseURIInternal(uri, local);
   }
 
   store::Item_t getEBV() const;
 
-  store::Item* copy(
-      store::Item* parent,
-      const store::CopyMode& copymode) const;
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
-  store::Item* copy(
-      store::Item* parent,
-      csize pos,
-      const store::CopyMode& copymode) const;
+  virtual store::Item_t getNilled() const 
+  {
+    assert(!isConnectorNode());
+    return 0; 
+  }
 
-  virtual store::Item_t getNilled() const { return 0; }
+  virtual bool isId() const 
+  {
+    assert(!isConnectorNode());
+    return false;
+  }
 
-  virtual bool isId() const { return false; }
+  virtual bool isIdRefs() const 
+  {
+    assert(!isConnectorNode());
+    return false;
+  }
 
-  virtual bool isIdRefs() const { return false; }
-
-  bool isValidated() const { return getTree()->isValidated(); }
+  bool isValidated() const 
+  {
+    assert(!isConnectorNode());
+    return getTree()->isValidated();
+  }
 
   void markValidated()
   {
+    assert(!isConnectorNode());
     assert(theParent == NULL);
     getTree()->markValidated();
   }
@@ -475,10 +518,15 @@ public:
 
   void setCollection(SimpleCollection* coll, ulong pos)
   {
+    assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
   }
 
-  ulong getCollectionId() const { return getTree()->getCollectionId(); }
+  ulong getCollectionId() const 
+  {
+    assert(!isConnectorNode());
+    return getTree()->getCollectionId(); 
+  }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
@@ -515,35 +563,55 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
+  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
       Tokenizer::Numbers&,
       locale::iso639_1::type,
-      bool wildcards = false ) const;
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class ConnectorNode : public XmlNode
+{
+  friend class XmlNode;
 
 protected:
-  virtual void getBaseURIInternal(zstring& uri, bool& local) const;
+  XmlNode_t  theNode;
 
-  void attach(InternalNode* parent, csize pos);
+protected:
+  ConnectorNode(
+      XmlTree* tree,
+      InternalNode* parent,
+      const XmlNode* child);
 
-  void detach();
+public:
+  XmlNode* getNode() const { return theNode.getp(); }
 
-  void destroy(bool removeType);
+  store::Item* getNodeName() const { return theNode->getNodeName(); }
 
-  bool disconnect(csize& pos);
+  store::Item* getType() const { return theNode->getType(); }
 
-  void connect(InternalNode* node, csize pos);
+  zstring getStringValue() const { return theNode->getStringValue(); }
 
-private:
-  void setTree(const XmlTree* t);
+  void getStringValue2(zstring& val) const { theNode->getStringValue2(val); }
 
-#ifndef TEXT_ORDPATH
-  long compareInSameTree(const XmlNode* n1, const XmlNode* n2) const;
-#endif
+  void appendStringValue(zstring& buf) const { theNode->appendStringValue(buf); }
 
-  void destroyInternal(bool removeType);
+  XmlNode* copyInternal(
+      InternalNode* rootParent,
+      InternalNode* parent,
+      csize pos,
+      const XmlNode* rootCopy,
+      const store::CopyMode& copyMode) const;
+
+  zstring show() const;
 };
 
 
@@ -625,7 +693,6 @@ public:
 
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
-
 };
 
 
@@ -641,6 +708,7 @@ class InternalNode : public OrdPathNode
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class ConnectorNode;
   friend class UpdPut;
   friend class CollectionPul;
   friend class SimpleStore;
@@ -687,6 +755,7 @@ public:
   // SimpleStore Methods
   //
 
+  // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }
 
   csize numChildren() const { return theNodes.size() - theNumAttrs; }
@@ -707,7 +776,23 @@ public:
 
   const_reverse_iterator childrenREnd() const { return theNodes.rend() - theNumAttrs; }
 
-  XmlNode* getChild(csize i) const { return theNodes[theNumAttrs + i]; }
+  XmlNode* getChild(csize i) const 
+  {
+    XmlNode* child = theNodes[theNumAttrs + i];
+
+    if (child->isConnectorNode())
+      return static_cast<ConnectorNode*>(child)->getNode();
+
+    return child;
+  }
+
+  XmlNode* getChild(const_iterator& ite) const
+  {
+    if ((*ite)->isConnectorNode())
+      return static_cast<ConnectorNode*>(*ite)->getNode();
+
+    return *ite;
+  }
 
   csize numAttrs() const { return theNumAttrs; }
 
@@ -721,7 +806,24 @@ public:
 
   AttributeNode* getAttr(csize i) const
   {
-    return reinterpret_cast<AttributeNode*>(theNodes[i]);
+    XmlNode* attr = theNodes[i];
+
+    if (attr && attr->isConnectorNode())
+    {
+      return reinterpret_cast<AttributeNode*>
+             (static_cast<ConnectorNode*>(attr)->getNode());
+    }
+    return reinterpret_cast<AttributeNode*>(attr);
+  }
+
+  AttributeNode* getAttr(const_iterator& ite) const
+  {
+    if ((*ite) && (*ite)->isConnectorNode())
+    {
+      return reinterpret_cast<AttributeNode*>
+             (static_cast<ConnectorNode*>(*ite)->getNode());
+    }
+    return reinterpret_cast<AttributeNode*>(*ite);
   }
 
   void deleteChild(UpdDelete& upd);
@@ -750,6 +852,8 @@ protected:
   csize removeChild(XmlNode* child);
 
   void removeChildren(csize pos, csize numChildren);
+
+  void removeConnector(csize pos);
 
   csize findAttr(XmlNode* attr) const;
 
@@ -1195,7 +1299,7 @@ protected:
   TextNode() {}
 
 public:
-  ~TextNode()
+  virtual ~TextNode()
   {
     if (isTyped())
     {

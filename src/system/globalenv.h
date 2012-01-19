@@ -48,17 +48,19 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
 {
 private:
 
-  static GlobalEnvironment    * m_globalEnv;
+  static GlobalEnvironment        * m_globalEnv;
 
 private:
-  store::Store                * m_store;
+  store::Store                    * m_store;
 
-  root_static_context         * m_rootStaticContext;
+  RootTypeManager                 * theRootTypeManager;
 
-  XQueryCompilerSubsystem     * m_compilerSubSys;
+  root_static_context             * theRootStaticContext;
+
+  XQueryCompilerSubsystem         * m_compilerSubSys;
 
 #ifdef ZORBA_XQUERYX
-  XQueryXConvertor            * xqueryx_convertor;
+  XQueryXConvertor                * xqueryx_convertor;
 #endif
 
   internal::HTTPURLResolver       * m_http_resolver;
@@ -68,7 +70,7 @@ private:
   internal::ThesaurusURLResolver  * m_thesaurus_resolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  mutable DynamicLoader  * m_dynamic_loader;
+  mutable DynamicLoader           * m_dynamic_loader;
 
 public:
 
@@ -87,11 +89,11 @@ public:
 public:
   ~GlobalEnvironment();
 
-  RootTypeManager& getRootTypeManager();
+  RootTypeManager& getRootTypeManager() const;
 
-  static_context& getRootStaticContext();
+  static_context& getRootStaticContext() const;
 
-  bool isRootStaticContextInitialized();
+  bool isRootStaticContextInitialized() const;
 
   XQueryCompilerSubsystem& getCompilerSubsystem();
 
@@ -123,8 +125,8 @@ private:
   void init_icu();
 
   void cleanup_icu();
-
 };
+
 
 #define GENV GlobalEnvironment::getInstance()
 

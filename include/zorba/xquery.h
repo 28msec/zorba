@@ -304,13 +304,6 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual void
   printPlan(std::ostream& aStream, bool aDotFormat = false) const = 0;
-  
-  /** \brief Returns true if the variable is bound to a value
-	 *
-	 * @param aQName the qname of the variable to check
-	 */
-  virtual bool
-  isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const = 0;
 
   /** 
    * \brief Check if this query is an updating query.

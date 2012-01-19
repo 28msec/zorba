@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
@@ -57,11 +58,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DOUBLE>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_FLOAT>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DECIMAL>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_INTEGER>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_STRING>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DECIMAL>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_INTEGER>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
@@ -324,7 +325,7 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 ********************************************************************************/
 bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem0, lItem1, tItem0, tItem1;
+  store::Item_t item0, item1, tItem0, tItem1;
   bool c0Done = false, c1Done = false, done = false, found = false;
   std::vector<store::Item_t> seq0;
   std::vector<store::Item_t> seq1;
@@ -335,34 +336,34 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (theIsGeneralComparison)
   {
-    if (consumeNext(lItem0, theChild0.getp(), planState))
+    if (consumeNext(item0, theChild0.getp(), planState))
     {
       if (consumeNext(tItem0, theChild0.getp(), planState))
       {
-        seq0.push_back(lItem0);
+        seq0.push_back(item0);
         seq0.push_back(tItem0);
       }
       else
       {
         c0Done = true;
-        if (consumeNext(lItem1, theChild1.getp(), planState))
+        if (consumeNext(item1, theChild1.getp(), planState))
         {
           if (consumeNext(tItem1, theChild1.getp(), planState))
           {
-            seq0.push_back(lItem0);
-            seq1.push_back(lItem1);
+            seq0.push_back(item0);
+            seq1.push_back(item1);
             seq1.push_back(tItem1);
           }
           else
           {
             c1Done = true;
-            found = CompareIterator::generalComparison(loc,
-                                                       lItem0,
-                                                       lItem1,
-                                                       theCompType,
-                                                       theTypeManager,
-                                                       theTimezone,
-                                                       theCollation);
+            found = generalComparison(loc,
+                                      item0,
+                                      item1,
+                                      theCompType,
+                                      theTypeManager,
+                                      theTimezone,
+                                      theCollation);
             done = true;
           }
         }
@@ -383,77 +384,74 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     if (!done)
     {
-      store::Iterator_t lIter0;
-      store::Iterator_t lIter1;
+      store::Iterator_t ite0;
+      store::Iterator_t ite1;
       tSeq0 = GENV_STORE.createTempSeq(seq0);
       tSeq1 = GENV_STORE.createTempSeq(seq1);
 
       if (!c0Done)
       {
-        lIter0 = new PlanIteratorWrapper(theChild0, planState);
-        tSeq0->append(lIter0, false);
+        ite0 = new PlanIteratorWrapper(theChild0, planState);
+        tSeq0->append(ite0);
       }
 
       if (!c1Done)
       {
-        lIter1 = new PlanIteratorWrapper(theChild1, planState);
-        tSeq1->append(lIter1, false);
+        ite1 = new PlanIteratorWrapper(theChild1, planState);
+        tSeq1->append(ite1);
       }
 
-      ulong i0 = 1;
-      while(!found && tSeq0->containsItem(i0))
+      ite0 = tSeq0->getIterator();
+      ite1 = tSeq1->getIterator();
+      ite0->open();
+      ite1->open();
+
+      while (!found && ite0->next(item0))
       {
-        ulong i1 = 1;
-        while(!found && tSeq1->containsItem(i1))
+        while (!found && ite1->next(item1))
         {
-          store::Item_t item0;
-          store::Item_t item1;
-          tSeq0->getItem(i0, item0);
-          tSeq1->getItem(i1, item1);
-          if (CompareIterator::generalComparison(loc,
-                                                 item0,
-                                                 item1,
-                                                 theCompType,
-                                                 theTypeManager,
-                                                 theTimezone,
-                                                 theCollation))
+          store::Item_t tmp = item0;
+
+          if (generalComparison(loc,
+                                tmp,
+                                item1,
+                                theCompType,
+                                theTypeManager,
+                                theTimezone,
+                                theCollation))
           {
             found = true;
+            break;
           }
-          ++i1;
         }
-        ++i0;
+
+        ite1->reset();
       }
     }
 
-    STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
-
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, found), state);
   }
   else
   {
     // value comparison
-    if (consumeNext(lItem0, theChild0.getp(), planState) &&
-        consumeNext(lItem1, theChild1.getp(), planState))
+    if (consumeNext(item0, theChild0.getp(), planState) &&
+        consumeNext(item1, theChild1.getp(), planState))
     {
       STACK_PUSH(GENV_ITEMFACTORY->
                  createBoolean(result,
                                CompareIterator::valueComparison(loc,
-                                                                lItem0,
-                                                                lItem1,
+                                                                item0,
+                                                                item1,
                                                                 theCompType,
                                                                 theTypeManager,
                                                                 theTimezone,
                                                                 theCollation)),
                  state);
 
-      if (consumeNext(lItem0, theChild0.getp(), planState) ||
-          consumeNext(lItem1, theChild1.getp(), planState))
+      if (consumeNext(item0, theChild0.getp(), planState) ||
+          consumeNext(item1, theChild1.getp(), planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqInValueComp)));
       }
     }
   }
@@ -569,49 +567,43 @@ long CompareIterator::valueCompare(
 void CompareIterator::valueCasting(
     const QueryLoc& loc,
     const TypeManager* tm,
-    store::Item_t& aItem0,
-    store::Item_t& aItem1,
+    store::Item_t& item0,
+    store::Item_t& item1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  xqtref_t type0 = tm->create_value_type(aItem0);
-  xqtref_t type1 = tm->create_value_type(aItem1);
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
   {
-    GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+    GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
 
-    if  (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if  (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
     }
     else
     {
-      if (!GenericCast::promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, loc))
-        castItem1.transfer(aItem1);
+      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
+        castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
   {
-    if (!GenericCast::promote(const_cast<store::Item_t&>(castItem0),
-                              aItem0,
-                              &*rtm.STRING_TYPE_ONE,
-                              tm,
-                              loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
+      castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm, loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+      castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm, loc))
-      castItem1.transfer(aItem1);
+    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+      castItem1.transfer(item1);
   }
 }
 
@@ -752,65 +744,63 @@ long CompareIterator::generalCompare(
 void CompareIterator::generalCasting(
     const QueryLoc& loc,
     const TypeManager* tm,
-    store::Item_t& aItem0,
-    store::Item_t& aItem1,
+    store::Item_t& item0,
+    store::Item_t& item1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
-  xqtref_t type0 = tm->create_value_type(aItem0);
-  xqtref_t type1 = tm->create_value_type(aItem1);
-
-  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
   {
-    if (TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
 
-      GenericCast::promote(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm, loc);
+      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      castItem1.transfer(aItem1);
+      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*type1, tm, NULL, loc);
-      castItem1.transfer(aItem1);
+      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
   {
-    if (TypeOps::is_numeric(tm, *type0))
+    if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      GenericCast::promote(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm, loc);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(tm, *type0, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
-      castItem0.transfer(aItem0);
+      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*type0, tm, NULL, loc);
-      castItem0.transfer(aItem0);
+      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      castItem0.transfer(item0);
     }
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm, loc))
-      castItem0.transfer(aItem0);
+    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+      castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm, loc))
-      castItem1.transfer(aItem1);
+    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+      castItem1.transfer(item1);
   }
 }
 
@@ -874,14 +864,8 @@ bool CompareIterator::equal(
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( BadType_23o ), *type0,
-          ZED( NoCompareWithType_4 ), *type1
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
   }
 }
@@ -927,14 +911,8 @@ long CompareIterator::compare(
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( BadType_23o ), *type0,
-            ZED( NoCompareWithType_4 ), *type1
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
     }
     else if (TypeOps::is_subtype(tm, *type1, *type0))
@@ -957,14 +935,8 @@ long CompareIterator::compare(
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( BadType_23o ), *type0,
-            ZED( NoCompareWithType_4 ), *type1
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
     }
   }
@@ -973,14 +945,8 @@ long CompareIterator::compare(
     // For example, two QName items do not have an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( BadType_23o ), *type0,
-          ZED( NoCompareWithType_4 ), *type1
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
     throw;
   }
@@ -994,7 +960,7 @@ long CompareIterator::compare(
 /////////////////////////////////////////////////////////////////////////////////
 
 
-template <TypeConstants::atomic_type_code_t ATC>
+template <store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
@@ -1010,7 +976,7 @@ void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
 }
 
 
-template<TypeConstants::atomic_type_code_t ATC>
+template<store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>
@@ -1021,8 +987,10 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
 }
 
 
-template<TypeConstants::atomic_type_code_t ATC>
-bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& planState) const
+template<store::SchemaTypeCode ATC>
+bool TypedValueCompareIterator<ATC>::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lItem0, lItem1;
   bool bRes;
@@ -1092,11 +1060,11 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
 }
 
 
-template class TypedValueCompareIterator<TypeConstants::XS_DOUBLE>;
-template class TypedValueCompareIterator<TypeConstants::XS_FLOAT>;
-template class TypedValueCompareIterator<TypeConstants::XS_DECIMAL>;
-template class TypedValueCompareIterator<TypeConstants::XS_INTEGER>;
-template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
+template class TypedValueCompareIterator<store::XS_DOUBLE>;
+template class TypedValueCompareIterator<store::XS_FLOAT>;
+template class TypedValueCompareIterator<store::XS_DECIMAL>;
+template class TypedValueCompareIterator<store::XS_INTEGER>;
+template class TypedValueCompareIterator<store::XS_STRING>;
 
 
 
