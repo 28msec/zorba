@@ -67,8 +67,6 @@ public:
    * A %Callback is called once per token.
    * This is only internally by Zorba.
    * You do not need to derive from this class.
-   * The only thing you need to do is call the callback's \c operator() once
-   * for each token you parse in \c tokenize().
    */
   class Callback {
   public:
@@ -100,7 +98,7 @@ public:
     virtual void token( char const *utf8_s, size_type utf8_len,
                         locale::iso639_1::type lang,
                         size_type token_no, size_type sent_no,
-                        size_type para_no, Item const *item ) = 0;
+                        size_type para_no, Item const *item = 0 ) = 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -197,13 +195,13 @@ protected:
   virtual ~Tokenizer() = 0;
 
   /**
-   * Given an element, finds its <code>xml:lang</code> attribute, if any, and
-   * gets its value.
+   * Given an element, finds its \c xml:lang attribute, if any, and gets its
+   * value.
    *
    * @param element The element to check.
    * @param lang A pointer to where to put the found language, if any.
-   * @return Returns \c true only if an <code>xml:lang</code> attribute is
-   * found and the value is a known language.
+   * @return Returns \c true only if an \c xml:lang attribute is found and the
+   * value is a known language.
    */
   bool find_lang_attribute( Item const &element, locale::iso639_1::type *lang );
 
@@ -227,7 +225,7 @@ protected:
    * @param lang          The default language to use.
    * @param callback      The Callback to call per token.
    * @param tokenize_acp  If \c true, additionally tokenize all attribute,
-   *                      comment, or processing-instruction nodes encountered;
+   *                      comment, and processing-instruction nodes encountered;
    *                      if \c false, skip them.
    */
   void tokenize_node_impl( Item const &node, locale::iso639_1::type lang,
