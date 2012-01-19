@@ -153,10 +153,8 @@ bool icu_streambuf::to_external( char_type const **from,
     p_.pivot_buf_ + sizeof p_.pivot_buf_,
     /*reset*/ false, flush, &err
   );
-  if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR ) {
-    printf( "=> %s\n", u_errorName( err ) );
+  if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR )
     return false;
-  }
   if ( U_FAILURE( err ) )
     throw transcode_streambuf::exception( u_errorName( err ) );
   return true;
@@ -172,10 +170,8 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
     g_.pivot_buf_ + sizeof g_.pivot_buf_,
     /*reset*/ false, flush, &err
   );
-  if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR ) {
-    printf( "=> %s\n", u_errorName( err ) );
+  if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR )
     return false;
-  }
   if ( U_FAILURE( err ) )
     throw transcode_streambuf::exception( u_errorName( err ) );
   return true;
