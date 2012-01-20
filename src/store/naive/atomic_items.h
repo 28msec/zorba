@@ -412,7 +412,7 @@ protected:
     return theNormalizedQName != NULL &&
         theNormalizedQName->isNormalized() &&
         theNamespace == theNormalizedQName->theNamespace &&
-        !(!isNormalized() && theLocal.empty());
+        !(isNormalized() && theLocal.empty());
   }
 
   bool isInCache() const { return thePosition != 0; }
