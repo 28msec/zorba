@@ -193,7 +193,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
   if (collection != NULL)
   {
-    collName->equals(static_cast<const QNameItem*>(collection->getName()));
+    collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
 
     if (collName == theLastCollection)
       return theLastPul;
