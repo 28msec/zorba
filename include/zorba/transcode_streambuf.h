@@ -127,6 +127,42 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+template<class StreamType>
+class transcode_stream : public StreamType {
+public:
+  transcode_stream( char const *charset ) :
+    tbuf_( charset, this->rdbuf() )
+  {
+    init();
+  }
+
+  template<typename StreamArgType>
+  transcode_stream( char const *charset, StreamArgType stream_arg ) :
+    StreamType( stream_arg ),
+    tbuf_( charset, this->rdbuf() )
+  {
+    init();
+  }
+
+  template<typename StreamArgType>
+  transcode_stream( char const *charset, StreamArgType stream_arg,
+                    std::ios_base::openmode mode ) :
+    StreamType( stream_arg, mode ),
+    tbuf_( charset, this->rdbuf() )
+  {
+    init();
+  }
+
+private:
+  transcode_streambuf tbuf_;
+
+  void init() {
+    this->std::ios::rdbuf( &tbuf_ );
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 #endif  /* ZORBA_TRANSCODE_STREAMBUF_API_H */
 /* vim:set et sw=2 ts=2: */
