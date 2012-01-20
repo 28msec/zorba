@@ -242,7 +242,7 @@ namespace zorba
   theKind:
   --------
   The "kind" of this type. One "kind" per each concrete subclass of XQType.
-  See type_kind_t enum below
+  See TypeKind enum below
 
   theQuantifier:
   --------------
@@ -259,43 +259,45 @@ class XQType : public SimpleRCObject
 {
 public:
   //
-  // type_kind_t contains one enum code for each concrete subclass of XQType
+  // TypeKind contains one enum code for each concrete subclass of XQType
   //
   // ATTENTION !!!! The order of the enum values is important because they are
   // used as indexes into the KIND_STRINGS array !!!!
   //
   typedef enum
   {
-    EMPTY_KIND,              // empty-sequence() (quanttifier = ?)
-
-    ATOMIC_TYPE_KIND,        // atomic, built-in type + quantifier
-
-    ITEM_KIND,               // item() + quantifier
-
-    NODE_TYPE_KIND,          // KindTest + quantifier
-
-    JSON_TYPE_KIND,          // JSONTest + quantifier
-
-    FUNCTION_TYPE_KIND,      // function(...) as ... + quantifier
-
-    ANY_TYPE_KIND,           // xs:anyType (quanttifier = *)
-
-    ANY_SIMPLE_TYPE_KIND,    // xs:anySimpleType (quanttifier = *)
-
-    ANY_FUNCTION_TYPE_KIND,  // function(*)
-
-    UNTYPED_KIND,            // xs:untyped (quanttifier = *)
-
-    NONE_KIND,               // special kind of "type" defined by the formal
+    NONE_KIND = 0,           // special kind of "type" defined by the formal
                              // semantics. it represents the absence of type.
                              // for example, the static type of the fn:error
                              // function is "none". (quantifier = 1)
 
-    USER_DEFINED_KIND,       // Named, user-defined XMLSchema type (may be atomic,
-                             // list, union, or complex) + quantifier
+    EMPTY_KIND = 1,              // empty-sequence() (quanttifier = ?)
+
+    ITEM_KIND = 2,               // item() + quantifier
+
+    ATOMIC_TYPE_KIND = 3,        // atomic, built-in type + quantifier
+
+    STRUCTURED_ITEM_KIND = 4,    // structured-item() + quantifier
+
+    NODE_TYPE_KIND = 5,          // KindTest + quantifier
+
+    JSON_TYPE_KIND = 6,          // JSONTest + quantifier
+
+    FUNCTION_TYPE_KIND = 7,      // function(...) as ... + quantifier
+
+    ANY_TYPE_KIND = 8,           // xs:anyType (quanttifier = *)
+
+    ANY_SIMPLE_TYPE_KIND = 9,    // xs:anySimpleType (quanttifier = *)
+
+    ANY_FUNCTION_TYPE_KIND = 10, // function(*)
+
+    UNTYPED_KIND = 11,           // xs:untyped (quanttifier = *)
+
+    USER_DEFINED_KIND = 12,      // Named, user-defined XMLSchema type (may be atomic,
+                                 // list, union, or complex) + quantifier
 
     MAX_TYPE_KIND
-  } type_kind_t;
+  } TypeKind;
 
   //
   // The content kind of a complex type
@@ -315,7 +317,7 @@ protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
   TypeManager                  * theManager;
-  type_kind_t                    theKind;
+  TypeKind                       theKind;
   TypeConstants::quantifier_t    theQuantifier;
   bool                           theIsBuiltin;
 
@@ -336,7 +338,7 @@ public:
 
   TypeManager* get_manager() const { return theManager; }
 
-  type_kind_t type_kind() const { return theKind; }
+  TypeKind type_kind() const { return theKind; }
 
   TypeConstants::quantifier_t get_quantifier() const { return theQuantifier; }
 
@@ -369,7 +371,7 @@ public:
 protected:
   XQType(
       const TypeManager* manager,
-      type_kind_t type_kind,
+      TypeKind type_kind,
       TypeConstants::quantifier_t quantifier,
       bool builtin)
     :
@@ -400,21 +402,14 @@ protected:
 class NoneXQType : public XQType
 {
 public:
-  NoneXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin)
-  {
-  }
+  NoneXQType(const TypeManager* manager, bool builtin = false);
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 
  public:
   SERIALIZABLE_CLASS(NoneXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -424,21 +419,14 @@ public:
 class EmptyXQType : public XQType
 {
 public:
-  EmptyXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin)
-  {
-  }
+  EmptyXQType(const TypeManager* manager, bool builtin = false);
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 
  public:
   SERIALIZABLE_CLASS(EmptyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -449,21 +437,14 @@ class ItemXQType : public XQType
 {
 public:
   ItemXQType(
-      const TypeManager* manager,
-      TypeConstants::quantifier_t quantifier,
-      bool builtin = false)
-    :
-    XQType(manager, ITEM_KIND, quantifier, builtin)
-  {
-  }
+      const TypeManager* tm,
+      TypeConstants::quantifier_t q,
+      bool builtin = false);
 
  public:
   SERIALIZABLE_CLASS(ItemXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ItemXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -504,6 +485,54 @@ public:
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
+
+
+#ifdef ZORBA_WITH_JSON
+/******************************************************************************
+  Class StructuredItemXQType represents sequence types structured-item(), 
+  structured-item()?, structured-item()*, or structured-item()+
+*******************************************************************************/
+class StructuredItemXQType : public XQType
+{
+public:
+  StructuredItemXQType(
+      const TypeManager* tm,
+      TypeConstants::quantifier_t quant,
+      bool builtin = false);
+
+ public:
+  SERIALIZABLE_CLASS(StructuredItemXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(StructuredItemXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+};
+
+
+/***************************************************************************//**
+  Class JSONXQType represents all the sequence types whose ItemType is a
+  JSONTest.
+********************************************************************************/
+class JSONXQType : public XQType
+{
+private:
+  store::StoreConsts::JSONItemKind  theJSONKind;
+
+public:
+  SERIALIZABLE_CLASS(JSONXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(JSONXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  JSONXQType(
+      const TypeManager* manager,
+      store::StoreConsts::JSONItemKind kind,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin = false);
+
+  store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
+
+  std::ostream& serialize_ostream(std::ostream& os) const;
+};
+#endif
 
 
 /***************************************************************************//**
@@ -567,35 +596,6 @@ public:
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
-
-
-#ifdef ZORBA_WITH_JSON
-/***************************************************************************//**
-  Class JSONXQType represents all the sequence types whose ItemType is a
-  JSONTest.
-********************************************************************************/
-class JSONXQType : public XQType
-{
-private:
-  store::StoreConsts::JSONItemKind  theJSONKind;
-
-public:
-  SERIALIZABLE_CLASS(JSONXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(JSONXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  JSONXQType(
-      const TypeManager* manager,
-      store::StoreConsts::JSONItemKind kind,
-      TypeConstants::quantifier_t quantifier,
-      bool builtin = false);
-
-  store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
-
-  std::ostream& serialize_ostream(std::ostream& os) const;
-};
-#endif
 
 
 /******************************************************************************

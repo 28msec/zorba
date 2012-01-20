@@ -22,7 +22,7 @@ declare function j:parse-json($j as xs:string) as json-item()? external;
  : @param $o
  : @return
  :)
-declare function j:names($o as object()) as xs:string? external;
+declare function j:names($o as object()) as xs:string* external;
 
 (:~
  :

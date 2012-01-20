@@ -191,6 +191,16 @@ TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quan
 
 #ifdef ZORBA_WITH_JSON
 
+TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::STRUCTURED_ITEM_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
 TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -225,26 +235,6 @@ TypeIdentifier_t TypeIdentifier::createJSONPairType(IdentTypes::quantifier_t q)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
   ti->m_kind = IdentTypes::JSON_PAIR_TYPE;
-  ti->m_quantifier = q;
-
-  return ti;
-}
-
-
-TypeIdentifier_t TypeIdentifier::createJSONObjectPairType(IdentTypes::quantifier_t q)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_OBJECT_PAIR_TYPE;
-  ti->m_quantifier = q;
-
-  return ti;
-}
-
-
-TypeIdentifier_t TypeIdentifier::createJSONArrayPairType(IdentTypes::quantifier_t q)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_ARRAY_PAIR_TYPE;
   ti->m_quantifier = q;
 
   return ti;

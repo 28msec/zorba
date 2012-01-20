@@ -21,6 +21,7 @@
 #include <zorba/typeident.h>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"
@@ -61,7 +62,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
 /***************************************************************************//**
 
 ********************************************************************************/
-void TypeManagerImpl::serialize(::zorba::serialization::Archiver &ar)
+void TypeManagerImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (TypeManager*)this);
   SERIALIZE_TYPEMANAGER(TypeManager, m_parent);
@@ -119,6 +120,15 @@ xqtref_t TypeManagerImpl::create_untyped_type() const
 /***************************************************************************//**
 
 ********************************************************************************/
+xqtref_t TypeManagerImpl::create_any_simple_type() const
+{
+  return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_empty_type() const
 {
   return GENV_TYPESYSTEM.EMPTY_TYPE;
@@ -137,19 +147,9 @@ xqtref_t TypeManagerImpl::create_none_type() const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqtref_t TypeManagerImpl::create_any_simple_type() const
+xqtref_t TypeManagerImpl::create_any_item_type(TypeConstants::quantifier_t q) const
 {
-  return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_any_item_type(
-    TypeConstants::quantifier_t quantifier) const
-{
-  switch(quantifier)
+  switch(q)
   {
     case TypeConstants::QUANT_ONE:
       return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -187,6 +187,18 @@ xqtref_t TypeManagerImpl::create_any_function_type(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+xqtref_t TypeManagerImpl::create_function_type(
+        const std::vector<xqtref_t>& paramTypes,
+        const xqtref_t& returnType,
+        TypeConstants::quantifier_t quant) const
+{
+  return new FunctionXQType(this, paramTypes, returnType, quant);
+}
+
+
 /***************************************************************************//**
   Return the builtin sequence type corresponding to the given typecode and
   quantifier. The typecode identifies a builtin atomic type.
@@ -202,7 +214,8 @@ xqtref_t TypeManagerImpl::create_builtin_atomic_type(
 /***************************************************************************//**
   Create a sequence type from the given typename and quantifier. The typename
   is assumed to be of an atomic type. If not, or if no type with this name is
-  found in the in-scope schemaa, the method will return NULL.
+  found in the in-scope schemaa, the method will return NULL or raise an error,
+  depending on the value of the "error" param.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
@@ -281,7 +294,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
 
 /***************************************************************************//**
-  Create a type from the given typename and quantifier.
+  Create an XMLSchema type from the given typename and quantifier.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
@@ -354,16 +367,39 @@ xqtref_t TypeManagerImpl::create_named_type(
 }
 
 
-/******************************************************************************
+#ifdef ZORBA_WITH_JSON
+/***************************************************************************//**
 
-*******************************************************************************/
-xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType,
-        TypeConstants::quantifier_t quant) const
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_structured_item_type(
+    TypeConstants::quantifier_t q) const
 {
-  return new FunctionXQType(this, paramTypes, returnType, quant);
+  switch(q)
+  {
+    case TypeConstants::QUANT_ONE:
+      return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
+    case TypeConstants::QUANT_QUESTION:
+      return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_QUESTION;
+    case TypeConstants::QUANT_STAR:
+      return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR;
+    case TypeConstants::QUANT_PLUS:
+      return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_PLUS;
+    default:
+      return xqtref_t(0);
+  }
 }
+
+
+/***************************************************************************//**
+  Create a sequence type based on json item kind and a quantifier
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_json_type(
+    store::StoreConsts::JSONItemKind kind,
+    TypeConstants::quantifier_t quantifier) const
+{
+  return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
+}
+#endif
 
 
 /***************************************************************************//**
@@ -593,19 +629,6 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 }
 
 
-#ifdef ZORBA_WITH_JSON
-/***************************************************************************//**
-  Create a sequence type based on json item kind and a quantifier
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_json_type(
-    store::StoreConsts::JSONItemKind kind,
-    TypeConstants::quantifier_t quantifier) const
-{
-  return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
-}
-#endif
-
-
 /***************************************************************************//**
   Create a sequence type based on the kind and content of an item.
 ********************************************************************************/
@@ -771,11 +794,8 @@ void TypeManagerImpl::get_schema_element_typename(
 {
   if (m_schema == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(elemName->getStringValue(), ZED(SchemaElementName)));
   }
 
   m_schema->getTypeNameFromElementName(elemName, typeName, loc);
@@ -795,11 +815,8 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
 {
   if (m_schema == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(attrName->getStringValue(), ZED(SchemaAttributeName)));
   }
 
   xqtref_t contentType =
@@ -825,11 +842,8 @@ void TypeManagerImpl::get_schema_attribute_typename(
 {
   if (m_schema == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(attrName->getStringValue(), ZED(SchemaAttributeName)));
   }
 
   m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);
@@ -885,11 +899,10 @@ xqtref_t TypeManagerImpl::create_type(
   case XQType::FUNCTION_TYPE_KIND:
   {
     const FunctionXQType& ft = static_cast<const FunctionXQType&>(type);
-    return new FunctionXQType(
-        this,
-        ft.get_param_types(),
-        ft.get_return_type(),
-        quantifier);
+    return new FunctionXQType(this,
+                              ft.get_param_types(),
+                              ft.get_return_type(),
+                              quantifier);
   }
 
   case XQType::ITEM_KIND:

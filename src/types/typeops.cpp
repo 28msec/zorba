@@ -283,7 +283,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     return true;  // TODO: finer analysis
 
   default:
-    // NODE, EMPTY, NONE, JSON
+    // NODE, EMPTY, NONE, JSON, STRUCTURED_ITEM
     return false;
   }
 }
@@ -348,10 +348,14 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
                                     TypeConstants::QUANT_ONE);
   }
 
-  case XQType::NODE_TYPE_KIND:
 #ifdef ZORBA_WITH_JSON
+  case XQType::STRUCTURED_ITEM_KIND:
+    return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
+
   case XQType::JSON_TYPE_KIND: 
 #endif 
+  case XQType::NODE_TYPE_KIND:
+
   {
     if (type.get_quantifier() == TypeConstants::QUANT_ONE)
       return &type;
@@ -477,235 +481,258 @@ bool TypeOps::is_subtype(
 
   switch(supertype.type_kind()) 
   {
-    case XQType::ATOMIC_TYPE_KIND:
+  case XQType::EMPTY_KIND:
+  {
+    switch(subtype.type_kind()) 
     {
-      switch(subtype.type_kind()) 
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      {
-        const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
-        const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
-
-        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
-      }
-      case XQType::EMPTY_KIND:
-      {
-        return true;
-      }
-      case XQType::USER_DEFINED_KIND:
-      {
-        const UserDefinedXQType& udSubtype = 
-        static_cast<const UserDefinedXQType&>(subtype);
-
-        return udSubtype.isSubTypeOf(tm, supertype);
-      }
-      default:
-      {
-        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
-        return false;
-      }
-      }
-      break;
-    }
-
-    case XQType::NODE_TYPE_KIND:
-    {
-      switch(subtype.type_kind())
-      {
-      case XQType::NODE_TYPE_KIND:
-      {
-        const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
-        const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
-
-        return n1.is_subtype(tm, n2, loc);
-      }
-      case XQType::EMPTY_KIND:
-      {
-        return true;
-      }
-      default:
-      {
-        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, FUNCTION, JSON, USER_DEFINED (???)
-        return false;
-      }
-      }
-      break;
-    }
-
-#ifdef ZORBA_WITH_JSON
-    case XQType::JSON_TYPE_KIND:
-    {
-      if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
-        return false;
-
-      const JSONXQType& sub = static_cast<const JSONXQType&>(subtype);
-      const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
-
-      store::StoreConsts::JSONItemKind subKind = sub.get_json_kind();
-      store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
-
-      switch (supKind)
-      {
-      case store::StoreConsts::jsonItem:
-        return true;
-
-      case store::StoreConsts::jsonObject:
-      case store::StoreConsts::jsonArray:
-      case store::StoreConsts::jsonPair:
-        return (subKind == supKind);
-
-      default:
-        ZORBA_ASSERT(false);
-      }
-    }
-#endif
-
-    case XQType::ITEM_KIND:
-    {
-      switch(subtype.type_kind())
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      case XQType::NODE_TYPE_KIND:
-      case XQType::ITEM_KIND:
-      case XQType::FUNCTION_TYPE_KIND:
-      case XQType::ANY_FUNCTION_TYPE_KIND:
-      case XQType::EMPTY_KIND:
-#ifdef ZORBA_WITH_JSON
-      case XQType::JSON_TYPE_KIND:
-#endif
-        return true;
-
-      case XQType::USER_DEFINED_KIND:
-      {
-        const UserDefinedXQType& udSubType = 
-        static_cast<const UserDefinedXQType&>(subtype);
-
-        // What about union of atomic types ????
-        return udSubType.isAtomic();
-      }
-
-      default:
-        // ANY, ANY_SIMPLE, UNTYPED
-        return false;
-      }
-      break;
-    }
-
-    case XQType::ANY_TYPE_KIND:
-    {
-      switch(subtype.type_kind()) 
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      case XQType::ANY_TYPE_KIND:
-      case XQType::ANY_SIMPLE_TYPE_KIND:
-      case XQType::UNTYPED_KIND:
-      case XQType::EMPTY_KIND:
-      case XQType::USER_DEFINED_KIND:
-        return true;
-
-      case XQType::NODE_TYPE_KIND:
-      case XQType::JSON_TYPE_KIND:
-      case XQType::ITEM_KIND:
-        return false;
-
-      default:
-        ZORBA_ASSERT(false);
-      }
-      break;
-    }
-
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    {
-      switch(subtype.type_kind())
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      case XQType::ANY_SIMPLE_TYPE_KIND:
-      case XQType::EMPTY_KIND:
-          return true;
-
-      case XQType::USER_DEFINED_KIND:
-      {
-        const UserDefinedXQType& udSubType = 
-        static_cast<const UserDefinedXQType&>(subtype);
-
-        return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
-      }
-
-      default:
-        // ANY, UNTYPED, ITEM, NODE, JSON
-        return false;
-      }
-      break;
-    }
-
-    case XQType::FUNCTION_TYPE_KIND:
-    {
-      switch (subtype.type_kind())
-      {
-      case XQType::ANY_FUNCTION_TYPE_KIND:
-      case XQType::FUNCTION_TYPE_KIND:
-      {
-        const FunctionXQType& f1 = static_cast<const FunctionXQType&>(subtype);
-        const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
-        return f1.is_subtype(tm, f2);
-      }
-      default:
-        return false;
-      }
-    }
-
-    case XQType::ANY_FUNCTION_TYPE_KIND:
-    {
-      switch (subtype.type_kind())
-      {
-      case XQType::FUNCTION_TYPE_KIND:
-      case XQType::ANY_FUNCTION_TYPE_KIND:
-        return true;
-      default:
-        // any, untyped, node, atomic
-        return false;
-      }
-    }
-
-    case XQType::UNTYPED_KIND:
-    {
-      switch(subtype.type_kind()) 
-      {
-      case XQType::UNTYPED_KIND:
-        return true;
-
-      default:
-        return false;
-      }
-      break;
-    }
-
     case XQType::EMPTY_KIND:
-    {
-      switch(subtype.type_kind()) 
-      {
-      case XQType::EMPTY_KIND:
-        return true;
+      return true;
 
-      default:
-        return false;
-      }
-      break;
-    }
-
-    case XQType::NONE_KIND:
-    {
+    default:
       return false;
     }
+    break;
+  }
+
+  case XQType::NONE_KIND:
+  {
+    return false;
+  }
+
+  case XQType::ITEM_KIND:
+  {
+    switch(subtype.type_kind())
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    case XQType::NODE_TYPE_KIND:
+    case XQType::ITEM_KIND:
+    case XQType::FUNCTION_TYPE_KIND:
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+    case XQType::EMPTY_KIND:
+#ifdef ZORBA_WITH_JSON
+    case XQType::STRUCTURED_ITEM_KIND:
+    case XQType::JSON_TYPE_KIND:
+#endif
+      return true;
+      
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType& udSubType = 
+      static_cast<const UserDefinedXQType&>(subtype);
+      
+      // What about union of atomic types ????
+      return udSubType.isAtomic();
+    }
+    
+    default:
+      // ANY, ANY_SIMPLE, UNTYPED
+      return false;
+    }
+    break;
+  }
+
+  case XQType::FUNCTION_TYPE_KIND:
+  {
+    switch (subtype.type_kind())
+    {
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+    case XQType::FUNCTION_TYPE_KIND:
+    {
+      const FunctionXQType& f1 = static_cast<const FunctionXQType&>(subtype);
+      const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
+      return f1.is_subtype(tm, f2);
+    }
+    default:
+      return false;
+    }
+  }
+
+  case XQType::ANY_FUNCTION_TYPE_KIND:
+  {
+    switch (subtype.type_kind())
+    {
+    case XQType::FUNCTION_TYPE_KIND:
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+      return true;
+    default:
+      // any, untyped, node, atomic
+      return false;
+    }
+  }
+  
+  case XQType::ATOMIC_TYPE_KIND:
+  {
+    switch(subtype.type_kind()) 
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    {
+      const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
+      const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+
+      return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
+    }
+    case XQType::EMPTY_KIND:
+    {
+      return true;
+    }
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType& udSubtype = 
+      static_cast<const UserDefinedXQType&>(subtype);
+
+      return udSubtype.isSubTypeOf(tm, supertype);
+    }
+    default:
+    {
+      // NODE, ITEM, STRUCTURED_ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
+      return false;
+    }
+    }
+    break;
+  }
+
+#ifdef ZORBA_WITH_JSON
+  case XQType::STRUCTURED_ITEM_KIND:
+  {
+    switch(subtype.type_kind())
+    {
+    case XQType::NODE_TYPE_KIND:
+    case XQType::EMPTY_KIND:
+    case XQType::STRUCTURED_ITEM_KIND:
+    case XQType::JSON_TYPE_KIND:
+      return true;
+
+    default:
+      // ITEM, ANY_FUNCTION, FUNCTION, ATOMIC, USER_DEFINED, ANY, ANY_SIMPLE, UNTYPED
+      return false;
+    }
+    
+    break;
+  }
+
+  case XQType::JSON_TYPE_KIND:
+  {
+    if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
+      return false;
+
+    const JSONXQType& sub = static_cast<const JSONXQType&>(subtype);
+    const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
+
+    store::StoreConsts::JSONItemKind subKind = sub.get_json_kind();
+    store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
+
+    switch (supKind)
+    {
+    case store::StoreConsts::jsonItem:
+      return true;
+
+    case store::StoreConsts::jsonObject:
+    case store::StoreConsts::jsonArray:
+    case store::StoreConsts::jsonPair:
+      return (subKind == supKind);
+      
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+#endif
+
+  case XQType::NODE_TYPE_KIND:
+  {
+    switch(subtype.type_kind())
+    {
+    case XQType::NODE_TYPE_KIND:
+    {
+      const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
+      const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+      
+      return n1.is_subtype(tm, n2, loc);
+    }
+    case XQType::EMPTY_KIND:
+    {
+      return true;
+    }
+    default:
+    {
+      // ATOMIC, ITEM, STRUCTURED_ITEM, ANY, ANY_SIMPLE, UNTYPED, FUNCTION,
+      // JSON, USER_DEFINED (???)
+      return false;
+    }
+    }
+    break;
+  }
+  
+  case XQType::ANY_TYPE_KIND:
+  {
+    switch(subtype.type_kind()) 
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    case XQType::ANY_TYPE_KIND:
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+    case XQType::UNTYPED_KIND:
+    case XQType::EMPTY_KIND:
+    case XQType::USER_DEFINED_KIND:
+      return true;
+
+    case XQType::NODE_TYPE_KIND:
+    case XQType::ITEM_KIND:
+#ifdef ZORBA_WITH_JSON
+    case XQType::JSON_TYPE_KIND:
+    case XQType::STRUCTURED_ITEM_KIND:
+#endif
+      return false;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+    break;
+  }
+
+  case XQType::ANY_SIMPLE_TYPE_KIND:
+  {
+    switch(subtype.type_kind())
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+    case XQType::EMPTY_KIND:
+      return true;
 
     case XQType::USER_DEFINED_KIND:
     {
-      const UserDefinedXQType& udSuperType = 
-      static_cast<const UserDefinedXQType&>(supertype);
+      const UserDefinedXQType& udSubType = 
+      static_cast<const UserDefinedXQType&>(subtype);
 
-      return udSuperType.isSuperTypeOf(tm, subtype);
+      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
     }
 
+    default:
+      // ANY, UNTYPED, ITEM, NODE, JSON
+      return false;
+    }
+    break;
+  }
+  
+  case XQType::UNTYPED_KIND:
+  {
+    switch(subtype.type_kind()) 
+    {
+    case XQType::UNTYPED_KIND:
+      return true;
+
+    default:
+      return false;
+    }
+    break;
+  }
+
+  case XQType::USER_DEFINED_KIND:
+  {
+    const UserDefinedXQType& udSuperType = 
+    static_cast<const UserDefinedXQType&>(supertype);
+
+    return udSuperType.isSuperTypeOf(tm, subtype);
+  }
+  
   default:
     ZORBA_ASSERT(false);
   }
@@ -727,189 +754,197 @@ bool TypeOps::is_subtype(
 
   switch(supertype.type_kind()) 
   {
-    case XQType::ATOMIC_TYPE_KIND:
+  case XQType::EMPTY_KIND:
+  case XQType::NONE_KIND:
+  {
+    return false;
+  }
+
+  case XQType::ITEM_KIND:
+  {
+    return true;
+    break;
+  }
+
+  case XQType::FUNCTION_TYPE_KIND:
+  {
+    if (!subitem->isFunction())
+      return false;
+
+    xqtref_t subtype = tm->create_value_type(subitem, loc);
+
+    switch (subtype->type_kind())
     {
-      if (!subitem->isAtomic())
-        return false;
-
-      const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
-
-      if (a2.get_type_code() == store::XS_ANY_ATOMIC)
-        return true;
-
-      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                      TypeConstants::QUANT_ONE,
-                                                      loc,
-                                                      err::XPTY0004);
-      switch(subtype->type_kind()) 
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      {
-        const AtomicXQType& a1 = static_cast<const AtomicXQType&>(*subtype);
-
-        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()]
-                                                     [a2.get_type_code()];
-      }
-      case XQType::USER_DEFINED_KIND:
-      {
-        const UserDefinedXQType& udSubtype = 
-        static_cast<const UserDefinedXQType&>(*subtype);
-
-        return udSubtype.isSubTypeOf(tm, supertype);
-      }
-      case XQType::EMPTY_KIND:
-      {
-        assert(false);
-        return true;
-      }
-      default:
-      {
-        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
-        return false;
-      }
-      }
-      break;
-    }
-
-    case XQType::NODE_TYPE_KIND:
-    {
-      if (!subitem->isNode())
-        return false;
-
-      const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
-
-      return n2.is_supertype(tm, subitem, loc);
-
-      break;
-    }
-
-#ifdef ZORBA_WITH_JSON
-    case XQType::JSON_TYPE_KIND:
-    {
-      if (!subitem->isJSONItem())
-        return false;
-
-      const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
-
-      store::StoreConsts::JSONItemKind subKind = subitem->getJSONItemKind();
-      store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
-
-      switch (supKind)
-      {
-      case store::StoreConsts::jsonItem:
-        return true;
-
-      case store::StoreConsts::jsonObject:
-      case store::StoreConsts::jsonArray:
-      case store::StoreConsts::jsonPair:
-        return (subKind == supKind);
-
-      default:
-        ZORBA_ASSERT(false);
-      }
-    }
-#endif
-
-    case XQType::ITEM_KIND:
-    {
-      return true;
-      break;
-    }
-
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    {
-      if (!subitem->isAtomic())
-        return false;
-
-      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                      TypeConstants::QUANT_ONE,
-                                                      loc,
-                                                      err::XPTY0004);
-      switch (subtype->type_kind())
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      case XQType::ANY_SIMPLE_TYPE_KIND:
-      case XQType::EMPTY_KIND:
-          return true;
-
-      case XQType::USER_DEFINED_KIND:
-      {
-        const UserDefinedXQType& udSubType = 
-        static_cast<const UserDefinedXQType&>(*subtype);
-
-        return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
-      }
-
-      default:
-        // ANY, UNTYPED, ITEM, NODE
-        return false;
-      }
-      break;
-    }
-
+    case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::FUNCTION_TYPE_KIND:
     {
-      if (!subitem->isFunction())
-        return false;
-
-      xqtref_t subtype = tm->create_value_type(subitem, loc);
-
-      switch (subtype->type_kind())
-      {
-      case XQType::ANY_FUNCTION_TYPE_KIND:
-      case XQType::FUNCTION_TYPE_KIND:
-      {
-        const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
-        const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
-        return f1.is_subtype(tm, f2);
-      }
-      default:
-        return false;
-      }
+      const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
+      const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
+      return f1.is_subtype(tm, f2);
     }
-
-    case XQType::ANY_FUNCTION_TYPE_KIND:
-    {
-      if (subitem->isFunction())
-        return true;
-
+    default:
       return false;
     }
+  }
 
-    case XQType::UNTYPED_KIND:
-    case XQType::ANY_TYPE_KIND:
+  case XQType::ANY_FUNCTION_TYPE_KIND:
+  {
+    if (subitem->isFunction())
+      return true;
+    
+    return false;
+  }
+
+  case XQType::ATOMIC_TYPE_KIND:
+  {
+    if (!subitem->isAtomic())
+      return false;
+
+    const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+
+    if (a2.get_type_code() == store::XS_ANY_ATOMIC)
+      return true;
+
+    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                    TypeConstants::QUANT_ONE,
+                                                    loc,
+                                                    err::XPTY0004);
+    switch(subtype->type_kind()) 
     {
-      // We shouldn't be here because these are not a sequence types
-      ZORBA_ASSERT(false);
+    case XQType::ATOMIC_TYPE_KIND:
+    {
+      const AtomicXQType& a1 = static_cast<const AtomicXQType&>(*subtype);
 
-      if (!subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME))
-        return false;
+      return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()]
+                                                   [a2.get_type_code()];
+    }
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType& udSubtype = 
+      static_cast<const UserDefinedXQType&>(*subtype);
 
+      return udSubtype.isSubTypeOf(tm, supertype);
+    }
+    case XQType::EMPTY_KIND:
+    {
+      assert(false);
       return true;
     }
-
-    case XQType::EMPTY_KIND:
-    case XQType::NONE_KIND:
+    default:
     {
+      // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED, JSON
       return false;
     }
+    }
+    break;
+  }
+
+#ifdef ZORBA_WITH_JSON
+  case XQType::STRUCTURED_ITEM_KIND:
+  {
+    if (subitem->isJSONItem() || subitem->isNode())
+      return true;
+
+    return false;
+  }
+
+  case XQType::JSON_TYPE_KIND:
+  {
+    if (!subitem->isJSONItem())
+      return false;
+
+    const JSONXQType& sup = static_cast<const JSONXQType&>(supertype);
+
+    store::StoreConsts::JSONItemKind subKind = subitem->getJSONItemKind();
+    store::StoreConsts::JSONItemKind supKind = sup.get_json_kind();
+
+    switch (supKind)
+    {
+    case store::StoreConsts::jsonItem:
+      return true;
+
+    case store::StoreConsts::jsonObject:
+    case store::StoreConsts::jsonArray:
+    case store::StoreConsts::jsonPair:
+      return (subKind == supKind);
+      
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+#endif
+
+  case XQType::NODE_TYPE_KIND:
+  {
+    if (!subitem->isNode())
+      return false;
+
+    const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+
+    return n2.is_supertype(tm, subitem, loc);
+    
+    break;
+  }
+
+  case XQType::ANY_SIMPLE_TYPE_KIND:
+  {
+    if (!subitem->isAtomic())
+      return false;
+
+    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                    TypeConstants::QUANT_ONE,
+                                                    loc,
+                                                    err::XPTY0004);
+    switch (subtype->type_kind())
+    {
+    case XQType::ATOMIC_TYPE_KIND:
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+    case XQType::EMPTY_KIND:
+      return true;
 
     case XQType::USER_DEFINED_KIND:
     {
-      // The supertype must be a sequence type, and the only way that a user-
-      // defined type may be a sequence type, is if it is an atomic type.
-      if (!subitem->isAtomic())
-        return false;
+      const UserDefinedXQType& udSubType = 
+      static_cast<const UserDefinedXQType&>(*subtype);
 
-      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                      TypeConstants::QUANT_ONE,
-                                                      loc,
-                                                      err::XPTY0004);
-      const UserDefinedXQType& udSuperType = 
-      static_cast<const UserDefinedXQType&>(supertype);
-
-      return udSuperType.isSuperTypeOf(tm, *subtype);
+      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
     }
+
+    default:
+      // ANY, UNTYPED, ITEM, NODE
+      return false;
+    }
+    break;
+  }
+
+  case XQType::UNTYPED_KIND:
+  case XQType::ANY_TYPE_KIND:
+  {
+    // We shouldn't be here because these are not a sequence types
+    ZORBA_ASSERT(false);
+
+    if (!subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME))
+      return false;
+
+    return true;
+  }
+
+  case XQType::USER_DEFINED_KIND:
+  {
+    // The supertype must be a sequence type, and the only way that a user-
+    // defined type may be a sequence type, is if it is an atomic type.
+    if (!subitem->isAtomic())
+      return false;
+
+    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                    TypeConstants::QUANT_ONE,
+                                                    loc,
+                                                    err::XPTY0004);
+    const UserDefinedXQType& udSuperType = 
+    static_cast<const UserDefinedXQType&>(supertype);
+
+    return udSuperType.isSuperTypeOf(tm, *subtype);
+  }
 
   default:
     ZORBA_ASSERT(false);
@@ -963,6 +998,19 @@ xqtref_t TypeOps::union_type(
     const XQType& type2,
     const TypeManager* tm)
 {
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  XQType::TypeKind kind1 = type1.type_kind();
+  XQType::TypeKind kind2 = type2.type_kind();
+
+  ZORBA_ASSERT(kind1 != XQType::ANY_TYPE_KIND &&
+               kind1 != XQType::ANY_SIMPLE_TYPE_KIND &&
+               kind1 != XQType::UNTYPED_KIND);
+  
+  ZORBA_ASSERT(kind2 != XQType::ANY_TYPE_KIND &&
+               kind2 != XQType::ANY_SIMPLE_TYPE_KIND &&
+               kind2 != XQType::UNTYPED_KIND);
+
   if (is_subtype(tm, type1, type2))
     return &type2;
 
@@ -978,23 +1026,35 @@ xqtref_t TypeOps::union_type(
   else if (type1.get_quantifier() == TypeConstants::QUANT_ONE &&
            type2.get_quantifier() == TypeConstants::QUANT_ONE) 
   {
-    if (type1.type_kind() == type2.type_kind())
+    if (kind1 == kind2)
     {
-      switch (type1.type_kind()) 
+      switch (kind1) 
       {
       case XQType::ATOMIC_TYPE_KIND:
-        return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+        return rtm.ANY_ATOMIC_TYPE_ONE;
 
       case XQType::NODE_TYPE_KIND:
-          return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+          return rtm.ANY_NODE_TYPE_ONE;
 
 #ifdef ZORBA_WITH_JSON
+      case XQType::STRUCTURED_ITEM_KIND:
+        return rtm.STRUCTURED_ITEM_TYPE_ONE;
+
       case XQType::JSON_TYPE_KIND:
-        return GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE;
+        return rtm.JSON_ITEM_TYPE_ONE;
 #endif
       default:
         break;
       }
+    }
+    else if ((kind1 == XQType::NODE_TYPE_KIND || 
+              kind1 == XQType::JSON_TYPE_KIND ||
+              kind1 == XQType::STRUCTURED_ITEM_KIND) &&
+             (kind2 == XQType::NODE_TYPE_KIND ||
+              kind2 == XQType::JSON_TYPE_KIND ||
+              kind2 == XQType::STRUCTURED_ITEM_KIND))
+    {
+      return rtm.STRUCTURED_ITEM_TYPE_ONE;
     }
 
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -1033,8 +1093,10 @@ xqtref_t TypeOps::intersect_type(
     const XQType& type2,
     const TypeManager* tm)
 {
-  XQType::type_kind_t tk1 = type1.type_kind();
-  XQType::type_kind_t tk2 = type2.type_kind();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  XQType::TypeKind tk1 = type1.type_kind();
+  XQType::TypeKind tk2 = type2.type_kind();
 
   ZORBA_ASSERT(tk1 != XQType::ANY_TYPE_KIND &&
                tk1 != XQType::ANY_SIMPLE_TYPE_KIND &&
@@ -1044,79 +1106,77 @@ xqtref_t TypeOps::intersect_type(
                tk2 != XQType::ANY_SIMPLE_TYPE_KIND &&
                tk2 != XQType::UNTYPED_KIND);
 
-  if (tk1 < tk2)
-    return intersect_type(type2, type1, tm);
-
-  TypeConstants::quantifier_t q1 = type1.get_quantifier();
-  TypeConstants::quantifier_t q2 = type2.get_quantifier();
-
   if (is_subtype(tm, type1, type2))
     return &type1;
 
   if (is_subtype(tm, type2, type1))
     return &type2;
 
+  TypeConstants::quantifier_t q1 = type1.get_quantifier();
+  TypeConstants::quantifier_t q2 = type2.get_quantifier();
+
   if (tk1 == XQType::EMPTY_KIND)
     return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR ?
-            GENV_TYPESYSTEM.EMPTY_TYPE :
-            GENV_TYPESYSTEM.NONE_TYPE);
+            rtm.EMPTY_TYPE :
+            rtm.NONE_TYPE);
 
   if (tk2 == XQType::EMPTY_KIND)
     return (q1 == TypeConstants::QUANT_QUESTION || q1 == TypeConstants::QUANT_STAR ?
-            GENV_TYPESYSTEM.EMPTY_TYPE :
-            GENV_TYPESYSTEM.NONE_TYPE);
+            rtm.EMPTY_TYPE :
+            rtm.NONE_TYPE);
 
   if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) 
   {
+    assert(tk1 != XQType::EMPTY_KIND &&
+           tk1 != XQType::NONE_KIND &&
+           tk1 != XQType::ITEM_KIND);
+
+    assert(tk2 != XQType::EMPTY_KIND &&
+           tk2 != XQType::NONE_KIND &&
+           tk2 != XQType::ITEM_KIND);
+
     switch (tk1) 
     {
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+    {
+      return rtm.NONE_TYPE;
+    }
+
+    case XQType::FUNCTION_TYPE_KIND:
+    {
+      return rtm.ANY_FUNCTION_TYPE_ONE;
+    }
+
     case XQType::ATOMIC_TYPE_KIND:
     {
-      switch (tk2)
-      {
-      case XQType::ATOMIC_TYPE_KIND:
-      case XQType::NODE_TYPE_KIND:
-#ifdef ZORBA_WITH_JSON
-      case XQType::JSON_TYPE_KIND:
-#endif
-      case XQType::FUNCTION_TYPE_KIND:
-      case XQType::ANY_FUNCTION_TYPE_KIND:
-      case XQType::USER_DEFINED_KIND:
-      {
-        return GENV_TYPESYSTEM.NONE_TYPE;
-      }
-
-      case XQType::EMPTY_KIND:
-      case XQType::NONE_KIND:
-      case XQType::ITEM_KIND:
-      default:
-      {
-        ZORBA_ASSERT(false);
-      }
+      return rtm.NONE_TYPE;
     }
 
     case XQType::NODE_TYPE_KIND:
     {
       return (tk2 != XQType::NODE_TYPE_KIND ?
-              GENV_TYPESYSTEM.NONE_TYPE :
-              GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE); // ????
+              rtm.NONE_TYPE :
+              rtm.ANY_NODE_TYPE_ONE); // ????
     }
 
 #ifdef ZORBA_WITH_JSON
+    case XQType::STRUCTURED_ITEM_KIND:
+    {
+      return rtm.NONE_TYPE;
+    }
+
     case XQType::JSON_TYPE_KIND:
     {
-      return GENV_TYPESYSTEM.NONE_TYPE;
+      return rtm.NONE_TYPE;
     }
 #endif
 
     default:
       break;
     }
-    }
 
-    return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+    return rtm.ITEM_TYPE_ONE;
   }
-
   else 
   {
     xqtref_t pt1 = prime_type(tm, type1);
@@ -1131,7 +1191,7 @@ xqtref_t TypeOps::intersect_type(
     else
     {
       ZORBA_ASSERT(false);
-      return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+      return rtm.ITEM_TYPE_STAR;
     }
   }
 }
@@ -1256,16 +1316,52 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
   switch(type.type_kind()) 
   {
+  case XQType::EMPTY_KIND:
+    return TypeIdentifier::createEmptyType();
+
+  case XQType::ITEM_KIND:
+    return TypeIdentifier::createItemType(q);
+
   case XQType::ATOMIC_TYPE_KIND:
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString(qname->getNamespace()),
-      Unmarshaller::newString(qname->getLocalName()),
-      q
-    );
+        Unmarshaller::newString(qname->getNamespace()),
+        Unmarshaller::newString(qname->getLocalName()),
+        q);
   }
+
+#ifdef ZORBA_WITH_JSON
+  case XQType::STRUCTURED_ITEM_KIND:
+  {
+    return TypeIdentifier::createStructuredItemType(q);
+  }
+
+  case XQType::JSON_TYPE_KIND:
+  {
+    const JSONXQType& t = static_cast<const JSONXQType&>(type);
+
+    switch (t.get_json_kind())
+    {
+    case store::StoreConsts::jsonItem:
+      return TypeIdentifier::createJSONItemType(q);
+
+    case store::StoreConsts::jsonObject:
+      return TypeIdentifier::createJSONObjectType(q);
+
+    case store::StoreConsts::jsonArray:
+      return TypeIdentifier::createJSONArrayType(q);
+
+    case store::StoreConsts::jsonPair:
+      return TypeIdentifier::createJSONPairType(q);
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+#endif
+
   case XQType::NODE_TYPE_KIND:
   {
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
@@ -1295,8 +1391,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::elementNode:
     {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+      String uri(Unmarshaller::newString(nodeName->getNamespace()));
+      String local(Unmarshaller::newString(nodeName->getLocalName()));
 
       return TypeIdentifier::createElementType(uri,
                                                nodeName == NULL,
@@ -1307,8 +1403,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
     }  
     case store::StoreConsts::attributeNode:
     {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+      String uri(Unmarshaller::newString(nodeName->getNamespace()));
+      String local(Unmarshaller::newString(nodeName->getLocalName()));
 
       return TypeIdentifier::createAttributeType(uri,
                                                  nodeName == NULL,
@@ -1323,37 +1419,26 @@ type_ident_ref_t TypeOps::get_type_identifier(
       return type_ident_ref_t();
     }
   }
-#ifdef ZORBA_WITH_JSON
-  case XQType::JSON_TYPE_KIND:
-  {
-  }
-#endif
-  case XQType::ANY_TYPE_KIND:
-    return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getNamespace() ),
-      Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getLocalName() ),
-      q
-    );
 
-  case XQType::ITEM_KIND:
-    return TypeIdentifier::createItemType(q);
+  case XQType::ANY_TYPE_KIND:
+  {
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getNamespace()),
+      Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getLocalName()),
+      q);
+  }
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace() ),
-      Unmarshaller::newString( rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName() ),
-      q
-    );
+      Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace()),
+      Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName()),
+      q);
 
   case XQType::UNTYPED_KIND:
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( rtm.XS_UNTYPED_QNAME->getNamespace() ),
-      Unmarshaller::newString( rtm.XS_UNTYPED_QNAME->getLocalName() ),
-      q
-    );
-    
-  case XQType::EMPTY_KIND:
-    return TypeIdentifier::createEmptyType();
+      Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getNamespace()),
+      Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getLocalName()),
+      q);
 
   case XQType::USER_DEFINED_KIND:
     //TODO for Vinayak return type identifier

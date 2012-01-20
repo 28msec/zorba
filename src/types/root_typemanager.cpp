@@ -208,8 +208,26 @@ RootTypeManager::RootTypeManager()
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
-#define ZXSE_URI "http://www.zorba-xquery.com/zorba/schema-extensions"
-#define ZXSE_PREFIX "zxse"
+  // These must be allocated before allocating the node types.
+  ANY_TYPE = new AnyXQType(this, true);
+
+  ANY_SIMPLE_TYPE = new AnySimpleXQType(this, true);
+
+  UNTYPED_TYPE = new UntypedXQType(this, true);
+
+  NONE_TYPE = new NoneXQType(this, true);
+
+  EMPTY_TYPE = new EmptyXQType(this, true);
+
+  ITEM_TYPE_ONE = new ItemXQType(this, TypeConstants::QUANT_ONE, true);
+  ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
+  ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
+  ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
+
+  ANY_FUNCTION_TYPE_ONE = new AnyFunctionXQType(this, TypeConstants::QUANT_ONE, true);
+  ANY_FUNCTION_TYPE_QUESTION = new AnyFunctionXQType(this, TypeConstants::QUANT_QUESTION, true);
+  ANY_FUNCTION_TYPE_STAR = new AnyFunctionXQType(this, TypeConstants::QUANT_STAR, true);
+  ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define XSQNDECL(var, local)  \
   GENV.getStore().getItemFactory()->createQName(var, XS_URI, XS_PREFIX, local)
@@ -262,10 +280,6 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_ANY_TYPE_QNAME, "anyType");
   XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
-  GENV.getStore().getItemFactory()->createQName(ZXSE_TUPLE_QNAME,
-                                                ZXSE_URI,
-                                                ZXSE_PREFIX,
-                                                "tuple");
 
 #ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JDM_NULL_QNAME, JSONIQ_NS, "", "null");
@@ -398,28 +412,53 @@ RootTypeManager::RootTypeManager()
                                                                            
   m_atomic_typecode_map[store::JDM_NULL][TypeConstants::QUANT_PLUS] =    
     &JDM_NULL_TYPE_PLUS;
-#endif
 
-  ANY_TYPE = new AnyXQType(this, true);
+  STRUCTURED_ITEM_TYPE_ONE = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
 
-  ANY_SIMPLE_TYPE = new AnySimpleXQType(this, true);
+  STRUCTURED_ITEM_TYPE_QUESTION = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_QUESTION, true);
 
-  UNTYPED_TYPE = new UntypedXQType(this, true);
+  STRUCTURED_ITEM_TYPE_STAR = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_STAR, true);
 
-  EMPTY_TYPE = new EmptyXQType(this, true);
+  STRUCTURED_ITEM_TYPE_PLUS = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
-  NONE_TYPE = new NoneXQType(this, true);
+#define JSON_TYPE_DEFN(basename, kind)                                      \
+  basename##_TYPE_ONE = new JSONXQType(this,                                \
+                                  kind,                                     \
+                                  TypeConstants::QUANT_ONE,                 \
+                                  true);                                    \
+                                                                            \
+  basename##_TYPE_QUESTION = new JSONXQType(this,                           \
+                                       kind,                                \
+                                       TypeConstants::QUANT_QUESTION,       \
+                                       true);                               \
+                                                                            \
+  basename##_TYPE_STAR = new JSONXQType(this,                               \
+                                   kind,                                    \
+                                   TypeConstants::QUANT_STAR,               \
+                                   true);                                   \
+                                                                            \
+  basename##_TYPE_PLUS = new JSONXQType(this,                               \
+                                   kind,                                    \
+                                   TypeConstants::QUANT_PLUS,               \
+                                   true);                                   \
+                                                                            \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \
+  JSON_TYPES_MAP[kind][TypeConstants::QUANT_STAR] = basename##_TYPE_STAR.getp();
 
-  ITEM_TYPE_ONE = new ItemXQType(this, TypeConstants::QUANT_ONE, true);
-  ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
-  ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
-  ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
+  JSON_TYPE_DEFN(JSON_ITEM, store::StoreConsts::jsonItem);
+  JSON_TYPE_DEFN(JSON_OBJECT, store::StoreConsts::jsonObject);
+  JSON_TYPE_DEFN(JSON_ARRAY, store::StoreConsts::jsonArray);
+  JSON_TYPE_DEFN(JSON_PAIR, store::StoreConsts::jsonPair);
 
-  ANY_FUNCTION_TYPE_ONE = new AnyFunctionXQType(this, TypeConstants::QUANT_ONE, true);
-  ANY_FUNCTION_TYPE_QUESTION = new AnyFunctionXQType(this, TypeConstants::QUANT_QUESTION, true);
-  ANY_FUNCTION_TYPE_STAR = new AnyFunctionXQType(this, TypeConstants::QUANT_STAR, true);
-  ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
-  
+#undef JSON_TYPE_DEFN
+#endif // ZORBA_WITH_JSON
+
   store::Item_t nullNodeName;
 
 #define NODE_TYPE_DEFN(basename, nodeKind, contentType)                 \
@@ -482,47 +521,16 @@ RootTypeManager::RootTypeManager()
   NODE_TYPE_DEFN(COMMENT, store::StoreConsts::commentNode, STRING_TYPE_ONE);
 
 #undef NODE_TYPE_DEFN
-
-#ifdef ZORBA_WITH_JSON
-
-#define JSON_TYPE_DEFN(basename, kind)                                      \
-  basename##_TYPE_ONE = new JSONXQType(this,                                     \
-                                  kind,                                     \
-                                  TypeConstants::QUANT_ONE,                 \
-                                  true);                                    \
-                                                                            \
-  basename##_TYPE_QUESTION = new JSONXQType(this,                                \
-                                       kind,                                \
-                                       TypeConstants::QUANT_QUESTION,       \
-                                       true);                               \
-                                                                            \
-  basename##_TYPE_STAR = new JSONXQType(this,                                    \
-                                   kind,                                    \
-                                   TypeConstants::QUANT_STAR,               \
-                                   true);                                   \
-                                                                            \
-  basename##_TYPE_PLUS = new JSONXQType(this,                                    \
-                                   kind,                                    \
-                                   TypeConstants::QUANT_PLUS,               \
-                                   true);                                   \
-                                                                            \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_STAR] = basename##_TYPE_STAR.getp();
-
-  JSON_TYPE_DEFN(JSON_ITEM, store::StoreConsts::jsonItem);
-  JSON_TYPE_DEFN(JSON_OBJECT, store::StoreConsts::jsonObject);
-  JSON_TYPE_DEFN(JSON_ARRAY, store::StoreConsts::jsonArray);
-  JSON_TYPE_DEFN(JSON_PAIR, store::StoreConsts::jsonPair);
-
-#undef JSON_TYPE_DEFN
-#endif // ZORBA_WITH_JSON
 }
 
 
 RootTypeManager::~RootTypeManager()
 {
+  delete NONE_TYPE.getp();
+  NONE_TYPE.setNull();
+
+  delete EMPTY_TYPE.getp();
+  EMPTY_TYPE.setNull();
 
 #define DELETE_TYPE(tname) \
   delete tname##_TYPE_ONE.getp();       \
@@ -534,19 +542,9 @@ RootTypeManager::~RootTypeManager()
   tname##_TYPE_STAR.setNull();          \
   tname##_TYPE_PLUS.setNull();          \
 
-  DELETE_TYPE(COMMENT)
-  DELETE_TYPE(PI)
-  DELETE_TYPE(TEXT)
-  DELETE_TYPE(ATTRIBUTE_UNTYPED)
-  DELETE_TYPE(ATTRIBUTE)
-  DELETE_TYPE(ELEMENT_UNTYPED)
-  DELETE_TYPE(ELEMENT)
-  DELETE_TYPE(DOCUMENT_UNTYPED)
-  DELETE_TYPE(DOCUMENT)
-  DELETE_TYPE(ANY_NODE_UNTYPED)
-  DELETE_TYPE(ANY_NODE)
-
   DELETE_TYPE(ITEM)
+
+  DELETE_TYPE(ANY_FUNCTION)
 
   DELETE_TYPE(NOTATION)
   DELETE_TYPE(QNAME)
@@ -594,36 +592,30 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(STRING)
   DELETE_TYPE(ANY_ATOMIC)
 
-#undef DELETE_TYPE
-
 #ifdef ZORBA_WITH_JSON
+  DELETE_TYPE(JDM_NULL)
 
-  delete JDM_NULL_TYPE_ONE.getp();
-  delete JDM_NULL_TYPE_QUESTION.getp();
-  delete JDM_NULL_TYPE_STAR.getp();    
-  delete JDM_NULL_TYPE_PLUS.getp();    
-  JDM_NULL_TYPE_ONE.setNull();         
-  JDM_NULL_TYPE_QUESTION.setNull();    
-  JDM_NULL_TYPE_STAR.setNull();        
-  JDM_NULL_TYPE_PLUS.setNull();        
+  DELETE_TYPE(STRUCTURED_ITEM)
 
-#define DELETE_JSON_TYPE(tname)         \
-  delete tname##_TYPE_ONE.getp();       \
-  delete tname##_TYPE_QUESTION.getp();  \
-  delete tname##_TYPE_STAR.getp();      \
-  delete tname##_TYPE_PLUS.getp();      \
-  tname##_TYPE_ONE.setNull();           \
-  tname##_TYPE_QUESTION.setNull();      \
-  tname##_TYPE_STAR.setNull();          \
-  tname##_TYPE_PLUS.setNull();          \
+  DELETE_TYPE(JSON_ITEM)
+  DELETE_TYPE(JSON_OBJECT)
+  DELETE_TYPE(JSON_ARRAY)
+  DELETE_TYPE(JSON_PAIR)
+#endif
 
-  DELETE_JSON_TYPE(JSON_ITEM)
-  DELETE_JSON_TYPE(JSON_OBJECT)
-  DELETE_JSON_TYPE(JSON_ARRAY)
-  DELETE_JSON_TYPE(JSON_PAIR)
+  DELETE_TYPE(COMMENT)
+  DELETE_TYPE(PI)
+  DELETE_TYPE(TEXT)
+  DELETE_TYPE(ATTRIBUTE_UNTYPED)
+  DELETE_TYPE(ATTRIBUTE)
+  DELETE_TYPE(ELEMENT_UNTYPED)
+  DELETE_TYPE(ELEMENT)
+  DELETE_TYPE(DOCUMENT_UNTYPED)
+  DELETE_TYPE(DOCUMENT)
+  DELETE_TYPE(ANY_NODE_UNTYPED)
+  DELETE_TYPE(ANY_NODE)
 
-#undef DELETE_JSON_TYPE
-#endif // // ZORBA_WITH_JSON
+#undef DELETE_TYPE
 
   delete ANY_TYPE.getp();
   ANY_TYPE.setNull();
@@ -633,24 +625,6 @@ RootTypeManager::~RootTypeManager()
 
   delete UNTYPED_TYPE.getp();
   UNTYPED_TYPE.setNull();
-
-  delete EMPTY_TYPE.getp();
-  EMPTY_TYPE.setNull();
-
-  delete NONE_TYPE.getp();
-  NONE_TYPE.setNull();
-
-  delete ANY_FUNCTION_TYPE_ONE.getp();
-  ANY_FUNCTION_TYPE_ONE.setNull();
-
-  delete ANY_FUNCTION_TYPE_QUESTION.getp();
-  ANY_FUNCTION_TYPE_QUESTION.setNull();
-
-  delete ANY_FUNCTION_TYPE_PLUS.getp();
-  ANY_FUNCTION_TYPE_PLUS.setNull();
-
-  delete ANY_FUNCTION_TYPE_STAR.getp();
-  ANY_FUNCTION_TYPE_STAR.setNull();
 }
 
 }

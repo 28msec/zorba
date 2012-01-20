@@ -41,6 +41,32 @@ class RootTypeManager : public TypeManagerImpl
 
 public:
   /**
+   * Pre-allocated XQType object for the "none" type
+   */
+  xqtref_t NONE_TYPE;
+
+  /**
+   * Pre-allocated XQType object for the () sequence type (the empty sequence).
+   */ 
+  xqtref_t EMPTY_TYPE;
+
+  /**
+   *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
+   */
+  xqtref_t ITEM_TYPE_ONE; 
+  xqtref_t ITEM_TYPE_QUESTION;
+  xqtref_t ITEM_TYPE_STAR;
+  xqtref_t ITEM_TYPE_PLUS;
+
+  /**
+   * Pre-allocated any function item objects
+   */
+  xqtref_t ANY_FUNCTION_TYPE_ONE; 
+  xqtref_t ANY_FUNCTION_TYPE_QUESTION;
+  xqtref_t ANY_FUNCTION_TYPE_STAR;
+  xqtref_t ANY_FUNCTION_TYPE_PLUS;
+
+  /**
    * Pre-allocated XQType and QNameItem objects for all of the 45 built-in atomic
    * types of XQDM. Specifically, for each built-in atomic XQDM type T, we pre-
    * allocate a QNameItem for the name of T (as defined by XMLSchema), and 4 
@@ -111,23 +137,40 @@ public:
   xqtref_t JDM_NULL_TYPE_QUESTION;
   xqtref_t JDM_NULL_TYPE_STAR;
   xqtref_t JDM_NULL_TYPE_PLUS;
-#endif
 
   /**
-   *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
+   *  Pre-allocate XQType objects for structured-item(), structured-item()?,
+   *  structured-item()+, and structured-item()*.
    */
-  xqtref_t ITEM_TYPE_ONE; 
-  xqtref_t ITEM_TYPE_QUESTION;
-  xqtref_t ITEM_TYPE_STAR;
-  xqtref_t ITEM_TYPE_PLUS;
-  
+  xqtref_t STRUCTURED_ITEM_TYPE_ONE; 
+  xqtref_t STRUCTURED_ITEM_TYPE_QUESTION;
+  xqtref_t STRUCTURED_ITEM_TYPE_STAR;
+  xqtref_t STRUCTURED_ITEM_TYPE_PLUS;
+
   /**
-   * Pre-allocated any function item objects
+   * Pre-allocate XQType objects for the following JSONTest sequence types:
+   *
+   * N(), N()?, N()+, N()*, where N is one of json-item, object, array, or pair
    */
-  xqtref_t ANY_FUNCTION_TYPE_ONE; 
-  xqtref_t ANY_FUNCTION_TYPE_QUESTION;
-  xqtref_t ANY_FUNCTION_TYPE_STAR;
-  xqtref_t ANY_FUNCTION_TYPE_PLUS;
+#define JSON_DECL(basename) \
+    xqtref_t basename##_TYPE_ONE;\
+    xqtref_t basename##_TYPE_QUESTION; \
+    xqtref_t basename##_TYPE_STAR; \
+    xqtref_t basename##_TYPE_PLUS;\
+
+  JSON_DECL(JSON_ITEM);
+  JSON_DECL(JSON_OBJECT);
+  JSON_DECL(JSON_ARRAY);
+  JSON_DECL(JSON_PAIR);
+
+#undef JSON_DECL
+
+  /**
+   * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
+   */
+  static const XQType* JSON_TYPES_MAP[4][4];
+
+#endif // ZORBA_WITH_JSON
 
   /**
    * Pre-allocate XQType objects for the following KindTest sequence types:
@@ -173,33 +216,6 @@ public:
 
 #undef ALL_NODE_TYPE_DECL
 
-#ifdef ZORBA_WITH_JSON
-
-  /**
-   * Pre-allocate XQType objects for the following JSONTest sequence types:
-   *
-   * N(), N()?, N()+, N()*, where N is one of json-item, object, array, or pair
-   */
-#define JSON_DECL(basename) \
-    xqtref_t basename##_TYPE_ONE;\
-    xqtref_t basename##_TYPE_QUESTION; \
-    xqtref_t basename##_TYPE_STAR; \
-    xqtref_t basename##_TYPE_PLUS;\
-
-  JSON_DECL(JSON_ITEM);
-  JSON_DECL(JSON_OBJECT);
-  JSON_DECL(JSON_ARRAY);
-  JSON_DECL(JSON_PAIR);
-
-#undef JSON_DECL
-
-  /**
-   * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
-   */
-  static const XQType* JSON_TYPES_MAP[4][4];
-
-#endif // ZORBA_WITH_JSON
-
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
    * XQDM types (not including the built-in list types xs:IDREFS, xs:NMTOKENS,
@@ -212,21 +228,6 @@ public:
   store::Item_t XS_ANY_TYPE_QNAME;
   store::Item_t XS_UNTYPED_QNAME;
   store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
-
-  /**
-   * Pre-allocated XQType object for the () sequence type (the empty sequence).
-   */ 
-  xqtref_t EMPTY_TYPE;
-
-  /**
-   *
-   */
-  xqtref_t NONE_TYPE;
-
-  /**
-   *
-   */
-  store::Item_t ZXSE_TUPLE_QNAME;
 
 private:
 
