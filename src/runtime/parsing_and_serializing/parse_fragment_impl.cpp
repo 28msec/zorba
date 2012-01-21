@@ -58,6 +58,7 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
   if (item.getp() == NULL)
     return;
 
+#ifndef ZORBA_NO_XMLSCHEMA
   tempItem = NULL; // used as the effectiveValidationValue()'s typeName
   Validator::effectiveValidationValue(
       item,
@@ -67,6 +68,7 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
       ParseConstants::val_strict,
       theSctx,
       loc);
+#endif      
 
   store::Iterator_t children = item->getChildren();
   children->open();
