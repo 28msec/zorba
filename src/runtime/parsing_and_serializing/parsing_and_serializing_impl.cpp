@@ -122,12 +122,16 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
   14.9.2 fn:serialize
 ********************************************************************************/
+void
+FnSerializeIterator::streamReleaser(std::istream* s)
+{
+  delete s;
+}
+
 bool
 FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lParams;
-  std::stringstream lResultStream;
-  zstring lResult;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
@@ -254,12 +258,15 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       lElemIter->close();
     }
 
-    // and now serialize
-    lSerializer.serialize(lIterWrapper, lResultStream);
-    lResult = lResultStream.str();
+    {
+      // and now serialize
+      std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+      lSerializer.serialize(lIterWrapper, *lResultStream.get());
+      GENV_ITEMFACTORY->createStreamableString(aResult, *lResultStream.release(), FnSerializeIterator::streamReleaser, true);
+    }
   }
+  STACK_PUSH(true, lState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, lResult), lState);
   STACK_END (lState);
 }
 
