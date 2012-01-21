@@ -25,6 +25,8 @@ version 2.2
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
+  * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
+  * Deprecated StaticContext:getNamespaceURIByPrefix()
 
 version 2.1
 
