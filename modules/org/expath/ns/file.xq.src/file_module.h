@@ -47,23 +47,9 @@ protected:
   FuncMap_t theFunctions;
 
 public:
-  typedef std::map<std::istream*, transcode_streambuf*> BufMap_t;
-  typedef BufMap_t::iterator BufMapIter_t;
-  static BufMap_t  theStreamBufs;
-
   static void
   streamReleaser(std::istream* stream)
   {
-    // reset the original streambuffer and
-    // delete the corresponding transcoding buffer
-    // if there was any
-    BufMapIter_t lIter = theStreamBufs.find(stream);
-    if (lIter != theStreamBufs.end())
-    {
-      stream->rdbuf( lIter->second->orig_streambuf() );
-      delete lIter->second;
-      theStreamBufs.erase(lIter);
-    }
     delete stream;
   }
 

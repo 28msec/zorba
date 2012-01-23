@@ -21,8 +21,6 @@
 
 namespace zorba { namespace filemodule {
 
-  FileModule::BufMap_t FileModule::theStreamBufs;
-
   const char* FileModule::theNamespace = "http://expath.org/ns/file";
 
 
@@ -33,7 +31,6 @@ FileModule::~FileModule()
     delete lIter->second;
   }
   theFunctions.clear();
-  assert(theStreamBufs.empty());
 }
   
 ExternalFunction*

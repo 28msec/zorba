@@ -203,35 +203,29 @@ ReadTextFunction::evaluate(
     lEncoding = getEncodingArg(aArgs, 1);
   }
   
-  std::auto_ptr<std::ifstream> lInStream(new std::ifstream());
-  lFile->openInputStream(*lInStream.get(), false, true);
-
+  zorba::Item lResult;
+  std::auto_ptr<std::ifstream> lInStream;
   if (lEncoding != "UTF-8")
   {
     try {
-      std::auto_ptr<transcode_streambuf> lBuf(new transcode_streambuf(
-          lEncoding.c_str(), lInStream->rdbuf()
-        )
-      );
-      lInStream->std::ios::rdbuf(lBuf.get());
-
-      FileModule::theStreamBufs.insert(
-          std::make_pair<std::istream*, transcode_streambuf*>(
-            lInStream.get(), lBuf.release()
-          )
+      lInStream = std::auto_ptr<std::ifstream>(
+          new transcode_stream<std::ifstream>(lEncoding.c_str())
         );
     } catch (std::invalid_argument& e)
     {
       raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
     }
   }
-
-
-  zorba::Item lResult = theModule->getItemFactory()->createStreamableString(
+  else
+  {
+    lInStream = std::auto_ptr<std::ifstream>(new std::ifstream());
+  }
+  lFile->openInputStream(*lInStream.get(), false, true);
+  lResult = theModule->getItemFactory()->createStreamableString(
       *lInStream.release(), &FileModule::streamReleaser
     );
-
   return ItemSequence_t(new SingletonItemSequence(lResult));
+
 }
 
 //*****************************************************************************
