@@ -62,7 +62,9 @@ public:
    * @param m The %omanip1 to insert.
    */
   friend std::ostream& operator<<( std::ostream &o, omanip1 const &m ) {
-    return (*m.f_)( o, m.a1_ );
+    if ( o.good() )
+      (*m.f_)( o, m.a1_ );
+    return o;
   }
 
 private:
@@ -124,7 +126,9 @@ public:
    * @param m The %omanip2 to insert.
    */
   friend std::ostream& operator<<( std::ostream &o, omanip2 const &m ) {
-    return (*m.f_)( o, m.a1_, m.a2_ );
+    if ( o.good() )
+      (*m.f_)( o, m.a1_, m.a2_ );
+    return o;
   }
 
 private:
@@ -190,7 +194,9 @@ public:
    * @param m The %omanip3 to insert.
    */
   friend std::ostream& operator<<( std::ostream &o, omanip3 const &m ) {
-    return (*m.f_)( o, m.a1_, m.a2_, m.a3_ );
+    if ( o.good() )
+      (*m.f_)( o, m.a1_, m.a2_, m.a3_ );
+    return o;
   }
 
 private:
@@ -261,7 +267,9 @@ public:
    * @param m The %omanip4 to insert.
    */
   friend std::ostream& operator<<( std::ostream &o, omanip4 const &m ) {
-    return (*m.f_)( o, m.a1_, m.a2_, m.a3_, m.a4_ );
+    if ( o.good() )
+      (*m.f_)( o, m.a1_, m.a2_, m.a3_, m.a4_ );
+    return o;
   }
 
 private:
