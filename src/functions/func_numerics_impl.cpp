@@ -788,8 +788,8 @@ DECL_ARITH(sctx, op, integer, INTEGER)
 
 void populateContext_Numerics(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL_ALL_ARITH (sctx, add);
   DECL_ALL_ARITH (sctx, subtract);
