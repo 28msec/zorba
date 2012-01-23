@@ -26,9 +26,39 @@ xquery version "3.0";
   : representations convert all data to strings.
   :
   : For a loss-less representation, Zorba implements that proposed by
-  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>;
-  : for a lossy representation, Zorba implements
+  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
+  : For example:
+  : <pre>
+  :   &lt;json type="object"&gt;
+  :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
+  :     &lt;pair name="lastName" type="string"&gt;Smith&lt;/pair&gt;
+  :     &lt;pair name="address" type="object"&gt;
+  :       &lt;pair name="streetAddress" type="string"&gt;21 2nd Street&lt;/pair&gt;
+  :       &lt;pair name="city" type="string"&gt;New York&lt;/pair&gt;
+  :       &lt;pair name="state" type="string"&gt;NY&lt;/pair&gt;
+  :       &lt;pair name="postalCode" type="number"&gt;10021&lt;/pair&gt;
+  :     &lt;/pair&gt;
+  :     &lt;pair name="phoneNumbers" type="array"&gt;
+  :       &lt;item type="string"&gt;212 732-1234&lt;/item&gt;
+  :       &lt;item type="string"&gt;646 123-4567&lt;/item&gt;
+  :     &lt;/pair&gt;
+  :   &lt;/json&gt;
+  : </pre>
+  : For a lossy representation, Zorba implements
   : <a href="http://jsonml.org/">JsonML</a> (the array form).
+  : For example:
+  : <pre>
+  :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
+  :     &lt;firstName&gt;Robert&lt;/firstName&gt;
+  :     &lt;lastName&gt;Smith&lt;/lastName&gt;
+  :     &lt;address type="home"&gt;
+  :       &lt;street&gt;12345 Sixth Ave&lt;/street&gt;
+  :       &lt;city&gt;Anytown&lt;/city&gt;
+  :       &lt;state&gt;CA&lt;/state&gt;
+  :       &lt;postalCode&gt;98765-4321&lt;/postalCode&gt;
+  :     &lt;/address&gt;
+  :   &lt;/person&gt;
+  : </pre>
   :)
 
 module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
@@ -38,7 +68,9 @@ import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 import schema namespace json-options =
   "http://www.zorba-xquery.com/modules/converters/json-options";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
@@ -52,13 +84,13 @@ declare option ver:module-version "2.0";
  : @return said XDM instance.
  : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
- : @error ZJPE0001 if $json contains an illegal JSON character.
- : @error ZJPE0002 if $json contains an illegal Unicode code-point.
- : @error ZJPE0003 if $json contains an illegal JSON character escape.
- : @error ZJPE0004 if $json contains an illegal JSON literal.
- : @error ZJPE0005 if $json contains an illegal JSON number.
- : @error ZJPE0007 if $json contains an unterminated string.
- : @error ZJPE0008 if $json contains an illegal QName.
+ : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
+ : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
+ : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
+ : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
+ : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
+ : @error zerr:ZJPE0007 if $json contains an unterminated string.
+ : @error zerr:ZJPE0008 if $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?,
@@ -78,13 +110,13 @@ declare function json:parse(
  :
  : @param $json The JSON data to parse.
  : @return said XDM instance.
- : @error ZJPE0001 if $json contains an illegal JSON character.
- : @error ZJPE0002 if $json contains an illegal Unicode code-point.
- : @error ZJPE0003 if $json contains an illegal JSON character escape.
- : @error ZJPE0004 if $json contains an illegal JSON literal.
- : @error ZJPE0005 if $json contains an illegal JSON number.
- : @error ZJPE0007 if $json contains an unterminated string.
- : @error ZJPE0008 if $json contains an illegal QName.
+ : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
+ : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
+ : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
+ : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
+ : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
+ : @error zerr:ZJPE0007 if $json contains an unterminated string.
+ : @error zerr:ZJPE0008 if $json contains an illegal QName.
  :)
 declare function json:parse(
   $json as xs:string?
@@ -109,15 +141,16 @@ declare function json:parse(
  : @return a JSON string.
  : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
- : @error ZJSE0001 if $xml is not a document or element node.
- : @error ZJSE0002 if $xml contains an element that is missing a required
+ : @error zerr:ZJSE0001 if $xml is not a document or element node.
+ : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
- : @error ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error ZJSE0004 if $xml contains an illegal element.
- : @error ZJSE0005 if $xml contains an illegal child element for a JSON type.
- : @error ZJSE0006 if $xml contains an illegal child element.
- : @error ZJSE0007 if $xml contains an illegal text node.
- : @error ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
+ : type.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child element.
+ : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*,
@@ -137,15 +170,16 @@ declare function json:serialize(
  :
  : @param $xml The XDM to serialize.
  : @return a JSON string.
- : @error ZJSE0001 if $xml is not a document or element node.
- : @error ZJSE0002 if $xml contains an element that is missing a required
+ : @error zerr:ZJSE0001 if $xml is not a document or element node.
+ : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
- : @error ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error ZJSE0004 if $xml contains an illegal element.
- : @error ZJSE0005 if $xml contains an illegal child element for a JSON type.
- : @error ZJSE0006 if $xml contains an illegal child element.
- : @error ZJSE0007 if $xml contains an illegal text node.
- : @error ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
+ : type.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child element.
+ : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  :)
 declare function json:serialize(
   $xml as item()*
@@ -167,7 +201,7 @@ declare %private function json:parse-internal(
   $options as item()?
 ) as element()* external;
 
-declare %private function json:serialize-internal(
+declare %ann:streamable %private function json:serialize-internal(
   $xml as item()*,
   $options as item()?
 ) as xs:string external;
