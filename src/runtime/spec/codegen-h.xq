@@ -293,6 +293,19 @@ declare function local:add-methods($function) as xs:string*
 
       else if (name($meth) eq 'zorba:propagatesInputNodes')
       then
+        if ($meth/@producer)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                     $gen:newline),'')
+        else if ($meth/@value)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return ', $meth/@value, '; }',
+                     $gen:newline),'')
+        else
         string-join(($gen:newline, $gen:indent,
                      'bool propagatesInputNodes(expr* fo, csize producer) const;',
                       $gen:newline),'')

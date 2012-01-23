@@ -20,17 +20,38 @@
     jsoniq:flatten function
   </zorba:description>
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true" generateCodegen="false">
     <zorba:signature localname="flatten" prefix="fn-jsoniq">
       <zorba:param>array()</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
   </zorba:function>
 
+  <zorba:function isDeterministic="true" generateCodegen="false">
+
+    <zorba:signature localname="flatten-internal" prefix="op-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:isMap producer="0"/>
+      <zorba:propagatesInputNodes value="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
   <zorba:state generateReset="false">
     <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
   </zorba:state>
     
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="propagateNonArrayItems" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="thePropagateNonArrayItems" />
+
 </zorba:iterator>
 
 <!--

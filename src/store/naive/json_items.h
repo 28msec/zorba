@@ -144,9 +144,7 @@ class SimpleJSONObject : public JSONObject
 protected:
   struct JSONObjectPairComparator
   {
-    bool operator() (
-      const store::Item* lhs,
-      const store::Item* rhs) const;
+    bool operator() (const store::Item* lhs, const store::Item* rhs) const;
   };
 
   typedef std::map<
@@ -247,7 +245,8 @@ protected:
 
     public:
       ValuesIterator(const SimpleJSONArray_t& aArray)
-        : theArray(aArray)
+        :
+        theArray(aArray)
       {
       }
 
@@ -256,6 +255,7 @@ protected:
       }
 
       virtual void open() { theIterator = theArray->theContent.begin(); }
+
       virtual bool next(store::Item_t& res)
       {
         if (theIterator == theArray->theContent.end())
@@ -268,7 +268,9 @@ protected:
           return true;
         }
       }
+
       virtual void reset() { open(); }
+
       virtual void close() { theIterator = theArray->theContent.end(); }
   };
 

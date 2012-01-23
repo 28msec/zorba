@@ -25,6 +25,30 @@
 namespace zorba
 {
 
+#ifdef ZORBA_WITH_JSON
+
+PlanIter_t fn_jsoniq_flatten::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONFlattenIterator(sctx, loc, argv, false);
+}
+
+
+PlanIter_t op_zorba_flatten_internal::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONFlattenIterator(sctx, loc, argv, true);
+}
+
+
 PlanIter_t fn_jsoniq_parse_json::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -44,6 +68,8 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
     return new JSONParseIterator(sctx, loc, argv, lArgLoc);
   }
 }
+
+#endif // ZORBA_WITH_JSON
 
 } /* namespace zorba */
 

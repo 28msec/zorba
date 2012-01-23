@@ -10196,9 +10196,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           flworExpr->add_clause(lc);
 
           // add the parameters to the eval's query string
-          if (i>1)
+          if (i > 1)
             query_params += ",";
-          if (i>0)
+          if (i > 0)
             query_params += "$" + var->get_name()->getStringValue();
         }
 
@@ -10890,9 +10890,25 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr_t lContent = pop_nodestack();
+  expr_t contentExpr = pop_nodestack();
 
-  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
+#ifdef ZORBA_WITH_JSON
+  TypeManager* tm = contentExpr->get_type_manager();
+
+  xqtref_t type = contentExpr->get_return_type();
+
+  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, tm);
+
+  if (!type->is_none() && !type->is_empty())
+  {
+    contentExpr = new fo_expr(theRootSctx,
+                              loc,
+                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
+                              contentExpr);
+  }
+#endif
+
+  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
 
   push_nodestack(foExpr);
 }
@@ -10988,19 +11004,17 @@ void* begin_visit(const DirAttributeList& v)
       break;
 
     attr_expr* attrExpr = expr.dyn_cast<attr_expr>().getp();
-    store::Item const *const attExprName = attrExpr->getQName();
+    const store::Item* attExprName = attrExpr->getQName();
 
-    for (unsigned long i = 0; i < numAttrs; i++)
+    for (unsigned long i = 0; i < numAttrs; ++i)
     {
-      store::Item const *const attName = attributes[i]->getQName();
+      const store::Item* attName = attributes[i]->getQName();
       if (attName->equals(attExprName))
-        throw XQUERY_EXCEPTION(
-          err::XQST0040, ERROR_PARAMS( attName->getStringValue() ), ERROR_LOC(loc)
-        );
+        RAISE_ERROR(err::XQST0040, loc, ERROR_PARAMS(attName->getStringValue()));
     }
 
     attributes.push_back(attrExpr);
-    numAttrs++;
+    ++numAttrs;
   }
 
   if (attributes.size() == 1)
@@ -11017,10 +11031,7 @@ void* begin_visit(const DirAttributeList& v)
       args.push_back((*it).getp());
     }
 
-    fo_expr* expr_list = new fo_expr(theRootSctx,
-                                     loc,
-                                     op_concatenate,
-                                     args);
+    fo_expr* expr_list = new fo_expr(theRootSctx, loc, op_concatenate, args);
 
     normalize_fo(expr_list);
 

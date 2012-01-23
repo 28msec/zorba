@@ -91,8 +91,6 @@ declare function local:process($doc,
             local:create-functions($iter, $function),
             $gen:newline,
 
-            local:propagate($function),
-
             if (exists($iter/@preprocessorGuard))
             then
               concat($gen:newline, "#endif", $gen:newline)

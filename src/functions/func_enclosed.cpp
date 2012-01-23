@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "runtime/core/constructors.h"
+#include "runtime/json/jsoniq_functions.h"
 
 #include "functions/function_impl.h"
 
@@ -23,6 +24,7 @@
 
 #include "system/globalenv.h"
 
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -59,7 +61,7 @@ public:
     return producer == 0;
   }
 
-  DEFAULT_UNARY_CODEGEN(EnclosedIterator);
+  CODEGEN_DECL();
 };
 
 
@@ -72,6 +74,44 @@ xqtref_t op_enclosed_expr::getReturnType(const fo_expr* caller) const
   else
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
+
+
+PlanIter_t op_enclosed_expr::codegen(
+    CompilerCB* /* cb */,
+    static_context* sctx,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+#ifdef ZORBA_WITH_JSON
+  fo_expr* enclosedExpr = static_cast<fo_expr*>(&ann);
+
+  expr* inputExpr = enclosedExpr->get_arg(0);
+
+  if (inputExpr->get_function_kind() == FunctionConsts::OP_ZORBA_FLATTEN_INTERNAL_1)
+  {
+    TypeManager* tm = inputExpr->get_type_manager();
+
+    expr* contentExpr = static_cast<fo_expr*>(inputExpr)->get_arg(0);
+    xqtref_t type = contentExpr->get_return_type();
+
+    type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, tm);
+
+    if (type->is_none() || type->is_empty())
+    {
+      assert(dynamic_cast<JSONFlattenIterator*>(argv[0].getp()) != NULL);
+      
+      PlanIter_t inputIter = 
+      static_cast<JSONFlattenIterator*>(argv[0].getp())->getChildren()[0];
+
+      return new EnclosedIterator(sctx, loc, inputIter);
+    }
+  }
+#endif
+
+  return new EnclosedIterator(sctx, loc, argv[0]);
+}
+
 
 
 void populateContext_Constructors(static_context* sctx)

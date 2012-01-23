@@ -31,15 +31,9 @@ namespace zorba{
 
 
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_flatten::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONFlattenIterator(sctx, loc, argv);
-}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -154,6 +148,22 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_FLATTEN_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_zorba_flatten_internal,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","flatten-internal"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_FLATTEN_INTERNAL_1);
 
   }
 

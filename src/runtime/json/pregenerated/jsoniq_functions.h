@@ -55,6 +55,8 @@ public:
 
 class JSONFlattenIterator : public NaryBaseIterator<JSONFlattenIterator, JSONFlattenIteratorState>
 { 
+protected:
+  bool thePropagateNonArrayItems; //
 public:
   SERIALIZABLE_CLASS(JSONFlattenIterator);
 
@@ -65,14 +67,18 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<JSONFlattenIterator, JSONFlattenIteratorState>*)this);
+
+    ar & thePropagateNonArrayItems;
   }
 
   JSONFlattenIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool propagateNonArrayItems)
     : 
-    NaryBaseIterator<JSONFlattenIterator, JSONFlattenIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONFlattenIterator, JSONFlattenIteratorState>(sctx, loc, children),
+    thePropagateNonArrayItems(propagateNonArrayItems)
   {}
 
   virtual ~JSONFlattenIterator();

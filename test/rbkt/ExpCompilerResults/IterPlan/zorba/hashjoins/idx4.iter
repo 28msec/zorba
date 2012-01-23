@@ -132,28 +132,30 @@ Iterator tree for main query:
                       <SingletonIterator value="xs:string(ns)"/>
                     </AttributeIterator>
                     <EnclosedIterator attr_cont="false">
-                      <FnConcatIterator>
-                        <ConcatStrIterator>
-                          <SingletonIterator value="xs:string(xmlns:)"/>
-                          <ForVarIterator varname="prefix"/>
-                          <SingletonIterator value="xs:string(=")"/>
-                        </ConcatStrIterator>
-                        <ElementIterator>
-                          <SingletonIterator value="xs:QName(,,span)"/>
-                          <AttributeIterator qname="xs:QName(,,class)">
-                            <SingletonIterator value="xs:string(nsUri)"/>
-                          </AttributeIterator>
-                          <EnclosedIterator attr_cont="false">
-                            <NamespaceUriForPrefixIterator>
-                              <ForVarIterator varname="prefix"/>
-                              <UnhoistIterator>
-                                <ForVarIterator varname="$$opt_temp_3"/>
-                              </UnhoistIterator>
-                            </NamespaceUriForPrefixIterator>
-                          </EnclosedIterator>
-                        </ElementIterator>
-                        <SingletonIterator value="xs:string(")"/>
-                      </FnConcatIterator>
+                      <JSONFlattenIterator>
+                        <FnConcatIterator>
+                          <ConcatStrIterator>
+                            <SingletonIterator value="xs:string(xmlns:)"/>
+                            <ForVarIterator varname="prefix"/>
+                            <SingletonIterator value="xs:string(=")"/>
+                          </ConcatStrIterator>
+                          <ElementIterator>
+                            <SingletonIterator value="xs:QName(,,span)"/>
+                            <AttributeIterator qname="xs:QName(,,class)">
+                              <SingletonIterator value="xs:string(nsUri)"/>
+                            </AttributeIterator>
+                            <EnclosedIterator attr_cont="false">
+                              <NamespaceUriForPrefixIterator>
+                                <ForVarIterator varname="prefix"/>
+                                <UnhoistIterator>
+                                  <ForVarIterator varname="$$opt_temp_3"/>
+                                </UnhoistIterator>
+                              </NamespaceUriForPrefixIterator>
+                            </EnclosedIterator>
+                          </ElementIterator>
+                          <SingletonIterator value="xs:string(")"/>
+                        </FnConcatIterator>
+                      </JSONFlattenIterator>
                     </EnclosedIterator>
                   </ElementIterator>
                 </FnConcatIterator>

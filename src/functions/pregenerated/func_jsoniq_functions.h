@@ -54,6 +54,28 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//op-zorba:flatten-internal
+class op_zorba_flatten_internal : public function
+{
+public:
+  op_zorba_flatten_internal(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool isMap(ulong producer) const { return producer == 0; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:parse-json
 class fn_jsoniq_parse_json : public function
 {

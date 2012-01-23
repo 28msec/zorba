@@ -46,51 +46,66 @@ void JSONFlattenIteratorState::reset(PlanState& planState)
   }
 }
 
+
 bool
 JSONFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lCurr;
+  store::Item_t item;
   bool lFoundArray = false;
 
   JSONFlattenIteratorState* state;
   DEFAULT_STACK_INIT(JSONFlattenIteratorState, state, planState);
 
-  consumeNext(lCurr, theChildren[0].getp(), planState);
-
-  state->theStack.push(lCurr->getMembers());
-  state->theStack.top()->open();
-
-  while (!state->theStack.empty())
+  while (consumeNext(item, theChildren[0].getp(), planState))
   {
-    while (state->theStack.top()->next(result))
+    if (!thePropagateNonArrayItems || item->isJSONArray())
     {
-      if (result->isJSONArray())
+      state->theStack.push(item->getMembers());
+      state->theStack.top()->open();
+
+      while (!state->theStack.empty())
       {
-        state->theStack.push(result->getMembers());
-        state->theStack.top()->open();
-        lFoundArray = true;
-        break;
+        while (state->theStack.top()->next(result))
+        {
+          if (result->isJSONArray())
+          {
+            state->theStack.push(result->getMembers());
+            state->theStack.top()->open();
+            lFoundArray = true;
+            break;
+          }
+
+          STACK_PUSH(true, state);
+        }
+
+        if (lFoundArray)
+        {
+          lFoundArray = false;
+          continue;
+        }
+
+        state->theStack.top()->close();
+        state->theStack.pop();
       }
-      STACK_PUSH( true, state );
     }
-
-    if (lFoundArray)
+    else
     {
-      lFoundArray = false;
-      continue;
+      result.transfer(item);
+      STACK_PUSH(true, state);
     }
 
-    state->theStack.top()->close();
-    state->theStack.pop();
+    if (!thePropagateNonArrayItems)
+      break;
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 JSONParseIterator::nextImpl(
