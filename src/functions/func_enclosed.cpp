@@ -76,7 +76,7 @@ xqtref_t op_enclosed_expr::getReturnType(const fo_expr* caller) const
 
 void populateContext_Constructors(static_context* sctx)
 {
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL(sctx, op_enclosed_expr,
        (createQName(zorba_op_ns, "", "enclosed-expr"),

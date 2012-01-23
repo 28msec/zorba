@@ -389,12 +389,18 @@ Item::getNamespaceBindings(NsBindings& aBindings,
 
       store::NsBindings lStoreBindings;
       m_item->getNamespaceBindings(lStoreBindings, aNsScoping);
+      aBindings.reserve(aBindings.size() + lStoreBindings.size());
+
       store::NsBindings::iterator ite = lStoreBindings.begin();
       store::NsBindings::iterator end = lStoreBindings.end();
       for (; ite != end; ++ite) {
         zstring& prefix = ite->first;
         zstring& nsuri = ite->second;
-        aBindings.push_back(std::pair<String, String>(prefix.str(), nsuri.str()));
+        aBindings.push_back(
+            std::pair<String, String>(
+              Unmarshaller::newString(prefix),
+              Unmarshaller::newString(nsuri))
+          );
       }
 
   ITEM_CATCH

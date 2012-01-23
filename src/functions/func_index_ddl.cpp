@@ -147,7 +147,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_general::codegen(
 
 void populate_context_index_ddl(static_context* sctx)
 {
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL(sctx, op_value_index_entry_builder,
        (createQName(zorba_op_ns, "", "value-index-entry-builder"),
