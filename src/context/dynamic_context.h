@@ -143,9 +143,9 @@ public:
 
   void set_environment_variables();
 
-  store::Item_t get_environment_variable(const zstring varname) const;
+  store::Item_t get_environment_variable(const zstring varname);
 
-  store::Iterator_t available_environment_variables() const;
+  store::Iterator_t available_environment_variables();
 
   void set_implicit_timezone(long tzone_seconds);
 

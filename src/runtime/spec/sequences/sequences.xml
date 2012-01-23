@@ -1144,4 +1144,58 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+  14.8.9 fn:available-environment-variables
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnAvailableEnvironmentVariablesIterator">
+  <zorba:description author="Zorba Team">
+    Summary: returns a list of environment variable names that are suitable for
+    passing to fn:environment-variable, as a (possible empty) sequence of
+    strings.
+
+    The function returns a sequence of strings, being the names of the environment
+    variables in the dynamic context in some implementation-defined order.
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="available-environment-variables" prefix="fn">
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="store::Iterator_t" name="theIterator"
+                  brief="the current iterator"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.8 fn:environment-variable
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnEnvironmentVariableIterator">
+  <zorba:description author="Zorba Team">
+    Summary: Returns the value of a system environment variable, if it exists.
+
+    If there is no environment variable with a matching name, the function returns
+    the empty sequence.
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="environment-variable" prefix="fn">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

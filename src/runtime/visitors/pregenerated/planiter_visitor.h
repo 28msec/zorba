@@ -36,10 +36,6 @@ namespace zorba{
 
     class FnUnparsedTextAvailableIterator;
 
-    class FnAvailableEnvironmentVariablesIterator;
-
-    class FnEnvironmentVariableIterator;
-
     class NodeNameIterator;
 
     class NilledIterator;
@@ -510,6 +506,10 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
+    class FnAvailableEnvironmentVariablesIterator;
+
+    class FnEnvironmentVariableIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
@@ -614,12 +614,6 @@ public:
 
     virtual void beginVisit ( const FnUnparsedTextAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnUnparsedTextAvailableIterator& ) = 0;
-
-    virtual void beginVisit ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
-    virtual void endVisit   ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
-
-    virtual void beginVisit ( const FnEnvironmentVariableIterator& ) = 0;
-    virtual void endVisit   ( const FnEnvironmentVariableIterator& ) = 0;
 
     virtual void beginVisit ( const NodeNameIterator& ) = 0;
     virtual void endVisit   ( const NodeNameIterator& ) = 0;
@@ -1324,6 +1318,12 @@ public:
 
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+    virtual void endVisit   ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+
+    virtual void beginVisit ( const FnEnvironmentVariableIterator& ) = 0;
+    virtual void endVisit   ( const FnEnvironmentVariableIterator& ) = 0;
 
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;

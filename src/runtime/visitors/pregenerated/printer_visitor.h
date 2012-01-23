@@ -56,12 +56,6 @@ namespace zorba {
     void beginVisit( const FnUnparsedTextAvailableIterator& );
     void endVisit  ( const FnUnparsedTextAvailableIterator& );
 
-    void beginVisit( const FnAvailableEnvironmentVariablesIterator& );
-    void endVisit  ( const FnAvailableEnvironmentVariablesIterator& );
-
-    void beginVisit( const FnEnvironmentVariableIterator& );
-    void endVisit  ( const FnEnvironmentVariableIterator& );
-
     void beginVisit( const NodeNameIterator& );
     void endVisit  ( const NodeNameIterator& );
 
@@ -767,6 +761,12 @@ namespace zorba {
 
     void beginVisit( const FnDocAvailableIterator& );
     void endVisit  ( const FnDocAvailableIterator& );
+
+    void beginVisit( const FnAvailableEnvironmentVariablesIterator& );
+    void endVisit  ( const FnAvailableEnvironmentVariablesIterator& );
+
+    void beginVisit( const FnEnvironmentVariableIterator& );
+    void endVisit  ( const FnEnvironmentVariableIterator& );
 
     void beginVisit( const PutDocumentIterator& );
     void endVisit  ( const PutDocumentIterator& );

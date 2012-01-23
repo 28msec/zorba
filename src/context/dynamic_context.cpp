@@ -138,7 +138,6 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
-    set_environment_variables();
   }
   else
   {
@@ -276,7 +275,7 @@ void dynamic_context::set_environment_variables()
   if(!theEnvironmentVariables)
     theEnvironmentVariables = new EnvVarMap();
 
-  #if defined (WIN32)
+#if defined (WIN32)
     LPTCH envVarsCH = GetEnvironmentStrings();
     LPTSTR envVarsSTR = (LPTSTR) envVarsCH;
 
@@ -294,7 +293,6 @@ void dynamic_context::set_environment_variables()
                            NULL,
                            NULL);
       zstring envVarZS(envVar);
-
       int eqPos = envVarZS.find_first_of("=");
 
       if(eqPos > 0)
@@ -312,11 +310,11 @@ void dynamic_context::set_environment_variables()
     }
     
     FreeEnvironmentStrings(envVarsCH);
-    #else    
+#else    
     for(char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
-      
+
       int size = envVarZS.size();
             
       int eqPos = envVarZS.find_first_of("=");
@@ -331,14 +329,19 @@ void dynamic_context::set_environment_variables()
       }                                                                   
     }
      
-    #endif
+#endif
     
 }
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t dynamic_context::available_environment_variables() const
+store::Iterator_t dynamic_context::available_environment_variables()
 {
+  if(!theEnvironmentVariables)
+  {
+    set_environment_variables();
+  }
+
   EnvVarMap::iterator lIte = theEnvironmentVariables->begin();
   EnvVarMap::iterator lEnd = theEnvironmentVariables->end();
 
@@ -363,8 +366,14 @@ store::Iterator_t dynamic_context::available_environment_variables() const
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t dynamic_context::get_environment_variable(const zstring varname) const
+store::Item_t dynamic_context::get_environment_variable(const zstring varname)
 {
+
+  if(!theEnvironmentVariables)
+  {
+    set_environment_variables();
+  }
+
   EnvVarMap::iterator lIter = theEnvironmentVariables->find(varname);
 
   if(lIter == theEnvironmentVariables->end())

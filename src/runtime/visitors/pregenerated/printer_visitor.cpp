@@ -152,34 +152,6 @@ void PrinterVisitor::endVisit ( const FnUnparsedTextAvailableIterator& ) {
 // </FnUnparsedTextAvailableIterator>
 
 
-// <FnAvailableEnvironmentVariablesIterator>
-void PrinterVisitor::beginVisit ( const FnAvailableEnvironmentVariablesIterator& a) {
-  thePrinter.startBeginVisit("FnAvailableEnvironmentVariablesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnAvailableEnvironmentVariablesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnAvailableEnvironmentVariablesIterator>
-
-
-// <FnEnvironmentVariableIterator>
-void PrinterVisitor::beginVisit ( const FnEnvironmentVariableIterator& a) {
-  thePrinter.startBeginVisit("FnEnvironmentVariableIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnEnvironmentVariableIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnEnvironmentVariableIterator>
-
-
 // <NodeNameIterator>
 void PrinterVisitor::beginVisit ( const NodeNameIterator& a) {
   thePrinter.startBeginVisit("NodeNameIterator", ++theId);
@@ -3456,6 +3428,34 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnDocAvailableIterator>
+
+
+// <FnAvailableEnvironmentVariablesIterator>
+void PrinterVisitor::beginVisit ( const FnAvailableEnvironmentVariablesIterator& a) {
+  thePrinter.startBeginVisit("FnAvailableEnvironmentVariablesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnAvailableEnvironmentVariablesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnAvailableEnvironmentVariablesIterator>
+
+
+// <FnEnvironmentVariableIterator>
+void PrinterVisitor::beginVisit ( const FnEnvironmentVariableIterator& a) {
+  thePrinter.startBeginVisit("FnEnvironmentVariableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnEnvironmentVariableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnEnvironmentVariableIterator>
 
 
 // <PutDocumentIterator>
