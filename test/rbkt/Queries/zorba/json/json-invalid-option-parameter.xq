@@ -7,4 +7,4 @@ let $options :=
     <json-format value="array"/>
   </options>
 
-json:parse('{}',$options)
+return json:parse('{}',$options)
