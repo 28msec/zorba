@@ -59,8 +59,10 @@ xquery version "3.0";
   :     &lt;/address&gt;
   :   &lt;/person&gt;
   : </pre>
+  :
+  : @author Paul J. Lucas
+  : @project data processing/data converters
   :)
-
 module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
@@ -89,8 +91,10 @@ declare option ver:module-version "2.0";
  : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
  : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
  : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
+ : @error zerr:ZJPE0006 if $json is not a valid JSON string.
  : @error zerr:ZJPE0007 if $json contains an unterminated string.
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
  :)
 declare function json:parse(
   $json as xs:string?,
@@ -115,8 +119,10 @@ declare function json:parse(
  : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
  : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
  : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
+ : @error zerr:ZJPE0006 if $json is not a valid JSON string.
  : @error zerr:ZJPE0007 if $json contains an unterminated string.
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
+ : @example test/rbkt/Queries/zorba/json/json-snelson-parse-array-01.xq
  :)
 declare function json:parse(
   $json as xs:string?
@@ -151,6 +157,7 @@ declare function json:parse(
  : @error zerr:ZJSE0006 if $xml contains an illegal child element.
  : @error zerr:ZJSE0007 if $xml contains an illegal text node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
 declare function json:serialize(
   $xml as item()*,
@@ -180,6 +187,7 @@ declare function json:serialize(
  : @error zerr:ZJSE0006 if $xml contains an illegal child element.
  : @error zerr:ZJSE0007 if $xml contains an illegal text node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)
 declare function json:serialize(
   $xml as item()*
