@@ -63,8 +63,8 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-  ulong n = (ulong)theHashSet.theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  csize n = theHashSet.theHashTab.size();
+  for (csize i = 0; i < n; ++i)
   {
     if (!theHashSet.theHashTab[i].isFree())
     {
