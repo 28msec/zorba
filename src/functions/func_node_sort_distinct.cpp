@@ -666,7 +666,7 @@ public:
 ********************************************************************************/
 void populateContext_DocOrder(static_context* sctx) 
 {
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL(sctx, op_either_nodes_or_atomics,
        (createQName(zorba_op_ns,"","either-nodes-or-atomics"),

@@ -249,7 +249,6 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 /***************************************************************************//**
   Target namespaces of zorba builtin modules
 ********************************************************************************/
-#define NS_PRE static_context::ZORBA_NS_PREFIX
 
 const zstring
 static_context::DOT_VAR_NAME = "$$dot";
@@ -260,134 +259,157 @@ static_context::DOT_POS_VAR_NAME = "$$pos";
 const zstring
 static_context::DOT_SIZE_VAR_NAME = "$$last-idx";
 
-const zstring
+const char*
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
 
-const zstring
+const char*
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
 
-const zstring
-static_context::W3C_FN_NS = W3C_NS_PREFIX + "2005/xpath-functions";
+const char*
+static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
-const zstring
-static_context::W3C_XML_NS = W3C_NS_PREFIX + "XML/1998/namespace";
+const char*
+static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
-const zstring
-static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
+const char*
+static_context::ZORBA_MATH_FN_NS = 
+"http://www.zorba-xquery.com/modules/math";
 
-const zstring
-static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/converters/base64";
+const char*
+static_context::ZORBA_BASE64_FN_NS = 
+"http://www.zorba-xquery.com/modules/converters/base64";
 
-const zstring
-static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
+const char*
+static_context::ZORBA_NODEREF_FN_NS = 
+"http://www.zorba-xquery.com/modules/node-reference";
 
-const zstring
-static_context::ZORBA_NODEPOS_FN_NS = NS_PRE + "modules/node-position";
+const char*
+static_context::ZORBA_NODEPOS_FN_NS = 
+"http://www.zorba-xquery.com/modules/node-position";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
-  = NS_PRE + "modules/store/dynamic/collections/ddl";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS
-  = NS_PRE + "modules/store/dynamic/collections/dml";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS
-  = NS_PRE + "modules/store/static/collections/ddl";
+const char*
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS
-  = NS_PRE + "modules/store/static/collections/dml";
+const char*
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS
-  = NS_PRE + "modules/store/static/indexes/ddl";
+const char*
+static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS
-  = NS_PRE + "modules/store/static/indexes/dml";
+const char*
+static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS
-  = NS_PRE + "modules/store/static/integrity_constraints/ddl";
+const char*
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS
-  = NS_PRE + "modules/store/static/integrity_constraints/dml";
+const char*
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/data-structures/unordered-map";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-const zstring
-static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
+const char*
+static_context::ZORBA_SCHEMA_FN_NS = 
+"http://www.zorba-xquery.com/modules/schema";
 
-const zstring
-static_context::ZORBA_XQDOC_FN_NS = ZORBA_NS_PREFIX + "modules/xqdoc";
+const char*
+static_context::ZORBA_XQDOC_FN_NS = 
+"http://www.zorba-xquery.com/modules/xqdoc";
 
-const zstring
-static_context::ZORBA_RANDOM_FN_NS = ZORBA_NS_PREFIX + "modules/random";
+const char*
+static_context::ZORBA_RANDOM_FN_NS = 
+"http://www.zorba-xquery.com/modules/random";
 
-const zstring
-static_context::ZORBA_INTROSP_SCTX_FN_NS = NS_PRE + "modules/introspection/sctx";
+const char*
+static_context::ZORBA_INTROSP_SCTX_FN_NS = 
+"http://www.zorba-xquery.com/modules/introspection/sctx";
 
-const zstring
-static_context::ZORBA_REFLECTION_FN_NS = NS_PRE + "modules/reflection";
+const char*
+static_context::ZORBA_REFLECTION_FN_NS = 
+"http://www.zorba-xquery.com/modules/reflection";
 
-const zstring
-static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
+const char*
+static_context::ZORBA_UTIL_FN_NS = 
+"http://www.zorba-xquery.com/zorba/util-functions";
 
-const zstring
-static_context::ZORBA_SCRIPTING_FN_NS = NS_PRE + "zorba/scripting";
+const char*
+static_context::ZORBA_SCRIPTING_FN_NS = 
+"http://www.zorba-xquery.com/zorba/scripting";
 
-const zstring
-static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
+const char*
+static_context::ZORBA_STRING_FN_NS = 
+"http://www.zorba-xquery.com/modules/string";
 
-const zstring
-static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
+const char*
+static_context::ZORBA_FETCH_FN_NS = 
+"http://www.zorba-xquery.com/modules/fetch";
 
-const zstring
-static_context::ZORBA_NODE_FN_NS = NS_PRE + "modules/node";
+const char*
+static_context::ZORBA_NODE_FN_NS = 
+"http://www.zorba-xquery.com/modules/node";
 
-const zstring
-static_context::ZORBA_XML_FN_NS = NS_PRE + "modules/xml";
+const char*
+static_context::ZORBA_XML_FN_NS = 
+"http://www.zorba-xquery.com/modules/xml";
 
 #ifndef ZORBA_NO_FULL_TEXT
-const zstring
-static_context::ZORBA_FULL_TEXT_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/full-text";
+const char*
+static_context::ZORBA_FULL_TEXT_FN_NS =
+"http://www.zorba-xquery.com/modules/full-text";
 #endif /* ZORBA_NO_FULL_TEXT */
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
-const zstring
-static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
+const char*
+static_context::XQUERY_OP_NS = 
+"http://www.zorba-xquery.com/internal/xquery-ops";
 
-const zstring
-static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
+const char*
+static_context::ZORBA_OP_NS = 
+"http://www.zorba-xquery.com/internal/zorba-ops";
 
 /***************************************************************************//**
   Options-related namespaces
 ********************************************************************************/
-const zstring 
-static_context::ZORBA_OPTIONS_NS = ZORBA_NS_PREFIX + "options";
+const char* 
+static_context::ZORBA_OPTIONS_NS = 
+"http://www.zorba-xquery.com/options";
 
-const zstring 
-static_context::ZORBA_OPTION_WARN_NS = static_context::ZORBA_OPTIONS_NS + "/warnings";
+const char* 
+static_context::ZORBA_OPTION_WARN_NS = 
+"http://www.zorba-xquery.com/options/warnings";
 
-const zstring 
-static_context::ZORBA_OPTION_FEATURE_NS = static_context::ZORBA_OPTIONS_NS + "/features";
+const char* 
+static_context::ZORBA_OPTION_FEATURE_NS = 
+"http://www.zorba-xquery.com/options/features";
 
-const zstring 
-static_context::ZORBA_OPTION_OPTIM_NS = static_context::ZORBA_OPTIONS_NS + "/optimizer";
+const char* 
+static_context::ZORBA_OPTION_OPTIM_NS = 
+"http://www.zorba-xquery.com/options/optimizer";
 
-const zstring 
-static_context::ZORBA_VERSIONING_NS = static_context::ZORBA_OPTIONS_NS + "/versioning";
+const char* 
+static_context::ZORBA_VERSIONING_NS = 
+"http://www.zorba-xquery.com/options/versioning";
 
 
 /***************************************************************************//**
@@ -396,7 +418,7 @@ static_context::ZORBA_VERSIONING_NS = static_context::ZORBA_OPTIONS_NS + "/versi
 ********************************************************************************/
 bool static_context::is_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
@@ -441,7 +463,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_builtin_virtual_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
@@ -462,7 +484,7 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
@@ -479,7 +501,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_reserved_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_OP_NS || ns == XQUERY_OP_NS);
   }
@@ -3241,14 +3263,14 @@ void static_context::bind_option(
       {
         // Re-use "ModuleVersion" class since it does 98% of the work for us;
         // just use a fake URI
-        ModuleVersion lOptVersion(ZORBA_VERSIONING_NS + "/corezorba", value);
+        ModuleVersion lOptVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba", value);
         if (! lOptVersion.is_valid_version()) 
         {
           RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
           ERROR_PARAMS(value));
         }
 
-        ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS + "/corezorba",
+        ModuleVersion lZorbaVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba",
                                     ZORBA_VERSION);
 
         if ( ! lZorbaVersion.satisfies(lOptVersion)) 
