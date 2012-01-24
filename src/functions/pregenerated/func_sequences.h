@@ -622,6 +622,36 @@ public:
 };
 
 
+//fn:available-environment-variables
+class fn_available_environment_variables : public function
+{
+public:
+  fn_available_environment_variables(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:environment-variable
+class fn_environment_variable : public function
+{
+public:
+  fn_environment_variable(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

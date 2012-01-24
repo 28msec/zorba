@@ -30,8 +30,6 @@
 #include "zorbatypes/zstring.h"
 
 namespace zorba{
-    class FnURICollectionIterator;
-
     class FnUnparsedTextIterator;
 
     class FnUnparsedTextAvailableIterator;
@@ -123,6 +121,8 @@ namespace zorba{
     class IsDeclaredICIterator;
 
     class DeclaredICsIterator;
+
+    class FnURICollectionIterator;
 
     class CurrentDateTimeIterator;
 
@@ -606,9 +606,6 @@ public:
   virtual ~PlanIterVisitor() {}
 
 #include "runtime/visitors/planiter_visitor_impl_code.h"
-    virtual void beginVisit ( const FnURICollectionIterator& ) = 0;
-    virtual void endVisit   ( const FnURICollectionIterator& ) = 0;
-
     virtual void beginVisit ( const FnUnparsedTextIterator& ) = 0;
     virtual void endVisit   ( const FnUnparsedTextIterator& ) = 0;
 
@@ -746,6 +743,9 @@ public:
 
     virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
     virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
+
+    virtual void beginVisit ( const FnURICollectionIterator& ) = 0;
+    virtual void endVisit   ( const FnURICollectionIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;

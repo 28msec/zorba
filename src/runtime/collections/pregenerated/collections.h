@@ -1423,6 +1423,57 @@ public:
 };
 
 
+/**
+ * 
+ *      Returns a sequence of xs:anyURI values representing the document URIs of the 
+ *      documents in a collection.
+ *    
+ * Author: Zorba Team
+ */
+class FnURICollectionIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //the current iterator
+  bool theIteratorOpened; //flag indicating whether theIterator was opened
+
+  FnURICollectionIteratorState();
+
+  ~FnURICollectionIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnURICollectionIterator : public NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnURICollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnURICollectionIterator,
+    NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>*)this);
+  }
+
+  FnURICollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnURICollectionIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

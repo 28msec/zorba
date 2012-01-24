@@ -31,16 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_uri_collection::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnURICollectionIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_unparsed_text::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -61,51 +51,8 @@ PlanIter_t fn_unparsed_text_available::codegen(
   return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_available_environment_variables::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnAvailableEnvironmentVariablesIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_environment_variable::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnEnvironmentVariableIterator(sctx, loc, argv);
-}
-
 void populate_context_access(static_context* sctx)
 {
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_uri_collection,
-        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
-        FunctionConsts::FN_URI_COLLECTION_0);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_uri_collection,
-        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
-        FunctionConsts::FN_URI_COLLECTION_1);
-
-  }
-
-
   {
     
 
@@ -152,29 +99,6 @@ void populate_context_access(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
         FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_2);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_available_environment_variables,
-        (createQName("http://www.w3.org/2005/xpath-functions","","available-environment-variables"), 
-        GENV_TYPESYSTEM.STRING_TYPE_STAR),
-        FunctionConsts::FN_AVAILABLE_ENVIRONMENT_VARIABLES_0);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_environment_variable,
-        (createQName("http://www.w3.org/2005/xpath-functions","","environment-variable"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
-        FunctionConsts::FN_ENVIRONMENT_VARIABLE_1);
 
   }
 

@@ -32,36 +32,6 @@
 
 namespace zorba {
 
-// <FnURICollectionIterator>
-const char* FnURICollectionIterator::class_name_str = "FnURICollectionIterator";
-FnURICollectionIterator::class_factory<FnURICollectionIterator>
-FnURICollectionIterator::g_class_factory;
-
-const serialization::ClassVersion 
-FnURICollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnURICollectionIterator::class_versions_count =
-sizeof(FnURICollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void FnURICollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnURICollectionIterator::~FnURICollectionIterator() {}
-
-FnURICollectionIteratorState::FnURICollectionIteratorState() {}
-
-// </FnURICollectionIterator>
-
-
 // <FnUnparsedTextIterator>
 const char* FnUnparsedTextIterator::class_name_str = "FnUnparsedTextIterator";
 FnUnparsedTextIterator::class_factory<FnUnparsedTextIterator>

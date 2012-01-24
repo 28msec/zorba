@@ -645,6 +645,21 @@ public:
 };
 
 
+//fn:uri-collection
+class fn_uri_collection : public function
+{
+public:
+  fn_uri_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

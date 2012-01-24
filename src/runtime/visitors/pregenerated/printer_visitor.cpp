@@ -110,20 +110,6 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
 }
 
 
-// <FnURICollectionIterator>
-void PrinterVisitor::beginVisit ( const FnURICollectionIterator& a) {
-  thePrinter.startBeginVisit("FnURICollectionIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnURICollectionIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnURICollectionIterator>
-
-
 // <FnUnparsedTextIterator>
 void PrinterVisitor::beginVisit ( const FnUnparsedTextIterator& a) {
   thePrinter.startBeginVisit("FnUnparsedTextIterator", ++theId);
@@ -766,6 +752,20 @@ void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DeclaredICsIterator>
+
+
+// <FnURICollectionIterator>
+void PrinterVisitor::beginVisit ( const FnURICollectionIterator& a) {
+  thePrinter.startBeginVisit("FnURICollectionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnURICollectionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnURICollectionIterator>
 
 
 // <CurrentDateTimeIterator>
