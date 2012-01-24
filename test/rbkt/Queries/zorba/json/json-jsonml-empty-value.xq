@@ -7,4 +7,4 @@ let $options :=
     <json-format value="JsonML-array"/>
   </options>
 
-json:parse(<a/>,$options)
+return json:parse(<a/>,$options)
