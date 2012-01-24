@@ -90,6 +90,8 @@ void QNamePool::remove(QNameItem* qn)
       hasNormalizingBackPointers(qn))
     return;
 
+  unregisterNormalizingBackPointer(qn->getNormalized(), qn);
+
   if (qn->isInCache())
   {
     qn->theNextFree = (uint16_t)theFirstFree;
@@ -106,8 +108,6 @@ void QNamePool::remove(QNameItem* qn)
     theHashSet.eraseNoSync(qn);
     delete qn;
   }
-  
-  unregisterNormalizingBackPointer(qn->getNormalized(), qn);
 }
 
 store::Item_t QNamePool::insert(const char* ns,
