@@ -864,17 +864,17 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
   TypeManager* tm = node->get_type_manager();
 
-  flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
-
-  if (flwor == NULL)
+  if (node->get_expr_kind() != flwor_expr_kind &&
+      node->get_expr_kind() != gflwor_expr_kind)
+  {
     return NULL;
+  }
 
   bool modified = false;
+  flwor_expr* flwor = static_cast<flwor_expr*>(node);
 
-  expr* whereExpr = NULL;
-  if(!flwor->is_general())
-    whereExpr = flwor->get_where();
-
+  // "for $x in ... return if (ce) then te else ()" -->
+  // "for $x in ... where ce return te"
   if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
   {
     if_expr* ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
@@ -883,71 +883,60 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     expr_t thenExpr = ifReturnExpr->get_then_expr();
     expr* elseExpr = ifReturnExpr->get_else_expr();
 
-    expr_t newWhereExpr = condExpr;
-
-    if(!flwor->is_general())
-    {
-
-      if(whereExpr->get_expr_kind() == fo_expr_kind &&
-          static_cast<fo_expr*>(whereExpr)->get_func() ==
-              GET_BUILTIN_FUNCTION(OP_AND_N))
-      {
-        if(condExpr->get_expr_kind() == fo_expr_kind &&
-            static_cast<fo_expr*>(condExpr.getp())->get_func() ==
-                GET_BUILTIN_FUNCTION(OP_AND_N))
-        {
-          newWhereExpr = whereExpr;
-          static_cast<fo_expr*>(newWhereExpr.getp())->add_args(
-              static_cast<fo_expr*>(condExpr.getp())->get_args());
-        }
-        else
-        {
-          newWhereExpr = whereExpr;
-          static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(condExpr);
-        }
-      }
-      else if(condExpr->get_expr_kind() == fo_expr_kind &&
-          static_cast<fo_expr*>(condExpr.getp())->get_func() ==
-              GET_BUILTIN_FUNCTION(OP_AND_N))
-      {
-        newWhereExpr = condExpr;
-        static_cast<fo_expr*>(newWhereExpr.getp())->add_arg(whereExpr);
-      }
-      else
-      {
-
-        newWhereExpr = new fo_expr(whereExpr->get_sctx(),
-                                whereExpr->get_loc(),
-                                GET_BUILTIN_FUNCTION(OP_AND_N),
-                                condExpr,
-                                whereExpr);
-
-      }
-
-    }
-
-
-    // "for $x in ... return if (ce) then te else ()" -->
-    // "for $x in ... where ce return te"
     if (!condExpr->is_sequential() &&
         (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
         !elseExpr->isNonDiscardable() &&
         TypeOps::is_empty(tm, *elseExpr->get_return_type()))
     {
-
-      if(flwor->is_general())
+      if (flwor->is_general())
       {
         flwor->add_where(condExpr);
       }
       else
       {
-        flwor->set_where(newWhereExpr);
+        expr* whereExpr = flwor->get_where();
+
+        if (whereExpr == NULL)
+        {
+          flwor->set_where(condExpr);
+          whereExpr = condExpr.getp();
+        }
+        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
+
+          if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+          {
+            fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr.getp());
+            foWhereExpr->add_args(foCondExpr->get_args());
+          }
+          else
+          {
+            foWhereExpr->add_arg(condExpr);
+          }
+        }
+        else if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr.getp());
+          foCondExpr->add_arg(whereExpr);
+          whereExpr = condExpr;
+          flwor->set_where(whereExpr);
+        }
+        else
+        {
+          expr_t newWhereExpr = new fo_expr(whereExpr->get_sctx(),
+                                            whereExpr->get_loc(),
+                                            GET_BUILTIN_FUNCTION(OP_AND_N),
+                                            whereExpr,
+                                            condExpr);
+          whereExpr = newWhereExpr.getp();
+          flwor->set_where(whereExpr);
+        }
       }
 
       flwor->set_return_expr(thenExpr);
       modified = true;
     }
-
   }
 
   expr_t posExpr;
@@ -963,28 +952,17 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
   // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
   // case of >= and <= the -1 and +1 are removed for the previous examples.
-  ulong num_clauses = flwor->is_general()? flwor->num_clauses() : 1;
-  for (ulong clause_pos = 0;
-      clause_pos < num_clauses;
-      ++clause_pos)
+  csize numClauses = flwor->num_clauses();
+  for (csize whereClausePos = 0; whereClausePos < numClauses; ++whereClausePos)
   {
+    flwor_clause* clause = flwor->get_clause(whereClausePos);
 
-    if(flwor->is_general())
-    {
+    if (clause->get_kind() != flwor_clause::where_clause)
+      continue;
 
-      flwor_clause* clause = flwor->get_clause(clause_pos);
+    expr* whereExpr = clause->get_expr();
 
-      if(clause->get_kind() == flwor_clause::where_clause)
-      {
-          whereExpr = clause->get_expr();
-      }
-
-    }
-    //no need to do anything for the simple_flwor case
-    //the variable already has been defined near the beginning of the function.
-
-    if (whereExpr != NULL &&
-        ! flwor->has_sequential_clauses() &&
+    if (! flwor->has_sequential_clauses() &&
         is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
         expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
     {
@@ -1004,24 +982,16 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       clause->set_expr(&*result);
       clause->set_pos_var(NULL);
 
-      if(flwor->is_general())
-      {
-        flwor->remove_clause(clause_pos);
-        clause_pos--; //the loop will push it back to this position
-                     //which is now taken by the next clause
-      }
-      else
-      {
-        flwor->remove_where_clause();
-      }
+      flwor->remove_clause(whereClausePos);
+      --whereClausePos;
+      --numClauses;
 
       modified = true;
     }
 
-  //This is necesary to prevent the whole thing being ran multiple times
-  //in the case of the general flwor.
-  whereExpr = NULL;
-
+    //This is necesary to prevent the whole thing being ran multiple times
+    //in the case of the general flwor.
+    whereExpr = NULL;
   }
 
   return (modified ? flwor : NULL);
