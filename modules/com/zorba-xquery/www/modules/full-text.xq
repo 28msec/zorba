@@ -34,9 +34,9 @@ declare function ft:host-lang()
 (:~
  : Checks whether the given word is a stop-word.
  :
- : @param word The word to check.  The word's language is assumed to be the
+ : @param $word The word to check.  The word's language is assumed to be the
  : host machine's current language.
- : @return \c true only if the \a word is a stop-word.
+ : @return <code>true</code> only if the <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string )
   as xs:boolean external;
@@ -44,9 +44,9 @@ declare function ft:is-stop-word( $word as xs:string )
 (:~
  : Checks whether the given word is a stop-word.
  :
- : @param word The word to check.
- : @param lang The language of \a word.
- : @return \c true only if the \a word is a stop-word.
+ : @param $word The word to check.
+ : @param $lang The language of <code>$word</code>.
+ : @return <code>true</code> only if the <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
@@ -54,9 +54,9 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
 (:~
  : Stems the given word.
  :
- : @param word The word to stem.  The word's language is assumed to be the
+ : @param $word The word to stem.  The word's language is assumed to be the
  : host machine's current language.
- : @return the stem of \a word.
+ : @return the stem of <code>$word</code>.
  :)
 declare function ft:stem( $word as xs:string )
   as xs:string external;
@@ -64,9 +64,9 @@ declare function ft:stem( $word as xs:string )
 (:~
  : Stems the given word.
  :
- : @param word The word to stem.
- : @param lang The language of \a word.
- : @return the stem of \a word.
+ : @param $word The word to stem.
+ : @param $lang The language of <code>$word</code>.
+ : @return the stem of <code>$word</code>.
  :)
 declare function ft:stem( $word as xs:string, $lang as xs:language )
   as xs:string external;
@@ -74,8 +74,8 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
 (:~
  : Strips all diacritical marks from all characters.
  :
- : @param string The string to strip diacritical marks from.
- : @return \a string with diacritical marks stripped.
+ : @param $string The string to strip diacritical marks from.
+ : @return <code>$string</code> with diacritical marks stripped.
  :)
 declare function ft:strip-diacritics( $string as xs:string )
   as xs:string external;
@@ -83,8 +83,8 @@ declare function ft:strip-diacritics( $string as xs:string )
 (:~
  : Looks-up the given phrase in the default thesaurus.
  :
- : @param phrase The phrase to look up.  The phrase's language is assumed to be
- : in the host machine's current language.
+ : @param $phrase The phrase to look up.  The phrase's language is assumed to
+ : be in the host machine's current language.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
@@ -93,9 +93,9 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
 (:~
  : Looks-up the given phrase in a thesaurus.
  :
- : @param uri The URI specifying the thesaurus to use.
- : @param phrase The phrase to look up.  The phrase's language is assumed to be
- : in the host machine's current language.
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $phrase The phrase to look up.  The phrase's language is assumed to
+ : be in the host machine's current language.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
@@ -104,9 +104,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
 (:~
  : Looks-up the given phrase in a thesaurus.
  :
- : @param uri The URI specifying the thesaurus to use.
- : @param phrase The phrase to look up.
- : @param lang The language of \a phrase.
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $phrase The phrase to look up.
+ : @param $lang The language of <code>$phrase</code>.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
@@ -116,10 +116,11 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
 (:~
  : Looks-up the given phrase in a thesaurus.
  :
- : @param uri The URI specifying the thesaurus to use.
- : @param phrase The phrase to look up.
- : @param lang The language of \a phrase.
- : @param relationship The relationship the results are to have to \a phrase.
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $phrase The phrase to look up.
+ : @param $lang The language of <code>$phrase</code>.
+ : @param $relationship The relationship the results are to have to
+ : <code>$phrase</code>.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
@@ -130,13 +131,14 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
 (:~
  : Looks-up the given phrase in a thesaurus.
  :
- : @param uri The URI specifying the thesaurus to use.
- : @param phrase The phrase to look up.
- : @param lang The language of \a phrase.
- : @param relationship The relationship the results are to have to \a phrase.
- : @param level-least The minimum number of levels within the thesaurus to be
- : traversed.
- : @param level-most The maximum number of levels within the thesaurus to be
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $phrase The phrase to look up.
+ : @param $lang The language of <code>$phrase</code>.
+ : @param $relationship The relationship the results are to have to
+ : <code>$phrase</code>.
+ : @param $level-least The minimum number of levels within the thesaurus to be
+ : travers$ed.
+ : @param $level-most The maximum number of levels within the thesaurus to be
  : traversed.
  : @return the related phrases.
  :)
@@ -150,8 +152,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
 (:~
  : Tokenizes the given document.
  :
- : @param doc The XML document to tokenize.  The document's default language is
- : assumed to be the host machine's current language.
+ : @param $doc The XML document to tokenize.  The document's default language
+ : is assumed to be the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize( $doc as node() )
@@ -160,8 +162,8 @@ declare function ft:tokenize( $doc as node() )
 (:~
  : Tokenizes the given document.
  :
- : @param doc The document to tokenize.
- : @param lang The default language of \a doc.
+ : @param $doc The document to tokenize.
+ : @param $lang The default language of <code>$doc</code>.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize( $doc as node(), $lang as xs:language )
@@ -170,7 +172,7 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
 (:~
  : Tokenizes the given string.
  :
- : @param string The string to tokenize.  The string's default language is
+ : @param $string The string to tokenize.  The string's default language is
  : assumed to be the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
@@ -183,8 +185,8 @@ declare function ft:tokenize-string( $string as xs:string )
 (:~
  : Tokenizes the given string.
  :
- : @param string The string to tokenize.
- : @param lang The default language of \a string.
+ : @param $string The string to tokenize.
+ : @param $lang The default language of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize-string( $string as xs:string,
