@@ -613,6 +613,7 @@ zstring UntypedAtomicItem::show() const
 QNameItem::QNameItem(const char* aNamespace,
                      const char* aPrefix,
                      const char* aLocalName)
+  : isInPool(false)
 {
   initializeAsQNameNotInPool(zstring(aNamespace), zstring(aPrefix), zstring(aLocalName));
 }
@@ -620,6 +621,7 @@ QNameItem::QNameItem(const char* aNamespace,
 QNameItem::QNameItem(const zstring& aNamespace,
             const zstring& aPrefix,
             const zstring& aLocalName)
+  : isInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
 }
@@ -638,6 +640,8 @@ void QNameItem::free()
   if (isInPool)
   {
       GET_STORE().getQNamePool().remove(this);
+  } else {
+    delete this;
   }
 }
 
