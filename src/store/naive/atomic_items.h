@@ -339,7 +339,7 @@ class QNameItem : public AtomicItem
   // The QName pool is the only class authorized to edit namespace/prefix/local name.
   friend class QNamePool;
 
-protected:
+private:
   zstring          theNamespace;
   zstring          thePrefix;
   zstring          theLocal;

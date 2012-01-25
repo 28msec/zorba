@@ -90,8 +90,6 @@ void QNamePool::remove(QNameItem* qn)
       hasNormalizingBackPointers(qn))
     return;
 
-  unregisterNormalizingBackPointer(qn->getNormalized(), qn);
-
   if (qn->isInCache())
   {
     qn->theNextFree = (uint16_t)theFirstFree;
@@ -105,6 +103,7 @@ void QNamePool::remove(QNameItem* qn)
     // qn in the pool, and let the pool garbage-collect it later (if it still
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
+    unregisterNormalizingBackPointer(qn->getNormalized(), qn);
     theHashSet.eraseNoSync(qn);
     delete qn;
   }
@@ -313,6 +312,7 @@ QNameItem* QNamePool::cacheInsert()
 
     if (qn->isValid())
     {
+      unregisterNormalizingBackPointer(qn->getNormalized(), qn);
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
     }
@@ -391,15 +391,25 @@ bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName)
 {
   return !theWhoNormalizesToMe[aNormalizedQName].empty();
 }
+
 void QNamePool::registerNormalizingBackPointer(const QNameItem* aNormalizedQName,
                                                  const QNameItem* anotherQName)
 {
-  theWhoNormalizesToMe[aNormalizedQName].insert(anotherQName);
+  if (!anotherQName->isNormalized())
+  {
+    theWhoNormalizesToMe[aNormalizedQName].insert(anotherQName);
+  }
 }
+
 void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aNormalizedQName,
                                                  const QNameItem* anotherQName)
 {
-  theWhoNormalizesToMe[aNormalizedQName].erase(anotherQName);
+  if (!anotherQName->isNormalized())
+  {
+    assert(theWhoNormalizesToMe[aNormalizedQName].find(anotherQName)
+         != theWhoNormalizesToMe[aNormalizedQName].end());
+    theWhoNormalizesToMe[aNormalizedQName].erase(anotherQName);
+  }
 }
   
   
