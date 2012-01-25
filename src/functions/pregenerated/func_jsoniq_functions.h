@@ -49,6 +49,10 @@ public:
 
   }
 
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 #endif
@@ -107,6 +111,10 @@ public:
 
   }
 
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 #endif
@@ -122,6 +130,10 @@ public:
   {
 
   }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -139,6 +151,10 @@ public:
 
   }
 
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 #endif
@@ -154,6 +170,10 @@ public:
   {
 
   }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -171,6 +191,10 @@ public:
 
   }
 
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 #endif
@@ -186,6 +210,10 @@ public:
   {
 
   }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -203,6 +231,10 @@ public:
 
   }
 
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 #endif
@@ -218,6 +250,10 @@ public:
   {
 
   }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
