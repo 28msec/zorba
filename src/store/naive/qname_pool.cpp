@@ -103,7 +103,7 @@ void QNamePool::remove(QNameItem* qn)
     // qn in the pool, and let the pool garbage-collect it later (if it still
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
-    unregisterNormalizingBackPointer(qn->getNormalized(), qn);
+    unregisterNormalizingBackPointer(qn);
     theHashSet.eraseNoSync(qn);
     delete qn;
   }
@@ -185,7 +185,7 @@ retry:
           goto retry;
         }
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        registerNormalizingBackPointer(normQName, qn);
+        registerNormalizingBackPointer(qn);
       }
 
       bool found;
@@ -267,7 +267,7 @@ retry:
         }
 
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        registerNormalizingBackPointer(normQName, qn);
+        registerNormalizingBackPointer(qn);
       }
 
       bool found;
@@ -312,7 +312,7 @@ QNameItem* QNamePool::cacheInsert()
 
     if (qn->isValid())
     {
-      unregisterNormalizingBackPointer(qn->getNormalized(), qn);
+      unregisterNormalizingBackPointer(qn);
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
     }
@@ -392,23 +392,21 @@ bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName)
   return !theWhoNormalizesToMe[aNormalizedQName].empty();
 }
 
-void QNamePool::registerNormalizingBackPointer(const QNameItem* aNormalizedQName,
-                                                 const QNameItem* anotherQName)
+void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
 {
-  if (!anotherQName->isNormalized())
+  if (!aQName->isNormalized())
   {
-    theWhoNormalizesToMe[aNormalizedQName].insert(anotherQName);
+    theWhoNormalizesToMe[aQName->getNormalized()].insert(aQName);
   }
 }
 
-void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aNormalizedQName,
-                                                 const QNameItem* anotherQName)
+void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName)
 {
-  if (!anotherQName->isNormalized())
+  if (!aQName->isNormalized())
   {
-    assert(theWhoNormalizesToMe[aNormalizedQName].find(anotherQName)
-         != theWhoNormalizesToMe[aNormalizedQName].end());
-    theWhoNormalizesToMe[aNormalizedQName].erase(anotherQName);
+    assert(theWhoNormalizesToMe[aQName->getNormalized()].find(aQName)
+         != theWhoNormalizesToMe[aQName->getNormalized()].end());
+    theWhoNormalizesToMe[aQName->getNormalized()].erase(aQName);
   }
 }
   

@@ -150,10 +150,8 @@ protected:
         ulong       hval);
   
   bool hasNormalizingBackPointers(const QNameItem* aNormalizedQName);
-  void registerNormalizingBackPointer(const QNameItem* aNormalizedQName,
-                                      const QNameItem* anotherQName);
-  void unregisterNormalizingBackPointer(const QNameItem* aNormalizedQName,
-                                        const QNameItem* anotherQName);
+  void registerNormalizingBackPointer(const QNameItem* aQName);
+  void unregisterNormalizingBackPointer(const QNameItem* aQName);
 };
 
 
