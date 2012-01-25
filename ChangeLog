@@ -22,6 +22,7 @@ version 2.2
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
+  * Fixed bug involving positional var and groupby 
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
