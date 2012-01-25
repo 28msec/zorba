@@ -20,11 +20,15 @@ xquery version "3.0";
  : This module provides an XQuery API to full-text functions.
  :)
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
+import schema namespace ft-schema =
+  "http://www.zorba-xquery.com/modules/full-text/schema";
+
 (:~
- : Gets the host's default language.
+ : Gets the host's current language.
  :
  : @return said language.
  :)
@@ -35,7 +39,7 @@ declare function ft:host-lang()
  : Checks whether the given word is a stop-word.
  :
  : @param $word The word to check.  The word's language is assumed to be the
- : host machine's current language.
+ : host's current language.
  : @return <code>true</code> only if the <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string )
@@ -55,7 +59,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : Stems the given word.
  :
  : @param $word The word to stem.  The word's language is assumed to be the
- : host machine's current language.
+ : host's current language.
  : @return the stem of <code>$word</code>.
  :)
 declare function ft:stem( $word as xs:string )
@@ -84,7 +88,7 @@ declare function ft:strip-diacritics( $string as xs:string )
  : Looks-up the given phrase in the default thesaurus.
  :
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be in the host machine's current language.
+ : be in the host's current language.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
@@ -95,7 +99,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be in the host machine's current language.
+ : be in the host's current language.
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
@@ -153,7 +157,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : Tokenizes the given document.
  :
  : @param $doc The XML document to tokenize.  The document's default language
- : is assumed to be the host machine's current language.
+ : is assumed to be the host's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize( $doc as node() )
@@ -173,7 +177,7 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.  The string's default language is
- : assumed to be the host machine's current language.
+ : assumed to be the host's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize-string( $string as xs:string )
