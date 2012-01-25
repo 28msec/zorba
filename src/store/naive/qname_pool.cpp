@@ -105,6 +105,7 @@ void QNamePool::remove(QNameItem* qn)
     // well, then qn must be removed from the pool and really deleted
     unregisterNormalizingBackPointer(qn);
     theHashSet.eraseNoSync(qn);
+    qn->invalidate();
     delete qn;
   }
 }
@@ -315,6 +316,7 @@ QNameItem* QNamePool::cacheInsert()
       unregisterNormalizingBackPointer(qn);
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
+      qn->invalidate();
     }
 
     qn->theNextFree = qn->thePrevFree = 0;

@@ -758,19 +758,21 @@ zstring QNameItem::show() const
   res += ")";
   return res;
 }
-  
+
 void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
                                            const zstring& aPrefix,
                                            const zstring& aLocalName)
 {
   store::Item_t lPoolQName =
       GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
+  
   theNormalizedQName = static_cast<QNameItem*>(lPoolQName.getp())->
       getNormalized();
+  
   theNamespace = theNormalizedQName->theNamespace;
   thePrefix = aPrefix;
   theLocal.clear();
-  GET_STORE().getQNamePool().registerNormalizingBackPointer(this);
+  
   assert(!isNormalized());
 }
 

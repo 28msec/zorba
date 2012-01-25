@@ -433,28 +433,39 @@ protected:
   }
 
   void initializeAsNormalizedQName(const zstring& aNamespace,
-                                 const zstring& aLocalName)
+                                   const zstring& aLocalName)
   {
     theNamespace = aNamespace;
     thePrefix.clear();
     theLocal = aLocalName;
     theNormalizedQName = this;
     assert(isNormalized());
+    assert(isValid());
   }
   
   void initializeAsUnnormalizedQName(const QNameItem* aNormalizedQName,
                                      const zstring& aPrefix)
   {
-    theNamespace = aNormalizedQName->theNamespace;
+    theNormalizedQName = aNormalizedQName;
+    
+    theNamespace = theNormalizedQName->theNamespace;
     thePrefix = aPrefix;
     theLocal.clear();
-    theNormalizedQName = aNormalizedQName;
+    
     assert(!isNormalized());
+    assert(isValid());
   }
-  
+
   void initializeAsQNameNotInPool(const zstring& aNamespace,
                                   const zstring& aPrefix,
                                   const zstring& aLocalName);
+  
+  void invalidate()
+  {
+    theNormalizedQName = NULL;
+    assert(!isValid());
+  }
+
 };
 
 
