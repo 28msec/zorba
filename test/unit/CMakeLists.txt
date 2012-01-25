@@ -94,6 +94,7 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
   xmldatamanager.cpp
   staticcollectionmanager.cpp
+  static_context.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

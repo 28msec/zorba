@@ -1038,6 +1038,20 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  {
+    return;
+  }
+  case json_array_expr_kind:
+  case json_pair_expr_kind:
+  {
+    // TODO? We need to drill inside a json pair or array constructor only 
+    // if we are coming from an unbox or flatten call ????
+    break;
+  }
+#endif
+
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);

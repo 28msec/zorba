@@ -72,14 +72,14 @@ void root_static_context::init()
   const char* const default_ns_initializers[] = 
   {
     //"err", XQUERY_ERR_NS,
-    "fn", static_context::W3C_FN_NS.c_str(),
+    "fn", static_context::W3C_FN_NS,
     "local", XQUERY_LOCAL_FN_NS,
     //"math", XQUERY_MATH_FN_NS,
     "xml", XML_NS,
     "xs", XML_SCHEMA_NS,
     "xsi", XSI_NS,
     //"zerr", ZORBA_ERR_NS,
-    NULL, NULL
+      NULL, NULL
   };
 
   for (const char* const* p = default_ns_initializers; *p != NULL; p += 2)

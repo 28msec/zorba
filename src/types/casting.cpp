@@ -1348,7 +1348,6 @@ T1_TO_T2(NUL, str)
 bool str_down(
     store::Item_t& result,
     const store::Item* aItem,
-    RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
     const ErrorInfo& aErrorInfo)
@@ -1440,7 +1439,6 @@ bool str_down(
 bool int_down(
     store::Item_t& result,
     const store::Item* aItem,
-    RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
     const ErrorInfo& aErrorInfo)
@@ -1864,7 +1862,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*lDownCastFunc)(result,
                              &*result,
-                             rtm,
                              targetTypeCode,
                              lFactory,
                              lErrorInfo);
@@ -1888,7 +1885,6 @@ bool GenericCast::castToAtomic(
     namespace_context*   nsCtx,
     const QueryLoc&      loc)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
   ZORBA_ASSERT(aItem->isAtomic());
@@ -1974,7 +1970,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*downCastFunc)(result,
                             &*result,
-                            rtm,
                             targetTypeCode,
                             factory,
                             errorInfo);
@@ -1999,21 +1994,18 @@ bool GenericCast::castToAtomic(
     namespace_context*    nsCtx,
     const QueryLoc&       loc)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   zstring sourceString;
 
-  ZORBA_ASSERT(item->isAtomic());
-
   store::SchemaTypeCode sourceType = item->getTypeCode();
-
-  ErrorInfo errorInfo(sourceType, targetType, loc);
 
   if (sourceType == targetType)
   {
     result.transfer(item);
     return true;
   }
+
+  ErrorInfo errorInfo(sourceType, targetType, loc);
 
   if (targetType == store::XS_NOTATION ||
       targetType == store::XS_ANY_ATOMIC)
@@ -2022,18 +2014,24 @@ bool GenericCast::castToAtomic(
   }
 
   if (sourceType == store::XS_ANY_ATOMIC)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   if (targetType == store::XS_NCNAME &&
       sourceType != store::XS_STRING &&
       sourceType != store::XS_NCNAME &&
       sourceType != store::XS_UNTYPED_ATOMIC)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   CastFunc castFunc = theCastMatrix[theMapping[sourceType]]
                                     [theMapping[targetType]];
   if (castFunc == 0)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   if (theMapping[sourceType] == theMapping[store::XS_STRING])
   {
@@ -2055,7 +2053,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*downCastFunc)(result,
                             &*result,
-                            rtm,
                             targetType,
                             factory,
                             errorInfo);

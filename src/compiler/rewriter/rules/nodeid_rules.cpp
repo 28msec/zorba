@@ -650,6 +650,47 @@ void MarkNodeCopyProps::applyInternal(
     break;
   }
 
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  {
+    break;
+  }
+  case json_array_expr_kind:
+  {
+    // For now, assume that nodes to appear as pair values must be copied first.
+    // TODO improve this
+    json_array_expr* e = static_cast<json_array_expr *>(node);
+
+    static_context* sctx = e->get_sctx();
+
+    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    break;
+  }
+  case json_pair_expr_kind:
+  {
+    // For now, assume that nodes to appear as pair values must be copied first.
+    // TODO improve this
+    json_pair_expr* e = static_cast<json_pair_expr *>(node);
+
+    static_context* sctx = e->get_sctx();
+
+    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->get_value_expr(), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    break;
+  }
+#endif
+
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
@@ -705,6 +746,20 @@ void MarkNodeCopyProps::applyInternal(
     {
       user_function* udf = static_cast<user_function*>(f);
 
+#if 0
+      UdfCalls::iterator ite = std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e);
+
+      if (ite == theUdfCallPath.end())
+      {
+        theUdfCallPath.push_back(e);
+
+        UDFCallChain nextUdfCall(e, &udfCaller);
+
+        applyInternal(rCtx, udf->getBody(), nextUdfCall);
+
+        theUdfCallPath.pop_back();
+      }
+#else
       UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
 
       if (ite == theProcessedUDFCalls.end())
@@ -731,6 +786,7 @@ void MarkNodeCopyProps::applyInternal(
           }
         }
       }
+#endif
     } // f->isUdf()
     else
     {
@@ -1093,6 +1149,15 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   {
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  case json_pair_expr_kind:
+  {
+    break;
+  }
+#endif
 
   case relpath_expr_kind:
   {

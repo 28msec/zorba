@@ -89,9 +89,6 @@ public:
   JSONItem() : store::Item(JSONIQ) {}
 
   virtual ~JSONItem() {}
-
-  store::StoreConsts::JSONItemKind
-  getJSONItemKind() const { return store::StoreConsts::jsonItem; }
 };
 
 
@@ -104,21 +101,20 @@ class JSONObject : public JSONItem
 public:
   virtual ~JSONObject() {}
 
+  store::StoreConsts::JSONItemKind getJSONItemKind() const 
+  {
+    return store::StoreConsts::jsonObject;
+  }
+
   bool isJSONObject() const { return true; }
 
-  virtual void
-  add(const JSONObjectPair_t& aPair) = 0;
+  virtual void add(const JSONObjectPair_t& aPair) = 0;
 
-  virtual xs_integer
-  getSize() const = 0;
-
-  store::StoreConsts::JSONItemKind
-  getJSONItemKind() const { return store::StoreConsts::jsonObject; }
+  virtual xs_integer getSize() const = 0;
 
   bool getBooleanValue() const { return true; }
 
-  virtual Item*
-  getType() const;
+  virtual Item* getType() const;
 
 #if 0
   bool equals(
@@ -128,9 +124,7 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  virtual store::Item* copy(
-        store::Item* parent,
-        const store::CopyMode&) const;
+  virtual store::Item* copy(store::Item* parent, const store::CopyMode&) const;
 #endif
 };
 
@@ -147,10 +141,9 @@ protected:
     bool operator() (const store::Item* lhs, const store::Item* rhs) const;
   };
 
-  typedef std::map<
-    store::Item*,
-    JSONObjectPair_t,
-    JSONObjectPairComparator> Pairs;
+  typedef std::map<store::Item*,
+                   JSONObjectPair_t,
+                   JSONObjectPairComparator> Pairs;
 
   typedef Pairs::const_iterator PairsConstIter;
   typedef Pairs::iterator PairsIter;
@@ -180,17 +173,13 @@ protected:
 public:
   virtual ~SimpleJSONObject() {}
 
-  void
-  add(const JSONObjectPair_t& aPair);
+  void add(const JSONObjectPair_t& aPair);
 
-  xs_integer
-  getSize() const { return thePairs.size(); }
+  xs_integer getSize() const { return thePairs.size(); }
 
-  store::Iterator_t
-  getPairs() const;
+  store::Iterator_t getPairs() const;
 
-  store::Item*
-  getPair(const store::Item_t& name) const;
+  store::Item* getPair(const store::Item_t& name) const;
 };
 
 

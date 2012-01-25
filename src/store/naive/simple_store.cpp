@@ -151,7 +151,7 @@ void SimpleStore::init()
     // i.e. when the store is shutdown
     LIBXML_TEST_VERSION
 
-    store::Properties::load (0, NULL);
+    store::Properties::load(0, NULL);
 
     theUriCounter = 0;
     theCollectionCounter = 1;
