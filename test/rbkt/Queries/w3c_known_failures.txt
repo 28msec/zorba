@@ -1,8 +1,4 @@
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
-test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2
-test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1
-test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2
-test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
@@ -32,7 +28,6 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-039
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-914
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-030
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-009
-test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0003-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10

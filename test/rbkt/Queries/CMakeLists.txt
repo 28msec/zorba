@@ -213,8 +213,13 @@ ENDFOREACH(TESTFILE)
 IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
     IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
   MESSAGE (STATUS "Adding multi-threaded XQTS test")
-  ZORBA_ADD_TEST(xqts testdriver_mt -q -b w3c_testsuite
+  ZORBA_ADD_TEST(xqts-xquery testdriver_mt -q -b w3c_testsuite/XQuery
     -k "${CMAKE_CURRENT_SOURCE_DIR}/w3c_known_failures.txt")
+  IF (ZORBA_TEST_XQUERYX)
+    MESSAGE (STATUS "Adding multi-threaded XQTS-XQueryX test")
+    ZORBA_ADD_TEST(xqts-xqx testdriver_mt -q -b w3c_testsuite/XQueryX
+      -k "${CMAKE_CURRENT_SOURCE_DIR}/w3c_known_failures_XQueryX.txt")
+  ENDIF (ZORBA_TEST_XQUERYX)
 ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
   IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
 
