@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WORK_DEFAULT=/tmp
-XQUTSURL_DEFAULT=http://zorbatest.lambda.nu:8080/~spungi/XQUTS_221211.zip
+XQUTSURL_DEFAULT=http://zorbatest.lambda.nu:8080/~spungi/XQUTS_250112.zip
 
 die() {
   echo
