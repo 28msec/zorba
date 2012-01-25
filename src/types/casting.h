@@ -40,16 +40,15 @@ class GenericCast
                             zstring& strval,
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
-                            const ErrorInfo& aErrorInfo
-                        );
+                            const ErrorInfo& aErrorInfo);
+
   typedef bool (*DownCastFunc)(
                             store::Item_t&,
                             const store::Item*, 
-                            RootTypeManager& aTS,
                             store::SchemaTypeCode aTargetAtomicType,
                             store::ItemFactory*,
-                            const ErrorInfo& aErrorInfo
-                        ); 
+                            const ErrorInfo& aErrorInfo);
+ 
 private:
   static const int          theMapping[store::XS_LAST];
   static const CastFunc     theCastMatrix[23][23];
