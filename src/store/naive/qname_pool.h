@@ -56,6 +56,8 @@ class StringPool;
 ********************************************************************************/
 class QNamePool
 {
+  // Allow QName items to register/unregister pointers to normalized QName.
+  friend class QNameItem;
 protected:
 
   class CompareFunction

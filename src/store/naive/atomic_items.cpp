@@ -610,7 +610,20 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-
+QNameItem::QNameItem(const char* aNamespace,
+                     const char* aPrefix,
+                     const char* aLocalName)
+{
+  initializeAsQNameNotInPool(zstring(aNamespace), zstring(aPrefix), zstring(aLocalName));
+}
+  
+QNameItem::QNameItem(const zstring& aNamespace,
+            const zstring& aPrefix,
+            const zstring& aLocalName)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+  
 QNameItem::~QNameItem()
 {
   if (isValid())
@@ -742,6 +755,21 @@ zstring QNameItem::show() const
   return res;
 }
   
+void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
+                                           const zstring& aPrefix,
+                                           const zstring& aLocalName)
+{
+  store::Item_t lPoolQName =
+      GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
+  theNormalizedQName = static_cast<QNameItem*>(lPoolQName.getp())->
+      getNormalized();
+  theNamespace = theNormalizedQName->theNamespace;
+  thePrefix = aPrefix;
+  theLocal.clear();
+  GET_STORE().getQNamePool().registerNormalizingBackPointer(this);
+  assert(!isNormalized());
+}
+
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/

@@ -405,6 +405,14 @@ protected:
   QNameItem() : isInPool(true), thePosition(0), theNextFree(0), thePrevFree(0)
   {
   }
+  
+  QNameItem(const char* aNamespace,
+            const char* aPrefix,
+            const char* aLocalName);
+
+  QNameItem(const zstring& aNamespace,
+            const zstring& aPrefix,
+            const zstring& aLocalName);
 
   void free();
 
@@ -443,6 +451,10 @@ protected:
     theNormalizedQName = aNormalizedQName;
     assert(!isNormalized());
   }
+  
+  void initializeAsQNameNotInPool(const zstring& aNamespace,
+                                  const zstring& aPrefix,
+                                  const zstring& aLocalName);
 };
 
 
