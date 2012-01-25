@@ -28,7 +28,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
 #include <zorba/user_exception.h>
-#include <zorba/transcode_streambuf.h>
+#include <zorba/transcode_stream.h>
 
 #include "file_module.h"
 

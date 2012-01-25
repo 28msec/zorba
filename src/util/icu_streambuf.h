@@ -17,7 +17,7 @@
 #ifndef ZORBA_ICU_STREAMBUF_H
 #define ZORBA_ICU_STREAMBUF_H
 
-#include <zorba/transcode_streambuf.h>
+#include <zorba/transcode_stream.h>
 
 #include "util/utf8_util.h"
 

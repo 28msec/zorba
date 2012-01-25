@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_TRANSCODE_STREAMBUF_API_H
-#define ZORBA_TRANSCODE_STREAMBUF_API_H
+#ifndef ZORBA_TRANSCODE_STREAM_API_H
+#define ZORBA_TRANSCODE_STREAM_API_H
 
 #include <stdexcept>
 #include <streambuf>
@@ -127,15 +127,41 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %transcode_stream is used to wrap a C++ standard I/O stream with a
+ * transcode_streambuf so that transcoding and the management of the streambuf
+ * happens automatically.
+ *
+ * @tparam StreamType The I/O stream class type to wrap. It must be a concrete
+ * stream class, i.e., ifstream, ofstream, istringstream, or ostringstream.
+ */
 template<class StreamType>
 class transcode_stream : public StreamType {
 public:
+  typedef transcode_streambuf::exception exception;
+
+  /**
+   * Constructs a %transcode_stream.
+   *
+   * @param charset The name of the character encoding to convert from/to.
+   * @throws std::invalid_argument if \a charset is not supported.
+   */
   transcode_stream( char const *charset ) :
     tbuf_( charset, this->rdbuf() )
   {
     init();
   }
 
+  /**
+   * Constructs a %transcode_stream.
+   *
+   * @tparam StreamArgType The type of the first argument of \a StreamType's
+   * constructor.
+   * @param charset The name of the character encoding to convert from/to.
+   * @param stream_arg The argument to pass as the first argument to
+   * \a StreamType's constructor.
+   * @throws std::invalid_argument if \a charset is not supported.
+   */
   template<typename StreamArgType>
   transcode_stream( char const *charset, StreamArgType stream_arg ) :
     StreamType( stream_arg ),
@@ -144,6 +170,17 @@ public:
     init();
   }
 
+  /**
+   * Constructs a %transcode_stream.
+   *
+   * @tparam StreamArgType The type of the first argument of \a StreamType's
+   * constructor.
+   * @param charset The name of the character encoding to convert from/to.
+   * @param stream_arg The argument to pass as the first argument to
+   * @param mode The open-mode to pass to \a StreamType's constructor.
+   * \a StreamType's constructor.
+   * @throws std::invalid_argument if \a charset is not supported.
+   */
   template<typename StreamArgType>
   transcode_stream( char const *charset, StreamArgType stream_arg,
                     std::ios_base::openmode mode ) :
@@ -164,5 +201,5 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_TRANSCODE_STREAMBUF_API_H */
+#endif  /* ZORBA_TRANSCODE_STREAM_API_H */
 /* vim:set et sw=2 ts=2: */

@@ -21,7 +21,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
-#include <zorba/transcode_streambuf.h>
+#include <zorba/transcode_stream.h>
 
 namespace zorba { namespace filemodule {
 
