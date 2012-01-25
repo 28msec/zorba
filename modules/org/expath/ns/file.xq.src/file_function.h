@@ -27,8 +27,6 @@
 
 namespace zorba {
 
-  class transcode_streambuf;
-  
   namespace filemodule {
 
   class FileModule;
@@ -142,11 +140,9 @@ namespace zorba {
 
         Item                 theItem;
         std::ifstream*       theStream;
-        transcode_streambuf* theTranscodingBuffer;
 
         StreamableItemSequence() 
-          : theStream(new std::ifstream()),
-            theTranscodingBuffer(0) {}
+          : theStream(new std::ifstream()) {}
 
         Iterator_t  getIterator()
         {
