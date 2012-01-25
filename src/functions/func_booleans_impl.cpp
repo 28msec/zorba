@@ -795,7 +795,7 @@ public:
 ********************************************************************************/
 void populateContext_Comparison(static_context* sctx)
 {
-  const char* zorba_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_ns = static_context::ZORBA_OP_NS;
 
   // General Comparison;
   DECL(sctx, op_equal,
@@ -881,8 +881,8 @@ DECL(sctx, op_atomic_values_equivalent,
 
 void populate_context_booleans_impl(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
   // Boolean
   DECL(sctx, fn_true,

@@ -287,7 +287,7 @@ public:
 ********************************************************************************/
 void populateContext_Arithmetics(static_context* sctx) 
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
 
   DECL(sctx, op_add,
        (createQName (xquery_op_ns, "", "add"),

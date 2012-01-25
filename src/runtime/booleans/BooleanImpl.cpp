@@ -821,22 +821,22 @@ void CompareIterator::generalCasting(
 ********************************************************************************/
 bool CompareIterator::equal(
     const QueryLoc& loc,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1,
+    const store::Item_t& item0,
+    const store::Item_t& item1,
     const TypeManager* tm,
     long timezone,
-    XQPCollator* aCollation)
+    XQPCollator* collation)
 {
-  xqtref_t type0 = tm->create_value_type(aItem0.getp());
-  xqtref_t type1 = tm->create_value_type(aItem1.getp());
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
-  if (TypeOps::is_subtype(tm, *type0, *type1))
+  if (TypeOps::is_subtype(type0, type1))
   {
-    return aItem1->equals(aItem0, timezone, aCollation);
+    return item1->equals(item0, timezone, collation);
   }
-  else if (TypeOps::is_subtype(tm, *type1, *type0))
+  else if (TypeOps::is_subtype(type1, type0))
   {
-    return aItem0->equals(aItem1, timezone, aCollation);
+    return item0->equals(item1, timezone, collation);
   }
   else
   {
@@ -847,23 +847,26 @@ bool CompareIterator::equal(
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
     // The same case happens when there are two types derived from xs:NOTATION.
-    if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
-        TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+    if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
+        TypeOps::is_subtype(type1, store::XS_INTEGER))
     {
-      return (aItem0->getIntegerValue() == aItem1->getIntegerValue());
+      return (item0->getIntegerValue() == item1->getIntegerValue());
     }
-    else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-             TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type0, store::XS_DURATION) &&
+             TypeOps::is_subtype(type1, store::XS_DURATION))
     {
-      return (aItem0->getDurationValue() == aItem1->getDurationValue());
+      return (item0->getDurationValue() == item1->getDurationValue());
     }
-    else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) &&
-             TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type0, store::XS_NOTATION) &&
+             TypeOps::is_subtype(type1, store::XS_NOTATION))
     {
-      return aItem0->equals(aItem1);
+      return item0->equals(item1);
     }
     else
     {
+      xqtref_t type0 = tm->create_value_type(item0.getp());
+      xqtref_t type1 = tm->create_value_type(item1.getp());
+
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
@@ -890,51 +893,56 @@ bool CompareIterator::equal(
 ********************************************************************************/
 long CompareIterator::compare(
     const QueryLoc& loc,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1,
+    const store::Item_t& item0,
+    const store::Item_t& item1,
     const TypeManager* tm,
     long timezone,
-    XQPCollator* aCollation)
+    XQPCollator* collation)
 {
-  xqtref_t type0 = tm->create_value_type(aItem0.getp());
-  xqtref_t type1 = tm->create_value_type(aItem1.getp());
+  store::SchemaTypeCode type0 = item0->getTypeCode();
+  store::SchemaTypeCode type1 = item1->getTypeCode();
 
   try
   {
-    if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-        TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+    if (TypeOps::is_subtype(type0, store::XS_DURATION) &&
+        TypeOps::is_subtype(type1, store::XS_DURATION))
     {
-      if (TypeOps::is_equal(tm, *type0, *type1) &&
-          !TypeOps::is_equal(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+      if (type0 == type1 && type0 != store::XS_DURATION)
       {
-        return aItem0->compare(aItem1, timezone, aCollation);
+        return item0->compare(item1, timezone, collation);
       }
       else
       {
+        xqtref_t type0 = tm->create_value_type(item0.getp());
+        xqtref_t type1 = tm->create_value_type(item1.getp());
+
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
     }
-    else if (TypeOps::is_subtype(tm, *type1, *type0))
+    else if (TypeOps::is_subtype(type1, type0))
     {
-      return aItem0->compare(aItem1, timezone, aCollation);
+      return item0->compare(item1, timezone, collation);
     }
-    else if (TypeOps::is_subtype(tm, *type0, *type1))
+    else if (TypeOps::is_subtype(type0, type1))
     {
-      return -aItem1->compare(aItem0, timezone, aCollation);
+      return -item1->compare(item0, timezone, collation);
     }
     else
     {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
       // type-inheritance subtree rooted at xs:Integer.
-      if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+      if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
+          TypeOps::is_subtype(type1, store::XS_INTEGER))
       {
-        return aItem0->getIntegerValue().compare( aItem1->getIntegerValue() );
+        return item0->getIntegerValue().compare(item1->getIntegerValue());
       }
       else
       {
+        xqtref_t type0 = tm->create_value_type(item0.getp());
+        xqtref_t type1 = tm->create_value_type(item1.getp());
+
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
       }
@@ -945,6 +953,9 @@ long CompareIterator::compare(
     // For example, two QName items do not have an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
+      xqtref_t type0 = tm->create_value_type(item0.getp());
+      xqtref_t type1 = tm->create_value_type(item1.getp());
+
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
