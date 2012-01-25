@@ -10376,6 +10376,11 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     push_nodestack(memberExpr);
     return;
   }
+  /*
+  else if (!theSctx->is_feature_set(feature::hof))
+  {
+  }
+  */
 #endif
 
   if (!theSctx->is_feature_set(feature::hof))
