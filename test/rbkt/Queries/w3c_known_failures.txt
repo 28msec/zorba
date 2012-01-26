@@ -69,6 +69,12 @@ test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-006
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-901
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-002
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-008
+test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
+test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
+test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-5
+test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch08
+test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
+test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
