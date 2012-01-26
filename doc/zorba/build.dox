@@ -233,10 +233,10 @@ Now you are ready to call \c nmake from the \c [ZORBABUILD] directory.
   a set of public keys freely available on the internet. 
 - On Windows,
   Zorba expects this file to be called \c cacert.pem
-  and searches for it in current directory and system paths. 
+  and searches for it in the current directory and system paths. 
 - This \c cacert.pem file can be found on the curl page:
   http://curl.haxx.se/docs/caextract.html .
-- In order to disable the validation of server certificate,
+- In order to disable the validation of the server certificate,
   the \c ZORBA_VERIFY_PEER_SSL_CERTIFICATE can be set to \c OFF
   in cmake 
   (and actually this is the default value).
