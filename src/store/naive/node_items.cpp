@@ -577,8 +577,7 @@ store::Item* XmlNode::copy(
         pnode->checkUniqueAttr(attrName);
 
         try
-        {
-          
+        {    
           pnode->addBindingForQName(attrName, true, false);
         }
         catch (...)

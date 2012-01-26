@@ -180,6 +180,8 @@ public:
   store::Iterator_t getPairs() const;
 
   store::Item* getPair(const store::Item_t& name) const;
+
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 };
 
 
@@ -282,6 +284,8 @@ public:
 
   virtual store::Item*
   getMember(const store::Item_t& aPosition) const;
+
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 };
 
 
@@ -327,9 +331,9 @@ public:
 class SimpleJSONObjectPair : public JSONObjectPair
 {
 protected:
-  store::Item_t theName;
-  store::Item_t theValue;
-  JSONObject*   theContainer;
+  store::Item_t          theName;
+  store::Item_t          theValue;
+  mutable JSONObject   * theContainer;
 
 public:
   SimpleJSONObjectPair() {}
@@ -367,6 +371,8 @@ public:
 
   store::Item*
   getContainer() const { return theContainer; }
+
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 };
 
 } // namespace json

@@ -24,9 +24,18 @@
 #include "system/globalenv.h"
 
 #include "runtime/json/jsoniq_functions.h"
+
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include "zorba/internal/diagnostic.h"
+
+#include "context/static_context.h"
+
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "types/root_typemanager.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -60,8 +69,14 @@ JSONFlattenIterator::nextImpl(
 
   while (consumeNext(item, theChildren[0].getp(), planState))
   {
-    if (!thePropagateNonArrayItems || item->isJSONArray())
+    // if thePropagateNonArrayItems == false, then item is always a json array
+    if (!thePropagateNonArrayItems || 
+        item->isJSONArray() ||
+        (item->isJSONPair() && item->getValue()->isJSONArray()))
     {
+      if (thePropagateNonArrayItems && item->isJSONPair())
+        item = item->getValue();
+
       state->theStack.push(item->getMembers());
       state->theStack.top()->open();
 
@@ -89,6 +104,19 @@ JSONFlattenIterator::nextImpl(
         state->theStack.top()->close();
         state->theStack.pop();
       }
+    }
+    else if (item->isJSONPair())
+    {
+      item = item->getValue();
+
+      if (item->isJSONObject())
+        RAISE_ERROR_NO_PARAMS(zerr::JSDY0002, loc);
+
+      result.transfer(item);
+    }
+    else if (item->isJSONObject())
+    {
+      RAISE_ERROR_NO_PARAMS(zerr::JSDY0002, loc);
     }
     else
     {
@@ -279,7 +307,66 @@ JSONMemberAccessorIterator::nextImpl(
 
   STACK_PUSH(result != 0, state);
 
-  STACK_END (state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONPairOrMemberAccessorIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t input;
+  store::Item_t selector;
+
+  const TypeManager* tm = theSctx->get_typemanager();
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(input, theChildren[0].getp(), planState);
+  consumeNext(selector, theChildren[1].getp(), planState);
+
+  if (input->isJSONArray())
+  {
+    store::SchemaTypeCode type = selector->getTypeCode();
+
+    if (!TypeOps::is_subtype(type, store::XS_INTEGER))
+    {
+      xqtref_t type = tm->create_value_type(selector, loc);
+
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(NoTypePromotion_23), type, GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+    }
+
+    result = input->getMember(selector);
+  }
+  else if (input->isJSONObject())
+  {
+    store::SchemaTypeCode type = selector->getTypeCode();
+
+    if (!TypeOps::is_subtype(type, store::XS_STRING) &&
+        !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
+        !TypeOps::is_subtype(type, store::XS_ANY_URI))
+    {
+      xqtref_t type = tm->create_value_type(selector, loc);
+
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(NoTypePromotion_23), type, GENV_TYPESYSTEM.STRING_TYPE_ONE));
+    }
+
+    result = input->getPair(selector);
+  }
+  else
+  {
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoTypePromotion_json)));
+  }
+
+  STACK_PUSH(result != 0, state);
+
+  STACK_END(state);
 }
 
 
@@ -300,19 +387,15 @@ JSONSizeIterator::nextImpl(
 
   if (lJSONItem->isJSONPair())
   {
-    throw XQUERY_EXCEPTION(
-        zerr::JSDY0020,
-        ERROR_PARAMS( ZED(BadArgTypeForFn_2o34o), "pair", "json:size" ),
-        ERROR_LOC( loc )
-      );
-    // raise error
+    RAISE_ERROR(zerr::JSDY0020, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:size"));
   }
 
   lSize = lJSONItem->getSize();
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

@@ -10348,39 +10348,39 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();
 
-  if (TypeOps::is_subtype(tm,
-                          *sourceExpr->get_return_type(), 
-                          *theRTM.JSON_ARRAY_TYPE_STAR))
+  if (!theSctx->is_feature_set(feature::hof) ||
+      (numArgs == 1 &&
+       !TypeOps::is_subtype(tm,
+                            *sourceExpr->get_return_type(), 
+                            *theRTM.ANY_FUNCTION_TYPE_STAR)))
   {
-    ZORBA_ASSERT(numArgs == 1);
+    function* func;
 
-    expr_t memberExpr = new fo_expr(theRootSctx,
-                                    loc,
-                                    GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2), 
-                                    sourceExpr,
-                                    arguments[0]);
-    push_nodestack(memberExpr);
+    if (TypeOps::is_subtype(tm,
+                            *sourceExpr->get_return_type(), 
+                            *theRTM.JSON_ARRAY_TYPE_STAR))
+    {
+      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
+    }
+    else if (TypeOps::is_subtype(tm,
+                                 *sourceExpr->get_return_type(), 
+                                 *theRTM.JSON_OBJECT_TYPE_STAR))
+    {
+      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
+    }
+    else
+    {
+      func = GET_BUILTIN_FUNCTION(OP_ZORBA_PAIR_OR_MEMBER_2);
+    }
+
+    expr_t accessorExpr = new fo_expr(theRootSctx,
+                                      loc,
+                                      func, 
+                                      sourceExpr,
+                                      arguments[0]);
+    push_nodestack(accessorExpr);
     return;
   }
-  else if (TypeOps::is_subtype(tm,
-                               *sourceExpr->get_return_type(), 
-                               *theRTM.JSON_OBJECT_TYPE_STAR))
-  {
-    ZORBA_ASSERT(numArgs == 1);
-
-    expr_t memberExpr = new fo_expr(theRootSctx,
-                                    loc,
-                                    GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2), 
-                                    sourceExpr,
-                                    arguments[0]);
-    push_nodestack(memberExpr);
-    return;
-  }
-  /*
-  else if (!theSctx->is_feature_set(feature::hof))
-  {
-  }
-  */
 #endif
 
   if (!theSctx->is_feature_set(feature::hof))
@@ -10902,7 +10902,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 
   xqtref_t type = contentExpr->get_return_type();
 
-  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, tm);
+  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
 
   if (!type->is_none() && !type->is_empty())
   {

@@ -3067,8 +3067,8 @@ void end_visit(json_pair_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t nameIter = pop_itstack();
   PlanIter_t valueIter = pop_itstack();
+  PlanIter_t nameIter = pop_itstack();
 
   push_itstack(new JSONPairIterator(sctx, qloc, nameIter, valueIter, true));
 }

@@ -95,7 +95,7 @@ PlanIter_t op_enclosed_expr::codegen(
     expr* contentExpr = static_cast<fo_expr*>(inputExpr)->get_arg(0);
     xqtref_t type = contentExpr->get_return_type();
 
-    type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, tm);
+    type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
 
     if (type->is_none() || type->is_empty())
     {

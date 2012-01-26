@@ -101,6 +101,8 @@ bool JSONPairIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   GENV_ITEMFACTORY->createJSONObjectPair(result, name, value);
 
+  STACK_PUSH(true, state);
+
   STACK_END(state);
 }
 

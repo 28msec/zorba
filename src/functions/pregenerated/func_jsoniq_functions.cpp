@@ -100,6 +100,18 @@ PlanIter_t fn_jsoniq_member::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_pair_or_member::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONPairOrMemberAccessorIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_size::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -262,6 +274,23 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
         FunctionConsts::FN_JSONIQ_MEMBER_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_zorba_pair_or_member,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","pair-or-member"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
+        FunctionConsts::OP_ZORBA_PAIR_OR_MEMBER_2);
 
   }
 

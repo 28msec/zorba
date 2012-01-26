@@ -62,7 +62,18 @@
        the dynamic type of a value does not match a required type as specified
        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
+
       <value>$1</value>
+
+      <entry key="NoTypePromotion_23">
+        <value>"$2": can not promote to type "$3"</value>
+      </entry>
+      <entry key="NoTypePromotion_234">
+        <value>"$2": can not promote to return type "$3" of function $4()</value>
+      </entry>
+      <entry key="NoTypePromotion_json">
+        <value>"pair()": can not promote to object() or array()</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -2335,7 +2346,7 @@
     </diagnostic>
 
     <diagnostic code="JSDY0002">
-      <value>JSON object cannot appear as input to an "$1" constructor</value>
+      <value>JSON object cannot appear as input to an XML constructor</value>
     </diagnostic>
 
     <diagnostic code="JSDY0020">
@@ -2958,14 +2969,6 @@
 
     <entry key="NoTypeInModule_45">
       <value>type of variable "$4" is not among the in-scope types module "$5"</value>
-    </entry>
-
-    <entry key="NoTypePromotion_23">
-      <value>"$2": can not promote to type "$3"</value>
-    </entry>
-
-    <entry key="NoTypePromotion_234">
-      <value>"$2": can not promote to return type "$3" of function $4()</value>
     </entry>
 
     <entry key="NoURIAuthority">

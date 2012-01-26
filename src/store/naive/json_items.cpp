@@ -19,6 +19,10 @@
 #include "simple_store.h"
 #include "item_iterator.h"
 
+#include "store/api/copymode.h"
+
+#include "diagnostics/assert.h"
+
 namespace zorba
 {
 
@@ -51,26 +55,6 @@ JSONObject::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONArray::getType() const
-{
-  return GET_STORE().JDM_ARRAY_QNAME;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item*
-JSONObjectPair::getType() const
-{
-  return GET_STORE().JDM_PAIR_QNAME;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
 bool
 SimpleJSONObject::JSONObjectPairComparator::operator()(
     const store::Item* lhs,
@@ -88,6 +72,18 @@ SimpleJSONObject::add(const JSONObjectPair_t& p)
 {
   store::Item* lName = p->getName();
   thePairs.insert(std::make_pair<store::Item*, JSONObjectPair_t>(lName, p));
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item* SimpleJSONObject::copy(
+    store::Item* parent,
+    const store::CopyMode& copymode) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
 }
 
 
@@ -181,6 +177,16 @@ SimpleJSONObject::getPair(const store::Item_t& name) const
 /******************************************************************************
 
 *******************************************************************************/
+store::Item*
+JSONArray::getType() const
+{
+  return GET_STORE().JDM_ARRAY_QNAME;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void
 SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
@@ -244,6 +250,58 @@ SimpleJSONArray::getMember(const store::Item_t& aPosition) const
     return theContent[lIndex-1].getp();
   }
 }
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item* SimpleJSONArray::copy(
+    store::Item* parent,
+    const store::CopyMode& copymode) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item*
+JSONObjectPair::getType() const
+{
+  return GET_STORE().JDM_PAIR_QNAME;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item* SimpleJSONObjectPair::copy(
+    store::Item* parent,
+    const store::CopyMode& copymode) const
+{
+  if (copymode.theDoCopy == false)
+  {
+    assert(theContainer == NULL);
+
+    if (parent)
+    {
+      assert(parent->isJSONObject());
+
+      JSONObject* p = static_cast<JSONObject*>(parent);
+      
+      theContainer = p;
+      p->add(const_cast<SimpleJSONObjectPair*>(this));
+    }
+
+    return const_cast<SimpleJSONObjectPair*>(this);
+  }
+
+  ZORBA_ASSERT(false);
+  return NULL;
+}
+
 
 } // namespace json
 } // namespace simplestore

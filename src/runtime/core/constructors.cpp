@@ -421,6 +421,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (!child->isNode())
         {
+          assert(child->isAtomic());
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
         }
@@ -446,18 +447,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (!child->isNode())
         {
-#ifdef ZORBA_WITH_JSON
-          if (child->isJSONItem()) 
-          {
-            if (child->getJSONItemKind() == store::StoreConsts::jsonObject)
-            {
-              RAISE_ERROR(zerr::JSDY0002, loc, ERROR_PARAMS("element"));
-            }
-            else if (child->getJSONItemKind() == store::StoreConsts::jsonArray)
-            {
-            }
-          }
-#endif
+          assert(child->isAtomic());
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
         }
@@ -490,7 +480,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     result = NULL;
     path.pop();
-    set_source( e, loc, false );
+    set_source(e, loc, false);
     throw;
   }
   catch (...)
@@ -503,7 +493,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   path.pop();
 
   STACK_PUSH(true, state);
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -514,7 +504,7 @@ void ElementIterator::resetImpl(PlanState& planState) const
   if (theQNameIter != 0)
     theQNameIter->reset(planState);
 
-  if ( theChildrenIter != 0 )
+  if (theChildrenIter != 0)
     theChildrenIter->reset(planState);
 
   if (theAttributesIter != 0)
@@ -522,7 +512,6 @@ void ElementIterator::resetImpl(PlanState& planState) const
 
   if (theNamespacesIter != 0)
     theNamespacesIter->reset(planState);
-
 }
 
 
@@ -534,7 +523,8 @@ void ElementIterator::closeImpl(PlanState& planState)
   if (theChildrenIter != 0)
     theChildrenIter->close(planState);
 
-  if (theAttributesIter != 0)    theAttributesIter->close(planState);
+  if (theAttributesIter != 0)
+    theAttributesIter->close(planState);
 
   if (theNamespacesIter != 0)
     theNamespacesIter->close(planState);
@@ -563,16 +553,14 @@ AttributeIterator::AttributeIterator(
   {
     if (theQName->getLocalName().empty())
     {
-      RAISE_ERROR(err::XQDY0074, loc,
-      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
     }
 
     if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
+      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -581,8 +569,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
+      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
@@ -591,11 +578,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xmlns") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( theQName->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
     }
 
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
@@ -1247,6 +1230,8 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         }
         else
         {
+          assert(result->isAtomic());
+
           result->getStringValue2(strval);
 
           {
@@ -1293,7 +1278,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

@@ -200,6 +200,26 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//op-zorba:pair-or-member
+class op_zorba_pair_or_member : public function
+{
+public:
+  op_zorba_pair_or_member(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:size
 class fn_jsoniq_size : public function
 {

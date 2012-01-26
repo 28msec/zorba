@@ -343,6 +343,42 @@ public:
  * 
  * Author: 
  */
+class JSONPairOrMemberAccessorIterator : public NaryBaseIterator<JSONPairOrMemberAccessorIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONPairOrMemberAccessorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONPairOrMemberAccessorIterator,
+    NaryBaseIterator<JSONPairOrMemberAccessorIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONPairOrMemberAccessorIterator, PlanIteratorState>*)this);
+  }
+
+  JSONPairOrMemberAccessorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONPairOrMemberAccessorIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONPairOrMemberAccessorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
 class JSONSizeIterator : public NaryBaseIterator<JSONSizeIterator, PlanIteratorState>
 { 
 public:
