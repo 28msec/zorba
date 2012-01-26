@@ -28,6 +28,7 @@ version 2.2
   * Added API method Item::getNamespaceBindings().
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug 921624 (slow queries with bogus example.com schema URIs)
 
 version 2.1
 
