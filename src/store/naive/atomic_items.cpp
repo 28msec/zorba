@@ -628,10 +628,6 @@ QNameItem::QNameItem(const zstring& aNamespace,
   
 QNameItem::~QNameItem()
 {
-  if (isValid())
-  {
-    assert(isNormalized() || theLocal.empty());
-  }
 }
 
 
@@ -766,14 +762,9 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
   store::Item_t lPoolQName =
       GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
   
-  theNormalizedQName = static_cast<QNameItem*>(lPoolQName.getp())->
-      getNormalized();
-  
-  theNamespace = theNormalizedQName->theNamespace;
-  thePrefix = aPrefix;
-  theLocal.clear();
-  
-  assert(!isNormalized());
+  initializeAsUnnormalizedQName(
+      static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
+      aPrefix);
 }
 
 /*******************************************************************************

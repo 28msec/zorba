@@ -369,11 +369,7 @@ public:
   store::Item_t getEBV() const;
     
   const zstring& getLocalName() const {
-    if (isNormalized()) {
-      return theLocal;
-    } else {
-      return theNormalizedQName->theLocal;
-    }
+    return theLocal;
   }
   
   const zstring& getNamespace() const { return theNamespace; }
@@ -420,7 +416,7 @@ protected:
     return theNormalizedQName != NULL &&
         theNormalizedQName->isNormalized() &&
         theNamespace == theNormalizedQName->theNamespace &&
-        !(isNormalized() && theLocal.empty());
+        theLocal == theNormalizedQName->theLocal;
   }
 
   bool isInCache() const { return thePosition != 0; }
@@ -450,7 +446,7 @@ protected:
     
     theNamespace = theNormalizedQName->theNamespace;
     thePrefix = aPrefix;
-    theLocal.clear();
+    theLocal = theNormalizedQName->theLocal;
     
     assert(!isNormalized());
     assert(isValid());
