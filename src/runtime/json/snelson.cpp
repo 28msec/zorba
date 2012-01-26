@@ -65,22 +65,26 @@ static void add_item_element( item_stack_type &item_stack,
                               state_stack_type &state_stack,
                               store::Item_t &cur_item,
                               char const *type ) {
-  if ( !state_stack.empty() && state_stack.top() == in_array ) {
-    store::Item_t element_name, type_name;
-    zstring base_uri;
-    store::NsBindings ns_bindings;
-    GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "item" );
-    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createElementNode(
-      cur_item, item_stack.top(),
-      element_name, type_name, false, false, ns_bindings, base_uri
-    );
-    add_type_attribute( cur_item.getp(), type );
-  }
+  store::Item_t element_name, type_name;
+  zstring base_uri;
+  store::NsBindings ns_bindings;
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "item" );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    cur_item, item_stack.top(),
+    element_name, type_name, false, false, ns_bindings, base_uri
+  );
+  add_type_attribute( cur_item.getp(), type );
+  PUSH_ITEM( cur_item );
 }
 
-#define ADD_ITEM_ELEMENT(T) \
+#define ADD_ITEM_ELEMENT(T)                                     \
+  if ( !ztd::top_stack_equals( state_stack, in_array ) ) ; else \
   add_item_element( item_stack, state_stack, cur_item, T )
+
+#define POP_ITEM_ELEMENT()                                      \
+  if ( !ztd::top_stack_equals( state_stack, in_array ) ) ; else \
+  POP_ITEM()
 
 static void escape_json_chars( zstring *s ) {
   ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
@@ -147,6 +151,7 @@ void parse( json::parser &p, store::Item_t *result ) {
       case '}':
         POP_ITEM();
         POP_STATE();
+        POP_ITEM_ELEMENT();
         break;
 
       case ',':
@@ -158,6 +163,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         ADD_ITEM_ELEMENT( "number" );
         value = token.get_value();
         GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+        POP_ITEM_ELEMENT();
         break;
 
       case json::token::string:
@@ -188,6 +194,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         } else {
           ADD_ITEM_ELEMENT( "string" );
           GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+          POP_ITEM_ELEMENT();
         }
         break;
 
@@ -197,11 +204,13 @@ void parse( json::parser &p, store::Item_t *result ) {
         ADD_ITEM_ELEMENT( "boolean" );
         value = token.get_type() == 'F' ? "false" : "true";
         GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+        POP_ITEM_ELEMENT();
         break;
 
       case json::token::json_null:
         ADD_TYPE_ATTRIBUTE( "null" );
         ADD_ITEM_ELEMENT( "null" );
+        POP_ITEM_ELEMENT();
         break;
 
       case ':':
@@ -425,11 +434,11 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
     i->open();
     store::Item_t child;
     while ( i->next( child ) ) {
-      o << sep;
 
       switch ( child->getNodeKind() ) {
 
         case store::StoreConsts::elementNode:
+          o << sep;
           switch ( parent_type ) {
             case json::none:
               o << serialize_json_element( child, ws );
@@ -449,6 +458,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
           break;
 
         case store::StoreConsts::textNode:
+          o << sep;
           switch ( parent_type ) {
             case json::boolean:
               o << serialize_boolean( child->getStringValue() );

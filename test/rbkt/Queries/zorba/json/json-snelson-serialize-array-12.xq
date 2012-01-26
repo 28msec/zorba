@@ -4,7 +4,7 @@ import module namespace json = "http://www.zorba-xquery.com/modules/converters/j
 
 let $json :=
   <json type="array">
-  <!--comment-->
+    <!--comment-->
     <item type="boolean">true</item>
   </json>
 return json:serialize( $json )

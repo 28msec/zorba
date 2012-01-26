@@ -196,6 +196,37 @@ typename StackType::value_type pop_stack( StackType &s ) {
   return value;
 }
 
+template<typename T>
+struct is_pass_by_value {
+  static bool const value =
+        ZORBA_TR1_NS::is_arithmetic<T>::value
+    ||  ZORBA_TR1_NS::is_enum<T>::value
+    ||  ZORBA_TR1_NS::is_pointer<T>::value
+    ||  ZORBA_TR1_NS::is_reference<T>::value
+    ||  ZORBA_TR1_NS::is_member_function_pointer<T>::value;
+};
+
+template<typename T,bool = is_pass_by_value<T>::value>
+struct optimal_arg {
+  typedef T type;
+};
+
+template<typename T>
+struct optimal_arg<T,false> {
+  typedef T const& type;
+};
+
+/**
+ * A less verbose way to compare the top value of a stack for equality with a
+ * given value.
+ */
+template<class StackType> inline
+bool top_stack_equals(
+    StackType const &s,
+    typename optimal_arg<typename StackType::value_type>::type v ) {
+  return !s.empty() && s.top() == v;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 template<typename NumericType> inline

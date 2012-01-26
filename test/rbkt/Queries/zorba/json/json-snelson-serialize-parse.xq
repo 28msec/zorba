@@ -1,5 +1,5 @@
 import module namespace json="http://www.zorba-xquery.com/modules/converters/json";
 
-declare variable $json-value := '{"html":"<b>bold</b>"}';
+declare variable $json-value := '{ "key" : "value" }';
 
-json:serialize(json:parse($json-value))
+json:serialize( json:parse( $json-value ) )
