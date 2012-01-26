@@ -2,7 +2,7 @@
 
 \section initial_setup Initial setup
 
-These steps were checked on Ubuntu 10.10. Send us email with the results you had on diffrent platforms.
+These steps were checked on Ubuntu 10.10. Send us email with the results you had on different platforms.
 
 \section install_apache_http Install Apache HTTP Server
 
@@ -73,7 +73,7 @@ Copy Zorba extension library files to /usr/local/lib/php/.
 zorba/build$ cp swig/php/zorba_api.so swig/php/zorba_api_wrapper.php /usr/local/lib/php/
 \endcode
 
-Add the folowing lines to /etc/php5/apache2/php.ini file.
+Add the following lines to /etc/php5/apache2/php.ini file.
 
 \code
 include_path="/usr/local/lib/php/"
