@@ -205,7 +205,7 @@ declare function json:serialize(
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
 
 declare %private function json:parse-internal(
-  $json as xs:string,
+  $json as xs:string?,
   $options as item()?
 ) as element()* external;
 

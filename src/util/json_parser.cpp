@@ -645,6 +645,15 @@ bool parser::next( token *t ) {
   } // while
 }
 
+token::type parser::peek( token *t ) {
+  if ( token::type const tt = PEEK_TOKEN() ) {
+    if ( t )
+      *t = peeked_token_;
+    return tt;
+  }
+  return token::none;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace json

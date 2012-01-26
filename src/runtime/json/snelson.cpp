@@ -80,7 +80,7 @@ static void add_item_element( item_stack_type &item_stack,
 }
 
 #define ADD_ITEM_ELEMENT(T) \
-  add_item_element( item_stack, state_stack, cur_item, T );
+  add_item_element( item_stack, state_stack, cur_item, T )
 
 static void escape_json_chars( zstring *s ) {
   ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
@@ -99,20 +99,22 @@ namespace snelson {
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
 
-  state_stack_type state_stack;
-
   store::Item_t cur_item, junk_item, value_item;
   store::Item_t att_name, element_name, type_name;
 
   zstring base_uri;
+  bool got_something = false;
   item_stack_type item_stack;
   bool needs_type_attribute = false;
   bool next_string_is_key = false;
   store::NsBindings ns_bindings;
+  state_stack_type state_stack;
   zstring value;
 
   json::token token;
   while ( p.next( &token ) ) {
+    got_something = true;
+
     if ( !*result ) {
       GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "json" );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -210,6 +212,8 @@ void parse( json::parser &p, store::Item_t *result ) {
         assert( false );
     } // switch
   } // while
+  if ( !got_something )
+    throw XQUERY_EXCEPTION( zerr::ZJPE0009_ILLEGAL_EMPTY_STRING );
 }
 
 } // namespace snelson

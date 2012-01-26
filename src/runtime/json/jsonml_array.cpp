@@ -77,6 +77,7 @@ void parse( json::parser &p, store::Item_t *result ) {
   store::Item_t att_name, element_name, type_name;
 
   zstring base_uri;
+  bool got_something = false;
   item_stack_type item_stack;
   expect::type expect_what = expect::none;
   store::NsBindings ns_bindings;
@@ -84,6 +85,7 @@ void parse( json::parser &p, store::Item_t *result ) {
 
   json::token token;
   while ( p.next( &token ) ) {
+    got_something = true;
     switch ( token.get_type() ) {
 
       case '[':
@@ -159,6 +161,8 @@ void parse( json::parser &p, store::Item_t *result ) {
         assert( false );
     } // switch
   } // while
+  if ( !got_something )
+    throw XQUERY_EXCEPTION( zerr::ZJPE0009_ILLEGAL_EMPTY_STRING );
 }
 
 } // namespace jsonml_array

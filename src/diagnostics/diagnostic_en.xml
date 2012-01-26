@@ -2333,6 +2333,9 @@
     <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
       <value>"$1": illegal QName</value>
     </diagnostic>
+    <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
+      <value>illegal empty string</value>
+    </diagnostic>
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 

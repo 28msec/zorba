@@ -507,11 +507,20 @@ public:
   /**
    * Gets the next token, if any.
    *
-   * @param result A pointer to the token to get into.
+   * @param result A pointer to the token to receive the token.
    * @return Returns \c true only if there was a next token.
    * @throws exception upon error.
    */
   bool next( token *result );
+
+  /**
+   * Peeks at the next token, if any.
+   *
+   * @param result A pointer to the token to receive the token, if any.
+   * @return Returns the type of the peeked token.
+   * @throws exception upon error.
+   */
+  token::type peek( token *result = nullptr );
 
   /**
    * Sets the file location.
