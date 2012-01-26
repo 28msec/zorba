@@ -56,9 +56,9 @@ declare %private variable $conf:serParamXhtml :=
   
 declare %private variable $conf:XQTS_PATH  as xs:string := "/tmp/XQTS_current";
 declare %private variable $conf:XQTS_submission as xs:string := 
-        "/tmp/XQTS_current/ReportingResults/zorba_11674_xqts_current_xquery_1_0.xml";
+        "/tmp/XQTS_current/ReportingResults/zorba_xqts_submission.xml";
 declare %private variable $conf:XQTSX_submission as xs:string := 
-        "/tmp/XQTS_current/ReportingResults/zorba_11674_xqtsx_current_xquery_1_0.xml";
+        "/tmp/XQTS_current/ReportingResults/zorba_xqtsx_submission.xml";
 
 declare %private variable $conf:XQuery   as xs:string := "XQuery";
 declare %private variable $conf:XQueryX  as xs:string := "XQueryX";
@@ -421,7 +421,7 @@ declare %private function conf:create-summary-string() as xs:string
             ") for the W3C XML Query Test Suite.
             
 Please see the table below for more details.")
-")
+
 };
 
 declare %ann:sequential function conf:test()

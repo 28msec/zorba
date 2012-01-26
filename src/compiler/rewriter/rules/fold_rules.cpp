@@ -840,7 +840,7 @@ static expr_t partial_eval_logic(
 
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
-      if (constArg->get_val()->getEBV()->getBooleanValue() == shortcircuit_val)
+      if (constArg->get_val()->getEBV() == shortcircuit_val)
         return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean)shortcircuit_val);
     }
     else

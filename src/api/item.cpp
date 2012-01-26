@@ -32,6 +32,7 @@
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -264,7 +265,12 @@ Item Item::getEBV() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return &*m_item->getEBV();
+    bool value = m_item->getEBV();
+
+    store::Item_t result;
+    GENV_ITEMFACTORY->createBoolean(result, value);
+
+    return result.getp();
 
   ITEM_CATCH
   return Item();
