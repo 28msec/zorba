@@ -755,7 +755,7 @@ T1_TO_T2(flt, int)
 
 T1_TO_T2(flt, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -811,7 +811,7 @@ T1_TO_T2(dbl, int)
 
 T1_TO_T2(dbl, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -850,7 +850,7 @@ T1_TO_T2(dec, int)
 
 T1_TO_T2(dec, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -890,7 +890,7 @@ T1_TO_T2(int, dec)
 
 T1_TO_T2(int, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
