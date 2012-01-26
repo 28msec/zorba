@@ -28,6 +28,8 @@ version 2.2
   * Added API method Item::getNamespaceBindings().
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
+  * Fixed bug #918157 (Add XQFTTS to validation queue)
 
 version 2.1
 
