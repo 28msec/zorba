@@ -1798,7 +1798,7 @@ if the index is not among the statically known indexes or the available indexes.
 equal to the number of keyspecs found in the index declaration.
 </li>
 <li>
-[err:XPTY0004], if a non-empty seach key is given, whose type does not match 
+[err:XPTY0004], if a non-empty search key is given, whose type does not match 
 the sequence type specified in the corresponding keyspec.
 </li>
 </ul>
