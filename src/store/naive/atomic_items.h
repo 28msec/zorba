@@ -413,10 +413,11 @@ protected:
   void free();
 
   bool isValid() const {
-    return theNormalizedQName != NULL &&
+    assert(theNormalizedQName == NULL || (
         theNormalizedQName->isNormalized() &&
         theNamespace == theNormalizedQName->theNamespace &&
-        theLocal == theNormalizedQName->theLocal;
+        theLocal == theNormalizedQName->theLocal));
+    return theNormalizedQName != NULL;
   }
 
   bool isInCache() const { return thePosition != 0; }
@@ -425,6 +426,7 @@ protected:
 
   bool isNormalized() const {
     assert(theNormalizedQName != this || thePrefix.empty());
+    assert(theNormalizedQName == this || !thePrefix.empty());
     return theNormalizedQName == this;
   }
 
