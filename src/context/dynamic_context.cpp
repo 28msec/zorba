@@ -311,9 +311,16 @@ void dynamic_context::set_environment_variables()
     
     FreeEnvironmentStrings(envVarsCH);
 #else    
+    const char* invalid_char;
     for(char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
+      
+      if((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+          ERROR_PARAMS(zstring("#x") + 
+          BUILD_STRING(std::uppercase << std::hex 
+            << (static_cast<unsigned int>(*invalid_char)&0xFF))));
 
       int size = envVarZS.size();
             
