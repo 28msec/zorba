@@ -2,14 +2,4 @@
 
 import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
-json:parse('
-[
-    [
-        1,
-        1
-    ],
-    [
-        2,
-        2
-    ]
-]')
+json:parse( '[ [ 11, 12 ], [ 21, 22 ] ]' )
