@@ -278,6 +278,22 @@ public:
   CODEGEN_DECL();
 };
 #endif
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:null
+class fn_jsoniq_null : public function
+{
+public:
+  fn_jsoniq_null(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
 
 
 //fn-jsoniq:insert-into

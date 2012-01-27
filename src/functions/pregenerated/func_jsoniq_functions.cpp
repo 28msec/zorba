@@ -147,6 +147,18 @@ PlanIter_t fn_jsoniq_size::codegen(
 }
 
 #endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_null::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONNullIterator(sctx, loc);
+}
+
+#endif
 
 PlanIter_t fn_jsoniq_insert_into::codegen(
   CompilerCB*,
@@ -419,6 +431,21 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
         FunctionConsts::FN_JSONIQ_SIZE_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_null,
+        (createQName("http://www.jsoniq.org/functions","","null"), 
+        GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE),
+        FunctionConsts::FN_JSONIQ_NULL_0);
 
   }
 

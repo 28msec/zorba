@@ -1844,6 +1844,21 @@ void PrinterVisitor::endVisit ( const JSONSizeIterator& ) {
 // </JSONSizeIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONNullIterator>
+void PrinterVisitor::beginVisit ( const JSONNullIterator& a) {
+  thePrinter.startBeginVisit("JSONNullIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONNullIterator>
+
+#endif
 
 // <JSONInsertIntoIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertIntoIterator& a) {

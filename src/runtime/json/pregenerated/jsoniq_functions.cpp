@@ -358,6 +358,31 @@ JSONSizeIterator::~JSONSizeIterator() {}
 // </JSONSizeIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONNullIterator>
+const char* JSONNullIterator::class_name_str = "JSONNullIterator";
+JSONNullIterator::class_factory<JSONNullIterator>
+JSONNullIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONNullIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONNullIterator::class_versions_count =
+sizeof(JSONNullIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONNullIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  
+
+  v.endVisit(*this);
+}
+
+JSONNullIterator::~JSONNullIterator() {}
+
+// </JSONNullIterator>
+
+#endif
 // <JSONInsertIntoIterator>
 const char* JSONInsertIntoIterator::class_name_str = "JSONInsertIntoIterator";
 JSONInsertIntoIterator::class_factory<JSONInsertIntoIterator>

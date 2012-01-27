@@ -321,6 +321,23 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+<zorba:iterator name="JSONNullIterator" arity="noary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="null" prefix="fn-jsoniq">
+      <zorba:output>jdm:null</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONInsertIntoIterator" arity="nary">
 
     <zorba:description author="Zorba Team">

@@ -27,7 +27,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
-
+#include "runtime/base/noarybase.h"
 #include "runtime/base/narybase.h"
 
 
@@ -487,6 +487,41 @@ public:
   {}
 
   virtual ~JSONSizeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONNullIterator : public NoaryBaseIterator<JSONNullIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONNullIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONNullIterator,
+    NoaryBaseIterator<JSONNullIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NoaryBaseIterator<JSONNullIterator, PlanIteratorState>*)this);
+  }
+
+  JSONNullIterator(
+    static_context* sctx,
+    const QueryLoc& loc)
+    : 
+    NoaryBaseIterator<JSONNullIterator, PlanIteratorState>(sctx, loc)
+  {}
+
+  virtual ~JSONNullIterator();
 
   void accept(PlanIterVisitor& v) const;
 

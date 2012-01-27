@@ -503,6 +503,23 @@ JSONSizeIterator::nextImpl(
 
 
 /*******************************************************************************
+  j:null()) as jdm:null
+********************************************************************************/
+bool
+JSONNullIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createJSONNull(result), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
 ********************************************************************************/
 bool
 JSONInsertIntoIterator::nextImpl(

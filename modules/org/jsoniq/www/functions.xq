@@ -1,5 +1,7 @@
 module namespace j = "http://www.jsoniq.org/functions";
 
+declare namespace jdm = "http://www.jsoniq.org/";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
@@ -74,6 +76,13 @@ declare function j:values($j as json-item()) as item()* external;
  : @return
  :)
 declare function j:value($p as pair()) as item() external;
+
+(:~
+ : Returns the jdm:null value null.
+ :
+ : @return the said value
+ :)
+declare function j:null() as jdm:null external;
 
 (:~
  :
