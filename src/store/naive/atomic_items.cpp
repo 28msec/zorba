@@ -621,6 +621,7 @@ void QNameItem::free()
   {
     GET_STORE().getQNamePool().remove(this);
   } else {
+    GET_STORE().getQNamePool().unregisterNormalizingBackPointer(this);
     delete this;
   }
 }
@@ -745,7 +746,7 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
 {
   store::Item_t lPoolQName =
       GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
-  
+  GET_STORE().getQNamePool().registerNormalizingBackPointer(this);
   initializeAsUnnormalizedQName(
       static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
       aPrefix);
