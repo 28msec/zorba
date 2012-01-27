@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset.h"
