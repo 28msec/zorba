@@ -34,7 +34,7 @@ PlanIter_t fn_jsoniq_flatten::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new JSONFlattenIterator(sctx, loc, argv, false);
+  return new JSONFlattenIterator(sctx, loc, argv[0], false);
 }
 
 
@@ -45,7 +45,7 @@ PlanIter_t op_zorba_flatten_internal::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new JSONFlattenIterator(sctx, loc, argv, true);
+  return new JSONFlattenIterator(sctx, loc, argv[0], true);
 }
 
 

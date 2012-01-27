@@ -72,7 +72,7 @@
         <value>"$2": can not promote to return type "$3" of function $4()</value>
       </entry>
       <entry key="NoTypePromotion_json">
-        <value>"pair()": can not promote to object() or array()</value>
+        <value>"$2": can not promote to object() or array()</value>
       </entry>
     </diagnostic>
 

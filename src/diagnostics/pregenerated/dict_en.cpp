@@ -686,7 +686,7 @@ extern entry const dict_en[] = {
   { "~XPST0003_StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~XPTY0004_NoTypePromotion_23", "\"$2\": can not promote to type \"$3\"" },
   { "~XPTY0004_NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $4()" },
-  { "~XPTY0004_NoTypePromotion_json", "\"pair()\": can not promote to object() or array()" },
+  { "~XPTY0004_NoTypePromotion_json", "\"$2\": can not promote to object() or array()" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XQueryVersionAtLeast10_2", "\"$2\": XQuery version must be at least 1.0" },

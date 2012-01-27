@@ -256,16 +256,16 @@ namespace zorba{
     class JSONSerializeInternal;
 
 #ifdef ZORBA_WITH_JSON
-    class JSONFlattenIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
     class JSONParseIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONNamesIterator;
+    class JSONNameIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONNameIterator;
+    class JSONValueIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONNamesIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONPairsIterator;
@@ -277,16 +277,16 @@ namespace zorba{
     class JSONMemberAccessorIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONPairOrMemberAccessorIterator;
+    class JSONFlattenIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONSizeIterator;
+    class JSONItemAccessorIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONValuesIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONValueIterator;
+    class JSONSizeIterator;
 #endif
     class JSONInsertIntoIterator;
 
@@ -989,20 +989,20 @@ public:
     virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONFlattenIterator& ) = 0;
-    virtual void endVisit   ( const JSONFlattenIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONNamesIterator& ) = 0;
-    virtual void endVisit   ( const JSONNamesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONNameIterator& ) = 0;
     virtual void endVisit   ( const JSONNameIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONValueIterator& ) = 0;
+    virtual void endVisit   ( const JSONValueIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONNamesIterator& ) = 0;
+    virtual void endVisit   ( const JSONNamesIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONPairsIterator& ) = 0;
@@ -1017,20 +1017,20 @@ public:
     virtual void endVisit   ( const JSONMemberAccessorIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONPairOrMemberAccessorIterator& ) = 0;
-    virtual void endVisit   ( const JSONPairOrMemberAccessorIterator& ) = 0;
+    virtual void beginVisit ( const JSONFlattenIterator& ) = 0;
+    virtual void endVisit   ( const JSONFlattenIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONSizeIterator& ) = 0;
-    virtual void endVisit   ( const JSONSizeIterator& ) = 0;
+    virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
+    virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONValuesIterator& ) = 0;
     virtual void endVisit   ( const JSONValuesIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONValueIterator& ) = 0;
-    virtual void endVisit   ( const JSONValueIterator& ) = 0;
+    virtual void beginVisit ( const JSONSizeIterator& ) = 0;
+    virtual void endVisit   ( const JSONSizeIterator& ) = 0;
 #endif
     virtual void beginVisit ( const JSONInsertIntoIterator& ) = 0;
     virtual void endVisit   ( const JSONInsertIntoIterator& ) = 0;
