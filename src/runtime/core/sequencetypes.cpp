@@ -380,7 +380,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if ( theFnQName.getp() )
       {
         throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoTypePromotion_234),
+                               ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_234),
                                             valueType->toSchemaString(),
                                             thePromoteType->toSchemaString(),
                                             theFnQName->getStringValue()),
@@ -389,7 +389,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       else
       {
         throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoTypePromotion_23),
+                               ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
                                             valueType->toSchemaString(),
                                             thePromoteType->toSchemaString()),
                                ERROR_LOC(loc));
@@ -407,7 +407,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (theFnQName.getp())
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED( NoTypePromotion_234 ),
+          ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_234),
                        tm->create_value_type(lItem)->toSchemaString(),
                        thePromoteType->toSchemaString(),
                        theFnQName->getStringValue()));
@@ -415,7 +415,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         else
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED( NoTypePromotion_23 ),
+          ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
                        tm->create_value_type(lItem)->toSchemaString(),
                        thePromoteType->toSchemaString()));
         }

@@ -10370,7 +10370,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
     else
     {
-      func = GET_BUILTIN_FUNCTION(OP_ZORBA_PAIR_OR_MEMBER_2);
+      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
     }
 
     expr_t accessorExpr = new fo_expr(theRootSctx,

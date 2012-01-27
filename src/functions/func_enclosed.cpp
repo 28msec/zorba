@@ -102,7 +102,7 @@ PlanIter_t op_enclosed_expr::codegen(
       assert(dynamic_cast<JSONFlattenIterator*>(argv[0].getp()) != NULL);
       
       PlanIter_t inputIter = 
-      static_cast<JSONFlattenIterator*>(argv[0].getp())->getChildren()[0];
+      static_cast<JSONFlattenIterator*>(argv[0].getp())->getChild();
 
       return new EnclosedIterator(sctx, loc, inputIter);
     }
