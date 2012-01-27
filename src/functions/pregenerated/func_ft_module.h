@@ -38,14 +38,31 @@ void populate_context_ft_module(static_context* sctx);
 
 
 
+//zorba-full-text:current-lang
+class zorba_full_text_current_lang : public function
+{
+public:
+  zorba_full_text_current_lang(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-full-text:host-lang
 class zorba_full_text_host_lang : public function
 {
 public:
   zorba_full_text_host_lang(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -56,9 +73,11 @@ class zorba_full_text_is_stop_word : public function
 {
 public:
   zorba_full_text_is_stop_word(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,9 +88,11 @@ class zorba_full_text_stem : public function
 {
 public:
   zorba_full_text_stem(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -82,9 +103,11 @@ class zorba_full_text_strip_diacritics : public function
 {
 public:
   zorba_full_text_strip_diacritics(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -95,9 +118,11 @@ class zorba_full_text_thesaurus_lookup : public function
 {
 public:
   zorba_full_text_thesaurus_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -108,9 +133,11 @@ class zorba_full_text_tokenize : public function
 {
 public:
   zorba_full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -121,9 +148,11 @@ class zorba_full_text_tokenizer_properties : public function
 {
 public:
   zorba_full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };

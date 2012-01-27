@@ -21,6 +21,7 @@
 
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/schema_types.h"
+#include "util/cxx_util.h"
 
 #include "ft_match.h"
 
@@ -70,7 +71,7 @@ get_thesaurus_option( ftmatch_options const *options ) {
     if ( ftthesaurus_option const *const t = options->get_thesaurus_option() )
       if ( !t->no_thesaurus() )
         return t;
-  return 0;
+  return nullptr;
 }
 
 /**

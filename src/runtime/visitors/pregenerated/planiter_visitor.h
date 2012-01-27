@@ -189,6 +189,8 @@ namespace zorba{
 
     class FnPutIterator;
 
+    class CurrentLangIterator;
+
     class HostLangIterator;
 
     class IsStopWordIterator;
@@ -849,6 +851,9 @@ public:
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
+
+    virtual void beginVisit ( const CurrentLangIterator& ) = 0;
+    virtual void endVisit   ( const CurrentLangIterator& ) = 0;
 
     virtual void beginVisit ( const HostLangIterator& ) = 0;
     virtual void endVisit   ( const HostLangIterator& ) = 0;

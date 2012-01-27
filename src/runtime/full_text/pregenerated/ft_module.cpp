@@ -33,6 +33,34 @@
 
 namespace zorba {
 
+// <CurrentLangIterator>
+const char* CurrentLangIterator::class_name_str = "CurrentLangIterator";
+CurrentLangIterator::class_factory<CurrentLangIterator>
+CurrentLangIterator::g_class_factory;
+
+const serialization::ClassVersion 
+CurrentLangIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int CurrentLangIterator::class_versions_count =
+sizeof(CurrentLangIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void CurrentLangIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+CurrentLangIterator::~CurrentLangIterator() {}
+
+// </CurrentLangIterator>
+
+
 // <HostLangIterator>
 const char* HostLangIterator::class_name_str = "HostLangIterator";
 HostLangIterator::class_factory<HostLangIterator>

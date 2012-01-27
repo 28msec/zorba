@@ -1217,6 +1217,20 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
 // </FnPutIterator>
 
 
+// <CurrentLangIterator>
+void PrinterVisitor::beginVisit ( const CurrentLangIterator& a) {
+  thePrinter.startBeginVisit("CurrentLangIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentLangIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentLangIterator>
+
+
 // <HostLangIterator>
 void PrinterVisitor::beginVisit ( const HostLangIterator& a) {
   thePrinter.startBeginVisit("HostLangIterator", ++theId);

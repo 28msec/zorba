@@ -286,6 +286,9 @@ namespace zorba {
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
 
+    void beginVisit( const CurrentLangIterator& );
+    void endVisit  ( const CurrentLangIterator& );
+
     void beginVisit( const HostLangIterator& );
     void endVisit  ( const HostLangIterator& );
 

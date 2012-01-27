@@ -21,11 +21,23 @@ xquery version "3.0";
  :)
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
+(:
+import schema namespace ft-schema =
+  "http://www.zorba-xquery.com/modules/full-text";
+:)
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
-import schema namespace ft-schema =
-  "http://www.zorba-xquery.com/modules/full-text/schema";
+(:~
+ : Gets the current language: either the langauge specified by the
+ : <code>declare ft-option using language</code> statement or the host's
+ : current language if none.
+ :
+ : @return said language.
+ :)
+declare function ft:current-lang()
+  as xs:language external;
 
 (:~
  : Gets the host's current language.
@@ -38,16 +50,6 @@ declare function ft:host-lang()
 (:~
  : Checks whether the given word is a stop-word.
  :
- : @param $word The word to check.  The word's language is assumed to be the
- : host's current language.
- : @return <code>true</code> only if the <code>$word</code> is a stop-word.
- :)
-declare function ft:is-stop-word( $word as xs:string )
-  as xs:boolean external;
-
-(:~
- : Checks whether the given word is a stop-word.
- :
  : @param $word The word to check.
  : @param $lang The language of <code>$word</code>.
  : @return <code>true</code> only if the <code>$word</code> is a stop-word.
@@ -56,14 +58,18 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
 
 (:~
- : Stems the given word.
+ : Checks whether the given word is a stop-word.
  :
- : @param $word The word to stem.  The word's language is assumed to be the
- : host's current language.
- : @return the stem of <code>$word</code>.
+ : @param $word The word to check.  The word's language is assumed to be the
+ : one in the static context (if specified via <code>declare ft-option</code>)
+ : or the host's current language (if not).
+ : @return <code>true</code> only if the <code>$word</code> is a stop-word.
  :)
-declare function ft:stem( $word as xs:string )
-  as xs:string external;
+declare function ft:is-stop-word( $word as xs:string )
+  as xs:boolean
+{
+  ft:is-stop-word( $word, ft:current-lang() )
+};
 
 (:~
  : Stems the given word.
@@ -74,6 +80,20 @@ declare function ft:stem( $word as xs:string )
  :)
 declare function ft:stem( $word as xs:string, $lang as xs:language )
   as xs:string external;
+
+(:~
+ : Stems the given word.
+ :
+ : @param $word The word to stem.  The word's language is assumed to be the
+ : one in the static context (if specified via <code>declare ft-option</code>)
+ : or the host's current language (if not).
+ : @return the stem of <code>$word</code>.
+ :)
+declare function ft:stem( $word as xs:string )
+  as xs:string
+{
+  ft:stem( $word, ft:current-lang() )
+};
 
 (:~
  : Strips all diacritical marks from all characters.
@@ -88,21 +108,11 @@ declare function ft:strip-diacritics( $string as xs:string )
  : Looks-up the given phrase in the default thesaurus.
  :
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be in the host's current language.
+ : be the one in the static context (if specified via <code>declare
+ : ft-option</code>) or the host's current language (if not).
  : @return the related phrases.
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
-  as xs:string+ external;
-
-(:~
- : Looks-up the given phrase in a thesaurus.
- :
- : @param $uri The URI specifying the thesaurus to use.
- : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be in the host's current language.
- : @return the related phrases.
- :)
-declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
   as xs:string+ external;
 
 (:~
@@ -116,6 +126,21 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language )
   as xs:string+ external;
+
+(:~
+ : Looks-up the given phrase in a thesaurus.
+ :
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $phrase The phrase to look up.  The phrase's language is assumed to
+ : be the one in the static context (if specified via <code>declare
+ : ft-option</code>) or the host's current language (if not).
+ : @return the related phrases.
+ :)
+declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
+  as xs:string+
+{
+  ft:thesaurus-lookup( $uri, $phrase, ft:current-lang() )
+};
 
 (:~
  : Looks-up the given phrase in a thesaurus.
@@ -156,16 +181,6 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
 (:~
  : Tokenizes the given document.
  :
- : @param $doc The XML document to tokenize.  The document's default language
- : is assumed to be the host's current language.
- : @return a (possibly empty) sequence of tokens.
- :)
-declare function ft:tokenize( $doc as node() )
-  as node()* external;
-
-(:~
- : Tokenizes the given document.
- :
  : @param $doc The document to tokenize.
  : @param $lang The default language of <code>$doc</code>.
  : @return a (possibly empty) sequence of tokens.
@@ -174,16 +189,17 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
   as node()* external;
 
 (:~
- : Tokenizes the given string.
+ : Tokenizes the given document.
  :
- : @param $string The string to tokenize.  The string's default language is
- : assumed to be the host's current language.
+ : @param $doc The XML document to tokenize.  The document's default language
+ : is assumed to be the one in the static context (if specified via
+ : <code>declare ft-option</code>) or the host's current language (if not).
  : @return a (possibly empty) sequence of tokens.
  :)
-declare function ft:tokenize-string( $string as xs:string )
-  as xs:string*
+declare function ft:tokenize( $doc as node() )
+  as node()*
 {
-  () (: TODO :)
+  ft:tokenize( $doc, ft:current-lang() )
 };
 
 (:~
@@ -201,11 +217,33 @@ declare function ft:tokenize-string( $string as xs:string,
 };
 
 (:~
- : Gets properties of the tokenizer.
+ : Tokenizes the given string.
+ :
+ : @param $string The string to tokenize.  The string's default language is
+ : assumed to be the host's current language.
+ : @return a (possibly empty) sequence of tokens.
+ :)
+declare function ft:tokenize-string( $string as xs:string )
+  as xs:string*
+{
+  ft:tokenize-string( $string, ft:current-lang() )
+};
+
+(:~
+ : Gets properties of the tokenizer for the current language.
  :
  : @return said properties.
  :)
 declare function ft:tokenizer-properties()
+  as node() external;
+
+(:~
+ : Gets properties of the tokenizer for the given language.
+ :
+ : @param $lang The default language of <code>$string</code>.
+ : @return said properties.
+ :)
+declare function ft:tokenizer-properties( $lang as xs:language )
   as node() external;
 
 (: vim:set et sw=2 ts=2: :)

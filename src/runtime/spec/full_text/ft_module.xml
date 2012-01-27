@@ -13,6 +13,14 @@
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
+<zorba:iterator name="CurrentLangIterator">
+  <zorba:function>
+    <zorba:signature localname="current-lang" prefix="zorba-full-text">
+      <zorba:output>xs:language</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <zorba:iterator name="HostLangIterator">
   <zorba:function>
     <zorba:signature localname="host-lang" prefix="zorba-full-text">

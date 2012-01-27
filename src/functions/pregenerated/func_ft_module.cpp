@@ -31,6 +31,16 @@ namespace zorba{
 
 
 
+PlanIter_t zorba_full_text_current_lang::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new CurrentLangIterator(sctx, loc, argv);
+}
+
 PlanIter_t zorba_full_text_host_lang::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -103,6 +113,17 @@ PlanIter_t zorba_full_text_tokenizer_properties::codegen(
 
 void populate_context_ft_module(static_context* sctx)
 {
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_current_lang,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","current-lang"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_CURRENT_LANG_0);
+
+  }
+
+
   {
     
 

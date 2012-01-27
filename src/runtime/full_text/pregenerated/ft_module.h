@@ -38,6 +38,40 @@ namespace zorba {
  * 
  * Author: 
  */
+class CurrentLangIterator : public NaryBaseIterator<CurrentLangIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(CurrentLangIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentLangIterator,
+    NaryBaseIterator<CurrentLangIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CurrentLangIterator, PlanIteratorState>*)this);
+  }
+
+  CurrentLangIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<CurrentLangIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~CurrentLangIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class HostLangIterator : public NaryBaseIterator<HostLangIterator, PlanIteratorState>
 { 
 public:
