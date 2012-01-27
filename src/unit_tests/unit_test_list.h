@@ -17,18 +17,23 @@
 #ifndef ZORBA_UNIT_TEST_LIST_H
 #define ZORBA_UNIT_TEST_LIST_H
 
-#include <iostream>
-
+#include <zorba/config.h>
 
 namespace zorba {
 
   namespace UnitTests {
     int runUriTest(int argc, char* argv[]);
     int runDebuggerProtocolTest(int argc, char* argv[]);
+    int test_string( int, char*[] );
+    int test_unique_ptr( int, char*[] );
+#ifndef ZORBA_NO_FULL_TEXT
+    int test_stemmer( int, char*[] );
+    int test_thesaurus( int, char*[] );
+    int test_tokenizer( int, char*[] );
+#endif /* ZORBA_NO_FULL_TEXT */
     /**
      * ADD NEW UNIT TESTS HERE
      */
-
 
     void initializeTestList();
   };

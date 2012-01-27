@@ -50,9 +50,9 @@ declare %private variable $conf:serParamXhtml :=
   
 declare %private variable $conf:XQFTTS_PATH  as xs:string := "/tmp/XQFTTS_current";
 declare %private variable $conf:XQFTTS_submission as xs:string := 
-"/tmp/XQFTTS_current/ReportingResults/zorba_11674_xqftts_current.xml";
+"/tmp/XQFTTS_current/ReportingResults/zorba_xqftts_submission.xml";
 declare %private variable $conf:XQFTTSX_submission as xs:string := 
-"/tmp/XQFTTS_current/ReportingResults/zorba_11674_xqfttsx_current.xml";
+"/tmp/XQFTTS_current/ReportingResults/zorba_xqfttsx_submission.xml";
 
 declare %private variable $conf:XQuery   as xs:string := "XQuery";
 declare %private variable $conf:XQueryX  as xs:string := "XQueryX";
@@ -397,11 +397,11 @@ declare %private function conf:create-summary-string() as xs:string
             ") for the W3C XPath Full Text 1.0 Test Suite.
             
 Please see the table below for more details.")
-")
+
 };
 
 declare %ann:sequential function conf:test()
-{  
+{
   variable $XQTS_catalog := fn:parse-xml(file:read-text(file:resolve-path(concat($conf:XQFTTS_PATH,file:directory-separator(),"XQFTTSCatalog.xml"))));
   
   conf:create-collection($conf:XQuery, $XQTS_catalog);
@@ -435,5 +435,4 @@ The following table shows the supported features:
 ,"
 */"), 
              $conf:serParamXhtml);
-
 };

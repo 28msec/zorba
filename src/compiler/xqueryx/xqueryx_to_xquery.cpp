@@ -53,7 +53,10 @@ void XQueryXConvertor::XQueryX_init()
   if(!inited)
   {
     xmlDocPtr doc;
-    doc = xmlParseDoc((xmlChar*)xqueryx_update_xslt);
+    std::string xqueryx_full_xslt;
+    xqueryx_full_xslt += xqueryx3_0_update_xslt;
+    xqueryx_full_xslt += xqueryx_fulltext_xslt;
+    doc = xmlParseDoc((xmlChar*)xqueryx_full_xslt.c_str());
 
     xqueryx_xslt = (xsltStylesheet*)xsltParseStylesheetDoc(doc);
   //	xmlFreeDoc(doc);

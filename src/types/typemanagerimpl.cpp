@@ -212,7 +212,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
-  store::SchemaTypeCode code;
+  store::SchemaTypeCode code = store::XS_LAST;
 
   if (myMap.get(qname, code))
     return create_builtin_atomic_type(code, quantifier);
@@ -225,11 +225,8 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     {
 			throw XQUERY_EXCEPTION_VAR(
 				error,
-				ERROR_PARAMS(
-					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-				),
-				ERROR_LOC( loc )
-			);
+				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+				ERROR_LOC(loc));
     }
     else
     {

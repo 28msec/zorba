@@ -63,16 +63,6 @@ namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t AtomicItem::getAtomizationValue() const
-{
-  store::Item* lItem = const_cast<AtomicItem *>(this);
-  return lItem;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   store::Item* lItem = const_cast<AtomicItem *>(this);
@@ -589,12 +579,9 @@ long UntypedAtomicItem::compare(
 }
 
 
-store::Item_t UntypedAtomicItem::getEBV() const
+bool UntypedAtomicItem::getEBV() const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! ( theValue == "" );
 }
 
 
@@ -652,7 +639,7 @@ store::Item* QNameItem::getType() const
 }
 
 
-store::Item_t QNameItem::getEBV() const
+bool QNameItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "QName"));
@@ -846,12 +833,9 @@ uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t AnyUriItem::getEBV() const
+bool AnyUriItem::getEBV() const
 {
-  bool b = ! (theValue == "");
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! (theValue == "");
 }
 
 
@@ -1619,12 +1603,9 @@ long StringItem::compare(
 }
 
 
-store::Item_t StringItem::getEBV() const
+bool StringItem::getEBV() const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! ( theValue == "" );
 }
 
 
@@ -1694,7 +1675,7 @@ bool StreamableStringItem::equals(
 }
 
 
-store::Item_t StreamableStringItem::getEBV() const
+bool StreamableStringItem::getEBV() const
 {
   if (!theIsMaterialized) 
   {
@@ -2081,77 +2062,43 @@ uint32_t DateTimeItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t DateTimeItem::getEBV() const
+bool DateTimeItem::getEBV() const
 {
   switch (theValue.getFacet())
   {
     case DateTime::DATE_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Date"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Date"));
 
     case DateTime::TIME_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Time"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Time"));
 
     case DateTime::GYEARMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GYearMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYearMonth"));
 
     case DateTime::GYEAR_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GYear"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYear"));
 
     case DateTime::GMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonth"));
 
     case DateTime::GMONTHDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GMonthDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonthDay"));
 
     case DateTime::GDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GDay"));
 
     default:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "dateTime"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "dateTime"));
   }
-  return NULL;
+  return false;
 }
 
 
@@ -2223,7 +2170,7 @@ store::Item* DurationItem::getType() const
 }
 
 
-store::Item_t DurationItem::getEBV() const
+bool DurationItem::getEBV() const
 {
   RAISE_ERROR_NO_LOC(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "duration"));
@@ -2246,20 +2193,16 @@ store::Item* DoubleItem::getType() const
 }
 
 
-store::Item_t DoubleItem::getEBV() const
+bool DoubleItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN())
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2318,20 +2261,16 @@ store::Item* FloatItem::getType() const
 }
 
 
-store::Item_t FloatItem::getEBV() const
+bool FloatItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN()) 
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2390,13 +2329,11 @@ store::Item* DecimalItem::getType() const
 }
 
 
-store::Item_t DecimalItem::getEBV() const
+bool DecimalItem::getEBV() const
 {
-  bool b = ( theValue != xs_decimal::zero() );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != xs_decimal::zero() );
 }
+
 
 zstring DecimalItem::getStringValue() const
 {
@@ -2485,12 +2422,9 @@ store::Item* IntegerItem::getType() const
 }
 
 
-store::Item_t IntegerItem::getEBV() const
+bool IntegerItem::getEBV() const
 {
-  bool b = ( theValue != xs_integer::zero() );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != xs_integer::zero() );
 }
 
 
@@ -2617,12 +2551,9 @@ store::Item* LongItem::getType() const
 }
 
 
-store::Item_t LongItem::getEBV() const
+bool LongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2678,13 +2609,11 @@ store::Item* IntItem::getType() const
 }
 
 
-store::Item_t IntItem::getEBV() const
+bool IntItem::getEBV() const
 {
-  bool b = ( theValue != (int32_t)0 );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != (int32_t)0 );
 }
+
 
 zstring IntItem::getStringValue() const
 {
@@ -2738,12 +2667,9 @@ store::Item* ShortItem::getType() const
 }
 
 
-store::Item_t ShortItem::getEBV() const
+bool ShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2799,12 +2725,9 @@ store::Item* ByteItem::getType() const
 }
 
 
-store::Item_t ByteItem::getEBV() const
+bool ByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2866,12 +2789,9 @@ store::Item* UnsignedLongItem::getType() const
 }
 
 
-store::Item_t UnsignedLongItem::getEBV() const
+bool UnsignedLongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2933,12 +2853,9 @@ store::Item* UnsignedIntItem::getType() const
 }
 
 
-store::Item_t UnsignedIntItem::getEBV() const
+bool UnsignedIntItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3000,12 +2917,9 @@ store::Item* UnsignedShortItem::getType() const
 }
 
 
-store::Item_t UnsignedShortItem::getEBV() const
+bool UnsignedShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3067,12 +2981,9 @@ store::Item* UnsignedByteItem::getType() const
 }
 
 
-store::Item_t UnsignedByteItem::getEBV() const
+bool UnsignedByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3122,9 +3033,9 @@ uint32_t BooleanItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t BooleanItem::getEBV() const
+bool BooleanItem::getEBV() const
 {
-  return this->getAtomizationValue();
+  return theValue;
 }
 
 
