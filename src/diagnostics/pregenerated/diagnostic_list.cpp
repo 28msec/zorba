@@ -1112,6 +1112,9 @@ ZorbaErrorCode JSDY0020( "JSDY0020" );
 ZorbaErrorCode JSDY0040( "JSDY0040" );
 
 
+ZorbaErrorCode JSDY0060( "JSDY0060" );
+
+
 ZorbaErrorCode ZJPE0001_ILLEGAL_CHARACTER( "ZJPE0001" );
 
 

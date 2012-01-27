@@ -62,6 +62,9 @@ namespace zorba { namespace simplestore {
   class UpdDestroyHashMap;
   class UpdInsertIntoHashMap;
   class UpdRemoveFromHashMap;
+#ifdef ZORBA_WITH_JSON
+  class UpdJSONInsert;
+#endif
 
 class PULPrimitiveFactory 
 {
@@ -417,6 +420,17 @@ class PULPrimitiveFactory
         const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
+
+#ifdef ZORBA_WITH_JSON
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdJSONInsert*
+  createUpdJSONInsert(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aTarget,
+        std::vector<store::Item_t>& aPairs);
+#endif
 
 }; /* class PULPrimitiveFactory */
     

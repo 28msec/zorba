@@ -74,3 +74,90 @@ declare function j:values($j as json-item()) as item()* external;
  : @return
  :)
 declare function j:value($p as pair()) as item() external;
+
+(:~
+ :
+ : @param $p
+ :
+ : @return
+ :
+ : @error j:JSDY0060 if pair with the given name already exists
+ :)
+declare updating function j:insert-into(
+  $o as object(),
+  $p as pair()*) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:insert-as-first(
+  $a as array(),
+  $i as item()*) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:insert-after(
+  $a as array(),
+  $pos as xs:integer,
+  $i as item()*) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:insert-before(
+  $a as array(),
+  $pos as xs:integer,
+  $i as item()*) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:insert-as-last(
+  $a as array(),
+  $i as item()*) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:delete(
+  $i as json-item(),
+  $selector as item()) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:rename(
+  $p as pair(),
+  $name as xs:string) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:replace-value(
+  $p as pair(),
+  $i as item()) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:replace-value(
+  $a as array(),
+  $pos as xs:integer,
+  $i as item()) external;

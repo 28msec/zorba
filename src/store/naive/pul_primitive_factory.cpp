@@ -530,5 +530,19 @@ PULPrimitiveFactory::createUpdPut(
     return new UpdRemoveFromHashMap(pul, aLoc, aQName, aKey);
   }
 
+#ifdef ZORBA_WITH_JSON
+  /***************************************************************************
+   ***************************************************************************/
+  UpdJSONInsert*
+  PULPrimitiveFactory::createUpdJSONInsert(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aObject,
+        std::vector<store::Item_t>& aPairs)
+  {
+    return new UpdJSONInsert(pul, aLoc, aObject, aPairs);
+  }
+#endif
+
 } /* namespace simplestore */ } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

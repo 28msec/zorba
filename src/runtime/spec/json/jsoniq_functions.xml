@@ -311,4 +311,237 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONInsertIntoIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:insert-into
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="insert-into" prefix="fn-jsoniq">
+        <zorba:param>object()</zorba:param>
+        <zorba:param>pair()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONInsertAsFirstIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:insert-as-first
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="insert-as-first" prefix="fn-jsoniq">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONInsertAfterIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:insert-after
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="insert-after" prefix="fn-jsoniq">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONInsertBeforeIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:insert-before
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="insert-before" prefix="fn-jsoniq">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONInsertAsLastIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:insert-as-last
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="insert-as-last" prefix="fn-jsoniq">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONDeleteIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:delete
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="delete" prefix="fn-jsoniq">
+        <zorba:param>json-item()</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONRenameIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:rename
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="rename" prefix="fn-jsoniq">
+        <zorba:param>pair()</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONReplaceValueIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      json:replace-value
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="replace-value" prefix="fn-jsoniq">
+        <zorba:param>pair()</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="replace-value" prefix="fn-jsoniq">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes producer="1"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

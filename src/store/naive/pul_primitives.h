@@ -1600,6 +1600,38 @@ public:
   void undo();
 };
 
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONInsert: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::UpdateConsts::UpdPrimKind theKind;
+  std::vector<store::Item_t>       theNewPairs;
+
+  UpdJSONInsert(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& target,
+        std::vector<store::Item_t>& pairs);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_INSERT;
+  }
+
+  void apply();
+  void undo();
+};
+#endif // ZORBA_WITH_JSON
+
 } /* namespace simplestore */
 } /* namespace zorba */
 #endif

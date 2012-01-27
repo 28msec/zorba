@@ -148,6 +148,86 @@ PlanIter_t fn_jsoniq_value::codegen(
 
 #endif
 
+PlanIter_t fn_jsoniq_insert_into::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONInsertIntoIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_insert_as_first::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONInsertAsFirstIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_insert_after::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONInsertAfterIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_insert_before::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONInsertBeforeIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_insert_as_last::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONInsertAsLastIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_delete::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONDeleteIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_rename::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONRenameIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_jsoniq_replace_value::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONReplaceValueIterator(sctx, loc, argv);
+}
+
 void populate_context_jsoniq_functions(static_context* sctx)
 {
 
@@ -344,6 +424,126 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #endif
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_insert_into,
+        (createQName("http://www.jsoniq.org/functions","","insert-into"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_INSERT_INTO_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_first,
+        (createQName("http://www.jsoniq.org/functions","","insert-as-first"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_INSERT_AS_FIRST_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_insert_after,
+        (createQName("http://www.jsoniq.org/functions","","insert-after"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_INSERT_AFTER_3);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_insert_before,
+        (createQName("http://www.jsoniq.org/functions","","insert-before"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_INSERT_BEFORE_3);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_last,
+        (createQName("http://www.jsoniq.org/functions","","insert-as-last"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_INSERT_AS_LAST_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_delete,
+        (createQName("http://www.jsoniq.org/functions","","delete"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_DELETE_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_rename,
+        (createQName("http://www.jsoniq.org/functions","","rename"), 
+        GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_RENAME_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_replace_value,
+        (createQName("http://www.jsoniq.org/functions","","replace-value"), 
+        GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_REPLACE_VALUE_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_jsoniq_replace_value,
+        (createQName("http://www.jsoniq.org/functions","","replace-value"), 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::FN_JSONIQ_REPLACE_VALUE_3);
+
+  }
+
 }
 
 

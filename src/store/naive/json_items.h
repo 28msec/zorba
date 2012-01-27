@@ -22,6 +22,7 @@
 
 #include <zorba/config.h>
 #include "atomic_items.h"
+#include "simple_collection.h"
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 
@@ -39,8 +40,6 @@ namespace simplestore
 
 namespace json
 {
-
-class JSONVisitor;
 
 /******************************************************************************
 
@@ -116,6 +115,8 @@ public:
 
   virtual Item* getType() const;
 
+  virtual SimpleCollection* getCollection() const = 0;
+
 #if 0
   bool equals(
         const store::Item*,
@@ -149,6 +150,7 @@ protected:
   typedef Pairs::iterator PairsIter;
 
   Pairs thePairs;
+  SimpleCollection* theCollection;
 
   class PairIterator : public store::Iterator
   {
@@ -171,6 +173,10 @@ protected:
   };
 
 public:
+  SimpleJSONObject()
+    : theCollection(0)
+  {}
+
   virtual ~SimpleJSONObject() {}
 
   void add(const JSONObjectPair_t& aPair);
@@ -182,6 +188,7 @@ public:
   store::Item* getPair(const store::Item_t& name) const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+  virtual SimpleCollection* getCollection() const { return theCollection; }
 };
 
 
@@ -212,6 +219,8 @@ public:
 
   virtual const store::Item*
   operator[](xs_integer&) const = 0;
+
+  virtual SimpleCollection* getCollection() const = 0;
 };
 
 
@@ -227,6 +236,7 @@ protected:
   typedef Pairs::iterator PairsIter;
 
   Pairs theContent;
+  SimpleCollection* theCollection;
 
   class ValuesIterator : public store::Iterator
   {
@@ -268,6 +278,10 @@ protected:
   friend class ValuesIterator;
 
 public:
+  SimpleJSONArray()
+    : theCollection(0)
+  {}
+
   virtual ~SimpleJSONArray() {}
 
   virtual void
@@ -286,6 +300,8 @@ public:
   getMember(const store::Item_t& aPosition) const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
+  virtual SimpleCollection* getCollection() const { return theCollection; }
 };
 
 
