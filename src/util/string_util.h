@@ -797,8 +797,9 @@ to_string( T const &t, OutputStringType *out ) {
 template<typename T,class OutputStringType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
 to_string( T p, OutputStringType *out ) {
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
   if ( p )
-    to_string( *p, out );
+    to_string( *static_cast<T_const_ptr>( p ), out );
   else
     *out = "<null>";
 }
