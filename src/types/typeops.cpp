@@ -288,6 +288,15 @@ bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
+bool TypeOps::is_numeric(store::SchemaTypeCode type)
+{
+  return store::XS_FLOAT <= type && type <= store::XS_POSITIVE_INTEGER;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_numeric(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);

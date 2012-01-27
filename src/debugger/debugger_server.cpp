@@ -18,6 +18,9 @@
 #include "debugger_server.h"
 
 #include <sstream>
+#ifndef WIN32
+# include <signal.h>
+#endif
 
 #include <zorba/base64.h>
 #include <zorba/util/uri.h>
@@ -34,6 +37,31 @@
 
 namespace zorba {
 
+bool theInterruptBreak = false;
+
+// this will make sure the zorba when run in debug (i.e. with the debugger)
+// will not terminate when Ctrl-C is pressed but trigger a query interruption
+// break through the theInterruptBreak variable that is continuously monitored
+// by the debugger commons through the debugger runtime
+#ifdef WIN32
+BOOL WINAPI
+DebuggerServer::ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    theInterruptBreak = true;
+    return true;
+  }
+  return false;
+}
+#else
+void
+DebuggerServer::ctrlC_Handler(int lParam)
+{
+  theInterruptBreak = true;
+}
+#endif
+
+
 DebuggerServer::DebuggerServer(
   XQueryImpl*               aQuery,
   Zorba_SerializerOptions&  aSerializerOptions,
@@ -47,7 +75,8 @@ DebuggerServer::DebuggerServer(
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
-    theCommunicator, aHandler, aCallbackData);
+    theCommunicator, aHandler, aCallbackData,
+    &theInterruptBreak);
 #ifdef WIN32
   theFileName = aQuery->getFileName().str();
 #else
@@ -66,9 +95,17 @@ DebuggerServer::~DebuggerServer()
   delete theCommunicator;
 }
 
+
 bool
 DebuggerServer::run()
 {
+  // add the interrupt handlers to catch Ctrl-C
+  #ifdef WIN32
+    SetConsoleCtrlHandler(DebuggerServer::ctrlC_Handler, TRUE);
+  #else
+    signal(SIGINT, ctrlC_Handler);
+  #endif
+
   theCommunicator->connect();
 
   if (!theCommunicator->isConnected()) {
@@ -78,6 +115,8 @@ DebuggerServer::run()
   init();
 
   std::string lCommand;
+  std::string lCommandName;
+  int lTransactionID = 0;
 
   while (!theStopping &&
       theRuntime->getExecutionStatus() != QUERY_DETACHED) {
@@ -85,6 +124,9 @@ DebuggerServer::run()
     // read next command
     theCommunicator->receive(lCommand);
     DebuggerCommand lCmd = DebuggerCommand(lCommand);
+
+    lCommandName = lCmd.getName();
+    lCmd.getArg("i", lTransactionID);
 
     if (theRuntime->getExecutionStatus() == QUERY_TERMINATED) {
       // clone the existing runtime
@@ -108,7 +150,16 @@ DebuggerServer::run()
   }
 
   theRuntime->terminate();
-  theRuntime->resetRuntime();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << lCommandName << "\" "
+    << "status=\"stopped\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << lTransactionID << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
+
+  //theRuntime->resetRuntime();
   theRuntime->join();
 
   return true;
@@ -473,10 +524,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       } else if (aCommand.getName() == "stop") {
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());
-        theStopping = true;
+        // sending the zorba extensions flag, the debugger server will not terminate
+        // when the stop command is sent. This way the zorba debugger client can
+        // perform multiple execution of the same query even when the user terminates
+        // the execution using the stop command.
+        // NOTE: theStopping is controlling the main debugger server loop
+        if (!lZorbaExtensions) {
+          theStopping = true;
+        }
 
-        lResponse << "reason=\"ok\" status=\"stopped\" ";
+        lResponse << "status=\"stopping\" reason=\"ok\"";
         lResponse << ">";
+
         theRuntime->terminateRuntime();
 
       } else if (aCommand.getName() == "stack_depth") {
@@ -531,8 +590,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         theRuntime->stepOver();
         return "";
       } else if (aCommand.getName() == "step_out") {
-        ExecutionStatus lStatus = theRuntime->getExecutionStatus();
-        if (lStatus != QUERY_SUSPENDED) {
+        if (theRuntime->getExecutionStatus() != QUERY_SUSPENDED) {
           return buildErrorResponse(lTransactionID, lCmdName, 6, "Can not step out since the execution is not started.");
         }
         theRuntime->setLastContinuationCommand(lTransactionID, aCommand.getName());

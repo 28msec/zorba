@@ -29,7 +29,7 @@
 #else
 # include <windows.h>
   typedef DWORD ThreadId;
-  typedef HANDLE ProcessId;
+  typedef DWORD ProcessId;
   typedef DWORD ExitCode;
 # define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif

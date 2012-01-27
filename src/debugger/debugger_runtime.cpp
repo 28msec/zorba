@@ -60,19 +60,20 @@ DebuggerRuntime::DebuggerRuntime(
   Zorba_SerializerOptions& serializerOptions,
   DebuggerCommunicator* communicator,
   itemHandler aHandler,
-  void* aCallBackData)
+  void* aCallBackData,
+  bool* aInterruptBreak)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
     theCommunicator(communicator),
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
-    theNotSendTerminateEvent(false),
     thePlanIsOpen(false),
     theSerializer(0),
     theItemHandler(aHandler),
     theCallbackData(aCallBackData),
-    theLastContinuationCommand()
+    theLastContinuationCommand(),
+    theInterruptBreak(aInterruptBreak)
 {
 }
 
@@ -89,6 +90,14 @@ DebuggerRuntime::run()
   theWrapper->open();
   thePlanIsOpen = true;
   runQuery();
+
+  std::stringstream lResult;
+  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
+    << "status=\"stopping\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
 }
 
 void
@@ -107,7 +116,6 @@ DebuggerRuntime::resetRuntime()
   theWrapper = theQuery->generateWrapper();
   thePlanIsOpen = false;
   theExecStatus = QUERY_IDLE;
-  theNotSendTerminateEvent = false;
   reset();
 }
 
@@ -314,6 +322,7 @@ DebuggerRuntime::resumeRuntime()
   if (theExecStatus != QUERY_SUSPENDED) {
     return;
   }
+  *theInterruptBreak = false;
   theExecStatus = QUERY_RUNNING;
   resume();
 }
@@ -324,15 +333,6 @@ DebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theExecStatus = QUERY_TERMINATED;
-
-  std::stringstream lResult;
-  lResult << "<response command=\"" << theLastContinuationCommand.second << "\" "
-    << "status=\"stopping\" "
-    << "reason=\"ok\" "
-    << "transaction_id=\"" << theLastContinuationCommand.first << "\">"
-    << "</response>";
-  theCommunicator->send(lResult.str());
-  // TODO: something more here?
 }
 
 
@@ -503,10 +503,14 @@ DebuggerRuntime::stepOut()
 }
 
 
-void
-DebuggerRuntime::setNotSendTerminateEvent()
+bool
+DebuggerRuntime::getAndClearInterruptBreak()
 {
-  theNotSendTerminateEvent = true;
+  bool lMustBreak = *theInterruptBreak;
+  if (lMustBreak) {
+    *theInterruptBreak = false;
+  }
+  return lMustBreak;
 }
 
 
@@ -710,7 +714,8 @@ DebuggerRuntime::clone()
     theSerializerOptions,
     theCommunicator,
     theItemHandler,
-    theCallbackData);
+    theCallbackData,
+    theInterruptBreak);
 
   lNewRuntime->theBreakpoints = theBreakpoints;
   return lNewRuntime;

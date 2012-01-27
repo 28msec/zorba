@@ -20,8 +20,6 @@
 #include <list>
 #include <vector>
 
-#include <zorba/config.h>
-
 namespace zorba {
   namespace regex_ascii{
 

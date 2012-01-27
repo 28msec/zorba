@@ -21,8 +21,6 @@
 #include <cwchar>
 #include <string>
 
-#include <zorba/config.h>
-
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "unicode_util.h"
@@ -319,7 +317,6 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
  * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_string( unicode::char_type const *in, unicode::size_type in_len,
                 storage_type **out, size_type *out_len = nullptr );
 
@@ -406,7 +403,6 @@ bool to_string( unicode::string const &in, StringType *out ) {
  * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
                 size_type *out_len = nullptr );
 
@@ -476,7 +472,6 @@ bool to_string( std::wstring const &in, StringType *out ) {
  * the wchar_t string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
                  unicode::size_type *out_len );
 

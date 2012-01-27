@@ -78,8 +78,6 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  store::Item_t getAtomizationValue() const;
-
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   bool castToLong(store::Item_t& result) const;
@@ -145,7 +143,7 @@ public:
       return theBaseItem->compare(other->getBaseItem(), timezone, collation);
   }
 
-  store::Item_t getEBV() const { return theBaseItem->getEBV(); }
+  bool getEBV() const { return theBaseItem->getEBV(); }
 
   zstring getStringValue() const { return theBaseItem->getStringValue(); }
 
@@ -312,7 +310,12 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const;
 
-  store::Item_t getEBV() const;
+  long compare(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* collation = 0) const;
+
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -367,7 +370,7 @@ public:
 
   store::Item* getType() const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -520,7 +523,7 @@ public:
     return theValue.compare(other->getString());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -741,7 +744,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -754,8 +757,11 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 };
 
@@ -787,7 +793,7 @@ public:
         long timezone = 0,
         const XQPCollator* collator = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1053,7 +1059,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1113,7 +1119,7 @@ public:
     return theValue.compare(other->getDurationValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1172,7 +1178,7 @@ public:
     return theValue.compare(other->getDoubleValue());
   }
 
-	store::Item_t getEBV( ) const;
+	bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1233,7 +1239,7 @@ public:
     return getDoubleValue().compare(other->getDoubleValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1310,7 +1316,7 @@ public:
     return theValue.compare(other->getDecimalValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1363,7 +1369,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1531,7 +1537,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1613,7 +1619,7 @@ public:
     }
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1693,7 +1699,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1777,7 +1783,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1859,7 +1865,7 @@ protected:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1950,7 +1956,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -2043,7 +2049,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -2138,7 +2144,7 @@ public:
     }
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -2192,7 +2198,7 @@ public:
             (theValue == false ? -1 : 1));
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
