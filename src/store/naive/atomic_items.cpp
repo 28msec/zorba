@@ -615,27 +615,24 @@ QNameItem::QNameItem(const char* aNamespace,
                      const char* aLocalName)
   : isInPool(false)
 {
-  initializeAsQNameNotInPool(zstring(aNamespace), zstring(aPrefix), zstring(aLocalName));
+  initializeAsQNameNotInPool(zstring(aNamespace),
+                             zstring(aPrefix),
+                             zstring(aLocalName));
 }
   
 QNameItem::QNameItem(const zstring& aNamespace,
-            const zstring& aPrefix,
-            const zstring& aLocalName)
+                     const zstring& aPrefix,
+                     const zstring& aLocalName)
   : isInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
 }
-  
-QNameItem::~QNameItem()
-{
-}
-
 
 void QNameItem::free()
 {
   if (isInPool)
   {
-      GET_STORE().getQNamePool().remove(this);
+    GET_STORE().getQNamePool().remove(this);
   } else {
     delete this;
   }

@@ -336,6 +336,26 @@ public:
 ********************************************************************************/
 class QNameItem : public AtomicItem
 {
+  /*****************************************************************************
+   Instances of this class can be classified into two categories:
+   - QNames in the pool. They are owned by the pool. There
+   can be only one QName in the pool with a given namespace, prefix and local name.
+   - QNames that are not in the pool. The user owns them and is responsible
+   for their destruction. The ternary constructors construct such QNames.
+   
+   Normalized QNames are QNames without a prefix and that are in the
+   pool. There is only one normalized QName with a given namespace and local name,
+   so that direct pointer comparison can be used to compare them.
+   
+   Each QName points to the equivalent normalized QName (same namespace and prefix)
+   which provides an efficient way of comparing two QNames.
+
+   A newly constructed instance of this class can be initialized as a normalized
+   QName (always in the pool), as an unnormalized QName in the pool or as an
+   unnormalized QName not in the pool. It can also be invalidated and initialized
+   again.
+  ****************************************************************************/
+  
   // The QName pool is the only class authorized to edit namespace/prefix/local name.
   friend class QNamePool;
 
@@ -345,19 +365,17 @@ private:
   zstring          theLocal;
 
   // Points to the corresponding normalized QName in the pool (pool owns this pointer).
-  // The normalized QName is the unique QName in the pool that has the same
-  // namespace and local name ,but no prefix. This allows direct pointer comparison.
   const QNameItem* theNormalizedQName;
   
   bool             isInPool;
 
-  // Used by the pool.
+  // Used by the pool for managing the cache.
   uint16_t         thePosition;
   uint16_t         theNextFree;
   uint16_t         thePrevFree;
 
 public:
-  virtual ~QNameItem();
+  virtual ~QNameItem() {}
 
   // zorba::store::Item interface.
   void appendStringValue(zstring& buf) const;
@@ -368,9 +386,7 @@ public:
     
   store::Item_t getEBV() const;
     
-  const zstring& getLocalName() const {
-    return theLocal;
-  }
+  const zstring& getLocalName() const { return theLocal; }
   
   const zstring& getNamespace() const { return theNamespace; }
     
@@ -387,8 +403,9 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   // Class-specific extensions.
-  // Returns a normalized QNames. Pointer comparison on normalized QNames is
-  // equivalent to using the equals() method.
+  // Returns the normalized QName. Pointer comparison on normalized QNames is
+  // equivalent to using the equals() method. For example, a pointer to the
+  // normalized QName can be used as a key.
   const QNameItem* getNormalized() const { return theNormalizedQName; }
   
   bool isBaseUri() const;
@@ -398,9 +415,11 @@ public:
   zstring show() const;
 
 protected:
-  QNameItem() : isInPool(true), thePosition(0), theNextFree(0), thePrevFree(0)
-  {
-  }
+  QNameItem() : theNormalizedQName(NULL),
+                isInPool(true),
+                thePosition(0),
+                theNextFree(0),
+                thePrevFree(0) {}
   
   QNameItem(const char* aNamespace,
             const char* aPrefix,
@@ -433,10 +452,13 @@ protected:
   void initializeAsNormalizedQName(const zstring& aNamespace,
                                    const zstring& aLocalName)
   {
+    assert(!isValid());
+
+    theNormalizedQName = this;
     theNamespace = aNamespace;
     thePrefix.clear();
     theLocal = aLocalName;
-    theNormalizedQName = this;
+
     assert(isNormalized());
     assert(isValid());
   }
@@ -444,12 +466,13 @@ protected:
   void initializeAsUnnormalizedQName(const QNameItem* aNormalizedQName,
                                      const zstring& aPrefix)
   {
+    assert(!isValid());
+
     theNormalizedQName = aNormalizedQName;
-    
     theNamespace = theNormalizedQName->theNamespace;
     thePrefix = aPrefix;
     theLocal = theNormalizedQName->theLocal;
-    
+
     assert(!isNormalized());
     assert(isValid());
   }
@@ -460,7 +483,10 @@ protected:
   
   void invalidate()
   {
+    assert(isValid());
+
     theNormalizedQName = NULL;
+
     assert(!isValid());
   }
 
