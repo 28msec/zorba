@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WORK_DEFAULT=/tmp
-XQTSURL_DEFAULT=http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_1_0_3.zip
+XQTSURL_DEFAULT=http://zorbatest.lambda.nu:8080/~spungi/XQTS_250112.zip
 
 die() {
   echo
