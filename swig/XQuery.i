@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 %{  // start Implementation
 
 class Iterator 
@@ -67,6 +68,40 @@ public:
 }; // class Iterator
 
 
+
+
+
+class IStream
+{
+private:
+  std::istream* theIStream;
+
+public:
+  IStream() {}
+  IStream(const IStream& anIStream) : theIStream(anIStream.theIStream) {}
+  IStream(std::istream& anIStream)   : theIStream(&anIStream) {}
+
+  std::string readToString()
+  {
+    std::stringstream lStream;
+
+    lStream << theIStream;
+    return lStream.str();
+  }
+
+
+  int read(char *BYTE, int LENGTH)
+  {
+    theIStream->read(BYTE, LENGTH);
+    //theIStream->read(byteArray, len);
+    int readLength = theIStream->gcount();
+    return readLength;
+  }
+
+
+}; // class IStream
+
+
 class Item 
 {
   friend class Iterator;
@@ -84,13 +119,10 @@ public:
   Item(const Item& aItem) : theItem(aItem.theItem) {}
   Item(const zorba::Item& aZItem) : theItem(aZItem) {}
 
-  static Item createEmptyItem() 
+  static Item createEmptyItem()
   { return Item(); }
 
-  std::string getStringValue() const 
-  { return std::string(theItem.getStringValue().c_str()); }
-  
-  std::string serialize() const 
+  std::string serialize() const
   {
     std::stringstream lStream; 
     Zorba_SerializerOptions_t lOptions; 
@@ -100,6 +132,22 @@ public:
     return lStream.str();
   }
   
+  void serializeToOutputStream(std::ostream &outStream) const
+  {
+    Zorba_SerializerOptions_t lOptions;
+    zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(lOptions);
+    zorba::SingletonItemSequence lSequence(theItem);
+    lSerializer->serialize(&lSequence, outStream);
+  }
+
+  IStream getStream()
+  {
+    return IStream(theItem.getStream());
+  }
+
+  std::string getStringValue() const
+  { return std::string(theItem.getStringValue().c_str()); }
+
   Iterator getAtomizationValue () const
   { return Iterator(theItem.getAtomizationValue()); }
   
@@ -274,10 +322,14 @@ Iterator::next(Item& aItem)
 }
 
 
-%}  // end   Implementation
+
+%}          // end   Implementation
+
 
 
 // Interfaces
+
+
 
 class DynamicContext
 {
@@ -292,12 +344,25 @@ public:
   setContextItem(Item);
 };
 
-class Item 
+
+class IStream
+{
+public:
+  std::string readToString();
+  int read(char * BYTE, long LENGTH);
+}; // class IStream
+
+
+class Item
 {
 public: 
   static Item createEmptyItem();
-  std::string getStringValue() const;
+
   std::string serialize() const;
+  void serializeToOutputStream(std::ostream &outStream) const;
+  IStream getStream();
+
+  std::string getStringValue() const;
   Iterator getAtomizationValue () const;
   Iterator getAttributes () const;
   bool getBooleanValue () const;
@@ -319,6 +384,7 @@ public:
   bool isPosOrNegInf () const;
 }; // class Item
 
+
 class Iterator 
 {
 public:
@@ -327,6 +393,7 @@ public:
   void close();
   void destroy();
 }; // class Iterator
+
 
 class XQuery 
 {
