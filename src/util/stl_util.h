@@ -91,12 +91,50 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Determines whether the given type \c T is efficiently passed by value.
+ */
+template<typename T>
+struct is_passable_by_value {
+  static bool const value =
+        ZORBA_TR1_NS::is_arithmetic<T>::value
+    ||  ZORBA_TR1_NS::is_enum<T>::value
+    ||  ZORBA_TR1_NS::is_pointer<T>::value
+    ||  ZORBA_TR1_NS::is_reference<T>::value
+    ||  ZORBA_TR1_NS::is_member_function_pointer<T>::value;
+};
+
+/**
+ * Useful traits when declaring functions.
+ * This class is similar to boost::call_traits.
+ *
+ * @tparam T A type that is used for a function formal argument or return type.
+ */
+template<typename T,bool = is_passable_by_value<T>::value>
+struct call_traits {
+  /**
+   * A type that is guaranteed to be the most efficient to use as a formal
+   * argument.
+   */
+  typedef T const arg_type;
+};
+
+/**
+ * Partial specialization for when \c T is not efficiently passed by value.
+ */
+template<typename T>
+struct call_traits<T,false> {
+  typedef T const& arg_type;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
  * A less-verbose way to determine whether the given set<T> contains a
  * particular element.
  */
 template<typename T> inline
-bool contains( std::set<T> const &s, T const &t ) {
-  return s.find( t ) != s.end();
+bool contains( std::set<T> const &s, typename call_traits<T>::arg_type v ) {
+  return s.find( v ) != s.end();
 }
 
 /**
@@ -196,26 +234,6 @@ typename StackType::value_type pop_stack( StackType &s ) {
   return value;
 }
 
-template<typename T>
-struct is_pass_by_value {
-  static bool const value =
-        ZORBA_TR1_NS::is_arithmetic<T>::value
-    ||  ZORBA_TR1_NS::is_enum<T>::value
-    ||  ZORBA_TR1_NS::is_pointer<T>::value
-    ||  ZORBA_TR1_NS::is_reference<T>::value
-    ||  ZORBA_TR1_NS::is_member_function_pointer<T>::value;
-};
-
-template<typename T,bool = is_pass_by_value<T>::value>
-struct optimal_arg {
-  typedef T type;
-};
-
-template<typename T>
-struct optimal_arg<T,false> {
-  typedef T const& type;
-};
-
 /**
  * A less verbose way to compare the top value of a stack for equality with a
  * given value.
@@ -223,7 +241,7 @@ struct optimal_arg<T,false> {
 template<class StackType> inline
 bool top_stack_equals(
     StackType const &s,
-    typename optimal_arg<typename StackType::value_type>::type v ) {
+    typename call_traits<typename StackType::value_type>::arg_type v ) {
   return !s.empty() && s.top() == v;
 }
 
