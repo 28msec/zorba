@@ -237,7 +237,7 @@ void EvalIterator::copyOuterVariables(
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
-    if (!outerDctx->exists_variable(globalVarId))
+    if (!outerDctx->is_set_variable(globalVarId))
       continue;
 
     outerDctx->get_variable(globalVarId,
@@ -296,7 +296,7 @@ void EvalIterator::setExternalVariables(
 
   for (; sctxIte != sctxEnd; ++sctxIte)
   {
-    sctxIte->second->getVariables(innerVars);
+    sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
   FOR_EACH(std::vector<var_expr_t>, ite, innerVars)

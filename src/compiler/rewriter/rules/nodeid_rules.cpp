@@ -680,17 +680,33 @@ void MarkNodeCopyProps::applyInternal(
 
     if (f->isUdf())
     {
-      UdfCalls::iterator ite = rCtx.theProcessedUDFCalls.find(e);
+      user_function* udf = static_cast<user_function*>(f);
 
-      if (ite == rCtx.theProcessedUDFCalls.end())
+      UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
+
+      if (ite == theProcessedUDFCalls.end())
       {
-        rCtx.theProcessedUDFCalls.insert(e);
-
-        user_function* udf = static_cast<user_function*>(f);
+        theProcessedUDFCalls.insert(e);
 
         UDFCallChain nextUdfCall(e, &udfCaller);
 
         applyInternal(rCtx, udf->getBody(), nextUdfCall);
+      }
+      else
+      {
+        csize numArgs = e->num_args();
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          var_expr* argVar = udf->getArgVar(i);
+
+          if (theSourceFinder->theVarSourcesMap.find(argVar) !=
+              theSourceFinder->theVarSourcesMap.end())
+          {
+            std::vector<expr*> sources;
+            theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
+            markSources(sources);
+          }
+        }
       }
     } // f->isUdf()
     else
@@ -1253,7 +1269,9 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   case while_expr_kind:
   case flowctl_expr_kind:
   case exit_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
+#endif
   default:
     ZORBA_ASSERT(false);
   }

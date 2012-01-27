@@ -21,6 +21,12 @@
 #include <map>
 #include <vector>
 
+#include "config.h"
+
+#ifdef ZORBA_HAVE_LIBEDIT_H
+# include <histedit.h>
+#endif
+
 
 namespace zorba { namespace debugger {
 
@@ -29,6 +35,7 @@ class UntypedCommand;
 class CommandPrompt
 {
   public:
+    CommandPrompt();
     ~CommandPrompt();
 
   public:
@@ -51,6 +58,11 @@ class CommandPrompt
   private:
     std::map<std::string, UntypedCommand*>  theCommands;
     std::vector<std::string>                theLastArgs;
+
+#ifdef ZORBA_HAVE_LIBEDIT_H
+    EditLine*                               theEditLine;
+    History*                                theHistory;
+#endif
 };  
 
   

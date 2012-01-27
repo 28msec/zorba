@@ -830,6 +830,48 @@ StringIsStreamableIterator::~StringIsStreamableIterator() {}
 // </StringIsStreamableIterator>
 
 
+// <StringSplitIterator>
+const char* StringSplitIterator::class_name_str = "StringSplitIterator";
+StringSplitIterator::class_factory<StringSplitIterator>
+StringSplitIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringSplitIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringSplitIterator::class_versions_count =
+sizeof(StringSplitIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringSplitIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringSplitIterator::~StringSplitIterator() {}
+
+StringSplitIteratorState::StringSplitIteratorState() {}
+
+StringSplitIteratorState::~StringSplitIteratorState() {}
+
+
+void StringSplitIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theNextStartPos = 0;
+}
+
+void StringSplitIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theNextStartPos = 0;
+}
+// </StringSplitIterator>
+
+
 
 }
 

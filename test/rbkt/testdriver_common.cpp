@@ -190,7 +190,7 @@ Zorba_CompilerHints getCompilerHints()
 
   lHints.for_serialization_only = false;
 
-  if (zorba::Properties::instance()->serializeOnlyQuery())
+  if (zorba::Properties::instance()->serializeOnlyQuery() > 0)
   {
     lHints.for_serialization_only = true;
   }
