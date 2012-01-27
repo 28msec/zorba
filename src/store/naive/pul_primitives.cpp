@@ -29,6 +29,7 @@
 #include "store/naive/node_factory.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/simple_index_value.h"
+#include "store/naive/json_items.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -36,8 +37,10 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
+using namespace zorba::simplestore::json;
 
 namespace zorba {
+
 namespace simplestore {
 
 #if 0
@@ -1851,6 +1854,43 @@ void UpdRemoveFromHashMap::apply()
 void UpdRemoveFromHashMap::undo()
 {
 }
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONInsert::UpdJSONInsert(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      std::vector<store::Item_t>& pairs)
+  : UpdatePrimitive(pul, loc, target)
+{
+  theNewPairs.resize(pairs.size());
+  std::copy(pairs.begin(), pairs.end(), theNewPairs.begin());
+}
+
+void UpdJSONInsert::apply()
+{
+  ZORBA_ASSERT(theTarget->isJSONObject());
+
+  JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+
+  for (std::vector<store::Item_t>::const_iterator lIter = theNewPairs.begin();
+       lIter != theNewPairs.end();
+       ++lIter)
+  {
+    ZORBA_ASSERT((*lIter)->isJSONPair());
+    JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
+    lObj->add(lPair);
+  }
+}
+
+void UpdJSONInsert::undo()
+{
+}
+
+#endif
 
 } // namespace simplestore
 } // namespace zorba

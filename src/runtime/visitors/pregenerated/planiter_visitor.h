@@ -288,6 +288,22 @@ namespace zorba{
 #ifdef ZORBA_WITH_JSON
     class JSONSizeIterator;
 #endif
+    class JSONInsertIntoIterator;
+
+    class JSONInsertAsFirstIterator;
+
+    class JSONInsertAfterIterator;
+
+    class JSONInsertBeforeIterator;
+
+    class JSONInsertAsLastIterator;
+
+    class JSONDeleteIterator;
+
+    class JSONRenameIterator;
+
+    class JSONReplaceValueIterator;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -1016,6 +1032,30 @@ public:
     virtual void beginVisit ( const JSONSizeIterator& ) = 0;
     virtual void endVisit   ( const JSONSizeIterator& ) = 0;
 #endif
+    virtual void beginVisit ( const JSONInsertIntoIterator& ) = 0;
+    virtual void endVisit   ( const JSONInsertIntoIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONInsertAsFirstIterator& ) = 0;
+    virtual void endVisit   ( const JSONInsertAsFirstIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONInsertAfterIterator& ) = 0;
+    virtual void endVisit   ( const JSONInsertAfterIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONInsertBeforeIterator& ) = 0;
+    virtual void endVisit   ( const JSONInsertBeforeIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONInsertAsLastIterator& ) = 0;
+    virtual void endVisit   ( const JSONInsertAsLastIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONDeleteIterator& ) = 0;
+    virtual void endVisit   ( const JSONDeleteIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONRenameIterator& ) = 0;
+    virtual void endVisit   ( const JSONRenameIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONReplaceValueIterator& ) = 0;
+    virtual void endVisit   ( const JSONReplaceValueIterator& ) = 0;
+
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
 

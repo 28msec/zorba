@@ -101,6 +101,10 @@ public:
     UP_DESTROY_HASHMAP,
     UP_INSERT_INTO_HASHMAP,
     UP_REMOVE_FROM_HASHMAP
+
+#ifdef ZORBA_WITH_JSON
+    ,UP_JSON_INSERT
+#endif
   };
 
   static bool isRename(UpdPrimKind k)
@@ -209,6 +213,10 @@ static std::string toString(UpdPrimKind k)
       return "setElementType";
     case UP_REVALIDATE:
       return "revalidate";
+#ifdef ZORBA_WITH_JSON
+    case UP_JSON_INSERT:
+      return "jsonInsert";
+#endif
     default:
       return "unknownUpdatePrimitive";
   }

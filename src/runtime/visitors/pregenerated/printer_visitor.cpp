@@ -1845,6 +1845,118 @@ void PrinterVisitor::endVisit ( const JSONSizeIterator& ) {
 
 #endif
 
+// <JSONInsertIntoIterator>
+void PrinterVisitor::beginVisit ( const JSONInsertIntoIterator& a) {
+  thePrinter.startBeginVisit("JSONInsertIntoIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONInsertIntoIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONInsertIntoIterator>
+
+
+// <JSONInsertAsFirstIterator>
+void PrinterVisitor::beginVisit ( const JSONInsertAsFirstIterator& a) {
+  thePrinter.startBeginVisit("JSONInsertAsFirstIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONInsertAsFirstIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONInsertAsFirstIterator>
+
+
+// <JSONInsertAfterIterator>
+void PrinterVisitor::beginVisit ( const JSONInsertAfterIterator& a) {
+  thePrinter.startBeginVisit("JSONInsertAfterIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONInsertAfterIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONInsertAfterIterator>
+
+
+// <JSONInsertBeforeIterator>
+void PrinterVisitor::beginVisit ( const JSONInsertBeforeIterator& a) {
+  thePrinter.startBeginVisit("JSONInsertBeforeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONInsertBeforeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONInsertBeforeIterator>
+
+
+// <JSONInsertAsLastIterator>
+void PrinterVisitor::beginVisit ( const JSONInsertAsLastIterator& a) {
+  thePrinter.startBeginVisit("JSONInsertAsLastIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONInsertAsLastIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONInsertAsLastIterator>
+
+
+// <JSONDeleteIterator>
+void PrinterVisitor::beginVisit ( const JSONDeleteIterator& a) {
+  thePrinter.startBeginVisit("JSONDeleteIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONDeleteIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONDeleteIterator>
+
+
+// <JSONRenameIterator>
+void PrinterVisitor::beginVisit ( const JSONRenameIterator& a) {
+  thePrinter.startBeginVisit("JSONRenameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONRenameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONRenameIterator>
+
+
+// <JSONReplaceValueIterator>
+void PrinterVisitor::beginVisit ( const JSONReplaceValueIterator& a) {
+  thePrinter.startBeginVisit("JSONReplaceValueIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONReplaceValueIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONReplaceValueIterator>
+
+
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {
   thePrinter.startBeginVisit("SqrtIterator", ++theId);

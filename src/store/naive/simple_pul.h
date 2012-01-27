@@ -202,6 +202,13 @@ protected:
   std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
   std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
 
+#ifdef ZORBA_WITH_JSON
+  // jsoniq primitives
+  std::vector<UpdatePrimitive*>      theJSONInsertList;
+  std::vector<UpdatePrimitive*>      theJSONDeleteList;
+#endif
+
+
 public:
   CollectionPul(PULImpl* pul, SimpleCollection* collection);
 
@@ -529,6 +536,54 @@ public:
         const QueryLoc* aQueryLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
+
+#ifdef ZORBA_WITH_JSON
+  // jsoniq primitives
+
+  virtual void addJSONDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& node);
+
+  virtual void addJSONInsertInto(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& children);
+
+  virtual void addJSONInsertFirst(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& children);
+
+  virtual void addJSONInsertLast(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& children);
+
+  virtual void addJSONInsertBefore(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& siblings);
+
+  virtual void addJSONInsertAfter(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& siblings);
+  
+  virtual void addJSONInsertAttributes(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& attrs);
+
+  virtual void addJSONReplaceValue(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        store::Item_t& newValue);
+
+  virtual void addJSONRename(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        store::Item_t& newName);
+#endif
 
   // merge
   void mergeUpdates(store::Item* other);

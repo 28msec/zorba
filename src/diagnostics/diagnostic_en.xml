@@ -2362,6 +2362,12 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0060">
+      <comment>error raised by insert-into</comment>
+      <value>"$1": pair already exists</value>
+    </diagnostic>
+
+
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">

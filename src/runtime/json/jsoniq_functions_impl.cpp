@@ -37,6 +37,7 @@
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 
+#include "store/api/pul.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -501,6 +502,169 @@ JSONSizeIterator::nextImpl(
 }
 
 
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONInsertIntoIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lObject;
+  store::Item_t lTmp;
+  std::vector<store::Item_t> lPairs;
+  std::auto_ptr<store::PUL> pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lObject, theChildren[0].getp(), planState);
+
+  while (consumeNext(lTmp, theChildren[1].getp(), planState))
+  {
+    if (lObject->getPair(lTmp->getName()))
+    {
+      RAISE_ERROR(zerr::JSDY0060, loc,
+          ERROR_PARAMS(lTmp->getName()->getStringValue()));
+    }
+
+    // TODO copy the input
+    lPairs.push_back(lTmp);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONInsertInto(&loc, lObject, lPairs);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONInsertAsFirstIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONInsertAfterIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONInsertBeforeIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONInsertAsLastIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONDeleteIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONRenameIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONReplaceValueIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lInput;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
 #endif /* ZORBA_WITH_JSON */

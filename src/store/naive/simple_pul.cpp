@@ -185,7 +185,12 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-  assert(target->isNode());
+  assert(target->isNode()
+#ifdef ZORBA_WITH_JSON
+      || target->isJSONObject()
+      || target->isJSONArray()
+#endif
+      );
 
   const XmlNode* n = static_cast<const XmlNode*>(target);
 
@@ -1087,6 +1092,112 @@ void PULImpl::addRemoveFromHashMap(
   theRemoveFromHashMapList.push_back(upd);
 }
 
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONDelete(
+   const QueryLoc* aQueryLoc,
+   store::Item_t& node)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertInto(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& pairs)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONInsert(
+      pul, aQueryLoc, target, pairs);
+
+  pul->theJSONInsertList.push_back(upd);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertFirst(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& children)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertLast(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& children)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertBefore(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& siblings)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertAfter(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& siblings)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONInsertAttributes(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& attrs)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONReplaceValue(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     store::Item_t& newValue)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONRename(
+     const QueryLoc* aQueryLoc,
+     store::Item_t& target,
+     store::Item_t& newName)
+{
+}
+#endif // ZORBA_WITH_JSON
 
 /*******************************************************************************
   Merge PULs
@@ -2056,6 +2167,10 @@ void CollectionPul::applyUpdates()
     applyList(theReplaceContentList);
     applyList(theDeleteList);
 
+#ifdef ZORBA_WITH_JSON
+    applyList(theJSONInsertList);
+#endif
+
     // Check if any inconsistencies that were detected during the application
     // of XQUF primitives were only temporary and have been resolved by now.
     // If not, an exception will be raised, and the updates will be undone
@@ -2295,6 +2410,10 @@ void CollectionPul::undoUpdates()
         merge.theMergedNodes[j]->connect(merge.theParent, merge.thePos + j);
     }
     theMergeList.clear();
+
+#ifdef ZORBA_WITH_JSON
+    undoList(theJSONInsertList);
+#endif
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);

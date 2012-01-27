@@ -272,6 +272,56 @@ public:
         const Item_t& aQName,
         const std::vector<Item_t>& aKey) = 0;
 
+#ifdef ZORBA_WITH_JSON
+  // functions to add primitives for jsoniq items
+
+  virtual void addJSONDelete(
+      const QueryLoc* aQueryLoc,
+      Item_t& node) = 0;
+
+  virtual void addJSONInsertInto(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& children) = 0;
+
+  virtual void addJSONInsertFirst(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& children) = 0;
+
+  virtual void addJSONInsertLast(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& children) = 0;
+
+  virtual void addJSONInsertBefore(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& siblings) = 0;
+
+  virtual void addJSONInsertAfter(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& siblings) = 0;
+  
+  virtual void addJSONInsertAttributes(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& attrs) = 0;
+
+  virtual void addJSONReplaceValue(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        Item_t& newValue) = 0;
+
+  virtual void addJSONRename(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        Item_t& newName) = 0;
+#endif
+
+  //
+
   virtual void mergeUpdates(Item* other) = 0;
 
   virtual void applyUpdates(bool inheritNSBindings) = 0;

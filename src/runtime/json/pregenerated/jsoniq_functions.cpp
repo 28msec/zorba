@@ -358,6 +358,230 @@ JSONSizeIterator::~JSONSizeIterator() {}
 // </JSONSizeIterator>
 
 #endif
+// <JSONInsertIntoIterator>
+const char* JSONInsertIntoIterator::class_name_str = "JSONInsertIntoIterator";
+JSONInsertIntoIterator::class_factory<JSONInsertIntoIterator>
+JSONInsertIntoIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONInsertIntoIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONInsertIntoIterator::class_versions_count =
+sizeof(JSONInsertIntoIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONInsertIntoIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONInsertIntoIterator::~JSONInsertIntoIterator() {}
+
+// </JSONInsertIntoIterator>
+
+
+// <JSONInsertAsFirstIterator>
+const char* JSONInsertAsFirstIterator::class_name_str = "JSONInsertAsFirstIterator";
+JSONInsertAsFirstIterator::class_factory<JSONInsertAsFirstIterator>
+JSONInsertAsFirstIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONInsertAsFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONInsertAsFirstIterator::class_versions_count =
+sizeof(JSONInsertAsFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONInsertAsFirstIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONInsertAsFirstIterator::~JSONInsertAsFirstIterator() {}
+
+// </JSONInsertAsFirstIterator>
+
+
+// <JSONInsertAfterIterator>
+const char* JSONInsertAfterIterator::class_name_str = "JSONInsertAfterIterator";
+JSONInsertAfterIterator::class_factory<JSONInsertAfterIterator>
+JSONInsertAfterIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONInsertAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONInsertAfterIterator::class_versions_count =
+sizeof(JSONInsertAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONInsertAfterIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONInsertAfterIterator::~JSONInsertAfterIterator() {}
+
+// </JSONInsertAfterIterator>
+
+
+// <JSONInsertBeforeIterator>
+const char* JSONInsertBeforeIterator::class_name_str = "JSONInsertBeforeIterator";
+JSONInsertBeforeIterator::class_factory<JSONInsertBeforeIterator>
+JSONInsertBeforeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONInsertBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONInsertBeforeIterator::class_versions_count =
+sizeof(JSONInsertBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONInsertBeforeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONInsertBeforeIterator::~JSONInsertBeforeIterator() {}
+
+// </JSONInsertBeforeIterator>
+
+
+// <JSONInsertAsLastIterator>
+const char* JSONInsertAsLastIterator::class_name_str = "JSONInsertAsLastIterator";
+JSONInsertAsLastIterator::class_factory<JSONInsertAsLastIterator>
+JSONInsertAsLastIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONInsertAsLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONInsertAsLastIterator::class_versions_count =
+sizeof(JSONInsertAsLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONInsertAsLastIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONInsertAsLastIterator::~JSONInsertAsLastIterator() {}
+
+// </JSONInsertAsLastIterator>
+
+
+// <JSONDeleteIterator>
+const char* JSONDeleteIterator::class_name_str = "JSONDeleteIterator";
+JSONDeleteIterator::class_factory<JSONDeleteIterator>
+JSONDeleteIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONDeleteIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONDeleteIterator::class_versions_count =
+sizeof(JSONDeleteIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONDeleteIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONDeleteIterator::~JSONDeleteIterator() {}
+
+// </JSONDeleteIterator>
+
+
+// <JSONRenameIterator>
+const char* JSONRenameIterator::class_name_str = "JSONRenameIterator";
+JSONRenameIterator::class_factory<JSONRenameIterator>
+JSONRenameIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONRenameIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONRenameIterator::class_versions_count =
+sizeof(JSONRenameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONRenameIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONRenameIterator::~JSONRenameIterator() {}
+
+// </JSONRenameIterator>
+
+
+// <JSONReplaceValueIterator>
+const char* JSONReplaceValueIterator::class_name_str = "JSONReplaceValueIterator";
+JSONReplaceValueIterator::class_factory<JSONReplaceValueIterator>
+JSONReplaceValueIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONReplaceValueIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONReplaceValueIterator::class_versions_count =
+sizeof(JSONReplaceValueIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
+
+// </JSONReplaceValueIterator>
+
+
 
 }
 

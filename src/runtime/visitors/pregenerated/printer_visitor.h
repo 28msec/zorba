@@ -440,6 +440,30 @@ namespace zorba {
     void endVisit  ( const JSONSizeIterator& );
 #endif
 
+    void beginVisit( const JSONInsertIntoIterator& );
+    void endVisit  ( const JSONInsertIntoIterator& );
+
+    void beginVisit( const JSONInsertAsFirstIterator& );
+    void endVisit  ( const JSONInsertAsFirstIterator& );
+
+    void beginVisit( const JSONInsertAfterIterator& );
+    void endVisit  ( const JSONInsertAfterIterator& );
+
+    void beginVisit( const JSONInsertBeforeIterator& );
+    void endVisit  ( const JSONInsertBeforeIterator& );
+
+    void beginVisit( const JSONInsertAsLastIterator& );
+    void endVisit  ( const JSONInsertAsLastIterator& );
+
+    void beginVisit( const JSONDeleteIterator& );
+    void endVisit  ( const JSONDeleteIterator& );
+
+    void beginVisit( const JSONRenameIterator& );
+    void endVisit  ( const JSONRenameIterator& );
+
+    void beginVisit( const JSONReplaceValueIterator& );
+    void endVisit  ( const JSONReplaceValueIterator& );
+
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
 

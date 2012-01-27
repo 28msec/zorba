@@ -807,6 +807,11 @@ declare variable $zerr:JSDY0020 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0020
 declare variable $zerr:JSDY0040 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0040");
 
 (:~
+ :error raised by insert-into
+:)
+declare variable $zerr:JSDY0060 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0060");
+
+(:~
 :)
 declare variable $zerr:ZJPE0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJPE0001");
 

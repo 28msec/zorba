@@ -280,6 +280,174 @@ public:
 #endif
 
 
+//fn-jsoniq:insert-into
+class fn_jsoniq_insert_into : public function
+{
+public:
+  fn_jsoniq_insert_into(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:insert-as-first
+class fn_jsoniq_insert_as_first : public function
+{
+public:
+  fn_jsoniq_insert_as_first(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:insert-after
+class fn_jsoniq_insert_after : public function
+{
+public:
+  fn_jsoniq_insert_after(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:insert-before
+class fn_jsoniq_insert_before : public function
+{
+public:
+  fn_jsoniq_insert_before(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:insert-as-last
+class fn_jsoniq_insert_as_last : public function
+{
+public:
+  fn_jsoniq_insert_as_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:delete
+class fn_jsoniq_delete : public function
+{
+public:
+  fn_jsoniq_delete(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:rename
+class fn_jsoniq_rename : public function
+{
+public:
+  fn_jsoniq_rename(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:replace-value
+class fn_jsoniq_replace_value : public function
+{
+public:
+  fn_jsoniq_replace_value(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 
