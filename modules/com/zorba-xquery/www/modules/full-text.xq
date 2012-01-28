@@ -21,10 +21,8 @@ xquery version "3.0";
  :)
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
-(:
 import schema namespace ft-schema =
-  "http://www.zorba-xquery.com/modules/full-text";
-:)
+  "http://www.zorba-xquery.com/modules/full-text-schema";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";

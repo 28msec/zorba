@@ -16,8 +16,8 @@
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://www.zorba-xquery.com/modules/full-text"
-  xmlns="http://www.zorba-xquery.com/modules/full-text"
+  targetNamespace="http://www.zorba-xquery.com/modules/full-textschema"
+  xmlns="http://www.zorba-xquery.com/modules/full-text-schema"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 
