@@ -232,18 +232,18 @@ public:
 class SimpleJSONArray : public JSONArray
 {
 protected:
-  typedef std::vector<store::Item_t> Pairs;
-  typedef Pairs::const_iterator PairsConstIter;
-  typedef Pairs::iterator PairsIter;
+  typedef std::vector<store::Item_t> Members;
+  typedef Members::const_iterator MembersConstIter;
+  typedef Members::iterator MembersIter;
 
-  Pairs theContent;
+  Members theContent;
   SimpleCollection* theCollection;
 
   class ValuesIterator : public store::Iterator
   {
     protected:
       SimpleJSONArray_t theArray;
-      PairsConstIter    theIterator;
+      MembersConstIter    theIterator;
 
     public:
       ValuesIterator(const SimpleJSONArray_t& aArray)

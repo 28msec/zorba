@@ -82,8 +82,37 @@ store::Item* SimpleJSONObject::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
-  ZORBA_ASSERT(false);
-  return NULL;
+  SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
+  if (copymode.theDoCopy)
+  {
+    lNewObject = new SimpleJSONObject();
+
+    for (PairsConstIter lIter = thePairs.begin();
+         lIter != thePairs.end();
+         ++lIter)
+    {
+      SimpleJSONObjectPair* lNewPair = static_cast<SimpleJSONObjectPair*>(
+          lIter->second->copy(NULL, copymode)
+        );
+      lNewObject->add(lNewPair);
+    }
+  }
+
+  if (parent)
+  {
+    if (parent->isJSONArray())
+    {
+      JSONArray* a = static_cast<JSONArray*>(parent);
+      a->push_back(lNewObject);
+    }
+    else if (parent->isJSONPair())
+    {
+      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
+      p->setValue(lNewObject);
+    }
+  }
+
+  return lNewObject;
 }
 
 
@@ -259,8 +288,41 @@ store::Item* SimpleJSONArray::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
-  ZORBA_ASSERT(false);
-  return NULL;
+  SimpleJSONArray* lNewArray = const_cast<SimpleJSONArray*>(this);
+  if (copymode.theDoCopy)
+  {
+    lNewArray = new SimpleJSONArray();
+    lNewArray->theContent.resize(theContent.size());
+    for (MembersConstIter lIter = theContent.begin();
+         lIter != theContent.end();
+         ++lIter)
+    {
+      store::Item_t lValue = *lIter;
+      if (lValue->isJSONObject() ||
+          lValue->isJSONArray() ||
+          lValue->isNode())
+      {
+        lValue = lValue->copy(NULL, copymode);
+      }
+      lNewArray->push_back(lValue);
+    }
+  }
+
+  if (parent)
+  {
+    if (parent->isJSONArray())
+    {
+      JSONArray* a = static_cast<JSONArray*>(parent);
+      a->push_back(lNewArray);
+    }
+    else if (parent->isJSONPair())
+    {
+      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
+      p->setValue(lNewArray);
+    }
+  }
+
+  return lNewArray;
 }
 
 
