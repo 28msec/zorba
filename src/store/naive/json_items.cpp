@@ -60,7 +60,7 @@ SimpleJSONObject::JSONObjectPairComparator::operator()(
     const store::Item* lhs,
     const store::Item* rhs) const
 {
-  return lhs->getStringValue().compare(rhs->getStringValue());
+  return lhs->getStringValue().compare(rhs->getStringValue()) < 0;
 }
 
 
