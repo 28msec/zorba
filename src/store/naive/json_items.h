@@ -188,6 +188,7 @@ public:
   store::Item* getPair(const store::Item_t& name) const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
   virtual SimpleCollection* getCollection() const { return theCollection; }
 };
 
@@ -321,17 +322,11 @@ public:
   virtual void
   setValue(const store::Item_t& aValue)  = 0;
 
-  virtual void
-  setContainer(JSONObject* aContainer)  = 0;
-
   virtual store::Item*
   getName() const = 0;
 
   virtual store::Item*
   getValue() const = 0;
-
-  virtual store::Item*
-  getContainer() const = 0;
 
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonPair; }
@@ -349,7 +344,6 @@ class SimpleJSONObjectPair : public JSONObjectPair
 protected:
   store::Item_t          theName;
   store::Item_t          theValue;
-  mutable JSONObject   * theContainer;
 
 public:
   SimpleJSONObjectPair() {}
@@ -357,8 +351,7 @@ public:
   SimpleJSONObjectPair(const store::Item_t& aName, const store::Item_t& aValue)
     :
     theName(aName),
-    theValue(aValue),
-    theContainer(0)
+    theValue(aValue)
   {
   }
 
@@ -376,17 +369,11 @@ public:
   void
   setValue(const store::Item_t& aValue) { theValue = aValue; }
 
-  void
-  setContainer(JSONObject* aContainer) { theContainer = aContainer; }
-
   store::Item*
   getName() const { return theName.getp(); }
 
   store::Item*
   getValue() const { return theValue.getp(); }
-
-  store::Item*
-  getContainer() const { return theContainer; }
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 };

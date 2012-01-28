@@ -41,6 +41,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "store/api/copymode.h"
 #include <zorba/store_consts.h>
 
 namespace zorba {
@@ -530,6 +531,7 @@ JSONInsertIntoIterator::nextImpl(
   store::Item_t lTmp;
   std::vector<store::Item_t> lPairs;
   std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -544,8 +546,7 @@ JSONInsertIntoIterator::nextImpl(
           ERROR_PARAMS(lTmp->getName()->getStringValue()));
     }
 
-    // TODO copy the input
-    lPairs.push_back(lTmp);
+    lPairs.push_back(lTmp->copy(NULL, lCopyMode));
   }
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());

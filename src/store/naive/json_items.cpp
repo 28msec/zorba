@@ -281,25 +281,32 @@ store::Item* SimpleJSONObjectPair::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
-  if (copymode.theDoCopy == false)
+  SimpleJSONObjectPair* lNewPair = const_cast<SimpleJSONObjectPair*>(this);
+  if (copymode.theDoCopy)
   {
-    assert(theContainer == NULL);
-
-    if (parent)
+    store::Item_t lNewValue;
+    if (theValue->isJSONObject() ||
+        theValue->isJSONArray() ||
+        theValue->isNode())
     {
-      assert(parent->isJSONObject());
-
-      JSONObject* p = static_cast<JSONObject*>(parent);
-      
-      theContainer = p;
-      p->add(const_cast<SimpleJSONObjectPair*>(this));
+      lNewValue = theValue->copy(NULL, copymode);
     }
-
-    return const_cast<SimpleJSONObjectPair*>(this);
+    else
+    {
+      lNewValue = theValue;
+    }
+    lNewPair = new SimpleJSONObjectPair(theName, lNewValue);
   }
 
-  ZORBA_ASSERT(false);
-  return NULL;
+  if (parent)
+  {
+    assert(parent->isJSONObject());
+
+    JSONObject* p = static_cast<JSONObject*>(parent);
+    
+    p->add(lNewPair);
+  }
+  return lNewPair;
 }
 
 
