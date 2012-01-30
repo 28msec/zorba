@@ -100,6 +100,7 @@ extern entry const dict_en[] = {
   { "JSDY0020", "" },
   { "JSDY0040", "$1" },
   { "JSDY0060", "\"$1\": pair already exists" },
+  { "JSDY0061", "\"$1\": pair does not exist" },
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },

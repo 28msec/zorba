@@ -22,6 +22,7 @@
 #include "store/api/copymode.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 namespace zorba
 {
@@ -96,6 +97,23 @@ SimpleJSONObject::add(const JSONObjectPair_t& p)
 {
   store::Item* lName = p->getName();
   thePairs.insert(std::make_pair<store::Item*, JSONObjectPair_t>(lName, p));
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONObject::remove(const store::Item_t& aName)
+{
+  PairsIter lIter = thePairs.find(aName.getp());
+  if (lIter == thePairs.end())
+  {
+    RAISE_ERROR_NO_LOC(zerr::JSDY0061,
+        ERROR_PARAMS(aName->getStringValue())
+      );
+  }
+  thePairs.erase(lIter);
 }
 
 

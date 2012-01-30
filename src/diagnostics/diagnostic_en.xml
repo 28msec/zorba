@@ -2367,6 +2367,11 @@
       <value>"$1": pair already exists</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0061">
+      <comment>error raised JSONObject::remove</comment>
+      <value>"$1": pair does not exist</value>
+    </diagnostic>
+
 
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 

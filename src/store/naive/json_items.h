@@ -107,6 +107,8 @@ public:
 
   virtual void add(const JSONObjectPair_t& aPair) = 0;
 
+  virtual void remove(const store::Item_t& aName) = 0;
+
   virtual xs_integer getSize() const = 0;
 
   bool getBooleanValue() const { return true; }
@@ -178,6 +180,8 @@ public:
   virtual ~SimpleJSONObject() {}
 
   void add(const JSONObjectPair_t& aPair);
+
+  virtual void remove(const store::Item_t& aName);
 
   xs_integer getSize() const { return thePairs.size(); }
 

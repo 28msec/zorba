@@ -812,6 +812,11 @@ declare variable $zerr:JSDY0040 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0040
 declare variable $zerr:JSDY0060 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0060");
 
 (:~
+ :error raised JSONObject::remove
+:)
+declare variable $zerr:JSDY0061 as xs:QName := fn:QName($zerr:NS, "zerr:JSDY0061");
+
+(:~
 :)
 declare variable $zerr:ZJPE0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJPE0001");
 

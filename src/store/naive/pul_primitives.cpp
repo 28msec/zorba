@@ -1888,10 +1888,30 @@ void UpdJSONInsert::apply()
     JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
     lObj->add(lPair);
   }
+  theIsApplied = true;
 }
 
 void UpdJSONInsert::undo()
 {
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+
+  for (std::vector<store::Item_t>::const_iterator lIter = theNewPairs.begin();
+       lIter != theNewPairs.end();
+       ++lIter)
+  {
+    ZORBA_ASSERT((*lIter)->isJSONPair());
+    JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
+    if (!lObj->getPair(lPair->getName()))
+    {
+      lObj->remove(lPair->getName());
+    }
+  }
+  theIsApplied = false;
 }
 
 #endif
