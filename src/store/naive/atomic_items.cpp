@@ -751,12 +751,15 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
                                            const zstring& aPrefix,
                                            const zstring& aLocalName)
 {
+  assert(!isValid());
+
   store::Item_t lPoolQName =
       GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
   GET_STORE().getQNamePool().registerNormalizingBackPointer(this);
   initializeAsUnnormalizedQName(
       static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
       aPrefix);
+  isInPool = false;
 }
 
 /*******************************************************************************
