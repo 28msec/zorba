@@ -63,14 +63,12 @@ public:
 
   store::Item* getType() const; 
 
-#if 0
   bool equals(
         const store::Item* other,
         long timezone = 0,
         const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-#endif
 };
 
 

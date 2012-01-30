@@ -45,6 +45,30 @@ JSONNull::getType() const
 /******************************************************************************
 
 *******************************************************************************/
+bool
+JSONNull::equals(
+      const store::Item* other,
+      long /* timezone */,
+      const XQPCollator* /* collation */) const
+{
+  return other->getTypeCode() == store::JDM_NULL;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+uint32_t
+JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
+{
+  const void* tmp = this; // there is only one instance in the store
+  return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 store::Item*
 JSONObject::getType() const
 {
