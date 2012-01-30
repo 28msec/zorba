@@ -260,7 +260,16 @@ retry:
     if (entry == 0)
     {
       // Build a new QName (either new object or in cache).
-      qn = cacheInsert();
+      if (qn == NULL)
+      {
+        SYNC_CODE(theHashSet.theMutex.unlock();\
+                  haveLock = false;)
+
+        // This call might need the lock.
+        qn = cacheInsert();
+
+        goto retry;
+      }
       if (normalized)
       {
         qn->initializeAsNormalizedQName(pooledNs, ln);
@@ -272,6 +281,7 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
+          // This call will need the lock.
           normQName = insert_internal(pooledNs, zstring(), ln, false);
 
           goto retry;
