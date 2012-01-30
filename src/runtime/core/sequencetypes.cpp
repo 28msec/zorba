@@ -644,6 +644,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           STACK_PUSH(true, state);
         }
+      }
     } 
     while (consumeNext(result, theChild.getp(), planState));
   }
