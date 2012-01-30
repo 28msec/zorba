@@ -7,10 +7,14 @@ version 2.2
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 909126 (bug in cloning of var_expr)
   * Fixed bug in destruction of exit_catcher_expr
-  * Types-related optimization for the comparison operators
+  * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
+    Compare).
   * Fixed bug #911585 (management of variables during eval)
+  * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
+    case of early-out)
   * Added index management function to the C++ api's StaticCollectionManager.
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
@@ -19,14 +23,20 @@ version 2.2
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
+  * Fixed bug involving positional var and groupby 
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
+  * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
+  * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
+  * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
+  * Fixed bug #918157 (Add XQFTTS to validation queue)
 
 version 2.1
 
 New Features:
   * New node-position module. This module allows to obtain a representation of a node position, which
-    can be used to assess structural relationships with other nodes.   
+    can be used to assess structural relationships with other nodes.
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.

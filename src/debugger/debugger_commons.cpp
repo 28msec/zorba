@@ -35,6 +35,8 @@
 
 #include "zorba/util/uri.h"
 
+#include "debugger_runtime.h"
+
 namespace zorba {
 
 // ****************************************************************************
@@ -382,8 +384,12 @@ DebuggerCommons::canBreak()
 bool
 DebuggerCommons::mustBreak(SuspensionCause& aCause)
 {
+  if (theRuntime->getAndClearInterruptBreak()) {
+    aCause = CAUSE_USER;
+    return true;
+  }
   if (theBreak) {
-    aCause = CAUSE_STEP;
+    aCause = theCause;
     return true;
   } else if (theStepping) {
     std::size_t lSize = theIteratorStack.size();

@@ -341,7 +341,10 @@ TestTokenizerProvider::getTokenizer( iso639_1::type lang,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int tokenizer( int argc, char *argv[] ) {
+namespace zorba {
+namespace UnitTests {
+
+int test_tokenizer( int argc, char *argv[] ) {
   int result = 0;
 
   void *const zstore = StoreManager::getStore();
@@ -389,4 +392,8 @@ int tokenizer( int argc, char *argv[] ) {
   StoreManager::shutdownStore( zstore );
   return result;
 }
+
+} // namespace UnitTests
+} // namespace zorba
+
 /* vim:set et sw=2 ts=2: */
