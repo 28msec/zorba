@@ -86,8 +86,7 @@ void QNamePool::remove(QNameItem* qn)
 {
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
-  if (qn->getRefCount() > 0 ||
-      hasNormalizingBackPointers(qn))
+  if (qn->getRefCount() > 0 || hasNormalizingBackPointers(qn))
     return;
 
   if (qn->isInCache())
@@ -105,8 +104,19 @@ void QNamePool::remove(QNameItem* qn)
     // well, then qn must be removed from the pool and really deleted
     unregisterNormalizingBackPointer(qn);
     theHashSet.eraseNoSync(qn);
+    QNameItem* lNormalized = NULL;
+    if(qn->isNormalized())
+    {
+      lNormalized = const_cast<QNameItem*>(qn->getNormalized());
+    }
     qn->invalidate();
     delete qn;
+
+    if (lNormalized && !hasNormalizingBackPointers(lNormalized))
+    {
+      // Tail call. Should avoid deadlock because no new stack frame.
+      remove(lNormalized);
+    }
   }
 }
 
@@ -316,7 +326,16 @@ QNameItem* QNamePool::cacheInsert()
       unregisterNormalizingBackPointer(qn);
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
+      QNameItem* lNormalized = NULL;
+      if(qn->isNormalized())
+      {
+        lNormalized = const_cast<QNameItem*>(qn->getNormalized());
+      }
       qn->invalidate();
+      if (lNormalized && !hasNormalizingBackPointers(lNormalized))
+      {
+        remove(lNormalized);
+      }
     }
 
     qn->theNextFree = qn->thePrevFree = 0;
@@ -389,9 +408,11 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   return NULL;
 }
   
-bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName)
+bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName) const
 {
-  return !theWhoNormalizesToMe[aNormalizedQName].empty();
+  std::map<const QNameItem*, std::set<const QNameItem*> >::const_iterator lIterator =
+  theWhoNormalizesToMe.find(aNormalizedQName);
+  return !lIterator->second.empty();
 }
 
 void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
@@ -404,12 +425,18 @@ void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
 
 void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName)
 {
-  if (!aQName->isNormalized())
+  if (aQName->isNormalized())
   {
-    assert(theWhoNormalizesToMe[aQName->getNormalized()].find(aQName)
-         != theWhoNormalizesToMe[aQName->getNormalized()].end());
-    theWhoNormalizesToMe[aQName->getNormalized()].erase(aQName);
+    return;
   }
+  // Entry exists for this normalized QName.
+  assert(theWhoNormalizesToMe.find(aQName->getNormalized())
+         != theWhoNormalizesToMe.end());
+  // Backpointer exists.
+  assert(theWhoNormalizesToMe[aQName->getNormalized()].find(aQName)
+         != theWhoNormalizesToMe[aQName->getNormalized()].end());
+  // Remove backpointer.
+  theWhoNormalizesToMe[aQName->getNormalized()].erase(aQName);
 }
   
   
