@@ -105,6 +105,14 @@ setPathsOnContext(
     lPath.push_back(lCWD.get_path());
     tokenizePath(lEnvStr, lPath);
     aStaticCtx->setLibPath(lPath);
+
+    // Compute and set class path
+    aProperties.getClassPath(lPathStr);
+    tokenizePath(lPathStr, lPath);
+    lEnvStr = getPathFromEnvironment("CLASSPATH");
+    lPath.push_back(lCWD.get_path());
+    tokenizePath(lEnvStr, lPath);
+    aStaticCtx->setJVMClassPath(lPath);
   }
 }
 

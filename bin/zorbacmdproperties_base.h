@@ -34,7 +34,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
     return result;
   }
   bool theTiming;
@@ -70,6 +70,7 @@ protected:
   std::string theUriPath;
   std::string theLibPath;
   std::string theModulePath;
+  std::string theClasspath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
@@ -132,6 +133,7 @@ public:
   const std::string &uriPath () const { return theUriPath; }
   const std::string &libPath () const { return theLibPath; }
   const std::string &modulePath () const { return theModulePath; }
+  const std::string &classpath () const { return theClasspath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
@@ -281,6 +283,11 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --module-path option"; break; }        init_val (*argv, theModulePath, d);
       }
+      else if (strcmp (*argv, "--classpath") == 0 || strncmp (*argv, "-cp", 2) == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --classpath option"; break; }        init_val (*argv, theClasspath, d);
+      }
       else if (strcmp (*argv, "--option") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -348,6 +355,7 @@ public:
 "--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
 "--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
 "--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
+"--classpath, -cp\nJVM classpath to used by modules using Java implementations\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"

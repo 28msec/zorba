@@ -181,6 +181,11 @@ void ZorbaCMDProperties::getLibPath(std::string& aPath) const
   aPath = theLibPath;
 }
 
+void ZorbaCMDProperties::getClassPath(std::string& aPath) const
+{
+  aPath = theClasspath;
+}
+
 std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() const
 {
   std::vector<std::pair<std::string,std::string> > lResult;
