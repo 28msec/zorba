@@ -60,6 +60,7 @@ CompilerCB::config::config()
   :
   opt_level(O1),
   lib_module(false),
+  for_serialization_only(false),
   parse_cb(NULL)
 {
   translate_cb = optimize_cb = NULL;
@@ -97,6 +98,7 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
   ar & force_gflwor;
   SERIALIZE_ENUM(opt_level_t, opt_level);
   ar & lib_module;
+  ar & for_serialization_only;
   ar & print_item_flow;
 }
 
@@ -136,6 +138,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
+  theIsSequential(false),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
   theConfig(cb.theConfig)

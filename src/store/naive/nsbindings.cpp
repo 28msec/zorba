@@ -43,7 +43,7 @@ NsBindingsContext::NsBindingsContext(NsBindingsContext* parent)
 /*******************************************************************************
 
 ********************************************************************************/
-NsBindingsContext::NsBindingsContext(ulong numBindings)
+NsBindingsContext::NsBindingsContext(csize numBindings)
 {
   theBindings.resize(numBindings);
 #if 0
@@ -159,9 +159,9 @@ void NsBindingsContext::addBinding(
     const zstring& ns,
     bool soft)
 {
-  ulong numBindings = (ulong)theBindings.size();
+  csize numBindings = theBindings.size();
 
-  for (ulong i = 0; i < numBindings; ++i)
+  for (csize i = 0; i < numBindings; ++i)
   {
     if (theBindings[i].first == prefix)
     {

@@ -43,9 +43,13 @@ class fn_zorba_ref_node_reference : public function
 {
 public:
   fn_zorba_ref_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -56,9 +60,11 @@ class fn_zorba_ref_node_by_reference : public function
 {
 public:
   fn_zorba_ref_node_by_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -69,9 +75,13 @@ class fn_local_name : public function
 {
 public:
   fn_local_name(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -82,9 +92,13 @@ class fn_namespace_uri : public function
 {
 public:
   fn_namespace_uri(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -95,9 +109,13 @@ class fn_lang : public function
 {
 public:
   fn_lang(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -108,9 +126,11 @@ class fn_number : public function
 {
 public:
   fn_number(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -121,9 +141,11 @@ class fn_has_children_3_0 : public function
 {
 public:
   fn_has_children_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
 
   CODEGEN_DECL();
 };
@@ -134,9 +156,13 @@ class fn_innermost_3_0 : public function
 {
 public:
   fn_innermost_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -147,9 +173,13 @@ class fn_outermost_3_0 : public function
 {
 public:
   fn_outermost_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -160,9 +190,13 @@ class fn_generate_id_3_0 : public function
 {
 public:
   fn_generate_id_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -173,9 +207,13 @@ class fn_zorba_node_ancestor_of : public function
 {
 public:
   fn_zorba_node_ancestor_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -186,9 +224,13 @@ class fn_zorba_node_descendant_of : public function
 {
 public:
   fn_zorba_node_descendant_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -199,9 +241,13 @@ class fn_zorba_node_parent_of : public function
 {
 public:
   fn_zorba_node_parent_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -212,9 +258,13 @@ class fn_zorba_node_child_of : public function
 {
 public:
   fn_zorba_node_child_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -225,9 +275,13 @@ class fn_zorba_node_following_of : public function
 {
 public:
   fn_zorba_node_following_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -238,9 +292,13 @@ class fn_zorba_node_preceding_of : public function
 {
 public:
   fn_zorba_node_preceding_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -251,9 +309,13 @@ class fn_zorba_node_following_sibling_of : public function
 {
 public:
   fn_zorba_node_following_sibling_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -264,9 +326,13 @@ class fn_zorba_node_preceding_sibling_of : public function
 {
 public:
   fn_zorba_node_preceding_sibling_of(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -277,9 +343,13 @@ class fn_zorba_node_level : public function
 {
 public:
   fn_zorba_node_level(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -290,9 +360,13 @@ class fn_zorba_node_least_common_ancestor : public function
 {
 public:
   fn_zorba_node_least_common_ancestor(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

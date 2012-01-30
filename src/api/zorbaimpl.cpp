@@ -98,7 +98,7 @@ void ZorbaImpl::init(store::Store* store)
   {
     void* store2 = StoreManager::getStore();
     (void)store2;
-    assert(store == NULL || store2 == store);
+    assert(store2 == store);
     GlobalEnvironment::init(store);
   }
 

@@ -82,6 +82,7 @@ class StringToCodepointsIteratorState : public PlanIteratorState
 public:
   xs_unsignedInt theIterator; //the current iterator
   checked_vector<xs_unsignedInt> theResult; //the resulting vector
+  std::istream* theStream; //
 
   StringToCodepointsIteratorState();
 
@@ -1067,6 +1068,58 @@ public:
   {}
 
   virtual ~StringIsStreamableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    string:split
+ *  
+ * Author: Matthias Brantner
+ */
+class StringSplitIteratorState : public PlanIteratorState
+{
+public:
+  zstring theSeparator; //separator for the tokenization
+  std::istream* theIStream; //the remaining string (if the input is streamable)
+  zstring theInput; //the string to tokenize (if the input is not streamable)
+  size_t theNextStartPos; //
+
+  StringSplitIteratorState();
+
+  ~StringSplitIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StringSplitIterator : public NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringSplitIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringSplitIterator,
+    NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>*)this);
+  }
+
+  StringSplitIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringSplitIterator, StringSplitIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringSplitIterator();
 
   void accept(PlanIterVisitor& v) const;
 

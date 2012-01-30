@@ -406,8 +406,39 @@ Item ItemFactoryImpl::createDuration(
   
   return &*lItem;
 }
-    
-  
+
+Item ItemFactoryImpl::createDayTimeDuration( const String& aValue )
+{
+  zstring const &lString = Unmarshaller::getInternalString( aValue );
+  store::Item_t  lItem;
+  theItemFactory->createDayTimeDuration(lItem, lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+Item ItemFactoryImpl::createYearMonthDuration( const String& aValue )
+{
+  zstring const &lString = Unmarshaller::getInternalString( aValue );
+  store::Item_t  lItem;
+  theItemFactory->createYearMonthDuration(lItem, lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+Item ItemFactoryImpl::createDocumentNode( const String& aBaseUri, const String& aDocUri )
+{
+  store::Item_t lItem;
+  zstring &lBaseUri = Unmarshaller::getInternalString( aBaseUri );
+  zstring &lDocUri = Unmarshaller::getInternalString( aDocUri );
+  try {
+    theItemFactory->createDocumentNode(lItem, lBaseUri, lDocUri);
+  }
+  catch ( std::exception const& ) {
+    // ignore
+  }
+  return &*lItem;
+}
+
 Item ItemFactoryImpl::createFloat ( const String& aValue )
 {
   zstring const &lString = Unmarshaller::getInternalString( aValue );
@@ -665,7 +696,7 @@ zorba::Item ItemFactoryImpl::createElementNode(
     Item aTypeName,
     bool aHasTypedValue,
     bool aHasEmptyValue,
-    std::vector<std::pair<String, String> > aNsBindings)
+    NsBindings aNsBindings)
 {
   store::Item_t lItem;
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
@@ -738,10 +769,36 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
 }
 
 
+zorba::Item ItemFactoryImpl::createCommentNode(Item aParent, String &aContent)
+{
+  store::Item_t lItem;
+  zstring &lContent = Unmarshaller::getInternalString(aContent);
+  theItemFactory->createCommentNode(lItem,
+                               Unmarshaller::getInternalItem(aParent),
+                               lContent);
+  return &*lItem;
+}
+
+
+zorba::Item ItemFactoryImpl::createPiNode(Item aParent, String &aTarget, String &aContent, String &aBaseUri)
+{
+  store::Item_t lItem;
+  zstring &lTarget = Unmarshaller::getInternalString(aTarget);
+  zstring &lContent = Unmarshaller::getInternalString(aContent);
+  zstring &lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  theItemFactory->createPiNode(lItem,
+                               Unmarshaller::getInternalItem(aParent),
+                               lTarget,
+                               lContent,
+                               lBaseUri);
+  return &*lItem;
+}
+
+
 zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
 {
   store::Item_t lItem;
-  zstring lContent = Unmarshaller::getInternalString(content);
+  zstring &lContent = Unmarshaller::getInternalString(content);
   theItemFactory->createTextNode(lItem,
                                  Unmarshaller::getInternalItem(parent),
                                  lContent);

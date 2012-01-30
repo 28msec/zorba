@@ -692,11 +692,34 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
   // emit namespace bindings
   store::NsBindings nsBindings;
-
   if (depth == 0)
+  {
     item->getNamespaceBindings(nsBindings);
+  }
   else
-    item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  {
+    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+    item->getNamespaceBindings(nsBindings);
+
+    store::Item* nodeName = item->getNodeName();
+
+    const zstring& prefix = nodeName->getPrefix();
+    const zstring& nsuri = nodeName->getNamespace();
+    if (prefix.empty() && nsuri.empty())
+    {
+      store::NsBindings::const_iterator ite = nsBindings.begin();
+      store::NsBindings::const_iterator end = nsBindings.end();
+
+      for (; ite != end; ++ite)
+      {
+        if (ite->second.empty() && ite->first.empty())
+          break;
+      }
+
+      if (ite == end)
+        nsBindings.push_back(std::pair<zstring, zstring>(prefix, nsuri));
+    }
+  }
 
   csize numBindings = nsBindings.size();
 
@@ -1709,7 +1732,7 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   is.clear();                   // clear eofbit
   if (item->isSeekable())
   {
-    if (pos != 0 && pos != -1)
+    if (pos)
     {
       is.exceptions(is.exceptions() | std::ios::failbit);
       is.seekg(pos, std::ios::beg);

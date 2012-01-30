@@ -26,6 +26,7 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
+#include "store/api/xs_type_codes.h"
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -194,7 +195,7 @@ public:
    *
    *  @return  result of Effective Boolean Value
    */
-  virtual Item_t 
+  virtual bool 
   getEBV() const;
 
   /**
@@ -237,6 +238,11 @@ public:
   show() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
+
+  /**
+   * @return The numeric code coresponding to the data type of this item.
+   */
+  virtual SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return
@@ -585,31 +591,6 @@ public:
    */
   virtual const Item_t
   getFunctionName() const;
-
-#if 0
-  /**
-   * Make a copy of the xml tree rooted at this node and place the copied
-   * tree at a given position under a given node.
-   *
-   * @param parent   The node P under which the copied tree is to be placed.
-   *                 P may be NULL, in which case the copied tree becomes a
-   *                 new standalone xml tree.
-   * @param pos      The position under P where the copied tree is to be placed.
-   *                 If "this" is an attribute node, pos is a position among the
-   *                 attributes of P; otherwise it is a position among the 
-   *                 children of P. If is greater or equal to the current number
-   *                 of attributes/children in P, then the copied tree is appended
-   *                 to P's attributes/children.
-   * @param copymode Encapsulates the construction-mode and copy-namespace-mode
-   *                 components of the query's static context. 
-   * @return         A pointer to the root node of the copied tree, or to this
-   *                 node if no copy was actually done. 
-   */
-  virtual Item* copy(
-        Item* parent,
-        vsize_t pos,
-        const CopyMode& copymode) const;
-#endif
 
   /**
    * Make a copy of the xml tree rooted at this node and place the copied

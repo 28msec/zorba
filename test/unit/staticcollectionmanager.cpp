@@ -25,6 +25,8 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/static_collection_manager.h>
 
+#include "system/properties.h"
+
 using namespace zorba;
 
 bool
@@ -40,6 +42,7 @@ staticcollectionamanger1(zorba::Zorba* z)
 
   ItemFactory* lFac = z->getItemFactory();
   Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
+  Item lIdxName   = lFac->createQName("http://www.mod2.com/", "index");
   Item lCollName3 = lFac->createQName("http://www.mod3.com/", "coll");
 
   ItemSequence_t lSeq = lColMgr->declaredCollections();
@@ -56,16 +59,35 @@ staticcollectionamanger1(zorba::Zorba* z)
     return false;
   }
 
+  int num_idxs = 0;
+  lSeq = lColMgr->declaredIndexes();
+  lIter = lSeq->getIterator();
+  lIter->open();
+  while (lIter->next(lTmp)) {
+    std::cout << "name " << lTmp.getStringValue() << std::endl;
+    ++num_idxs;
+  }
+
+  if (num_idxs != 1) {
+    return false;
+  }
+
   if (!lColMgr->isDeclaredCollection(lCollName2) ||
       !lColMgr->isDeclaredCollection(lCollName3)) {
     return false;
   }
 
+  if (!lColMgr->isDeclaredIndex(lIdxName)) {
+    return false;
+  }
+
   lColMgr->createCollection(lCollName2);
   lColMgr->createCollection(lCollName3);
+  lColMgr->createIndex(lIdxName);
 
   if (!lColMgr->isAvailableCollection(lCollName2) ||
-      !lColMgr->isAvailableCollection(lCollName3)) {
+      !lColMgr->isAvailableCollection(lCollName3) ||
+      !lColMgr->isAvailableIndex(lIdxName)) {
     return false;
   }
 
@@ -82,11 +104,13 @@ staticcollectionamanger1(zorba::Zorba* z)
     return false;
   }
 
+  lColMgr->deleteIndex(lIdxName);
   lColMgr->deleteCollection(lCollName2);
   lColMgr->deleteCollection(lCollName3);
 
   if (lColMgr->isAvailableCollection(lCollName2) ||
-      lColMgr->isAvailableCollection(lCollName3)) {
+      lColMgr->isAvailableCollection(lCollName3) ||
+      lColMgr->isAvailableIndex(lIdxName)) {
     return false;
   }
 
@@ -203,11 +227,45 @@ staticcollectionamanger3(zorba::Zorba* z)
   return true;
 }
 
+
+bool
+staticcollectionamanger4(zorba::Zorba* z)
+{
+  std::ifstream lIn("main_invoke.xq");
+  assert(lIn.good());
+
+  zorba::XQuery_t lQuery = z->createQuery();
+  Zorba_CompilerHints lHints;
+  lQuery->compile(lIn, lHints);
+
+  size_t i = 0;
+
+  StaticCollectionManager* lMgr = lQuery->getStaticCollectionManager();
+
+  zorba::ItemSequence_t lSeq = lMgr->declaredCollections();
+  zorba::Iterator_t lIter = lSeq->getIterator();
+  lIter->open();
+  zorba::Item lName;
+  while (lIter->next(lName))
+  {
+    if (!lMgr->isAvailableCollection(lName))
+    {
+      lMgr->createCollection(lName);
+      std::cout << "created collection " << lName.getStringValue() << std::endl;
+      ++i;
+    }
+  }
+
+  return i == 1;
+}
+
 int
 staticcollectionmanager(int argc, char* argv[])
 {
   void* store = zorba::StoreManager::getStore();
   zorba::Zorba* z = zorba::Zorba::getInstance(store);
+
+  zorba::Properties::load(0, NULL);
 
   std::cout << "executing example 1" << std::endl;
   if (!staticcollectionamanger1(z))
@@ -222,6 +280,11 @@ staticcollectionmanager(int argc, char* argv[])
   std::cout << "executing example 3" << std::endl;
   if (!staticcollectionamanger3(z))
     return 3;
+  std::cout << std::endl;
+
+  std::cout << "executing example 4" << std::endl;
+  if (!staticcollectionamanger4(z))
+    return 4;
   std::cout << std::endl;
 
   return 0;
