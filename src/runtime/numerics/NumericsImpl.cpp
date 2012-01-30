@@ -558,12 +558,12 @@ bool NumArithIterator<Operation>::nextImpl(
                     this->loc,
                     n0,
                     n1);
-      
+#if 0
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
-        );
+          err::XPTY0004, ERROR_PARAMS(ZED(NoSeqAsArithOp)));
+#endif
       STACK_PUSH(res, state);
     }
   }
