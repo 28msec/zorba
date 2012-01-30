@@ -354,15 +354,12 @@ long Item::compare(
 }
 
 
-Item_t Item::getEBV() const
+bool Item::getEBV() const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-      getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(OperationNotDef_23),
+               ZED(EffectiveBooleanValue),
+               getType()->getStringValue()));
 }
 
 

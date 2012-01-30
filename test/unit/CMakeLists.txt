@@ -83,10 +83,7 @@ SET(UNIT_TESTS_SRCS
   ext_in_opt.cpp
   collection.cpp
   test_audit.cpp
-  string_instantiate.cpp
   streamable_string.cpp
-  string_test.cpp
-  unique_ptr.cpp
   main_sequential.cpp
   context_item.cpp
   datetime.cpp
@@ -96,13 +93,6 @@ SET(UNIT_TESTS_SRCS
   staticcollectionmanager.cpp
   static_context.cpp
 )
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND UNIT_TESTS_SRCS
-    stemmer.cpp
-    thesaurus.cpp
-    tokenizer.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 # multithread_simple.cpp
 # multithread_stress_test.cpp
@@ -141,6 +131,15 @@ ENDFOREACH(test)
 ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 
 # ADD NEW UNIT TESTS HERE
+ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
 ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
+ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
+IF (NOT ZORBA_NO_FULL_TEXT)
+  ZORBA_ADD_TEST("test/libunit/stemmer" LibUnitTest stemmer)
+  ZORBA_ADD_TEST("test/libunit/thesaurus" LibUnitTest thesaurus)
+  ZORBA_ADD_TEST("test/libunit/tokenizer" LibUnitTest tokenizer)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+# vim:set et sw=2 ts=2:

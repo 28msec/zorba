@@ -485,12 +485,10 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t XmlNode::getEBV() const
+bool XmlNode::getEBV() const
 {
   assert(!isConnectorNode());
-  store::Item_t bVal;
-  GET_FACTORY().createBoolean(bVal, true);
-  return bVal;
+  return true;
 }
 
 
