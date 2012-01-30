@@ -383,6 +383,7 @@ JSONNullIterator::~JSONNullIterator() {}
 // </JSONNullIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertIntoIterator>
 const char* JSONInsertIntoIterator::class_name_str = "JSONInsertIntoIterator";
 JSONInsertIntoIterator::class_factory<JSONInsertIntoIterator>
@@ -410,7 +411,8 @@ JSONInsertIntoIterator::~JSONInsertIntoIterator() {}
 
 // </JSONInsertIntoIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAsFirstIterator>
 const char* JSONInsertAsFirstIterator::class_name_str = "JSONInsertAsFirstIterator";
 JSONInsertAsFirstIterator::class_factory<JSONInsertAsFirstIterator>
@@ -438,7 +440,8 @@ JSONInsertAsFirstIterator::~JSONInsertAsFirstIterator() {}
 
 // </JSONInsertAsFirstIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAfterIterator>
 const char* JSONInsertAfterIterator::class_name_str = "JSONInsertAfterIterator";
 JSONInsertAfterIterator::class_factory<JSONInsertAfterIterator>
@@ -466,7 +469,8 @@ JSONInsertAfterIterator::~JSONInsertAfterIterator() {}
 
 // </JSONInsertAfterIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertBeforeIterator>
 const char* JSONInsertBeforeIterator::class_name_str = "JSONInsertBeforeIterator";
 JSONInsertBeforeIterator::class_factory<JSONInsertBeforeIterator>
@@ -494,7 +498,8 @@ JSONInsertBeforeIterator::~JSONInsertBeforeIterator() {}
 
 // </JSONInsertBeforeIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAsLastIterator>
 const char* JSONInsertAsLastIterator::class_name_str = "JSONInsertAsLastIterator";
 JSONInsertAsLastIterator::class_factory<JSONInsertAsLastIterator>
@@ -522,7 +527,8 @@ JSONInsertAsLastIterator::~JSONInsertAsLastIterator() {}
 
 // </JSONInsertAsLastIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONDeleteIterator>
 const char* JSONDeleteIterator::class_name_str = "JSONDeleteIterator";
 JSONDeleteIterator::class_factory<JSONDeleteIterator>
@@ -550,7 +556,8 @@ JSONDeleteIterator::~JSONDeleteIterator() {}
 
 // </JSONDeleteIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONRenameIterator>
 const char* JSONRenameIterator::class_name_str = "JSONRenameIterator";
 JSONRenameIterator::class_factory<JSONRenameIterator>
@@ -578,7 +585,8 @@ JSONRenameIterator::~JSONRenameIterator() {}
 
 // </JSONRenameIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONReplaceValueIterator>
 const char* JSONReplaceValueIterator::class_name_str = "JSONReplaceValueIterator";
 JSONReplaceValueIterator::class_factory<JSONReplaceValueIterator>
@@ -606,7 +614,7 @@ JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 
 // </JSONReplaceValueIterator>
 
-
+#endif
 
 }
 

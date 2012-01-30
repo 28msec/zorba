@@ -530,6 +530,7 @@ public:
 
 #endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:insert-into
@@ -565,7 +566,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:insert-as-first
@@ -601,7 +604,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:insert-after
@@ -637,7 +642,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:insert-before
@@ -673,7 +680,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:insert-as-last
@@ -709,7 +718,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:delete
@@ -745,7 +756,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:rename
@@ -781,7 +794,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * 
  *      json:replace-value
@@ -817,6 +832,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
 }
 #endif

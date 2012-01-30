@@ -777,6 +777,7 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   return false;
 }
 
+#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -786,6 +787,7 @@ void serializer::emitter::emit_json_item(store::Item *item, int depth)
   // JSON into HTML etc.
   throw ZORBA_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
 }
+#endif
 
 /*******************************************************************************
 
@@ -1540,11 +1542,13 @@ void serializer::xhtml_emitter::emit_node(
   }
 }
 
+#ifdef ZORBA_WITH_JSON
 void serializer::xhtml_emitter::emit_json_item(store::Item *item, int depth)
 {
   // "Un-override" this method - XHTML doesn't support JSON
   emitter::emit_json_item(item, depth);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

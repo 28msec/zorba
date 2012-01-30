@@ -445,29 +445,45 @@ namespace zorba {
     void endVisit  ( const JSONNullIterator& );
 #endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONInsertIntoIterator& );
     void endVisit  ( const JSONInsertIntoIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONInsertAsFirstIterator& );
     void endVisit  ( const JSONInsertAsFirstIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONInsertAfterIterator& );
     void endVisit  ( const JSONInsertAfterIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONInsertBeforeIterator& );
     void endVisit  ( const JSONInsertBeforeIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONInsertAsLastIterator& );
     void endVisit  ( const JSONInsertAsLastIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONDeleteIterator& );
     void endVisit  ( const JSONDeleteIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONRenameIterator& );
     void endVisit  ( const JSONRenameIterator& );
+#endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONReplaceValueIterator& );
     void endVisit  ( const JSONReplaceValueIterator& );
+#endif
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );

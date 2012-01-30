@@ -74,8 +74,6 @@ class ZORBA_DLL_PUBLIC StoreConsts
   }
 
 
-#ifdef ZORBA_WITH_JSON
-
   /* ATTENTION: the ordering of the enum values is important. Do NOT change it! */
   enum JSONItemKind
   {
@@ -106,8 +104,6 @@ class ZORBA_DLL_PUBLIC StoreConsts
         return "<unknown JSONItemKind>";
     }
   }
-
-#endif // ZORBA_WITH_JSON
  
 };
 

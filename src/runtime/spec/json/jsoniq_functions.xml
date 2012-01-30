@@ -338,7 +338,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONInsertIntoIterator" arity="nary">
+<zorba:iterator name="JSONInsertIntoIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:insert-into
@@ -366,7 +367,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONInsertAsFirstIterator" arity="nary">
+<zorba:iterator name="JSONInsertAsFirstIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:insert-as-first
@@ -394,7 +396,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONInsertAfterIterator" arity="nary">
+<zorba:iterator name="JSONInsertAfterIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:insert-after
@@ -423,7 +426,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONInsertBeforeIterator" arity="nary">
+<zorba:iterator name="JSONInsertBeforeIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:insert-before
@@ -452,7 +456,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONInsertAsLastIterator" arity="nary">
+<zorba:iterator name="JSONInsertAsLastIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:insert-as-last
@@ -480,7 +485,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONDeleteIterator" arity="nary">
+<zorba:iterator name="JSONDeleteIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:delete
@@ -508,7 +514,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONRenameIterator" arity="nary">
+<zorba:iterator name="JSONRenameIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:rename
@@ -536,7 +543,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONReplaceValueIterator" arity="nary">
+<zorba:iterator name="JSONReplaceValueIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
     <zorba:description author="Zorba Team">
       json:replace-value

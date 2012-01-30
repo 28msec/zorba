@@ -29,7 +29,9 @@
 #include "store/naive/node_factory.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/simple_index_value.h"
+#ifdef ZORBA_WITH_JSON
 #include "store/naive/json_items.h"
+#endif
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -37,7 +39,9 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
+#ifdef ZORBA_WITH_JSON
 using namespace zorba::simplestore::json;
+#endif
 
 namespace zorba {
 

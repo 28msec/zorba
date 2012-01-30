@@ -359,7 +359,9 @@ protected:
 
     virtual void emit_node(const store::Item* item, int depth);
 
+#ifdef ZORBA_WITH_JSON
     virtual void emit_json_item(store::Item *item, int depth);
+#endif
   };
 
 

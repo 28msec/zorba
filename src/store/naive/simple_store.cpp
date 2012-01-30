@@ -46,7 +46,9 @@
 #include "store/naive/loader.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
-#include "store/naive/json_items.h"
+#ifdef ZORBA_WITH_JSON
+#  include "store/naive/json_items.h"
+#endif
 #include "store/naive/dataguide.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_item_factory.h"

@@ -1859,7 +1859,7 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
 // </JSONNullIterator>
 
 #endif
-
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertIntoIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertIntoIterator& a) {
   thePrinter.startBeginVisit("JSONInsertIntoIterator", ++theId);
@@ -1873,7 +1873,8 @@ void PrinterVisitor::endVisit ( const JSONInsertIntoIterator& ) {
 }
 // </JSONInsertIntoIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAsFirstIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertAsFirstIterator& a) {
   thePrinter.startBeginVisit("JSONInsertAsFirstIterator", ++theId);
@@ -1887,7 +1888,8 @@ void PrinterVisitor::endVisit ( const JSONInsertAsFirstIterator& ) {
 }
 // </JSONInsertAsFirstIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAfterIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertAfterIterator& a) {
   thePrinter.startBeginVisit("JSONInsertAfterIterator", ++theId);
@@ -1901,7 +1903,8 @@ void PrinterVisitor::endVisit ( const JSONInsertAfterIterator& ) {
 }
 // </JSONInsertAfterIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertBeforeIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertBeforeIterator& a) {
   thePrinter.startBeginVisit("JSONInsertBeforeIterator", ++theId);
@@ -1915,7 +1918,8 @@ void PrinterVisitor::endVisit ( const JSONInsertBeforeIterator& ) {
 }
 // </JSONInsertBeforeIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONInsertAsLastIterator>
 void PrinterVisitor::beginVisit ( const JSONInsertAsLastIterator& a) {
   thePrinter.startBeginVisit("JSONInsertAsLastIterator", ++theId);
@@ -1929,7 +1933,8 @@ void PrinterVisitor::endVisit ( const JSONInsertAsLastIterator& ) {
 }
 // </JSONInsertAsLastIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONDeleteIterator>
 void PrinterVisitor::beginVisit ( const JSONDeleteIterator& a) {
   thePrinter.startBeginVisit("JSONDeleteIterator", ++theId);
@@ -1943,7 +1948,8 @@ void PrinterVisitor::endVisit ( const JSONDeleteIterator& ) {
 }
 // </JSONDeleteIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONRenameIterator>
 void PrinterVisitor::beginVisit ( const JSONRenameIterator& a) {
   thePrinter.startBeginVisit("JSONRenameIterator", ++theId);
@@ -1957,7 +1963,8 @@ void PrinterVisitor::endVisit ( const JSONRenameIterator& ) {
 }
 // </JSONRenameIterator>
 
-
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONReplaceValueIterator>
 void PrinterVisitor::beginVisit ( const JSONReplaceValueIterator& a) {
   thePrinter.startBeginVisit("JSONReplaceValueIterator", ++theId);
@@ -1971,6 +1978,7 @@ void PrinterVisitor::endVisit ( const JSONReplaceValueIterator& ) {
 }
 // </JSONReplaceValueIterator>
 
+#endif
 
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {

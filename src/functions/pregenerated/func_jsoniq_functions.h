@@ -294,7 +294,7 @@ public:
   CODEGEN_DECL();
 };
 #endif
-
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:insert-into
 class fn_jsoniq_insert_into : public function
@@ -315,7 +315,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:insert-as-first
 class fn_jsoniq_insert_as_first : public function
@@ -336,7 +337,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:insert-after
 class fn_jsoniq_insert_after : public function
@@ -357,7 +359,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:insert-before
 class fn_jsoniq_insert_before : public function
@@ -378,7 +381,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:insert-as-last
 class fn_jsoniq_insert_as_last : public function
@@ -399,7 +403,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:delete
 class fn_jsoniq_delete : public function
@@ -420,7 +425,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:rename
 class fn_jsoniq_rename : public function
@@ -441,7 +447,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:replace-value
 class fn_jsoniq_replace_value : public function
@@ -462,6 +469,7 @@ public:
 
   CODEGEN_DECL();
 };
+#endif
 
 
 } //namespace zorba

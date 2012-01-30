@@ -100,7 +100,11 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // empty sequence => false
     result = negate ^ false;
   }
-  else if (item->isNode() || item->isJSONItem())
+  else if (item->isNode()
+#ifdef ZORBA_WITH_JSON
+      || item->isJSONItem()
+#endif
+      )
   {
     // node or json => true
     result = negate ^ true;

@@ -1047,6 +1047,7 @@ xqtref_t TypeOps::union_type(
         break;
       }
     }
+#ifdef ZORBA_WITH_JSON
     else if ((kind1 == XQType::NODE_TYPE_KIND || 
               kind1 == XQType::JSON_TYPE_KIND ||
               kind1 == XQType::STRUCTURED_ITEM_KIND) &&
@@ -1056,6 +1057,7 @@ xqtref_t TypeOps::union_type(
     {
       return rtm.STRUCTURED_ITEM_TYPE_ONE;
     }
+#endif
 
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }

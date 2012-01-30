@@ -159,7 +159,7 @@ PlanIter_t fn_jsoniq_null::codegen(
 }
 
 #endif
-
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_insert_into::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -170,6 +170,8 @@ PlanIter_t fn_jsoniq_insert_into::codegen(
   return new JSONInsertIntoIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_insert_as_first::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -180,6 +182,8 @@ PlanIter_t fn_jsoniq_insert_as_first::codegen(
   return new JSONInsertAsFirstIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_insert_after::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -190,6 +194,8 @@ PlanIter_t fn_jsoniq_insert_after::codegen(
   return new JSONInsertAfterIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_insert_before::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -200,6 +206,8 @@ PlanIter_t fn_jsoniq_insert_before::codegen(
   return new JSONInsertBeforeIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_insert_as_last::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -210,6 +218,8 @@ PlanIter_t fn_jsoniq_insert_as_last::codegen(
   return new JSONInsertAsLastIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_delete::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -220,6 +230,8 @@ PlanIter_t fn_jsoniq_delete::codegen(
   return new JSONDeleteIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_rename::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -230,6 +242,8 @@ PlanIter_t fn_jsoniq_rename::codegen(
   return new JSONRenameIterator(sctx, loc, argv);
 }
 
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_replace_value::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -239,6 +253,8 @@ PlanIter_t fn_jsoniq_replace_value::codegen(
 {
   return new JSONReplaceValueIterator(sctx, loc, argv);
 }
+
+#endif
 
 void populate_context_jsoniq_functions(static_context* sctx)
 {
@@ -452,6 +468,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 #endif
 
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -465,6 +483,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -478,6 +500,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -492,6 +518,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -506,6 +536,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -519,6 +553,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -532,6 +570,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -545,6 +587,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -558,6 +604,10 @@ void populate_context_jsoniq_functions(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
   {
     
 
@@ -571,6 +621,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
   }
 
+
+#endif
 }
 
 
