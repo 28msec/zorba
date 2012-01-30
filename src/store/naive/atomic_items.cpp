@@ -624,11 +624,11 @@ void QNameItem::free()
     return;
   }
   
-  thePool.unregisterNormalizingBackPointer(this);
-  if (!thePool.hasNormalizingBackPointers(theNormalizedQName))
+  QNameItem* normVictim;
+  thePool.unregisterNormalizingBackPointer(this, normVictim);
+  if (normVictim)
   {
-    QNameItem* lNormalized = const_cast<QNameItem*>(theNormalizedQName);
-    thePool.remove(lNormalized);
+    thePool.remove(normVictim);
   }
   delete this;
 }

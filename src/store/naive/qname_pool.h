@@ -139,7 +139,7 @@ protected:
                              const zstring& ln,
                              bool sync = true);
   
-  QNameItem* cacheInsert();
+  QNameItem* cacheInsert(QNameItem*& normVictim);
 
   void cachePin(QNameItem* qn);
 
@@ -154,7 +154,8 @@ protected:
   
   bool hasNormalizingBackPointers(const QNameItem* aNormalizedQName) const;
   void registerNormalizingBackPointer(const QNameItem* aQName);
-  void unregisterNormalizingBackPointer(const QNameItem* aQName);
+  void unregisterNormalizingBackPointer(const QNameItem* aQName,
+                                        QNameItem*& normVictim);
 };
 
 

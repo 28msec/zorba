@@ -102,20 +102,16 @@ void QNamePool::remove(QNameItem* qn)
     // qn in the pool, and let the pool garbage-collect it later (if it still
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
-    unregisterNormalizingBackPointer(qn);
+    QNameItem* normVictim = NULL;
+    unregisterNormalizingBackPointer(qn, normVictim);
     theHashSet.eraseNoSync(qn);
-    QNameItem* lNormalized = NULL;
-    if(qn->isNormalized())
-    {
-      lNormalized = const_cast<QNameItem*>(qn->getNormalized());
-    }
     qn->invalidate();
     delete qn;
 
-    if (lNormalized && !hasNormalizingBackPointers(lNormalized))
+    if (normVictim)
     {
       // Tail call. Should avoid deadlock because no new stack frame.
-      remove(lNormalized);
+      remove(normVictim);
     }
   }
 }
@@ -153,6 +149,7 @@ QNameItem* QNamePool::insert_internal(
     bool        sync)
 {
   QNameItem* qn;
+  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   QNameItem* normQName = NULL;
 
@@ -178,10 +175,10 @@ retry:
                                   hval);
     if (entry == 0)
     {
-      // Build a new QName (either new object or in cache).
-      qn = cacheInsert();
       if (normalized)
       {
+        // Build a new QName (either new object or in cache).
+        qn = cacheInsert(normVictim);
         qn->initializeAsNormalizedQName(pooledNs, zstring(ln));
       }
       else
@@ -195,6 +192,8 @@ retry:
 
           goto retry;
         }
+        // Build a new QName (either new object or in cache).
+        qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
         registerNormalizingBackPointer(qn);
       }
@@ -221,6 +220,10 @@ retry:
     ZORBA_FATAL(0, "Unexpected exception");
   }
 
+  if (normVictim)
+  {
+    remove(normVictim);
+  }
   return qn;
 }
 
@@ -237,6 +240,7 @@ QNameItem* QNamePool::insert_internal(
     bool sync)
 {
   QNameItem* qn = NULL;
+  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   QNameItem* normQName = NULL;
 
@@ -259,19 +263,10 @@ retry:
                                   hval);
     if (entry == 0)
     {
-      // Build a new QName (either new object or in cache).
-      if (qn == NULL)
-      {
-        SYNC_CODE(theHashSet.theMutex.unlock();\
-                  haveLock = false;)
-
-        // This call might need the lock.
-        qn = cacheInsert();
-
-        goto retry;
-      }
       if (normalized)
       {
+        // Build a new QName (either new object or in cache).
+        qn = cacheInsert(normVictim);
         qn->initializeAsNormalizedQName(pooledNs, ln);
       }
       else
@@ -286,7 +281,8 @@ retry:
 
           goto retry;
         }
-
+        // Build a new QName (either new object or in cache).
+        qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
         registerNormalizingBackPointer(qn);
       }
@@ -312,6 +308,11 @@ retry:
 
     ZORBA_FATAL(0, "Unexpected exception");
   }
+
+  if (normVictim)
+  {
+    remove(normVictim);
+  }
   return qn;
 }
 
@@ -322,8 +323,9 @@ retry:
   slot (if any) is removed from the pool. If the cache free list is empty a new
   QNameItem is allocated from the heap.
 ********************************************************************************/
-QNameItem* QNamePool::cacheInsert()
+QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 {
+  assert (normVictim == NULL);
   if (theFirstFree != 0)
   {
     QNameItem* qn = &theCache[theFirstFree];
@@ -333,19 +335,10 @@ QNameItem* QNamePool::cacheInsert()
 
     if (qn->isValid())
     {
-      unregisterNormalizingBackPointer(qn);
+      unregisterNormalizingBackPointer(qn, normVictim);
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
-      QNameItem* lNormalized = NULL;
-      if(qn->isNormalized())
-      {
-        lNormalized = const_cast<QNameItem*>(qn->getNormalized());
-      }
       qn->invalidate();
-      if (lNormalized && !hasNormalizingBackPointers(lNormalized))
-      {
-        remove(lNormalized);
-      }
     }
 
     qn->theNextFree = qn->thePrevFree = 0;
@@ -433,7 +426,8 @@ void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
   }
 }
 
-void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName)
+void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName,
+                                                 QNameItem*& normVictim)
 {
   if (aQName->isNormalized())
   {
@@ -445,8 +439,16 @@ void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName)
   // Backpointer exists.
   assert(theWhoNormalizesToMe[aQName->getNormalized()].find(aQName)
          != theWhoNormalizesToMe[aQName->getNormalized()].end());
+
+  std::set<const QNameItem*>& lSet =
+      theWhoNormalizesToMe[aQName->getNormalized()];
+
   // Remove backpointer.
-  theWhoNormalizesToMe[aQName->getNormalized()].erase(aQName);
+  lSet.erase(aQName);
+
+  // Set normalization victim if the set is now empty.
+  if (lSet.empty())
+    normVictim = const_cast<QNameItem*>(aQName->getNormalized());
 }
   
   
