@@ -147,8 +147,8 @@ protected:
   typedef Pairs::const_iterator PairsConstIter;
   typedef Pairs::iterator PairsIter;
 
-  Pairs thePairs;
-  SimpleCollection* theCollection;
+  Pairs              thePairs;
+  SimpleCollection * theCollection;
 
   class PairIterator : public store::Iterator
   {
@@ -234,8 +234,8 @@ protected:
   typedef Members::const_iterator MembersConstIter;
   typedef Members::iterator MembersIter;
 
-  Members theContent;
-  SimpleCollection* theCollection;
+  Members            theContent;
+  SimpleCollection * theCollection;
 
   class ValuesIterator : public store::Iterator
   {
