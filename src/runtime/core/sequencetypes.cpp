@@ -594,11 +594,9 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                   << ".");
         }
       }
-      else
-      {
-        STACK_PUSH(true, state);
-      }
     }
+
+    STACK_PUSH(true, state);
   }
   else
   {
@@ -640,11 +638,9 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                     << " as " << theTreatType->toSchemaString());
           }
         }
-        else
-        {
-          STACK_PUSH(true, state);
-        }
       }
+
+      STACK_PUSH(true, state);
     } 
     while (consumeNext(result, theChild.getp(), planState));
   }
