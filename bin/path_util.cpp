@@ -66,6 +66,23 @@ tokenizePath(
   }
 }
 
+
+static String
+concatenatePaths( const std::vector<String>& aPathList)
+{
+  String delimiter(filesystem_path::get_path_separator());
+
+  String lResult;
+  for (std::vector<String>::const_iterator lIter = aPathList.begin();
+       lIter != aPathList.end(); ++lIter)
+  {
+    lResult += delimiter + *lIter;
+  }
+
+  return lResult;
+}
+
+
 void
 setPathsOnContext(
   const ZorbaCMDProperties& aProperties,
@@ -105,15 +122,15 @@ setPathsOnContext(
     lPath.push_back(lCWD.get_path());
     tokenizePath(lEnvStr, lPath);
     aStaticCtx->setLibPath(lPath);
-
-    // Compute and set class path
-    aProperties.getClassPath(lPathStr);
-    tokenizePath(lPathStr, lPath);
-    lEnvStr = getPathFromEnvironment("CLASSPATH");
-    lPath.push_back(lCWD.get_path());
-    tokenizePath(lEnvStr, lPath);
-    aStaticCtx->setJVMClassPath(lPath);
   }
+
+  // Compute and set JVM class path
+  aProperties.getJVMClassPath(lPathStr);
+  tokenizePath(lPathStr, lPath);
+  lEnvStr = getPathFromEnvironment("CLASSPATH");
+  lPath.push_back(lCWD.get_path());
+  tokenizePath(lEnvStr, lPath);
+  aStaticCtx->setJVMClassPath(lPath);
 }
 
 } /* namespace ModulePath */

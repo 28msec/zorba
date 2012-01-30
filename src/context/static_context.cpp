@@ -1679,6 +1679,19 @@ void static_context::get_jvm_class_path(std::vector<zstring>& path) const
   path.insert(path.end(), theJVMClassPath.begin(), theJVMClassPath.end());
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_full_jvm_class_path(std::vector<zstring>& path) const
+{
+  if (theParent != NULL)
+  {
+    theParent->get_full_jvm_class_path(path);
+  }
+
+  get_jvm_class_path(path);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

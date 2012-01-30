@@ -673,6 +673,27 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual void
   getJVMClassPath(std::vector<String>& aClassPath) const = 0;
+
+  /**
+   * @brief Return the JVM lookup classpath (list of filesystem directories) for
+   * this static context and all its parents.
+   *
+   * Returns any values set by \link setJVMClassPath() on this static context
+   * and all its parents.
+   */
+  virtual void
+  getFullJVMClassPath(std::vector<String>& aClassPath) const = 0;
+
+  /**
+   * @brief Return the JVM lookup classpath (list of filesystem directories) for
+   * this static context and all its parents,delimited by system path delimiter.
+   *
+   * Returns the values set by \link setJVMClassPath() on this static context
+   * and all its parents, concatenated by the system path delimiter:
+   * ';' on Windows platforms, ':' othervise.
+   */
+  virtual String
+  getFullJVMClassPath() const = 0;
 };
 
 } /* namespace zorba */

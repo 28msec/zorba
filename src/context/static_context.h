@@ -716,6 +716,8 @@ public:
 
   void get_jvm_class_path(std::vector<zstring>& oClassPath) const;
 
+  void get_full_jvm_class_path(std::vector<zstring>& path) const;
+
 	//
   // Validating Items
   //

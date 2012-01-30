@@ -32,6 +32,12 @@ namespace zorba {
     setPathsOnContext(const ZorbaCMDProperties& aProperties,
                       zorba::StaticContext_t& aStaticCtx);
 
+    static void
+    tokenizePath(const std::string& aPathStr, std::vector<String>&  aResult);
+
+
+    static String
+    concatenatePaths( const std::vector<String>& aPathList);
 
   }
 } /* namespace zorba */

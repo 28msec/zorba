@@ -93,7 +93,7 @@ public:
   getLibPath(std::string&) const;
 
   void
-  getClassPath(std::string&) const;
+  getJVMClassPath(std::string&) const;
 
   bool isDebug(){ return theDebug; }
 

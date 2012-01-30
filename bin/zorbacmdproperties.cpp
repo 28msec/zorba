@@ -181,7 +181,7 @@ void ZorbaCMDProperties::getLibPath(std::string& aPath) const
   aPath = theLibPath;
 }
 
-void ZorbaCMDProperties::getClassPath(std::string& aPath) const
+void ZorbaCMDProperties::getJVMClassPath(std::string& aPath) const
 {
   aPath = theClasspath;
 }
