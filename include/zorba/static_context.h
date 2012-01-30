@@ -654,6 +654,25 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const = 0;
+
+  /**
+   * @brief Set the JVM lookup classpath (list of filesystem directories) for
+   * this static context.
+   *
+   * Modules that have java implementations must set a classpath. This classpath
+   * is used when a JVM singleton is started.
+   */
+  virtual void
+  setJVMClassPath(const std::vector<String>& aClassPath) = 0;
+
+  /**
+   * @brief Return the JVM lookup classpath (list of filesystem directories) for
+   * this static context.
+   *
+   * Returns any values set by \link setJVMClassPath() on this static context.
+   */
+  virtual void
+  getJVMClassPath(std::vector<String>& aClassPath) const = 0;
 };
 
 } /* namespace zorba */

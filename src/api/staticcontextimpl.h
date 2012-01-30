@@ -269,6 +269,12 @@ public:
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
 
+  virtual void
+  setJVMClassPath(const std::vector<String>& aClassPath);
+
+  virtual void
+  getJVMClassPath(std::vector<String>& aClassPath) const;
+
 protected:
   String
   createInvokeQuery(const Function_t&, size_t aArity) const;

@@ -507,6 +507,8 @@ protected:
 
   ExternalModuleMap                     * theExternalModulesMap;
 
+  checked_vector<zstring>                 theJVMClassPath;
+
   rchandle<TypeManager>                   theTypeManager;
 
   NamespaceBindings                     * theNamespaceBindings;
@@ -708,6 +710,13 @@ public:
   void get_full_lib_path(std::vector<zstring>& oLibPath) const;
 
   //
+  // JVM classpath
+  //
+  void set_jvm_class_path(const std::vector<zstring>& aClassPath);
+
+  void get_jvm_class_path(std::vector<zstring>& oClassPath) const;
+
+	//
   // Validating Items
   //
   bool validate(
