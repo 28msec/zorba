@@ -429,6 +429,7 @@ void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
 void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName,
                                                  QNameItem*& normVictim)
 {
+  assert (normVictim == NULL);
   if (aQName->isNormalized())
   {
     return;
