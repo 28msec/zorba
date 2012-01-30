@@ -617,13 +617,20 @@ QNameItem::QNameItem(const zstring& aNamespace,
 
 void QNameItem::free()
 {
+  QNamePool& thePool = GET_STORE().getQNamePool();
   if (isInPool)
   {
-    GET_STORE().getQNamePool().remove(this);
-  } else {
-    GET_STORE().getQNamePool().unregisterNormalizingBackPointer(this);
-    delete this;
+    thePool.remove(this);
+    return;
   }
+  
+  thePool.unregisterNormalizingBackPointer(this);
+  if (!thePool.hasNormalizingBackPointers(theNormalizedQName))
+  {
+    QNameItem* lNormalized = const_cast<QNameItem*>(theNormalizedQName);
+    thePool.remove(lNormalized);
+  }
+  delete this;
 }
 
 
