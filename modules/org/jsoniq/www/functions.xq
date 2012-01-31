@@ -147,7 +147,7 @@ declare updating function j:insert-as-last(
  :)
 declare updating function j:delete(
   $i as json-item(),
-  $selector as item()) external;
+  $selector as xs:anyAtomicType) external;
 
 (:~
  :
