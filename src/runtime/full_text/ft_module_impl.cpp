@@ -56,7 +56,8 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
-  return get_lang_from( sctx->get_match_options() );
+  iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
+  return lang ? lang : get_host_lang();
 }
 
 static iso639_1::type get_lang_from( store::Item_t lang_item,
@@ -72,7 +73,7 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
       ),
       ERROR_LOC( loc )
     );
-  if ( iso639_1::type lang = find_lang( lang_string.c_str() ) )
+  if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
     return lang;
   throw XQUERY_EXCEPTION(
     err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
@@ -84,7 +85,7 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
 bool CurrentLangIterator::nextImpl( store::Item_t &result,
                                     PlanState &plan_state ) const {
   iso639_1::type const lang = get_lang_from( getStaticContext() );
-  zstring lang_string = iso639_1::string_of[ lang ];
+  zstring lang_string( iso639_1::string_of[ lang ] );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -384,7 +385,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *sctx;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -417,8 +417,9 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   );
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  sctx = getStaticContext();
-  sctx->validate( result, result, StaticContextConsts::strict_validation );
+  getStaticContext()->validate(
+    result, result, StaticContextConsts::strict_validation
+  );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
   STACK_PUSH( true, state );

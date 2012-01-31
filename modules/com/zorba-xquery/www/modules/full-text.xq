@@ -230,7 +230,7 @@ declare function ft:tokenize-string( $string as xs:string )
 (:~
  : Gets properties of the tokenizer for the given language.
  :
- : @param $lang The default language of <code>$string</code>.
+ : @param $lang The langauage of the tokenizer to get the properties of.
  : @return said properties.
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )

@@ -539,7 +539,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
