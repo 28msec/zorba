@@ -250,6 +250,11 @@ MACRO (DECLARE_ZORBA_MODULE)
     SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
+    IF (MODULE_VERSION)
+      # If there's a version, insert it into the module library name
+      SET (module_filewe "${module_filewe}_${MODULE_VERSION}")
+    ENDIF (MODULE_VERSION)
+
     # It seems like it would be nice to set the VERSION and/or
     # SOVERSION target properties here. However: On Windows, it
     # doesn't seem to do anything (the .rc file configured above
@@ -260,7 +265,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     # target property isn't desirable.
     # FOLDER is to group IDE projects into folders.
     SET_TARGET_PROPERTIES (${module_lib_target} PROPERTIES
-      OUTPUT_NAME "${module_filewe}_${MODULE_VERSION}${SUFFIX}"
+      OUTPUT_NAME "${module_filewe}${SUFFIX}"
       ${target_type}_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
       FOLDER "Modules"
     )
