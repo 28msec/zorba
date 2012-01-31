@@ -1159,10 +1159,16 @@ JSONiqErrorCode JSDY0020( "JSDY0020" );
 JSONiqErrorCode JSDY0040( "JSDY0040" );
 
 
-JSONiqErrorCode JSDY0060( "JSDY0060" );
+JSONiqErrorCode JUDY0060( "JUDY0060" );
 
 
-JSONiqErrorCode JSDY0061( "JSDY0061" );
+JSONiqErrorCode JUDY0061( "JUDY0061" );
+
+
+JSONiqErrorCode JUDY0062( "JUDY0062" );
+
+
+JSONiqErrorCode JUDY0063( "JUDY0063" );
 #endif
 
 

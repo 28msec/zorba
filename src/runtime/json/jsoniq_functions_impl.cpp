@@ -542,7 +542,7 @@ JSONInsertIntoIterator::nextImpl(
   {
     if (lObject->getPair(lTmp->getName()))
     {
-      RAISE_ERROR(jerr::JSDY0060, loc,
+      RAISE_ERROR(jerr::JUDY0060, loc,
           ERROR_PARAMS(lTmp->getName()->getStringValue()));
     }
 
@@ -652,11 +652,15 @@ JSONDeleteIterator::nextImpl(
   {
     if (lSelector->getTypeCode() != store::XS_STRING)
     {
-      // RAISE ERROR
+      RAISE_ERROR(jerr::JUDY0063, loc,
+          ERROR_PARAMS(lSelector->getType()->getStringValue(), "xs:string")
+        );
     }
     if (!lTarget->getPair(lSelector))
     {
-      // RAISE ERROR
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(ZED(JUDY0061_Object), lSelector->getStringValue())
+        );
     }
 
   }
@@ -664,18 +668,34 @@ JSONDeleteIterator::nextImpl(
   {
     if (lSelector->getTypeCode() != store::XS_INTEGER)
     {
-      // RAISE ERROR
+      RAISE_ERROR(jerr::JUDY0063, loc,
+          ERROR_PARAMS(lSelector->getType()->getStringValue(), "xs:integer")
+        );
     }
 
-    if (lSelector->getIntegerValue() <= xs_integer::zero() ||
-        lTarget->getSize() <= lSelector->getIntegerValue())
+    if (lSelector->getIntegerValue() <= xs_integer::zero())
     {
-      // RAISE ERROR
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(
+            ZED(JUDY0061_ArrayNegativeOrZero),
+            lSelector->getIntegerValue()
+          )
+       );
+    }
+    else if (lTarget->getSize() < lSelector->getIntegerValue())
+    {
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(
+            ZED(JUDY0061_ArrayOutOfBounds),
+            lSelector->getIntegerValue(),
+            lTarget->getSize()
+          )
+       );
     }
   }
   else
   {
-    // RAISE ERROR: can only be a pair, so I guess a type error is just fine
+    RAISE_ERROR_NO_PARAMS(jerr::JUDY0062, loc);
   }
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());

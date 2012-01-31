@@ -2409,14 +2409,37 @@
       <value>$1</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0060" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JUDY0060" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by insert-into</comment>
       <value>"$1": pair already exists</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0061" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by delete</comment>
-      <value>"$1": pair does not exists</value>
+    <diagnostic code="JUDY0061" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by upd:delete</comment>
+      <value>$1</value>
+
+      <entry key="Object">
+        <value>"$2": pair to delete does not exist</value>
+      </entry>
+      <entry key="ArrayNegativeOrZero">
+        <value>"$2": invalid array selector</value>
+      </entry>
+      <entry key="ArrayOutOfBounds">
+        <value>"$2": array out of bounds (size $3)</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="JUDY0062" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by upd:delete if the argument is not an object or array</comment>
+      <value>first argument to delete function is pair() but must be array or object</value>
+    </diagnostic>
+
+    <diagnostic code="JUDY0063" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by upd:delete if the first argument is an
+        object/array but second argument is not of type xs:string/xs:integer,
+        respectively
+      </comment>
+      <value>"$1": invalid type of second argument (must be $2)</value>
     </diagnostic>
 
   </namespace>

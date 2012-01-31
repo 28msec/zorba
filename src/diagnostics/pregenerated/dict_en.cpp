@@ -108,10 +108,16 @@ extern entry const dict_en[] = {
   { "JSDY0040", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0060", "\"$1\": pair already exists" },
+  { "JUDY0060", "\"$1\": pair already exists" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0061", "\"$1\": pair does not exists" },
+  { "JUDY0061", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JUDY0062", "first argument to delete function is pair() but must be array or object" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JUDY0063", "\"$1\": invalid type of second argument (must be $2)" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
@@ -536,6 +542,9 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JUDY0061_ArrayNegativeOrZero", "\"$2\": invalid array selector" },
+  { "~JUDY0061_ArrayOutOfBounds", "\"$2\": array out of bounds (size $3)" },
+  { "~JUDY0061_Object", "\"$2\": pair to delete does not exist" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
