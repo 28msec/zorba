@@ -79,7 +79,10 @@ Stemmer::ptr TestStemmerProvider::getStemmer( iso639_1::type lang ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int stemmer( int argc, char *argv[] ) {
+namespace zorba {
+namespace UnitTests {
+
+int test_stemmer( int argc, char *argv[] ) {
   void *const zstore = StoreManager::getStore();
   Zorba *const zorba = Zorba::getInstance( zstore );
 
@@ -118,4 +121,8 @@ int stemmer( int argc, char *argv[] ) {
   StoreManager::shutdownStore( zstore );
   return result;
 }
+
+} // namespace UnitTests
+} // namespace zorba
+
 /* vim:set et sw=2 ts=2: */
