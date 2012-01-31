@@ -68,6 +68,8 @@ DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
 IF(NOT ZORBA_NO_FULL_TEXT)
   DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
     URI "http://www.zorba-xquery.com/modules/full-text")
+  DECLARE_ZORBA_SCHEMA(FILE full-text-schema.xsd
+    URI "http://www.zorba-xquery.com/modules/full-text-schema")
 ENDIF(NOT ZORBA_NO_FULL_TEXT)
 
 # Subdirectories
