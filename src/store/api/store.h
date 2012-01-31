@@ -254,7 +254,8 @@ public:
    */
   virtual Collection_t getCollection(
       const Item* name,
-      bool aDynamicCollection = false) = 0;
+      bool isDynamic,
+      bool isJSONIQ) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.

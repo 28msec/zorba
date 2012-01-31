@@ -55,10 +55,13 @@ CollectionIterator::next(store::Collection_t& aResult)
   while (theIterator != theCollections->end()) 
   {
     aResult = (*theIterator).second;
-    if (aResult->isDynamic() != theDynamicCollections) {
+    if (aResult->isDynamic() != theDynamicCollections) 
+    {
       ++theIterator;
       continue;
-    } else {
+    }
+    else
+    {
       ++theIterator;
       return true;
     }
@@ -78,7 +81,8 @@ CollectionIterator::reset()
 void
 CollectionIterator::close()
 {
-  if (!theOpened) {
+  if (!theOpened) 
+  {
     return;
   }
   theOpened = false;
@@ -104,22 +108,24 @@ void CollectionSet::clear()
 }
 
 
-bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aCollection)
+bool CollectionSet::insert(const store::Item* name, store::Collection_t& collection)
 {
-  store::Item* qname = const_cast<store::Item*>(aName);
+  store::Item* qname = const_cast<store::Item*>(name);
 
-  return theCollections.insert(qname, aCollection);
+  return theCollections.insert(qname, collection);
 }
 
 
 bool CollectionSet::get(
-    const store::Item* aName,
-    store::Collection_t& aCollection,
-    bool aDynamicCollection) 
+    const store::Item* name,
+    store::Collection_t& collection,
+    bool isDynamic,
+    bool isJSONIQ) 
 {
-  if (theCollections.get(const_cast<store::Item*>(aName), aCollection)) 
+  if (theCollections.get(const_cast<store::Item*>(name), collection)) 
   {
-    return aCollection->isDynamic() == aDynamicCollection;
+    return (collection->isDynamic() == isDynamic &&
+            collection->isJSONIQ() == isJSONIQ);
   }
   else 
   {
@@ -128,29 +134,32 @@ bool CollectionSet::get(
 }
 
 
-bool CollectionSet::remove(const store::Item* aName, bool aDynamicCollection) 
+bool CollectionSet::remove(
+    const store::Item* name,
+    bool isDynamic,
+    bool isJSONIQ) 
 {
   store::Collection_t lColl;
-  if (!get(aName, lColl, aDynamicCollection))
+  if (!get(name, lColl, isDynamic, isJSONIQ))
   {
     return false;
   }
   else
   {
-    return theCollections.erase(const_cast<store::Item*>(aName));
+    return theCollections.erase(const_cast<store::Item*>(name));
   }
 }
 
 
-store::Iterator_t CollectionSet::names(bool aDynamicCollections) 
+store::Iterator_t CollectionSet::names(bool dynamic) 
 {
-  return new NameIterator<Set>(theCollections, aDynamicCollections);
+  return new NameIterator<Set>(theCollections, dynamic);
 }
 
 
-CollectionIterator_t CollectionSet::collections(bool aDynamicCollections) 
+CollectionIterator_t CollectionSet::collections(bool dynamic) 
 {
-  return new CollectionIterator(&theCollections, aDynamicCollections);
+  return new CollectionIterator(&theCollections, dynamic);
 }
 
 // specialize the next function of the NameIterator for

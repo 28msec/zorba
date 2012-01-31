@@ -58,16 +58,19 @@ protected:
   bool theIsDynamic;
   bool theIsJSONIQ;
 
+protected:
+
   virtual const StaticallyKnownCollection*
   getCollection(
       const static_context* aSctx,
       const store::Item_t& aName,
       const QueryLoc& aLoc,
-      bool aDynamicCollection,
+      bool isDynamic,
+      bool isJSONIQ,
       store::Collection_t& coll) const
   {
     const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-    if (collectionDecl == 0  && !aDynamicCollection)
+    if (collectionDecl == 0  && !isDynamic)
     {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
@@ -76,7 +79,7 @@ protected:
       );
     }
 
-    coll = GENV_STORE.getCollection(aName, aDynamicCollection);
+    coll = GENV_STORE.getCollection(aName, isDynamic, isJSONIQ);
 
     if (coll == NULL)
     {
@@ -108,12 +111,18 @@ protected:
 
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
 
-    collectionDecl = getCollection(
-        this->theSctx, collName, this->loc, theIsDynamic, collection);
+    collectionDecl = getCollection(this->theSctx,
+                                   collName,
+                                   this->loc,
+                                   theIsDynamic,
+                                   theIsJSONIQ,
+                                   collection);
 
     if (beforeOrAfter) 
     {
-      if(!this->consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState))
+      if(!this->consumeNext(targetNode,
+                            this->theChildren[this->theChildren.size()-2].getp(),
+                            planState))
       {
         ZORBA_ASSERT(false);
       }
@@ -130,7 +139,9 @@ protected:
 
     getCopyMode(lCopyMode, this->theSctx);
 
-    while (this->consumeNext(node, this->theChildren[this->theChildren.size()-1].getp(), planState))
+    while (this->consumeNext(node,
+                             this->theChildren[this->theChildren.size()-1].getp(),
+                             planState))
     {
       checkNodeType(this->theSctx, node, collectionDecl, this->loc, theIsDynamic);
       copyNode = node->copy(NULL, lCopyMode);

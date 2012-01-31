@@ -228,19 +228,22 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool aDynamicCollection = false);
+      bool isDynamic,
+      bool isJSONIQ);
 
   void deleteCollection(
       const store::Item* aName,
-      bool aDynamicCollection = false);
+      bool isDynamic,
+      bool isJSONIQ);
 
   store::Collection_t getCollection(
       const store::Item* aName,
-      bool aDynamicCollection = false);
+      bool isDynamic,
+      bool isJSONIQ);
 
   void addCollection(store::Collection_t& collection);
 
-  store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
+  store::Iterator_t listCollectionNames(bool dynamic);
 
   store::Index_t createIndex(
       const store::Item_t& qname,

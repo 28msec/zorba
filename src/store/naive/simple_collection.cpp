@@ -142,28 +142,29 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
                  item->getCollection()->getName()->getStringValue()));
   }
 
-  xs_long pos = to_xs_long(position);
+  csize pos;
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (pos < 0 || to_xs_unsignedLong(pos) >= theXmlTrees.size())
+  if (position < xs_integer(0) ||  position >= xs_integer(theXmlTrees.size()))
   {
+    pos = theXmlTrees.size() - 1;
     theXmlTrees.push_back(item);
-#ifdef ZORBA_WITH_JSON
-    if (object)
-      object->setCollection(this, theXmlTrees.size() - 1);
-    else if (array)
-      array->setCollection(this, theXmlTrees.size() - 1);
-    else
-#endif
-      node->setCollection(this, theXmlTrees.size() - 1);
   }
   else
   {
-    theXmlTrees.insert(theXmlTrees.begin() + (csize)pos, item);
-    if (node)
-      node->setCollection(this, to_xs_unsignedInt(pos));
+    pos = to_xs_unsignedInt(position);
+    theXmlTrees.insert(theXmlTrees.begin() + pos, item);
   }
+
+#ifdef ZORBA_WITH_JSON
+  if (object)
+    object->setCollection(this, pos);
+  else if (array)
+    array->setCollection(this, pos);
+  else
+#endif
+    node->setCollection(this, pos);
 }
 
 
@@ -185,10 +186,8 @@ ulong SimpleCollection::addNodes(
 
   if (!found)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
-      ERROR_PARAMS( theName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
+    ERROR_PARAMS(theName->getStringValue()));
   }
 
   std::size_t lTargetPos = to_xs_unsignedInt(targetPos);
@@ -205,10 +204,8 @@ ulong SimpleCollection::addNodes(
   {
     if (!nodes[i]->isNode())
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-        ERROR_PARAMS( getName()->getStringValue() )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS(getName()->getStringValue()));
     }
 
     XmlNode* node = static_cast<XmlNode*>(nodes[i].getp());

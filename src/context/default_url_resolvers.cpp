@@ -114,7 +114,7 @@ ZorbaCollectionURLResolver::resolveURL
 
   store::Item_t lName;
   GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
-  store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
+  store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true, false);
   if ( lColl == NULL ) {
     return NULL;
   } else {

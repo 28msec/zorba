@@ -202,7 +202,10 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
     if (collName == theLastCollection)
       return theLastPul;
-    return getCollectionPulByName(collName,collection->isDynamic());
+
+    return getCollectionPulByName(collName, 
+                                  collection->isDynamic(),
+                                  collection->isJSONIQ());
   }
   else if (theNoCollectionPul != NULL)
   {
@@ -221,7 +224,11 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   }
 }
 
-CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dynamicCollection)
+
+CollectionPul* PULImpl::getCollectionPulByName(
+    const store::Item* name,
+    bool isDynamic,
+    bool isJSONIQ)
 {
   const QNameItem* collName = static_cast<const QNameItem*>(name)->getNormalized();
 
@@ -242,7 +249,8 @@ CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dyn
   else
   {
     SimpleCollection* collection = static_cast<SimpleCollection*>
-    (GET_STORE().getCollection(collName,dynamicCollection).getp());
+      (GET_STORE().getCollection(collName, isDynamic, isJSONIQ).getp());
+
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
   }
@@ -844,7 +852,7 @@ void PULImpl::addCreateCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
   createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic, isJSONIQ));
@@ -857,7 +865,7 @@ void PULImpl::addDeleteCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theDeleteCollectionList.push_back(GET_PUL_FACTORY().
   createUpdDeleteCollection(pul, loc, name, isDynamic, isJSONIQ));
@@ -871,7 +879,7 @@ void PULImpl::addInsertIntoCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
   createUpdInsertIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
@@ -885,7 +893,7 @@ void PULImpl::addInsertFirstIntoCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
   createUpdInsertFirstIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
@@ -899,7 +907,7 @@ void PULImpl::addInsertLastIntoCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
   createUpdInsertLastIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
@@ -914,7 +922,7 @@ void PULImpl::addInsertBeforeIntoCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
   createUpdInsertBeforeIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
@@ -929,7 +937,7 @@ void PULImpl::addInsertAfterIntoCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
   createUpdInsertAfterIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
@@ -944,7 +952,7 @@ void PULImpl::addDeleteFromCollection(
     bool isDynamic,
     bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
 
   pul->theDeleteFromCollectionList.push_back(GET_PUL_FACTORY().
   createUpdDeleteNodesFromCollection(pul, loc, name, nodes, isLast, isDynamic, isJSONIQ));
@@ -960,7 +968,9 @@ void PULImpl::addCreateIndex(
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateIndex(this, loc,  qname, spec, sourceIter);
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().
+  createUpdCreateIndex(this, loc,  qname, spec, sourceIter);
+
   theCreateIndexList.push_back(upd);
 }
 
@@ -969,8 +979,8 @@ void PULImpl::addDeleteIndex(
     const QueryLoc* loc,
     const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdDeleteIndex(this, loc, qname);
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().
+  createUpdDeleteIndex(this, loc, qname);
 
   theDeleteIndexList.push_back(upd);
 }
@@ -981,8 +991,8 @@ void PULImpl::addRefreshIndex(
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdRefreshIndex(this, loc,  qname, sourceIter);
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().
+  createUpdRefreshIndex(this, loc,  qname, sourceIter);
 
   theRefreshIndexList.push_back(upd);
 }
@@ -1652,7 +1662,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 
   for (; collIte != collEnd; ++collIte)
   {
-    store::Collection* collection = store->getCollection(collIte->first);
+    store::Collection* collection = store->getCollection(collIte->first, false, false);
 
     // The collection may not be created yet.
     if (collection == NULL)
@@ -1740,7 +1750,7 @@ void PULImpl::addIndexEntryCreator(
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {
-  CollectionPul* pul = getCollectionPulByName(collectionName,false);
+  CollectionPul* pul = getCollectionPulByName(collectionName, false, false);
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
