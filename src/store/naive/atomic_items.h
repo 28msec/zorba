@@ -387,7 +387,7 @@ public:
   const zstring& getLocalName() const { return theLocal; }
   
   const zstring& getNamespace() const { return theNamespace; }
-    
+
   const zstring& getPrefix() const { return thePrefix; }
     
   zstring getStringValue() const;

@@ -132,9 +132,9 @@ store::Item_t QNamePool::insert(
     bool        sync)
 {
   QNameItem* qn;
-  store::Item_t normItem;
   QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
+  store::Item_t normItem;
   QNameItem* normQName = NULL;
 
   bool normalized = (pre == NULL || *pre == '\0');
@@ -203,10 +203,11 @@ retry:
     ZORBA_FATAL(0, "Unexpected exception");
   }
 
-  if (normVictim)
+  if (normVictim != NULL)
   {
     normVictim->removeReference();
   }
+
   return qn;
 }
 
@@ -223,9 +224,9 @@ store::Item_t QNamePool::insert(
     bool sync)
 {
   QNameItem* qn = NULL;
-  store::Item_t normItem;
   QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
+  store::Item_t normItem;
   QNameItem* normQName = NULL;
 
   bool normalized = pre.empty();
@@ -293,10 +294,11 @@ retry:
     ZORBA_FATAL(0, "Unexpected exception");
   }
 
-  if (normVictim)
+  if (normVictim != NULL)
   {
     normVictim->removeReference();
   }
+
   return qn;
 }
 
