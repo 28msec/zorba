@@ -213,6 +213,9 @@ store::Item_t FragmentXmlLoader::loadXml(
     // Prepare the input buffer and the parser context
     if (theFragmentStream->theBuffer == NULL)
     {
+      // Allocate input buffer
+      theFragmentStream->theBuffer = new char[FragmentIStream::BUFFER_SIZE + FragmentIStream::LOOKAHEAD_BYTES];
+
       // Create the LibXml parser context
       theFragmentStream->ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, NULL, 0, 0);
       if (theFragmentStream->ctxt == NULL)
@@ -235,12 +238,10 @@ store::Item_t FragmentXmlLoader::loadXml(
         throw 0; // the argument to throw is not used by the catch clause
       }
 
-      // Initialize the parser input (buffer length and end)
+      // Initialize the parser input (only filename and the pointer to the current char)
+      input->cur = (xmlChar*)(theFragmentStream->theBuffer);
       input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
       xmlPushInput(theFragmentStream->ctxt, input);
-
-      // Allocate input buffer
-      theFragmentStream->theBuffer = new char[FragmentIStream::BUFFER_SIZE + FragmentIStream::LOOKAHEAD_BYTES];
     }
 
     theFragmentStream->ctxt->userData = this;    // the loader has changed, update the address
@@ -273,12 +274,14 @@ store::Item_t FragmentXmlLoader::loadXml(
       xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
                     theFragmentStream->ctxt->input->length, 0);
 
-      if (theFragmentStream->current_offset < getCurrentInputOffset())
+      if (theFragmentStream->ctxt->input->base == (xmlChar*)(theFragmentStream->theBuffer)
+          &&
+          theFragmentStream->current_offset < getCurrentInputOffset())
         theFragmentStream->current_offset = getCurrentInputOffset();
 
       // If we didn't get an error and we haven't moved, we might have some freestanding text. Parse it as element character data.
       if (theXQueryDiagnostics->errors().empty()
-          && 
+          &&
           theFragmentStream->current_offset == 0)
       {
         // The input has been reset by xmlStopParser()

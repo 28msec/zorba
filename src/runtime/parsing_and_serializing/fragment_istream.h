@@ -30,7 +30,7 @@ namespace zorba {
 class FragmentIStream : public std::istream
 {
 public:
-  static const unsigned int BUFFER_SIZE = 2048;
+  static const unsigned int BUFFER_SIZE = 4096;
   static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
 
