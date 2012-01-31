@@ -69,6 +69,9 @@ public:
         const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 
