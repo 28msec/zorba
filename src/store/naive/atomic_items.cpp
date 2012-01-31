@@ -624,12 +624,9 @@ void QNameItem::free()
     return;
   }
   
-  QNameItem* normVictim;
-  thePool.unregisterNormalizingBackPointer(this, normVictim);
-  if (normVictim)
-  {
-    thePool.remove(normVictim);
-  }
+  assert(!isNormalized());
+  QNameItem* lNormalized = const_cast<QNameItem*>(theNormalizedQName);
+  lNormalized->removeReference();
   delete this;
 }
 
@@ -755,10 +752,10 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
 
   store::Item_t lPoolQName =
       GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
-  GET_STORE().getQNamePool().registerNormalizingBackPointer(this);
   initializeAsUnnormalizedQName(
       static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
       aPrefix);
+  theNormalizedQName->addReference();
   isInPool = false;
 }
 

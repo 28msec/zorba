@@ -152,10 +152,6 @@ protected:
         ulong       lnlen,
         ulong       hval);
   
-  bool hasNormalizingBackPointers(const QNameItem* aNormalizedQName) const;
-  void registerNormalizingBackPointer(const QNameItem* aQName);
-  void unregisterNormalizingBackPointer(const QNameItem* aQName,
-                                        QNameItem*& normVictim);
 };
 
 

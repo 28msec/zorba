@@ -86,7 +86,7 @@ void QNamePool::remove(QNameItem* qn)
 {
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
-  if (qn->getRefCount() > 0 || hasNormalizingBackPointers(qn))
+  if (qn->getRefCount() > 0)
     return;
 
   if (qn->isInCache())
@@ -103,7 +103,10 @@ void QNamePool::remove(QNameItem* qn)
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
     QNameItem* normVictim = NULL;
-    unregisterNormalizingBackPointer(qn, normVictim);
+    if (!qn->isNormalized())
+    {
+      normVictim = const_cast<QNameItem*>(qn->getNormalized());
+    }
     theHashSet.eraseNoSync(qn);
     qn->invalidate();
     delete qn;
@@ -111,7 +114,7 @@ void QNamePool::remove(QNameItem* qn)
     if (normVictim)
     {
       // Tail call. Should avoid deadlock because no new stack frame.
-      remove(normVictim);
+      normVictim->removeReference();
     }
   }
 }
@@ -195,7 +198,7 @@ retry:
         // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        registerNormalizingBackPointer(qn);
+        qn->getNormalized()->addReference();
       }
 
       bool found;
@@ -222,7 +225,7 @@ retry:
 
   if (normVictim)
   {
-    remove(normVictim);
+    normVictim->removeReference();
   }
   return qn;
 }
@@ -284,7 +287,7 @@ retry:
         // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        registerNormalizingBackPointer(qn);
+        qn->getNormalized()->addReference();
       }
 
       bool found;
@@ -311,7 +314,7 @@ retry:
 
   if (normVictim)
   {
-    remove(normVictim);
+    normVictim->removeReference();
   }
   return qn;
 }
@@ -335,7 +338,10 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
     if (qn->isValid())
     {
-      unregisterNormalizingBackPointer(qn, normVictim);
+      if (!qn->isNormalized())
+      {
+        normVictim = const_cast<QNameItem*>(qn->getNormalized());
+      }
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
       qn->invalidate();
@@ -410,54 +416,6 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
 
   return NULL;
 }
-
-bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName) const
-{
-  std::map<const QNameItem*, ulong>::const_iterator lIterator =
-  theWhoNormalizesToMe.find(aNormalizedQName);
-  return lIterator != theWhoNormalizesToMe.end() &&
-  lIterator->second != 0;
-}
-  
-void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
-{
-  if (!aQName->isNormalized())
-  {
-    const QNameItem* lNormalized = aQName->getNormalized();
-    std::map<const QNameItem*, ulong>::iterator lIt =
-    theWhoNormalizesToMe.find(lNormalized);
-    if (lIt == theWhoNormalizesToMe.end())
-    {
-      theWhoNormalizesToMe[lNormalized] = 0;
-    }
-    ++(theWhoNormalizesToMe[lNormalized]);
-  }
-}
-
-void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName,
-                                                 QNameItem*& normVictim)
-{
-  assert (normVictim == NULL);
-  if (aQName->isNormalized())
-  {
-    return;
-  }
-  // Entry exists for this normalized QName.
-  assert(theWhoNormalizesToMe.find(aQName->getNormalized())
-         != theWhoNormalizesToMe.end());
-  
-  ulong& lCounter = theWhoNormalizesToMe[aQName->getNormalized()];
-  
-  // Remove backpointer.
-  --lCounter;
-  
-  // Set normalization victim if the set is now empty.
-  if (lCounter == 0)
-    normVictim = const_cast<QNameItem*>(aQName->getNormalized());
-  }
-  
-  
-
 
 
 } // namespace store
