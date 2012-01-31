@@ -142,14 +142,17 @@ protected:
     bool operator() (const store::Item* lhs, const store::Item* rhs) const;
   };
 
-  typedef std::map<store::Item*,
-                   JSONObjectPair_t,
-                   JSONObjectPairComparator> Pairs;
+  typedef std::map<store::Item*, size_t, JSONObjectPairComparator> PairMap;
+  typedef PairMap::const_iterator PairMapConstIter;
+  typedef PairMap::iterator PairMapIter;
 
-  typedef Pairs::const_iterator PairsConstIter;
-  typedef Pairs::iterator PairsIter;
+  typedef std::vector<JSONObjectPair*>  Pairs;
+  typedef Pairs::const_iterator         PairsConstIter;
+  typedef Pairs::iterator               PairsIter;
 
-  Pairs thePairs;
+  PairMap thePairMap;
+  Pairs   thePairs;
+
   SimpleCollection* theCollection;
 
   class PairIterator : public store::Iterator
@@ -177,7 +180,7 @@ public:
     : theCollection(0)
   {}
 
-  virtual ~SimpleJSONObject() {}
+  virtual ~SimpleJSONObject();
 
   void add(const JSONObjectPair_t& aPair);
 
