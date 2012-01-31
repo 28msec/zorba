@@ -358,7 +358,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      //sctx->validate( result, result, StaticContextConsts::strict_validation );
+      sctx->validate( result, result, StaticContextConsts::strict_validation );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
       STACK_PUSH( true, state );
