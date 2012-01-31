@@ -755,7 +755,6 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
   initializeAsUnnormalizedQName(
       static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
       aPrefix);
-  theNormalizedQName->addReference();
   isInPool = false;
 }
 

@@ -467,6 +467,7 @@ protected:
     assert(!isValid());
 
     theNormalizedQName = aNormalizedQName;
+    theNormalizedQName->addReference();
     theNamespace = theNormalizedQName->theNamespace;
     thePrefix = aPrefix;
     theLocal = theNormalizedQName->theLocal;
@@ -479,10 +480,15 @@ protected:
                                   const zstring& aPrefix,
                                   const zstring& aLocalName);
   
-  void invalidate()
+  // Caller must later remove reference to returned aNormalizationVictim.
+  void invalidate(QNameItem*& aNormalizationVictim)
   {
     assert(isValid());
 
+    if (!isNormalized())
+    {
+      aNormalizationVictim = const_cast<QNameItem*>(theNormalizedQName);
+    }
     theNormalizedQName = NULL;
 
     assert(!isValid());

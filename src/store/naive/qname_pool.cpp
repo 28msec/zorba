@@ -103,12 +103,8 @@ void QNamePool::remove(QNameItem* qn)
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
     QNameItem* normVictim = NULL;
-    if (!qn->isNormalized())
-    {
-      normVictim = const_cast<QNameItem*>(qn->getNormalized());
-    }
     theHashSet.eraseNoSync(qn);
-    qn->invalidate();
+    qn->invalidate(normVictim);
     delete qn;
 
     if (normVictim)
@@ -198,7 +194,6 @@ retry:
         // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        qn->getNormalized()->addReference();
       }
 
       bool found;
@@ -287,7 +282,6 @@ retry:
         // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
         qn->initializeAsUnnormalizedQName(normQName, pre);
-        qn->getNormalized()->addReference();
       }
 
       bool found;
@@ -338,13 +332,9 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
     if (qn->isValid())
     {
-      if (!qn->isNormalized())
-      {
-        normVictim = const_cast<QNameItem*>(qn->getNormalized());
-      }
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
-      qn->invalidate();
+      qn->invalidate(normVictim);
     }
 
     qn->theNextFree = qn->thePrevFree = 0;
