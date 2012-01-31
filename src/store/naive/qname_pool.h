@@ -108,9 +108,6 @@ protected:
 
   StringPool        * theNamespacePool;
 
-  std::map<const QNameItem*, ulong>
-                      theWhoNormalizesToMe;
-
 public:
   QNamePool(ulong size, StringPool* nspool);
 
@@ -129,16 +126,6 @@ public:
   void remove(QNameItem* qn);
 
 protected:
-  QNameItem* insert_internal(const char* ns,
-                             const char* pre,
-                             const char* ln,
-                             bool sync = true);
-  
-  QNameItem* insert_internal(const zstring& ns,
-                             const zstring& pre,
-                             const zstring& ln,
-                             bool sync = true);
-  
   QNameItem* cacheInsert(QNameItem*& normVictim);
 
   void cachePin(QNameItem* qn);

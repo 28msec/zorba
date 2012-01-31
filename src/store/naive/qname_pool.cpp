@@ -104,7 +104,7 @@ void QNamePool::remove(QNameItem* qn)
     // well, then qn must be removed from the pool and really deleted
     QNameItem* normVictim = NULL;
     theHashSet.eraseNoSync(qn);
-    qn->invalidate(normVictim);
+    qn->invalidate(true, &normVictim);
     delete qn;
 
     if (normVictim)
@@ -115,22 +115,6 @@ void QNamePool::remove(QNameItem* qn)
   }
 }
 
-store::Item_t QNamePool::insert(const char* ns,
-                                const char* pre,
-                                const char* ln,
-                                bool        sync)
-{
-  return insert_internal(ns, pre, ln, sync);
-}
-
-store::Item_t QNamePool::insert(const zstring& ns,
-                                const zstring& pre,
-                                const zstring& ln,
-                                bool        sync)
-{
-  return insert_internal(ns, pre, ln, sync);
-}
-  
 /*******************************************************************************
   If the pool does not already contain a qname with the given namespace, prefix,
   and local name, then create such a qname, insert it in the pool and return an
@@ -141,13 +125,14 @@ store::Item_t QNamePool::insert(const zstring& ns,
   copied internally into zstring objects. So, it's always the caller who is
   resposnible for freeing the given strings.
 ********************************************************************************/
-QNameItem* QNamePool::insert_internal(
+store::Item_t QNamePool::insert(
     const char* ns,
     const char* pre,
     const char* ln,
     bool        sync)
 {
   QNameItem* qn;
+  store::Item_t normItem;
   QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   QNameItem* normQName = NULL;
@@ -187,8 +172,8 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
-          normQName = insert_internal(ns, NULL, ln, false);
-
+          normItem = insert(ns, NULL, ln, false);
+          normQName = static_cast<QNameItem*>(normItem.getp());
           goto retry;
         }
         // Build a new QName (either new object or in cache).
@@ -231,13 +216,14 @@ retry:
   and local name, then create such a qname, insert it in the pool and return an
   rchandle to it. Otherwise, return an rchandle to the existing qname. 
 ********************************************************************************/
-QNameItem* QNamePool::insert_internal(
+store::Item_t QNamePool::insert(
     const zstring& ns,
     const zstring& pre,
     const zstring& ln,
     bool sync)
 {
   QNameItem* qn = NULL;
+  store::Item_t normItem;
   QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   QNameItem* normQName = NULL;
@@ -275,7 +261,8 @@ retry:
           haveLock = false;)
 
           // This call will need the lock.
-          normQName = insert_internal(pooledNs, zstring(), ln, false);
+          normItem = insert(pooledNs, zstring(), ln, false);
+          normQName = static_cast<QNameItem*>(normItem.getp());
 
           goto retry;
         }
@@ -334,7 +321,7 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
     {
       ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
-      qn->invalidate(normVictim);
+      qn->invalidate(true, &normVictim);
     }
 
     qn->theNextFree = qn->thePrevFree = 0;

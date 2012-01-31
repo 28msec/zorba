@@ -480,14 +480,22 @@ protected:
                                   const zstring& aPrefix,
                                   const zstring& aLocalName);
   
-  // Caller must later remove reference to returned aNormalizationVictim.
-  void invalidate(QNameItem*& aNormalizationVictim)
+  // If asynchronous is true, caller must later remove reference to returned aNormalizationVictim.
+  void invalidate(bool asynchronous, QNameItem** aNormalizationVictim)
   {
     assert(isValid());
 
     if (!isNormalized())
     {
-      aNormalizationVictim = const_cast<QNameItem*>(theNormalizedQName);
+      if (asynchronous)
+      {
+        *aNormalizationVictim = const_cast<QNameItem*>(theNormalizedQName);
+      }
+      else
+      {
+        QNameItem* lNormalized = const_cast<QNameItem*>(theNormalizedQName);
+        lNormalized->removeReference();
+      }
     }
     theNormalizedQName = NULL;
 

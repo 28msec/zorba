@@ -626,8 +626,7 @@ void QNameItem::free()
   
   assert(!isNormalized());
   QNameItem* lNormalizationVictim;
-  invalidate(lNormalizationVictim);
-  lNormalizationVictim->removeReference();
+  invalidate(false, &lNormalizationVictim);
   delete this;
 }
 
