@@ -410,19 +410,27 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
 
   return NULL;
 }
-  
+
 bool QNamePool::hasNormalizingBackPointers(const QNameItem* aNormalizedQName) const
 {
-  std::map<const QNameItem*, std::set<const QNameItem*> >::const_iterator lIterator =
+  std::map<const QNameItem*, ulong>::const_iterator lIterator =
   theWhoNormalizesToMe.find(aNormalizedQName);
-  return !lIterator->second.empty();
+  return lIterator != theWhoNormalizesToMe.end() &&
+  lIterator->second != 0;
 }
-
+  
 void QNamePool::registerNormalizingBackPointer(const QNameItem* aQName)
 {
   if (!aQName->isNormalized())
   {
-    theWhoNormalizesToMe[aQName->getNormalized()].insert(aQName);
+    const QNameItem* lNormalized = aQName->getNormalized();
+    std::map<const QNameItem*, ulong>::iterator lIt =
+    theWhoNormalizesToMe.find(lNormalized);
+    if (lIt == theWhoNormalizesToMe.end())
+    {
+      theWhoNormalizesToMe[lNormalized] = 0;
+    }
+    ++(theWhoNormalizesToMe[lNormalized]);
   }
 }
 
@@ -437,20 +445,16 @@ void QNamePool::unregisterNormalizingBackPointer(const QNameItem* aQName,
   // Entry exists for this normalized QName.
   assert(theWhoNormalizesToMe.find(aQName->getNormalized())
          != theWhoNormalizesToMe.end());
-  // Backpointer exists.
-  assert(theWhoNormalizesToMe[aQName->getNormalized()].find(aQName)
-         != theWhoNormalizesToMe[aQName->getNormalized()].end());
-
-  std::set<const QNameItem*>& lSet =
-      theWhoNormalizesToMe[aQName->getNormalized()];
-
+  
+  ulong& lCounter = theWhoNormalizesToMe[aQName->getNormalized()];
+  
   // Remove backpointer.
-  lSet.erase(aQName);
-
+  --lCounter;
+  
   // Set normalization victim if the set is now empty.
-  if (lSet.empty())
+  if (lCounter == 0)
     normVictim = const_cast<QNameItem*>(aQName->getNormalized());
-}
+  }
   
   
 

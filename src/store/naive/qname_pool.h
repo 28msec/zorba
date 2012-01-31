@@ -108,7 +108,7 @@ protected:
 
   StringPool        * theNamespacePool;
 
-  std::map<const QNameItem*, std::set<const QNameItem*> >
+  std::map<const QNameItem*, ulong>
                       theWhoNormalizesToMe;
 
 public:
