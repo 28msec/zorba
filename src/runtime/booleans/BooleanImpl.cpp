@@ -89,7 +89,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
     const PlanIterator* iter,
     bool negate)
 {
-  store::Item_t item, temp;
+  store::Item_t item;
   bool result;
   bool is_sequence;
 
@@ -111,38 +111,41 @@ bool FnBooleanIterator::effectiveBooleanValue(
   }
   else
   {
-    xqtref_t type = tm->create_value_type(item);
-    is_sequence = consumeNext(temp, iter, planState);
+    store::SchemaTypeCode type = item->getTypeCode();
+
+    store::Item_t item2;
+    is_sequence = consumeNext(item2, iter, planState);
+
     if (!is_sequence 
         &&
-        (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-         || TypeOps::is_numeric(tm, *type)))
+        (type == store::XS_BOOLEAN ||
+         TypeOps::is_subtype(type, store::XS_STRING) ||
+         TypeOps::is_subtype(type, store::XS_ANY_URI) ||
+         type == store::XS_UNTYPED_ATOMIC ||
+         TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
       // => effective boolean value is defined in the items
-      temp = item->getEBV();
-      result = negate ? (negate ^ temp->getBooleanValue()) : temp->getBooleanValue();
+      bool temp = item->getEBV();
+      result = negate ? (negate ^ temp) : temp;
     }
     else
     {
       if (is_sequence)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-            ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean",
-            ZED( EBVNotDefSeq_5 ), *type
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        xqtref_t type = tm->create_value_type(item);
+
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     "", "fn:boolean",
+                     ZED(EBVNotDefSeq_5),
+                     *type));
+      }
       else
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean" ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
+      }
     }
   }
 

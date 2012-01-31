@@ -125,7 +125,7 @@ SimpleJSONObject::remove(const store::Item_t& aName)
   PairMapIter lIter = thePairMap.find(aName.getp());
   if (lIter == thePairMap.end())
   {
-    RAISE_ERROR_NO_LOC(zerr::JSDY0061,
+    RAISE_ERROR_NO_LOC(jerr::JSDY0061,
         ERROR_PARAMS(aName->getStringValue())
       );
   }

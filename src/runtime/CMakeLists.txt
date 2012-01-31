@@ -129,7 +129,6 @@ LIST(APPEND RUNTIME_SRCS
   collections/collections_base.cpp
   misc/materialize.cpp
   scripting/scripting.cpp
-  json/json_constructors.cpp
 )
 
 IF(NOT ZORBA_NO_FULL_TEXT)
@@ -156,4 +155,10 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
-HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
+
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND RUNTIME_SRCS
+    json/json_constructors.cpp
+  )
+  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
+ENDIF (ZORBA_WITH_JSON)

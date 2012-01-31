@@ -95,12 +95,24 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0001", "\"$1\" item cannot appear as input to JSON object constructor" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0002", "JSON object cannot appear as input to an XML constructor" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0020", "" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0060", "\"$1\": pair already exists" },
-  { "JSDY0061", "\"$1\": pair does not exist" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0061", "\"$1\": pair does not exists" },
+#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },

@@ -18,6 +18,7 @@
 #include "common/shared_types.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
@@ -492,9 +493,9 @@ bool ModOperation::compute<store::XS_DECIMAL, store::XS_DECIMAL>(
   xs_decimal ld0 = i0->getDecimalValue();
   xs_decimal ld1 = i1->getDecimalValue();
 
-  if ( ld1.sign() == 0 )
+  if (ld1.sign() == 0)
   {
-    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::FOAR0001, ERROR_LOC(loc));
   }
   return GENV_ITEMFACTORY->createDecimal(result,  ld0 % ld1);
 }
@@ -512,9 +513,9 @@ bool ModOperation::compute<store::XS_INTEGER, store::XS_INTEGER>(
   xs_integer ll0 = i0->getIntegerValue();
   xs_integer ll1 = i1->getIntegerValue();
 
-  if ( ll1 == Integer::zero() )
+  if (ll1 == Integer::zero())
   {
-    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::FOAR0001, ERROR_LOC(loc));
   }
   return GENV_ITEMFACTORY->createInteger(result, ll0 % ll1);
 }
@@ -558,12 +559,7 @@ bool NumArithIterator<Operation>::nextImpl(
                     this->loc,
                     n0,
                     n1);
-      
-      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-          this->consumeNext(n1, this->theChild1.getp(), planState))
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
-        );
+
       STACK_PUSH(res, state);
     }
   }
@@ -582,7 +578,6 @@ void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const
 
   v.endVisit(*this);
 }
-
 
 
 template < class Operation >
@@ -728,26 +723,20 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (this->consumeNext( n0, this->theChild0.getp(), planState ))
+  if (this->consumeNext(n0, this->theChild0.getp(), planState))
   {
-    if (this->consumeNext( n1, this->theChild1.getp(), planState ))
+    if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
-      res = compute(result,
-                    planState.theLocalDynCtx,
-                    this->theSctx->get_typemanager(),
-                    this->loc,
-                    n0.getp(),
-                    n1.getp());
-      
-      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-          this->consumeNext(n1, this->theChild1.getp(), planState))
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
-        );
-      STACK_PUSH ( res, state );
+      assert(n0->isAtomic());
+      assert(n1->isAtomic());
+
+      res = Operation::template 
+      computeSingleType<Type>(result, NULL, NULL, &this->loc, n0.getp(), n1.getp());
+
+      STACK_PUSH(res, state);
     }
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -757,13 +746,13 @@ bool SpecificNumArithIterator<Operation, Type>::compute(
     dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc& aLoc, 
-    store::Item *n0,
-    store::Item *n1)
+    store::Item* n0,
+    store::Item* n1)
 {
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  return Operation::template computeSingleType<Type>(result, dctx, tm, &aLoc, n0, n1 );
+  return Operation::template computeSingleType<Type>(result, dctx, tm, &aLoc, n0, n1);
 }
 
   
@@ -792,11 +781,11 @@ template class SpecificNumArithIterator<ModOperation, store::XS_INTEGER>;
 /*******************************************************************************
 
 ********************************************************************************/
-OpNumericUnaryIterator::OpNumericUnaryIterator (
+OpNumericUnaryIterator::OpNumericUnaryIterator(
      static_context* sctx,
      const QueryLoc& loc,
      PlanIter_t& theChild,
-     bool aPlus )
+     bool aPlus)
   :
   UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>(sctx, loc, theChild),
   thePlus(aPlus)
@@ -860,11 +849,8 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, ZED( UnaryArithOp ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, ZED(UnaryArithOp)));
     }
     
     STACK_PUSH(true, state);

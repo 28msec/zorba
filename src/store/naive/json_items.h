@@ -244,8 +244,8 @@ protected:
   typedef Members::const_iterator MembersConstIter;
   typedef Members::iterator MembersIter;
 
-  Members theContent;
-  SimpleCollection* theCollection;
+  Members            theContent;
+  SimpleCollection * theCollection;
 
   class ValuesIterator : public store::Iterator
   {

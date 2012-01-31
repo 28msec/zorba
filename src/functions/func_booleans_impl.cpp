@@ -874,7 +874,6 @@ DECL(sctx, op_atomic_values_equivalent,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Atomic Values Equivalent
 
 }
 

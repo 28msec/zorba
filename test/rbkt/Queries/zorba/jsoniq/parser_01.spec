@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:JSDY0040
+Error: http://www.jsoniq.org/errors:JSDY0040

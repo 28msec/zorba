@@ -1100,24 +1100,6 @@ ZorbaErrorCode XSST0009( "XSST0009" );
 ZorbaErrorCode XSST0010( "XSST0010" );
 
 
-ZorbaErrorCode JSDY0001( "JSDY0001" );
-
-
-ZorbaErrorCode JSDY0002( "JSDY0002" );
-
-
-ZorbaErrorCode JSDY0020( "JSDY0020" );
-
-
-ZorbaErrorCode JSDY0040( "JSDY0040" );
-
-
-ZorbaErrorCode JSDY0060( "JSDY0060" );
-
-
-ZorbaErrorCode JSDY0061( "JSDY0061" );
-
-
 ZorbaErrorCode ZJPE0001_ILLEGAL_CHARACTER( "ZJPE0001" );
 
 
@@ -1161,6 +1143,30 @@ ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD( "ZJSE0007" );
 
 
 } // namespace zerr
+
+namespace jerr {
+
+#if defined(ZORBA_WITH_JSON)
+JSONiqErrorCode JSDY0001( "JSDY0001" );
+
+
+JSONiqErrorCode JSDY0002( "JSDY0002" );
+
+
+JSONiqErrorCode JSDY0020( "JSDY0020" );
+
+
+JSONiqErrorCode JSDY0040( "JSDY0040" );
+
+
+JSONiqErrorCode JSDY0060( "JSDY0060" );
+
+
+JSONiqErrorCode JSDY0061( "JSDY0061" );
+#endif
+
+
+} // namespace jerr
 
 namespace zwarn {
 

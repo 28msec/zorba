@@ -14,7 +14,26 @@
                                   
 
 SET(UNIT_TEST_SRCS
+  string_instantiate.cpp
+  string.cpp
+  test_uri.cpp
+  unique_ptr.cpp
   unit_tests.cpp
   test_uri.cpp
   json_parser.cpp
 )
+
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST (APPEND UNIT_TEST_SRCS
+    stemmer.cpp
+    thesaurus.cpp
+    tokenizer.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+IF(ZORBA_WITH_DEBUGGER)
+  LIST(APPEND UNIT_TEST_SRCS
+#    test_debugger_protocol.cpp
+  )
+ENDIF(ZORBA_WITH_DEBUGGER)
+
+# vim:set et sw=2 tw=2:

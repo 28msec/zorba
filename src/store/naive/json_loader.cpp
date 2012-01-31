@@ -57,7 +57,7 @@ JSONLoader::~JSONLoader()
   if (theRelativeLoc) \
   { \
     throw XQUERY_EXCEPTION( \
-        zerr::JSDY0040, \
+        jerr::JSDY0040, \
         ERROR_PARAMS( \
           ZED(msg), \
           "" \
@@ -68,7 +68,7 @@ JSONLoader::~JSONLoader()
   else \
   { \
     throw ZORBA_EXCEPTION( \
-        zerr::JSDY0040, \
+        jerr::JSDY0040, \
         ERROR_PARAMS( \
           ZED(msg), \
           BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
@@ -80,7 +80,7 @@ JSONLoader::~JSONLoader()
   if (theRelativeLoc) \
   { \
     throw XQUERY_EXCEPTION( \
-        zerr::JSDY0040, \
+        jerr::JSDY0040, \
         ERROR_PARAMS( \
           ZED(msg), \
           param,  \
@@ -92,7 +92,7 @@ JSONLoader::~JSONLoader()
   else \
   { \
     throw ZORBA_EXCEPTION( \
-        zerr::JSDY0040, \
+        jerr::JSDY0040, \
         ERROR_PARAMS( \
           ZED(msg), \
           param, \

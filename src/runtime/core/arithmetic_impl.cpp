@@ -18,6 +18,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -107,7 +108,7 @@ bool GenericArithIterator<Operation>::nextImpl(
                        this->loc,
                        n0,
                        n1);
-    
+      /*
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
       {
@@ -117,7 +118,7 @@ bool GenericArithIterator<Operation>::nextImpl(
           ERROR_LOC( this->loc )
         );
       }
-
+      */
       STACK_PUSH ( status, state );
     }
   }
@@ -293,11 +294,8 @@ bool GenericArithIterator<Operation>::compute(
   }
   
   
-  throw XQUERY_EXCEPTION(
-    err::XPTY0004,
-    ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
-    ERROR_LOC( aLoc )
-  );
+  RAISE_ERROR(err::XPTY0004, aLoc,
+  ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
 
   return false; // suppresses wanring
 }

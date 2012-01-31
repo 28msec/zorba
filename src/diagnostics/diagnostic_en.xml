@@ -2334,70 +2334,31 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
-    <!--
-  </namespace>
-
-  <namespace prefix="jerr">
-  -->
-    <!--////////// JSONIQ ///////////////////////////////////////////-->
-
-    <diagnostic code="JSDY0001">
-      <value>"$1" item cannot appear as input to JSON object constructor</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0002">
-      <value>JSON object cannot appear as input to an XML constructor</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0020">
-      <comment>
-        This error maybe raised by the json:size function if the input to
-        the function is a pair. The error message BadArgTypeForFn_2o34o is
-        used with this error.
-      </comment>
-    </diagnostic>
-
-    <diagnostic code="JSDY0040">
-      <comment>parser errors raised by the JSONIQLoader</comment>
-      <value>$1</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0060">
-      <comment>error raised by insert-into</comment>
-      <value>"$1": pair already exists</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0061">
-      <comment>error raised JSONObject::remove</comment>
-      <value>"$1": pair does not exist</value>
-    </diagnostic>
-
-
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
      <value>$1</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
-     <value>$1</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
-     <value>$1</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
-     <value>$1</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
-     <value>$1</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
-     <value>$1 foo</value>
-   </diagnostic>
-   <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
-     <value>$1</value>
-   </diagnostic>
+    </diagnostic>
+    <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+      <value>$1</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+      <value>$1</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+      <value>$1</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+      <value>$1</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+      <value>$1 foo</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+      <value>$1</value>
+    </diagnostic>
 
-   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 
     <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
       <value>JSON serialization requires document or element node</value>
@@ -2419,6 +2380,43 @@
     </diagnostic>
     <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
       <value>JSON type "$1" can not have a child text node</value>
+    </diagnostic>
+
+  </namespace>
+
+  <namespace prefix="jerr">
+
+    <!--////////// JSONIQ ///////////////////////////////////////////-->
+
+    <diagnostic code="JSDY0001" if="defined(ZORBA_WITH_JSON)">
+      <value>"$1" item cannot appear as input to JSON object constructor</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0002" if="defined(ZORBA_WITH_JSON)">
+      <value>JSON object cannot appear as input to an XML constructor</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>
+        This error maybe raised by the json:size function if the input to
+        the function is a pair. The error message BadArgTypeForFn_2o34o is
+        used with this error.
+      </comment>
+    </diagnostic>
+
+    <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser errors raised by the JSONIQLoader</comment>
+      <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0060" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by insert-into</comment>
+      <value>"$1": pair already exists</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0061" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by delete</comment>
+      <value>"$1": pair does not exists</value>
     </diagnostic>
 
   </namespace>
