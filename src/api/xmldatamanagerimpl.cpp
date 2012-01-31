@@ -216,8 +216,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(),
-                                          "parse-xml");
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS, "parse-xml");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -247,7 +246,7 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(),
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS,
                                           "parse-xml");
 
     // create a streamable string item
@@ -349,7 +348,7 @@ XmlDataManagerImpl::fetch(const String& aURI) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS.c_str(),
+    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
                                           "content");
 
     // create a streamable string item

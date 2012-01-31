@@ -22,7 +22,7 @@
     </implementation-defined-item>
     <implementation-defined-item  
       name="fnPutSemantics" 
-      value="fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.">
+      value="fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent. Zorba does not implement fn:put() for attribute nodes.">
       <description last-mod="2008-11-05">The semantics of fn:put(), including the kinds of nodes
         accepted as operands by this function.</description>
     </implementation-defined-item>

@@ -18,6 +18,9 @@
 #include "debugger_server.h"
 
 #include <sstream>
+#ifndef WIN32
+# include <signal.h>
+#endif
 
 #include <zorba/base64.h>
 #include <zorba/util/uri.h>
@@ -34,6 +37,31 @@
 
 namespace zorba {
 
+bool theInterruptBreak = false;
+
+// this will make sure the zorba when run in debug (i.e. with the debugger)
+// will not terminate when Ctrl-C is pressed but trigger a query interruption
+// break through the theInterruptBreak variable that is continuously monitored
+// by the debugger commons through the debugger runtime
+#ifdef WIN32
+BOOL WINAPI
+DebuggerServer::ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    theInterruptBreak = true;
+    return true;
+  }
+  return false;
+}
+#else
+void
+DebuggerServer::ctrlC_Handler(int lParam)
+{
+  theInterruptBreak = true;
+}
+#endif
+
+
 DebuggerServer::DebuggerServer(
   XQueryImpl*               aQuery,
   Zorba_SerializerOptions&  aSerializerOptions,
@@ -47,7 +75,8 @@ DebuggerServer::DebuggerServer(
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
   theRuntime = new DebuggerRuntime(
     aQuery, aOstream, aSerializerOptions,
-    theCommunicator, aHandler, aCallbackData);
+    theCommunicator, aHandler, aCallbackData,
+    &theInterruptBreak);
 #ifdef WIN32
   theFileName = aQuery->getFileName().str();
 #else
@@ -66,9 +95,17 @@ DebuggerServer::~DebuggerServer()
   delete theCommunicator;
 }
 
+
 bool
 DebuggerServer::run()
 {
+  // add the interrupt handlers to catch Ctrl-C
+  #ifdef WIN32
+    SetConsoleCtrlHandler(DebuggerServer::ctrlC_Handler, TRUE);
+  #else
+    signal(SIGINT, ctrlC_Handler);
+  #endif
+
   theCommunicator->connect();
 
   if (!theCommunicator->isConnected()) {
