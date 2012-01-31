@@ -107,7 +107,7 @@ public:
 
   virtual void add(const JSONObjectPair_t& aPair) = 0;
 
-  virtual void remove(const store::Item_t& aName) = 0;
+  virtual JSONObjectPair_t remove(const store::Item_t& aName) = 0;
 
   virtual xs_integer getSize() const = 0;
 
@@ -181,7 +181,7 @@ public:
 
   void add(const JSONObjectPair_t& aPair);
 
-  virtual void remove(const store::Item_t& aName);
+  virtual JSONObjectPair_t remove(const store::Item_t& aName);
 
   xs_integer getSize() const { return thePairs.size(); }
 
@@ -216,6 +216,9 @@ public:
 
   virtual void
   push_back(const store::Item_t& aValue) = 0;
+
+  virtual void
+  remove(const store::Item_t& aValue) = 0;
 
   virtual xs_integer
   getSize() const = 0;
@@ -289,6 +292,9 @@ public:
 
   virtual void
   push_back(const store::Item_t& aValue);
+
+  virtual void
+  remove(const store::Item_t& aValue);
 
   virtual xs_integer
   getSize() const { return theContent.size(); }

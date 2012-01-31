@@ -103,7 +103,8 @@ public:
     UP_REMOVE_FROM_HASHMAP
 
 #ifdef ZORBA_WITH_JSON
-    ,UP_JSON_INSERT
+    ,UP_JSON_INSERT,
+    UP_JSON_DELETE
 #endif
   };
 

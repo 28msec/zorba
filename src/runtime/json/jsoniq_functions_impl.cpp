@@ -638,12 +638,51 @@ JSONDeleteIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lTarget;
+  store::Item_t lSelector;
+  std::auto_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lTarget, theChildren[0].getp(), planState);
+  consumeNext(lSelector, theChildren[1].getp(), planState);
+
+  if (lTarget->isJSONObject())
+  {
+    if (lSelector->getTypeCode() != store::XS_STRING)
+    {
+      // RAISE ERROR
+    }
+    if (!lTarget->getPair(lSelector))
+    {
+      // RAISE ERROR
+    }
+
+  }
+  else if (lTarget->isJSONArray())
+  {
+    if (lSelector->getTypeCode() != store::XS_INTEGER)
+    {
+      // RAISE ERROR
+    }
+
+    if (lSelector->getIntegerValue() <= xs_integer::zero() ||
+        lTarget->getSize() <= lSelector->getIntegerValue())
+    {
+      // RAISE ERROR
+    }
+  }
+  else
+  {
+    // RAISE ERROR: can only be a pair, so I guess a type error is just fine
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONDelete(&loc, lTarget, lSelector);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }

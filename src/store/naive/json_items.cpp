@@ -103,7 +103,7 @@ SimpleJSONObject::add(const JSONObjectPair_t& p)
 /******************************************************************************
 
 *******************************************************************************/
-void
+JSONObjectPair_t
 SimpleJSONObject::remove(const store::Item_t& aName)
 {
   PairsIter lIter = thePairs.find(aName.getp());
@@ -113,7 +113,9 @@ SimpleJSONObject::remove(const store::Item_t& aName)
         ERROR_PARAMS(aName->getStringValue())
       );
   }
+  JSONObjectPair_t lRes = lIter->second;
   thePairs.erase(lIter);
+  return lRes;
 }
 
 
@@ -262,6 +264,25 @@ void
 SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
   theContent.push_back(aValue);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::remove(const store::Item_t& aValue)
+{
+  for (MembersIter lIter = theContent.begin();
+       lIter != theContent.end();
+       ++lIter)
+  {
+    if (lIter->getp() == aValue.getp())
+    {
+      theContent.erase(lIter);
+      return;
+    }
+  }
 }
 
 
