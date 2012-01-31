@@ -496,7 +496,7 @@
 
       <zorba:signature localname="delete" prefix="fn-jsoniq">
         <zorba:param>json-item()</zorba:param>
-        <zorba:param>item()</zorba:param>
+        <zorba:param>xs:anyAtomicType</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 

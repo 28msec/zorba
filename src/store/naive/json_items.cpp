@@ -142,9 +142,7 @@ SimpleJSONObject::remove(const store::Item_t& aName)
   PairMapIter lIter = thePairMap.find(aName.getp());
   if (lIter == thePairMap.end())
   {
-    RAISE_ERROR_NO_LOC(jerr::JSDY0061,
-        ERROR_PARAMS(aName->getStringValue())
-      );
+    return 0;
   }
   size_t lPos = lIter->second;
 
@@ -153,6 +151,15 @@ SimpleJSONObject::remove(const store::Item_t& aName)
   thePairs.erase(thePairs.begin() + lPos);
 
   lRes->removeReference();
+
+  // adapt indexes in the map
+  for (lIter = thePairMap.begin(); lIter != thePairMap.end(); ++lIter)
+  {
+    if (lIter->second > lPos)
+    {
+      --(lIter->second);
+    }
+  }
 
   return lRes;
 }

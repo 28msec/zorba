@@ -90,7 +90,7 @@ declare function j:null() as jdm:null external;
  :
  : @return
  :
- : @error j:JSDY0060 if pair with the given name already exists
+ : @error j:JUDY0060 if pair with the given name already exists
  :)
 declare updating function j:insert-into(
   $o as object(),
@@ -138,10 +138,16 @@ declare updating function j:insert-as-last(
  :
  : @param $p
  : @return
+ :
+ : @error j:JUDY0061 if the selector doesn't select an existing pair or
+ :   array member
+ : @error j:JUDY0062 if the first argument is a pair
+ : @error j:JUDY0063 invalid type for second argument (must be xs:integer
+ :   if first argument is an array or xs:string if first argument is an object)
  :)
 declare updating function j:delete(
   $i as json-item(),
-  $selector as item()) external;
+  $selector as xs:anyAtomicType) external;
 
 (:~
  :

@@ -1282,6 +1282,19 @@ void PULImpl::mergeUpdates(store::Item* other)
                       otherPul->theDeleteCollectionList,
                       UP_LIST_NONE);
 
+#ifdef ZORBA_WITH_JSON
+      // merge jsoniq primitives
+      mergeUpdateList(thisPul,
+                      thisPul->theJSONInsertList,
+                      otherPul->theJSONInsertList,
+                      UP_LIST_NONE);
+
+      mergeUpdateList(thisPul,
+                      thisPul->theJSONDeleteList,
+                      otherPul->theJSONDeleteList,
+                      UP_LIST_NONE);
+#endif
+
       ++thisIte;
       ++otherIte;
     }
