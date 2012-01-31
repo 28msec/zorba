@@ -1099,8 +1099,16 @@ void PULImpl::addRemoveFromHashMap(
 ********************************************************************************/
 void PULImpl::addJSONDelete(
    const QueryLoc* aQueryLoc,
-   store::Item_t& node)
+   store::Item_t& target,
+   store::Item_t& deletee)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONDelete(
+      pul, aQueryLoc, target, deletee);
+
+  pul->theJSONDeleteList.push_back(upd);
 }
 
 
@@ -2169,6 +2177,7 @@ void CollectionPul::applyUpdates()
 
 #ifdef ZORBA_WITH_JSON
     applyList(theJSONInsertList);
+    applyList(theJSONDeleteList);
 #endif
 
     // Check if any inconsistencies that were detected during the application
@@ -2412,6 +2421,7 @@ void CollectionPul::undoUpdates()
     theMergeList.clear();
 
 #ifdef ZORBA_WITH_JSON
+    undoList(theJSONDeleteList);
     undoList(theJSONInsertList);
 #endif
 

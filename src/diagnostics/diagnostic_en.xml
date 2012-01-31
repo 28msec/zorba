@@ -2414,6 +2414,11 @@
       <value>"$1": pair already exists</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0061" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by delete</comment>
+      <value>"$1": pair does not exists</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->

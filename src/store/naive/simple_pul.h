@@ -542,6 +542,7 @@ public:
 
   virtual void addJSONDelete(
       const QueryLoc* aQueryLoc,
+      store::Item_t& target,
       store::Item_t& node);
 
   virtual void addJSONInsertInto(

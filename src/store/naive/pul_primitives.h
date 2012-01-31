@@ -1630,6 +1630,32 @@ public:
   void apply();
   void undo();
 };
+
+class UpdJSONDelete: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::UpdateConsts::UpdPrimKind theKind;
+  store::Item_t                    theDeletee;
+
+  UpdJSONDelete(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& target,
+        store::Item_t& selector);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_DELETE;
+  }
+
+  void apply();
+  void undo();
+};
 #endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */

@@ -277,7 +277,8 @@ public:
 
   virtual void addJSONDelete(
       const QueryLoc* aQueryLoc,
-      Item_t& node) = 0;
+      Item_t& target,
+      Item_t& selector) = 0;
 
   virtual void addJSONInsertInto(
         const QueryLoc* aQueryLoc,

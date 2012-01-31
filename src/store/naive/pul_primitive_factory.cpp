@@ -542,6 +542,18 @@ PULPrimitiveFactory::createUpdPut(
   {
     return new UpdJSONInsert(pul, aLoc, aObject, aPairs);
   }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdJSONDelete*
+  PULPrimitiveFactory::createUpdJSONDelete(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aTarget,
+        store::Item_t& aSelector)
+  {
+    return new UpdJSONDelete(pul, aLoc, aTarget, aSelector);
+  }
 #endif
 
 } /* namespace simplestore */ } /* namespace zorba */

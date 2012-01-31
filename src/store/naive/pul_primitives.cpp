@@ -1888,10 +1888,92 @@ void UpdJSONInsert::apply()
     JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
     lObj->add(lPair);
   }
+  theIsApplied = true;
 }
 
 void UpdJSONInsert::undo()
 {
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+
+  for (std::vector<store::Item_t>::const_iterator lIter = theNewPairs.begin();
+       lIter != theNewPairs.end();
+       ++lIter)
+  {
+    ZORBA_ASSERT((*lIter)->isJSONPair());
+    JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
+    if (!lObj->getPair(lPair->getName()))
+    {
+      lObj->remove(lPair->getName());
+    }
+  }
+  theIsApplied = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONDelete::UpdJSONDelete(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& selector)
+  : UpdatePrimitive(pul, loc, target)
+{
+  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
+
+  // need to get the pointers to the items that should be deleted
+  // first such that the order of the applies is not relevant
+  if (theTarget->isJSONObject())
+  {
+    JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+
+    theDeletee = lObj->getPair(selector.getp());
+  }
+  else
+  {
+    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+
+    xs_integer lPos = selector->getIntegerValue();
+    theDeletee = lArray->operator[](--lPos);
+  }
+}
+
+void UpdJSONDelete::apply()
+{
+  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
+
+  if (theTarget->isJSONObject())
+  {
+    JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+    JSONObjectPair_t lDeleted = lObj->remove(theDeletee->getName());
+
+    // need to be the same as chosen in the runtime function
+    ZORBA_ASSERT(lDeleted.getp() == theDeletee.getp());
+  }
+  else
+  {
+    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+    lArray->remove(theDeletee);
+  }
+
+  theIsApplied = true;
+}
+
+void UpdJSONDelete::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+  ZORBA_ASSERT(false);
+
+  theIsApplied = false;
 }
 
 #endif

@@ -69,6 +69,9 @@ public:
         const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 
@@ -107,6 +110,8 @@ public:
 
   virtual void add(const JSONObjectPair_t& aPair) = 0;
 
+  virtual JSONObjectPair_t remove(const store::Item_t& aName) = 0;
+
   virtual xs_integer getSize() const = 0;
 
   bool getBooleanValue() const { return true; }
@@ -140,15 +145,18 @@ protected:
     bool operator() (const store::Item* lhs, const store::Item* rhs) const;
   };
 
-  typedef std::map<store::Item*,
-                   JSONObjectPair_t,
-                   JSONObjectPairComparator> Pairs;
+  typedef std::map<store::Item*, size_t, JSONObjectPairComparator> PairMap;
+  typedef PairMap::const_iterator PairMapConstIter;
+  typedef PairMap::iterator PairMapIter;
 
-  typedef Pairs::const_iterator PairsConstIter;
-  typedef Pairs::iterator PairsIter;
+  typedef std::vector<JSONObjectPair*>  Pairs;
+  typedef Pairs::const_iterator         PairsConstIter;
+  typedef Pairs::iterator               PairsIter;
 
-  Pairs              thePairs;
-  SimpleCollection * theCollection;
+  PairMap thePairMap;
+  Pairs   thePairs;
+
+  SimpleCollection* theCollection;
 
   class PairIterator : public store::Iterator
   {
@@ -175,9 +183,11 @@ public:
     : theCollection(0)
   {}
 
-  virtual ~SimpleJSONObject() {}
+  virtual ~SimpleJSONObject();
 
   void add(const JSONObjectPair_t& aPair);
+
+  virtual JSONObjectPair_t remove(const store::Item_t& aName);
 
   xs_integer getSize() const { return thePairs.size(); }
 
@@ -188,6 +198,7 @@ public:
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
+
 };
 
 
@@ -212,6 +223,9 @@ public:
 
   virtual void
   push_back(const store::Item_t& aValue) = 0;
+
+  virtual void
+  remove(const store::Item_t& aValue) = 0;
 
   virtual xs_integer
   getSize() const = 0;
@@ -285,6 +299,9 @@ public:
 
   virtual void
   push_back(const store::Item_t& aValue);
+
+  virtual void
+  remove(const store::Item_t& aValue);
 
   virtual xs_integer
   getSize() const { return theContent.size(); }
@@ -374,6 +391,9 @@ public:
   getValue() const { return theValue.getp(); }
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 } // namespace json
