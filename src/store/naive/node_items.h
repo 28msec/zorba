@@ -223,7 +223,7 @@ public:
 
   const SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, ulong pos);
+  void setCollection(SimpleCollection* coll, csize pos);
 
   void setPosition(ulong pos) { thePos = pos; }
 
@@ -516,7 +516,7 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos)
+  void setCollection(SimpleCollection* coll, csize pos)
   {
     assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);

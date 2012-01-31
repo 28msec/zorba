@@ -2265,6 +2265,10 @@
       <value>non-node item used with collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZSTR0013" name="COLLECTION_ITEM_MUST_BE_STRUCTURED">
+      <value>an item that is not a node, object, or array is used with collection "$1"</value>
+    </diagnostic>
+
     <diagnostic code="ZSTR0015" name="IC_ALREADY_EXISTS">
       <value>"$1": integrity constraint already exists</value>
     </diagnostic>

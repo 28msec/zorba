@@ -382,6 +382,7 @@ extern entry const dict_en[] = {
   { "ZSTR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
   { "ZSTR0011", "non-root node can not be inserted into collection \"$1\"" },
   { "ZSTR0012", "non-node item used with collection \"$1\"" },
+  { "ZSTR0013", "an item that is not a node, object, or array is used with collection \"$1\"" },
   { "ZSTR0015", "\"$1\": integrity constraint already exists" },
   { "ZSTR0016", "\"$1\": integrity constraint does not exist" },
   { "ZSTR0020", "loader I/O error${: 1}" },

@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/URI.h"
@@ -52,17 +53,34 @@
 
 namespace zorba {
 
-void
-getCopyMode(
-    store::CopyMode& aCopyMode,
-    const static_context* aSctx);
 
-void checkNodeType(
-    const static_context* aSctx,
-    const store::Item_t& aNode,
-    const StaticallyKnownCollection* aColl,
-    const QueryLoc& aLoc,
-    bool  dyn_coll);
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection* getCollection(
+    const static_context* sctx,
+    const store::Item_t& name,
+    const QueryLoc& loc,
+    bool dynamic,
+    store::Collection_t& coll)
+{
+  const StaticallyKnownCollection* collectionDecl = sctx->lookup_collection(name);
+  if (collectionDecl == 0  && !dynamic)
+  {
+    RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, loc,
+    ERROR_PARAMS(name->getStringValue()));
+  }
+
+  coll = GENV_STORE.getCollection(name, dynamic);
+
+  if (coll == NULL)
+  {
+    RAISE_ERROR(zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST, loc,
+    ERROR_PARAMS(name->getStringValue()));
+  }
+
+  return collectionDecl;
+}
 
 
 /*******************************************************************************
@@ -131,11 +149,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     catch (ZorbaException const&)
     {
-      throw XQUERY_EXCEPTION(
-        err::FODC0004,
-        ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::FODC0004, loc,
+      ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)));
     }
   }
   else
@@ -143,11 +158,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
 
     if (NULL == resolvedURIItem)
-      throw XQUERY_EXCEPTION(
-        err::FODC0002,
-        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::FODC0002, loc,
+      ERROR_PARAMS(ZED(DefaultCollation), ZED(NotDefInDynamicCtx)));
 
     resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
   }
@@ -160,11 +172,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
-    throw XQUERY_EXCEPTION(
-      err::FODC0002,
-      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FODC0002, loc,
+    ERROR_PARAMS(resolvedURIString, lErrorMessage));
   }
 
   /** return the nodes of the collection */
@@ -216,15 +225,21 @@ void CountCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
 bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t coll;
-  store::Item_t qName;
+  store::Item_t name;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (this->isZorbaCollection())
-    coll = getZorbaCollection(planState);
+  if (isZorbaCollection())
+  {
+    ZORBA_ASSERT(consumeNext(name, theChildren[0].getp(), planState));
+
+    (void*)getCollection(theSctx, name, loc, isDynamic(), coll);
+  }
   else
+  {
     coll = getW3CCollection(planState);
+  }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
 
@@ -251,11 +266,8 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
     }
     catch (ZorbaException const&)
     {
-      throw XQUERY_EXCEPTION(
-        err::FODC0004,
-        ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::FODC0004, loc,
+      ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)));
     }
   }
   else
@@ -263,11 +275,10 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
     lURI = planState.theGlobalDynCtx->get_default_collection();
 
     if( NULL == lURI)
-      throw XQUERY_EXCEPTION(
-        err::FODC0002,
-        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
-        ERROR_LOC( loc )
-      );
+    {
+      RAISE_ERROR(err::FODC0002, loc,
+      ERROR_PARAMS(ZED(DefaultCollation), ZED(NotDefInDynamicCtx)));
+    }
 
     resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
   }
@@ -281,43 +292,8 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 
   if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS(resolvedURIString, lErrorMessage),
-      ERROR_LOC( loc )
-    );
-  }
-
-  return coll;
-}
-
-
-store::Collection_t CountCollectionIterator::getZorbaCollection(
-    PlanState& planState) const
-{
-  store::Item_t qName;
-  store::Collection_t coll;
-
-  ZORBA_ASSERT(consumeNext(qName, theChildren[0].getp(), planState));
-
-  if (theSctx->lookup_collection(qName) == 0  && ! this->isDynamicCollection())
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( qName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  coll = GENV_STORE.getCollection(qName, isDynamicCollection());
-
-  if (coll == NULL)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-      ERROR_PARAMS( qName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FODC0004, loc,
+    ERROR_PARAMS(resolvedURIString, lErrorMessage));
   }
 
   return coll;
@@ -387,7 +363,7 @@ bool ZorbaCollectionIterator::nextImpl(
 
   consumeNext(collectionName, theChildren[0].getp(), planState);
 
-  (void)getCollection(theSctx, collectionName, loc, theDynamicCollection, collection);
+  (void)getCollection(theSctx, collectionName, loc, theIsDynamic, collection);
 
   // return the nodes of the collection
   state->theIterator = collection->getIterator();
@@ -395,7 +371,7 @@ bool ZorbaCollectionIterator::nextImpl(
   state->theIterator->open();
   state->theIteratorOpened = true;
 
-  while(state->theIterator->next(result))
+  while (state->theIterator->next(result))
     STACK_PUSH(true, state);
 
   // close as early as possible
@@ -403,38 +379,6 @@ bool ZorbaCollectionIterator::nextImpl(
   state->theIteratorOpened = false;
 
   STACK_END(state);
-}
-
-const StaticallyKnownCollection*
-ZorbaCollectionIterator::getCollection(
-    const static_context* aSctx,
-    const store::Item_t& aName,
-    const QueryLoc& aLoc,
-    bool aDynamicCollection,
-    store::Collection_t& coll) const
-{
-  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-  if (collectionDecl == 0  && !aDynamicCollection)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-
-  coll = GENV_STORE.getCollection(aName, aDynamicCollection);
-
-  if (coll == NULL)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-
-  return collectionDecl;
 }
 
 
@@ -462,48 +406,17 @@ bool ZorbaIndexOfIterator::nextImpl(
     collection = node->getCollection();
 
     if (!collection)
-      throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos + xs_integer(1)),
                state);
   }
 
   STACK_END (state);
 }
 
-const StaticallyKnownCollection*
-ZorbaIndexOfIterator::getCollection(
-    const static_context* aSctx,
-    const store::Item_t& aName,
-    const QueryLoc& aLoc,
-    bool aDynamicCollection,
-    store::Collection_t& coll) const
-{
-  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-  if (collectionDecl == 0  && !aDynamicCollection)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-
-  coll = GENV_STORE.getCollection(aName, aDynamicCollection);
-
-  if (coll == NULL)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-
-  return collectionDecl;
-}
 
 /*******************************************************************************
   declare updating function
@@ -532,22 +445,21 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   consumeNext(collectionName, theChildren[0].getp(), aPlanState);
 
-  collectionDecl = getCollection(
-      theSctx, collectionName, loc, theDynamicCollection, collection);
-
+  collectionDecl = getCollection(theSctx, 
+                                 collectionName,
+                                 loc,
+                                 theIsDynamic,
+                                 collection);
   if (collection != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0002_COLLECTION_ALREADY_EXISTS,
-      ERROR_PARAMS( collectionName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0002_COLLECTION_ALREADY_EXISTS, loc,
+    ERROR_PARAMS(collectionName->getStringValue()));
   }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (theDynamicCollection)
+  if (theIsDynamic)
   {
     std::vector<store::Annotation_t> lAnnotations;
     store::Annotation_t lAnn = 0;
@@ -570,7 +482,8 @@ bool ZorbaCreateCollectionIterator::nextImpl(
         collectionName,
         lAnnotations,
         NULL,
-        true);
+        true,
+        false);
   }
   else
   {
@@ -593,12 +506,12 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     lNodeType = collectionDecl->getNodeType()->get_qname();
 
-    pul->addCreateCollection(
-        &loc,
-        collectionName,
-        lAnnotations,
-        lNodeType,
-        false);
+    pul->addCreateCollection(&loc,
+                             collectionName,
+                             lAnnotations,
+                             lNodeType,
+                             false,
+                             false);
   }
 
   // also add some optional nodes to the collection
@@ -611,7 +524,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     while (consumeNext(node, theChildren[1].getp(), aPlanState))
     {
-      checkNodeType(theSctx, node, collectionDecl, loc, theDynamicCollection);
+      checkNodeType(theSctx, node, collectionDecl, loc, theIsDynamic);
 
       copyNode = node->copy(NULL, copymode);
 
@@ -619,7 +532,11 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       nodes[numNodes++].transfer(copyNode);
     }
 
-    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc,
+                                 collectionName,
+                                 nodes,
+                                 theIsDynamic,
+                                 false);
   }
 
   result = pul.release();
@@ -628,25 +545,23 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   STACK_END(state);
 }
 
+
 const StaticallyKnownCollection*
 ZorbaCreateCollectionIterator::getCollection(
-    const static_context* aSctx,
-    const store::Item_t& aName,
-    const QueryLoc& aLoc,
-    bool aDynamicCollection,
+    const static_context* sctx,
+    const store::Item_t& name,
+    const QueryLoc& loc,
+    bool isDynamic,
     store::Collection_t& coll) const
 {
-  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-  if (collectionDecl == 0  && !aDynamicCollection)
+  const StaticallyKnownCollection* collectionDecl = sctx->lookup_collection(name);
+  if (collectionDecl == 0  && !isDynamic)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
+    RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, loc,
+    ERROR_PARAMS(name->getStringValue()));
   }
 
-  coll = GENV_STORE.getCollection(aName, aDynamicCollection);
+  coll = GENV_STORE.getCollection(name, isDynamic);
 
   return collectionDecl;
 }
@@ -669,11 +584,11 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
   consumeNext(collectionName, theChildren[0].getp(), aPlanState);
 
-  (void)getCollection(theSctx, collectionName, loc, theDynamicCollection, collection);
+  (void)getCollection(theSctx, collectionName, loc, theIsDynamic, collection);
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteCollection(&loc, collectionName, theDynamicCollection);
+  pul->addDeleteCollection(&loc, collectionName, theIsDynamic, false);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -733,7 +648,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   if (nodes.size() > 0)
-    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc, collectionName, nodes, theIsDynamic, false);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -815,7 +730,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertFirstIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+  pul->addInsertFirstIntoCollection(&loc, collectionName, nodes, theIsDynamic, false);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -913,7 +828,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+  pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theIsDynamic, false);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -997,7 +912,12 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertBeforeIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
+  pul->addInsertBeforeIntoCollection(&loc,
+                                     collectionName, 
+                                     targetNode,
+                                     nodes,
+                                     theIsDynamic,
+                                     false);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -1081,10 +1001,10 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t                    collectionName;
-  std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
-  store::Item_t                    targetNode;
+  store::Item_t               collectionName;
+  std::vector<store::Item_t>  nodes;
+  std::auto_ptr<store::PUL>   pul;
+  store::Item_t               targetNode;
 
   store::CopyMode lCopyMode;
 
@@ -1096,7 +1016,12 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertAfterIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
+  pul->addInsertAfterIntoCollection(&loc,
+                                    collectionName,
+                                    targetNode,
+                                    nodes, 
+                                    theIsDynamic,
+                                    false);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -1205,22 +1130,33 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) {
+  if (nodes.size() > 0) 
+  {
     // addInsertIntoCollection removes the nodes from the vector.
     // hence, we also store them in a separate vector in the state
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc,
+                                 collectionName,
+                                 nodes, 
+                                 theIsDynamic,
+                                 false);
   }
 
-  if (pul.get()) {
-    apply_updates(planState.theCompilerCB, planState.theGlobalDynCtx, theSctx, pul.get(), loc);
+  if (pul.get()) 
+  {
+    apply_updates(planState.theCompilerCB, 
+                  planState.theGlobalDynCtx,
+                  theSctx,
+                  pul.get(),
+                  loc);
     pul.reset();
   }
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) {
+  while (state->iterator != state->nodes.end()) 
+  {
     result = *state->iterator;
     ++(state->iterator);
     STACK_PUSH(true, state);
@@ -1273,20 +1209,31 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) {
+  if (nodes.size() > 0) 
+  {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertFirstIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+    pul->addInsertFirstIntoCollection(&loc,
+                                      collectionName,
+                                      nodes,
+                                      theIsDynamic,
+                                      false);
   }
 
-  if (pul.get()) {
-    apply_updates(planState.theCompilerCB, planState.theGlobalDynCtx, theSctx, pul.get(), loc);
+  if (pul.get()) 
+  {
+    apply_updates(planState.theCompilerCB,
+                  planState.theGlobalDynCtx,
+                  theSctx,
+                  pul.get(),
+                  loc);
     pul.reset();
   }
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) {
+  while (state->iterator != state->nodes.end()) 
+  {
     result = *state->iterator;
     ++(state->iterator);
     STACK_PUSH(true, state);
@@ -1341,7 +1288,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
   if (nodes.size() > 0) {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
+    pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theIsDynamic, false);
   }
 
   if (pul.get()) {
@@ -1405,20 +1352,32 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) {
+  if (nodes.size() > 0) 
+  {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertBeforeIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
+    pul->addInsertBeforeIntoCollection(&loc,
+                                       collectionName,
+                                       targetNode,
+                                       nodes,
+                                       theIsDynamic,
+                                       false);
   }
 
-  if (pul.get()) {
-    apply_updates(planState.theCompilerCB, planState.theGlobalDynCtx, theSctx, pul.get(), loc);
+  if (pul.get()) 
+  {
+    apply_updates(planState.theCompilerCB,
+                  planState.theGlobalDynCtx,
+                  theSctx,
+                  pul.get(),
+                  loc);
     pul.reset();
   }
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) {
+  while (state->iterator != state->nodes.end()) 
+  {
     result = *state->iterator;
     ++(state->iterator);
     STACK_PUSH(true, state);
@@ -1472,20 +1431,32 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) {
+  if (nodes.size() > 0) 
+  {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertAfterIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
+    pul->addInsertAfterIntoCollection(&loc,
+                                      collectionName,
+                                      targetNode,
+                                      nodes,
+                                      theIsDynamic,
+                                      false);
   }
 
-  if (pul.get()) {
-    apply_updates(planState.theCompilerCB, planState.theGlobalDynCtx, theSctx, pul.get(), loc);
+  if (pul.get()) 
+  {
+    apply_updates(planState.theCompilerCB,
+                  planState.theGlobalDynCtx,
+                  theSctx,
+                  pul.get(),
+                  loc);
     pul.reset();
   }
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) {
+  while (state->iterator != state->nodes.end())
+  {
     result = *state->iterator;
     ++(state->iterator);
     STACK_PUSH(true, state);
@@ -1521,13 +1492,13 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) {
-      throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
+    if (! node->getCollection()) 
+    {
+      throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
     }
-    if (collection && collection != node->getCollection()) {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0018_NODES_NOT_IN_SAME_COLLECTION, ERROR_LOC( loc )
-      );
+    if (collection && collection != node->getCollection()) 
+    {
+      throw XQUERY_EXCEPTION(zerr::ZDDY0018_NODES_NOT_IN_SAME_COLLECTION, ERROR_LOC(loc));
     }
     collection = node->getCollection();
 
@@ -1541,13 +1512,18 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     collectionDecl = getCollection(theSctx,
                                    collectionName,
                                    loc,
-                                   theDynamicCollection,
+                                   theIsDynamic,
                                    collection);
 
     // create the pul and add the primitive
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
+    pul->addDeleteFromCollection(&loc,
+                                 collectionName,
+                                 nodes,
+                                 false,
+                                 theIsDynamic,
+                                 false);
 
     // this should not be necessary. we reset everything in the sequential iterator
     theChildren[theChildren.size()-1]->reset(planState);
@@ -1570,11 +1546,8 @@ ZorbaDeleteNodesIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0 && !aDynamicCollection)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
+    RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, loc,
+    ERROR_PARAMS(aName->getStringValue()));
   }
 
   if (!aDynamicCollection) {
@@ -1644,7 +1617,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
     ZORBA_ASSERT(false);
 
   collectionDecl = getCollection(
-      theSctx, collectionName, loc, theDynamicCollection, collection);
+      theSctx, collectionName, loc, theIsDynamic, collection);
 
   if (theChildren.size() > 1)
   {
@@ -1669,7 +1642,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   for (xs_integer i = 0; i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
-  pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
+  pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theIsDynamic, false);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -1764,7 +1737,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   consumeNext(collectionName, theChildren[0].getp(), planState);
 
   collectionDecl = getCollection(
-      theSctx, collectionName, loc, theDynamicCollection, collection);
+      theSctx, collectionName, loc, theIsDynamic, collection);
 
   if (theChildren.size() > 1)
   {
@@ -1788,7 +1761,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   for (xs_integer i = numNodes; i > xs_integer(0); --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
-  pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);
+  pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theIsDynamic, false);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -1918,7 +1891,7 @@ IsAvailableCollectionIterator::nextImpl(
 
   try
   {
-    (void)getCollection(theSctx, lName, loc, theDynamicCollection, lCollection);
+    (void)getCollection(theSctx, lName, loc, theIsDynamic, lCollection);
   }
   catch (ZorbaException const& e)
   {
@@ -1990,7 +1963,8 @@ void AvailableCollectionsIteratorState::init(PlanState& planState)
 void AvailableCollectionsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) {
+  if ( nameItState != NULL ) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
@@ -2000,14 +1974,14 @@ void AvailableCollectionsIteratorState::reset(PlanState& planState)
 bool
 AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  AvailableCollectionsIteratorState * state;
-  store::Item_t              nameItem;
+  store::Item_t nameItem;
 
+  AvailableCollectionsIteratorState* state;
   DEFAULT_STACK_INIT(AvailableCollectionsIteratorState, state, planState);
 
-  if (theDynamicCollection)
+  if (theIsDynamic)
   {
-    for ((state->nameItState = GENV_STORE.listCollectionNames(theDynamicCollection))->open ();
+    for ((state->nameItState = GENV_STORE.listCollectionNames(theIsDynamic))->open();
          state->nameItState->next(nameItem);)
     {
       result = nameItem;
@@ -2017,7 +1991,7 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
   else
   {
     // static collections have to exist and need to be declared
-    for ((state->nameItState = theSctx->collection_names())->open ();
+    for ((state->nameItState = theSctx->collection_names())->open();
          state->nameItState->next(nameItem);)
     {
       if (!GENV_STORE.getCollection(nameItem.getp()))

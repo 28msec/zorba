@@ -157,51 +157,59 @@ public:
         Item_t& name,
         const std::vector<Annotation_t>& annotations,
         const Item_t& nodeType, // can be null if not a schema type
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addDeleteCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addInsertIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addInsertFirstIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addInsertLastIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addInsertBeforeIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addInsertAfterIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   virtual void addDeleteFromCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection = false) = 0;
+        bool isDynamic,
+        bool isJSONIQ) = 0;
 
   // functions to add primitives for indexes
 

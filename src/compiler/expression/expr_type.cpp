@@ -18,6 +18,7 @@
 #include <zorba/config.h>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
@@ -301,7 +302,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (funcKind)
     {
-    case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1:
+    case FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1:
     {
       const store::Item* qname = e->theArgs[0]->getQName(theSctx);
 
@@ -314,11 +315,8 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
         else
         {
-          throw XQUERY_EXCEPTION(
-            zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-            ERROR_PARAMS( qname->getStringValue() ),
-            ERROR_LOC( get_loc() )
-          );
+          RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
+          ERROR_PARAMS(qname->getStringValue()));
         }
       }
       break;

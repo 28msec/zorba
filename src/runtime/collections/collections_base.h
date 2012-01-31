@@ -49,13 +49,14 @@ getCopyMode(
 
 
 /*******************************************************************************
+
  ******************************************************************************/
 template <class Iter, class State>
 class ZorbaCollectionIteratorHelper : public NaryBaseIterator<Iter, State>
 {
 protected:
-  //whether it's the function of the dynamic or the static collection module
-  bool theDynamicCollection;
+  bool theIsDynamic;
+  bool theIsJSONIQ;
 
   virtual const StaticallyKnownCollection*
   getCollection(
@@ -108,9 +109,10 @@ protected:
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
 
     collectionDecl = getCollection(
-        this->theSctx, collName, this->loc, theDynamicCollection, collection);
+        this->theSctx, collName, this->loc, theIsDynamic, collection);
 
-    if (beforeOrAfter) {
+    if (beforeOrAfter) 
+    {
       if(!this->consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState))
       {
         ZORBA_ASSERT(false);
@@ -130,7 +132,7 @@ protected:
 
     while (this->consumeNext(node, this->theChildren[this->theChildren.size()-1].getp(), planState))
     {
-      checkNodeType(this->theSctx, node, collectionDecl, this->loc, theDynamicCollection);
+      checkNodeType(this->theSctx, node, collectionDecl, this->loc, theIsDynamic);
       copyNode = node->copy(NULL, lCopyMode);
       nodes.push_back(copyNode);
     }
@@ -159,9 +161,12 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool aDynamicCollection)
-    : NaryBaseIterator<Iter, State>(sctx, loc, children),
-      theDynamicCollection(aDynamicCollection)
+      bool isDynamic,
+      bool isJSONIQ)
+    :
+    NaryBaseIterator<Iter, State>(sctx, loc, children),
+    theIsDynamic(isDynamic),
+    theIsJSONIQ(isJSONIQ)
   {
   }
 
@@ -170,7 +175,8 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<Iter, State>*)this);
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
+    ar & theIsJSONIQ;
   }
 };
 

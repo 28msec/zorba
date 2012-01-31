@@ -51,17 +51,17 @@ PULPrimitiveFactory::createUpdInsertChildren(
 }
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertAttributes*
-    PULPrimitiveFactory::createUpdInsertAttributes(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& target,
-          std::vector<store::Item_t>&  attrs)
-    {
-      return new UpdInsertAttributes(pul, aLoc, target, attrs);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdInsertAttributes*
+PULPrimitiveFactory::createUpdInsertAttributes(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target,
+    std::vector<store::Item_t>&  attrs)
+{
+  return new UpdInsertAttributes(pul, aLoc, target, attrs);
+}
     
     /***************************************************************************
     ***************************************************************************/
@@ -257,164 +257,172 @@ PULPrimitiveFactory::createUpdPut(
 }
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdCreateCollection*
-    PULPrimitiveFactory::createUpdCreateCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          const std::vector<store::Annotation_t>& annotations,
-          const store::Item_t& nodeType,
-          bool dyn_collection)
-    {
-      return new UpdCreateCollection(
-          pul,
-          aLoc,
-          name,
-          annotations,
-          nodeType,
-          dyn_collection);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdCreateCollection*
+PULPrimitiveFactory::createUpdCreateCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    const std::vector<store::Annotation_t>& annotations,
+    const store::Item_t& nodeType,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdCreateCollection(pul,
+                                 aLoc,
+                                 name,
+                                 annotations,
+                                 nodeType,
+                                 isDynamic,
+                                 isJSONIQ);
+}
+    
+    
+/***************************************************************************
+***************************************************************************/
+UpdDeleteCollection*
+PULPrimitiveFactory::createUpdDeleteCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdDeleteCollection(pul, aLoc, name, isDynamic, isJSONIQ);
+}
+    
+    
+/***************************************************************************
+***************************************************************************/
+UpdInsertIntoCollection*
+PULPrimitiveFactory::createUpdInsertIntoCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name, 
+    std::vector<store::Item_t>& nodes,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdInsertIntoCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ);
+}
+    
+    
+/***************************************************************************
+***************************************************************************/
+UpdInsertFirstIntoCollection*
+PULPrimitiveFactory::createUpdInsertFirstIntoCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    std::vector<store::Item_t>& nodes,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdInsertFirstIntoCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ);
+}
+    
+    
+/***************************************************************************
+***************************************************************************/
+UpdInsertLastIntoCollection*
+PULPrimitiveFactory::createUpdInsertLastIntoCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    std::vector<store::Item_t>& nodes,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdInsertLastIntoCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ);
+}
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdDeleteCollection*
-    PULPrimitiveFactory::createUpdDeleteCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          bool dyn_collection)
-    {
-      return new UpdDeleteCollection(pul, aLoc, name, dyn_collection);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdInsertBeforeIntoCollection*
+PULPrimitiveFactory::createUpdInsertBeforeIntoCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    store::Item_t& target,
+    std::vector<store::Item_t>& nodes,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdInsertBeforeIntoCollection(pul, aLoc, name, target, nodes, isDynamic, isJSONIQ);
+}
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertIntoCollection*
-    PULPrimitiveFactory::createUpdInsertIntoCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name, 
-          std::vector<store::Item_t>& nodes,
-          bool dyn_collection)
-    {
-      return new UpdInsertIntoCollection(pul, aLoc, name, nodes, dyn_collection);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdInsertAfterIntoCollection*
+PULPrimitiveFactory::createUpdInsertAfterIntoCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    store::Item_t& target,
+    std::vector<store::Item_t>& nodes,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdInsertAfterIntoCollection(pul, aLoc, name, target, nodes, isDynamic, isJSONIQ);
+}
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertFirstIntoCollection*
-    PULPrimitiveFactory::createUpdInsertFirstIntoCollection(
-        CollectionPul* pul,
-          const QueryLoc* aLoc,
-        store::Item_t& name,
-        std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
-    {
-      return new UpdInsertFirstIntoCollection(pul, aLoc, name, nodes, dyn_collection);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdDeleteNodesFromCollection*
+PULPrimitiveFactory::createUpdDeleteNodesFromCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    std::vector<store::Item_t>& nodes,
+    bool isLast,
+    bool isDynamic,
+    bool isJSONIQ)
+{
+  return new UpdDeleteNodesFromCollection(pul, aLoc, name, nodes, isLast, isDynamic, isJSONIQ);
+}
+    
+    
+/***************************************************************************
+***************************************************************************/
+UpdCreateIndex*
+PULPrimitiveFactory::createUpdCreateIndex(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
+{
+  return new UpdCreateIndex(pul, aLoc, qname, spec, sourceIter);
+}
 
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertLastIntoCollection*
-    PULPrimitiveFactory::createUpdInsertLastIntoCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          std::vector<store::Item_t>& nodes,
-          bool dyn_collection)
-    {
-      return new UpdInsertLastIntoCollection(pul, aLoc, name, nodes, dyn_collection);
-    }
+/***************************************************************************
+***************************************************************************/
+UpdDeleteIndex*
+PULPrimitiveFactory::createUpdDeleteIndex(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    const store::Item_t& qname)
+{
+  return new UpdDeleteIndex(pul, aLoc, qname);
+}
 
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertBeforeIntoCollection*
-    PULPrimitiveFactory::createUpdInsertBeforeIntoCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          store::Item_t& target,
-          std::vector<store::Item_t>& nodes,
-          bool dyn_collection)
-    {
-      return new UpdInsertBeforeIntoCollection(pul, aLoc, name, target, nodes, dyn_collection);
-    }
-
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertAfterIntoCollection*
-    PULPrimitiveFactory::createUpdInsertAfterIntoCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          store::Item_t& target,
-          std::vector<store::Item_t>& nodes,
-          bool dyn_collection)
-    {
-      return new UpdInsertAfterIntoCollection(pul, aLoc, name, target, nodes, dyn_collection);
-    }
-
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdDeleteNodesFromCollection*
-    PULPrimitiveFactory::createUpdDeleteNodesFromCollection(
-          CollectionPul* pul,
-          const QueryLoc* aLoc,
-          store::Item_t& name,
-          std::vector<store::Item_t>& nodes,
-          bool isLast,
-          bool dyn_collection)
-    {
-      return new UpdDeleteNodesFromCollection(pul, aLoc, name, nodes, isLast, dyn_collection);
-    }
-
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdCreateIndex*
-    PULPrimitiveFactory::createUpdCreateIndex(
-          PULImpl* pul,
-          const QueryLoc* aLoc,
-          const store::Item_t& qname,
-          const store::IndexSpecification& spec,
-          store::Iterator* sourceIter)
-    {
-      return new UpdCreateIndex(pul, aLoc, qname, spec, sourceIter);
-    }
-
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdDeleteIndex*
-    PULPrimitiveFactory::createUpdDeleteIndex(
-        PULImpl* pul,
-        const QueryLoc* aLoc,
-        const store::Item_t& qname)
-    {
-      return new UpdDeleteIndex(pul, aLoc, qname);
-    }
-
-    
-    /***************************************************************************
-    ***************************************************************************/
-    UpdRefreshIndex*
-    PULPrimitiveFactory::createUpdRefreshIndex(
-          PULImpl* pul,
-          const QueryLoc* aLoc,
-          const store::Item_t& qname,
-          store::Iterator* sourceIter)
-    {
-      return new UpdRefreshIndex(pul, aLoc, qname, sourceIter);
-    }
+  
+/***************************************************************************
+***************************************************************************/
+UpdRefreshIndex*
+PULPrimitiveFactory::createUpdRefreshIndex(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    const store::Item_t& qname,
+    store::Iterator* sourceIter)
+{
+  return new UpdRefreshIndex(pul, aLoc, qname, sourceIter);
+}
 
     
     /***************************************************************************
