@@ -357,7 +357,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      sctx->validate( result, result, StaticContextConsts::strict_validation );
+      //sctx->validate( result, result, StaticContextConsts::strict_validation );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
       STACK_PUSH( true, state );
@@ -384,6 +384,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
+  static_context const *sctx;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -392,12 +393,8 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  lang = get_lang_from( getStaticContext() );
-
-  if ( theChildren.size() > 0 ) {
-    consumeNext( item, theChildren[0], plan_state );
-    lang = get_lang_from( item, loc );
-  }
+  consumeNext( item, theChildren[0], plan_state );
+  lang = get_lang_from( item, loc );
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   tokenizer = tokenizer_provider->getTokenizer( lang, no );
@@ -418,6 +415,11 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createAttributeNode(
     attr_node, result, attr_name, type_name, item
   );
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  sctx = getStaticContext();
+  sctx->validate( result, result, StaticContextConsts::strict_validation );
+#endif /* ZORBA_NO_XMLSCHEMA */
 
   STACK_PUSH( true, state );
   STACK_END( state );

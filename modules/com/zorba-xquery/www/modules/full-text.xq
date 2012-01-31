@@ -228,14 +228,6 @@ declare function ft:tokenize-string( $string as xs:string )
 };
 
 (:~
- : Gets properties of the tokenizer for the current language.
- :
- : @return said properties.
- :)
-declare function ft:tokenizer-properties()
-  as node() external;
-
-(:~
  : Gets properties of the tokenizer for the given language.
  :
  : @param $lang The default language of <code>$string</code>.
@@ -243,5 +235,16 @@ declare function ft:tokenizer-properties()
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )
   as node() external;
+
+(:~
+ : Gets properties of the tokenizer for the current language.
+ :
+ : @return said properties.
+ :)
+declare function ft:tokenizer-properties()
+  as node()
+{
+  ft:tokenizer-properties( ft:current-lang() )
+};
 
 (: vim:set et sw=2 ts=2: :)
