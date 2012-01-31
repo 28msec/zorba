@@ -145,6 +145,15 @@ SimpleJSONObject::remove(const store::Item_t& aName)
 
   lRes->removeReference();
 
+  // adapt indexes in the map
+  for (lIter = thePairMap.begin(); lIter != thePairMap.end(); ++lIter)
+  {
+    if (lIter->second > lPos)
+    {
+      --(lIter->second);
+    }
+  }
+
   return lRes;
 }
 
