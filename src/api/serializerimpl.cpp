@@ -20,8 +20,9 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/diagnostic_handler.h>
 
-#include "api/zorbaimpl.h"
-#include "api/unmarshaller.h"
+#include <diagnostics/assert.h>
+#include <api/zorbaimpl.h>
+#include <api/unmarshaller.h>
 
 #include "serializerimpl.h"
 
@@ -88,6 +89,8 @@ SerializerImpl::getSerializationMethod() const
 {
   switch (theInternalSerializer.getSerializationMethod())
   {
+  case serializer::PARAMETER_VALUE_XML:
+    return ZORBA_SERIALIZATION_METHOD_XML;
   case serializer::PARAMETER_VALUE_HTML:
     return ZORBA_SERIALIZATION_METHOD_HTML;
   case serializer::PARAMETER_VALUE_XHTML:
@@ -96,8 +99,14 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
+#ifdef ZORBA_WITH_JSON
+  case serializer::PARAMETER_VALUE_JSON:
+    return ZORBA_SERIALIZATION_METHOD_JSON;
+  case serializer::PARAMETER_VALUE_JSONIQ:
+    return ZORBA_SERIALIZATION_METHOD_JSONIQ;
+#endif
   default:
-    return ZORBA_SERIALIZATION_METHOD_XML;
+    ZORBA_ASSERT(0);
   }
 }
 
@@ -121,8 +130,9 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "binary"); break;
 #ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
-    // The default Zorba "XML" serializer is capable of outputting JSON
-    aInternalSerializer.setParameter("method", "xml"); break;
+    aInternalSerializer.setParameter("method", "json"); break;
+  case ZORBA_SERIALIZATION_METHOD_JSONIQ:
+    aInternalSerializer.setParameter("method", "jsoniq"); break;
 #endif
   }
 

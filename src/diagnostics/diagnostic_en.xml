@@ -1843,6 +1843,14 @@
       <value>cannot serialize JSON item using current output method</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0044" name="CANNOT_SERIALIZE_XML_ITEM">
+      <value>cannot serialize XML item using current output method</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0045" name="CANNOT_SERIALIZE_MIXED_XDM_JDM">
+      <value>cannot serialize sequence containing both JSON and XML items</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0070" name="INVALID_SERIALIZATION_METHOD_FOR_SAX">
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
@@ -2797,7 +2805,7 @@
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">
-      <value>valid values are: xml, html, xhtml, text, binary</value>
+      <value>valid values are: xml, html, xhtml, text, binary, json, jsoniq</value>
     </entry>
 
     <entry key="GoodValuesAreYesNo">

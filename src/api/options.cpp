@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <zorba/options.h>
+#include "diagnostics/xquery_diagnostics.h"
 
 Zorba_CompilerHints::Zorba_CompilerHints()
   :
@@ -36,7 +37,11 @@ void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
   :
+#ifdef ZORBA_WITH_JSON
+  ser_method(ZORBA_SERIALIZATION_METHOD_JSONIQ),
+#else
   ser_method(ZORBA_SERIALIZATION_METHOD_XML),
+#endif
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
@@ -66,10 +71,12 @@ void Zorba_SerializerOptions::SetSerializerOption(
     else if (strcmp(value, "binary") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
 #ifdef ZORBA_WITH_JSON
     else if (strcmp(value, "json") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_JSON;
+    else if (strcmp(value, "jsoniq") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_JSONIQ;
 #endif
     else
     {
-      ; // TODO signal errors for incorrect values?
+      throw XQUERY_EXCEPTION
+          (err::SEPM0016, ERROR_PARAMS( value, "method", ZED( GoodValuesAreXMLEtc ) ));
     }
   }
   else if (strcmp(parameter, "byte-order-mark") == 0)
