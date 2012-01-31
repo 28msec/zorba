@@ -877,10 +877,12 @@ UpdCollection::UpdCollection(
     const QueryLoc* aLoc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
   :
   UpdatePrimitive(pul, aLoc),
-  theDynamicCollection(dyn_collection)
+  theIsDynamic(isDynamic),
+  theIsJSONIQ(isJSONIQ)
 {
   theName.transfer(name);
 
@@ -900,10 +902,12 @@ UpdCollection::UpdCollection(
     store::Item_t& target,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
   :
   UpdatePrimitive(pul, aLoc, target),
-  theDynamicCollection(dyn_collection)
+  theIsDynamic(isDynamic),
+  theIsJSONIQ(isJSONIQ)
 {
   theName.transfer(name);
 
@@ -927,7 +931,7 @@ void UpdCreateCollection::apply()
       theName,
       theAnnotations,
       theNodeType,
-      theDynamicCollection);
+      theIsDynamic);
   theIsApplied = true;
 }
 
@@ -936,7 +940,7 @@ void UpdCreateCollection::undo()
 {
   try
   {
-    GET_STORE().deleteCollection(theName, theDynamicCollection);
+    GET_STORE().deleteCollection(theName, theIsDynamic);
   }
   catch (...)
   {
@@ -952,7 +956,7 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
+  theCollection = GET_STORE().getCollection(theName, theIsDynamic);
   if (theCollection == NULL)
     return;//If two delete collection are issued in the same snapshot is a noop
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
@@ -1003,7 +1007,7 @@ void UpdDeleteCollection::apply()
       );
   }
 
-  GET_STORE().deleteCollection(theName, theDynamicCollection);
+  GET_STORE().deleteCollection(theName, theIsDynamic);
   theIsApplied = true;
 }
 
@@ -1020,7 +1024,7 @@ void UpdDeleteCollection::undo()
 void UpdInsertIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -1037,20 +1041,19 @@ void UpdInsertIntoCollection::apply()
 void UpdInsertIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   uint64_t lastPos;
-  try {
+  try 
+  {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
-  } catch (std::range_error& e) {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("collection too big ("
-            << e.what() << "; " << theName << ")")
-        )
-      );
+  }
+  catch (std::range_error& e) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("collection too big ("
+                              << e.what() << "; " << theName << ")")));
   }
 
   for (long i = theNumApplied-1; i >= 0; --i)
@@ -1069,15 +1072,15 @@ void UpdInsertIntoCollection::undo()
 void UpdInsertFirstIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   theIsApplied = true;
 
   theCollectionPul->setAdjustTreePositions();
 
-  std::size_t numNodes = theNodes.size();
-  for (std::size_t i = 0; i < numNodes; ++i)
+  csize numNodes = theNodes.size();
+  for (csize i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], i);
     ++theNumApplied;
@@ -1088,10 +1091,10 @@ void UpdInsertFirstIntoCollection::apply()
 void UpdInsertFirstIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
-  for (std::size_t i = 0; i < theNumApplied; ++i)
+  for (csize i = 0; i < theNumApplied; ++i)
   {
     ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
 
@@ -1106,7 +1109,7 @@ void UpdInsertFirstIntoCollection::undo()
 void UpdInsertLastIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -1122,7 +1125,7 @@ void UpdInsertLastIntoCollection::apply()
 void UpdInsertLastIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   uint64_t lastPos;
@@ -1154,7 +1157,7 @@ void UpdInsertLastIntoCollection::undo()
 void UpdInsertBeforeIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   if (!theNodes.empty())
@@ -1170,7 +1173,7 @@ void UpdInsertBeforeIntoCollection::apply()
 void UpdInsertBeforeIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -1184,7 +1187,7 @@ void UpdInsertBeforeIntoCollection::undo()
 void UpdInsertAfterIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   if (!theNodes.empty())
@@ -1201,7 +1204,7 @@ void UpdInsertAfterIntoCollection::apply()
 void UpdInsertAfterIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -1215,7 +1218,7 @@ void UpdInsertAfterIntoCollection::undo()
 void UpdDeleteNodesFromCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -1270,10 +1273,10 @@ void UpdDeleteNodesFromCollection::apply()
 void UpdDeleteNodesFromCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
   assert(lColl);
 
-  for (std::size_t i = 0; i < theNumApplied; ++i)
+  for (csize i = 0; i < theNumApplied; ++i)
   {
     if (theFound[i])
     {

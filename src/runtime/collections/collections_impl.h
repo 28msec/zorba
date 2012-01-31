@@ -60,7 +60,7 @@ public:
 
   bool isZorbaCollection() const { return W3C != theCollectionType; }
 
-  bool isDynamicCollection() const { return ZORBADYNAMIC == theCollectionType; }
+  bool isDynamic() const { return ZORBADYNAMIC == theCollectionType; }
 
   void accept(PlanIterVisitor& v) const;
 

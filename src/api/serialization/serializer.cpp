@@ -353,7 +353,7 @@ void serializer::emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::emitter::emit_declaration_end()
+void serializer::emitter::emit_end()
 {
   // Do nothing in the default emitter
 }
@@ -402,10 +402,9 @@ void serializer::emitter::emit_item(store::Item* item)
 #ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
-    emit_json_item(item, 0);
+    throw XQUERY_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
   }
-  else
-#endif /* ZORBA_WITH_JSON */
+#endif
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -777,18 +776,6 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   return false;
 }
 
-#ifdef ZORBA_WITH_JSON
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::emitter::emit_json_item(store::Item *item, int depth)
-{
-  // Default is to throw an exception, so we don't accidentally serialize
-  // JSON into HTML etc.
-  throw ZORBA_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
-}
-#endif
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -833,7 +820,7 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  XML/JSONiq Emitter                                                        //
+//  XML emitter                                                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -915,7 +902,38 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 
 #ifdef ZORBA_WITH_JSON
 
-void serializer::xml_emitter::emit_json_item(store::Item* item, int depth)
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSON emitter                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::json_emitter::json_emitter(
+  serializer* the_serializer,
+  transcoder& the_transcoder)
+  :
+  emitter(the_serializer, the_transcoder)
+{
+}
+
+void serializer::json_emitter::emit_item(store::Item *item)
+{
+  if (!item->isJSONItem())
+  {
+    throw XQUERY_EXCEPTION(zerr::ZAPI0044_CANNOT_SERIALIZE_XML_ITEM);
+  }
+  emit_json_item(item, 0);
+}
+
+void serializer::json_emitter::emit_declaration()
+{
+}
+
+void serializer::json_emitter::emit_end()
+{
+}
+
+void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
 {
   // This is called for any item within a JSON array or object, or for a
   // top-level JSON array or object. So JSON rules for simple types may
@@ -958,7 +976,7 @@ void serializer::xml_emitter::emit_json_item(store::Item* item, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::xml_emitter::emit_json_object(store::Item* obj, int depth)
+void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 {
   store::Item_t pair;
   store::Iterator_t it = obj->getPairs();
@@ -999,7 +1017,7 @@ void serializer::xml_emitter::emit_json_object(store::Item* obj, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::xml_emitter::emit_json_array(store::Item* array, int depth)
+void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
   store::Item_t member;
   store::Iterator_t it = array->getMembers();
@@ -1021,12 +1039,81 @@ void serializer::xml_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::xml_emitter::emit_json_pair(store::Item* pair, int depth)
+void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
 {
   emit_json_item(pair->getName(), depth);
   tr << " : ";
   emit_json_item(pair->getValue(), depth);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSONiq emitter (auto-detects JSON or XML)                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::jsoniq_emitter::jsoniq_emitter(
+  serializer* the_serializer,
+  transcoder& the_transcoder)
+  :
+    emitter(the_serializer, the_transcoder),
+    theEmitterState(JESTATE_UNDETERMINED),
+    theEmitter(nullptr)
+{
+}
+
+serializer::jsoniq_emitter::~jsoniq_emitter()
+{
+  delete theEmitter;
+}
+
+void serializer::jsoniq_emitter::emit_declaration()
+{
+  // Probably I should set a flag here to note whether emit_declaration() has
+  // been called or not. However, I know that all serializer::serialize()
+  // methods DO call emit_declaration() and call it first, so there's no need.
+}
+
+void serializer::jsoniq_emitter::emit_item(store::Item *item)
+{
+  bool isJson = item->isJSONItem();
+
+  if (theEmitterState == JESTATE_UNDETERMINED) {
+    // Initialize theEmitter based on item type, passing through our serializer
+    // and transcoder.
+    if (isJson) {
+      theEmitterState = JESTATE_JDM;
+      theEmitter = new json_emitter(ser, tr);
+    }
+    else {
+      theEmitterState = JESTATE_XDM;
+      theEmitter = new xml_emitter(ser, tr);
+    }
+    // Since this was the first item, call emit_declaration().
+    theEmitter->emit_declaration();
+  }
+  else {
+    // Error checking
+    if ( (isJson && theEmitterState == JESTATE_XDM) ||
+         (!isJson && theEmitterState == JESTATE_JDM) ) {
+      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
+    }
+  }
+
+  // Pass through
+  theEmitter->emit_item(item);
+}
+
+void serializer::jsoniq_emitter::emit_end()
+{
+  // Not really clear what to do if we serialized no items and hence have
+  // no emitter yet, but doing nothing at all seems reasonable.
+  if (theEmitter) {
+    theEmitter->emit_end();
+  }
+}
+
 
 #endif /* ZORBA_WITH_JSON */
 
@@ -1184,7 +1271,7 @@ void serializer::html_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::html_emitter::emit_declaration_end()
+void serializer::html_emitter::emit_end()
 {
 }
 
@@ -1542,13 +1629,6 @@ void serializer::xhtml_emitter::emit_node(
   }
 }
 
-#ifdef ZORBA_WITH_JSON
-void serializer::xhtml_emitter::emit_json_item(store::Item *item, int depth)
-{
-  // "Un-override" this method - XHTML doesn't support JSON
-  emitter::emit_json_item(item, depth);
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -1587,7 +1667,7 @@ void serializer::sax2_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::sax2_emitter::emit_declaration_end()
+void serializer::sax2_emitter::emit_end()
 {
   theSAX2ContentHandler->endDocument();
 }
@@ -2087,7 +2167,12 @@ void serializer::reset()
 
   media_type.clear();
 
+  // This default should match the default for ser_method in Zorba_SerializerOptions
+#ifdef ZORBA_WITH_JSON
+  method = PARAMETER_VALUE_JSONIQ;
+#else
   method = PARAMETER_VALUE_XML;
+#endif
 
   normalization_form.clear();
 
@@ -2181,8 +2266,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_BINARY;
 #ifdef ZORBA_WITH_JSON
     else if (!strcmp(aValue, "json"))
-      // The default "XML" serializer is capable of outputting JSON
-      method = PARAMETER_VALUE_XML;
+      method = PARAMETER_VALUE_JSON;
+    else if (!strcmp(aValue, "jsoniq"))
+      method = PARAMETER_VALUE_JSONIQ;
 #endif
     else
       throw XQUERY_EXCEPTION(
@@ -2338,6 +2424,12 @@ bool serializer::setup(std::ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
+#ifdef ZORBA_WITH_JSON
+  else if (method == PARAMETER_VALUE_JSON)
+    e = new json_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_JSONIQ)
+    e = new jsoniq_emitter(this, *tr);
+#endif
   else
   {
     ZORBA_ASSERT(0);
@@ -2417,7 +2509,7 @@ serializer::serialize(
     e->emit_item(&*lItem);
   }
 //+  aObject->close();
-  e->emit_declaration_end();
+  e->emit_end();
 }
 
 
@@ -2463,7 +2555,7 @@ void serializer::serialize(
   }
  
   //object->close();
-  e->emit_declaration_end();
+  e->emit_end();
 }
 
 } // namespace zorba

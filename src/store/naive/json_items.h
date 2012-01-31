@@ -120,6 +120,8 @@ public:
 
   virtual SimpleCollection* getCollection() const = 0;
 
+  virtual void setCollection(SimpleCollection* collection, csize pos) = 0;
+
 #if 0
   bool equals(
         const store::Item*,
@@ -199,6 +201,7 @@ public:
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
+  void setCollection(SimpleCollection* collection, csize pos);
 };
 
 
@@ -234,6 +237,8 @@ public:
   operator[](xs_integer&) const = 0;
 
   virtual SimpleCollection* getCollection() const = 0;
+
+  virtual void setCollection(SimpleCollection* collection, csize pos) = 0;
 };
 
 
@@ -318,6 +323,8 @@ public:
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
+
+  void setCollection(SimpleCollection* collection, csize pos);
 };
 
 

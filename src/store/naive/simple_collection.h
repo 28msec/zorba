@@ -63,20 +63,19 @@ public:
 
 
 protected:
-  ulong                           theId;
-  store::Item_t                   theName;
-  checked_vector<store::Item_t>   theXmlTrees;
-  bool                            theIsDynamic;
+  ulong                                  theId;
+  store::Item_t                          theName;
+  checked_vector<store::Item_t>          theXmlTrees;
+  bool                                   theIsDynamic;
+  bool                                   theIsJSONIQ;
 
-  ulong                           theTreeCounter;
+  ulong                                  theTreeCounter;
 
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t                   theNodeType;
+  store::Item_t                          theNodeType;
 
-  SYNC_CODE(Latch               theLatch;)
+  SYNC_CODE(Latch                        theLatch;)
 
-  // default constructor added in order to allow subclasses to instantiate
-  // a collection without name
   SimpleCollection();
 
 public:
@@ -84,12 +83,10 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool aDynamicCollection = false);
+      bool isDynamic = false,
+      bool isJSONIQ = false);
 
   virtual ~SimpleCollection();
-
-  // virtual to allow extension by subclasses
-  virtual ulong getId() const { return theId; }
 
   const store::Item* getName() const { return theName.getp(); }
 
@@ -97,46 +94,41 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
-  void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
+  bool isJSONIQ() const { return theIsJSONIQ; }
 
-  // virtual to allow extension by subclasses
-  virtual ulong createTreeId() { return theTreeCounter++; }
+  void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
 
   store::Iterator_t getIterator();
 
-  void addNode(
-        store::Item* node,
-        xs_integer position = -1);
-
-  // virtual to allow extension by subclasses
-  virtual ulong addNodes(
-        std::vector<store::Item_t>& nodes,
-        const store::Item* aTargetNode,
-        bool before);
-
-  // virtual to allow extension by subclasses
-  virtual bool removeNode(store::Item* node, xs_integer& pos);
-
-  // virtual to allow extension by subclasses
-  virtual bool removeNode(xs_integer position);
-
-  // virtual to allow extension by subclasses
-  virtual xs_integer removeNodes(xs_integer position, xs_integer num);
+  void addNode(store::Item* node, xs_integer position = -1);
 
   bool findNode(const store::Item* node, xs_integer& position) const;
 
   store::Item_t nodeAt(xs_integer position);
 
-  // virtual to allow extension by subclasses
+  //
+  // The following methods are virtual to allow extension by subclasses
+  //
+
+  virtual ulong getId() const { return theId; }
+
+  virtual ulong createTreeId() { return theTreeCounter++; }
+
+  virtual ulong addNodes(
+        std::vector<store::Item_t>& nodes,
+        const store::Item* targetNode,
+        bool before);
+
+  virtual bool removeNode(store::Item* node, xs_integer& pos);
+
+  virtual bool removeNode(xs_integer position);
+
+  virtual xs_integer removeNodes(xs_integer position, xs_integer num);
+
   virtual void adjustTreePositions();
 
-  // virtual to allow extension by subclasses
   virtual void getIndexes(std::vector<store::Index*>& indexes);
 
- /**
-  * Returns active integrity constraints referencing this collection.
-  * Virtual to allow extension by subclasses
-  */
   virtual void getActiveICs(std::vector<store::IC*>& ics);
 };
 

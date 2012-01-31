@@ -896,17 +896,20 @@ class UpdCollection : public UpdatePrimitive
 protected:
   store::Item_t               theName;
   std::vector<store::Item_t>  theNodes;
-  bool                        theDynamicCollection;
+  bool                        theIsDynamic;
+  bool                        theIsJSONIQ;
 
   UpdCollection(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        bool dyn_collection = false)
+        bool isDynamic,
+        bool isJSONIQ)
     :
     UpdatePrimitive(pul, aLoc),
     theName(name),
-    theDynamicCollection(dyn_collection)
+    theIsDynamic(isDynamic),
+    theIsJSONIQ(isJSONIQ)
   {
   }
 
@@ -915,7 +918,8 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   UpdCollection(
         CollectionPul* pul,
@@ -923,16 +927,17 @@ protected:
         store::Item_t& target,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
 public:
   const store::Item* getName() const { return theName.getp(); }
 
-  ulong numNodes() const { return (ulong)theNodes.size(); }
+  csize numNodes() const { return theNodes.size(); }
 
   store::Item* getNode(ulong i) const { return theNodes[i].getp(); }
 
-  bool dynamicCollection() const { return theDynamicCollection; }
+  bool dynamicCollection() const { return theIsDynamic; }
 };
 
 
@@ -954,9 +959,10 @@ protected:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection),
+    UpdCollection(pul, aLoc, name, isDynamic, isJSONIQ),
     theAnnotations(annotations),
     theNodeType(nodeType)
   {
@@ -987,9 +993,10 @@ protected:
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, isDynamic, isJSONIQ)
   {
   }
 
@@ -1019,9 +1026,10 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name, 
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
       :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ),
     theNumApplied(0)
   {
   }
@@ -1049,12 +1057,13 @@ protected:
 
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
-        const QueryLoc* aLoc,
+      const QueryLoc* aLoc,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes,
-      bool dyn_collection)
+      bool isDynamic,
+      bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ),
     theNumApplied(0)
   {
   }
@@ -1085,9 +1094,10 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ),
     theNumApplied(0)
   {
   }
@@ -1120,9 +1130,10 @@ protected:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, isDynamic, isJSONIQ)
   {
   }
 
@@ -1154,9 +1165,10 @@ protected:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, isDynamic, isJSONIQ)
   {
   }
 
@@ -1179,10 +1191,10 @@ class UpdDeleteNodesFromCollection: public  UpdCollection
   friend class PULPrimitiveFactory;
 
 protected:
-  bool               theIsLast;
+  bool                    theIsLast;
 
-  ulong              theNumApplied;
-  std::vector<bool>  theFound;
+  ulong                   theNumApplied;
+  std::vector<bool>       theFound;
   std::vector<xs_integer> thePositions;
 
   UpdDeleteNodesFromCollection(
@@ -1191,9 +1203,10 @@ protected:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection)
+        bool isDynamic,
+        bool isJSONIQ)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic, isJSONIQ),
     theIsLast(isLast),
     theNumApplied(0)
   {

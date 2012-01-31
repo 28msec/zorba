@@ -837,115 +837,117 @@ void PULImpl::addRevalidate(
  Collection primitives
 ********************************************************************************/
 void PULImpl::addCreateCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
     const store::Item_t& nodeType,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theCreateCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdCreateCollection(
-    pul,
-    aQueryLoc,
-    name,
-    annotations,
-    nodeType,
-    dyn_collection));
+  pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addDeleteCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theDeleteCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
+  pul->theDeleteCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdDeleteCollection(pul, loc, name, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addInsertIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
 } 
 
 
 void PULImpl::addInsertFirstIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertFirstIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addInsertLastIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertLastIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addInsertBeforeIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertBeforeIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addInsertAfterIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertAfterIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
 }
 
 
 void PULImpl::addDeleteFromCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
     bool isLast,
-    bool dyn_collection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(),isDynamic);
 
-  pul->theDeleteFromCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
+  pul->theDeleteFromCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdDeleteNodesFromCollection(pul, loc, name, nodes, isLast, isDynamic, isJSONIQ));
 }
 
 
@@ -953,34 +955,34 @@ void PULImpl::addDeleteFromCollection(
   Index primitives
 ********************************************************************************/
 void PULImpl::addCreateIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname,
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateIndex(this, loc,  qname, spec, sourceIter);
   theCreateIndexList.push_back(upd);
 }
 
 
 void PULImpl::addDeleteIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdDeleteIndex(this, aQueryLoc, qname);
+  GET_STORE().getPULFactory().createUpdDeleteIndex(this, loc, qname);
 
   theDeleteIndexList.push_back(upd);
 }
 
 
 void PULImpl::addRefreshIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
+  GET_STORE().getPULFactory().createUpdRefreshIndex(this, loc,  qname, sourceIter);
 
   theRefreshIndexList.push_back(upd);
 }
@@ -990,24 +992,24 @@ void PULImpl::addRefreshIndex(
   Integrity Constraint Primitives
 ********************************************************************************/
 void PULImpl::addActivateIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname,
       const store::Item_t& aCollectionName)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
+  GET_STORE().getPULFactory().createUpdActivateIC(this, loc, qname, aCollectionName);
 
   theICActivationList.push_back(upd);
 }
 
 void PULImpl::addActivateForeignKeyIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname,
       const store::Item_t& aFromCollectionName,
       const store::Item_t& aToCollectionName)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdActivateForeignKeyIC(this,
-      aQueryLoc,
+      loc,
       qname,
       aFromCollectionName,
       aToCollectionName);
@@ -1015,10 +1017,10 @@ void PULImpl::addActivateForeignKeyIC(
 }
 
 void PULImpl::addDeActivateIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeActivateIC(this, aQueryLoc, qname);
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeActivateIC(this, loc, qname);
   theICActivationList.push_back(upd);
 }
 
@@ -1027,22 +1029,22 @@ void PULImpl::addDeActivateIC(
   Document PULs
 ********************************************************************************/
 void PULImpl::addCreateDocument(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& uri,
     store::Item_t& doc)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateDocument(
-      this, aQueryLoc, uri, doc);
+      this, loc, uri, doc);
   theCreateDocumentList.push_back(upd);
 }
 
 
 void PULImpl::addDeleteDocument(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& uri)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteDocument(
-      this, aQueryLoc, uri);
+      this, loc, uri);
   theDeleteDocumentList.push_back(upd);
 }
 
@@ -1051,44 +1053,44 @@ void PULImpl::addDeleteDocument(
   HashMap PULs
 ********************************************************************************/
 void PULImpl::addCreateHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKeyTypes,
     const std::vector<zstring>& aCollations,
     long  aTimezone)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateHashMap(
-      this, aQueryLoc, aQName, aKeyTypes, aCollations, aTimezone);
+      this, loc, aQName, aKeyTypes, aCollations, aTimezone);
   theCreateHashMapList.push_back(upd);
 }
 
 void PULImpl::addDestroyHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDestroyHashMap(
-      this, aQueryLoc, aQName);
+      this, loc, aQName);
   theDestroyHashMapList.push_back(upd);
 }
 
 void PULImpl::addInsertIntoHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKey,
     const store::Iterator_t& aValue)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdInsertIntoHashMap(
-      this, aQueryLoc, aQName, aKey, aValue);
+      this, loc, aQName, aKey, aValue);
   theInsertIntoHashMapList.push_back(upd);
 }
 
 void PULImpl::addRemoveFromHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& aQName,
       const std::vector<store::Item_t>& aKey)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdRemoveFromHashMap(
-      this, aQueryLoc, aQName, aKey);
+      this, loc, aQName, aKey);
   theRemoveFromHashMapList.push_back(upd);
 }
 
@@ -1098,7 +1100,7 @@ void PULImpl::addRemoveFromHashMap(
 
 ********************************************************************************/
 void PULImpl::addJSONDelete(
-   const QueryLoc* aQueryLoc,
+   const QueryLoc* loc,
    store::Item_t& target,
    store::Item_t& deletee)
 {
@@ -1106,7 +1108,7 @@ void PULImpl::addJSONDelete(
 
   UpdatePrimitive* upd =
     GET_STORE().getPULFactory().createUpdJSONDelete(
-      pul, aQueryLoc, target, deletee);
+      pul, loc, target, deletee);
 
   pul->theJSONDeleteList.push_back(upd);
 }
@@ -1116,7 +1118,7 @@ void PULImpl::addJSONDelete(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertInto(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& pairs)
 {
@@ -1124,7 +1126,7 @@ void PULImpl::addJSONInsertInto(
 
   UpdatePrimitive* upd =
     GET_STORE().getPULFactory().createUpdJSONInsert(
-      pul, aQueryLoc, target, pairs);
+      pul, loc, target, pairs);
 
   pul->theJSONInsertList.push_back(upd);
 }
@@ -1134,7 +1136,7 @@ void PULImpl::addJSONInsertInto(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertFirst(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& children)
 {
@@ -1145,7 +1147,7 @@ void PULImpl::addJSONInsertFirst(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertLast(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& children)
 {
@@ -1156,7 +1158,7 @@ void PULImpl::addJSONInsertLast(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertBefore(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& siblings)
 {
@@ -1167,7 +1169,7 @@ void PULImpl::addJSONInsertBefore(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertAfter(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& siblings)
 {
@@ -1178,7 +1180,7 @@ void PULImpl::addJSONInsertAfter(
 
 ********************************************************************************/
 void PULImpl::addJSONInsertAttributes(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      std::vector<store::Item_t>& attrs)
 {
@@ -1189,7 +1191,7 @@ void PULImpl::addJSONInsertAttributes(
 
 ********************************************************************************/
 void PULImpl::addJSONReplaceValue(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      store::Item_t& newValue)
 {
@@ -1200,7 +1202,7 @@ void PULImpl::addJSONReplaceValue(
 
 ********************************************************************************/
 void PULImpl::addJSONRename(
-     const QueryLoc* aQueryLoc,
+     const QueryLoc* loc,
      store::Item_t& target,
      store::Item_t& newName)
 {

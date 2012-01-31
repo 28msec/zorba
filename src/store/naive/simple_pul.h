@@ -426,51 +426,59 @@ public:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addDeleteCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addInsertIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addInsertFirstIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addInsertLastIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addInsertBeforeIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addInsertAfterIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void addDeleteFromCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   // Index primitives
   void addCreateIndex(

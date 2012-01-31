@@ -327,6 +327,26 @@ const char*
 static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS = 
 "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
+#ifdef ZORBA_WITH_JSON
+
+const char*
+static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS =
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+
+const char*
+static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+
+const char*
+static_context::ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+const char*
+static_context::ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+#endif
+
 const char*
 static_context::ZORBA_SCHEMA_FN_NS = 
 "http://www.zorba-xquery.com/modules/schema";
@@ -422,6 +442,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
+
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
@@ -432,6 +453,12 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_STORE_STATIC_INDEXES_DML_FN_NS ||
             ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS ||
             ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS ||
+#ifdef ZORBA_WITH_JSON
+            ns == ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
+            ns == ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS ||
+            ns == ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DDL_FN_NS ||
+            ns == ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DML_FN_NS ||
+#endif
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||

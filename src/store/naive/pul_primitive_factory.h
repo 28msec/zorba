@@ -240,7 +240,8 @@ class PULPrimitiveFactory
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
     
   /***************************************************************************
    ***************************************************************************/
@@ -249,7 +250,8 @@ class PULPrimitiveFactory
         CollectionPul* pul,
         const QueryLoc*,
         store::Item_t& name,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
     
     
   /***************************************************************************
@@ -260,7 +262,8 @@ class PULPrimitiveFactory
         const QueryLoc*,
         store::Item_t& name, 
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
   
     
   /***************************************************************************
@@ -271,7 +274,8 @@ class PULPrimitiveFactory
       const QueryLoc*,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes,
-      bool dyn_collection = false);
+      bool isDynamic,
+      bool isJSONIQ);
     
   /***************************************************************************
    ***************************************************************************/
@@ -281,7 +285,8 @@ class PULPrimitiveFactory
         const QueryLoc*,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
     
   /***************************************************************************
    ***************************************************************************/
@@ -292,7 +297,8 @@ class PULPrimitiveFactory
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
     
   /***************************************************************************
    ***************************************************************************/
@@ -303,7 +309,8 @@ class PULPrimitiveFactory
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
   
   /***************************************************************************
    ***************************************************************************/
@@ -314,7 +321,8 @@ class PULPrimitiveFactory
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection = false);
+        bool isDynamic,
+        bool isJSONIQ);
     
   /***************************************************************************
    ***************************************************************************/
