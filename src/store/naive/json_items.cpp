@@ -468,6 +468,19 @@ store::Item* SimpleJSONObjectPair::copy(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONObjectPair::getTypedValue(
+    store::Item_t& val,
+    store::Iterator_t& iter) const
+{
+  iter = NULL;
+  val = theValue;
+}
+
+
 } // namespace json
 } // namespace simplestore
 } // namespace zorba

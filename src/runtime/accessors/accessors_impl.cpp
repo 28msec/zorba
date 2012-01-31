@@ -144,7 +144,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
-    if (result->isNode())
+    if (result->isNode() || result->isJSONPair())
     {
       itemNode.transfer(result);
 

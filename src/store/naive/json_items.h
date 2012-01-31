@@ -198,6 +198,7 @@ public:
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
+
 };
 
 
@@ -390,6 +391,9 @@ public:
   getValue() const { return theValue.getp(); }
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 } // namespace json
