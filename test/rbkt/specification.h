@@ -52,7 +52,11 @@ public:
   Specification()
     : theInline(false),
       theComparisonMethod("Fragment"),
+#ifdef ZORBA_WITH_JSON
+      theSerializationMethod("JSONiq"),
+#else
       theSerializationMethod("XML"),
+#endif
       theUseIndent(false),
       theEnableDtd(false),
       theEnableUriTestResolver(false)
@@ -76,7 +80,9 @@ private:
   std::string              theInputQueryFile;
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
-  std::string              theSerializationMethod;//"XML" (default), "TXT"(for CSV testing)
+                           // "XML" (default), "TXT"(for CSV testing),
+                           // "JSONiq" (if JSONiq is supported)
+  std::string              theSerializationMethod;
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
