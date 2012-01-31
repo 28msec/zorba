@@ -323,13 +323,13 @@ JSONFlattenIterator::nextImpl(
       item = item->getValue();
 
       if (item->isJSONObject())
-        RAISE_ERROR_NO_PARAMS(zerr::JSDY0002, loc);
+        RAISE_ERROR_NO_PARAMS(jerr::JSDY0002, loc);
 
       result.transfer(item);
     }
     else if (item->isJSONObject())
     {
-      RAISE_ERROR_NO_PARAMS(zerr::JSDY0002, loc);
+      RAISE_ERROR_NO_PARAMS(jerr::JSDY0002, loc);
     }
     else
     {
@@ -491,7 +491,7 @@ JSONSizeIterator::nextImpl(
 
   if (lJSONItem->isJSONPair())
   {
-    RAISE_ERROR(zerr::JSDY0020, loc,
+    RAISE_ERROR(jerr::JSDY0020, loc,
     ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:size"));
   }
 
@@ -542,7 +542,7 @@ JSONInsertIntoIterator::nextImpl(
   {
     if (lObject->getPair(lTmp->getName()))
     {
-      RAISE_ERROR(zerr::JSDY0060, loc,
+      RAISE_ERROR(jerr::JSDY0060, loc,
           ERROR_PARAMS(lTmp->getName()->getStringValue()));
     }
 

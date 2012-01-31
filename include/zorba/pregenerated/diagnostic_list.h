@@ -748,16 +748,6 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0009;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0010;
 
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0001;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0002;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0020;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0040;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode JSDY0060;
-
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJPE0001_ILLEGAL_CHARACTER;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJPE0002_ILLEGAL_CODEPOINT;
@@ -787,6 +777,22 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0006_NO_ELEMENT_CHILD;
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD;
 
 } // namespace zerr
+
+namespace jerr {
+
+#if defined(ZORBA_WITH_JSON)
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0001;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0002;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0020;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0040;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0060;
+#endif
+
+} // namespace jerr
 
 namespace zwarn {
 
