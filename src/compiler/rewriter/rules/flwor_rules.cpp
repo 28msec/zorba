@@ -963,11 +963,10 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     expr* whereExpr = clause->get_expr();
 
     if (! flwor->has_sequential_clauses() &&
-        is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
+        is_subseq_pred(rCtx, flwor, whereClausePos, whereExpr, posVar, posExpr) &&
         expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
     {
       function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
-      //This will be null if a windowing claused is used
       expr* domainExpr = posVar->get_for_clause()->get_expr();
 
       std::vector<expr_t> args(2);
@@ -979,7 +978,6 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
                                              seq_point,
                                              args);
       expr_tools::fix_annotations(&*result);
-      //this will be null if it's from a windowing clause
       for_clause* clause = posVar->get_for_clause();
       clause->set_expr(&*result);
       clause->set_pos_var(NULL);
@@ -1014,8 +1012,11 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
   (b2) the flwor expr has no sequential clauses and posExpr is an expression
        whose type is xs:Integer? and which does not reference the for var
        associated with posVar nor any other vars that are defined after that
-       for var.i
-  (c)  the for clause that defines $posVar isn't windowing.
+       for var and
+  (c)  the for clause that defines $posVar isn't windowing and
+  (d)  there is no count or groupby clause between the for and the where clause
+       containing the condExpr and
+  (e)  the for clause doesn't allow empty.
 
   TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses are
   before the clause that defines the pos var.
@@ -1023,6 +1024,7 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 static bool is_subseq_pred(
     RewriterContext& rCtx,
     const flwor_expr* flworExpr,
+    const csize whereClausePos,
     const expr* condExpr,
     var_expr_t& posVar,
     expr_t& posExpr)
@@ -1094,8 +1096,25 @@ static bool is_subseq_pred(
           ExprVarsMap exprVarMap;
           expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
 
-          //this would be null if a windowing clause is used
-          var_expr* forVar = posVar->get_for_clause()->get_var();
+          for_clause* forClause = posVar->get_for_clause();
+          //forClause is NULL if the clause is a windowing for clause
+          if(forClause == NULL || forVar->is_allowing_empty) return false;
+
+          //We check that there isn't any clause that breaks the optimization
+          flwor_clause *checkClause;
+          csize checkPosClause = whereClausePos;
+          do
+          {
+            if(checkPosClause < 0) //Can this even happen?
+              return false;
+            checkClause = flworExpr->get_clause(checkPosClause);
+            if(checkClause->get_kind() == flwor_clause::group_clause ||
+                checkClause->get_kind() == flwor_clause::count_clause)
+              return false;
+          }while(checkClause != forClause)
+
+          var_expr* forVar = forClause->get_var();
+
           ulong forVarId = varidMap[forVar];
 
           std::vector<ulong> posExprVarIds;
