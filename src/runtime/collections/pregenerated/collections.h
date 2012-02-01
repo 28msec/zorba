@@ -321,7 +321,7 @@ public:
   virtual ~ZorbaInsertNodesIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -361,7 +361,7 @@ public:
   virtual ~ZorbaInsertNodesFirstIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -401,7 +401,7 @@ public:
   virtual ~ZorbaInsertNodesLastIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -441,7 +441,7 @@ public:
   virtual ~ZorbaInsertNodesBeforeIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -489,7 +489,7 @@ public:
   virtual ~ZorbaInsertNodesAfterIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -542,6 +542,8 @@ public:
 
   virtual ~ZorbaApplyInsertNodesIterator();
 
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -594,6 +596,8 @@ public:
 
   virtual ~ZorbaApplyInsertNodesFirstIterator();
 
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -646,6 +650,8 @@ public:
 
   virtual ~ZorbaApplyInsertNodesLastIterator();
 
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -698,6 +704,8 @@ public:
 
   virtual ~ZorbaApplyInsertNodesBeforeIterator();
 
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -750,6 +758,8 @@ public:
 
   virtual ~ZorbaApplyInsertNodesAfterIterator();
 
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -797,7 +807,7 @@ public:
   virtual ~ZorbaDeleteNodesIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -845,7 +855,7 @@ public:
   virtual ~ZorbaDeleteNodesFirstIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -893,7 +903,7 @@ public:
   virtual ~ZorbaDeleteNodesLastIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

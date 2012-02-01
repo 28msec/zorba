@@ -307,12 +307,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -363,12 +360,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -418,12 +412,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -476,12 +467,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -537,12 +525,9 @@
     <zorba:member type="bool" name="theIsDynamic"/>
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -581,12 +566,19 @@
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
       </zorba:methods>
+
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -645,6 +637,12 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
+
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
                     brief="the nodes that have been inserted"/>
@@ -701,6 +699,12 @@
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -762,12 +766,19 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
+
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
                     brief="the nodes that have been inserted"/>
       <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
           brief="iterator over the nodes"/>
     </zorba:state>
+
 </zorba:iterator>
 
 <!--
@@ -820,6 +831,12 @@
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -877,11 +894,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>
@@ -948,11 +961,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>
@@ -1019,11 +1028,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>

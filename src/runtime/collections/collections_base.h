@@ -65,37 +65,7 @@ protected:
 protected:
 
   virtual const StaticallyKnownCollection*
-  getCollection(
-      const static_context* aSctx,
-      const store::Item_t& aName,
-      const QueryLoc& aLoc,
-      bool isDynamic,
-      bool isJSONIQ,
-      store::Collection_t& coll) const
-  {
-    const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-    if (collectionDecl == 0  && !isDynamic)
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-        ERROR_PARAMS( aName->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
-    }
-
-    coll = GENV_STORE.getCollection(aName, isDynamic, isJSONIQ);
-
-    if (coll == NULL)
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-        ERROR_PARAMS( aName->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
-    }
-
-    return collectionDecl;
-  }
+  getCollection(const store::Item_t& name, store::Collection_t& coll) const = 0;
 
   virtual void
   checkCollectionAndCopyNodes(
@@ -115,12 +85,7 @@ protected:
 
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
 
-    collectionDecl = getCollection(this->theSctx,
-                                   collName,
-                                   this->loc,
-                                   theIsDynamic,
-                                   theIsJSONIQ,
-                                   collection);
+    collectionDecl = getCollection(collName, collection);
 
     if (beforeOrAfter) 
     {
