@@ -451,8 +451,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), aPlanState);
 
-  collectionDecl = 
-  getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
+  collectionDecl = getCollection(name, collection);
 
   if (collection != NULL)
   {
@@ -524,7 +523,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       nodes[numNodes++].transfer(copyNode);
     }
 
-    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic, false);
+    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
   }
 
   result = pul.release();
@@ -536,24 +535,21 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
 const StaticallyKnownCollection*
 ZorbaCreateCollectionIterator::getCollection(
-    const static_context* sctx,
     const store::Item_t& name,
-    const QueryLoc& loc,
-    bool isDynamic,
-    bool isJSONIQ,
     store::Collection_t& coll) const
 {
-  const StaticallyKnownCollection* collectionDecl = sctx->lookup_collection(name);
-  if (collectionDecl == 0  && !isDynamic)
+  const StaticallyKnownCollection* collectionDecl = theSctx->lookup_collection(name);
+  if (collectionDecl == 0  && !theIsDynamic)
   {
     RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, loc,
     ERROR_PARAMS(name->getStringValue()));
   }
 
-  coll = GENV_STORE.getCollection(name, isDynamic, isJSONIQ);
+  coll = GENV_STORE.getCollection(name, theIsDynamic, theIsJSONIQ);
 
   return collectionDecl;
 }
+
 
 /*******************************************************************************
   declare updating function delete($name as xs:QName)
@@ -617,6 +613,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
   STACK_END(state);
 }
 
+
 const StaticallyKnownCollection*
 ZorbaInsertNodesIterator::getCollection(
     const static_context* aSctx,
@@ -636,25 +633,16 @@ ZorbaInsertNodesIterator::getCollection(
     switch(collectionDecl->getUpdateProperty())
     {
       case StaticContextConsts::decl_const:
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0004_COLLECTION_CONST_UPDATE,
-          ERROR_PARAMS( aName->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0004_COLLECTION_CONST_UPDATE, loc,
+        ERROR_PARAMS(aName->getStringValue()));
 
       case StaticContextConsts::decl_append_only:
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0005_COLLECTION_APPEND_BAD_INSERT,
-          ERROR_PARAMS( aName->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc,
+        ERROR_PARAMS(aName->getStringValue()));
 
       case StaticContextConsts::decl_queue:
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0006_COLLECTION_QUEUE_BAD_INSERT,
-          ERROR_PARAMS( aName->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc,
+        ERROR_PARAMS(aName->getStringValue()));
 
       case StaticContextConsts::decl_mutable:
         // good to go

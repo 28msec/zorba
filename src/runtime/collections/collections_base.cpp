@@ -66,6 +66,7 @@ void checkNodeType(
 {
   if (isDynamic)
   {
+#ifdef ZORBA_WITH_JSON
     if (isJSONIQ && node->isJSONPair())
     {
       const TypeManager* tm = sctx->get_typemanager();
@@ -74,7 +75,7 @@ void checkNodeType(
       ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
                    collectionDecl->getName()->getStringValue()));
     }
-
+#endif
     return;
   }
 

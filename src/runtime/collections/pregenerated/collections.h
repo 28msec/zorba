@@ -235,7 +235,7 @@ public:
   virtual ~ZorbaCreateCollectionIterator();
 
 public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

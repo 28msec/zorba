@@ -30,7 +30,7 @@ xquery version "3.0";
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/dynamic
+ : @project store/jsoniq/collections/dynamic
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";

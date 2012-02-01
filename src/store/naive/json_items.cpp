@@ -526,7 +526,8 @@ store::Item* SimpleJSONArray::copy(
   if (copymode.theDoCopy)
   {
     lNewArray = new SimpleJSONArray();
-    lNewArray->theContent.resize(theContent.size());
+    lNewArray->theContent.reserve(theContent.size());
+
     for (MembersConstIter lIter = theContent.begin();
          lIter != theContent.end();
          ++lIter)
