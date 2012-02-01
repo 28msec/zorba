@@ -802,6 +802,8 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JUDY0061;
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JUDY0062;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JUDY0063;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JUDY0064;
 #endif
 
 } // namespace jerr

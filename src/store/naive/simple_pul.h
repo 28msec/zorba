@@ -204,8 +204,9 @@ protected:
 
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
-  std::vector<UpdatePrimitive*>      theJSONInsertList;
+  std::vector<UpdatePrimitive*>      theJSONInsertIntoList;
   std::vector<UpdatePrimitive*>      theJSONDeleteList;
+  std::vector<UpdatePrimitive*>      theJSONPositionalInsertList;
 #endif
 
 
@@ -275,7 +276,9 @@ public:
     UP_LIST_DELETE,
     UP_LIST_PUT,
     UP_LIST_CREATE_COLLECTION,
-    UP_LIST_CREATE_INDEX
+    UP_LIST_CREATE_INDEX,
+    UP_LIST_JSON_POSITIONAL_INSERT
+
   };
 
   typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
@@ -561,28 +564,25 @@ public:
   virtual void addJSONInsertFirst(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
-        std::vector<store::Item_t>& children);
+        std::vector<store::Item_t>& members);
 
   virtual void addJSONInsertLast(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
-        std::vector<store::Item_t>& children);
+        std::vector<store::Item_t>& members);
 
   virtual void addJSONInsertBefore(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
-        std::vector<store::Item_t>& siblings);
+        store::Item_t& pos,
+        std::vector<store::Item_t>& members);
 
   virtual void addJSONInsertAfter(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
-        std::vector<store::Item_t>& siblings);
+        store::Item_t& pos,
+        std::vector<store::Item_t>& members);
   
-  virtual void addJSONInsertAttributes(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        std::vector<store::Item_t>& attrs);
-
   virtual void addJSONReplaceValue(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
@@ -623,6 +623,12 @@ public:
 
 protected:
   void mergeUpdateList(
+        CollectionPul* myPul,
+        std::vector<UpdatePrimitive*>& myList,
+        std::vector<UpdatePrimitive*>& otherList,
+        UpdListKind listKind);
+
+  void mergeJSONUpdateList(
         CollectionPul* myPul,
         std::vector<UpdatePrimitive*>& myList,
         std::vector<UpdatePrimitive*>& otherList,

@@ -1644,6 +1644,42 @@ public:
   void undo();
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONInsertPositional : public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::UpdateConsts::UpdPrimKind theKind;
+  std::vector<store::Item_t>       theNewMembers;
+  store::Item_t                    theSibling;
+
+  long                             theNumApplied;
+
+  UpdJSONInsertPositional(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t& target,
+        store::Item_t& pos,
+        std::vector<store::Item_t>& members);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const { return theKind; }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class UpdJSONDelete: public UpdatePrimitive
 {
   friend class PULImpl;

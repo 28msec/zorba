@@ -1921,6 +1921,63 @@ void UpdJSONInsert::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdJSONInsertPositional::UpdJSONInsertPositional(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::UpdateConsts::UpdPrimKind kind,
+      store::Item_t& target,
+      store::Item_t& pos,
+      std::vector<store::Item_t>& members)
+  : UpdatePrimitive(pul, loc, target),
+    theKind(kind),
+    theNewMembers(members),
+    theNumApplied(0)
+{
+  if (theKind == store::UpdateConsts::UP_JSON_INSERT_BEFORE ||
+      theKind == store::UpdateConsts::UP_JSON_INSERT_AFTER)
+  {
+    ZORBA_ASSERT(pos);
+    ZORBA_ASSERT(theTarget->isJSONArray());
+
+    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+
+    xs_integer lPos = pos->getIntegerValue();
+    theSibling = lArray->operator[](--lPos);
+  }
+}
+
+void
+UpdJSONInsertPositional::apply()
+{
+  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+
+  switch (theKind)
+  {
+    case store::UpdateConsts::UP_JSON_INSERT_FIRST:
+      lArray->push_front(theNewMembers);
+      break;
+    case store::UpdateConsts::UP_JSON_INSERT_LAST:
+      lArray->push_back(theNewMembers);
+      break;
+    case store::UpdateConsts::UP_JSON_INSERT_BEFORE:
+      lArray->insert_before(theSibling, theNewMembers);
+      break;
+    case store::UpdateConsts::UP_JSON_INSERT_AFTER:
+      lArray->insert_after(theSibling, theNewMembers);
+      break;
+    default:
+      ZORBA_ASSERT(false);
+  }
+}
+
+void
+UpdJSONInsertPositional::undo()
+{
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 UpdJSONDelete::UpdJSONDelete(
       CollectionPul* pul,
       const QueryLoc* loc,

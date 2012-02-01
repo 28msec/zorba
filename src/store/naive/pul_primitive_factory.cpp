@@ -553,6 +553,22 @@ PULPrimitiveFactory::createUpdRefreshIndex(
 
   /***************************************************************************
    ***************************************************************************/
+  UpdJSONInsertPositional*
+  PULPrimitiveFactory::createUpdJSONInsertPositional(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t& aTarget,
+        store::Item_t& aPos,
+        std::vector<store::Item_t>& aMembers)
+  {
+    return new UpdJSONInsertPositional(
+        pul, aLoc, kind, aTarget, aPos, aMembers
+      );
+  }
+
+  /***************************************************************************
+   ***************************************************************************/
   UpdJSONDelete*
   PULPrimitiveFactory::createUpdJSONDelete(
         CollectionPul* pul,

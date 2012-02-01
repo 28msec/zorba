@@ -104,7 +104,11 @@ public:
 
 #ifdef ZORBA_WITH_JSON
     ,UP_JSON_INSERT,
-    UP_JSON_DELETE
+    UP_JSON_DELETE,
+    UP_JSON_INSERT_FIRST,
+    UP_JSON_INSERT_LAST,
+    UP_JSON_INSERT_BEFORE,
+    UP_JSON_INSERT_AFTER
 #endif
   };
 
@@ -125,6 +129,12 @@ public:
   {
     return (k == UP_REPLACE_CHILD ||
           k == UP_REPLACE_ATTRIBUTE);
+  }
+
+  static bool isPositionalArray(UpdPrimKind k)
+  {
+    return (k == UP_JSON_INSERT_BEFORE ||
+            k == UP_JSON_INSERT_AFTER);
   }
 
 
