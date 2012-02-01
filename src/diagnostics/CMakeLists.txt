@@ -82,17 +82,19 @@ ZORBA_DIAGNOSTIC_GENERATOR(
     "${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq"
 )
 
-ADD_CUSTOM_TARGET (gen_diag_modules
-  DEPENDS ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq
-          ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq
-          ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
+SET(DIAG_MODULES
+  ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq
+  ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq
+  ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
 )
 
 IF(ZORBA_WITH_JSON)
-  ADD_DEPENDENCIES(gen_diag_modules
-      ${CMAKE_BINARY_DIR}/modules/org/jsoniq/www/errors.xq
-  )
+  LIST(APPEND DIAG_MODULES ${CMAKE_BINARY_DIR}/modules/org/jsoniq/www/errors.xq)
 ENDIF(ZORBA_WITH_JSON)
+
+ADD_CUSTOM_TARGET (gen_diag_modules
+  DEPENDS ${DIAG_MODULES}
+)
 
 SET_TARGET_PROPERTIES (gen_diag_modules PROPERTIES
   FOLDER "Modules"

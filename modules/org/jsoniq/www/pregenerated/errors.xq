@@ -56,4 +56,29 @@ declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040
 (:~
  :error raised by insert-into
 :)
-declare variable $jerr:JSDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0060");
+declare variable $jerr:JUDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0060");
+
+(:~
+ :error raised by upd:delete, upd:insert-before/after
+:)
+declare variable $jerr:JUDY0061 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0061");
+
+(:~
+ :error raised by upd:delete if the argument is not an object or array
+:)
+declare variable $jerr:JUDY0062 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0062");
+
+(:~
+ :error raised by upd:delete if the first argument is an
+ : object/array but second argument is not of type xs:string/xs:integer,
+ : respectively
+ : 
+:)
+declare variable $jerr:JUDY0063 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0063");
+
+(:~
+ :error raised by mergeUpdates. An insert-before or insert-last
+ : UP must not have the same target as any other insert-before, -last, -as-first, or -as-last UP
+ : 
+:)
+declare variable $jerr:JUDY0064 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0064");
