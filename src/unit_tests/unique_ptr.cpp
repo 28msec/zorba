@@ -221,7 +221,10 @@ static void test_swap() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int unique_ptr( int, char*[] ) {
+namespace zorba {
+namespace UnitTests {
+
+int test_unique_ptr( int, char*[] ) {
   compile_test();
   test_array();
   test_basic();
@@ -238,6 +241,9 @@ int unique_ptr( int, char*[] ) {
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
 }
+
+} // namespace UnitTests
+} // namespace zorba
 
 ///////////////////////////////////////////////////////////////////////////////
 

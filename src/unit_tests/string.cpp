@@ -778,7 +778,12 @@ static void test_xml_parse_entity() {
   ASSERT_TRUE( xml::parse_entity( "&#x26", &c ) == -1 );
 }
 
-int string_test( int, char*[] ) {
+///////////////////////////////////////////////////////////////////////////////
+
+namespace zorba {
+namespace UnitTests {
+
+int test_string( int, char*[] ) {
 
   ////////// basic string functionality ///////////////////////////////////////
 
@@ -898,4 +903,8 @@ int string_test( int, char*[] ) {
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
 }
+
+} // namespace UnitTests
+} // namespace zorba
+
 /* vim:set et sw=2 ts=2: */

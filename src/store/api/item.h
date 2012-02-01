@@ -195,7 +195,7 @@ public:
    *
    *  @return  result of Effective Boolean Value
    */
-  virtual Item_t 
+  virtual bool 
   getEBV() const;
 
   /**

@@ -755,7 +755,7 @@ T1_TO_T2(flt, int)
 
 T1_TO_T2(flt, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -811,7 +811,7 @@ T1_TO_T2(dbl, int)
 
 T1_TO_T2(dbl, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -850,7 +850,7 @@ T1_TO_T2(dec, int)
 
 T1_TO_T2(dec, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -890,7 +890,7 @@ T1_TO_T2(int, dec)
 
 T1_TO_T2(int, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -2552,53 +2552,71 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 bool GenericCast::promote(
     store::Item_t& result,
-    store::Item_t& aItem,
-    const XQType* aTargetType,
+    store::Item_t& item,
+    const XQType* targetType,
     const TypeManager* tm,
     const QueryLoc& loc)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t lItemType = tm->create_value_type(aItem);
+  if (targetType->type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return promote(result, 
+                   item,
+                   static_cast<const AtomicXQType*>(targetType)->get_type_code(),
+                   tm,
+                   loc);
+  }
 
-  if (TypeOps::is_equal(tm, *aTargetType, *rtm.NONE_TYPE))
+  if (targetType->type_kind() == XQType::NONE_KIND)
       return false;
 
-  if (TypeOps::is_subtype(tm, *lItemType, *aTargetType))
+  xqtref_t itemType = tm->create_value_type(item);
+
+  if (TypeOps::is_subtype(tm, *itemType, *targetType))
   {
-    result.transfer(aItem);
+    result.transfer(item);
     return result != NULL;
   }
 
-  if (TypeOps::is_equal(tm, *lItemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
-      ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *aTargetType), *rtm.QNAME_TYPE_ONE))
+  // untyped --> target type
+  if (TypeOps::is_equal(tm, *itemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+      ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *targetType), *rtm.QNAME_TYPE_ONE))
   {
-    // untyped --> target type
-    return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
+    return castToAtomic(result, item, targetType, tm, NULL, loc);
   }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.FLOAT_TYPE_ONE))
-  {
-    // decimal --> xs:float
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE))
-    {
-      return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
-    }
-  }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.DOUBLE_TYPE_ONE))
-  {
+
     // Decimal/Float --> xs:double
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(tm, *lItemType, *rtm.FLOAT_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.DOUBLE_TYPE_ONE))
+  {
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_DECIMAL) ||
+        TypeOps::is_subtype(itemTypeCode, store::XS_FLOAT))
     {
-      return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
     }
   }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.STRING_TYPE_ONE))
+
+  // decimal --> xs:float
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.FLOAT_TYPE_ONE))
   {
-    // URI --> xs:String Promotion
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.ANY_URI_TYPE_ONE))
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_DECIMAL))
     {
-      return castToAtomic(result, aItem, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
+    }
+  }
+
+  // URI --> xs:String
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.STRING_TYPE_ONE))
+  {
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_ANY_URI))
+    {
+      return castToAtomic(result, item, store::XS_STRING, tm, NULL, loc);
     }
   }
 
@@ -2632,19 +2650,19 @@ bool GenericCast::promote(
     // untyped --> target type
     return castToAtomic(result, item, targetType, tm, NULL, loc);
   }
-  else if (TypeOps::is_subtype(targetType, store::XS_FLOAT))
-  {
-    // decimal --> xs:float
-    if (TypeOps::is_subtype(itemType, store::XS_DECIMAL))
-    {
-      return castToAtomic(result, item, targetType, tm, NULL, loc);
-    }
-  }
   else if (TypeOps::is_subtype(targetType, store::XS_DOUBLE))
   {
     // Decimal/Float --> xs:double
     if (TypeOps::is_subtype(itemType, store::XS_DECIMAL) ||
         TypeOps::is_subtype(itemType, store::XS_FLOAT))
+    {
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
+    }
+  }
+  else if (TypeOps::is_subtype(targetType, store::XS_FLOAT))
+  {
+    // decimal --> xs:float
+    if (TypeOps::is_subtype(itemType, store::XS_DECIMAL))
     {
       return castToAtomic(result, item, targetType, tm, NULL, loc);
     }

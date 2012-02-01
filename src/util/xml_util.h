@@ -191,7 +191,6 @@ void escape( StringType &s ) {
  * @return If successful, returns the number of characters parsed; otherwise
  * returns -1.
  */
-ZORBA_DLL_PUBLIC
 int parse_entity( char const *ref, unicode::code_point *c );
 
 /**
