@@ -2016,6 +2016,12 @@ CollectionPul::~CollectionPul()
   cleanList(theDeleteFromCollectionList);
   cleanList(theDeleteCollectionList);
 
+#ifdef ZORBA_WITH_JSON
+  cleanList(theJSONInsertIntoList);
+  cleanList(theJSONDeleteList);
+  cleanList(theJSONPositionalInsertList);
+#endif
+
   cleanIndexDeltas(theBeforeIndexDeltas);
   cleanIndexDeltas(theAfterIndexDeltas);
   cleanIndexDeltas(theInsertedDocsIndexDeltas);

@@ -326,10 +326,24 @@ JSONArray::getType() const
 /******************************************************************************
 
 *******************************************************************************/
+SimpleJSONArray::~SimpleJSONArray()
+{
+  for (MembersIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
+  {
+    store::Item* lItem = *lIter;
+    lItem->removeReference();
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void
 SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
-  theContent.push_back(aValue);
+  theContent.push_back(aValue.getp());
+  theContent.back()->addReference();
 }
 
 
@@ -340,7 +354,8 @@ void
 SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 {
   theContent.reserve(theContent.size() + members.size());
-  theContent.insert(theContent.end(), members.begin(), members.end());
+  MembersIter lIter = theContent.end();
+  add(lIter, members);
 }
 
 
@@ -351,7 +366,8 @@ void
 SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 {
   theContent.reserve(theContent.size() + members.size());
-  theContent.insert(theContent.begin(), members.begin(), members.end());
+  MembersIter lIter = theContent.begin();
+  add(lIter, members);
 }
 
 
@@ -370,12 +386,12 @@ SimpleJSONArray::insert_before(
   MembersIter lIter = theContent.begin();
   for (; lIter != theContent.end(); ++lIter)
   {
-    if (lIter->getp() == aTarget.getp())
+    if (*lIter == aTarget.getp())
     {
       break;
     }
   }
-  theContent.insert(lIter, members.begin(), members.end());
+  add(lIter, members);
 }
 
 
@@ -394,14 +410,31 @@ SimpleJSONArray::insert_after(
   MembersIter lIter = theContent.begin();
   for (lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
   {
-    if (lIter->getp() == aTarget.getp())
+    if (*lIter == aTarget.getp())
     {
       break;
     }
   }
-  theContent.insert(++lIter, members.begin(), members.end());
+  add(++lIter, members);
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::add(
+    MembersIter& aTargetPos,
+    const std::vector<store::Item_t>& aNewMembers)
+{
+  for (size_t i = 0; i < aNewMembers.size(); ++i)
+  {
+    store::Item* lItem = aNewMembers[i].getp();
+    theContent.insert(aTargetPos + i, lItem);
+    lItem->addReference();
+  }
+
+}
 
 /******************************************************************************
 
@@ -413,9 +446,11 @@ SimpleJSONArray::remove(const store::Item_t& aValue)
        lIter != theContent.end();
        ++lIter)
   {
-    if (lIter->getp() == aValue.getp())
+    if (*lIter == aValue.getp())
     {
+      store::Item* lItem = *lIter;
       theContent.erase(lIter);
+      lItem->removeReference();
       return;
     }
   }
@@ -438,7 +473,7 @@ SimpleJSONArray::operator[](xs_integer& aPos) const
     throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
     ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
-  return theContent[lIndex].getp();
+  return theContent[lIndex];
 }
 
 
@@ -475,7 +510,7 @@ SimpleJSONArray::getMember(const store::Item_t& aPosition) const
   }
   else
   {
-    return theContent[lIndex-1].getp();
+    return theContent[lIndex-1];
   }
 }
 

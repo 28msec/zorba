@@ -265,7 +265,7 @@ public:
 class SimpleJSONArray : public JSONArray
 {
 protected:
-  typedef std::vector<store::Item_t> Members;
+  typedef std::vector<store::Item*> Members;
   typedef Members::const_iterator MembersConstIter;
   typedef Members::iterator MembersIter;
 
@@ -316,7 +316,7 @@ public:
     : theCollection(0)
   {}
 
-  virtual ~SimpleJSONArray() {}
+  virtual ~SimpleJSONArray();
 
   virtual void
   push_back(const store::Item_t& aValue);
@@ -360,6 +360,10 @@ public:
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
   void setCollection(SimpleCollection* collection, csize pos);
+
+protected:
+  void
+  add(MembersIter& aTargetPos, const std::vector<store::Item_t>& aNewMembers);
 };
 
 
