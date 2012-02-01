@@ -1224,29 +1224,59 @@ type_ident_ref_t TypeOps::get_type_identifier(
       return TypeIdentifier::createDocumentType(content_type, q);
 
     case store::StoreConsts::elementNode:
-    {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
-
-      return TypeIdentifier::createElementType(uri,
-                                               nodeName == NULL,
-                                               local,
-                                               nodeName == NULL,
-                                               content_type,
-                                               q);
-    }  
-    case store::StoreConsts::attributeNode:
-    {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
-
-      return TypeIdentifier::createAttributeType(uri,
+      if (nt.is_schema_test()) 
+      {
+        ZORBA_ASSERT(nodeName);
+        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        return TypeIdentifier::createSchemaElementType(uri,
+                                                       local,
+                                                       content_type,
+                                                       q);
+      }
+      else
+      {
+        String uri;
+        String local;
+        if (nodeName)
+        {
+          uri   = nodeName->getNamespace().c_str();
+          local = nodeName->getNamespace().c_str();
+        }
+        return TypeIdentifier::createElementType(uri,
                                                  nodeName == NULL,
                                                  local,
                                                  nodeName == NULL,
                                                  content_type,
-                                                 q);
-    }
+                                                 q); 
+      }  
+    case store::StoreConsts::attributeNode:
+      if (nt.is_schema_test()) 
+      {
+        ZORBA_ASSERT(nodeName);
+        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        return TypeIdentifier::createSchemaAttributeType(uri,
+                                                       local,
+                                                       content_type,
+                                                       q);
+      }
+      else
+      {
+        String uri;
+        String local;
+        if (nodeName)
+        {
+          uri   = nodeName->getNamespace().c_str();
+          local = nodeName->getNamespace().c_str();
+        }
+        return TypeIdentifier::createAttributeType(uri,
+                                                   nodeName == NULL,
+                                                   local,
+                                                   nodeName == NULL,
+                                                   content_type,
+                                                   q);
+      }
     default:
       // cannot happen
       ZORBA_ASSERT(false);
@@ -1281,7 +1311,14 @@ type_ident_ref_t TypeOps::get_type_identifier(
     return TypeIdentifier::createEmptyType();
 
   case XQType::USER_DEFINED_KIND:
-    //TODO for Vinayak return type identifier
+  {
+    store::Item* lQname = type.get_qname().getp();
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString( lQname->getNamespace() ), 
+      Unmarshaller::newString( lQname->getLocalName() ),
+      q
+    );
+  }
   default:
     break;
   }

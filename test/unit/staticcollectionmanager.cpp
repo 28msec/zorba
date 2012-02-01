@@ -259,6 +259,159 @@ staticcollectionamanger4(zorba::Zorba* z)
   return i == 1;
 }
 
+bool
+check_types(StaticCollectionManager* aColMgr,
+            ItemFactory* aFac,
+            const char* const aCollName, 
+            int aDepth,
+            IdentTypes::kind_t someKinds[],
+            IdentTypes::quantifier_t someQuantifiers[])
+{
+  Item lCollName = aFac->createQName("http://www.mod6.com/", aCollName);
+  aColMgr->createCollection(lCollName);
+  Collection_t lCollection = aColMgr->getCollection(lCollName);
+  zorba::TypeIdentifier_t lType = lCollection->getType();
+  std::cout << lType << std::endl;
+
+  for (int i = 0; i < aDepth; ++i) {    
+    if (lType->getKind() != someKinds[i]) {
+      std::cout << lType << std::endl;
+      return false;
+    }
+    if (lType->getQuantifier() != someQuantifiers[i]) {
+      std::cout << lType << std::endl;
+      return false;
+    }
+    lType = lType->getContentType();
+  }
+  assert(lType.isNull());
+
+  aColMgr->deleteCollection(lCollName);
+  return true;
+}
+
+bool
+staticcollectionamanger5(zorba::Zorba* z)
+{
+  std::ifstream lIn("module5.xq");
+  zorba::XQuery_t lQuery = z->createQuery();
+
+  try {
+    Zorba_CompilerHints lHints;
+    lQuery->compile(lIn, lHints);
+  } catch (zorba::XQueryException &e) {
+    std::cout << e << std::endl;
+    return false;
+  } catch (...) {
+    std::cout << "compilation failed" << std::endl;
+    return false;
+  }
+
+  StaticCollectionManager* lColMgr = lQuery->getStaticCollectionManager();
+  ItemFactory* lFac = z->getItemFactory();
+
+  IdentTypes::kind_t       lC01Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
+                                            IdentTypes::ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC01Quants[] = { IdentTypes::QUANT_STAR,
+                                            IdentTypes::QUANT_ONE, 
+                                            // this '*' is probably a bug
+                                            IdentTypes::QUANT_STAR }; 
+  if (!check_types(lColMgr, lFac, "coll01", 3, lC01Kinds, lC01Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC02Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
+                                            IdentTypes::ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC02Quants[] = { IdentTypes::QUANT_STAR,
+                                            IdentTypes::QUANT_ONE, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll02", 3, lC02Kinds, lC02Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC03Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
+                                            IdentTypes::SCHEMA_ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC03Quants[] = { IdentTypes::QUANT_STAR,
+                                            IdentTypes::QUANT_ONE, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll03", 3, lC03Kinds, lC03Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC04Kinds[]  = { IdentTypes::ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC04Quants[] = { IdentTypes::QUANT_STAR, 
+                                            // this '*' is probably a bug
+                                            IdentTypes::QUANT_STAR }; 
+  if (!check_types(lColMgr, lFac, "coll04", 2, lC04Kinds, lC04Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC05Kinds[]  = { IdentTypes::ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC05Quants[] = { IdentTypes::QUANT_STAR, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll05", 2, lC05Kinds, lC05Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC06Kinds[]  = { IdentTypes::SCHEMA_ELEMENT_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC06Quants[] = { IdentTypes::QUANT_STAR, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll06", 2, lC06Kinds, lC06Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC07Kinds[]  = { IdentTypes::ATTRIBUTE_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC07Quants[] = { IdentTypes::QUANT_STAR, 
+                                            // this '*' is probably a bug
+                                            IdentTypes::QUANT_STAR }; 
+  if (!check_types(lColMgr, lFac, "coll07", 2, lC07Kinds, lC07Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC08Kinds[]  = { IdentTypes::ATTRIBUTE_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC08Quants[] = { IdentTypes::QUANT_STAR, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll08", 2, lC08Kinds, lC08Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC09Kinds[]  = { IdentTypes::SCHEMA_ATTRIBUTE_TYPE,
+                                            IdentTypes::NAMED_TYPE };
+  IdentTypes::quantifier_t lC09Quants[] = { IdentTypes::QUANT_STAR, 
+                                            IdentTypes::QUANT_ONE };
+  if (!check_types(lColMgr, lFac, "coll09", 2, lC09Kinds, lC09Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC10Kinds[]  = { IdentTypes::TEXT_TYPE };
+  IdentTypes::quantifier_t lC10Quants[] = { IdentTypes::QUANT_ONE }; 
+  if (!check_types(lColMgr, lFac, "coll10", 1, lC10Kinds, lC10Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC11Kinds[]  = { IdentTypes::TEXT_TYPE };
+  IdentTypes::quantifier_t lC11Quants[] = { IdentTypes::QUANT_QUESTION };
+  if (!check_types(lColMgr, lFac, "coll11", 1, lC11Kinds, lC11Quants)) {
+    return false;
+  }
+  
+  IdentTypes::kind_t       lC12Kinds[]  = { IdentTypes::TEXT_TYPE };
+  IdentTypes::quantifier_t lC12Quants[] = { IdentTypes::QUANT_PLUS };
+  if (!check_types(lColMgr, lFac, "coll12", 1, lC12Kinds, lC12Quants)) {
+    return false;
+  }
+  
+  return true;
+}
+
 int
 staticcollectionmanager(int argc, char* argv[])
 {
@@ -285,6 +438,11 @@ staticcollectionmanager(int argc, char* argv[])
   std::cout << "executing example 4" << std::endl;
   if (!staticcollectionamanger4(z))
     return 4;
+  std::cout << std::endl;
+
+  std::cout << "executing example 5" << std::endl;
+  if (!staticcollectionamanger5(z))
+    return 5;
   std::cout << std::endl;
 
   return 0;

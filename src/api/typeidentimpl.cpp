@@ -206,7 +206,78 @@ TypeIdentifier_t TypeIdentifier::createEmptyType()
   return ti;
 }
 
+TypeIdentifier_t TypeIdentifier::createSchemaElementType(
+    const String& uri,
+    const String& localName,
+    TypeIdentifier_t contentType,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::SCHEMA_ELEMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
+  ti->m_contentType = contentType;
+  
+  return ti;
 }
+
+
+TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
+    const String& uri,
+    const String& localName,
+    TypeIdentifier_t contentType,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::SCHEMA_ATTRIBUTE_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
+  ti->m_contentType = contentType;
+  
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createNamespaceType(IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::NAMESPACE_TYPE;
+  ti->m_quantifier = quantifier;
+  
+  return ti;
+}
+
+
+std::ostream& TypeIdentifier::emit(std::ostream& os) const {
+  os << '{' << m_kind << m_quantifier
+     << ", {" << (m_uriWildcard ? "*" : m_uri) << "}" 
+     << (m_localNameWildcard ? "*" : m_localName);
+  if ( ! m_contentType.isNull() ) {
+    os << ", " << m_contentType;
+  }
+  return os << '}';
+}
+
+}
+
+namespace std {
+
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti) {
+  return ti.emit(o);
+}
+
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti) {
+  return ti->emit(o);
+}
+
+}
+
 
 #endif
 /* vim:set et sw=2 ts=2: */
