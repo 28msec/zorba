@@ -240,7 +240,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     ZORBA_ASSERT(consumeNext(name, theChildren[0].getp(), planState));
 
-    (void*)getCollection(theSctx, name, loc, isDynamic(), isJSONIQ(), coll);
+    (void)getCollection(theSctx, name, loc, isDynamic(), theIsJSONIQ, coll);
   }
   else
   {
@@ -296,7 +296,7 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 
   lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
 
-  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+  if (lCollResource == 0 || !(coll = lCollResource->getCollection()))
   {
     RAISE_ERROR(err::FODC0004, loc,
     ERROR_PARAMS(resolvedURIString, lErrorMessage));
@@ -318,7 +318,7 @@ NARY_ACCEPT(CountCollectionIterator);
 ********************************************************************************/
 ZorbaCollectionIteratorState::~ZorbaCollectionIteratorState()
 {
-  if ( theIterator != NULL )
+  if (theIterator != NULL)
   {
     // closing the iterator is necessary here if an exception occurs
     // in the producer or if the iterator is not fully consumed
@@ -443,7 +443,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t node;
   store::Item_t copyNode;
-  std::auto_ptr<store::PUL> pul;
+  store::PUL_t pul;
   store::Item_t lNodeType;
 
   PlanIteratorState* state;
@@ -451,20 +451,16 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), aPlanState);
 
-  collectionDecl = getCollection(theSctx, 
-                                 name,
-                                 loc,
-                                 theIsDynamic,
-                                 theIsJSONIQ,
-                                 collection);
+  collectionDecl = 
+  getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
+
   if (collection != NULL)
   {
     RAISE_ERROR(zerr::ZDDY0002_COLLECTION_ALREADY_EXISTS, loc,
     ERROR_PARAMS(name->getStringValue()));
   }
 
-  // create the pul and add the primitive
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
   if (theIsDynamic)
   {
@@ -484,13 +480,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes);
     lAnnotations.push_back(lAnn);
 
-    pul->addCreateCollection(
-        &loc,
-        name,
-        lAnnotations,
-        NULL,
-        true,
-        false);
+    pul->addCreateCollection(&loc, name, lAnnotations, NULL, true, theIsJSONIQ);
   }
   else
   {
@@ -513,12 +503,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     lNodeType = collectionDecl->getNodeType()->get_qname();
 
-    pul->addCreateCollection(&loc,
-                             name,
-                             lAnnotations,
-                             lNodeType,
-                             false,
-                             false);
+    pul->addCreateCollection(&loc, name, lAnnotations, lNodeType, false, theIsJSONIQ);
   }
 
   // also add some optional nodes to the collection
@@ -527,11 +512,11 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     store::CopyMode copymode;
     getCopyMode(copymode, theSctx);
     std::vector<store::Item_t> nodes;
-    ulong numNodes = 0;
+    csize numNodes = 0;
 
     while (consumeNext(node, theChildren[1].getp(), aPlanState))
     {
-      checkNodeType(theSctx, node, collectionDecl, loc, theIsDynamic);
+      checkNodeType(theSctx, node, collectionDecl, loc, theIsDynamic, theIsJSONIQ);
 
       copyNode = node->copy(NULL, copymode);
 
@@ -539,11 +524,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       nodes[numNodes++].transfer(copyNode);
     }
 
-    pul->addInsertIntoCollection(&loc,
-                                 name,
-                                 nodes,
-                                 theIsDynamic,
-                                 false);
+    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic, false);
   }
 
   result = pul.release();
@@ -596,7 +577,7 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteCollection(&loc, name, theIsDynamic, false);
+  pul->addDeleteCollection(&loc, name, theIsDynamic, theIsJSONIQ);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -604,35 +585,6 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
   STACK_END(state);
 }
 
-const StaticallyKnownCollection*
-ZorbaDeleteCollectionIterator::getCollection(
-    const static_context* aSctx,
-    const store::Item_t& aName,
-    const QueryLoc& aLoc,
-    bool isDynamic,
-    bool isJSONIQ,
-    store::Collection_t& coll) const
-{
-  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-  if (collectionDecl == 0  && !isDynamic)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-  coll = GENV_STORE.getCollection(aName, isDynamic, isJSONIQ);
-  if (coll == NULL)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-  return collectionDecl;
-}
 
 /*******************************************************************************
   declare updating function
@@ -1899,18 +1851,18 @@ IsAvailableCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t       lName;
-  store::Collection_t lCollection;
+  store::Item_t       name;
+  store::Collection_t collection;
   bool                res = true;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lName, theChildren[0].getp(), planState);
+  consumeNext(name, theChildren[0].getp(), planState);
 
   try
   {
-    (void)getCollection(theSctx, lName, loc, theIsDynamic, theIsJSONIQ, lCollection);
+    (void)getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
   }
   catch (ZorbaException const& e)
   {
@@ -1925,40 +1877,11 @@ IsAvailableCollectionIterator::nextImpl(
   }
 
   GENV_ITEMFACTORY->createBoolean(result, res);
-  STACK_PUSH(true, state );
+  STACK_PUSH(true, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
-const StaticallyKnownCollection*
-IsAvailableCollectionIterator::getCollection(
-    const static_context* aSctx,
-    const store::Item_t& aName,
-    const QueryLoc& aLoc,
-    bool isDynamic,
-    bool isJSONIQ,
-    store::Collection_t& coll) const
-{
-  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-  if (collectionDecl == 0 && !isDynamic)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-  coll = GENV_STORE.getCollection(aName, isDynamic, isJSONIQ);
-  if (coll == NULL)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-      ERROR_PARAMS( aName->getStringValue() ),
-      ERROR_LOC( aLoc )
-    );
-  }
-  return collectionDecl;
-}
 
 /*******************************************************************************
 
@@ -2001,11 +1924,13 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   if (theIsDynamic)
   {
-    for ((state->nameItState = GENV_STORE.listCollectionNames(theIsDynamic))->open();
-         state->nameItState->next(nameItem);)
+    state->nameItState = GENV_STORE.listCollectionNames(theIsDynamic, theIsJSONIQ);
+
+    state->nameItState->open();
+    while(state->nameItState->next(nameItem))
     {
       result = nameItem;
-      STACK_PUSH( true, state);
+      STACK_PUSH(true, state);
     }
   }
   else
@@ -2021,14 +1946,14 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
       else
       {
         result = nameItem;
-        STACK_PUSH( true, state);
+        STACK_PUSH(true, state);
       }
     }
   }
 
   state->nameItState->close();
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

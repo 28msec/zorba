@@ -55,40 +55,46 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>, 10)
 
+
 void checkNodeType(
     const static_context* sctx,
     const store::Item_t& node, 
     const StaticallyKnownCollection* collectionDecl,
     const QueryLoc& loc,
-    bool dyn_coll)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  if (dyn_coll)
+  if (isDynamic)
+  {
+    if (isJSONIQ && node->isJSONPair())
+    {
+      const TypeManager* tm = sctx->get_typemanager();
+
+      RAISE_ERROR(zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc,
+      ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
+                   collectionDecl->getName()->getStringValue()));
+    }
+
     return;
+  }
 
   const TypeManager* tm = sctx->get_typemanager();
 
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType()), loc))
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE,
-      ERROR_PARAMS(
-        TypeOps::toString( *tm->create_value_type( node ) ),
-        collectionDecl->getName()->getStringValue()
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc,
+    ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
+                 collectionDecl->getName()->getStringValue()));
   }
 }
 
-void
-getCopyMode(
-    store::CopyMode& aCopyMode,
-    const static_context* aSctx)
+
+void getCopyMode(store::CopyMode& copyMode, const static_context* sctx)
 {
-  aCopyMode.set(true, 
-    aSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    aSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    aSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+  copyMode.set(true, 
+               sctx->construction_mode() == StaticContextConsts::cons_preserve,
+               sctx->preserve_mode() == StaticContextConsts::preserve_ns,
+               sctx->inherit_mode() == StaticContextConsts::inherit_ns);
 }
 
 } /* namespace zorba */

@@ -38,7 +38,9 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
 declare option ver:module-version "1.0";
+declare option ver:zorba-version "2.2";
 
 (:~
  : The insert-nodes-first function is an updating function that inserts copies of the

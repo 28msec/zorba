@@ -20,68 +20,74 @@
 
 namespace zorba {
 
-  namespace simplestore {
+namespace simplestore {
 
-    /*******************************************************************************
-      Iterator to return Index and Collection Names
-    ********************************************************************************/
-    template < typename T >
-    class NameIterator : public store::Iterator
+/*******************************************************************************
+  Iterator to return Index and Collection Names
+********************************************************************************/
+template < typename T >
+class NameIterator : public store::Iterator
+{
+private:
+  T&                   theItems;
+  typename T::iterator theIterator;
+  bool                 theOpened;
+  bool                 theDynamicCollections;
+  bool                 theJSONIQCollections;
+  
+public:
+  NameIterator(T& aItems, bool dynamic, bool jsoniq)
+    :
+    theItems(aItems),
+    theOpened(false),
+    theDynamicCollections(dynamic),
+    theJSONIQCollections(jsoniq)
+  {
+  }
+    
+  virtual ~NameIterator()
+  {
+    close();
+  }
+    
+  virtual void open()
+  {
+    theIterator = theItems.begin();
+    theOpened = true;
+  }
+    
+  virtual bool next(store::Item_t& aResult)
+  {
+    if (theIterator == theItems.end())
     {
-    private:
-      T&                   theItems;
-      typename T::iterator theIterator;
-      bool                 theOpened;
-      bool                 theDynamicCollections;
-
-    public:
-      NameIterator(T& aItems, bool aDynamicCollections = false)
-        : theItems(aItems),
-          theOpened(false),
-          theDynamicCollections(aDynamicCollections)
-      {
-      }
+      aResult = NULL;
+      return false;
+    }
+    else 
+    {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+  
+  virtual void reset()
+  {
+    theIterator = theItems.begin();
+  }
+  
+  virtual void close()
+  {
+    if (!theOpened) 
+    {
+      return;
+    }
     
-      virtual ~NameIterator()
-      {
-        close();
-      }
-    
-      virtual void open()
-      {
-        theIterator = theItems.begin();
-        theOpened = true;
-      }
-    
-      virtual bool next(store::Item_t& aResult)
-      {
-        if (theIterator == theItems.end())
-        {
-          aResult = NULL;
-          return false;
-        } else {
-          aResult = (*theIterator).first;
-          ++theIterator;
-          return true;
-        }
-      }
-    
-      virtual void reset()
-      {
-        theIterator = theItems.begin();
-      }
-    
-      virtual void close()
-      {
-        if (!theOpened) {
-          return;
-        }
-
-        theOpened = false;
-      }
-    };
-
-  } // namespace store
+    theOpened = false;
+  }
+};
+  
+} // namespace store
 } // namespace zorba
 
 

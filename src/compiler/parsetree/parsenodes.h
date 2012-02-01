@@ -4951,6 +4951,20 @@ public:
 
 
 /*******************************************************************************
+
+********************************************************************************/
+class StructuredItemType : public parsenode
+{
+public:
+  StructuredItemType(const QueryLoc& loc) : parsenode(loc)
+  {
+  }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
   [148] AtomicType ::= QName
 ********************************************************************************/
 class AtomicType : public parsenode
@@ -4959,9 +4973,7 @@ protected:
   rchandle<QName> qname_h;
 
 public:
-  AtomicType(
-    const QueryLoc&,
-    rchandle<QName>);
+  AtomicType(const QueryLoc&, rchandle<QName>);
 
   rchandle<QName> get_qname() const { return qname_h; }
 

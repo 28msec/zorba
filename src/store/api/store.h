@@ -260,7 +260,7 @@ public:
   /** 
    * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionNames(bool aDynamicCollections = false) = 0;
+  virtual Iterator_t listCollectionNames(bool dynamic, bool jsoniq) = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/

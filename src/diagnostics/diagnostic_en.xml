@@ -2180,7 +2180,7 @@
     </diagnostic>
 
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">
-      <value>"$1": invalid node type in collection "$2"</value>
+      <value>"$1": invalid item type in collection "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0010" name="INDEX_DOMAIN_TYPE_ERROR">

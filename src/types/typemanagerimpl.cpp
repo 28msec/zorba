@@ -889,6 +889,11 @@ xqtref_t TypeManagerImpl::create_type(
   }
 
 #ifdef ZORBA_WITH_JSON
+  case XQType::STRUCTURED_ITEM_KIND:
+  {
+    return create_structured_item_type(quantifier);
+  }
+
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);

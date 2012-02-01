@@ -819,7 +819,7 @@ void SimpleStore::deleteIndex(const store::Item* qname)
 ********************************************************************************/
 store::Iterator_t SimpleStore::listIndexNames()
 {
-  return new NameIterator<IndexSet>(theIndices);
+  return new NameIterator<IndexSet>(theIndices, false, false);
 }
 
 
@@ -901,7 +901,7 @@ SimpleStore::deactivateIC(const store::Item_t& icQName,
 
 store::Iterator_t SimpleStore::listActiveICNames()
 {
-  return new NameIterator<ICSet>(theICs);
+  return new NameIterator<ICSet>(theICs, false, false);
 }
 
 
@@ -934,7 +934,7 @@ SimpleStore::getMap(const store::Item* aQName) const
 ********************************************************************************/
 store::Iterator_t SimpleStore::listMapNames()
 {
-  return new NameIterator<IndexSet>(theHashMaps);
+  return new NameIterator<IndexSet>(theHashMaps, false, false);
 }
 
 
@@ -946,19 +946,18 @@ store::Iterator_t SimpleStore::listMapNames()
 store::Collection_t SimpleStore::createCollection(
     const store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& aNodeType,
+    const store::Item_t& nodeType,
     bool isDynamic,
     bool isJSONIQ)
 {
   if (name == NULL)
     return NULL;
 
-  store::Collection_t collection(
-      new SimpleCollection(name,
-                           annotations,
-                           aNodeType,
-                           isDynamic,
-                           isJSONIQ));
+  store::Collection_t collection(new SimpleCollection(name,
+                                                      annotations,
+                                                      nodeType,
+                                                      isDynamic,
+                                                      isJSONIQ));
 
   const store::Item* lName = collection->getName();
 
@@ -1038,9 +1037,9 @@ void SimpleStore::deleteCollection(
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionNames(bool dynamic)
+store::Iterator_t SimpleStore::listCollectionNames(bool dynamic, bool jsoniq)
 {
-  return theCollections->names(dynamic);
+  return theCollections->names(dynamic, jsoniq);
 }
 
 

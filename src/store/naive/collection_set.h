@@ -51,9 +51,7 @@ public:
     
   // needs to be virtual to allow implementation of additional stores
   virtual bool
-  insert(
-      const store::Item* aName,
-      store::Collection_t& aCollection);
+  insert(const store::Item* name, store::Collection_t& collection);
     
   // needs to be virtual to allow implementation of additional stores
   virtual bool
@@ -65,14 +63,11 @@ public:
     
   // needs to be virtual to allow implementation of additional stores
   virtual bool
-  remove(
-      const store::Item* aName,
-      bool isDynamic,
-      bool isJSONIQ);
+  remove(const store::Item* name, bool isDynamic, bool isJSONIQ);
   
   // needs to be virtual to allow implementation of additional stores
   virtual store::Iterator_t
-  names(bool dynamic);
+  names(bool dynamic, bool jsoniq);
     
   // needs to be virtual to allow implementation of additional stores
   virtual CollectionIterator_t

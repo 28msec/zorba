@@ -148,7 +148,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
 
   if (position < xs_integer(0) ||  position >= xs_integer(theXmlTrees.size()))
   {
-    pos = theXmlTrees.size() - 1;
+    pos = theXmlTrees.size();
     theXmlTrees.push_back(item);
   }
   else

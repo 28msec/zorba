@@ -282,8 +282,6 @@ public:
 
   virtual ~ZorbaDeleteCollectionIterator();
 
-public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -978,8 +976,6 @@ public:
 
   virtual ~IsAvailableCollectionIterator();
 
-public:
-  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, bool isJSONIQ, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

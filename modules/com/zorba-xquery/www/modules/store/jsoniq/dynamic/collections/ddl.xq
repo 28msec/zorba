@@ -18,7 +18,7 @@ xquery version "3.0";
 
 (:~
  : This modules defines a set of functions for managing persistent, ordered, and
- : updatable collections.
+ : updatable collections that can contain both XML nodes and JSON objects and arrays.
  :
  : <p>Please refer to our documentation for <a href="../../html/data_lifecycle.html">
  : more information</a> about the lifecycle management and the manipulation of such
@@ -37,8 +37,9 @@ module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "1.0";
 
+declare option ver:module-version "1.0";
+declare option ver:zorba-version "2.1";
 
 (:~
  : The function returns true if a collection with the given QName is available.
@@ -50,6 +51,7 @@ declare option ver:module-version "1.0";
  :)
 declare function ddl:is-available-collection($name as xs:QName) as xs:boolean external;
 
+
 (:~
  : The function returns a sequence of QNames of the collections that are
  : available. The sequence will be empty if there are no collections.
@@ -58,6 +60,7 @@ declare function ddl:is-available-collection($name as xs:QName) as xs:boolean ex
  :
  :)
 declare function ddl:available-collections() as xs:QName* external;
+
 
 (:~
  : The create function is an updating function which creates
@@ -75,14 +78,16 @@ declare function ddl:available-collections() as xs:QName* external;
  :)
 declare updating function ddl:create($name as xs:QName) external;
 
+
 (:~
  : The create function is an updating function which creates
  : the collection with the given expanded QName. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
  : @param $name The QName of the collection to create.
- : @param $content The sequences of nodes that should be added to the new collection.
- :
+ : @param $content The sequence of items that should be added to the new collection.
+ :                 The sequence may contain any mix of XML nodes, JSON objects, or
+ :                 JSON arrays.
  : @return The result of the function is an empty XDM instance and a 
  :         pending update list which, once applied, creates a collection
  :         with the given name and inserts the given nodes into it.
@@ -95,8 +100,8 @@ declare updating function ddl:create($name as xs:QName) external;
  :
  :)
 declare updating function ddl:create(
-  $name as xs:QName,
-  $content as node()*) external;
+    $name as xs:QName,
+    $content as structured-item()*) external;
 
 
 (:~
