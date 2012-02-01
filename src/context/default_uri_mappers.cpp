@@ -62,7 +62,6 @@ FileizeURIMapper::mapURI
       lExtension = "";
       break;
   }
-  std::cout << aUri << std::endl;
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
