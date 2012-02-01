@@ -24,21 +24,6 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-transcode_streambuf::exception::exception( string const &message ) :
-  message_( message )
-{
-}
-
-transcode_streambuf::exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-char const* transcode_streambuf::exception::what() const throw() {
-  return message_.c_str();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 transcode_streambuf::transcode_streambuf( char const *charset,
                                           streambuf *orig ) :
   proxy_buf_( new internal::transcode_streambuf( charset, orig ) )

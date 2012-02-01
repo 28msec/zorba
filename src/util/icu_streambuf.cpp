@@ -23,7 +23,10 @@
 #include <algorithm>
 #include <cassert>
 
+#include <zorba/diagnostic_list.h>
+
 #include "diagnostics/assert.h"
+#include "diagnostics/zorba_exception.h"
 #include "util/cxx_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
@@ -155,8 +158,12 @@ bool icu_streambuf::to_external( char_type const **from,
   );
   if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR )
     return false;
+#if 0
   if ( U_FAILURE( err ) )
-    throw transcode_streambuf::exception( u_errorName( err ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZOSE0006_TRANSCODING_ERROR, ERROR_PARAMS( u_errorName( err ) )
+    );
+#endif
   return true;
 }
 
@@ -172,8 +179,12 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
   );
   if ( err == U_TRUNCATED_CHAR_FOUND || err == U_BUFFER_OVERFLOW_ERROR )
     return false;
+#if 0
   if ( U_FAILURE( err ) )
-    throw transcode_streambuf::exception( u_errorName( err ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZOSE0006_TRANSCODING_ERROR, ERROR_PARAMS( u_errorName( err ) )
+    );
+#endif
   return true;
 }
 
