@@ -319,7 +319,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
 
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
-        result, nullptr, state->token_qname_, type_name, true, false,
+        result, nullptr, state->token_qname_, type_name, false, false,
         ns_bindings, base_uri
       );
 
@@ -381,10 +381,13 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
   store::Item_t attr_name, attr_node, item;
-  zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
+  zstring base_uri;
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
+#ifndef ZORBA_NO_XMLSCHEMA
+  static_context const *sctx;
+#endif /* ZORBA_NO_XMLSCHEMA */
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -392,6 +395,10 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  sctx = getStaticContext();
+#endif /* ZORBA_NO_XMLSCHEMA */
 
   consumeNext( item, theChildren[0], plan_state );
   lang = get_lang_from( item, loc );
@@ -405,7 +412,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   GENV_ITEMFACTORY->createElementNode(
-    result, nullptr, item, type_name, true, false, ns_bindings, base_uri
+    result, nullptr, item, type_name, false, false, ns_bindings, base_uri
   );
 
   GENV_ITEMFACTORY->createQName(
@@ -417,9 +424,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   );
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  getStaticContext()->validate(
-    result, result, StaticContextConsts::strict_validation
-  );
+  sctx->validate( result, result, StaticContextConsts::strict_validation );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
   STACK_PUSH( true, state );
