@@ -38,9 +38,14 @@ FileizeURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris)
 {
-  // File-izing isn't for collections.
+  // File-izing isn't for collections. Also, Thesauri use fake URIs that can
+  // choke our URI class, so skip them.
   EntityData::Kind lKind = aEntityData->getKind();
-  if (lKind == EntityData::COLLECTION) {
+  if (lKind == EntityData::COLLECTION
+#ifndef ZORBA_NO_FULL_TEXT
+      || lKind == EntityData::THESAURUS
+#endif
+      ) {
     return;
   }
 
@@ -57,6 +62,7 @@ FileizeURIMapper::mapURI
       lExtension = "";
       break;
   }
+  std::cout << aUri << std::endl;
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
@@ -141,7 +147,11 @@ AutoFSURIMapper::mapURI
 {
   // Filesystem resolution doesn't make sense for collections
   EntityData::Kind lKind = aEntityData->getKind();
-  if (lKind == EntityData::COLLECTION) {
+  if (lKind == EntityData::COLLECTION
+#ifndef ZORBA_NO_FULL_TEXT
+      || lKind == EntityData::THESAURUS
+#endif
+      ) {
     return;
   }
   // Automatic resolution is for NON-file: URIs
