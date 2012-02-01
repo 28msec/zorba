@@ -119,6 +119,9 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_JSON)
   { "JUDY0063", "\"$1\": invalid type of second argument (must be $2)" },
 #endif
+#if defined(ZORBA_WITH_JSON)
+  { "JUDY0064", "array is target of several incompatible inserts" },
+#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -545,7 +548,7 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
-  { "~JUDY0061_ArrayNegativeOrZero", "\"$2\": invalid array selector" },
+  { "~JUDY0061_ArrayNegativeOrZero", "\"$2\": invalid array position" },
   { "~JUDY0061_ArrayOutOfBounds", "\"$2\": array out of bounds (size $3)" },
   { "~JUDY0061_Object", "\"$2\": pair to delete does not exist" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },

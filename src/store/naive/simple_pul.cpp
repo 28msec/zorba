@@ -1138,7 +1138,7 @@ void PULImpl::addJSONInsertInto(
     GET_STORE().getPULFactory().createUpdJSONInsert(
       pul, loc, target, pairs);
 
-  pul->theJSONInsertList.push_back(upd);
+  pul->theJSONInsertIntoList.push_back(upd);
 }
 
 
@@ -1148,8 +1148,18 @@ void PULImpl::addJSONInsertInto(
 void PULImpl::addJSONInsertFirst(
      const QueryLoc* loc,
      store::Item_t& target,
-     std::vector<store::Item_t>& children)
+     std::vector<store::Item_t>& members)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  store::Item_t lPos;
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONInsertPositional(
+      pul, loc, store::UpdateConsts::UP_JSON_INSERT_FIRST,
+      target, lPos, members);
+
+  pul->theJSONPositionalInsertList.push_back(upd);
 }
 
 
@@ -1159,8 +1169,18 @@ void PULImpl::addJSONInsertFirst(
 void PULImpl::addJSONInsertLast(
      const QueryLoc* loc,
      store::Item_t& target,
-     std::vector<store::Item_t>& children)
+     std::vector<store::Item_t>& members)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  store::Item_t lPos;
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONInsertPositional(
+      pul, loc, store::UpdateConsts::UP_JSON_INSERT_LAST,
+      target, lPos, members);
+
+  pul->theJSONPositionalInsertList.push_back(upd);
 }
 
 
@@ -1170,8 +1190,17 @@ void PULImpl::addJSONInsertLast(
 void PULImpl::addJSONInsertBefore(
      const QueryLoc* loc,
      store::Item_t& target,
-     std::vector<store::Item_t>& siblings)
+     store::Item_t& pos,
+     std::vector<store::Item_t>& members)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONInsertPositional(
+      pul, loc, store::UpdateConsts::UP_JSON_INSERT_BEFORE,
+      target, pos, members);
+
+  pul->theJSONPositionalInsertList.push_back(upd);
 }
 
 
@@ -1181,19 +1210,17 @@ void PULImpl::addJSONInsertBefore(
 void PULImpl::addJSONInsertAfter(
      const QueryLoc* loc,
      store::Item_t& target,
-     std::vector<store::Item_t>& siblings)
+     store::Item_t& pos,
+     std::vector<store::Item_t>& members)
 {
-}
+  CollectionPul* pul = getCollectionPul(target.getp());
 
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONInsertPositional(
+      pul, loc, store::UpdateConsts::UP_JSON_INSERT_AFTER,
+      target, pos, members);
 
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::addJSONInsertAttributes(
-     const QueryLoc* loc,
-     store::Item_t& target,
-     std::vector<store::Item_t>& attrs)
-{
+  pul->theJSONPositionalInsertList.push_back(upd);
 }
 
 
@@ -1294,15 +1321,21 @@ void PULImpl::mergeUpdates(store::Item* other)
 
 #ifdef ZORBA_WITH_JSON
       // merge jsoniq primitives
-      mergeUpdateList(thisPul,
-                      thisPul->theJSONInsertList,
-                      otherPul->theJSONInsertList,
+      mergeJSONUpdateList(thisPul,
+                      thisPul->theJSONInsertIntoList,
+                      otherPul->theJSONInsertIntoList,
                       UP_LIST_NONE);
 
-      mergeUpdateList(thisPul,
+      mergeJSONUpdateList(thisPul,
+                      thisPul->theJSONPositionalInsertList,
+                      otherPul->theJSONPositionalInsertList,
+                      UP_LIST_JSON_POSITIONAL_INSERT);
+
+      mergeJSONUpdateList(thisPul,
                       thisPul->theJSONDeleteList,
                       otherPul->theJSONDeleteList,
                       UP_LIST_NONE);
+
 #endif
 
       ++thisIte;
@@ -1412,6 +1445,48 @@ void PULImpl::mergeUpdates(store::Item* other)
                   UP_LIST_NONE);
 }
 
+void PULImpl::mergeJSONUpdateList(
+    CollectionPul* myPul,
+    std::vector<UpdatePrimitive*>& myList,
+    std::vector<UpdatePrimitive*>& otherList,
+    UpdListKind listKind)
+{
+  csize numUpdates = myList.size();
+  csize numOtherUpdates = otherList.size();
+
+  for (csize i = 0; i < numOtherUpdates; ++i)
+  {
+    UpdatePrimitive* otherUpd = otherList[i];
+    store::UpdateConsts::UpdPrimKind updKind = otherUpd->getKind();
+
+    switch (listKind)
+    {
+      case UP_LIST_JSON_POSITIONAL_INSERT:
+        for (csize j = 0; j < numUpdates; ++j)
+        {
+          if (myList[j]->theTarget == otherUpd->theTarget)
+          {
+            if (store::UpdateConsts::isPositionalArray(updKind) ||
+                store::UpdateConsts::isPositionalArray(myList[j]->getKind()))
+            {
+              throw XQUERY_EXCEPTION(
+                  jerr::JUDY0064,
+                  ERROR_LOC (otherUpd->theLoc)
+                );
+            }
+          }
+        }
+
+        break;
+      default:
+        break;
+    }
+
+    myList.push_back(otherUpd);
+    otherList[i] = NULL;
+  }
+  otherList.clear();
+}
 
 void PULImpl::mergeUpdateList(
     CollectionPul* myPul,
@@ -2201,7 +2276,8 @@ void CollectionPul::applyUpdates()
     applyList(theDeleteList);
 
 #ifdef ZORBA_WITH_JSON
-    applyList(theJSONInsertList);
+    applyList(theJSONInsertIntoList);
+    applyList(theJSONPositionalInsertList);
     applyList(theJSONDeleteList);
 #endif
 
@@ -2447,7 +2523,8 @@ void CollectionPul::undoUpdates()
 
 #ifdef ZORBA_WITH_JSON
     undoList(theJSONDeleteList);
-    undoList(theJSONInsertList);
+    undoList(theJSONPositionalInsertList);
+    undoList(theJSONInsertIntoList);
 #endif
 
     undoList(theDeleteList);

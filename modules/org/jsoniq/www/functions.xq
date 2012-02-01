@@ -109,6 +109,7 @@ declare updating function j:insert-as-first(
  :
  : @param $p
  : @return
+ : @error j:JUDY0061 if the position doesn't select an existing array member
  :)
 declare updating function j:insert-after(
   $a as array(),
@@ -119,6 +120,7 @@ declare updating function j:insert-after(
  :
  : @param $p
  : @return
+ : @error j:JUDY0061 if the position doesn't select an existing array member
  :)
 declare updating function j:insert-before(
   $a as array(),

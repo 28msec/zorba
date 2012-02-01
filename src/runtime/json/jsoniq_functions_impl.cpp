@@ -538,6 +538,11 @@ JSONInsertIntoIterator::nextImpl(
 
   consumeNext(lObject, theChildren[0].getp(), planState);
 
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
   while (consumeNext(lTmp, theChildren[1].getp(), planState))
   {
     if (lObject->getPair(lTmp->getName()))
@@ -566,12 +571,36 @@ JSONInsertAsFirstIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lArray;
+  store::Item_t lTmp;
+  std::vector<store::Item_t> lMembers;
+  std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lArray, theChildren[0].getp(), planState);
+
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  while (consumeNext(lTmp, theChildren[1].getp(), planState))
+  {
+    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
+    {
+      lTmp = lTmp->copy(NULL, lCopyMode);
+    }
+    lMembers.push_back(lTmp);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONInsertFirst(&loc, lArray, lMembers);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }
@@ -584,12 +613,58 @@ JSONInsertAfterIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lArray;
+  store::Item_t lTmp;
+  store::Item_t lPos;
+  std::vector<store::Item_t> lMembers;
+  std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lArray, theChildren[0].getp(), planState);
+  consumeNext(lPos, theChildren[1].getp(), planState);
+
+  if (lPos->getIntegerValue() <= xs_integer::zero())
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(
+          ZED(JUDY0061_ArrayNegativeOrZero),
+          lPos->getIntegerValue()
+        )
+     );
+  }
+  else if (lArray->getSize() < lPos->getIntegerValue())
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(
+          ZED(JUDY0061_ArrayOutOfBounds),
+          lPos->getIntegerValue(),
+          lArray->getSize()
+        )
+     );
+  }
+
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  while (consumeNext(lTmp, theChildren[2].getp(), planState))
+  {
+    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
+    {
+      lTmp = lTmp->copy(NULL, lCopyMode);
+    }
+    lMembers.push_back(lTmp);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONInsertAfter(&loc, lArray, lPos, lMembers);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }
@@ -602,12 +677,58 @@ JSONInsertBeforeIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lArray;
+  store::Item_t lTmp;
+  store::Item_t lPos;
+  std::vector<store::Item_t> lMembers;
+  std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lArray, theChildren[0].getp(), planState);
+  consumeNext(lPos, theChildren[1].getp(), planState);
+
+  if (lPos->getIntegerValue() <= xs_integer::zero())
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(
+          ZED(JUDY0061_ArrayNegativeOrZero),
+          lPos->getIntegerValue()
+        )
+     );
+  }
+  else if (lArray->getSize() < lPos->getIntegerValue())
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(
+          ZED(JUDY0061_ArrayOutOfBounds),
+          lPos->getIntegerValue(),
+          lArray->getSize()
+        )
+     );
+  }
+
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  while (consumeNext(lTmp, theChildren[2].getp(), planState))
+  {
+    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
+    {
+      lTmp = lTmp->copy(NULL, lCopyMode);
+    }
+    lMembers.push_back(lTmp);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONInsertBefore(&loc, lArray, lPos, lMembers);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }
@@ -620,12 +741,36 @@ JSONInsertAsLastIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lArray;
+  store::Item_t lTmp;
+  std::vector<store::Item_t> lMembers;
+  std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lArray, theChildren[0].getp(), planState);
+
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  while (consumeNext(lTmp, theChildren[1].getp(), planState))
+  {
+    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
+    {
+      lTmp = lTmp->copy(NULL, lCopyMode);
+    }
+    lMembers.push_back(lTmp);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONInsertLast(&loc, lArray, lMembers);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }

@@ -228,6 +228,22 @@ public:
   push_back(const store::Item_t& aValue) = 0;
 
   virtual void
+  push_back(const std::vector<store::Item_t>& members) = 0;
+
+  virtual void
+  push_front(const std::vector<store::Item_t>& members) = 0;
+
+  virtual void
+  insert_before(
+      const store::Item_t& aTarget,
+      const std::vector<store::Item_t>& members) = 0;
+
+  virtual void
+  insert_after(
+      const store::Item_t& aTarget,
+      const std::vector<store::Item_t>& members) = 0;
+
+  virtual void
   remove(const store::Item_t& aValue) = 0;
 
   virtual xs_integer
@@ -305,6 +321,25 @@ public:
   virtual void
   push_back(const store::Item_t& aValue);
 
+  virtual void
+  push_back(const std::vector<store::Item_t>& members);
+
+  virtual void
+  push_front(const std::vector<store::Item_t>& members);
+
+  // pointer comparison is used for the target
+  virtual void
+  insert_before(
+      const store::Item_t& aTarget,
+      const std::vector<store::Item_t>& members);
+
+  // pointer comparison is used for the target
+  virtual void
+  insert_after(
+      const store::Item_t& aTarget,
+      const std::vector<store::Item_t>& members);
+
+  // pointer comparison is used for the value
   virtual void
   remove(const store::Item_t& aValue);
 

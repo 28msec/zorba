@@ -2427,14 +2427,14 @@
     </diagnostic>
 
     <diagnostic code="JUDY0061" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by upd:delete</comment>
+      <comment>error raised by upd:delete, upd:insert-before/after</comment>
       <value>$1</value>
 
       <entry key="Object">
         <value>"$2": pair to delete does not exist</value>
       </entry>
       <entry key="ArrayNegativeOrZero">
-        <value>"$2": invalid array selector</value>
+        <value>"$2": invalid array position</value>
       </entry>
       <entry key="ArrayOutOfBounds">
         <value>"$2": array out of bounds (size $3)</value>
@@ -2452,6 +2452,13 @@
         respectively
       </comment>
       <value>"$1": invalid type of second argument (must be $2)</value>
+    </diagnostic>
+
+    <diagnostic code="JUDY0064" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by mergeUpdates. An insert-before or insert-last
+        UP must not have the same target as any other insert-before, -last, -as-first, or -as-last UP
+      </comment>
+      <value>array is target of several incompatible inserts</value>
     </diagnostic>
 
   </namespace>

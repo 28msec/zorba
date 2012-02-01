@@ -337,6 +337,76 @@ SimpleJSONArray::push_back(const store::Item_t& aValue)
 
 *******************************************************************************/
 void
+SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
+{
+  theContent.reserve(theContent.size() + members.size());
+  theContent.insert(theContent.end(), members.begin(), members.end());
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
+{
+  theContent.reserve(theContent.size() + members.size());
+  theContent.insert(theContent.begin(), members.begin(), members.end());
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::insert_before(
+    const store::Item_t& aTarget,
+    const std::vector<store::Item_t>& members)
+{
+  // need to reserve at the beginning because reserve invalidates
+  // existing iterators
+  theContent.reserve(theContent.size() + members.size());
+
+  MembersIter lIter = theContent.begin();
+  for (; lIter != theContent.end(); ++lIter)
+  {
+    if (lIter->getp() == aTarget.getp())
+    {
+      break;
+    }
+  }
+  theContent.insert(lIter, members.begin(), members.end());
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::insert_after(
+    const store::Item_t& aTarget,
+    const std::vector<store::Item_t>& members)
+{
+  // need to reserve at the beginning because reserve invalidates
+  // existing iterators
+  theContent.reserve(theContent.size() + members.size());
+
+  MembersIter lIter = theContent.begin();
+  for (lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
+  {
+    if (lIter->getp() == aTarget.getp())
+    {
+      break;
+    }
+  }
+  theContent.insert(++lIter, members.begin(), members.end());
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
 SimpleJSONArray::remove(const store::Item_t& aValue)
 {
   for (MembersIter lIter = theContent.begin();

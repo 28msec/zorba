@@ -296,28 +296,25 @@ public:
   virtual void addJSONInsertFirst(
         const QueryLoc* aQueryLoc,
         Item_t& target,
-        std::vector<Item_t>& children) = 0;
+        std::vector<Item_t>& members) = 0;
 
   virtual void addJSONInsertLast(
         const QueryLoc* aQueryLoc,
         Item_t& target,
-        std::vector<Item_t>& children) = 0;
+        std::vector<Item_t>& members) = 0;
 
   virtual void addJSONInsertBefore(
         const QueryLoc* aQueryLoc,
         Item_t& target,
-        std::vector<Item_t>& siblings) = 0;
+        Item_t& pos,
+        std::vector<Item_t>& members) = 0;
 
   virtual void addJSONInsertAfter(
         const QueryLoc* aQueryLoc,
         Item_t& target,
-        std::vector<Item_t>& siblings) = 0;
+        Item_t& pos,
+        std::vector<Item_t>& members) = 0;
   
-  virtual void addJSONInsertAttributes(
-        const QueryLoc* aQueryLoc,
-        Item_t& target,
-        std::vector<Item_t>& attrs) = 0;
-
   virtual void addJSONReplaceValue(
         const QueryLoc* aQueryLoc,
         Item_t& target,
