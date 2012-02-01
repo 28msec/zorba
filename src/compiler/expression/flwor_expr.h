@@ -712,6 +712,8 @@ public:
 
   flwor_clause* get_clause(ulong i);
 
+  const flwor_clause* get_clause(ulong i) const;
+
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
 
   clause_list_t::const_iterator clause_end() const { return theClauses.end(); }

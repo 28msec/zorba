@@ -908,6 +908,10 @@ flwor_clause* flwor_expr::get_clause(ulong i)
   return theClauses[i].getp();
 }
 
+const flwor_clause* flwor_expr::get_clause(ulong i) const
+{
+  return theClauses[i].getp();
+}
 
 /*******************************************************************************
 
@@ -1173,7 +1177,7 @@ void flwor_expr::compute_scripting_kind()
     if (k == flwor_clause::for_clause ||
         k == flwor_clause::let_clause ||
         k == flwor_clause::window_clause)
-    { 
+    {
       const forletwin_clause* c2 = static_cast<const forletwin_clause*>(c);
 
       theScriptingKind |= c2->get_expr()->get_scripting_detail();

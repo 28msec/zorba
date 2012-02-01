@@ -48,7 +48,7 @@ static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, cons
 
 static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, bool&);
 
-static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var_expr_t&, expr_t&);
+static bool is_subseq_pred(RewriterContext&, const flwor_expr*, csize whereClausePos, const expr*, var_expr_t&, expr_t&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -1098,10 +1098,10 @@ static bool is_subseq_pred(
 
           for_clause* forClause = posVar->get_for_clause();
           //forClause is NULL if the clause is a windowing for clause
-          if(forClause == NULL || forVar->is_allowing_empty) return false;
+          if(forClause == NULL || forClause->is_allowing_empty()) return false;
 
           //We check that there isn't any clause that breaks the optimization
-          flwor_clause *checkClause;
+          const flwor_clause *checkClause;
           csize checkPosClause = whereClausePos;
           do
           {
@@ -1111,7 +1111,7 @@ static bool is_subseq_pred(
             if(checkClause->get_kind() == flwor_clause::group_clause ||
                 checkClause->get_kind() == flwor_clause::count_clause)
               return false;
-          }while(checkClause != forClause)
+          }while(checkClause != forClause);
 
           var_expr* forVar = forClause->get_var();
 
