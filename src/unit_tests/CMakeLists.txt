@@ -13,11 +13,23 @@
 # limitations under the License.
 
 SET(UNIT_TEST_SRCS
-  unit_tests.cpp
+  string_instantiate.cpp
+  string.cpp
   test_uri.cpp
+  unique_ptr.cpp
+  unit_tests.cpp
 )
 
-IF(NOT ZORBA_NO_UNICODE)
-  LIST(APPEND UNIT_TEST_SRCS
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST (APPEND UNIT_TEST_SRCS
+    stemmer.cpp
+    thesaurus.cpp
+    tokenizer.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+IF (NOT ZORBA_NO_UNICODE)
+  LIST (APPEND UNIT_TEST_SRCS
     test_icu_streambuf.cpp)
-ENDIF(NOT ZORBA_NO_UNICODE)
+ENDIF (NOT ZORBA_NO_UNICODE)
+
+# vim:set et sw=2 tw=2:

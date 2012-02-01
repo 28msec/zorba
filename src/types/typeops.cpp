@@ -916,7 +916,6 @@ bool TypeOps::is_treatable(
     const XQType& targetType,
     const QueryLoc& loc)
 {
-  // return is_subtype(tm, *tm->create_value_type(item.getp(), loc), targetType, loc);
   return is_subtype(tm, item.getp(), targetType, loc);
 }
 
