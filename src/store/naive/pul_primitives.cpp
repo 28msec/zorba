@@ -38,6 +38,7 @@
 #include "store/api/validator.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #ifdef ZORBA_WITH_JSON
 using namespace zorba::simplestore::json;
@@ -886,10 +887,10 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  std::size_t numNodes = nodes.size();
+  csize numNodes = nodes.size();
   theNodes.resize(numNodes);
 
-  for (std::size_t i = 0; i < numNodes; ++i)
+  for (csize i = 0; i < numNodes; ++i)
   {
     theNodes[i].transfer(nodes[i]);
   }
@@ -911,10 +912,10 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  std::size_t numNodes = nodes.size();
+  csize numNodes = nodes.size();
   theNodes.resize(numNodes);
 
-  for (std::size_t i = 0; i < numNodes; ++i)
+  for (csize i = 0; i < numNodes; ++i)
   {
     theNodes[i].transfer(nodes[i]);
   }
@@ -927,11 +928,11 @@ UpdCollection::UpdCollection(
 void UpdCreateCollection::apply()
 {
   // Error is raised if collection exists already.
-  GET_STORE().createCollection(
-      theName,
-      theAnnotations,
-      theNodeType,
-      theIsDynamic);
+  GET_STORE().createCollection(theName,
+                               theAnnotations,
+                               theNodeType,
+                               theIsDynamic,
+                               theIsJSONIQ);
   theIsApplied = true;
 }
 
@@ -940,7 +941,7 @@ void UpdCreateCollection::undo()
 {
   try
   {
-    GET_STORE().deleteCollection(theName, theIsDynamic);
+    GET_STORE().deleteCollection(theName, theIsDynamic, theIsJSONIQ);
   }
   catch (...)
   {
@@ -956,43 +957,40 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  theCollection = GET_STORE().getCollection(theName, theIsDynamic);
+  theCollection = GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ);
   if (theCollection == NULL)
     return;//If two delete collection are issued in the same snapshot is a noop
+
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
   collection->getIndexes(indexes);
 
   if (!indexes.empty())
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
-      ERROR_PARAMS( collection->getName()->getStringValue() ),
-      ERROR_LOC( theLoc )
-    );
+  {
+    RAISE_ERROR(zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES, theLoc,
+    ERROR_PARAMS(collection->getName()->getStringValue()));
+  }
 
   std::vector<store::IC*> activeICs;
   collection->getActiveICs(activeICs);
 
   if (!activeICs.empty())
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS,
-      ERROR_PARAMS( collection->getName()->getStringValue() ),
-      ERROR_LOC( theLoc )
-    );
+  {
+    RAISE_ERROR(zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS, theLoc,
+    ERROR_PARAMS(collection->getName()->getStringValue()));
+  }
 
   uint64_t size;
-  try {
-    size = to_xs_unsignedLong(collection->size());
-  } catch (std::range_error& e)
+  try 
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("collection too big ("
-            << e.what() << "; " << theName << ")")
-        )
-      );
+    size = to_xs_unsignedLong(collection->size());
+  }
+  catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("collection too big ("
+                              << e.what() << "; " << theName << ")")));
   }
 
   for (uint64_t i = 0; i < size; ++i)
@@ -1000,14 +998,13 @@ void UpdDeleteCollection::apply()
     XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
     XmlTree* tree = root->getTree();
     if (tree->getRefCount() > 1)
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES,
-        ERROR_PARAMS( collection->getName()->getStringValue() ),
-        ERROR_LOC( theLoc )
-      );
+    {
+      RAISE_ERROR(zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES, theLoc,
+      ERROR_PARAMS(collection->getName()->getStringValue()));
+    }
   }
 
-  GET_STORE().deleteCollection(theName, theIsDynamic);
+  GET_STORE().deleteCollection(theName, theIsDynamic, theIsJSONIQ);
   theIsApplied = true;
 }
 
@@ -1023,14 +1020,15 @@ void UpdDeleteCollection::undo()
 ********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  SimpleCollection* lColl = static_cast<SimpleCollection*>(
+  GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   theIsApplied = true;
 
-  std::size_t numNodes = theNodes.size();
-  for (std::size_t i = 0; i < numNodes; ++i)
+  csize numNodes = theNodes.size();
+  for (csize i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], -1);
     ++theNumApplied;
@@ -1041,7 +1039,8 @@ void UpdInsertIntoCollection::apply()
 void UpdInsertIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   uint64_t lastPos;
@@ -1072,7 +1071,8 @@ void UpdInsertIntoCollection::undo()
 void UpdInsertFirstIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   theIsApplied = true;
@@ -1091,7 +1091,8 @@ void UpdInsertFirstIntoCollection::apply()
 void UpdInsertFirstIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   for (csize i = 0; i < theNumApplied; ++i)
@@ -1109,7 +1110,8 @@ void UpdInsertFirstIntoCollection::undo()
 void UpdInsertLastIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   theIsApplied = true;
@@ -1125,7 +1127,8 @@ void UpdInsertLastIntoCollection::apply()
 void UpdInsertLastIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   uint64_t lastPos;
@@ -1157,7 +1160,8 @@ void UpdInsertLastIntoCollection::undo()
 void UpdInsertBeforeIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   if (!theNodes.empty())
@@ -1173,7 +1177,8 @@ void UpdInsertBeforeIntoCollection::apply()
 void UpdInsertBeforeIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -1187,7 +1192,8 @@ void UpdInsertBeforeIntoCollection::undo()
 void UpdInsertAfterIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   if (!theNodes.empty())
@@ -1204,7 +1210,8 @@ void UpdInsertAfterIntoCollection::apply()
 void UpdInsertAfterIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -1218,7 +1225,8 @@ void UpdInsertAfterIntoCollection::undo()
 void UpdDeleteNodesFromCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   theIsApplied = true;
@@ -1273,7 +1281,8 @@ void UpdDeleteNodesFromCollection::apply()
 void UpdDeleteNodesFromCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName, theIsDynamic).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+
   assert(lColl);
 
   for (csize i = 0; i < theNumApplied; ++i)

@@ -77,9 +77,14 @@ public:
   virtual bool findNode(const Item* aNode, xs_integer& position) const = 0;
 
   /**
-   * Returns true if the collection is dynamic or static
+   * Returns true if the collection is dynamic
    */
   virtual bool isDynamic() const = 0;
+
+  /**
+   * Returns true if the collection is a JSONIQ one
+   */
+  virtual bool isJSONIQ() const = 0;
 
   /**
    * Returns all annotations of the given collection

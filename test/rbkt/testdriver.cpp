@@ -426,7 +426,12 @@ main(int argc, char** argv)
         lSerOptions.ser_method = 
           lSpec.getSerializationMethod() == "XML" ? ZORBA_SERIALIZATION_METHOD_XML :
           lSpec.getSerializationMethod() == "TXT" ? ZORBA_SERIALIZATION_METHOD_TEXT :
+#ifdef ZORBA_WITH_JSON
+          lSpec.getSerializationMethod() == "JSONiq" ? ZORBA_SERIALIZATION_METHOD_JSONIQ :
+                                                  ZORBA_SERIALIZATION_METHOD_JSONIQ;
+#else
                                                   ZORBA_SERIALIZATION_METHOD_XML;
+#endif
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
         lSerOptions.indent = lSpec.getUseIndent() ?
           ZORBA_INDENT_YES : ZORBA_INDENT_NO;

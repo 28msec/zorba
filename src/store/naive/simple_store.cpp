@@ -944,20 +944,21 @@ store::Iterator_t SimpleStore::listMapNames()
   an error.
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(
-    const store::Item_t& aName,
+    const store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
     const store::Item_t& aNodeType,
-    bool aDynamicCollection)
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
   store::Collection_t collection(
-      new SimpleCollection(
-        aName,
-        annotations,
-        aNodeType,
-        aDynamicCollection));
+      new SimpleCollection(name,
+                           annotations,
+                           aNodeType,
+                           isDynamic,
+                           isJSONIQ));
 
   const store::Item* lName = collection->getName();
 
@@ -995,14 +996,15 @@ void SimpleStore::addCollection(store::Collection_t& collection)
   or NULL if there is no collection with that QName.
 ********************************************************************************/
 store::Collection_t SimpleStore::getCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  if (theCollections->get(name, collection, isDynamic, isJSONIQ)) 
   {
     return collection;
   }
@@ -1018,16 +1020,17 @@ store::Collection_t SimpleStore::getCollection(
   that QName, this method is a NOOP.
 ********************************************************************************/
 void SimpleStore::deleteCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic,
+    bool isJSONIQ)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return;
 
-  if (!theCollections->remove(aName, aDynamicCollection))
+  if (!theCollections->remove(name, isDynamic, isJSONIQ))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-    ERROR_PARAMS(aName->getStringValue()));
+    ERROR_PARAMS(name->getStringValue()));
   }
 }
 
@@ -1035,9 +1038,9 @@ void SimpleStore::deleteCollection(
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionNames(bool aDynamicCollections)
+store::Iterator_t SimpleStore::listCollectionNames(bool dynamic)
 {
-  return theCollections->names(aDynamicCollections);
+  return theCollections->names(dynamic);
 }
 
 

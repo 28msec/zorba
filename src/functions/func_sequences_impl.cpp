@@ -549,14 +549,16 @@ PlanIter_t fn_count::codegen(
       return new CountCollectionIterator(sctx,
                                          loc,
                                          collection.getChildren(),
-                                         CountCollectionIterator::ZORBADYNAMIC);
+                                         CountCollectionIterator::ZORBADYNAMIC,
+                                         collection.isJSONIQ());
     }
     else
     {
       return new CountCollectionIterator(sctx,
                                          loc,
                                          collection.getChildren(),
-                                         CountCollectionIterator::ZORBASTATIC);
+                                         CountCollectionIterator::ZORBASTATIC,
+                                         collection.isJSONIQ());
     }
   }
   else if (typeid(FnCollectionIterator) == counted_type)
@@ -567,7 +569,8 @@ PlanIter_t fn_count::codegen(
     return new CountCollectionIterator(sctx,
                                        loc,
                                        collection.getChildren(),
-                                       CountCollectionIterator::W3C);
+                                       CountCollectionIterator::W3C,
+                                       false);
   }
   else
   {

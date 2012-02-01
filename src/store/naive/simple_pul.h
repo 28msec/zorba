@@ -645,7 +645,8 @@ protected:
 
   CollectionPul* getCollectionPulByName(
         const store::Item* name,
-        bool dynamicCollection = false);
+        bool isDynamic,
+        bool isJSONIQ);
 
   void undoUpdates();
 };

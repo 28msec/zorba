@@ -58,21 +58,25 @@ public:
   // needs to be virtual to allow implementation of additional stores
   virtual bool
   get(
-      const store::Item* aName,
-      store::Collection_t& aCollection,
-      bool aDynamicCollection = false);
+      const store::Item* name,
+      store::Collection_t& collection,
+      bool isDynamic,
+      bool isJSONIQ);
     
   // needs to be virtual to allow implementation of additional stores
   virtual bool
-  remove(const store::Item* aName, bool aDynamicCollection = false);
+  remove(
+      const store::Item* aName,
+      bool isDynamic,
+      bool isJSONIQ);
   
   // needs to be virtual to allow implementation of additional stores
   virtual store::Iterator_t
-  names(bool aDynamicCollection = false);
+  names(bool dynamic);
     
   // needs to be virtual to allow implementation of additional stores
   virtual CollectionIterator_t
-  collections(bool aDynamicCollection = false);
+  collections(bool dynamic);
 };
     
 
@@ -91,7 +95,7 @@ protected:
 public:
   CollectionIterator(
       CollectionSet::Set* aCollections,
-      bool aDynamicCollections);
+      bool dynamic);
     
   virtual ~CollectionIterator();
     

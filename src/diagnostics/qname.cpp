@@ -71,7 +71,14 @@ char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
 char const JSONiqErrQName::PREFIX[] = "jerr";
 
 zorba::diagnostic::category JSONiqErrQName::category() const {
-  return zorba::diagnostic::UNKNOWN_CATEGORY;
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ascii::begins_with( name, "JU", 2 ) )
+    return JSONIQ_UPDATE;
+
+  return JSONIQ_CORE;
 }
 
 zorba::diagnostic::kind JSONiqErrQName::kind() const {

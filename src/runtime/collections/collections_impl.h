@@ -36,10 +36,16 @@ class CountCollectionIterator : public NaryBaseIterator<CountCollectionIterator,
                                                         PlanIteratorState>
 {
 public:
-  enum CollectionType { W3C = 0, ZORBASTATIC = 1, ZORBADYNAMIC = 2 };
+  enum CollectionType 
+  { 
+    W3C = 0,
+    ZORBASTATIC = 1,
+    ZORBADYNAMIC = 2 
+  };
 
 protected:
   CollectionType theCollectionType;
+  bool           theIsJSONIQ;
 
 public:
   SERIALIZABLE_CLASS(CountCollectionIterator);
@@ -54,13 +60,16 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      CollectionType collectionType);
+      CollectionType collectionType,
+      bool isJSONIQ);
 
   ~CountCollectionIterator();
 
   bool isZorbaCollection() const { return W3C != theCollectionType; }
 
   bool isDynamic() const { return ZORBADYNAMIC == theCollectionType; }
+
+  bool isJSONIQ() const { return theIsJSONIQ; }
 
   void accept(PlanIterVisitor& v) const;
 
