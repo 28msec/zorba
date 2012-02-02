@@ -23,9 +23,9 @@
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
+#include "store_defs.h"
+#include "atomic_items.h"
+#include "node_items.h"
 
 #include "runtime/function_item/function_item.h"
 
