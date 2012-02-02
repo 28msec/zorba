@@ -354,8 +354,7 @@ void
 SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 {
   theContent.reserve(theContent.size() + members.size());
-  MembersIter lIter = theContent.end();
-  add(lIter, members);
+  add(theContent.size(), members);
 }
 
 
@@ -366,8 +365,7 @@ void
 SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 {
   theContent.reserve(theContent.size() + members.size());
-  MembersIter lIter = theContent.begin();
-  add(lIter, members);
+  add(0, members);
 }
 
 
@@ -376,22 +374,14 @@ SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 *******************************************************************************/
 void
 SimpleJSONArray::insert_before(
-    const store::Item_t& aTarget,
+    const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
-  MembersIter lIter = theContent.begin();
-  for (; lIter != theContent.end(); ++lIter)
-  {
-    if (*lIter == aTarget.getp())
-    {
-      break;
-    }
-  }
-  add(lIter, members);
+  add(cast(aPos) - 1, members);
 }
 
 
@@ -400,22 +390,14 @@ SimpleJSONArray::insert_before(
 *******************************************************************************/
 void
 SimpleJSONArray::insert_after(
-    const store::Item_t& aTarget,
+    const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
-  MembersIter lIter = theContent.begin();
-  for (lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
-  {
-    if (*lIter == aTarget.getp())
-    {
-      break;
-    }
-  }
-  add(++lIter, members);
+  add(cast(aPos), members);
 }
 
 
@@ -424,13 +406,13 @@ SimpleJSONArray::insert_after(
 *******************************************************************************/
 void
 SimpleJSONArray::add(
-    MembersIter& aTargetPos,
+    uint64_t aTargetPos,
     const std::vector<store::Item_t>& aNewMembers)
 {
   for (size_t i = 0; i < aNewMembers.size(); ++i)
   {
     store::Item* lItem = aNewMembers[i].getp();
-    theContent.insert(aTargetPos + i, lItem);
+    theContent.insert(theContent.begin() + aTargetPos + i, lItem);
     lItem->addReference();
   }
 
@@ -440,19 +422,29 @@ SimpleJSONArray::add(
 
 *******************************************************************************/
 void
-SimpleJSONArray::remove(const store::Item_t& aValue)
+SimpleJSONArray::remove(const xs_integer& aPos)
 {
-  for (MembersIter lIter = theContent.begin();
-       lIter != theContent.end();
-       ++lIter)
+  uint64_t lPos = cast(aPos) - 1;
+  store::Item* lItem = const_cast<store::Item*>(operator[](aPos));
+  theContent.erase(theContent.begin() + lPos);
+  lItem->removeReference();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+uint64_t
+SimpleJSONArray::cast(const xs_integer& i)
+{
+  try 
   {
-    if (*lIter == aValue.getp())
-    {
-      store::Item* lItem = *lIter;
-      theContent.erase(lIter);
-      lItem->removeReference();
-      return;
-    }
+    return to_xs_unsignedLong(i);
+  }
+  catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
 }
 
@@ -461,19 +453,17 @@ SimpleJSONArray::remove(const store::Item_t& aValue)
 
 *******************************************************************************/
 const store::Item*
-SimpleJSONArray::operator[](xs_integer& aPos) const
+SimpleJSONArray::operator[](const xs_integer& aPos) const
 {
-  uint64_t lIndex;
-  try 
+  uint64_t lPos = cast(aPos);
+  if (lPos == 0 || lPos > theContent.size())
   {
-    lIndex = to_xs_unsignedLong(aPos);
+    return 0;
   }
-  catch (std::range_error& e)
+  else
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    return theContent[lPos-1];
   }
-  return theContent[lIndex];
 }
 
 
@@ -493,25 +483,7 @@ SimpleJSONArray::getMembers() const
 store::Item*
 SimpleJSONArray::getMember(const store::Item_t& aPosition) const
 {
-  uint64_t lIndex;
-  try 
-  {
-    lIndex = to_xs_unsignedLong(aPosition->getIntegerValue());
-  }
-  catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
-  }
-
-  if (lIndex == 0 || lIndex > theContent.size())
-  {
-    return 0;
-  }
-  else
-  {
-    return theContent[lIndex-1];
-  }
+  return const_cast<store::Item*>(operator[](aPosition->getIntegerValue()));
 }
 
 
@@ -526,7 +498,7 @@ store::Item* SimpleJSONArray::copy(
   if (copymode.theDoCopy)
   {
     lNewArray = new SimpleJSONArray();
-    lNewArray->theContent.resize(theContent.size());
+    lNewArray->theContent.reserve(theContent.size());
     for (MembersConstIter lIter = theContent.begin();
          lIter != theContent.end();
          ++lIter)

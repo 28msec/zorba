@@ -1940,19 +1940,9 @@ UpdJSONInsertPositional::UpdJSONInsertPositional(
   : UpdatePrimitive(pul, loc, target),
     theKind(kind),
     theNewMembers(members),
+    thePosition(pos?pos->getIntegerValue():0),
     theNumApplied(0)
 {
-  if (theKind == store::UpdateConsts::UP_JSON_INSERT_BEFORE ||
-      theKind == store::UpdateConsts::UP_JSON_INSERT_AFTER)
-  {
-    ZORBA_ASSERT(pos);
-    ZORBA_ASSERT(theTarget->isJSONArray());
-
-    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-
-    xs_integer lPos = pos->getIntegerValue();
-    theSibling = lArray->operator[](--lPos);
-  }
 }
 
 void
@@ -1969,10 +1959,10 @@ UpdJSONInsertPositional::apply()
       lArray->push_back(theNewMembers);
       break;
     case store::UpdateConsts::UP_JSON_INSERT_BEFORE:
-      lArray->insert_before(theSibling, theNewMembers);
+      lArray->insert_before(thePosition, theNewMembers);
       break;
     case store::UpdateConsts::UP_JSON_INSERT_AFTER:
-      lArray->insert_after(theSibling, theNewMembers);
+      lArray->insert_after(thePosition, theNewMembers);
       break;
     default:
       ZORBA_ASSERT(false);
@@ -2006,10 +1996,7 @@ UpdJSONDelete::UpdJSONDelete(
   }
   else
   {
-    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-
-    xs_integer lPos = selector->getIntegerValue();
-    theDeletee = lArray->operator[](--lPos);
+    theDeletee = selector;
   }
 }
 
@@ -2028,7 +2015,8 @@ void UpdJSONDelete::apply()
   else
   {
     JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-    lArray->remove(theDeletee);
+    xs_integer lPos = theDeletee->getIntegerValue();
+    lArray->remove(lPos);
   }
 
   theIsApplied = true;
@@ -2041,6 +2029,66 @@ void UpdJSONDelete::undo()
     return;
   }
   ZORBA_ASSERT(false);
+
+  theIsApplied = false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONReplaceValue::UpdJSONReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& selector,
+      store::Item_t& newValue)
+  : UpdatePrimitive(pul, loc, target),
+    theSelector(selector),
+    theNewValue(newValue)
+{
+  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
+}
+
+void UpdJSONReplaceValue::apply()
+{
+  if (theTarget->isJSONObject())
+  {
+    JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
+    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
+        lObject->getPair(theSelector)
+      );
+    theOldValue = lPair->getValue();
+    lPair->setValue(theNewValue);
+  }
+  else
+  {
+    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+    xs_integer lPos = theSelector->getIntegerValue();
+    lArray->remove(lPos);
+    std::vector<store::Item_t> lNewMember;
+    lNewMember.push_back(theNewValue);
+    lArray->insert_before(lPos, lNewMember);
+  }
+
+  theIsApplied = true;
+}
+
+void UpdJSONReplaceValue::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  if (theTarget->isJSONPair())
+  {
+    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(theTarget.getp());
+    lPair->setValue(theOldValue);
+  }
+  else
+  {
+    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+  }
 
   theIsApplied = false;
 }

@@ -66,6 +66,7 @@ namespace zorba { namespace simplestore {
   class UpdJSONInsert;
   class UpdJSONInsertPositional;
   class UpdJSONDelete;
+  class UpdJSONReplaceValue;
 #endif
 
 class PULPrimitiveFactory 
@@ -460,6 +461,16 @@ class PULPrimitiveFactory
         const QueryLoc* aLoc,
         store::Item_t& aTarget,
         store::Item_t& aSelector);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdJSONReplaceValue*
+  createUpdJSONReplaceValue(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aTarget,
+        store::Item_t& aPos,
+        store::Item_t& aNewValue);
 #endif
 
 }; /* class PULPrimitiveFactory */

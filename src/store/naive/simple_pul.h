@@ -207,6 +207,7 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONInsertIntoList;
   std::vector<UpdatePrimitive*>      theJSONDeleteList;
   std::vector<UpdatePrimitive*>      theJSONPositionalInsertList;
+  std::vector<UpdatePrimitive*>      theJSONReplaceValueList;
 #endif
 
 
@@ -277,8 +278,8 @@ public:
     UP_LIST_PUT,
     UP_LIST_CREATE_COLLECTION,
     UP_LIST_CREATE_INDEX,
-    UP_LIST_JSON_POSITIONAL_INSERT
-
+    UP_LIST_JSON_POSITIONAL_INSERT,
+    UP_LIST_JSON_DELETE
   };
 
   typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
@@ -586,6 +587,7 @@ public:
   virtual void addJSONReplaceValue(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
+        store::Item_t& pos,
         store::Item_t& newValue);
 
   virtual void addJSONRename(

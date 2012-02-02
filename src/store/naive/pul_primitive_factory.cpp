@@ -578,6 +578,19 @@ PULPrimitiveFactory::createUpdRefreshIndex(
   {
     return new UpdJSONDelete(pul, aLoc, aTarget, aSelector);
   }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdJSONReplaceValue*
+  PULPrimitiveFactory::createUpdJSONReplaceValue(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aTarget,
+        store::Item_t& aPos,
+        store::Item_t& aNewValue)
+  {
+    return new UpdJSONReplaceValue(pul, aLoc, aTarget, aPos, aNewValue);
+  }
 #endif
 
 } /* namespace simplestore */ } /* namespace zorba */

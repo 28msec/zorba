@@ -318,6 +318,7 @@ public:
   virtual void addJSONReplaceValue(
         const QueryLoc* aQueryLoc,
         Item_t& target,
+        Item_t& pos,
         Item_t& newValue) = 0;
 
   virtual void addJSONRename(

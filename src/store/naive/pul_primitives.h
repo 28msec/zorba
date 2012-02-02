@@ -1657,7 +1657,7 @@ class UpdJSONInsertPositional : public UpdatePrimitive
 protected:
   store::UpdateConsts::UpdPrimKind theKind;
   std::vector<store::Item_t>       theNewMembers;
-  store::Item_t                    theSibling;
+  xs_integer                       thePosition;
 
   long                             theNumApplied;
 
@@ -1700,6 +1700,38 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_JSON_DELETE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONReplaceValue: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theSelector;
+  store::Item_t  theNewValue;
+  store::Item_t  theOldValue;
+
+  UpdJSONReplaceValue(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& target,
+        store::Item_t& selector,
+        store::Item_t& newValue);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_REPLACE_VALUE;
   }
 
   void apply();

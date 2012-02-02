@@ -723,7 +723,7 @@ public:
 #ifdef ZORBA_WITH_JSON
 /**
  * 
- *      json:delete
+ *      json:delete-member
  *    
  * Author: Zorba Team
  */
