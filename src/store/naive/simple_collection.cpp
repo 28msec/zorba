@@ -247,6 +247,13 @@ ulong SimpleCollection::addNodes(
         ERROR_PARAMS(getName()->getStringValue(),
                      node->getCollection()->getName()->getStringValue()));
       }
+
+      if (object)
+        object->setCollection(this, targetPos + i);
+      else if (array)
+        array->setCollection(this, targetPos + i);
+      else
+        node->setCollection(this, targetPos + i);
     }
     else
 #endif
@@ -304,29 +311,64 @@ ulong SimpleCollection::addNodes(
   collection. If the tree was found return true and the position of the tree;
   otherwise, return false.
 ********************************************************************************/
-bool SimpleCollection::removeNode(store::Item* nodeItem, xs_integer& position)
+bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 {
-  if (!nodeItem->isNode())
-  {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-      ERROR_PARAMS( getName()->getStringValue() )
-    );
-  }
+  XmlNode* node = NULL;
+#ifdef ZORBA_WITH_JSON
+  json::SimpleJSONArray* array = NULL;
+  json::SimpleJSONObject* object = NULL;
 
-  XmlNode* node = static_cast<XmlNode*>(nodeItem);
+  if (theIsJSONIQ)
+  {
+    if (item->isNode())
+    {
+      node = static_cast<XmlNode*>(item);
+    }
+    else if (item->isJSONObject())
+    {
+      object = static_cast<json::SimpleJSONObject*>(item);
+    }
+    else if (item->isJSONArray())
+    {
+      array = static_cast<json::SimpleJSONArray*>(item);
+    }
+    else
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+      ERROR_PARAMS(getName()->getStringValue()));
+    }
+  }
+  else
+#endif
+  {
+    if (!item->isNode())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS(getName()->getStringValue()));
+    }
+
+    node = static_cast<XmlNode*>(item);
+  }
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  bool found = findNode(nodeItem, position);
+  bool found = findNode(item, position);
 
   if (found)
   {
-    ZORBA_ASSERT(node->getCollection() == this);
+    ZORBA_ASSERT(item->getCollection() == this);
 
-    node->setCollection(NULL, 0);
-    std::size_t lPosition = to_xs_unsignedInt(position);
-    theXmlTrees.erase(theXmlTrees.begin() + lPosition);
+#ifdef ZORBA_WITH_JSON
+    if (object)
+      object->setCollection(NULL, 0);
+    else if (array)
+      array->setCollection(NULL, 0);
+    else
+#endif
+      node->setCollection(NULL, 0);
+
+    csize pos = to_xs_unsignedInt(position);
+    theXmlTrees.erase(theXmlTrees.begin() + pos);
     return true;
   }
   else
@@ -345,19 +387,50 @@ bool SimpleCollection::removeNode(xs_integer position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  std::size_t lPosition = to_xs_unsignedInt(position);
+  std::size_t pos = to_xs_unsignedInt(position);
 
-  if (lPosition >= theXmlTrees.size()) 
+  if (pos >= theXmlTrees.size()) 
   {
     return false;
   }
   else
   {
-    XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
-    ZORBA_ASSERT(node->getCollection() == this);
+    store::Item* item = theXmlTrees[pos].getp();
 
-    node->setCollection(NULL, 0);
-    theXmlTrees.erase(theXmlTrees.begin() + lPosition);
+    ZORBA_ASSERT(item->getCollection() == this);
+
+#ifdef ZORBA_WITH_JSON
+    if (theIsJSONIQ)
+    {
+      if (item->isNode())
+      {
+        XmlNode* node = static_cast<XmlNode*>(item);
+        node->setCollection(NULL, 0);
+      }
+      else if (item->isJSONObject())
+      {
+        json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
+        object->setCollection(NULL, 0);
+      }
+      else if (item->isJSONArray())
+      {
+        json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
+        array->setCollection(NULL, 0);
+      }
+      else
+      {
+        ZORBA_ASSERT(false);
+      }
+    }
+    else
+#endif
+    {
+      assert(item->isNode());
+      XmlNode* node = static_cast<XmlNode*>(item);
+      node->setCollection(NULL, 0);
+    }
+
+    theXmlTrees.erase(theXmlTrees.begin() + pos);
     return true;
   }
 }
@@ -369,35 +442,66 @@ bool SimpleCollection::removeNode(xs_integer position)
   in the collection, this mothod is a noop. The method returns the number of 
   trees that are actually deleted.
 ********************************************************************************/
-xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
+xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNodes)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  std::size_t lPosition = to_xs_unsignedInt(position);
-  std::size_t lNum = to_xs_unsignedInt(num);
+  csize pos = to_xs_unsignedInt(position);
+  csize num = to_xs_unsignedInt(numNodes);
 
-  if (lNum == 0 || lPosition >= theXmlTrees.size())
+  if (num == 0 || pos >= theXmlTrees.size())
   {
     return 0;
   }
   else
   {
-    uint64_t last = lPosition + lNum;
+    uint64_t last = pos + num;
     if (last > theXmlTrees.size())
     {
       last = theXmlTrees.size();
     }
 
-    for (std::size_t i = lPosition; i < last; ++i)
+    for (csize i = pos; i < last; ++i)
     { 
-      XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
-      ZORBA_ASSERT(node->getCollection() == this);
-      node->setCollection(NULL, 0);
+      store::Item* item = theXmlTrees[pos].getp();
 
-      theXmlTrees.erase(theXmlTrees.begin() + lPosition);
+      ZORBA_ASSERT(item->getCollection() == this);
+
+#ifdef ZORBA_WITH_JSON
+      if (theIsJSONIQ)
+      {
+        if (item->isNode())
+        {
+          XmlNode* node = static_cast<XmlNode*>(item);
+          node->setCollection(NULL, 0);
+        }
+        else if (item->isJSONObject())
+        {
+          json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
+          object->setCollection(NULL, 0);
+        }
+        else if (item->isJSONArray())
+        {
+          json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
+          array->setCollection(NULL, 0);
+        }
+        else
+        {
+          ZORBA_ASSERT(false);
+        }
+      }
+      else
+#endif
+      {
+        assert(item->isNode());
+        XmlNode* node = static_cast<XmlNode*>(item);
+        node->setCollection(NULL, 0);
+      }
+
+      theXmlTrees.erase(theXmlTrees.begin() + pos);
     }
 
-    return last-lPosition;
+    return last - pos;
   }
 }
 
@@ -408,13 +512,13 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(xs_integer position)
 {
-  csize lPosition = to_xs_unsignedInt(position);
-  if (lPosition >= theXmlTrees.size())
+  csize pos = to_xs_unsignedInt(position);
+  if (pos >= theXmlTrees.size())
   {
     return NULL;
   }
 
-  return theXmlTrees[lPosition];
+  return theXmlTrees[pos];
 }
 
 
