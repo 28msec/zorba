@@ -48,7 +48,7 @@ namespace unicode {
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
  */
-class ZORBA_DLL_PUBLIC regex {
+class regex {
 public:
   /**
    * Constructs a %regex.
@@ -520,7 +520,7 @@ namespace unicode{
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
  */
-class ZORBA_DLL_PUBLIC regex {
+class regex {
 public:
   /**
    * Constructs a %regex.

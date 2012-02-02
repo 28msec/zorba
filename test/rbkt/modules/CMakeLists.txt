@@ -54,3 +54,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
     -e "manifest:=${CMAKE_BINARY_DIR}/ZorbaManifest.xml"
     --module-path "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
+
+# This is as good a place as any to test this feature
+DECLARE_ZORBA_URI_FILE(FILE "random-file.txt"
+  URI "http://www.zorba-xquery.com/random-file" TEST_ONLY)
