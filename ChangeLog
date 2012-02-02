@@ -8,6 +8,7 @@ version 2.2
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
+  * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug 909126 (bug in cloning of var_expr)
   * Fixed bug in destruction of exit_catcher_expr
   * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
@@ -29,6 +30,7 @@ version 2.2
   * Added API method Item::getNamespaceBindings().
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug 921624 (slow queries with bogus example.com schema URIs)
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
   * Fixed bug with unversioned modules with C++ external functions

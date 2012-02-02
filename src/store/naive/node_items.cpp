@@ -1721,7 +1721,7 @@ zstring DocumentNode::show() const
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
   strStream << " baseUri = \"" << theBaseUri << "\"";
-  strStream << " docUri = \"" << theDocUri;
+  strStream << " docUri = \"" << theDocUri << "\"";
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
