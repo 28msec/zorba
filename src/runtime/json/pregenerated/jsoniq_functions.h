@@ -415,6 +415,55 @@ public:
  * 
  * Author: 
  */
+class JSONEmptyItemAccessorIteratorState : public PlanIteratorState
+{
+public:
+  std::stack<store::Iterator_t> theStack; //
+
+  JSONEmptyItemAccessorIteratorState();
+
+  ~JSONEmptyItemAccessorIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONEmptyItemAccessorIterator : public UnaryBaseIterator<JSONEmptyItemAccessorIterator, JSONEmptyItemAccessorIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONEmptyItemAccessorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONEmptyItemAccessorIterator,
+    UnaryBaseIterator<JSONEmptyItemAccessorIterator, JSONEmptyItemAccessorIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<JSONEmptyItemAccessorIterator, JSONEmptyItemAccessorIteratorState>*)this);
+  }
+
+  JSONEmptyItemAccessorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONEmptyItemAccessorIterator, JSONEmptyItemAccessorIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONEmptyItemAccessorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
 class JSONValuesIteratorState : public PlanIteratorState
 {
 public:

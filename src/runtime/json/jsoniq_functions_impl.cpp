@@ -428,6 +428,74 @@ object:
 
 
 /*******************************************************************************
+  op_zorba:json-empty-item-accessor($i as json-item()) as item()?
+********************************************************************************/
+void JSONEmptyItemAccessorIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  while (!theStack.empty())
+  {
+    theStack.pop();
+  }
+}
+
+
+bool
+JSONEmptyItemAccessorIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t input;
+
+  JSONEmptyItemAccessorIteratorState* state;
+  DEFAULT_STACK_INIT(JSONEmptyItemAccessorIteratorState, state, planState);
+
+  consumeNext(input, theChild.getp(), planState);
+
+  while (true)
+  {
+    if (!input)
+    {
+      if (state->theStack.empty())
+      {
+        break;
+      }
+      if (!state->theStack.top()->next(input))
+      { 
+        state->theStack.pop();
+        input = NULL;
+        continue;
+      }
+    }
+
+    if (input->isJSONObject())
+    {
+      state->theStack.push(input->getPairs());
+      state->theStack.top()->open();
+      result = input;
+      STACK_PUSH(true, state);
+    }
+    else if (input->isJSONArray())
+    {
+      state->theStack.push(input->getMembers());
+      state->theStack.top()->open();
+      input = NULL;
+    }
+    else if (input->isJSONPair())
+    {
+      input = input->getValue();
+    }
+    else
+    {
+      input = NULL;
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
   j:values($i as json-item()) as item()*
 ********************************************************************************/
 bool

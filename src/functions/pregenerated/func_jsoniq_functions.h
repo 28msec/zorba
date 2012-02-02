@@ -240,6 +240,26 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//op-zorba:json-empty-item-accessor
+class op_zorba_json_empty_item_accessor : public function
+{
+public:
+  op_zorba_json_empty_item_accessor(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:values
 class fn_jsoniq_values : public function
 {

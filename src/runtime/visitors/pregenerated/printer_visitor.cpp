@@ -1815,6 +1815,21 @@ void PrinterVisitor::endVisit ( const JSONItemAccessorIterator& ) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONEmptyItemAccessorIterator>
+void PrinterVisitor::beginVisit ( const JSONEmptyItemAccessorIterator& a) {
+  thePrinter.startBeginVisit("JSONEmptyItemAccessorIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONEmptyItemAccessorIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONEmptyItemAccessorIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONValuesIterator>
 void PrinterVisitor::beginVisit ( const JSONValuesIterator& a) {
   thePrinter.startBeginVisit("JSONValuesIterator", ++theId);

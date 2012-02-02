@@ -297,6 +297,39 @@ JSONItemAccessorIterator::~JSONItemAccessorIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONEmptyItemAccessorIterator>
+const char* JSONEmptyItemAccessorIterator::class_name_str = "JSONEmptyItemAccessorIterator";
+JSONEmptyItemAccessorIterator::class_factory<JSONEmptyItemAccessorIterator>
+JSONEmptyItemAccessorIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONEmptyItemAccessorIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONEmptyItemAccessorIterator::class_versions_count =
+sizeof(JSONEmptyItemAccessorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONEmptyItemAccessorIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONEmptyItemAccessorIterator::~JSONEmptyItemAccessorIterator() {}
+
+JSONEmptyItemAccessorIteratorState::JSONEmptyItemAccessorIteratorState() {}
+
+JSONEmptyItemAccessorIteratorState::~JSONEmptyItemAccessorIteratorState() {}
+
+
+void JSONEmptyItemAccessorIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </JSONEmptyItemAccessorIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONValuesIterator>
 const char* JSONValuesIterator::class_name_str = "JSONValuesIterator";
 JSONValuesIterator::class_factory<JSONValuesIterator>

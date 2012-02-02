@@ -265,6 +265,34 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONEmptyItemAccessorIterator" arity="unary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="json-empty-item-accessor" prefix="op-zorba">
+      <zorba:param>json-item()</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state generateReset="false">
+    <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack"
+      brief=""/>
+  </zorba:state>
+
+</zorba:iterator>
+
 
 <!--
 /*******************************************************************************

@@ -10361,29 +10361,41 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   {
     function* func;
 
-    if (TypeOps::is_subtype(tm,
-                            *sourceExpr->get_return_type(), 
-                            *theRTM.JSON_ARRAY_TYPE_STAR))
+    if (numArgs == 1)
     {
-      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
-    }
-    else if (TypeOps::is_subtype(tm,
-                                 *sourceExpr->get_return_type(), 
-                                 *theRTM.JSON_OBJECT_TYPE_STAR))
-    {
-      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
+      if (TypeOps::is_subtype(tm,
+                              *sourceExpr->get_return_type(), 
+                              *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
+      }
+      else if (TypeOps::is_subtype(tm,
+                                   *sourceExpr->get_return_type(), 
+                                   *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
+      }
+      else
+      {
+        func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      }
+
+      expr_t accessorExpr = new fo_expr(theRootSctx,
+                                        loc,
+                                        func, 
+                                        sourceExpr,
+                                        arguments[0]);
+      push_nodestack(accessorExpr);
     }
     else
     {
-      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
+      expr_t accessorExpr = new fo_expr(theRootSctx,
+                                        loc,
+                                        func, 
+                                        sourceExpr);
+      push_nodestack(accessorExpr);
     }
-
-    expr_t accessorExpr = new fo_expr(theRootSctx,
-                                      loc,
-                                      func, 
-                                      sourceExpr,
-                                      arguments[0]);
-    push_nodestack(accessorExpr);
     return;
   }
 #endif

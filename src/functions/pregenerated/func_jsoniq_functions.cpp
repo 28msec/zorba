@@ -124,6 +124,18 @@ PlanIter_t op_zorba_json_item_accessor::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_json_empty_item_accessor::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONEmptyItemAccessorIterator(sctx, loc, argv[0]);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_values::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -415,6 +427,22 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
         FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_json_empty_item_accessor,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-empty-item-accessor"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
 
   }
 
