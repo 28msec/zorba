@@ -53,17 +53,22 @@ DebuggerListener::run()
     lStr >> length;
 #endif
 
-    // we are not interested in the length, but only in the init message
     std::getline(*(theClient->theInStream), str, '\0');
 
+    // only assert if we have a good stream (no stream was broken,
+    // case in which an empty string will be returned)
+    if (theClient->theInStream->good()) {
 #ifndef NDEBUG
-    assert(str.size() == length);
+      assert(str.size() == length);
 #endif
+    } else {
+      break;
+    }
 
     theClient->theHandler->parseMessage(str);
 
     // TODO: this was the initial implementation. This will have to change
-    this->sleep_(1000);
+    this->sleep_(250);
   }
 }
   
@@ -213,10 +218,14 @@ DebuggerClientImpl::step_out()
 }
   
 std::size_t
-DebuggerClientImpl::stop()
+DebuggerClientImpl::stop(bool withQuit)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "stop -i " << id << '\0';
+  *theOutStream << "stop -i " << id;
+  if (!withQuit) {
+    *theOutStream << " -z 1";
+  }
+  *theOutStream << '\0';
   theOutStream->flush();
   return id;
 }

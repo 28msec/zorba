@@ -134,6 +134,12 @@ public:
    * numeric type (xs:decimal, xs:double, or xs:float)
    */
   static bool is_numeric(const TypeManager* tm, const XQType& type);
+
+  /**
+   * Returns true is the given sequence type is a subtype of an atomic builtin
+   * numeric type (xs:decimal, xs:double, or xs:float)
+   */
+  static bool is_numeric(store::SchemaTypeCode type);
  
   /**
    * Returns true is the given sequence type is a subtype of an atomic builtin
@@ -164,7 +170,7 @@ public:
   /*
    * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
    */
-  bool is_subtype(
+  static bool is_subtype(
         store::SchemaTypeCode subtype,
         store::SchemaTypeCode supertype);
 

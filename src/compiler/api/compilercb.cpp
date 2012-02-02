@@ -27,6 +27,7 @@
 #include "system/properties.h"
 
 #include "zorbaserialization/serialization_engine.h"
+#include "functions/udf.h"
 
 
 namespace zorba 
@@ -120,6 +121,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theTimeout(timeout),
   theTempIndexCounter(0)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -143,6 +145,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theTempIndexCounter(0),
   theConfig(cb.theConfig)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -169,6 +172,20 @@ CompilerCB::~CompilerCB()
 {
 }
 
+//compile all the user_functions so the expr tree is stable at serialize
+void CompilerCB::prepare_for_serialize()
+{
+  rclist<user_function*>::iterator udf_it;
+  for(udf_it=theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
+  {
+    (*udf_it)->prepare_for_serialize(this);
+  }
+}
+
+rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
+{
+  return theLocalUdfs;
+}
 
 /*******************************************************************************
 

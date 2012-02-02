@@ -118,7 +118,10 @@ TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int thesaurus( int argc, char *argv[] ) {
+namespace zorba {
+namespace UnitTests {
+
+int test_thesaurus( int argc, char *argv[] ) {
   void *const zstore = StoreManager::getStore();
   Zorba *const zorba = Zorba::getInstance( zstore );
 
@@ -157,4 +160,8 @@ int thesaurus( int argc, char *argv[] ) {
   StoreManager::shutdownStore( zstore );
   return result;
 }
+
+} // namespace UnitTests
+} // namespace zorba
+
 /* vim:set et sw=2 ts=2: */

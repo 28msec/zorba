@@ -523,6 +523,7 @@ void SimpleCollection::CollectionIter::open()
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
+  theEnd = theCollection->theXmlTrees.end();
 }
 
 
@@ -539,13 +540,13 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
     );
   }
 
-  if (theIterator == theCollection->theXmlTrees.end()) 
+  if (theIterator == theEnd) 
   {
     result = NULL;
     return false;
   }
 
-  result = (*theIterator).getp();
+  result = *theIterator;
   ++theIterator;
 
   return true;
@@ -558,6 +559,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
+  theEnd = theCollection->theXmlTrees.end();
 }
 
 
