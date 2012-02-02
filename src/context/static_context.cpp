@@ -22,6 +22,7 @@
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
 
+#include "functions/udf.h"
 #include "zorbaserialization/serialization_engine.h"
 
 #include "zorbamisc/ns_consts.h"

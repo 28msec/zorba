@@ -193,7 +193,8 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   }
   else
   {
-    ar.compiler_cb = theCompilerCB;
+    //ar.compiler_cb = theCompilerCB;
+    theCompilerCB->prepare_for_serialize();
   }
 
   ar & theCompilerCB;
