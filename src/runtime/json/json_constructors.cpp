@@ -170,6 +170,12 @@ bool JSONObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       {
         assert(child->isJSONPair());
 
+        if (result->getPair(child->getName()))
+        {
+          RAISE_ERROR(jerr::JSDY0003, loc,
+              ERROR_PARAMS(child->getName()->getStringValue()));
+        }
+
         child->copy(result, copymode);
       }
     }

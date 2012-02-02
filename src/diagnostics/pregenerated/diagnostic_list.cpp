@@ -1162,6 +1162,9 @@ JSONiqErrorCode JSDY0001( "JSDY0001" );
 JSONiqErrorCode JSDY0002( "JSDY0002" );
 
 
+JSONiqErrorCode JSDY0003( "JSDY0003" );
+
+
 JSONiqErrorCode JSDY0020( "JSDY0020" );
 
 

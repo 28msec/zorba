@@ -102,6 +102,9 @@ extern entry const dict_en[] = {
   { "JSDY0002", "JSON object cannot appear as input to an XML constructor" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JSDY0003", "\"$1\": pair with the same name already exists in object" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0020", "" },
 #endif
 #if defined(ZORBA_WITH_JSON)
