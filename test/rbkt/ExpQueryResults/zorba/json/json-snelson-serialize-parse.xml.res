@@ -1,1 +1,1 @@
-{"html":"<b>bold</b>"}
+{"key":"value"}

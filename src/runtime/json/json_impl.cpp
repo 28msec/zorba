@@ -71,6 +71,9 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   get_options( cur_item, &options );
 
   if ( consumeNext( cur_item, theChildren[0], planState ) ) {
+
+    result = NULL;
+
     istream *is;
     if ( cur_item->isStreamable() ) {
       is = &cur_item->getStream();
