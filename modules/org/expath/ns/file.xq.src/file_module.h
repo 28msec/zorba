@@ -52,6 +52,8 @@ public:
     delete stream;
   }
 
+  FileModule() : theFactory(0) {}
+
   virtual ~FileModule();
   
   virtual String
