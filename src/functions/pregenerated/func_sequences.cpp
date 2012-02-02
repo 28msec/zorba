@@ -261,11 +261,11 @@ PlanIter_t fn_doc_available::codegen(
 
 void populate_context_sequences(static_context* sctx)
 {
-  {
-    std::vector<xqtref_t> lParamTypes;
-    lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
-    DECL_WITH_KIND(sctx, op_concatenate,
+
+      {
+    std::vector<xqtref_t> lParamTypes;
+    lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);DECL_WITH_KIND(sctx, op_concatenate,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","concatenate"), 
         lParamTypes, GENV_TYPESYSTEM.ITEM_TYPE_STAR, true),
         FunctionConsts::OP_CONCATENATE_N);
@@ -273,9 +273,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_index_of,
         (createQName("http://www.w3.org/2005/xpath-functions","","index-of"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -286,9 +286,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_index_of,
         (createQName("http://www.w3.org/2005/xpath-functions","","index-of"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -300,9 +300,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_empty,
         (createQName("http://www.w3.org/2005/xpath-functions","","empty"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -312,9 +312,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_exists,
         (createQName("http://www.w3.org/2005/xpath-functions","","exists"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -324,9 +324,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_distinct_values,
         (createQName("http://www.w3.org/2005/xpath-functions","","distinct-values"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -337,9 +337,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_distinct_values,
         (createQName("http://www.w3.org/2005/xpath-functions","","distinct-values"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -349,9 +349,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_insert_before,
         (createQName("http://www.w3.org/2005/xpath-functions","","insert-before"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -363,9 +363,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_remove,
         (createQName("http://www.w3.org/2005/xpath-functions","","remove"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -376,9 +376,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_reverse,
         (createQName("http://www.w3.org/2005/xpath-functions","","reverse"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -388,9 +388,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_subsequence,
         (createQName("http://www.w3.org/2005/xpath-functions","","subsequence"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -401,9 +401,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_subsequence,
         (createQName("http://www.w3.org/2005/xpath-functions","","subsequence"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -415,9 +415,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -428,9 +428,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -442,9 +442,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_sequence_point_access,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","sequence-point-access"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -455,9 +455,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zero_or_one,
         (createQName("http://www.w3.org/2005/xpath-functions","","zero-or-one"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -467,9 +467,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_one_or_more,
         (createQName("http://www.w3.org/2005/xpath-functions","","one-or-more"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -479,9 +479,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_deep_equal,
         (createQName("http://www.w3.org/2005/xpath-functions","","deep-equal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -492,9 +492,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_deep_equal,
         (createQName("http://www.w3.org/2005/xpath-functions","","deep-equal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -506,9 +506,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_count,
         (createQName("http://www.w3.org/2005/xpath-functions","","count"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -518,9 +518,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_avg,
         (createQName("http://www.w3.org/2005/xpath-functions","","avg"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -530,9 +530,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_sum,
         (createQName("http://www.w3.org/2005/xpath-functions","","sum"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -542,9 +542,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_sum,
         (createQName("http://www.w3.org/2005/xpath-functions","","sum"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -555,9 +555,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_double,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
@@ -567,9 +567,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_double,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
@@ -580,9 +580,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_float,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
@@ -592,9 +592,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_float,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
@@ -605,9 +605,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_decimal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
@@ -617,9 +617,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_decimal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
@@ -630,9 +630,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_integer,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
@@ -642,9 +642,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_integer,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
@@ -655,9 +655,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_to,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","to"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
@@ -668,9 +668,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -680,9 +680,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -693,9 +693,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_element_with_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","element-with-id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -705,9 +705,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_element_with_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","element-with-id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -718,9 +718,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_idref,
         (createQName("http://www.w3.org/2005/xpath-functions","","idref"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -730,9 +730,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_idref,
         (createQName("http://www.w3.org/2005/xpath-functions","","idref"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -743,9 +743,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_doc,
         (createQName("http://www.w3.org/2005/xpath-functions","","doc"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -755,9 +755,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_doc_available,
         (createQName("http://www.w3.org/2005/xpath-functions","","doc-available"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 

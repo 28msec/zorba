@@ -11966,8 +11966,9 @@ void* begin_visit(const StructuredItemType& v)
 void end_visit(const StructuredItemType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
+#ifdef ZORBA_WITH_JSON
   theTypeStack.push(GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE);
+#endif
 }
 
 

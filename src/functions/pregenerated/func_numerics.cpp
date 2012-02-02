@@ -112,9 +112,9 @@ PlanIter_t fn_format_integer_3_0::codegen(
 
 void populate_context_numerics(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_abs,
         (createQName("http://www.w3.org/2005/xpath-functions","","abs"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -124,9 +124,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_ceiling,
         (createQName("http://www.w3.org/2005/xpath-functions","","ceiling"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -136,9 +136,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_floor,
         (createQName("http://www.w3.org/2005/xpath-functions","","floor"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -148,9 +148,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_round,
         (createQName("http://www.w3.org/2005/xpath-functions","","round"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -160,9 +160,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_round_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","round"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -173,9 +173,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_round_half_to_even,
         (createQName("http://www.w3.org/2005/xpath-functions","","round-half-to-even"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -185,9 +185,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_round_half_to_even,
         (createQName("http://www.w3.org/2005/xpath-functions","","round-half-to-even"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -198,9 +198,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_format_number_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","format-number"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -211,9 +211,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_format_number_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","format-number"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -225,9 +225,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_format_integer_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
@@ -238,9 +238,9 @@ void populate_context_numerics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_format_integer_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 

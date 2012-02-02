@@ -79,7 +79,8 @@
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="collection" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="collection" prefix="jsoniq-dynamic-collections-dml"
+        preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
@@ -130,7 +131,8 @@
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="index-of" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="index-of" prefix="jsoniq-dynamic-collections-dml"
+        preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>structured-item()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
@@ -187,12 +189,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl">
+      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl">
+      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -244,7 +246,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete" prefix="jsoniq-dynamic-collections-ddl">
+      <zorba:signature localname="delete" prefix="jsoniq-dynamic-collections-ddl" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -340,7 +342,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-first" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="insert-nodes-first" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -393,7 +395,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-last" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="insert-nodes-last" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -447,7 +449,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-before" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="insert-nodes-before" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
@@ -502,7 +504,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-after" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="insert-nodes-after" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
@@ -617,7 +619,7 @@
       </zorba:signature>
 
       <zorba:signature localname="apply-insert-nodes-first" 
-                       prefix="jsoniq-dynamic-collections-dml">
+                       prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>structured-item()*</zorba:output>
@@ -680,7 +682,7 @@
       </zorba:signature>
 
       <zorba:signature localname="apply-insert-nodes-last" 
-                       prefix="jsoniq-dynamic-collections-dml">
+                       prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>structured-item()*</zorba:output>
@@ -745,7 +747,7 @@
       </zorba:signature>
 
       <zorba:signature localname="apply-insert-nodes-before"  
-                       prefix="jsoniq-dynamic-collections-dml">
+                       prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
@@ -811,7 +813,7 @@
       </zorba:signature>
 
       <zorba:signature localname="apply-insert-nodes-after" 
-                       prefix="jsoniq-dynamic-collections-dml">
+                       prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>structured-item()</zorba:param>
         <zorba:param>structured-item()*</zorba:param>
@@ -870,7 +872,7 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="delete-nodes" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -933,12 +935,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-node-first" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="delete-node-first" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-first" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="delete-nodes-first" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:integer</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -1000,12 +1002,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-node-last" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="delete-node-last" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-last" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="delete-nodes-last" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:integer</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -1055,7 +1057,7 @@
         <zorba:output>xs:QName</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="collection-name" prefix="jsoniq-dynamic-collections-dml">
+      <zorba:signature localname="collection-name" prefix="jsoniq-dynamic-collections-dml" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>structured-item()</zorba:param>
         <zorba:output>xs:QName</zorba:output>
       </zorba:signature>
@@ -1094,7 +1096,7 @@
       </zorba:signature>
 
       <zorba:signature localname="is-available-collection"
-                       prefix="jsoniq-dynamic-collections-ddl">
+                       prefix="jsoniq-dynamic-collections-ddl" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1137,7 +1139,7 @@
       </zorba:signature>
 
       <zorba:signature localname="available-collections"
-                       prefix="jsoniq-dynamic-collections-ddl">
+                       prefix="jsoniq-dynamic-collections-ddl" preprocessorGuard="#ifdef ZORBA_WITH_JSON">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
 

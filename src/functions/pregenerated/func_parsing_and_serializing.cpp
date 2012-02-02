@@ -53,9 +53,9 @@ PlanIter_t fn_serialize_3_0::codegen(
 
 void populate_context_parsing_and_serializing(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_parse_xml_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -65,9 +65,9 @@ void populate_context_parsing_and_serializing(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_parse_xml_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -78,9 +78,9 @@ void populate_context_parsing_and_serializing(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_serialize_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","serialize"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -90,9 +90,9 @@ void populate_context_parsing_and_serializing(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_serialize_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","serialize"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 

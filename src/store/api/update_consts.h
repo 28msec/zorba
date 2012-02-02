@@ -133,11 +133,13 @@ public:
           k == UP_REPLACE_ATTRIBUTE);
   }
 
+#ifdef ZORBA_WITH_JSON
   static bool isPositionalArray(UpdPrimKind k)
   {
     return (k == UP_JSON_INSERT_BEFORE ||
             k == UP_JSON_INSERT_AFTER);
   }
+#endif
 
 
 static std::string toString(UpdPrimKind k)

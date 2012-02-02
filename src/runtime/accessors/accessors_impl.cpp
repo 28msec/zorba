@@ -144,7 +144,11 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
-    if (result->isNode() || result->isJSONPair())
+    if (result->isNode()
+#ifdef ZORBA_WITH_JSON
+        || result->isJSONPair()
+#endif
+        )
     {
       itemNode.transfer(result);
 

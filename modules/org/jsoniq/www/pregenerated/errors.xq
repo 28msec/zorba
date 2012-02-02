@@ -45,6 +45,11 @@ declare variable $jerr:JSDY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0001
 :)
 declare variable $jerr:JSDY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0002");
 
+(:~
+ :error raised by object constructor
+:)
+declare variable $jerr:JSDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0003");
+
 
 declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020");
 

@@ -276,6 +276,12 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
              concat($gen:newline, $iter/@preprocessorGuard, $gen:newline)
            else 
              "",
+           $gen:newline, $gen:newline, gen:indent(2),
+           if (exists($sig/@preprocessorGuard))
+           then
+            concat($gen:newline, $sig/@preprocessorGuard, $gen:newline)
+           else
+             "",
            $gen:indent,
            '{', $gen:newline, $gen:indent, $gen:indent,
 
@@ -294,8 +300,6 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
            else
              ""
            ,
-           $gen:newline, $gen:newline, gen:indent(2),
-
            'DECL_WITH_KIND(sctx, ',
              concat(
               local:function-name($function),
@@ -335,6 +339,12 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
               'FunctionConsts::', gen:function-kind($sig) ,');',
               $gen:newline, $gen:newline, $gen:indent,
             '}', $gen:newline, $gen:newline,
+            if (exists($sig/@preprocessorGuard))
+            then
+             concat($gen:newline, "#endif", $gen:newline)
+            else
+              "",
+
              if (exists($iter/@preprocessorGuard))
              then
                concat($gen:newline, "#endif", $gen:newline)

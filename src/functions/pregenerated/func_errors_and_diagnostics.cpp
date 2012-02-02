@@ -44,9 +44,9 @@ PlanIter_t fn_error::codegen(
 
 void populate_context_errors_and_diagnostics(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_error,
         (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
         GENV_TYPESYSTEM.NONE_TYPE),
@@ -55,9 +55,9 @@ void populate_context_errors_and_diagnostics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_error,
         (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -67,9 +67,9 @@ void populate_context_errors_and_diagnostics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_error,
         (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -80,9 +80,9 @@ void populate_context_errors_and_diagnostics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_error,
         (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -94,9 +94,9 @@ void populate_context_errors_and_diagnostics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_trace,
         (createQName("http://www.w3.org/2005/xpath-functions","","trace"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 

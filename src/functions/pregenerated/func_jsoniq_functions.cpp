@@ -260,9 +260,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 {
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_parse_json,
         (createQName("http://www.jsoniq.org/functions","","parse-json"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -276,9 +276,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_name,
         (createQName("http://www.jsoniq.org/functions","","name"), 
         GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
@@ -292,9 +292,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_value,
         (createQName("http://www.jsoniq.org/functions","","value"), 
         GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
@@ -308,9 +308,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_names,
         (createQName("http://www.jsoniq.org/functions","","names"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -324,9 +324,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_pairs,
         (createQName("http://www.jsoniq.org/functions","","pairs"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -340,9 +340,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_pair,
         (createQName("http://www.jsoniq.org/functions","","pair"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -357,9 +357,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_member,
         (createQName("http://www.jsoniq.org/functions","","member"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -374,9 +374,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_flatten,
         (createQName("http://www.jsoniq.org/functions","","flatten"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -390,9 +390,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_flatten_internal,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","flatten-internal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -406,9 +406,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-item-accessor"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
@@ -423,9 +423,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_values,
         (createQName("http://www.jsoniq.org/functions","","values"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
@@ -439,9 +439,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_size,
         (createQName("http://www.jsoniq.org/functions","","size"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
@@ -455,9 +455,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_null,
         (createQName("http://www.jsoniq.org/functions","","null"), 
         GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE),
@@ -470,9 +470,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_insert_into,
         (createQName("http://www.jsoniq.org/functions","","insert-into"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -487,9 +487,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_first,
         (createQName("http://www.jsoniq.org/functions","","insert-as-first"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -504,9 +504,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_insert_after,
         (createQName("http://www.jsoniq.org/functions","","insert-after"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -522,9 +522,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_insert_before,
         (createQName("http://www.jsoniq.org/functions","","insert-before"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -540,9 +540,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_last,
         (createQName("http://www.jsoniq.org/functions","","insert-as-last"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -557,9 +557,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_delete_pair,
         (createQName("http://www.jsoniq.org/functions","","delete-pair"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -574,9 +574,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_delete_pair,
         (createQName("http://www.jsoniq.org/functions","","delete-member"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -591,9 +591,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_rename,
         (createQName("http://www.jsoniq.org/functions","","rename"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -609,9 +609,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_replace_value_in_object,
         (createQName("http://www.jsoniq.org/functions","","replace-value-in-object"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
@@ -627,9 +627,9 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #ifdef ZORBA_WITH_JSON
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_replace_value_in_object,
         (createQName("http://www.jsoniq.org/functions","","replace-value-in-array"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 

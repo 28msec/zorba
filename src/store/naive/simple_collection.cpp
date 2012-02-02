@@ -26,7 +26,9 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
-#include "store/naive/json_items.h"
+#ifdef ZORBA_WITH_JSON
+#  include "store/naive/json_items.h"
+#endif
 #include "zorbatypes/numconversions.h"
 
 namespace zorba { namespace simplestore {
