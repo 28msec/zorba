@@ -843,15 +843,38 @@ JSONRenameIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lPair;
+  store::Item_t lTarget;
+  store::Item_t lSelector;
   store::Item_t lNewName;
+  std::auto_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lPair, theChildren[0].getp(), planState);
+  consumeNext(lTarget, theChildren[0].getp(), planState);
+  consumeNext(lSelector, theChildren[1].getp(), planState);
+  consumeNext(lNewName, theChildren[2].getp(), planState);
 
-  STACK_PUSH(true, state);
+  if (!lTarget->getPair(lSelector))
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(ZED(JUDY0061_Object), lSelector->getStringValue())
+      );
+  }
+
+  if (lTarget->getPair(lNewName))
+  {
+    RAISE_ERROR(jerr::JUDY0065, loc,
+        ERROR_PARAMS(lNewName->getStringValue())
+      );
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONRename(&loc, lTarget, lSelector, lNewName);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
+
 
   STACK_END (state);
 }

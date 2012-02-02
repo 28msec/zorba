@@ -1230,16 +1230,14 @@ void PULImpl::addJSONInsertAfter(
 void PULImpl::addJSONReplaceValue(
      const QueryLoc* loc,
      store::Item_t& target,
-     store::Item_t& pos,
+     store::Item_t& selector,
      store::Item_t& newValue)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  // pos != null means target is an array
-  // otherwise it's a pair
   UpdatePrimitive* upd =
     GET_STORE().getPULFactory().createUpdJSONReplaceValue(
-      pul, loc, target, pos, newValue);
+      pul, loc, target, selector, newValue);
 
   pul->theJSONReplaceValueList.push_back(upd);
 }
@@ -1251,8 +1249,16 @@ void PULImpl::addJSONReplaceValue(
 void PULImpl::addJSONRename(
      const QueryLoc* loc,
      store::Item_t& target,
+     store::Item_t& selector,
      store::Item_t& newName)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONRename(
+      pul, loc, target, selector, newName);
+
+  pul->theJSONRenameList.push_back(upd);
 }
 #endif // ZORBA_WITH_JSON
 
@@ -1351,6 +1357,10 @@ void PULImpl::mergeUpdates(store::Item* other)
                       otherPul->theJSONReplaceValueList,
                       UP_LIST_NONE);
 
+      mergeJSONUpdateList(thisPul,
+                      thisPul->theJSONReplaceValueList,
+                      otherPul->theJSONReplaceValueList,
+                      UP_LIST_NONE);
 #endif
 
       ++thisIte;
@@ -1460,6 +1470,7 @@ void PULImpl::mergeUpdates(store::Item* other)
                   UP_LIST_NONE);
 }
 
+#ifdef ZORBA_WITH_JSON
 void PULImpl::mergeJSONUpdateList(
     CollectionPul* myPul,
     std::vector<UpdatePrimitive*>& myList,
@@ -1526,6 +1537,7 @@ void PULImpl::mergeJSONUpdateList(
   }
   otherList.clear();
 }
+#endif
 
 void PULImpl::mergeUpdateList(
     CollectionPul* myPul,
@@ -2060,6 +2072,7 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONDeleteList);
   cleanList(theJSONPositionalInsertList);
   cleanList(theJSONReplaceValueList);
+  cleanList(theJSONRenameList);
 #endif
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -2324,6 +2337,7 @@ void CollectionPul::applyUpdates()
 #ifdef ZORBA_WITH_JSON
     applyList(theJSONInsertIntoList);
     applyList(theJSONReplaceValueList);
+    applyList(theJSONRenameList);
     applyList(theJSONPositionalInsertList);
     applyList(theJSONDeleteList);
 #endif
@@ -2572,6 +2586,7 @@ void CollectionPul::undoUpdates()
     undoList(theJSONDeleteList);
     undoList(theJSONPositionalInsertList);
     undoList(theJSONReplaceValueList);
+    undoList(theJSONRenameList);
     undoList(theJSONInsertIntoList);
 #endif
 

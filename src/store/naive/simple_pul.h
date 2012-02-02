@@ -208,6 +208,7 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONDeleteList;
   std::vector<UpdatePrimitive*>      theJSONPositionalInsertList;
   std::vector<UpdatePrimitive*>      theJSONReplaceValueList;
+  std::vector<UpdatePrimitive*>      theJSONRenameList;
 #endif
 
 
@@ -277,9 +278,11 @@ public:
     UP_LIST_DELETE,
     UP_LIST_PUT,
     UP_LIST_CREATE_COLLECTION,
-    UP_LIST_CREATE_INDEX,
-    UP_LIST_JSON_POSITIONAL_INSERT,
+    UP_LIST_CREATE_INDEX
+#ifdef ZORBA_WITH_JSON
+    ,UP_LIST_JSON_POSITIONAL_INSERT,
     UP_LIST_JSON_DELETE
+#endif
   };
 
   typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
@@ -593,6 +596,7 @@ public:
   virtual void addJSONRename(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
+        store::Item_t& selector,
         store::Item_t& newName);
 #endif
 
@@ -630,11 +634,13 @@ protected:
         std::vector<UpdatePrimitive*>& otherList,
         UpdListKind listKind);
 
+#ifdef ZORBA_WITH_JSON
   void mergeJSONUpdateList(
         CollectionPul* myPul,
         std::vector<UpdatePrimitive*>& myList,
         std::vector<UpdatePrimitive*>& otherList,
         UpdListKind listKind);
+#endif
 
   void addInsertChildren(
         const QueryLoc* aQueryLoc,

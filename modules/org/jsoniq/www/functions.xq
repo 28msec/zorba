@@ -207,6 +207,8 @@ declare updating function j:delete-member(
  :
  : @param $p
  : @return
+ :
+ : @error j:JUDY0061 if the position doesn't select an existing member 
  :)
 declare updating function j:rename(
   $p as object(),

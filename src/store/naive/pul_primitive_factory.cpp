@@ -586,10 +586,23 @@ PULPrimitiveFactory::createUpdRefreshIndex(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& aTarget,
-        store::Item_t& aPos,
+        store::Item_t& aSelector,
         store::Item_t& aNewValue)
   {
-    return new UpdJSONReplaceValue(pul, aLoc, aTarget, aPos, aNewValue);
+    return new UpdJSONReplaceValue(pul, aLoc, aTarget, aSelector, aNewValue);
+  }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdJSONRename*
+  PULPrimitiveFactory::createUpdJSONRename(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& aTarget,
+        store::Item_t& aSelector,
+        store::Item_t& aNewName)
+  {
+    return new UpdJSONRename(pul, aLoc, aTarget, aSelector, aNewName);
   }
 #endif
 

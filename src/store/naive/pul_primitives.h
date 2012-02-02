@@ -1737,6 +1737,37 @@ public:
   void apply();
   void undo();
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONRename: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theSelector;
+  store::Item_t  theNewName;
+
+  UpdJSONRename(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& target,
+        store::Item_t& selector,
+        store::Item_t& newName);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_RENAME;
+  }
+
+  void apply();
+  void undo();
+};
 #endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */

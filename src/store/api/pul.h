@@ -324,6 +324,7 @@ public:
   virtual void addJSONRename(
         const QueryLoc* aQueryLoc,
         Item_t& target,
+        Item_t& selector,
         Item_t& newName) = 0;
 #endif
 

@@ -2064,6 +2064,7 @@ void UpdJSONReplaceValue::apply()
   {
     JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
     xs_integer lPos = theSelector->getIntegerValue();
+    theOldValue = const_cast<store::Item*>(lArray->operator[](lPos));
     lArray->remove(lPos);
     std::vector<store::Item_t> lNewMember;
     lNewMember.push_back(theNewValue);
@@ -2080,18 +2081,71 @@ void UpdJSONReplaceValue::undo()
     return;
   }
 
-  if (theTarget->isJSONPair())
+  if (theTarget->isJSONObject())
   {
-    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(theTarget.getp());
+    JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
+    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
+        lObject->getPair(theSelector)
+      );
     lPair->setValue(theOldValue);
   }
   else
   {
     JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+    xs_integer lPos = theSelector->getIntegerValue();
+    lArray->remove(lPos);
+    std::vector<store::Item_t> lOldMember;
+    lOldMember.push_back(theOldValue);
+    lArray->insert_before(lPos, lOldMember);
+
   }
 
   theIsApplied = false;
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONRename::UpdJSONRename(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& selector,
+      store::Item_t& newName)
+  : UpdatePrimitive(pul, loc, target),
+    theSelector(selector),
+    theNewName(newName)
+{
+  ZORBA_ASSERT(theTarget->isJSONObject());
+}
+
+void UpdJSONRename::apply()
+{
+  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
+  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
+      lObject->getPair(theSelector)
+    );
+  lPair->setName(theNewName);
+
+  theIsApplied = true;
+}
+
+void UpdJSONRename::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
+  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
+      lObject->getPair(theNewName)
+    );
+  lPair->setName(theSelector);
+
+  theIsApplied = false;
+}
+
 
 #endif
 
