@@ -151,9 +151,9 @@ bool CollectionSet::remove(
 }
 
 
-store::Iterator_t CollectionSet::names(bool dynamic) 
+store::Iterator_t CollectionSet::names(bool dynamic, bool jsoniq)
 {
-  return new NameIterator<Set>(theCollections, dynamic);
+  return new NameIterator<Set>(theCollections, dynamic, jsoniq);
 }
 
 
@@ -161,6 +161,7 @@ CollectionIterator_t CollectionSet::collections(bool dynamic)
 {
   return new CollectionIterator(&theCollections, dynamic);
 }
+
 
 // specialize the next function of the NameIterator for
 // the CollectionSet in order to be able to handle dynamic collections
@@ -173,7 +174,13 @@ NameIterator<CollectionSet::Set>::next(store::Item_t& aResult)
     {
       ++theIterator;
       continue;
-    } else
+    } 
+    else if ((*theIterator).second->isJSONIQ() != theJSONIQCollections)
+    {
+      ++theIterator;
+      continue;
+    } 
+    else
     {
       aResult = (*theIterator).first;
       ++theIterator;

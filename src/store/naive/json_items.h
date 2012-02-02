@@ -59,19 +59,21 @@ public:
 
   zstring getStringValue() const { return "null"; }
 
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
 
   store::Item* getType() const; 
 
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* collation = 0) const;
+  bool 
+  equals(
+      const store::Item* other,
+      long timezone = 0,
+      const XQPCollator* collation = 0) const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  uint32_t 
+  hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 };
 
 
@@ -89,6 +91,15 @@ public:
   JSONItem() : store::Item(JSONIQ) {}
 
   virtual ~JSONItem() {}
+
+  bool 
+  equals(
+      const store::Item* other,
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const
+  {
+    return this == other;
+  }
 };
 
 
@@ -123,11 +134,6 @@ public:
   virtual void setCollection(SimpleCollection* collection, csize pos) = 0;
 
 #if 0
-  bool equals(
-        const store::Item*,
-        long = 0,
-        const XQPCollator* = 0) const;
-
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   virtual store::Item* copy(store::Item* parent, const store::CopyMode&) const;

@@ -358,7 +358,7 @@ extern entry const dict_en[] = {
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },
   { "ZDST0048", "\"$1\": integrity constraint declaration in foreign module" },
   { "ZDST0060", "\"$1\": feature not supported; $2" },
-  { "ZDTY0001", "\"$1\": invalid node type in collection \"$2\"" },
+  { "ZDTY0001", "\"$1\": invalid item type in collection \"$2\"" },
   { "ZDTY0010", "\"$1\": index domain expression yields a non-node item" },
   { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },

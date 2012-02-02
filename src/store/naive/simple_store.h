@@ -243,7 +243,7 @@ public:
 
   void addCollection(store::Collection_t& collection);
 
-  store::Iterator_t listCollectionNames(bool dynamic);
+  store::Iterator_t listCollectionNames(bool dynamic, bool jsoniq);
 
   store::Index_t createIndex(
       const store::Item_t& qname,

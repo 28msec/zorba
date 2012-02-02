@@ -538,6 +538,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON */
 /* ---- */
+%token STRUCTURED_ITEM                  "'structured-item'"
 %token ARRAY                            "'array'"
 %token JSON_ITEM                        "'json-item'"
 %token OBJECT                           "'object'"
@@ -4935,7 +4936,11 @@ ItemType :
         }
     |   ITEM LPAR RPAR
         {
-            $$ = new ItemType( LOC(@$),true );
+            $$ = new ItemType( LOC(@$), true );
+        }
+    |   STRUCTURED_ITEM LPAR RPAR
+        {
+            $$ = new StructuredItemType(LOC(@$));
         }
     |   FunctionTest
         {
@@ -6694,6 +6699,7 @@ FUNCTION_NAME :
     |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
     |   PAIR                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pair"))); }
     |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+    |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 
 // [196]

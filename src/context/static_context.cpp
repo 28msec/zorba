@@ -331,19 +331,19 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 
 const char*
 static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+"http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS = 
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+"http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
 
 const char*
 static_context::ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DDL_FN_NS = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+"http://www.zorba-xquery.com/modules/store/jsoniq/static/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_JSONIQ_STATIC_COLLECTIONS_DML_FN_NS = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+"http://www.zorba-xquery.com/modules/store/jsoniq/static/collections/dml";
 
 #endif
 

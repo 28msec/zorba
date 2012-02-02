@@ -18,15 +18,20 @@
 #define ZORBA_RUNTIME_COLLECTIONS_COLLECTIONS_BASE_H
 
 #include "runtime/base/narybase.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 #include "context/static_context.h"
 
 #include "store/api/collection.h"
-#include "types/typeops.h"
-#include "types/typeimpl.h"
 #include "store/api/copymode.h"
 #include "store/api/store.h"
+
+#include "types/typeops.h"
+#include "types/typeimpl.h"
+
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba {
 
@@ -40,17 +45,16 @@ void checkNodeType(
     const store::Item_t& node,
     const StaticallyKnownCollection* collectionDecl,
     const QueryLoc& loc,
-    bool dyn_coll);
+    bool isDynamic,
+    bool isJSONIQ);
 
-void
-getCopyMode(
-    store::CopyMode& aCopyMode,
-    const static_context* aSctx);
+
+void getCopyMode(store::CopyMode& copyMode, const static_context* sctx);
 
 
 /*******************************************************************************
 
- ******************************************************************************/
+********************************************************************************/
 template <class Iter, class State>
 class ZorbaCollectionIteratorHelper : public NaryBaseIterator<Iter, State>
 {
@@ -61,37 +65,7 @@ protected:
 protected:
 
   virtual const StaticallyKnownCollection*
-  getCollection(
-      const static_context* aSctx,
-      const store::Item_t& aName,
-      const QueryLoc& aLoc,
-      bool isDynamic,
-      bool isJSONIQ,
-      store::Collection_t& coll) const
-  {
-    const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
-    if (collectionDecl == 0  && !isDynamic)
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-        ERROR_PARAMS( aName->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
-    }
-
-    coll = GENV_STORE.getCollection(aName, isDynamic, isJSONIQ);
-
-    if (coll == NULL)
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-        ERROR_PARAMS( aName->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
-    }
-
-    return collectionDecl;
-  }
+  getCollection(const store::Item_t& name, store::Collection_t& coll) const = 0;
 
   virtual void
   checkCollectionAndCopyNodes(
@@ -111,29 +85,21 @@ protected:
 
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
 
-    collectionDecl = getCollection(this->theSctx,
-                                   collName,
-                                   this->loc,
-                                   theIsDynamic,
-                                   theIsJSONIQ,
-                                   collection);
+    collectionDecl = getCollection(collName, collection);
 
     if (beforeOrAfter) 
     {
-      if(!this->consumeNext(targetNode,
-                            this->theChildren[this->theChildren.size()-2].getp(),
-                            planState))
+      if (!this->consumeNext(targetNode,
+                             this->theChildren[this->theChildren.size()-2].getp(),
+                             planState))
       {
         ZORBA_ASSERT(false);
       }
 
       if (!collection->findNode(targetNode.getp(), targetPos))
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
-          ERROR_PARAMS( collName->getStringValue() ),
-          ERROR_LOC( this->loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND, this->loc,
+        ERROR_PARAMS(collName->getStringValue()));
       }
     }
 
@@ -143,7 +109,13 @@ protected:
                              this->theChildren[this->theChildren.size()-1].getp(),
                              planState))
     {
-      checkNodeType(this->theSctx, node, collectionDecl, this->loc, theIsDynamic);
+      checkNodeType(this->theSctx,
+                    node,
+                    collectionDecl,
+                    this->loc,
+                    theIsDynamic,
+                    theIsJSONIQ);
+
       copyNode = node->copy(NULL, lCopyMode);
       nodes.push_back(copyNode);
     }

@@ -2782,8 +2782,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
-    RAISE_ERROR(err::XQST0070, loc,
-    ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+  {
+    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+  }
 
   // The first URILiteral in a module import must be of nonzero length
   // [err:XQST0088]
@@ -5456,10 +5457,7 @@ void* begin_visit(const AssignExpr& v)
 
   if ( !theSctx->is_feature_set(feature::scripting) )
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(v.get_location()));
   }
   return no_state;
 }
@@ -9693,9 +9691,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     if (f == NULL)
     {
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(),
-                   ZED(FunctionUndeclared_3),
-                   numArgs));
+      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
     switch (f->getKind())
@@ -11953,6 +11949,23 @@ void end_visit(const ItemType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   theTypeStack.push(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+}
+
+
+void* begin_visit(const StructuredItemType& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const StructuredItemType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  theTypeStack.push(GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE);
 }
 
 

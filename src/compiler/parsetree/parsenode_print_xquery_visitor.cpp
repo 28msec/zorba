@@ -531,15 +531,26 @@ void* begin_visit(const GeneralComp& n)
   return no_state;
 }
 
-
 DEFAULT_END_VISIT (GeneralComp)
 
-    void* begin_visit(const ItemType& n)
-    {
-      os << "item()";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ItemType)
+
+void* begin_visit(const ItemType& n)
+{
+  os << "item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT (ItemType)
+
+
+void* begin_visit(const StructuredItemType& n)
+{
+  os << "structured-item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT(StructuredItemType)
+
 
     void* begin_visit(const LetClause& n)
     {

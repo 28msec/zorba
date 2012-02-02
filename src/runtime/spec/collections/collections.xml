@@ -187,6 +187,17 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="create" prefix="jsoniq-dynamic-collections-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -202,11 +213,7 @@
 
     <zorba:method const="true" name="getCollection"
       return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -237,6 +244,10 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="delete" prefix="jsoniq-dynamic-collections-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
 
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
@@ -250,16 +261,6 @@
       <zorba:parameter type="bool" name="isDynamic" />
       <zorba:parameter type="bool" name="isJSONIQ" />
     </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection"
-      return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
 
     <zorba:member type="bool" name="theIsDynamic"/>
     <zorba:member type="bool" name="theIsJSONIQ"/>
@@ -306,12 +307,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -342,6 +340,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="insert-nodes-first" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
 
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
@@ -356,12 +360,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -392,6 +393,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="insert-nodes-last" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -405,12 +412,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -443,6 +447,13 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="insert-nodes-before" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -456,12 +467,9 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -494,6 +502,13 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="insert-nodes-after" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -510,12 +525,9 @@
     <zorba:member type="bool" name="theIsDynamic"/>
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 
@@ -554,12 +566,19 @@
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
       </zorba:methods>
+
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -583,16 +602,25 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-first" prefix="static-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-first" 
+                       prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-first" prefix="dynamic-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-first" 
+                       prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="apply-insert-nodes-first" 
+                       prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
       <zorba:methods>
@@ -608,6 +636,12 @@
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -631,16 +665,25 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-last" prefix="static-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-last" 
+                       prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-last" prefix="dynamic-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-last" 
+                       prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="apply-insert-nodes-last" 
+                       prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
       <zorba:methods>
@@ -656,6 +699,12 @@
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -679,18 +728,28 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-before" prefix="static-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-before" 
+                       prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-before" prefix="dynamic-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-before"  
+                       prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="apply-insert-nodes-before"  
+                       prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
       <zorba:methods>
@@ -707,12 +766,19 @@
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
 
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
+
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
                     brief="the nodes that have been inserted"/>
       <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
           brief="iterator over the nodes"/>
     </zorba:state>
+
 </zorba:iterator>
 
 <!--
@@ -728,18 +794,28 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-after" prefix="static-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-after" 
+                       prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-after" prefix="dynamic-collections-dml">
+      <zorba:signature localname="apply-insert-nodes-after" 
+                       prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="apply-insert-nodes-after" 
+                       prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>structured-item()</zorba:param>
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
       <zorba:methods>
@@ -755,6 +831,12 @@
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
       <zorba:parameter type="bool" name="isJSONIQ" base="true"/>
     </zorba:constructor>
+
+    <zorba:method const="true" name="getCollection" 
+                  return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
@@ -788,6 +870,11 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="delete-nodes" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>structured-item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -807,11 +894,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>
@@ -850,6 +933,17 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="delete-node-first" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="delete-nodes-first" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -867,11 +961,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>
@@ -910,6 +1000,17 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="delete-node-last" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="delete-nodes-last" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -927,11 +1028,7 @@
     <zorba:member type="bool" name="theIsJSONIQ"/>
 
     <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
       <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
       <zorba:param type="store::Collection_t&amp;" name="coll"/>
     </zorba:method>
 </zorba:iterator>
@@ -958,6 +1055,11 @@
         <zorba:output>xs:QName</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="collection-name" prefix="jsoniq-dynamic-collections-dml">
+        <zorba:param>structured-item()</zorba:param>
+        <zorba:output>xs:QName</zorba:output>
+      </zorba:signature>
+
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes value="true"/>
@@ -978,13 +1080,21 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
-      <zorba:signature localname="is-available-collection" prefix="static-collections-ddl">
+
+      <zorba:signature localname="is-available-collection" 
+                       prefix="static-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="is-available-collection"
                        prefix="dynamic-collections-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="is-available-collection"
+                       prefix="jsoniq-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -998,15 +1108,6 @@
       <zorba:parameter type="bool" name="isDynamic"/>
       <zorba:parameter type="bool" name="isJSONIQ"/>
     </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const static_context*" name="sctx"/>
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="const QueryLoc&amp;" name="loc"/>
-      <zorba:param type="bool" name="dyn_coll"/>
-      <zorba:param type="bool" name="isJSONIQ"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
 
     <zorba:member type="bool" name="theIsDynamic"/>
     <zorba:member type="bool" name="theIsJSONIQ"/>
@@ -1025,12 +1126,18 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="available-collections" prefix="static-collections-ddl">
+      <zorba:signature localname="available-collections" 
+                       prefix="static-collections-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="available-collections"
-        prefix="dynamic-collections-ddl">
+                       prefix="dynamic-collections-ddl">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="available-collections"
+                       prefix="jsoniq-dynamic-collections-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
 

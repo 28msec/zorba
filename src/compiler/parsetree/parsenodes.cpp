@@ -4197,6 +4197,13 @@ void ItemType::accept( parsenode_visitor &v ) const
 }
 
 
+void StructuredItemType::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [122] AtomicType
 // ----------------
 AtomicType::AtomicType(
