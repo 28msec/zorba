@@ -1,6 +1,10 @@
 module namespace j = "http://www.jsoniq.org/functions";
 
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+
 declare namespace jdm = "http://www.jsoniq.org/";
+
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
@@ -148,17 +152,68 @@ declare updating function j:insert-as-last(
  :   if first argument is an array or xs:string if first argument is an object)
  :)
 declare updating function j:delete(
-  $i as json-item(),
-  $selector as xs:anyAtomicType) external;
+  $j as json-item(),
+  $selector as xs:anyAtomicType)
+{
+  try {
+    typeswitch ($j)
+    case $o as object()
+      return j:delete-pair($o, $selector treat as xs:string)
+    case $a as array()
+      return j:delete-member($a, $selector treat as xs:integer)
+    default return
+      fn:error(
+        fn:QName("http://www.jsoniq.org/errors", "JUDY0062"),
+        "first argument to delete function is pair() but must be array() or object()",
+        $j)
+   } catch err:XPDY0050 {
+     fn:error(
+       fn:QName("http://www.jsoniq.org/errors", "JUDY0063"),
+       concat(
+         schema:schema-type($selector),
+         ": invalid type for second argument; should be ",
+         typeswitch ($j)
+         case object() return "xs:string"
+         default return "xs:integer"
+       ),
+       $selector
+     )
+   }
+};
 
 (:~
  :
  : @param $p
  : @return
+ :
+ : @error j:JUDY0061 if the key doesn't select an existing pair 
+ :)
+declare updating function j:delete-pair(
+  $o as object(),
+  $key as xs:string) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :
+ : @error j:JUDY0061 if the position doesn't select an existing member 
+ :)
+declare updating function j:delete-member(
+  $a as array(),
+  $pos as xs:integer) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :
+ : @error j:JUDY0061 if the position doesn't select an existing member 
  :)
 declare updating function j:rename(
-  $p as pair(),
-  $name as xs:string) external;
+  $p as object(),
+  $old-name as xs:string,
+  $new-name as xs:string) external;
 
 (:~
  :
@@ -166,15 +221,52 @@ declare updating function j:rename(
  : @return
  :)
 declare updating function j:replace-value(
-  $p as pair(),
-  $i as item()) external;
+  $j as json-item(),
+  $selector as xs:anyAtomicType,
+  $new-val as item()) 
+{
+  try {
+    typeswitch ($j)
+    case $o as object()
+      return j:replace-value-in-object($o, $selector treat as xs:string, $new-val)
+    case $a as array()
+      return j:replace-value-in-array($a, $selector treat as xs:integer, $new-val)
+    default return
+      fn:error(
+        fn:QName("http://www.jsoniq.org/errors", "JUDY0062"),
+        "first argument to replace-value function is pair() but must be array() or object()",
+        $j)
+   } catch err:XPDY0050 {
+     fn:error(
+       fn:QName("http://www.jsoniq.org/errors", "JUDY0063"),
+       concat(
+         schema:schema-type($selector),
+         ": invalid type for second argument; should be ",
+         typeswitch ($j)
+         case object() return "xs:string"
+         default return "xs:integer"
+       ),
+       $selector
+     )
+   }
+};
 
 (:~
  :
  : @param $p
  : @return
  :)
-declare updating function j:replace-value(
+declare updating function j:replace-value-in-object(
+  $o as object(),
+  $key as xs:string,
+  $new-val as item()) external;
+
+(:~
+ :
+ : @param $p
+ : @return
+ :)
+declare updating function j:replace-value-in-array(
   $a as array(),
   $pos as xs:integer,
-  $i as item()) external;
+  $new-val as item()) external;

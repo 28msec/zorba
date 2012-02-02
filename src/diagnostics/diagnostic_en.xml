@@ -2461,6 +2461,11 @@
       <value>array is target of several incompatible inserts</value>
     </diagnostic>
 
+    <diagnostic code="JUDY0065" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by upd:rename</comment>
+      <value>"$1": pair with that name already exists</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->

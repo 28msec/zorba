@@ -82,3 +82,8 @@ declare variable $jerr:JUDY0063 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0063
  : 
 :)
 declare variable $jerr:JUDY0064 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0064");
+
+(:~
+ :error raised by upd:rename
+:)
+declare variable $jerr:JUDY0065 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0065");

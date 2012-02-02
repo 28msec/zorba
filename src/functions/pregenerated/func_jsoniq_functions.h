@@ -406,11 +406,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:delete
-class fn_jsoniq_delete : public function
+//fn-jsoniq:delete-pair
+class fn_jsoniq_delete_pair : public function
 {
 public:
-  fn_jsoniq_delete(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_jsoniq_delete_pair(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -450,11 +450,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:replace-value
-class fn_jsoniq_replace_value : public function
+//fn-jsoniq:replace-value-in-object
+class fn_jsoniq_replace_value_in_object : public function
 {
 public:
-  fn_jsoniq_replace_value(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_jsoniq_replace_value_in_object(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

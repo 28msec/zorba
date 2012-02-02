@@ -1230,8 +1230,16 @@ void PULImpl::addJSONInsertAfter(
 void PULImpl::addJSONReplaceValue(
      const QueryLoc* loc,
      store::Item_t& target,
+     store::Item_t& selector,
      store::Item_t& newValue)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONReplaceValue(
+      pul, loc, target, selector, newValue);
+
+  pul->theJSONReplaceValueList.push_back(upd);
 }
 
 
@@ -1241,8 +1249,16 @@ void PULImpl::addJSONReplaceValue(
 void PULImpl::addJSONRename(
      const QueryLoc* loc,
      store::Item_t& target,
+     store::Item_t& selector,
      store::Item_t& newName)
 {
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd =
+    GET_STORE().getPULFactory().createUpdJSONRename(
+      pul, loc, target, selector, newName);
+
+  pul->theJSONRenameList.push_back(upd);
 }
 #endif // ZORBA_WITH_JSON
 
@@ -1334,8 +1350,17 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeJSONUpdateList(thisPul,
                       thisPul->theJSONDeleteList,
                       otherPul->theJSONDeleteList,
+                      UP_LIST_JSON_DELETE);
+
+      mergeJSONUpdateList(thisPul,
+                      thisPul->theJSONReplaceValueList,
+                      otherPul->theJSONReplaceValueList,
                       UP_LIST_NONE);
 
+      mergeJSONUpdateList(thisPul,
+                      thisPul->theJSONReplaceValueList,
+                      otherPul->theJSONReplaceValueList,
+                      UP_LIST_NONE);
 #endif
 
       ++thisIte;
@@ -1445,6 +1470,7 @@ void PULImpl::mergeUpdates(store::Item* other)
                   UP_LIST_NONE);
 }
 
+#ifdef ZORBA_WITH_JSON
 void PULImpl::mergeJSONUpdateList(
     CollectionPul* myPul,
     std::vector<UpdatePrimitive*>& myList,
@@ -1454,8 +1480,10 @@ void PULImpl::mergeJSONUpdateList(
   csize numUpdates = myList.size();
   csize numOtherUpdates = otherList.size();
 
+
   for (csize i = 0; i < numOtherUpdates; ++i)
   {
+    bool lInserted = false;
     UpdatePrimitive* otherUpd = otherList[i];
     store::UpdateConsts::UpdPrimKind updKind = otherUpd->getKind();
 
@@ -1476,17 +1504,40 @@ void PULImpl::mergeJSONUpdateList(
             }
           }
         }
-
         break;
+      case UP_LIST_JSON_DELETE:
+      {
+        UpdJSONDelete* lOther = static_cast<UpdJSONDelete*>(otherUpd);
+        if (!lOther->theTarget->isJSONObject())
+        {
+          for (csize j = 0; j < numUpdates; ++j)
+          {
+            UpdJSONDelete* lThis = static_cast<UpdJSONDelete*>(myList[j]);
+            if (lThis->theTarget->isJSONObject() ||
+                lThis->theDeletee->getIntegerValue() > lOther->theDeletee->getIntegerValue())
+            {
+              break;
+            }
+            myList.insert(myList.begin() + j, lOther); 
+            otherList[i] = NULL;
+            lInserted = true;
+          }
+        }
+        break;
+      }
       default:
         break;
     }
 
-    myList.push_back(otherUpd);
-    otherList[i] = NULL;
+    if (!lInserted)
+    {
+      myList.push_back(otherUpd);
+      otherList[i] = NULL;
+    }
   }
   otherList.clear();
 }
+#endif
 
 void PULImpl::mergeUpdateList(
     CollectionPul* myPul,
@@ -2020,6 +2071,8 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONInsertIntoList);
   cleanList(theJSONDeleteList);
   cleanList(theJSONPositionalInsertList);
+  cleanList(theJSONReplaceValueList);
+  cleanList(theJSONRenameList);
 #endif
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -2283,6 +2336,8 @@ void CollectionPul::applyUpdates()
 
 #ifdef ZORBA_WITH_JSON
     applyList(theJSONInsertIntoList);
+    applyList(theJSONReplaceValueList);
+    applyList(theJSONRenameList);
     applyList(theJSONPositionalInsertList);
     applyList(theJSONDeleteList);
 #endif
@@ -2530,6 +2585,8 @@ void CollectionPul::undoUpdates()
 #ifdef ZORBA_WITH_JSON
     undoList(theJSONDeleteList);
     undoList(theJSONPositionalInsertList);
+    undoList(theJSONReplaceValueList);
+    undoList(theJSONRenameList);
     undoList(theJSONInsertIntoList);
 #endif
 

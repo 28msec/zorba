@@ -795,12 +795,6 @@ JSONDeleteIterator::nextImpl(
 
   if (lTarget->isJSONObject())
   {
-    if (lSelector->getTypeCode() != store::XS_STRING)
-    {
-      RAISE_ERROR(jerr::JUDY0063, loc,
-          ERROR_PARAMS(lSelector->getType()->getStringValue(), "xs:string")
-        );
-    }
     if (!lTarget->getPair(lSelector))
     {
       RAISE_ERROR(jerr::JUDY0061, loc,
@@ -811,13 +805,6 @@ JSONDeleteIterator::nextImpl(
   }
   else if (lTarget->isJSONArray())
   {
-    if (lSelector->getTypeCode() != store::XS_INTEGER)
-    {
-      RAISE_ERROR(jerr::JUDY0063, loc,
-          ERROR_PARAMS(lSelector->getType()->getStringValue(), "xs:integer")
-        );
-    }
-
     if (lSelector->getIntegerValue() <= xs_integer::zero())
     {
       RAISE_ERROR(jerr::JUDY0061, loc,
@@ -838,10 +825,6 @@ JSONDeleteIterator::nextImpl(
        );
     }
   }
-  else
-  {
-    RAISE_ERROR_NO_PARAMS(jerr::JUDY0062, loc);
-  }
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
   pul->addJSONDelete(&loc, lTarget, lSelector);
@@ -860,12 +843,38 @@ JSONRenameIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lTarget;
+  store::Item_t lSelector;
+  store::Item_t lNewName;
+  std::auto_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lTarget, theChildren[0].getp(), planState);
+  consumeNext(lSelector, theChildren[1].getp(), planState);
+  consumeNext(lNewName, theChildren[2].getp(), planState);
+
+  if (!lTarget->getPair(lSelector))
+  {
+    RAISE_ERROR(jerr::JUDY0061, loc,
+        ERROR_PARAMS(ZED(JUDY0061_Object), lSelector->getStringValue())
+      );
+  }
+
+  if (lTarget->getPair(lNewName))
+  {
+    RAISE_ERROR(jerr::JUDY0065, loc,
+        ERROR_PARAMS(lNewName->getStringValue())
+      );
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONRename(&loc, lTarget, lSelector, lNewName);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
+
 
   STACK_END (state);
 }
@@ -878,12 +887,67 @@ JSONReplaceValueIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t lTarget;
+  store::Item_t lSelector;
+  store::Item_t lNewValue;
+  std::auto_ptr<store::PUL> pul;
+  store::CopyMode lCopyMode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  STACK_PUSH(true, state);
+  consumeNext(lTarget, theChildren[0].getp(), planState);
+  consumeNext(lSelector, theChildren[1].getp(), planState);
+  consumeNext(lNewValue, theChildren[2].getp(), planState);
+
+  if (lTarget->isJSONObject())
+  {
+    if (!lTarget->getPair(lSelector))
+    {
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(ZED(JUDY0061_Object), lSelector->getStringValue())
+        );
+    }
+  }
+  else if (lTarget->isJSONArray())
+  {
+    if (lSelector->getIntegerValue() <= xs_integer::zero())
+    {
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(
+            ZED(JUDY0061_ArrayNegativeOrZero),
+            lSelector->getIntegerValue()
+          )
+       );
+    }
+    else if (lTarget->getSize() < lSelector->getIntegerValue())
+    {
+      RAISE_ERROR(jerr::JUDY0061, loc,
+          ERROR_PARAMS(
+            ZED(JUDY0061_ArrayOutOfBounds),
+            lSelector->getIntegerValue(),
+            lTarget->getSize()
+          )
+       );
+    }
+  }
+
+  if (lNewValue->isNode() ||
+      lNewValue->isJSONObject() ||
+      lNewValue->isJSONArray())
+  {
+    lCopyMode.set(true, 
+      theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+      theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+      theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+    lNewValue = lNewValue->copy(NULL, lCopyMode);
+  }
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  pul->addJSONReplaceValue(&loc, lTarget, lSelector, lNewValue);
+
+  result = pul.release();
+  STACK_PUSH(result != NULL, state);
 
   STACK_END (state);
 }

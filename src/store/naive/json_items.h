@@ -241,22 +241,22 @@ public:
 
   virtual void
   insert_before(
-      const store::Item_t& aTarget,
+      const xs_integer& aPos,
       const std::vector<store::Item_t>& members) = 0;
 
   virtual void
   insert_after(
-      const store::Item_t& aTarget,
+      const xs_integer& aPos,
       const std::vector<store::Item_t>& members) = 0;
 
   virtual void
-  remove(const store::Item_t& aValue) = 0;
+  remove(const xs_integer& aPos) = 0;
 
   virtual xs_integer
   getSize() const = 0;
 
   virtual const store::Item*
-  operator[](xs_integer&) const = 0;
+  operator[](const xs_integer&) const = 0;
 
   virtual SimpleCollection* getCollection() const = 0;
 
@@ -333,27 +333,24 @@ public:
   virtual void
   push_front(const std::vector<store::Item_t>& members);
 
-  // pointer comparison is used for the target
   virtual void
   insert_before(
-      const store::Item_t& aTarget,
+      const xs_integer& aPos,
       const std::vector<store::Item_t>& members);
 
-  // pointer comparison is used for the target
   virtual void
   insert_after(
-      const store::Item_t& aTarget,
+      const xs_integer& aPos,
       const std::vector<store::Item_t>& members);
 
-  // pointer comparison is used for the value
   virtual void
-  remove(const store::Item_t& aValue);
+  remove(const xs_integer& aPos);
 
   virtual xs_integer
   getSize() const { return theContent.size(); }
 
   virtual const store::Item*
-  operator[](xs_integer&) const;
+  operator[](const xs_integer&) const;
 
   virtual store::Iterator_t
   getMembers() const;
@@ -369,7 +366,10 @@ public:
 
 protected:
   void
-  add(MembersIter& aTargetPos, const std::vector<store::Item_t>& aNewMembers);
+  add(uint64_t aTargetPos, const std::vector<store::Item_t>& aNewMembers);
+
+  static uint64_t
+  cast(const xs_integer& i);
 };
 
 

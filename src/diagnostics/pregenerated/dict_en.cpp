@@ -122,6 +122,9 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_JSON)
   { "JUDY0064", "array is target of several incompatible inserts" },
 #endif
+#if defined(ZORBA_WITH_JSON)
+  { "JUDY0065", "\"$1\": pair with that name already exists" },
+#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
