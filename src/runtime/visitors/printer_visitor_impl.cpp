@@ -192,8 +192,7 @@ void PrinterVisitor::beginVisit ( const TreatIterator& a )
   thePrinter.startBeginVisit("TreatIterator", ++theId);
   if (a.theCheckPrime)
     thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
-  thePrinter.addAttribute("quant", TypeOps::decode_quantifier
-      (a.theQuantifier));
+  thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }

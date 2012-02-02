@@ -205,7 +205,7 @@ ReadTextFunction::evaluate(
   
   zorba::Item lResult;
   std::auto_ptr<std::ifstream> lInStream;
-  if (lEncoding != "UTF-8")
+  if (lEncoding != "UTF-8" && lEncoding != "ASCII")
   {
     try {
       lInStream = std::auto_ptr<std::ifstream>(

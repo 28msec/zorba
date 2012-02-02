@@ -27,8 +27,8 @@
 namespace zorba {
 namespace internal {
   typedef passthru_streambuf transcode_streambuf;
-}
-}
+} // namespace internal
+} // namespace zorba
 
 #else
 
@@ -36,8 +36,8 @@ namespace internal {
 namespace zorba {
 namespace internal {
   typedef icu_streambuf transcode_streambuf;
-}
-}
+} // namespace internal
+} // namespace zorba
 
 #endif /* ZORBA_NO_UNICODE */
 

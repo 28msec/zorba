@@ -65,21 +65,6 @@ typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
 class ZORBA_DLL_PUBLIC transcode_streambuf : public std::streambuf {
 public:
   /**
-   * Transcoding %exception class.  Instances of this %exception class (or
-   * classes derived form this class) are thrown if there is an error during
-   * transcoding.  For example, you are trying to convert a Unicode character
-   * to ISO-8859-1 that is not supported by that encoding.
-   */
-  class exception : public std::exception {
-  public:
-    exception( std::string const &message );
-    ~exception() throw();
-    char const* what() const throw();
-  private:
-    std::string message_;
-  };
-
-  /**
    * Constructs a %transcode_streambuf.
    *
    * @param charset The name of the character encoding to convert from/to.
@@ -95,9 +80,17 @@ public:
   ~transcode_streambuf();
 
   /**
+   * Checks whether the given character set is supported for transcoding.
+   *
+   * @param charset The name of the character encoding to check.
+   * @return \c true only if the character encoding is supported.
+   */
+  static bool is_supported( char const *charset );
+
+  /**
    * Gets the original streambuf.
    *
-   * @return Returns said streambuf.
+   * @return said streambuf.
    */
   std::streambuf* orig_streambuf() const {
     return proxy_buf_->original();
@@ -138,8 +131,6 @@ private:
 template<class StreamType>
 class transcode_stream : public StreamType {
 public:
-  typedef transcode_streambuf::exception exception;
-
   /**
    * Constructs a %transcode_stream.
    *

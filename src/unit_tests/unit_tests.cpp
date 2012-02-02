@@ -37,13 +37,21 @@ namespace zorba {
      * ADD NEW UNIT TESTS HERE
      */
     void initializeTestList() {
+      libunittests["string"] = test_string;
       libunittests["uri"] = runUriTest;
 #ifndef ZORBA_NO_UNICODE
       libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_UNICODE */
+      libunittests["unique_ptr"] = test_unique_ptr;
+#ifndef ZORBA_NO_FULL_TEXT
+      libunittests["stemmer"] = test_stemmer;
+      libunittests["thesaurus"] = test_thesaurus;
+      libunittests["tokenizer"] = test_tokenizer;
+#endif /* ZORBA_NO_FULL_TEXT */
+
 #ifdef ZORBA_WITH_DEBUGGER
 //      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
-#endif
+#endif /* ZORBA_WITH_DEBUGGER */
     }
 
     int runUnitTest(int argc, char* argv[]) {
