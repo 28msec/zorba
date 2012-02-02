@@ -5,7 +5,6 @@ test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
 test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-013
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-904
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-031
 test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-037
@@ -78,3 +77,4 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
+
