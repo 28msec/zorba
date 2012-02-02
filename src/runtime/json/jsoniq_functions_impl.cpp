@@ -375,8 +375,8 @@ array:
 
       RAISE_ERROR(err::XPTY0004, loc, 
       ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
-                   type,
-                   GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+                   type->toSchemaString(),
+                   GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
     }
 
     result = input->getMember(selector);
@@ -394,8 +394,8 @@ object:
 
       RAISE_ERROR(err::XPTY0004, loc, 
       ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
-                   type,
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE));
+                   type->toSchemaString(),
+                   GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
     }
 
     result = input->getPair(selector);
@@ -417,7 +417,7 @@ object:
       xqtref_t type = tm->create_value_type(input, loc);
 
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_json), type));
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_json), type->toSchemaString()));
     }
   }
 
