@@ -803,7 +803,7 @@ void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
 
 flwor_clause_t materialize_clause::clone(expr::substitution_t& subst) const
 {
-  ZORBA_ASSERT(false);
+  return new materialize_clause(theContext, get_loc());
 }
 
 

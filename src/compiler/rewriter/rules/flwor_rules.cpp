@@ -627,6 +627,10 @@ static bool safe_to_fold_single_use(
     {
       // TODO
     }
+    else if (kind == flwor_clause::materialize_clause)
+    {
+      // TODO
+    }
     else
     {
       ZORBA_ASSERT(false);
