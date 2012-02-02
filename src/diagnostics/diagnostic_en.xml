@@ -2408,6 +2408,11 @@
       <value>JSON object cannot appear as input to an XML constructor</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by object constructor</comment>
+      <value>"$1": pair with the same name already exists in object</value>
+    </diagnostic>
+
     <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>
         This error maybe raised by the json:size function if the input to
