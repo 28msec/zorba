@@ -71,6 +71,14 @@ public:
    */
   ~icu_streambuf();
 
+  /**
+   * Checks whether the given character set is supported for transcoding.
+   *
+   * @param charset The name of the character encoding to check.
+   * @return \c true only if the character encoding is supported.
+   */
+  static bool is_supported( char const *charset );
+
 protected:
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
   pos_type seekpos( pos_type, std::ios_base::openmode );

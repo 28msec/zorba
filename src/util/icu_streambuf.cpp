@@ -101,6 +101,16 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
   return conv;
 }
 
+bool icu_streambuf::is_supported( char const *charset ) {
+  try {
+    ucnv_close( create_conv( charset ) );
+    return true;
+  }
+  catch ( invalid_argument const& ) {
+    return false;
+  }
+}
+
 icu_streambuf::pos_type icu_streambuf::seekoff( off_type o, ios_base::seekdir d,
                                                 ios_base::openmode m ) {
   clear();

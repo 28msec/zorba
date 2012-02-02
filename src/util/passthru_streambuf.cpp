@@ -37,6 +37,15 @@ void passthru_streambuf::imbue( std::locale const &loc ) {
   original()->pubimbue( loc );
 }
 
+bool passthru_streambuf::is_supported( char const *cc_charset ) {
+  zstring charset( cc_charset );
+  ascii::trim_whitespace( charset );
+  ascii::to_upper( charset );
+  return charset == "ASCII"
+      || charset == "US-ASCII"
+      || charset == "UTF-8";
+}
+
 passthru_streambuf::pos_type
 passthru_streambuf::seekoff( off_type o, ios_base::seekdir d,
                              ios_base::openmode m ) {

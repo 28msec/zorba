@@ -80,9 +80,17 @@ public:
   ~transcode_streambuf();
 
   /**
+   * Checks whether the given character set is supported for transcoding.
+   *
+   * @param charset The name of the character encoding to check.
+   * @return \c true only if the character encoding is supported.
+   */
+  static bool is_supported( char const *charset );
+
+  /**
    * Gets the original streambuf.
    *
-   * @return Returns said streambuf.
+   * @return said streambuf.
    */
   std::streambuf* orig_streambuf() const {
     return proxy_buf_->original();

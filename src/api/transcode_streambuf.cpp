@@ -38,6 +38,10 @@ void transcode_streambuf::imbue( std::locale const &loc ) {
   proxy_buf_->pubimbue( loc );
 }
 
+bool transcode_streambuf::is_supported( char const *charset ) {
+  return internal::transcode_streambuf::is_supported( charset );
+}
+
 transcode_streambuf::pos_type
 transcode_streambuf::seekoff( off_type o, ios_base::seekdir d,
                              ios_base::openmode m ) {
