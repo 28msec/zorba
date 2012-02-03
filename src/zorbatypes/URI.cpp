@@ -99,6 +99,18 @@ void URI::decode_file_URI(const zstring& uri, zstring& filepath)
     zstring tmp(uri.c_str() + 8);
     uri::decode(tmp, &filepath);
   }
+  else if (uri.compare(0, 6, "file:/") == 0 && //JAVA Exception for File URIs without Authority
+          ((uri.compare(7, 1, ":") == 0) || (uri.compare(7, 4, "%3A/") == 0))) 
+  {
+    zstring tmp(uri.c_str() + 6);
+    uri::decode(tmp, &filepath);
+  }
+  else if (uri.compare(0, 17, "file://localhost/") == 0 && 
+      ((uri.compare(18, 1, ":") == 0) || (uri.compare(18, 4, "%3A/") == 0))) 
+  {
+    zstring tmp(uri.c_str() + 17);
+    uri::decode(tmp, &filepath);
+  }
   else
 #endif
     if (uri.compare(0, 8, "file:///") == 0) 
@@ -621,9 +633,13 @@ void URI::initialize(const zstring& uri, bool have_base)
    * Authority
    * two slashes means generic URI syntax, so we get the authority
    */
-  if (lTrimmedURI.compare(lIndex, 2, "//") == 0) 
+  if ( (lTrimmedURI.compare(lIndex, 2, "//") == 0) ||
+        // allow JAVA FILE constructs without authority, i.e.: file:/D:/myFile 
+       (ZSTREQ(theScheme, "file") && (lTrimmedURI.compare(lIndex, 1, "/") == 0)))
   {
-    lIndex += 2;
+    if ((lTrimmedURI.compare(lIndex, 2, "//") == 0)) {
+      lIndex += 2;
+    }
     if (lIndex >= lTrimmedURILength)
     {
       throw XQUERY_EXCEPTION(
