@@ -65,7 +65,7 @@ declare function j:member($o as array(), $p as xs:integer) as item()? external;
  : @param $j
  : @return
  :)
-declare function j:size($j as json-item()) as item()* external;
+declare function j:size($j as json-item()) as xs:integer external;
 
 (:~
  :
