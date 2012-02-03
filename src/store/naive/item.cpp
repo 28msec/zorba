@@ -368,7 +368,7 @@ zstring Item::getStringValue() const
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), "string-value",
       getType()->getStringValue()
     )
   );
@@ -380,7 +380,7 @@ void Item::getStringValue2(zstring& val) const
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), "string-value",
       getType()->getStringValue()
     )
   );
