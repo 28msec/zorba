@@ -249,11 +249,11 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
     streamsize const get = min( (streamsize)(sizeof ebuf), size );
     if ( streamsize const got = original()->sgetn( ebuf, get ) ) {
       char const *from = ebuf;
-      char_type const *const to_before = to;
+      char_type const *const to_orig = to;
       int_type const peek = original()->sgetc();
       bool const flush = traits_type::eq_int_type( peek, traits_type::eof() );
       to_utf8( &from, from + got, &to, to_end, flush );
-      streamsize const n = to - to_before;
+      streamsize const n = to - to_orig;
       size -= n, return_size += n;
       if ( flush )
         break;
@@ -276,13 +276,13 @@ streamsize icu_streambuf::xsputn( char_type const *from, streamsize size ) {
   char const *const to_end = to + sizeof ebuf;
 
   while ( size > 0 ) {
-    char_type const *const from_before = from;
+    char_type const *const from_orig = from;
     to_external( &from, from_end, &to, to_end );
     streamsize n = to - ebuf;
     if ( n && !original()->sputn( ebuf, n ) )
       break;
     to = ebuf;
-    n = from - from_before;
+    n = from - from_orig;
     size -= n, return_size += n;
   }
   return return_size;
