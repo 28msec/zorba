@@ -69,6 +69,11 @@ declare variable $jerr:JUDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0060
 declare variable $jerr:JUDY0061 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0061");
 
 (:~
+ :objects or arrays don't have a typed value
+:)
+declare variable $jerr:JSTY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JSTY0001");
+
+(:~
  :error raised by upd:delete if the argument is not an object or array
 :)
 declare variable $jerr:JUDY0062 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0062");

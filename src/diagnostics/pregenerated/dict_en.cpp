@@ -111,6 +111,9 @@ extern entry const dict_en[] = {
   { "JSDY0040", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JSTY0001", "\"$1\": does not have a typed value" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JUDY0060", "\"$1\": pair already exists" },
 #endif
 #if defined(ZORBA_WITH_JSON)

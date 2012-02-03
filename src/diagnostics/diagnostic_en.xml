@@ -2446,6 +2446,11 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="JSTY0001" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a typed value</comment>
+      <value>"$1": does not have a typed value</value>
+    </diagnostic>
+
     <diagnostic code="JUDY0062" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by upd:delete if the argument is not an object or array</comment>
       <value>first argument to delete function is pair() but must be array or object</value>

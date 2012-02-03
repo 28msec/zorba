@@ -187,6 +187,13 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       STACK_PUSH(true, state);
     }
+#ifdef ZORBA_WITH_JSON
+    else if (result->isJSONItem())
+    {
+			RAISE_ERROR(jerr::JSTY0001, loc,
+      ERROR_PARAMS(result->isJSONObject()?"object()":"array()"));
+    }
+#endif
     else //(result->isFunction())
     {
 			RAISE_ERROR(err::FOTY0013, loc,
