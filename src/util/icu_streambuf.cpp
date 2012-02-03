@@ -211,8 +211,8 @@ icu_streambuf::int_type icu_streambuf::underflow() {
       if ( traits_type::eq_int_type( c, traits_type::eof() ) )
         return traits_type::eof();
 
-      char const ext_byte = traits_type::to_char_type( c );
-      char const *from = &ext_byte;
+      char const ebyte = traits_type::to_char_type( c );
+      char const *from = &ebyte;
 
       to_utf8( &from, from + 1, &to, to_end );
       if ( to > g_.utf8_char_ ) {
