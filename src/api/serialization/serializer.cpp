@@ -39,7 +39,8 @@
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
 #include "store/api/item.h"
-
+#include <store/api/item_factory.h>
+#include <store/api/copymode.h>
 
 namespace zorba {
 
@@ -948,27 +949,55 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     emit_json_pair(item, depth);
   }
   else if (item->isAtomic()) {
-    // QQQ any easier/more direct way to determine simple type?
-    store::Item* type = item->getType();
-    if (!(type->getNamespace().compare(XML_SCHEMA_NS))) {
-      const zstring& tname = type->getLocalName();
-      if (tname == "string") {
-        // QQQ need to escape here
-        tr << '"' << item->getStringValue() << '"';
+    store::SchemaTypeCode type = item->getTypeCode();
+    switch (type) {
+    case store::XS_STRING:
+      // QQQ need to escape the string here
+      tr << '"' << item->getStringValue() << '"';
+      break;
+
+    case store::XS_DOUBLE:
+    case store::XS_FLOAT:
+      if (item->isNaN()) {
+        emit_jsoniq_value("number", "NaN", depth);
+        break;
       }
-      else if (tname == "double" || tname == "float") {
-        // QQQ need to check for NaN and Inf here
-        tr << item->getStringValue();
+      else if (item->isPosOrNegInf()) {
+        emit_jsoniq_value("number", "Infinity", depth);
+        break;
       }
-      else if (tname == "decimal" || tname == "integer") {
-        // QQQ what about int? nonNegativeInteger? etc. Not explicitly
-        // mentioned by JSONiq spec...
-        tr << item->getStringValue();
-      }
-      else {
-        // QQQ output the "JSONiq value" object here
-        tr << "((unknown type " << tname << "))";
-      }
+      // else fall through
+    case store::XS_INTEGER:
+    case store::XS_DECIMAL:
+    case store::XS_NON_POSITIVE_INTEGER:
+    case store::XS_NEGATIVE_INTEGER:
+    case store::XS_LONG:
+    case store::XS_INT:
+    case store::XS_SHORT:
+    case store::XS_BYTE:
+    case store::XS_NON_NEGATIVE_INTEGER:
+    case store::XS_UNSIGNED_LONG:
+    case store::XS_UNSIGNED_INT:
+    case store::XS_UNSIGNED_SHORT:
+    case store::XS_UNSIGNED_BYTE:
+    case store::XS_POSITIVE_INTEGER:
+      // All numerics get serialized the same way
+      tr << item->getStringValue();
+      break;
+
+    case store::XS_BOOLEAN:
+      tr << (item->getBooleanValue() ? "true" : "false");
+      break;
+
+    case store::JDM_NULL:
+      tr << "null";
+      break;
+
+    default: {
+      emit_jsoniq_value(item->getType()->getStringValue(),
+                        item->getStringValue(), depth);
+      break;
+    }
     }
   }
 }
@@ -1044,6 +1073,49 @@ void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
   emit_json_item(pair->getName(), depth);
   tr << " : ";
   emit_json_item(pair->getValue(), depth);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_jsoniq_value
+    (zstring type, zstring value, int depth)
+{
+  // Create items for constant strings, if not already done
+  if (!theJsoniqValueName) {
+    zstring jsoniqvaluestring("JSONiq value");
+    zstring typestring("type");
+    zstring valuestring("value");
+    GENV_ITEMFACTORY->createString(theJsoniqValueName, jsoniqvaluestring);
+    GENV_ITEMFACTORY->createString(theTypeName, typestring);
+    GENV_ITEMFACTORY->createString(theValueName, valuestring);
+  }
+
+  // Create the inner JSON object
+  store::Item_t inner;
+  GENV_ITEMFACTORY->createJSONObject(inner);
+  // Inner object contains two pairs
+  store::Item_t typeitem, valueitem;
+  store::Item_t typepair, valuepair;
+  GENV_ITEMFACTORY->createString(typeitem, type);
+  GENV_ITEMFACTORY->createString(valueitem, value);
+  GENV_ITEMFACTORY->createJSONObjectPair(typepair, theTypeName, typeitem);
+  GENV_ITEMFACTORY->createJSONObjectPair(valuepair, theValueName, valueitem);
+
+  // "Copy" pairs into object
+  store::CopyMode noCopy;
+  noCopy.theDoCopy = false;
+  typepair->copy(inner.getp(), noCopy);
+  valuepair->copy(inner.getp(), noCopy);
+
+  // Create the outer JSON object with one pair
+  store::Item_t outer;
+  GENV_ITEMFACTORY->createJSONObject(outer);
+  store::Item_t outerpair;
+  GENV_ITEMFACTORY->createJSONObjectPair(outerpair, theJsoniqValueName, inner);
+  outerpair->copy(outer, noCopy);
+
+  emit_json_object(outer, depth);
 }
 
 
