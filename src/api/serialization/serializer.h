@@ -364,6 +364,11 @@ protected:
 
     void emit_json_value(store::Item* value, int depth);
 
+    void emit_jsoniq_value(zstring type, zstring value, int depth);
+
+    store::Item_t theJsoniqValueName;
+    store::Item_t theTypeName;
+    store::Item_t theValueName;
   };
 
 
