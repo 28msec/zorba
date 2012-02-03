@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.2
 
   * The core parse-xml module is now able to parse input files in a streaming mode. A number of new options have also been added.
+  * LibXml2 version 2.7.0 or higher is now required in order to build Zorba.
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
   * Added external function annotations %ann:propagates-input-nodes and 
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
