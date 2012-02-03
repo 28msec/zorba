@@ -279,7 +279,7 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS,
                                           "parse");
 
     // create a streamable string item
@@ -314,7 +314,7 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS,
                                           "parse");
 
     // create a streamable string item

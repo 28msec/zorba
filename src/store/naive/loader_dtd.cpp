@@ -239,6 +239,7 @@ store::Item_t FragmentXmlLoader::loadXml(
       }
 
       // Initialize the parser input (only filename and the pointer to the current char)
+      theFragmentStream->theBuffer[0] = ' '; // This assignment is needed for LibXml2-2.7.6, which tries to read the buffer when xmlPushInput() is called
       input->cur = (xmlChar*)(theFragmentStream->theBuffer);
       input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
       xmlPushInput(theFragmentStream->ctxt, input);
