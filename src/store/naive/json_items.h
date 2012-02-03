@@ -205,6 +205,15 @@ public:
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
   void setCollection(SimpleCollection* collection, csize pos);
@@ -359,6 +368,15 @@ public:
   getMember(const store::Item_t& aPosition) const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 

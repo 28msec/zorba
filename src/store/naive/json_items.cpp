@@ -209,6 +209,46 @@ store::Item* SimpleJSONObject::copy(
 /******************************************************************************
 
 *******************************************************************************/
+zstring
+SimpleJSONObject::getStringValue() const
+{
+  throw ZORBA_EXCEPTION( jerr::JSTY0002, ERROR_PARAMS( "object()" ) );
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONObject::getStringValue2(zstring& val) const
+{
+  val = getStringValue();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONObject::appendStringValue(zstring& buf) const
+{
+  buf = getStringValue();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+{
+  throw ZORBA_EXCEPTION( jerr::JSTY0001, ERROR_PARAMS( "object()" ) );
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 SimpleJSONObject::PairIterator::~PairIterator() 
 {
 }
@@ -533,6 +573,46 @@ store::Item* SimpleJSONArray::copy(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+zstring
+SimpleJSONArray::getStringValue() const
+{
+  throw ZORBA_EXCEPTION( jerr::JSTY0002, ERROR_PARAMS( "array()" ) );
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::getStringValue2(zstring& val) const
+{
+  val = getStringValue();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::appendStringValue(zstring& buf) const
+{
+  buf = getStringValue();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+{
+  throw ZORBA_EXCEPTION( jerr::JSTY0001, ERROR_PARAMS( "array()" ) );
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -607,7 +687,8 @@ SimpleJSONObjectPair::getTypedValue(
     store::Iterator_t& iter) const
 {
   iter = NULL;
-  val = theValue;
+  val = NULL;
+  theValue->getTypedValue(val, iter);
 }
 
 

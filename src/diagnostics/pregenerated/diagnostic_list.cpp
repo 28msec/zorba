@@ -1177,6 +1177,12 @@ JSONiqErrorCode JUDY0060( "JUDY0060" );
 JSONiqErrorCode JUDY0061( "JUDY0061" );
 
 
+JSONiqErrorCode JSTY0001( "JSTY0001" );
+
+
+JSONiqErrorCode JSTY0002( "JSTY0002" );
+
+
 JSONiqErrorCode JUDY0062( "JUDY0062" );
 
 
