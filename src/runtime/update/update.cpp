@@ -845,7 +845,11 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       const CopyClause& copyClause = theCopyClauses[i];
 
       if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState) ||
-          !lCopyNode->isNode())
+          (!lCopyNode->isNode()
+#ifdef ZORBA_WITH_JSON
+           && !lCopyNode->isJSONItem()
+#endif
+          ))
       {
         throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
       }
