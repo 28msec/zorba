@@ -37,13 +37,17 @@ void passthru_streambuf::imbue( std::locale const &loc ) {
   original()->pubimbue( loc );
 }
 
-bool passthru_streambuf::is_supported( char const *cc_charset ) {
+bool passthru_streambuf::is_necessary( char const *cc_charset ) {
   zstring charset( cc_charset );
   ascii::trim_whitespace( charset );
   ascii::to_upper( charset );
-  return charset == "ASCII"
-      || charset == "US-ASCII"
-      || charset == "UTF-8";
+  return charset != "ASCII"
+      && charset != "US-ASCII"
+      && charset != "UTF-8";
+}
+
+bool passthru_streambuf::is_supported( char const *cc_charset ) {
+  return !is_necessary( charset );
 }
 
 passthru_streambuf::pos_type

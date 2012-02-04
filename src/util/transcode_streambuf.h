@@ -22,24 +22,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef ZORBA_NO_UNICODE
-
-#include "passthru_streambuf.h"
-namespace zorba {
-namespace internal {
-  typedef passthru_streambuf transcode_streambuf;
-} // namespace internal
-} // namespace zorba
-
+# include "passthru_streambuf.h"
 #else
+# include "icu_streambuf.h"
+#endif /* ZORBA_NO_UNICODE */
 
-#include "icu_streambuf.h"
 namespace zorba {
 namespace internal {
-  typedef icu_streambuf transcode_streambuf;
+namespace transcode {
+
+#ifdef ZORBA_NO_UNICODE
+typedef passthru_streambuf streambuf;
+#else
+typedef icu_streambuf streambuf;
+#endif /* ZORBA_NO_UNICODE */
+
+} // namespace transcode
 } // namespace internal
 } // namespace zorba
-
-#endif /* ZORBA_NO_UNICODE */
 
 ///////////////////////////////////////////////////////////////////////////////
 

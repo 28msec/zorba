@@ -72,6 +72,16 @@ public:
   ~icu_streambuf();
 
   /**
+   * Checks whether it would be necessary to transcode from the given character
+   * encoding to UTF-8.
+   *
+   * @param charset The name of the character encoding to check.
+   * @return \c true only if t would be necessary to transcode from the given
+   * character encoding to UTF-8.
+   */
+  static bool is_necessary( char const *charset );
+
+  /**
    * Checks whether the given character set is supported for transcoding.
    *
    * @param charset The name of the character encoding to check.

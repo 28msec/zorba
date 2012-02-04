@@ -204,21 +204,19 @@ ReadTextFunction::evaluate(
   }
   
   zorba::Item lResult;
-  std::auto_ptr<std::ifstream> lInStream;
-  if (lEncoding != "UTF-8" && lEncoding != "ASCII")
+  std::unique_ptr<std::ifstream> lInStream;
+  if ( transcode::is_necessary( lEncoding.c_str() ) )
   {
     try {
-      lInStream = std::auto_ptr<std::ifstream>(
-          new transcode_stream<std::ifstream>(lEncoding.c_str())
-        );
-    } catch (std::invalid_argument& e)
+      lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
+    } catch (std::invalid_argument const& e)
     {
       raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
     }
   }
   else
   {
-    lInStream = std::auto_ptr<std::ifstream>(new std::ifstream());
+    lInStream.reset( new std::ifstream() );
   }
   lFile->openInputStream(*lInStream.get(), false, true);
   lResult = theModule->getItemFactory()->createStreamableString(
@@ -738,3 +736,4 @@ AppendBinaryFunction::isBinary() const {
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::filemodule::FileModule();
 }
+/* vim:set et sw=2 ts=2: */

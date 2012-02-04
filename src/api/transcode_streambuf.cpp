@@ -21,77 +21,82 @@
 using namespace std;
 
 namespace zorba {
+namespace transcode {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-transcode_streambuf::transcode_streambuf( char const *charset,
-                                          streambuf *orig ) :
-  proxy_buf_( new internal::transcode_streambuf( charset, orig ) )
+streambuf::streambuf( char const *charset, std::streambuf *orig ) :
+  proxy_buf_( new internal::transcode::streambuf( charset, orig ) )
 {
 }
 
-transcode_streambuf::~transcode_streambuf() {
+streambuf::~streambuf() {
   // out-of-line since it's virtual
 }
 
-void transcode_streambuf::imbue( std::locale const &loc ) {
+void streambuf::imbue( std::locale const &loc ) {
   proxy_buf_->pubimbue( loc );
 }
 
-bool transcode_streambuf::is_supported( char const *charset ) {
-  return internal::transcode_streambuf::is_supported( charset );
-}
-
-transcode_streambuf::pos_type
-transcode_streambuf::seekoff( off_type o, ios_base::seekdir d,
-                             ios_base::openmode m ) {
+streambuf::pos_type streambuf::seekoff( off_type o, ios_base::seekdir d,
+                                        ios_base::openmode m ) {
   return proxy_buf_->pubseekoff( o, d, m );
 }
 
-transcode_streambuf::pos_type
-transcode_streambuf::seekpos( pos_type p, ios_base::openmode m ) {
+streambuf::pos_type streambuf::seekpos( pos_type p, ios_base::openmode m ) {
   return proxy_buf_->pubseekpos( p, m );
 }
 
-streambuf* transcode_streambuf::setbuf( char_type *p, streamsize s ) {
+std::streambuf* streambuf::setbuf( char_type *p, streamsize s ) {
   proxy_buf_->pubsetbuf( p, s );
   return this;
 }
 
-streamsize transcode_streambuf::showmanyc() {
+streamsize streambuf::showmanyc() {
   return proxy_buf_->in_avail();
 }
 
-int transcode_streambuf::sync() {
+int streambuf::sync() {
   return proxy_buf_->pubsync();
 }
 
-transcode_streambuf::int_type transcode_streambuf::overflow( int_type c ) {
+streambuf::int_type streambuf::overflow( int_type c ) {
   return proxy_buf_->sputc( c );
 }
 
-transcode_streambuf::int_type transcode_streambuf::pbackfail( int_type c ) {
+streambuf::int_type streambuf::pbackfail( int_type c ) {
   return proxy_buf_->sputbackc( traits_type::to_char_type( c ) );
 }
 
-transcode_streambuf::int_type transcode_streambuf::uflow() {
+streambuf::int_type streambuf::uflow() {
   return proxy_buf_->sbumpc();
 }
 
-transcode_streambuf::int_type transcode_streambuf::underflow() {
+streambuf::int_type streambuf::underflow() {
   return proxy_buf_->sgetc();
 }
 
-streamsize transcode_streambuf::xsgetn( char_type *to, streamsize size ) {
+streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   return proxy_buf_->sgetn( to, size );
 }
 
-streamsize transcode_streambuf::xsputn( char_type const *from,
+streamsize streambuf::xsputn( char_type const *from,
                                        streamsize size ) {
   return proxy_buf_->sputn( from, size );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool is_necessary( char const *charset ) {
+  return internal::transcode::streambuf::is_necessary( charset );
+}
+
+bool is_supported( char const *charset ) {
+  return internal::transcode::streambuf::is_supported( charset );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace transcode
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

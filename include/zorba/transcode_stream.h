@@ -29,25 +29,27 @@ namespace zorba {
 
 typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
 
+namespace transcode {
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %transcode_streambuf is-a std::streambuf for transcoding character
+ * A %transcode::streambuf is-a std::streambuf for transcoding character
  * encodings from/to UTF-8 on-the-fly.
  *
  * To use it, replace a stream's streambuf:
  * \code
  *  istream is;
  *  // ...
- *  transcode_streambuf tbuf( "ISO-8859-1", is.rdbuf() );
+ *  transcode::streambuf tbuf( "ISO-8859-1", is.rdbuf() );
  *  is.ios::rdbuf( &tbuf );
  * \endcode
- * Note that the %transcode_streambuf must exist for as long as it's being used
+ * Note that the %transcode::streambuf must exist for as long as it's being used
  * by the stream.  If you are replacing the streabuf for a stream you did not
  * create, you should set it back to the original streambuf:
  * \code
  *  void f( ostream &os ) {
- *    transcode_streambuf tbuf( "ISO-8859-1", os.rdbuf() );
+ *    transcode::streambuf tbuf( "ISO-8859-1", os.rdbuf() );
  *    try {
  *      os.ios::rdbuf( &tbuf );
  *      // ...
@@ -59,33 +61,25 @@ typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
  *  }
  * \endcode
  *
- * While %transcode_streambuf does support seeking, the positions are relative
+ * While %transcode::streambuf does support seeking, the positions are relative
  * to the original byte stream.
  */
-class ZORBA_DLL_PUBLIC transcode_streambuf : public std::streambuf {
+class ZORBA_DLL_PUBLIC streambuf : public std::streambuf {
 public:
   /**
-   * Constructs a %transcode_streambuf.
+   * Constructs a %transcode::streambuf.
    *
    * @param charset The name of the character encoding to convert from/to.
    * @param orig The original streambuf to read/write from/to.
    * @throws std::invalid_argument if either \a charset is not supported or
    * \a orig is null.
    */
-  transcode_streambuf( char const *charset, std::streambuf *orig );
+  streambuf( char const *charset, std::streambuf *orig );
 
   /**
-   * Destructs a %transcode_streambuf.
+   * Destructs a %transcode::streambuf.
    */
-  ~transcode_streambuf();
-
-  /**
-   * Checks whether the given character set is supported for transcoding.
-   *
-   * @param charset The name of the character encoding to check.
-   * @return \c true only if the character encoding is supported.
-   */
-  static bool is_supported( char const *charset );
+  ~streambuf();
 
   /**
    * Gets the original streambuf.
@@ -114,37 +108,37 @@ private:
   std::unique_ptr<proxy_streambuf> proxy_buf_;
 
   // forbid
-  transcode_streambuf( transcode_streambuf const& );
-  transcode_streambuf& operator=( transcode_streambuf const& );
+  streambuf( streambuf const& );
+  streambuf& operator=( streambuf const& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %transcode_stream is used to wrap a C++ standard I/O stream with a
- * transcode_streambuf so that transcoding and the management of the streambuf
+ * A %transcode::stream is used to wrap a C++ standard I/O stream with a
+ * transcode::streambuf so that transcoding and the management of the streambuf
  * happens automatically.
  *
  * @tparam StreamType The I/O stream class type to wrap. It must be a concrete
  * stream class, i.e., ifstream, ofstream, istringstream, or ostringstream.
  */
 template<class StreamType>
-class transcode_stream : public StreamType {
+class stream : public StreamType {
 public:
   /**
-   * Constructs a %transcode_stream.
+   * Constructs a %transcode::stream.
    *
    * @param charset The name of the character encoding to convert from/to.
    * @throws std::invalid_argument if \a charset is not supported.
    */
-  transcode_stream( char const *charset ) :
+  stream( char const *charset ) :
     tbuf_( charset, this->rdbuf() )
   {
     init();
   }
 
   /**
-   * Constructs a %transcode_stream.
+   * Constructs a %stream.
    *
    * @tparam StreamArgType The type of the first argument of \a StreamType's
    * constructor.
@@ -154,7 +148,7 @@ public:
    * @throws std::invalid_argument if \a charset is not supported.
    */
   template<typename StreamArgType>
-  transcode_stream( char const *charset, StreamArgType stream_arg ) :
+  stream( char const *charset, StreamArgType stream_arg ) :
     StreamType( stream_arg ),
     tbuf_( charset, this->rdbuf() )
   {
@@ -162,7 +156,7 @@ public:
   }
 
   /**
-   * Constructs a %transcode_stream.
+   * Constructs a %transcode::stream.
    *
    * @tparam StreamArgType The type of the first argument of \a StreamType's
    * constructor.
@@ -173,7 +167,7 @@ public:
    * @throws std::invalid_argument if \a charset is not supported.
    */
   template<typename StreamArgType>
-  transcode_stream( char const *charset, StreamArgType stream_arg,
+  stream( char const *charset, StreamArgType stream_arg,
                     std::ios_base::openmode mode ) :
     StreamType( stream_arg, mode ),
     tbuf_( charset, this->rdbuf() )
@@ -182,7 +176,7 @@ public:
   }
 
 private:
-  transcode_streambuf tbuf_;
+  streambuf tbuf_;
 
   void init() {
     this->std::ios::rdbuf( &tbuf_ );
@@ -191,6 +185,29 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Checks whether it would be necessary to transcode from the given character
+ * encoding to UTF-8.
+ *
+ * @param charset The name of the character encoding to check.
+ * @return \c true only if it would be necessary to transcode from the given
+ * character encoding to UTF-8.
+ */
+ZORBA_DLL_PUBLIC
+bool is_necessary( char const *charset );
+
+/**
+ * Checks whether the given character set is supported for transcoding.
+ *
+ * @param charset The name of the character encoding to check.
+ * @return \c true only if the character encoding is supported.
+ */
+ZORBA_DLL_PUBLIC
+bool is_supported( char const *charset );
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace transcode
 } // namespace zorba
 #endif  /* ZORBA_TRANSCODE_STREAM_API_H */
 /* vim:set et sw=2 ts=2: */
