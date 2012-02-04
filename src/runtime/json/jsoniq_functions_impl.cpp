@@ -326,6 +326,7 @@ JSONFlattenIterator::nextImpl(
         RAISE_ERROR_NO_PARAMS(jerr::JSDY0002, loc);
 
       result.transfer(item);
+      STACK_PUSH(true, state);
     }
     else if (item->isJSONObject())
     {
