@@ -261,7 +261,7 @@ extern entry const dict_en[] = {
   { "XUTY0010", "replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes" },
   { "XUTY0011", "replacement sequence does not consist of zero or more attribute nodes" },
   { "XUTY0012", "multiple elements, attributes, or processing-instruction nodes returned" },
-  { "XUTY0013", "source expression of \"copy\" clause must return a single node" },
+  { "XUTY0013", "source expression of \"copy\" clause must return a single node or json-item" },
   { "XUTY0022", "insertion of attribute node into document node" },
   { "ZAPI0002", "XQuery compilation failed${: 1}" },
   { "ZAPI0003", "XQuery not compiled" },

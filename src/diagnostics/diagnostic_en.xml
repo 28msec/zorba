@@ -1271,7 +1271,7 @@
        In a transform expression, it is a type error if a source expression in
        the \c copy clause does not return a single node.
       </comment>
-      <value>source expression of "copy" clause must return a single node</value>
+      <value>source expression of "copy" clause must return a single node or json-item</value>
     </diagnostic>
 
     <diagnostic code="XUDY0014">
