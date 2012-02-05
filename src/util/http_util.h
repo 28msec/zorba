@@ -27,7 +27,6 @@ namespace zorba {
   public:
     std::istream& getStream();
     void init();
-    bool didInit() { return theDidInit; }
     StreamReleaser getStreamReleaser();
     void setStreamReleaser(StreamReleaser aReleaser);
   private:
@@ -35,7 +34,6 @@ namespace zorba {
     StaticContext_t theStaticContext;
     Item theStreamableString;
     Iterator_t theIterator;
-    bool theDidInit;
     const zstring& theUri;
   };
 }
