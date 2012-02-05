@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <list>
+#include "common/common.h"
+#include "zorbatypes/rchandle.h"
 #pragma once
-#include <zorba/zorba.h>
-#include <zorba/item_sequence.h>
-#include <zorba/static_context.h>
-#include <zorbatypes/zstring.h>
+#ifndef ZORBA_REF_COUNTED_STD_LIST
+#define ZORBA_REF_COUNTED_STD_LIST
 
-namespace zorba {
-  class HttpStream {
-  public:
-    HttpStream(const zstring& uri);
-    ~HttpStream();
-  public:
-    std::istream& getStream();
-    void init();
-    StreamReleaser getStreamReleaser();
-    void setStreamReleaser(StreamReleaser aReleaser);
-  private:
-    ItemSequence_t theItemSequence;
-    StaticContext_t theStaticContext;
-    Item theStreamableString;
-    Iterator_t theIterator;
-    const zstring& theUri;
-  };
-}
+namespace zorba
+{
+
+template <typename T>
+class rclist : public RCObject, public std::list<T>
+{
+  SYNC_CODE(mutable RCLock  lock;)
+public:
+  long* getSharedRefCounter() const { return NULL; }
+  SYNC_CODE(RCLock* getRCLock() const { return &lock; });
+};
+
+}//end namespace zorba
+
+#endif
