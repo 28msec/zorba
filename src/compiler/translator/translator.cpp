@@ -10354,7 +10354,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (numArgs == 1 &&
+      (numArgs <= 1 &&
        !TypeOps::is_subtype(tm,
                             *sourceExpr->get_return_type(), 
                             *theRTM.ANY_FUNCTION_TYPE_STAR)))
@@ -10396,22 +10396,28 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
         func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
       }
 
-      expr_t accessorExpr = new fo_expr(theRootSctx,
-                                        loc,
-                                        func, 
-                                        sourceExpr,
-                                        arguments[0]);
-      push_nodestack(accessorExpr);
+      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
+                                           loc,
+                                           func, 
+                                           sourceExpr,
+                                           arguments[0]);
+
+      normalize_fo(accessorExpr);
+
+      push_nodestack(accessorExpr.getp());
     }
     else
     {
       func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
-      expr_t accessorExpr = new fo_expr(theRootSctx,
-                                        loc,
-                                        func, 
-                                        sourceExpr);
-      push_nodestack(accessorExpr);
+      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
+                                           loc,
+                                           func, 
+                                           sourceExpr);
+      normalize_fo(accessorExpr);
+
+      push_nodestack(accessorExpr.getp());
     }
+
     return;
   }
 #endif
