@@ -2415,9 +2415,9 @@
 
     <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>
-        This error maybe raised by the json:size function if the input to
-        the function is a pair. The error message BadArgTypeForFn_2o34o is
-        used with this error.
+        This error maybe raised by the json:size or json:values functions
+        if the input to the function is a pair.
+        The error message BadArgTypeForFn_2o34o is used with this error.
       </comment>
     </diagnostic>
 

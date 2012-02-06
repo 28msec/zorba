@@ -534,8 +534,8 @@ JSONValuesIterator::nextImpl(
   }
   else if (lInput->getJSONItemKind() == store::StoreConsts::jsonPair)
   {
-    result = lInput->getValue();
-    STACK_PUSH (true, state);
+    RAISE_ERROR(jerr::JSDY0020, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:values"));
   }
 
   STACK_END (state);
