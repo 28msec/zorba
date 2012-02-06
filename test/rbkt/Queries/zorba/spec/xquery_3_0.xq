@@ -41,7 +41,7 @@ declare function local:generate-report(
 };
 
 (
-(: util:download-and-write-spec($xquery_version, $specPath), :)
+ (:util:download-and-write-spec($xquery_version, $specPath),:)
 
 let $specFuncs := util:create-spec-function-arity-sequence($specPath, $xquery_version),
     $zorbaFuncs := util:create-zorba-function-arity-sequence(sctx:function-names()),
