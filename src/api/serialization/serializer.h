@@ -172,6 +172,7 @@ protected:
 
   bool setup(std::ostream& os);
 
+  transcoder* create_transcoder(std::ostream& os);
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -341,6 +342,8 @@ protected:
   public:
     json_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
+    virtual ~json_emitter();
+
     virtual void emit_declaration();
 
     virtual void emit_item(store::Item *item);
@@ -366,9 +369,15 @@ protected:
 
     void emit_jsoniq_value(zstring type, zstring value, int depth);
 
+    void emit_json_string(zstring string);
+
     store::Item_t theJsoniqValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
+
+    rchandle<emitter> theXMLEmitter;
+    rchandle<transcoder> theXMLTranscoder;
+    std::stringstream* theXMLStringStream;
   };
 
 

@@ -912,9 +912,14 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 serializer::json_emitter::json_emitter(
   serializer* the_serializer,
   transcoder& the_transcoder)
-  :
-  emitter(the_serializer, the_transcoder)
+  : emitter(the_serializer, the_transcoder),
+    theXMLStringStream(nullptr)
 {
+}
+
+serializer::json_emitter::~json_emitter()
+{
+  delete theXMLStringStream;
 }
 
 void serializer::json_emitter::emit_item(store::Item *item)
@@ -952,8 +957,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     store::SchemaTypeCode type = item->getTypeCode();
     switch (type) {
     case store::XS_STRING:
-      // QQQ need to escape the string here
-      tr << '"' << item->getStringValue() << '"';
+      emit_json_string(item->getStringValue());
       break;
 
     case store::XS_DOUBLE:
@@ -999,6 +1003,19 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
     }
     }
+  }
+  else {
+    // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
+    // and output it as a "JSONiq value".
+    if (!theXMLEmitter) {
+      theXMLStringStream = new std::stringstream();
+      theXMLTranscoder = ser->create_transcoder(*theXMLStringStream);
+      theXMLEmitter = new serializer::xml_emitter(ser, *theXMLTranscoder);
+    }
+    theXMLEmitter->emit_item(item);
+    std::string xml = theXMLStringStream->str();
+    emit_jsoniq_value("XML", xml, depth);
+    theXMLStringStream->str("");
   }
 }
 
@@ -1116,6 +1133,20 @@ void serializer::json_emitter::emit_jsoniq_value
   outerpair->copy(outer, noCopy);
 
   emit_json_object(outer, depth);
+}
+
+void serializer::json_emitter::emit_json_string(zstring string)
+{
+  tr << '"';
+  zstring::const_iterator i = string.begin();
+  zstring::const_iterator end = string.end();
+  for (; i < end; i++) {
+    if (*i == '\\' || *i == '"' || (*i < 0x20)) {
+      tr << '\\';
+    }
+    tr << *i;
+  }
+  tr << '"';
 }
 
 
@@ -2470,22 +2501,10 @@ serializer::validate_parameters(void)
 ********************************************************************************/
 bool serializer::setup(std::ostream& os)
 {
-  if (encoding == PARAMETER_VALUE_UTF_8)
-  {
-    tr = new transcoder(os, false);
-  }
-#ifndef ZORBA_NO_UNICODE
-  else if (encoding == PARAMETER_VALUE_UTF_16)
-  {
-    tr = new transcoder(os, true);
-  }
-#endif
-  else
-  {
-    ZORBA_ASSERT(0);
+  tr = create_transcoder(os);
+  if (!tr) {
     return false;
   }
-
   if (method == PARAMETER_VALUE_XML)
     e = new xml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_HTML)
@@ -2520,6 +2539,24 @@ bool serializer::setup(std::ostream& os)
   return true;
 }
 
+transcoder* serializer::create_transcoder(std::ostream &os)
+{
+  if (encoding == PARAMETER_VALUE_UTF_8)
+  {
+    return new transcoder(os, false);
+  }
+#ifndef ZORBA_NO_UNICODE
+  else if (encoding == PARAMETER_VALUE_UTF_16)
+  {
+    return new transcoder(os, true);
+  }
+#endif
+  else
+  {
+    ZORBA_ASSERT(0);
+    return nullptr;
+  }
+}
 
 /*******************************************************************************
 
