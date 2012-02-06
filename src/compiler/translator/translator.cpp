@@ -10369,26 +10369,12 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
                               *sourceExpr->get_return_type(), 
                               *theRTM.JSON_ARRAY_TYPE_STAR))
       {
-        if (!TypeOps::is_subtype(tm, *argType, *theRTM.INTEGER_TYPE_ONE))
-        {
-          RAISE_ERROR(err::XPTY0004, arguments[0]->get_loc(), 
-          ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
-                       argType->toSchemaString(),
-                       theRTM.INTEGER_TYPE_ONE->toSchemaString()));
-        }
         func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
       }
       else if (TypeOps::is_subtype(tm,
                                    *sourceExpr->get_return_type(), 
                                    *theRTM.JSON_OBJECT_TYPE_STAR))
       {
-        if (!TypeOps::is_subtype(tm, *argType, *theRTM.STRING_TYPE_ONE))
-        {
-          RAISE_ERROR(err::XPTY0004, arguments[0]->get_loc(), 
-          ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
-                       argType->toSchemaString(),
-                       theRTM.INTEGER_TYPE_ONE->toSchemaString()));
-        }
         func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
       }
       else
@@ -10402,7 +10388,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
                                            sourceExpr,
                                            arguments[0]);
 
-      normalize_fo(accessorExpr);
+      normalize_fo(accessorExpr.getp());
 
       push_nodestack(accessorExpr.getp());
     }
@@ -10413,7 +10399,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
                                            loc,
                                            func, 
                                            sourceExpr);
-      normalize_fo(accessorExpr);
+      normalize_fo(accessorExpr.getp());
 
       push_nodestack(accessorExpr.getp());
     }
