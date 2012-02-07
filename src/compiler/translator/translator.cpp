@@ -10426,28 +10426,28 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
 #ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();
+  xqtref_t srcType = sourceExpr->get_return_type();
 
   if (!theSctx->is_feature_set(feature::hof) ||
       (numArgs <= 1 &&
-       !TypeOps::is_subtype(tm,
-                            *sourceExpr->get_return_type(), 
-                            *theRTM.ANY_FUNCTION_TYPE_STAR)))
+       !TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
   {
     function* func;
 
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+    fo_expr_t accessorExpr;
+
+    const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+    expr* flworVarExpr = fc->get_var();
+
     if (numArgs == 1)
     {
-      xqtref_t argType = arguments[0]->get_return_type();
 
-      if (TypeOps::is_subtype(tm,
-                              *sourceExpr->get_return_type(), 
-                              *theRTM.JSON_ARRAY_TYPE_STAR))
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
       {
         func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
       }
-      else if (TypeOps::is_subtype(tm,
-                                   *sourceExpr->get_return_type(), 
-                                   *theRTM.JSON_OBJECT_TYPE_STAR))
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
       {
         func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
       }
@@ -10456,27 +10456,25 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
         func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
       }
 
-      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
-                                           loc,
-                                           func, 
-                                           sourceExpr,
-                                           arguments[0]);
-
-      normalize_fo(accessorExpr.getp());
-
-      push_nodestack(accessorExpr.getp());
+      accessorExpr = new fo_expr(theRootSctx,
+                                 loc,
+                                 func, 
+                                 flworVarExpr,
+                                 arguments[0]);
     }
     else
     {
       func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
-      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
-                                           loc,
-                                           func, 
-                                           sourceExpr);
-      normalize_fo(accessorExpr.getp());
-
-      push_nodestack(accessorExpr.getp());
+      accessorExpr = new fo_expr(theRootSctx,
+                                 loc,
+                                 func, 
+                                 flworVarExpr);
     }
+    normalize_fo(accessorExpr.getp());
+    flworExpr->set_return_expr(accessorExpr.getp());
+    pop_scope();
+
+    push_nodestack(flworExpr);
 
     return;
   }

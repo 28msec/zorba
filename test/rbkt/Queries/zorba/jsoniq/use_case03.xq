@@ -50,11 +50,11 @@ object {
          pair {
            $category : object {
               for $sales in dml:collection(xs:QName("sales"))
-              where $sales("store number") = (for $s in $store return $s("store number"))
-                and $sales("product") = (for $p in $product return $p("name"))
+              where $sales("store number") = $store("store number")
+                and $sales("product") = $product("name")
               let $pname := $sales("product")
               group by $pname
-              return pair { $pname : sum( for $s in $sales return $s("quantity") ) }
+              return pair { $pname : sum( $sales("quantity") ) }
           }
         }
       }
