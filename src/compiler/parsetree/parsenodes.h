@@ -3541,19 +3541,23 @@ protected:
   enum ParseConstants::steptype_t step_type;
   rchandle<exprnode> step_expr_h;
   rchandle<exprnode> relpath_expr_h;
+  bool is_implicit_b;
 
 public:
   RelativePathExpr(
     const QueryLoc&,
     ParseConstants::steptype_t,
     rchandle<exprnode>,
-    rchandle<exprnode>);
+    rchandle<exprnode>,
+    bool implicit);
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
   rchandle<exprnode> get_step_expr() const { return step_expr_h; }
 
   rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  
+  bool is_implicit() const { return is_implicit_b; }
 
   virtual void accept(parsenode_visitor&) const;
 };

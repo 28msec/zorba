@@ -8305,44 +8305,54 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  // terrible hack to allow for the value of a json pair to be
-  // null, true, false
+  // terrible hack to allow for a standalone true, false or null to be 
+  // interpreted as a boolean. User must use ./true, ./false or ./null for
+  // navigating XML elements named that way.
 #ifdef ZORBA_WITH_JSON
-  if (pe_type == ParseConstants::path_relative &&
-      !theNodeStack.empty() && theNodeStack.top().dyn_cast<json_pair_expr>())
+  if (pe_type == ParseConstants::path_relative)
   {
-    RelativePathExpr* lRelPathExpr
+    RelativePathExpr* lRootRelPathExpr
       = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
-    AxisStep* lStepExpr
-      = dynamic_cast<AxisStep*>(lRelPathExpr->get_relpath_expr().getp());
-    if (lStepExpr)
+    ContextItemExpr* lStepExpr
+    = dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr().getp());
+    AxisStep* lRelPathExpr
+    = dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr().getp());
+    // Only rewrites if expression consists of a context item step on the left
+    // and of an axis step on the right,
+    // AND if this context item was set implicitly by the parser, meaning,
+    // the original expression was only an axis step.
+    if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
     {
       ForwardStep* lFwdStep
-        = dynamic_cast<ForwardStep*>(lStepExpr->get_forward_step().getp());
+        = dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step().getp());
       if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
       {
         AbbrevForwardStep* lAbbrFwdStep
           = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
-        const NameTest* lNodetest
-          = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
-        const rchandle<QName> lQName = lNodetest->getQName();
-        if (lQName && lQName->get_namespace() == "")
-        {
-          const zstring& lLocal = lQName->get_localname();
-          if (lLocal == "true")
-          {
-            push_nodestack(new const_expr(theRootSctx, loc, true));
-            return (void*)1;
-          } else if (lLocal == "false")
-          {
-            push_nodestack(new const_expr(theRootSctx, loc, false));
-            return (void*)1;
-          } else if (lLocal == "null")
-          {
-            store::Item_t lNull;
-            GENV_ITEMFACTORY->createJSONNull(lNull);
-            push_nodestack(new const_expr(theRootSctx, loc, lNull));
-            return (void*)1;
+        if (lAbbrFwdStep) {
+          const NameTest* lNodetest
+            = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+          if (lNodetest) {
+            const rchandle<QName> lQName = lNodetest->getQName();
+            if (lQName && lQName->get_namespace() == "")
+            {
+              const zstring& lLocal = lQName->get_localname();
+              if (lLocal == "true")
+              {
+                push_nodestack(new const_expr(theRootSctx, loc, true));
+                return (void*)1;
+              } else if (lLocal == "false")
+              {
+                push_nodestack(new const_expr(theRootSctx, loc, false));
+                return (void*)1;
+              } else if (lLocal == "null")
+              {
+                store::Item_t lNull;
+                GENV_ITEMFACTORY->createJSONNull(lNull);
+                push_nodestack(new const_expr(theRootSctx, loc, lNull));
+                return (void*)1;
+              }
+            }
           }
         }
       }
@@ -10934,6 +10944,7 @@ void* begin_visit(const JSON_ArrayConstructor& v)
 #ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
 #endif
+
   return no_state;
 }
 
@@ -10963,9 +10974,7 @@ void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
     }
   }
 
-  json_array_expr* ja = new json_array_expr(theRootSctx, loc, contentExpr);
-
-  push_nodestack(ja);
+  push_nodestack(new json_array_expr(theRootSctx, loc, contentExpr));
 #endif
 }
 

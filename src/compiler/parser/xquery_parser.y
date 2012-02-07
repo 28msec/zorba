@@ -3867,7 +3867,7 @@ PathExpr :
     {
       RelativePathExpr* rpe;
 
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2);
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2, false);
 
       $$ = new PathExpr(LOC(@$),
                         ParseConstants::path_leading_slash,
@@ -3877,7 +3877,7 @@ PathExpr :
     {
       RelativePathExpr* rpe;
 
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2);
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2, false);
 
       $$ = new PathExpr(LOC(@$),
                         ParseConstants::path_leading_slashslash,
@@ -3911,17 +3911,17 @@ RelativePathExpr :
       $$ = (as ?
             new RelativePathExpr(LOC(@$),
                                  ParseConstants::st_slash,
-                                 new ContextItemExpr( LOC(@$), true ), $1)
+                                 new ContextItemExpr( LOC(@$), true ), $1, true)
             :
             $1);
     }
   | StepExpr SLASH RelativePathExpr
     {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3, false);
     }
   | StepExpr SLASH_SLASH RelativePathExpr
     {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
     }
 ;
 
