@@ -4,7 +4,6 @@ import module namespace http = "http://www.zorba-xquery.com/modules/http-client"
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
-(:import module namespace http-expath = "http://expath.org/ns/http-client"; :)
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -19,7 +18,7 @@ used local variables instead of passing the specURI defined as an external varia
 opened bug #3152386
 :)
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
-(:
+
 declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) 
 {
   let $serParams := 
@@ -31,17 +30,9 @@ declare %ann:sequential function util:download-and-write-spec($specVersion as xs
   if ($specVersion = $util:xquery_version_1_0) then
     file:write($docPath, http:get("http://www.w3.org/TR/xpath-functions/")[2], $serParams)
   else
-    (: one has to provide a username & password of a valid W3C account :)
-    let $req := <http-expath:request method="GET"
-               href="http://www.w3.org/XML/Group/qtspecs/specifications/xpath-functions-30/html/"
-               auth-method="Basic"
-               send-authorization="true"
-               username=""
-               password=""/>
-    return
-      file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
+    file:write($docPath, http:get("http://www.w3.org/TR/xpath-functions-30/")[2], $serParams)
 };
-:)
+
 
 
 declare function util:create-spec-function-arity-sequence(
@@ -85,7 +76,7 @@ as xs:string*
     for $s in $functionsSpec
     let $funcName := fn:substring-after($s//*:code[@class="function"]/text(),"fn:")
     where (fn:not($funcName = "numeric-function") and
-           fn:not($funcName = "eg:distinct-nodes-stable") and
+    	   fn:not(starts-with($funcName,"eg:")) and
            fn:not($funcName = "median"))
     return
       if($xquery_version = "1.0") then (: omit "fn:function-name all together :)

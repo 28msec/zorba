@@ -599,6 +599,8 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
+  void prepare_for_serialize(CompilerCB *compiler_cb);
+
 public:
   static_context(::zorba::serialization::Archiver& ar);
 

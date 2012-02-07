@@ -66,7 +66,8 @@ ENDMACRO(PARSE_ARGUMENTS)
 #
 # Parameters:
 #   URI - URI to mangle
-#   EXT - extension to ensure URI ends with
+#   EXT - extension to ensure URI ends with (may be empty; if set, must
+#         include leading "."
 #   DIR_VAR - variable to set with the directory part of the mangled path
 #   FILE_VAR - variable to set with the file part of the mangled path
 MACRO (MANGLE_URI URI EXT DIR_VAR FILE_VAR)
@@ -89,13 +90,14 @@ MACRO (MANGLE_URI URI EXT DIR_VAR FILE_VAR)
 
   # Convert final component into proper filename
   IF (NOT final_comp)
-    SET (${FILE_VAR} "index.${EXT}")
+    SET (${FILE_VAR} "index${EXT}")
   ELSE (NOT final_comp)
-    IF ("${final_comp}" MATCHES "\\.${EXT}$")
+    # \\ necessary to escape the leading . in EXT
+    IF ("${final_comp}" MATCHES "\\${EXT}$")
       SET (${FILE_VAR} "${final_comp}")
-    ELSE ("${final_comp}" MATCHES "\\.${EXT}$")
-      SET (${FILE_VAR} "${final_comp}.${EXT}")
-    ENDIF ("${final_comp}" MATCHES "\\.${EXT}$")
+    ELSE ("${final_comp}" MATCHES "\\${EXT}$")
+      SET (${FILE_VAR} "${final_comp}${EXT}")
+    ENDIF ("${final_comp}" MATCHES "\\${EXT}$")
   ENDIF (NOT final_comp)
 
   # Stick the reversed authority back on the front of the path: done!
@@ -139,7 +141,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
 
-  MANGLE_URI (${MODULE_URI} "xq" module_path module_filename)
+  MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
 
   # Compute a CMake-symbol-safe version of the target URI, for storing
   # things in CMake properties.
@@ -250,6 +252,11 @@ MACRO (DECLARE_ZORBA_MODULE)
     SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
+    IF (MODULE_VERSION)
+      # If there's a version, insert it into the module library name
+      SET (module_filewe "${module_filewe}_${MODULE_VERSION}")
+    ENDIF (MODULE_VERSION)
+
     # It seems like it would be nice to set the VERSION and/or
     # SOVERSION target properties here. However: On Windows, it
     # doesn't seem to do anything (the .rc file configured above
@@ -260,7 +267,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     # target property isn't desirable.
     # FOLDER is to group IDE projects into folders.
     SET_TARGET_PROPERTIES (${module_lib_target} PROPERTIES
-      OUTPUT_NAME "${module_filewe}_${MODULE_VERSION}${SUFFIX}"
+      OUTPUT_NAME "${module_filewe}${SUFFIX}"
       ${target_type}_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
       FOLDER "Modules"
     )
@@ -350,7 +357,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
     SET (SOURCE_FILE "${SCHEMA_FILE}")
   ENDIF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
   GET_FILENAME_COMPONENT (schema_name "${SCHEMA_FILE}" NAME)
-  MANGLE_URI (${SCHEMA_URI} "xsd" schema_path schema_filename)
+  MANGLE_URI (${SCHEMA_URI} ".xsd" schema_path schema_filename)
 
   # Add to schema manifest (except test schema).
   IF (NOT SCHEMA_TEST_ONLY)
@@ -362,11 +369,44 @@ MACRO (DECLARE_ZORBA_SCHEMA)
 
 ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
+# Macro which declares a file to be loaded by URI. This sets up the
+# installation of the file into the URI_PATH folder so it will be
+# found at runtime.
+#
+# Args: URI - the URI of the file
+#       FILE - path to file (if not absolute, will be resolved
+#              relative to CMAKE_CURRENT_SOURCE_DIR)
+#       TEST_ONLY - (optional) File is for testcases only and should not
+#              be installed
+MACRO (DECLARE_ZORBA_URI_FILE)
+  # QQQ Refactor - this macro is basically identical to DECLARE_ZORBA_SCHEMA
+  PARSE_ARGUMENTS(URI_FILE "" "URI;FILE" "TEST_ONLY" ${ARGN})
+  IF (NOT URI_FILE_FILE)
+    MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_URI_FILE()")
+  ENDIF (NOT URI_FILE_FILE)
+  IF (NOT URI_FILE_URI)
+    MESSAGE (FATAL_ERROR "'URI' argument is required for ZORBA_DECLARE_URI_FILE()")
+  ENDIF (NOT URI_FILE_URI)
+  IF (NOT IS_ABSOLUTE "${URI_FILE_FILE}")
+    SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${URI_FILE_FILE}")
+  ELSE (NOT IS_ABSOLUTE "${URI_FILE_FILE}")
+    SET (SOURCE_FILE "${URI_FILE_FILE}")
+  ENDIF (NOT IS_ABSOLUTE "${URI_FILE_FILE}")
+  GET_FILENAME_COMPONENT (uri_file_name "${URI_FILE_FILE}" NAME)
+  # Don't enforce any extension on general files
+  MANGLE_URI (${URI_FILE_URI} "" uri_file_path uri_file_filename)
+
+  ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${uri_file_path}/${uri_file_filename}"
+    "" "" "${URI_FILE_TEST_ONLY}")
+
+ENDMACRO (DECLARE_ZORBA_URI_FILE)
+
 # Utility macro for setting up a build rule to copy a file to a
 # particular (possibly versioned) file in a shared directory if such a file has
 # not already been output.
 # FILE_TYPE: Either "URI" or "LIB"; will be used to determine which shared
-#    directory to place output in (URI_PATH or LIB_PATH).
+#    directory to place output in (URI_PATH or LIB_PATH). Also, "URI" files
+#    will have an INSTALL() directive to put them in the install image.
 # INPUT_FILE: Absolute path to file to copy.
 # OUTPUT_FILE: Relative path to output file (relative to URI_PATH).
 # VERSION_ARG: Version; may be "" for non-versioned files.
@@ -420,39 +460,37 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
     SET_PROPERTY (GLOBAL APPEND PROPERTY ZORBA_URI_FILES
       "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}" "${_is_core}")
 
-    # For .xq and .xsd files, also set up an INSTALL rule (if not TEST_ONLY).
-    IF (NOT ${TEST_ONLY} EQUAL 1)
-      IF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
+    # Also set up an INSTALL rule (unless TEST_ONLY or LIB).
+    IF ( (NOT "${FILE_TYPE}" STREQUAL "LIB") AND (NOT ${TEST_ONLY} EQUAL 1) )
         
-        IF(NOT _is_core)
-          STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
-          INSTALL (FILES "${INPUT_FILE}"
-            DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
-            RENAME "${_output_filename}"
-            COMPONENT "${component_name}")
+      IF(NOT _is_core)
+        STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
+        INSTALL (FILES "${INPUT_FILE}"
+          DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
+          RENAME "${_output_filename}"
+          COMPONENT "${component_name}")
           
-          IF (NOT ${component_name}_cpack)
-            SET (${component_name}_cpack 1)
+        IF (NOT ${component_name}_cpack)
+          SET (${component_name}_cpack 1)
         
-            STRING(TOUPPER ${component_name} component_name2)
-            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_GROUP \"external_modules\")\n")
+          STRING(TOUPPER ${component_name} component_name2)
+          FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_GROUP \"external_modules\")\n")
             
-            STRING(REPLACE "zorba_" "" component_display_name ${component_name})
-            STRING(REPLACE "_" " " component_display_name ${component_display_name})
-            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DISPLAY_NAME \"${component_display_name}\")\n")
+          STRING(REPLACE "zorba_" "" component_display_name ${component_name})
+          STRING(REPLACE "_" " " component_display_name ${component_display_name})
+          FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DISPLAY_NAME \"${component_display_name}\")\n")
             
-            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DESCRIPTION \"Install the functionalities of the ${component_display_name}.\")\n")
-            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_INSTALL_TYPES Full)\n")
-          ENDIF (NOT ${component_name}_cpack)  
+          FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DESCRIPTION \"Install the functionalities of the ${component_display_name}.\")\n")
+          FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_INSTALL_TYPES Full)\n")
+        ENDIF (NOT ${component_name}_cpack)  
             
-        ELSE(NOT _is_core)
-          INSTALL (FILES "${INPUT_FILE}"
+      ELSE(NOT _is_core)
+        INSTALL (FILES "${INPUT_FILE}"
           DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
           RENAME "${_output_filename}")
-        ENDIF(NOT _is_core)
+      ENDIF(NOT _is_core)
           
-      ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
-    ENDIF (NOT ${TEST_ONLY} EQUAL 1)
+    ENDIF ( (NOT "${FILE_TYPE}" STREQUAL "LIB") AND (NOT ${TEST_ONLY} EQUAL 1) )
   ENDIF (file_found EQUAL -1)
 ENDMACRO (ADD_COPY_RULE)
 

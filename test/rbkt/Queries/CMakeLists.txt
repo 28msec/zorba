@@ -483,6 +483,11 @@ ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 #  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
 #ENDIF ()
 
+# Bug 921624. If this test takes more than a couple seconds, it must be
+# hitting w3.org for the DTD, which is bad.
+SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
+  PROPERTIES TIMEOUT 5)
+
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
@@ -509,7 +514,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3299356)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
@@ -549,7 +554,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)

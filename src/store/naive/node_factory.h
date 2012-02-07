@@ -108,7 +108,7 @@ public:
   virtual TextNode* createTextNode(
         XmlTree*       tree,
         InternalNode*  parent,
-        bool           aqppend,
+        bool           append,
         csize          pos,
         zstring&       content);
 
