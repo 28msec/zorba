@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <cassert>
 #include <string>
 
@@ -547,7 +548,10 @@ static void instantiate_utf8_string() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int string_instantiate( int, char*[] ) {
+namespace zorba {
+namespace UnitTests {
+
+int test_string_instantiate( int, char*[] ) {
   return 0;                             // don't actually call anything
 
   instantiate_common<zstring>();
@@ -570,4 +574,8 @@ int string_instantiate( int, char*[] ) {
 
   return 0;
 }
+
+} // namespace UnitTests
+} // namespace zorba
+
 /* vim:set et sw=2 ts=2: */

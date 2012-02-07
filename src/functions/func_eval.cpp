@@ -141,22 +141,22 @@ PlanIter_t fn_zorba_eval_s::codegen(
 void populate_context_eval(static_context* sctx)
 {
   DECL(sctx, fn_zorba_eval,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "eval"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_zorba_eval_n,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-n"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "eval-n"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_zorba_eval_u,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-u"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "eval-u"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_eval_s,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-s"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "eval-s"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

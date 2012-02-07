@@ -485,12 +485,10 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t XmlNode::getEBV() const
+bool XmlNode::getEBV() const
 {
   assert(!isConnectorNode());
-  store::Item_t bVal;
-  GET_FACTORY().createBoolean(bVal, true);
-  return bVal;
+  return true;
 }
 
 
@@ -1724,7 +1722,7 @@ zstring DocumentNode::show() const
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
   strStream << " baseUri = \"" << theBaseUri << "\"";
-  strStream << " docUri = \"" << theDocUri;
+  strStream << " docUri = \"" << theDocUri << "\"";
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
