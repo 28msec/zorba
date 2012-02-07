@@ -168,7 +168,7 @@ public:
    */
   template<typename StreamArgType>
   stream( char const *charset, StreamArgType stream_arg,
-                    std::ios_base::openmode mode ) :
+          std::ios_base::openmode mode ) :
     StreamType( stream_arg, mode ),
     tbuf_( charset, this->rdbuf() )
   {
