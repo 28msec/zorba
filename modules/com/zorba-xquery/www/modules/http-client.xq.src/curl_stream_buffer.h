@@ -128,6 +128,15 @@ public:
   void close();
 
   /**
+   * Gets the CURL object in use.
+   *
+   * @return Return said CURL object.
+   */
+  CURL* curl() const {
+    return curl_;
+  }
+
+  /**
    * Provide a InformDataRead that will get callbacks about read events.
    */
   void setInformer( http_client::InformDataRead *aInformer ) {
