@@ -2426,6 +2426,11 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0041" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by block expression</comment>
+      <value>illegal non-pair content in object constructor</value>
+    </diagnostic>
+
     <diagnostic code="JUDY0060" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by insert-into</comment>
       <value>"$1": pair already exists</value>

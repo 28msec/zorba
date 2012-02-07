@@ -5389,6 +5389,10 @@ void* begin_visit(const BlockBody& v)
 
   // Flatten-out a block expr if it has only one child and that child is
   // not a var decl expr.
+  // hack?
+  // this has been removed to allow for blocks containing only an expression
+  // to be treated as JSON object constructors
+#ifndef ZORBA_WITH_JSON
   if (stmts.size() == 1 && !declaresVars)
   {
     push_nodestack(stmts[0]);
@@ -5398,6 +5402,7 @@ void* begin_visit(const BlockBody& v)
 
     return NULL;
   }
+#endif
 
   // Create the block expr
   std::vector<var_expr*>& prevAssignedVars = theAssignedVars[numScopes-1];

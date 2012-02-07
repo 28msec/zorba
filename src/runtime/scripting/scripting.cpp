@@ -22,8 +22,11 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/flowctl_exception.h"
+#include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 
 #include "system/globalenv.h"
+#include "diagnostics/util_macros.h"
 
 
 namespace zorba 
@@ -99,14 +102,70 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       if (i == theChildren.size() - 1)
       {
-        STACK_PUSH(true, state);
-        i = theChildren.size() - 1;
+#ifdef ZORBA_WITH_JSON
+        if (result->isJSONPair())
+        {
+          constructJSONObject(result, theChildren[i], planState);
+          STACK_PUSH(true, state);
+          i = theChildren.size() - 1;
+          break;
+        }
+        else
+#endif
+        {
+          STACK_PUSH(true, state);
+          i = theChildren.size() - 1;
+        }
       }
     }
   }
 
   STACK_END(state);
 }
+
+#ifdef ZORBA_WITH_JSON
+// hack
+// construct a json object if the last expression in a block
+// returns only pairs
+// raise an error if the first item is a pair and one of the following items
+// isn't.
+void
+SequentialIterator::constructJSONObject(
+    store::Item_t& result,
+    const PlanIter_t& iter,
+    PlanState& planState) const
+{
+  std::vector<store::Item_t> lPairs;
+  lPairs.reserve(5);
+  lPairs.push_back(result);
+  while (consumeNext(result, iter.getp(), planState))
+  {
+    if (!result->isJSONPair())
+    {
+      RAISE_ERROR_NO_PARAMS(jerr::JSDY0041, loc);
+    }
+    else
+    {
+      lPairs.push_back(result);
+    }
+  }
+  GENV_ITEMFACTORY->createJSONObject(result);
+
+  {
+    store::CopyMode copymode;
+    copymode.set(false, true, true, true);
+    for (csize j = 0; j < lPairs.size(); ++j)
+    {
+      if (result->getPair(lPairs[j]->getName()))
+      {
+        RAISE_ERROR(jerr::JSDY0003, loc,
+            ERROR_PARAMS(lPairs[j]->getName()->getStringValue()));
+      }
+      lPairs[j]->copy(result, copymode);
+    }
+  }
+}
+#endif
 
 
 /*******************************************************************************
