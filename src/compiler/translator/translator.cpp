@@ -8281,8 +8281,9 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  // terrible hack to allow for the value of a json pair to be
-  // null, true, false
+  // terrible hack to allow for a standalone true, false or null to be 
+  // interpreted as a boolean. User must use ./true, ./false or ./null for
+  // navigating XML elements named that way.
 #ifdef ZORBA_WITH_JSON
   if (pe_type == ParseConstants::path_relative)
   {
@@ -8304,26 +8305,30 @@ void* begin_visit(const PathExpr& v)
       {
         AbbrevForwardStep* lAbbrFwdStep
           = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
-        const NameTest* lNodetest
-          = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
-        const rchandle<QName> lQName = lNodetest->getQName();
-        if (lQName && lQName->get_namespace() == "")
-        {
-          const zstring& lLocal = lQName->get_localname();
-          if (lLocal == "true")
-          {
-            push_nodestack(new const_expr(theRootSctx, loc, true));
-            return (void*)1;
-          } else if (lLocal == "false")
-          {
-            push_nodestack(new const_expr(theRootSctx, loc, false));
-            return (void*)1;
-          } else if (lLocal == "null")
-          {
-            store::Item_t lNull;
-            GENV_ITEMFACTORY->createJSONNull(lNull);
-            push_nodestack(new const_expr(theRootSctx, loc, lNull));
-            return (void*)1;
+        if (lAbbrFwdStep) {
+          const NameTest* lNodetest
+            = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+          if (lNodetest) {
+            const rchandle<QName> lQName = lNodetest->getQName();
+            if (lQName && lQName->get_namespace() == "")
+            {
+              const zstring& lLocal = lQName->get_localname();
+              if (lLocal == "true")
+              {
+                push_nodestack(new const_expr(theRootSctx, loc, true));
+                return (void*)1;
+              } else if (lLocal == "false")
+              {
+                push_nodestack(new const_expr(theRootSctx, loc, false));
+                return (void*)1;
+              } else if (lLocal == "null")
+              {
+                store::Item_t lNull;
+                GENV_ITEMFACTORY->createJSONNull(lNull);
+                push_nodestack(new const_expr(theRootSctx, loc, lNull));
+                return (void*)1;
+              }
+            }
           }
         }
       }
