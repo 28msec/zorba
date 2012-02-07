@@ -8,9 +8,9 @@ declare variable $input :=
   };
 
 declare variable $stroke := attribute stroke { $input("color") };
-declare variable $points := attribute points { j:flatten(j:value($input("points"))) };
+declare variable $points := attribute points { $input("points") };
 
-if (fn:data($input("closed"))) then
+if ($input("closed")) then
   <svg><polygon>{ $stroke, $points }</polygon></svg>
 else
   <svg><polyline>{ $stroke, $points }</polyline></svg>
