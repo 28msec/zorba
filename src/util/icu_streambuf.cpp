@@ -104,8 +104,8 @@ bool icu_streambuf::is_necessary( char const *charset ) {
   // Checking for "US-ASCII" explicitly isn't necessary since ICU knows about
   // aliases.
   //
-  return  !ucnv_compareNames( charset, "ASCII" )
-      &&  !ucnv_compareNames( charset, "UTF-8" );
+  return  ucnv_compareNames( charset, "ASCII" )
+      &&  ucnv_compareNames( charset, "UTF-8" );
 }
 
 bool icu_streambuf::is_supported( char const *charset ) {
