@@ -2914,11 +2914,13 @@ RelativePathExpr::RelativePathExpr(
   const QueryLoc& loc_,
   enum ParseConstants::steptype_t _step_type,
   rchandle<exprnode> step,
-  rchandle<exprnode> rpe)
+  rchandle<exprnode> rpe,
+  bool implicit)
   :
   exprnode(loc_),
   step_type(_step_type),
-  step_expr_h(step)
+  step_expr_h(step),
+  is_implicit_b(implicit)
 {
   RelativePathExpr* rpep = dynamic_cast<RelativePathExpr*>(rpe.getp());
   if (rpep != NULL)

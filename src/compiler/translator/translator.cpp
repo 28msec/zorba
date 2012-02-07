@@ -8284,17 +8284,22 @@ void* begin_visit(const PathExpr& v)
   // terrible hack to allow for the value of a json pair to be
   // null, true, false
 #ifdef ZORBA_WITH_JSON
-  if (pe_type == ParseConstants::path_relative &&
-      !theNodeStack.empty() && theNodeStack.top().dyn_cast<json_pair_expr>())
+  if (pe_type == ParseConstants::path_relative)
   {
-    RelativePathExpr* lRelPathExpr
+    RelativePathExpr* lRootRelPathExpr
       = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
-    AxisStep* lStepExpr
-      = dynamic_cast<AxisStep*>(lRelPathExpr->get_relpath_expr().getp());
-    if (lStepExpr)
+    ContextItemExpr* lStepExpr
+    = dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr().getp());
+    AxisStep* lRelPathExpr
+    = dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr().getp());
+    // Only rewrites if expression consists of a context item step on the left
+    // and of an axis step on the right,
+    // AND if this context item was set implicitly by the parser, meaning,
+    // the original expression was only an axis step.
+    if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
     {
       ForwardStep* lFwdStep
-        = dynamic_cast<ForwardStep*>(lStepExpr->get_forward_step().getp());
+        = dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step().getp());
       if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
       {
         AbbrevForwardStep* lAbbrFwdStep
