@@ -531,8 +531,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
-EXPECTED_FAILURE(test/rbkt/zorba/fulltext/ft-same-sentence-true-4 900552)
-
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 900688) # forward references not implemented
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 900688) # forward references not implemented -> cycles cannot be detected
