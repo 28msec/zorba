@@ -31,7 +31,8 @@
 #include "http_request_handler.h"
 #include "curl_stream_buffer.h"
 
-namespace zorba { namespace http_client {
+namespace zorba {
+namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
@@ -120,23 +121,20 @@ namespace zorba { namespace http_client {
 
   void HttpResponseParser::registerHandler()
   {
-    curl_easy_setopt(theCurl, CURLOPT_HEADERFUNCTION,
-      &HttpResponseParser::headerfunction);
+    curl_easy_setopt(theCurl, CURLOPT_HEADERFUNCTION, &curl_headerfunction);
     curl_easy_setopt(theCurl, CURLOPT_HEADERDATA, this);
   }
 
-  size_t HttpResponseParser::headerfunction(void *ptr,
-                                            size_t size,
-                                            size_t nmemb,
-                                            void *stream)
+  size_t HttpResponseParser::curl_headerfunction( void *ptr, size_t size,
+                                                  size_t nmemb, void *data )
   {
     size_t lSize = size*nmemb;
     size_t lResult = lSize;
-    HttpResponseParser* lParser = static_cast<HttpResponseParser*>(stream);
+    HttpResponseParser* lParser = static_cast<HttpResponseParser*>(data);
     if (lParser->theInsideRead) {
       lParser->theHandler.endBody();
+      lParser->theInsideRead = false;
     }
-    lParser->theInsideRead = false;
     const char* lDataChar = (const char*) ptr;
     while (lSize != 0 && (lDataChar[lSize - 1] == 10
           || lDataChar[lSize - 1] == 13)) {
@@ -184,7 +182,7 @@ namespace zorba { namespace http_client {
     return lResult;
   }
 
-  void HttpResponseParser::parseStatusAndMessage(std::string aHeader)
+  void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
     std::string::size_type lPos = aHeader.find(' ');
     assert(lPos != std::string::npos);
@@ -265,4 +263,7 @@ namespace zorba { namespace http_client {
       return Item(); 
     }
   }
-}}
+
+} // namespace http_client
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
