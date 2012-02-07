@@ -41,7 +41,9 @@ namespace http_client {
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
-    std::vector<std::pair<std::string, std::string> > theHeaders;
+    std::string theCurrentCharset;
+    typedef std::vector<std::pair<std::string, std::string> > headers_type;
+    headers_type theHeaders;
     int theStatus;
     std::string theMessage;
     zorba::curl::streambuf* theStreamBuffer;

@@ -26,6 +26,7 @@
 #include <zorba/error.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/transcode_stream.h>
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
@@ -61,9 +62,19 @@ namespace http_client {
     if (lCode)
       return lCode; 
     if (!theStatusOnly) {
-      std::auto_ptr<std::istream> lStream(new std::istream(theStreamBuffer));
+
+      std::auto_ptr<std::istream> lStream;
+      if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+        lStream.reset(
+          new transcode::stream<std::istream>(
+            theCurrentCharset.c_str(), theStreamBuffer
+          )
+        );
+      } else
+        lStream.reset(new std::istream(theStreamBuffer));
+
       Item lItem;
-      if (theOverridenContentType != "") {
+      if (!theOverridenContentType.empty()) {
         theCurrentContentType = theOverridenContentType;
       }
       if (theCurrentContentType == "text/xml" ||
@@ -72,8 +83,6 @@ namespace http_client {
           theCurrentContentType == "application/xml-external-parsed-entity" ||
           theCurrentContentType.find("+xml") == theCurrentContentType.size()-4) {
         lItem = createXmlItem(*lStream.get());
-      } else if (theCurrentContentType.find("text/html") == 0) {
-        lItem = createTextItem(lStream.release());
       } else if (theCurrentContentType.find("text/") == 0) {
         lItem = createTextItem(lStream.release());
       } else {
@@ -107,8 +116,8 @@ namespace http_client {
     }
     theInsideRead = true;
     theHandler.beginResponse(theStatus, theMessage);
-    std::vector<std::pair<std::string, std::string> >::iterator lIter;
-    for (lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
+    for ( headers_type::const_iterator
+          lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
       theHandler.header(lIter->first, lIter->second);
     }
     if (!theStatusOnly)
@@ -171,7 +180,31 @@ namespace http_client {
     }
     String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type") {
-      lParser->theCurrentContentType = lValue.substr(0, lValue.find(';'));
+      std::string::size_type pos = lValue.find( ';' );
+      lParser->theCurrentContentType = lValue.substr( 0, pos );
+
+      if ( pos != std::string::npos ) {
+        //
+        // Parse: charset="?XXXXX"?[ (comment)]
+        //
+        if ( (pos = lValue.find( '=' )) != std::string::npos ) {
+          std::string charset = lValue.substr( pos + 1 );
+          if ( !charset.empty() ) {
+            if ( charset[0] == '"' ) {
+              charset.erase( 0, 1 );
+              if ( (pos = charset.find( '"' )) != std::string::npos )
+                charset.erase( pos );
+            } else {
+              if ( (pos = charset.find( ' ' )) != std::string::npos )
+                charset.erase( pos );
+            }
+            lParser->theCurrentCharset = charset;
+          } 
+        }
+      } else {
+        // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
+        lParser->theCurrentCharset = "ISO-8859-1";
+      }
     } else if (lNameS == "content-id") {
       lParser->theId = lValue;
     } else if (lNameS == "content-description") {
@@ -213,7 +246,12 @@ namespace http_client {
   static void streamReleaser(std::istream* aStream)
   {
     // This istream contains our curl stream buffer, so we have to delete it too
-    delete aStream->rdbuf();
+    std::streambuf *const sbuf = aStream->rdbuf();
+    if ( transcode::streambuf *tbuf =
+          dynamic_cast<transcode::streambuf*>( sbuf ) )
+      delete tbuf->orig_streambuf();
+    else
+      delete sbuf;
     delete aStream;
   }
 
