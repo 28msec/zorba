@@ -2415,15 +2415,20 @@
 
     <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>
-        This error maybe raised by the json:size function if the input to
-        the function is a pair. The error message BadArgTypeForFn_2o34o is
-        used with this error.
+        This error maybe raised by the json:size or json:values functions
+        if the input to the function is a pair.
+        The error message BadArgTypeForFn_2o34o is used with this error.
       </comment>
     </diagnostic>
 
     <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
       <comment>parser errors raised by the JSONIQLoader</comment>
       <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0041" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by block expression</comment>
+      <value>illegal non-pair content in object constructor</value>
     </diagnostic>
 
     <diagnostic code="JUDY0060" if="defined(ZORBA_WITH_JSON)">

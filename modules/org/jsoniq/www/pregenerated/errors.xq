@@ -59,6 +59,11 @@ declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
 
 (:~
+ :error raised by block expression
+:)
+declare variable $jerr:JSDY0041 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0041");
+
+(:~
  :error raised by insert-into
 :)
 declare variable $jerr:JUDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0060");

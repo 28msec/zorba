@@ -1431,6 +1431,30 @@ expr_t wrap_in_type_match(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+fo_expr* wrap_in_enclosed_expr(expr_t contentExpr, const QueryLoc& loc)
+{
+#ifdef ZORBA_WITH_JSON
+  TypeManager* tm = contentExpr->get_type_manager();
+
+  xqtref_t type = contentExpr->get_return_type();
+
+  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
+
+  if (!type->is_none() && !type->is_empty())
+  {
+    contentExpr = new fo_expr(theRootSctx,
+                              contentExpr->get_loc(),
+                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
+                              contentExpr);
+  }
+#endif
+
+  return new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+}
+
 
 /*******************************************************************************
 
@@ -5389,6 +5413,10 @@ void* begin_visit(const BlockBody& v)
 
   // Flatten-out a block expr if it has only one child and that child is
   // not a var decl expr.
+  // hack?
+  // this has been removed to allow for blocks containing only an expression
+  // to be treated as JSON object constructors
+#ifndef ZORBA_WITH_JSON
   if (stmts.size() == 1 && !declaresVars)
   {
     push_nodestack(stmts[0]);
@@ -5398,6 +5426,7 @@ void* begin_visit(const BlockBody& v)
 
     return NULL;
   }
+#endif
 
   // Create the block expr
   std::vector<var_expr*>& prevAssignedVars = theAssignedVars[numScopes-1];
@@ -8276,6 +8305,51 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
+  // terrible hack to allow for the value of a json pair to be
+  // null, true, false
+#ifdef ZORBA_WITH_JSON
+  if (pe_type == ParseConstants::path_relative &&
+      !theNodeStack.empty() && theNodeStack.top().dyn_cast<json_pair_expr>())
+  {
+    RelativePathExpr* lRelPathExpr
+      = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
+    AxisStep* lStepExpr
+      = dynamic_cast<AxisStep*>(lRelPathExpr->get_relpath_expr().getp());
+    if (lStepExpr)
+    {
+      ForwardStep* lFwdStep
+        = dynamic_cast<ForwardStep*>(lStepExpr->get_forward_step().getp());
+      if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
+      {
+        AbbrevForwardStep* lAbbrFwdStep
+          = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
+        const NameTest* lNodetest
+          = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+        const rchandle<QName> lQName = lNodetest->getQName();
+        if (lQName && lQName->get_namespace() == "")
+        {
+          const zstring& lLocal = lQName->get_localname();
+          if (lLocal == "true")
+          {
+            push_nodestack(new const_expr(theRootSctx, loc, true));
+            return (void*)1;
+          } else if (lLocal == "false")
+          {
+            push_nodestack(new const_expr(theRootSctx, loc, false));
+            return (void*)1;
+          } else if (lLocal == "null")
+          {
+            store::Item_t lNull;
+            GENV_ITEMFACTORY->createJSONNull(lNull);
+            push_nodestack(new const_expr(theRootSctx, loc, lNull));
+            return (void*)1;
+          }
+        }
+      }
+    }  
+  }
+#endif
+
   rchandle<relpath_expr> pathExpr = NULL;
 
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
@@ -10354,7 +10428,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (numArgs == 1 &&
+      (numArgs <= 1 &&
        !TypeOps::is_subtype(tm,
                             *sourceExpr->get_return_type(), 
                             *theRTM.ANY_FUNCTION_TYPE_STAR)))
@@ -10363,6 +10437,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     if (numArgs == 1)
     {
+      xqtref_t argType = arguments[0]->get_return_type();
+
       if (TypeOps::is_subtype(tm,
                               *sourceExpr->get_return_type(), 
                               *theRTM.JSON_ARRAY_TYPE_STAR))
@@ -10380,22 +10456,28 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
         func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
       }
 
-      expr_t accessorExpr = new fo_expr(theRootSctx,
-                                        loc,
-                                        func, 
-                                        sourceExpr,
-                                        arguments[0]);
-      push_nodestack(accessorExpr);
+      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
+                                           loc,
+                                           func, 
+                                           sourceExpr,
+                                           arguments[0]);
+
+      normalize_fo(accessorExpr.getp());
+
+      push_nodestack(accessorExpr.getp());
     }
     else
     {
       func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
-      expr_t accessorExpr = new fo_expr(theRootSctx,
-                                        loc,
-                                        func, 
-                                        sourceExpr);
-      push_nodestack(accessorExpr);
+      fo_expr_t accessorExpr = new fo_expr(theRootSctx,
+                                           loc,
+                                           func, 
+                                           sourceExpr);
+      normalize_fo(accessorExpr.getp());
+
+      push_nodestack(accessorExpr.getp());
     }
+
     return;
   }
 #endif
@@ -10717,7 +10799,10 @@ void* begin_visit(const JSON_PairConstructor& v)
   TRACE_VISIT ();
 #ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#else
+  push_nodestack(new json_pair_expr(theRootSctx, loc));
 #endif
+
   return no_state;
 }
 
@@ -10726,8 +10811,8 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
-  expr_t valueExpr = pop_nodestack();
   expr_t nameExpr = pop_nodestack();
+  expr_t valueExpr = pop_nodestack();
 
   nameExpr = wrap_in_atomization(nameExpr);
   nameExpr = new promote_expr(theRootSctx,
@@ -10745,9 +10830,11 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
                                GENV_TYPESYSTEM.ITEM_TYPE_ONE,
                                NULL);
 
-  json_pair_expr* jp = new json_pair_expr(theRootSctx, loc, nameExpr, valueExpr);
-
-  push_nodestack(jp);
+  json_pair_expr* jp = dynamic_cast<json_pair_expr*>(theNodeStack.top().getp());
+  ZORBA_ASSERT(jp);
+  jp->set_name_expr(nameExpr);
+  jp->set_value_expr(valueExpr);
+  jp->compute_scripting_kind();
 #endif
 }
 
@@ -10916,23 +11003,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 
   expr_t contentExpr = pop_nodestack();
 
-#ifdef ZORBA_WITH_JSON
-  TypeManager* tm = contentExpr->get_type_manager();
-
-  xqtref_t type = contentExpr->get_return_type();
-
-  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
-
-  if (!type->is_none() && !type->is_empty())
-  {
-    contentExpr = new fo_expr(theRootSctx,
-                              loc,
-                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
-                              contentExpr);
-  }
-#endif
-
-  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+  fo_expr* foExpr = wrap_in_enclosed_expr(contentExpr, loc);
 
   push_nodestack(foExpr);
 }
@@ -11634,7 +11705,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
+  fo_expr* lEnclosed = wrap_in_enclosed_expr(lContent, loc);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
                     !Properties::instance()->noCopyOptim());
@@ -11660,7 +11731,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+    fo_expr* lEnclosed = wrap_in_enclosed_expr(contentExpr, loc);
     contentExpr = lEnclosed;
   }
 
@@ -11710,10 +11781,10 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   if (v.get_val_expr() != 0)
   {
     valueExpr = pop_nodestack();
-    valueExpr = wrap_in_atomization(valueExpr);
 
-    fo_expr* enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, valueExpr);
-    valueExpr = enclosedExpr;
+    valueExpr = wrap_in_enclosed_expr(valueExpr, loc);
+
+    valueExpr = wrap_in_atomization(valueExpr);
   }
 
   QName* constQName = v.get_qname_expr().dyn_cast<QName>().getp();
@@ -11750,7 +11821,7 @@ void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, inputExpr);
+  fo_expr_t enclosedExpr = wrap_in_enclosed_expr(inputExpr, loc);
 
   expr_t textExpr = new text_expr(theRootSctx, loc,
                                   text_expr::comment_constructor,
@@ -11781,7 +11852,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     content = pop_nodestack();
 
-    fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, content);
+    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(content, loc);
     content = enclosedExpr;
   }
 
@@ -11791,7 +11862,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
     expr_t castExpr = create_cast_expr(loc, target.getp(), theRTM.NCNAME_TYPE_ONE, true);
 
-    fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, castExpr.getp());
+    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(castExpr.getp(), loc);
     target = enclosedExpr;
   }
 
@@ -11815,7 +11886,7 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, inputExpr);
+  fo_expr_t enclosedExpr = wrap_in_enclosed_expr(inputExpr, loc);
 
   expr_t textExpr = new text_expr(theRootSctx, loc,
                                   text_expr::text_constructor,

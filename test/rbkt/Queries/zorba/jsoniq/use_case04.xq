@@ -21,12 +21,12 @@ let $sats :=
 return {
   "visible" : [
      for $sat in j:pairs(j:value($sats("satellites")))
-     where data($sat("visible"))
+     where $sat("visible")
      return j:name($sat)
   ],
   "invisible" : [
      for $sat in j:pairs(j:value($sats("satellites")))
-     where not(data($sat("visible")))
+     where not($sat("visible"))
      return j:name($sat)
   ]
 }
