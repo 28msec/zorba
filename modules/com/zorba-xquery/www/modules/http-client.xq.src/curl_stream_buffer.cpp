@@ -162,18 +162,6 @@ streambuf::streambuf( char const *uri ) {
   open( uri );
 }
 
-int streambuf::multi_perform() {
-  underflow();
-  CURLMsg *msg;
-  int msgInQueue;
-  int error = 0;
-  while ( (msg = curl_multi_info_read( curlm_, &msgInQueue )) ) {
-    if ( msg->msg == CURLMSG_DONE )
-      error = msg->data.result;
-  }
-  return error;
-}
-
 streambuf::streambuf( CURL *curl ) {
   init();
   curl_ = curl;
@@ -349,6 +337,18 @@ void streambuf::init_curlm() {
     curl_ = 0;
     throw;
   }
+}
+
+int streambuf::multi_perform() {
+  underflow();
+  CURLMsg *msg;
+  int msgInQueue;
+  int error = 0;
+  while ( (msg = curl_multi_info_read( curlm_, &msgInQueue )) ) {
+    if ( msg->msg == CURLMSG_DONE )
+      error = msg->data.result;
+  }
+  return error;
 }
 
 void streambuf::open( char const *uri ) {

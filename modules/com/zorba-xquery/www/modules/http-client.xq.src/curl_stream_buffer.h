@@ -92,10 +92,12 @@ public:
   streambuf( char const *uri );
 
   /**
-   * In case we already have a curl object, which was set up somewhere else, we
-   * take it here as an arument. This takes ownership over the object.
+   * Constructs a %streambuf using an existing CURL object.
+   *
+   * @param curl The CURL object to use.  This %streambuf takes ownership of
+   * it.
    */
-  streambuf( CURL* aCurl );
+  streambuf( CURL *curl );
 
   /**
    * Destroys a %streambuf.
