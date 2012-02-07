@@ -74,6 +74,9 @@ public:
 
   uint32_t 
   hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool
+  getEBV() const { return false; }
 };
 
 

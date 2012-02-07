@@ -90,66 +90,81 @@ bool FnBooleanIterator::effectiveBooleanValue(
     bool negate)
 {
   store::Item_t item;
-  bool result;
-  bool is_sequence;
 
   TypeManager* tm = iter->getStaticContext()->get_typemanager();
 
   if (!consumeNext(item, iter, planState))
   {
     // empty sequence => false
-    result = negate ^ false;
+    return negate ^ false;
   }
-  else if (item->isNode()
-#ifdef ZORBA_WITH_JSON
-      || item->isJSONItem()
-#endif
-      )
-  {
-    // node or json => true
-    result = negate ^ true;
-  }
-  else
-  {
-    store::SchemaTypeCode type = item->getTypeCode();
 
-    store::Item_t item2;
-    is_sequence = consumeNext(item2, iter, planState);
+  bool lPairFound = false;
+  bool is_sequence;
 
-    if (!is_sequence 
-        &&
-        (type == store::XS_BOOLEAN ||
-         TypeOps::is_subtype(type, store::XS_STRING) ||
-         TypeOps::is_subtype(type, store::XS_ANY_URI) ||
-         type == store::XS_UNTYPED_ATOMIC ||
-         TypeOps::is_numeric(type)))
+  while (true)
+  {
+    if (item->isNode()
+  #ifdef ZORBA_WITH_JSON
+        || item->isJSONObject() || item->isJSONArray()
+  #endif
+        )
     {
-      // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
-      // => effective boolean value is defined in the items
-      bool temp = item->getEBV();
-      result = negate ? (negate ^ temp) : temp;
+      // node or json => true
+      return negate ^ true;
     }
     else
     {
-      if (is_sequence)
+      if (!lPairFound)
+      {
+        store::Item_t item2;
+        is_sequence = consumeNext(item2, iter, planState);
+
+#ifdef ZORBA_WITH_JSON
+        if (item->isJSONPair() && !is_sequence)
+        {
+          item = item->getValue();
+          lPairFound = true;
+          continue;
+        }
+      }
+#endif
+  
+      if (!is_sequence)
+      {
+        store::SchemaTypeCode type = item->getTypeCode();
+        if (type == store::XS_BOOLEAN ||
+           TypeOps::is_subtype(type, store::XS_STRING) ||
+           TypeOps::is_subtype(type, store::XS_ANY_URI) ||
+           type == store::XS_UNTYPED_ATOMIC ||
+#ifdef ZORBA_WITH_JSON
+           type == store::JDM_NULL ||
+#endif
+           TypeOps::is_numeric(type))
+        {
+          // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
+          // => effective boolean value is defined in the items
+          bool temp = item->getEBV();
+          return negate ? (negate ^ temp) : temp;
+        }
+        else
+        {
+          RAISE_ERROR(err::FORG0006, loc,
+          ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
+        }
+      }
+      else
       {
         xqtref_t type = tm->create_value_type(item);
-
+  
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
                      "", "fn:boolean",
                      ZED(EBVNotDefSeq_5),
                      *type));
       }
-      else
-      {
-        RAISE_ERROR(err::FORG0006, loc,
-        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
-      }
     }
   }
-
-  return result;
 }
 
 
