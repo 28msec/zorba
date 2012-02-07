@@ -120,7 +120,7 @@ private:
  * happens automatically.
  *
  * @tparam StreamType The I/O stream class type to wrap. It must be a concrete
- * stream class, i.e., ifstream, ofstream, istringstream, or ostringstream.
+ * stream class.
  */
 template<class StreamType>
 class stream : public StreamType {
@@ -162,8 +162,8 @@ public:
    * constructor.
    * @param charset The name of the character encoding to convert from/to.
    * @param stream_arg The argument to pass as the first argument to
-   * @param mode The open-mode to pass to \a StreamType's constructor.
    * \a StreamType's constructor.
+   * @param mode The open-mode to pass to \a StreamType's constructor.
    * @throws std::invalid_argument if \a charset is not supported.
    */
   template<typename StreamArgType>
