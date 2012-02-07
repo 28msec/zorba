@@ -1431,6 +1431,30 @@ expr_t wrap_in_type_match(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+fo_expr* wrap_in_enclosed_expr(expr_t contentExpr, const QueryLoc& loc)
+{
+#ifdef ZORBA_WITH_JSON
+  TypeManager* tm = contentExpr->get_type_manager();
+
+  xqtref_t type = contentExpr->get_return_type();
+
+  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
+
+  if (!type->is_none() && !type->is_empty())
+  {
+    contentExpr = new fo_expr(theRootSctx,
+                              contentExpr->get_loc(),
+                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
+                              contentExpr);
+  }
+#endif
+
+  return new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+}
+
 
 /*******************************************************************************
 
@@ -10979,23 +11003,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 
   expr_t contentExpr = pop_nodestack();
 
-#ifdef ZORBA_WITH_JSON
-  TypeManager* tm = contentExpr->get_type_manager();
-
-  xqtref_t type = contentExpr->get_return_type();
-
-  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
-
-  if (!type->is_none() && !type->is_empty())
-  {
-    contentExpr = new fo_expr(theRootSctx,
-                              loc,
-                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
-                              contentExpr);
-  }
-#endif
-
-  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+  fo_expr* foExpr = wrap_in_enclosed_expr(contentExpr, loc);
 
   push_nodestack(foExpr);
 }
@@ -11697,7 +11705,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
+  fo_expr* lEnclosed = wrap_in_enclosed_expr(lContent, loc);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
                     !Properties::instance()->noCopyOptim());
@@ -11723,7 +11731,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+    fo_expr* lEnclosed = wrap_in_enclosed_expr(contentExpr, loc);
     contentExpr = lEnclosed;
   }
 
@@ -11773,10 +11781,10 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   if (v.get_val_expr() != 0)
   {
     valueExpr = pop_nodestack();
-    valueExpr = wrap_in_atomization(valueExpr);
 
-    fo_expr* enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, valueExpr);
-    valueExpr = enclosedExpr;
+    valueExpr = wrap_in_enclosed_expr(valueExpr, loc);
+
+    valueExpr = wrap_in_atomization(valueExpr);
   }
 
   QName* constQName = v.get_qname_expr().dyn_cast<QName>().getp();
@@ -11813,7 +11821,7 @@ void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, inputExpr);
+  fo_expr_t enclosedExpr = wrap_in_enclosed_expr(inputExpr, loc);
 
   expr_t textExpr = new text_expr(theRootSctx, loc,
                                   text_expr::comment_constructor,
@@ -11844,7 +11852,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     content = pop_nodestack();
 
-    fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, content);
+    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(content, loc);
     content = enclosedExpr;
   }
 
@@ -11854,7 +11862,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
     expr_t castExpr = create_cast_expr(loc, target.getp(), theRTM.NCNAME_TYPE_ONE, true);
 
-    fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, castExpr.getp());
+    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(castExpr.getp(), loc);
     target = enclosedExpr;
   }
 
@@ -11878,7 +11886,7 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(theRootSctx, loc, op_enclosed, inputExpr);
+  fo_expr_t enclosedExpr = wrap_in_enclosed_expr(inputExpr, loc);
 
   expr_t textExpr = new text_expr(theRootSctx, loc,
                                   text_expr::text_constructor,
