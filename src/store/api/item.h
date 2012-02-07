@@ -51,7 +51,7 @@ typedef StoreConsts::NodeKind NodeKind;
  */
 class ZORBA_DLL_PUBLIC Item
 {
-protected:
+public:
   enum ItemKind
   {
     NODE       = 0x10,
@@ -62,6 +62,7 @@ protected:
     ERROR_     = 0x201
   };
 
+protected:
   typedef union 
   {
     long    * treeRCPtr;
@@ -102,6 +103,11 @@ public:
 
 
   /* -------------------   General Methods for Items ------------------------- */
+
+  /**
+   * @return the kind of the item
+   */
+  ItemKind getKind() const;
 
   /**
    *  @return  "true" if the item is a node
