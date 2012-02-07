@@ -2892,7 +2892,9 @@ PathExpr::PathExpr(
 
 void PathExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR();
+  void* visitor_state = v.begin_visit(*this);
+  if (visitor_state != parsenode_visitor::no_state)
+    return;
   ACCEPT (relpath_expr_h);
   END_VISITOR();
 }
@@ -5730,8 +5732,8 @@ JSON_PairConstructor::~JSON_PairConstructor()
 void JSON_PairConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( expr1_ );
   ACCEPT( expr2_ );
+  ACCEPT( expr1_ );
   END_VISITOR();
 }
 

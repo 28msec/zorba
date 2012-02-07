@@ -50,9 +50,17 @@ public:
 public:
   json_pair_expr(
       static_context* sctx,
+      const QueryLoc& loc);
+
+  json_pair_expr(
+      static_context* sctx,
       const QueryLoc& loc,
       const expr_t& name,
       const expr_t& value);
+
+  void set_name_expr(const expr_t& name) { theNameExpr = name; }
+
+  void set_value_expr(const expr_t& value) { theValueExpr = value; }
 
   expr* get_name_expr() const { return theNameExpr.getp(); }
 

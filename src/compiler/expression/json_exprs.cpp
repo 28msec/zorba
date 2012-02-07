@@ -41,6 +41,14 @@ DEF_EXPR_ACCEPT(json_array_expr)
 ********************************************************************************/
 json_pair_expr::json_pair_expr(
     static_context* sctx,
+    const QueryLoc& loc)
+  :
+  expr(sctx, loc, json_pair_expr_kind)
+{
+}
+
+json_pair_expr::json_pair_expr(
+    static_context* sctx,
     const QueryLoc& loc,
     const expr_t& name,
     const expr_t& value)

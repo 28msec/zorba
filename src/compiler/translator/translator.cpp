@@ -8276,6 +8276,51 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
+  // terrible hack to allow for the value of a json pair to be
+  // null, true, false
+#ifdef ZORBA_WITH_JSON
+  if (pe_type == ParseConstants::path_relative &&
+      !theNodeStack.empty() && theNodeStack.top().dyn_cast<json_pair_expr>())
+  {
+    RelativePathExpr* lRelPathExpr
+      = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
+    AxisStep* lStepExpr
+      = dynamic_cast<AxisStep*>(lRelPathExpr->get_relpath_expr().getp());
+    if (lStepExpr)
+    {
+      ForwardStep* lFwdStep
+        = dynamic_cast<ForwardStep*>(lStepExpr->get_forward_step().getp());
+      if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
+      {
+        AbbrevForwardStep* lAbbrFwdStep
+          = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
+        const NameTest* lNodetest
+          = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+        const rchandle<QName> lQName = lNodetest->getQName();
+        if (lQName && lQName->get_namespace() == "")
+        {
+          const zstring& lLocal = lQName->get_localname();
+          if (lLocal == "true")
+          {
+            push_nodestack(new const_expr(theRootSctx, loc, true));
+            return (void*)1;
+          } else if (lLocal == "false")
+          {
+            push_nodestack(new const_expr(theRootSctx, loc, false));
+            return (void*)1;
+          } else if (lLocal == "null")
+          {
+            store::Item_t lNull;
+            GENV_ITEMFACTORY->createJSONNull(lNull);
+            push_nodestack(new const_expr(theRootSctx, loc, lNull));
+            return (void*)1;
+          }
+        }
+      }
+    }  
+  }
+#endif
+
   rchandle<relpath_expr> pathExpr = NULL;
 
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
@@ -10725,7 +10770,10 @@ void* begin_visit(const JSON_PairConstructor& v)
   TRACE_VISIT ();
 #ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#else
+  push_nodestack(new json_pair_expr(theRootSctx, loc));
 #endif
+
   return no_state;
 }
 
@@ -10734,8 +10782,8 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
-  expr_t valueExpr = pop_nodestack();
   expr_t nameExpr = pop_nodestack();
+  expr_t valueExpr = pop_nodestack();
 
   nameExpr = wrap_in_atomization(nameExpr);
   nameExpr = new promote_expr(theRootSctx,
@@ -10753,9 +10801,11 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
                                GENV_TYPESYSTEM.ITEM_TYPE_ONE,
                                NULL);
 
-  json_pair_expr* jp = new json_pair_expr(theRootSctx, loc, nameExpr, valueExpr);
-
-  push_nodestack(jp);
+  json_pair_expr* jp = dynamic_cast<json_pair_expr*>(theNodeStack.top().getp());
+  ZORBA_ASSERT(jp);
+  jp->set_name_expr(nameExpr);
+  jp->set_value_expr(valueExpr);
+  jp->compute_scripting_kind();
 #endif
 }
 
