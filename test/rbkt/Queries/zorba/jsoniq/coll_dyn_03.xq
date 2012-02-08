@@ -9,7 +9,7 @@ declare namespace xqsx = "http://www.zorba-xquery.com/zorba/scripting";
 
 declare variable $coll1 := xs:QName("collection1");
 
-ddl:create($coll1, (<a/>, { "p1":1, "p2":2 }, {}, [1, 2, 3]));
+ddl:create($coll1, (<a/>, { "p1":1, "p2":2 }, [1, 2, 3]));
 
 (
 ["
@@ -34,8 +34,10 @@ XXX-04"]
 ,
 {
 "index" :
+(
 let $o := dml:collection($coll1)[. instance of object()][2]
 return dml:index-of($o)
+)
 }
 ,
 ["

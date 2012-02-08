@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <sstream>
+#include <iomanip>
 
 #include <zorba/zorba_string.h>
 #include <zorbamisc/ns_consts.h>
@@ -1141,8 +1142,18 @@ void serializer::json_emitter::emit_json_string(zstring string)
   zstring::const_iterator i = string.begin();
   zstring::const_iterator end = string.end();
   for (; i < end; i++) {
-    if (*i == '\\' || *i == '"' || (*i < 0x20)) {
+    if (*i < 0x20) {
+      // Escape control sequences
+      std::stringstream hex;
+      hex << "\\u" << std::setw(4) << std::setfill('0')
+          << std::hex << static_cast<int>(*i);
+      tr << hex.str();
+      continue;
+    }
+    if (*i == '\\' || *i == '"') {
+      // Output escape char for \ or "
       tr << '\\';
+      // Fall through to output original character
     }
     tr << *i;
   }
