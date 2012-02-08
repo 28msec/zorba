@@ -5400,6 +5400,10 @@ void* begin_visit(const BlockBody& v)
 
   ulong numExprs = v.size();
   bool declaresVars = false;
+#ifdef ZORBA_WITH_JSON
+  bool mightProduceObject = true;
+  bool introducedObjectConstr = false;
+#endif
 
   for (ulong i = 0; i < numExprs; ++i)
   {
@@ -5433,6 +5437,28 @@ void* begin_visit(const BlockBody& v)
         }
       }
 
+#ifdef ZORBA_WITH_JSON
+      if (i == numExprs - 1)
+      {
+        xqtref_t lResType = childExpr->get_return_type();
+        TypeManager* tm = childExpr->get_type_manager();
+        if (TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR, loc))
+        {
+          childExpr = new json_object_expr(theRootSctx, loc, childExpr);
+          introducedObjectConstr = true;
+        }
+
+        if (TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, loc) ||
+            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, loc) ||
+            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR, loc) ||
+            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, loc))
+        {
+          mightProduceObject = false;
+        }
+
+      }
+#endif
+
       stmts.push_back(childExpr);
     }
   }
@@ -5446,8 +5472,11 @@ void* begin_visit(const BlockBody& v)
   // hack?
   // this has been removed to allow for blocks containing only an expression
   // to be treated as JSON object constructors
-#ifndef ZORBA_WITH_JSON
-  if (stmts.size() == 1 && !declaresVars)
+  if (stmts.size() == 1 && !declaresVars
+#ifdef ZORBA_WITH_JSON
+      && (introducedObjectConstr || !mightProduceObject)
+#endif
+      )
   {
     push_nodestack(stmts[0]);
 
@@ -5456,7 +5485,6 @@ void* begin_visit(const BlockBody& v)
 
     return NULL;
   }
-#endif
 
   // Create the block expr
   std::vector<var_expr*>& prevAssignedVars = theAssignedVars[numScopes-1];
