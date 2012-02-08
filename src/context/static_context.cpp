@@ -332,7 +332,7 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 
 const char*
 static_context::JSONIQ_NS =
-"http://www.jsoniq.org";
+"http://www.jsoniq.org/";
 
 const char*
 static_context::JSONIQ_FN_NS =
@@ -482,9 +482,6 @@ bool static_context::is_builtin_module(const zstring& ns)
   } 
   else if (ns == W3C_FN_NS ||
            ns == XQUERY_MATH_FN_NS
-#ifdef ZORBA_WITH_JSON
-           || ns == JSONIQ_FN_NS
-#endif
           )
   {
     return true;
@@ -532,6 +529,9 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+#ifdef ZORBA_WITH_JSON
+            ns == JSONIQ_FN_NS ||
+#endif
             ns == ZORBA_RANDOM_FN_NS);
   }
 
