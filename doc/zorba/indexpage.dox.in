@@ -124,7 +124,15 @@
 
     \ref options_and_annotations
 
-    \ref jsoniq
+</td></tr>
+<tr><td class="tdDocIndexTable">
+
+    <h2>JSONiq</h2>
+
+
+    <a href="XQueryforJSON.html">JSONiq for JSON users</a>
+
+    <a href="JSONforXQuery.html">JSONiq for XQuery users</a>
 
 
 </td></tr>
