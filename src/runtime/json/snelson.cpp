@@ -78,12 +78,14 @@ static void add_item_element( item_stack_type &item_stack,
   PUSH_ITEM( cur_item );
 }
 
-#define ADD_ITEM_ELEMENT(T)                                     \
-  if ( !ztd::top_stack_equals( state_stack, in_array ) ) ; else \
+#define IN_STATE(S) ztd::top_stack_equals( state_stack, (S) )
+
+#define ADD_ITEM_ELEMENT(T)                                 \
+  if ( !IN_STATE( in_array ) ) ; else                       \
   add_item_element( item_stack, state_stack, cur_item, T )
 
-#define POP_ITEM_ELEMENT()                                      \
-  if ( !ztd::top_stack_equals( state_stack, in_array ) ) ; else \
+#define POP_ITEM_ELEMENT()            \
+  if ( !IN_STATE( in_array ) ) ; else \
   POP_ITEM()
 
 static void escape_json_chars( zstring *s ) {
@@ -128,19 +130,22 @@ void parse( json::parser &p, store::Item_t *result ) {
       );
       *result = cur_item;
       needs_type_attribute = true;
+      PUSH_ITEM( cur_item );
     }
 
     switch ( token.get_type() ) {
 
       case '[':
-        PUSH_ITEM( cur_item );
+        if ( !IN_STATE( in_array ) )
+          PUSH_ITEM( cur_item );
         ADD_TYPE_ATTRIBUTE( "array" );
         ADD_ITEM_ELEMENT( "array" );
         PUSH_STATE( in_array );
         break;
 
       case '{':
-        PUSH_ITEM( cur_item );
+        if ( !IN_STATE( in_array ) )
+          PUSH_ITEM( cur_item );
         ADD_TYPE_ATTRIBUTE( "object" );
         ADD_ITEM_ELEMENT( "object" );
         PUSH_STATE( in_object );
@@ -149,7 +154,8 @@ void parse( json::parser &p, store::Item_t *result ) {
 
       case ']':
       case '}':
-        POP_ITEM();
+        if ( !IN_STATE( in_array ) )
+          POP_ITEM();
         POP_STATE();
         POP_ITEM_ELEMENT();
         break;
