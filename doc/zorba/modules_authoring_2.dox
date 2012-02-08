@@ -118,6 +118,9 @@ the filename of your module <tt>.xq</tt> file need not directly
 correspond with the namespace URI. You may use different filenames for
 supporting different versions if you wish.)
 
+Finally, note that if you declare a module <i>without</i> a VERSION
+argument, it will internally be treated as though the version was "0.0.0".
+
 \section mod_author_schemas Adding schemas
 
 If you develop modules that make use of your own XML Schemas, then you
