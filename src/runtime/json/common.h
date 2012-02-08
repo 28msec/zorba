@@ -74,6 +74,8 @@ DEF_OMANIP2( if_emit, bool, char )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#define IN_STATE(S) ztd::top_stack_equals( state_stack, (S) )
+
 #if ZORBA_DEBUG_JSON
 
 std::ostream& operator<<( std::ostream &o, parse_state s );

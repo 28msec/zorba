@@ -107,7 +107,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case ',':
-        expect_what = state_stack.top() == in_object ?
+        expect_what = IN_STATE( in_object ) ?
           expect::attribute_name : expect::none;
         break;
 

@@ -78,15 +78,12 @@ static void add_item_element( item_stack_type &item_stack,
   PUSH_ITEM( cur_item );
 }
 
-#define IN_STATE(S) ztd::top_stack_equals( state_stack, (S) )
-
 #define ADD_ITEM_ELEMENT(T)                                 \
   if ( !IN_STATE( in_array ) ) ; else                       \
   add_item_element( item_stack, state_stack, cur_item, T )
 
-#define POP_ITEM_ELEMENT()            \
-  if ( !IN_STATE( in_array ) ) ; else \
-  POP_ITEM()
+#define POP_ITEM_ELEMENT()  \
+  if ( !IN_STATE( in_array ) ) ; else POP_ITEM()
 
 static void escape_json_chars( zstring *s ) {
   ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
@@ -153,11 +150,13 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case ']':
-      case '}':
-        if ( !IN_STATE( in_array ) )
-          POP_ITEM();
         POP_STATE();
         POP_ITEM_ELEMENT();
+        break;
+
+      case '}':
+        POP_ITEM();
+        POP_STATE();
         break;
 
       case ',':
