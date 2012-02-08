@@ -46,11 +46,6 @@
 
 #define ZORBA_NS                "http://www.zorba-xquery.com/"
 
-#ifdef ZORBA_WITH_JSON
-#  define JSONIQ_NS                "http://www.jsoniq.org/"
-#  define JSONIQ_FN_NS             JSONIQ_NS "functions"
-#endif
-
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 
 #define ZORBA_ERR_NS            ZORBA_NS "errors"

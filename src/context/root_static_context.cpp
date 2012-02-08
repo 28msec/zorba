@@ -74,7 +74,7 @@ void root_static_context::init()
     //"err", XQUERY_ERR_NS,
     "fn", static_context::W3C_FN_NS,
 #ifdef ZORBA_WITH_JSON
-    "jn", static_context::ZORBA_JSON_FN_NS,
+    "jn", static_context::JSONIQ_FN_NS,
 #endif
     "local", XQUERY_LOCAL_FN_NS,
     "xml", XML_NS,

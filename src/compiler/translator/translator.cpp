@@ -8371,8 +8371,10 @@ void* begin_visit(const PathExpr& v)
   {
     RelativePathExpr* lRootRelPathExpr
       = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
+
     ContextItemExpr* lStepExpr
     = dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr().getp());
+
     AxisStep* lRelPathExpr
     = dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr().getp());
     // Only rewrites if expression consists of a context item step on the left
@@ -8383,27 +8385,36 @@ void* begin_visit(const PathExpr& v)
     {
       ForwardStep* lFwdStep
         = dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step().getp());
+
       if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
       {
         AbbrevForwardStep* lAbbrFwdStep
           = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
-        if (lAbbrFwdStep) {
+
+        if (lAbbrFwdStep) 
+        {
           const NameTest* lNodetest
             = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
-          if (lNodetest) {
+
+          if (lNodetest) 
+          {
             const rchandle<QName> lQName = lNodetest->getQName();
+
             if (lQName && lQName->get_namespace() == "")
             {
               const zstring& lLocal = lQName->get_localname();
+
               if (lLocal == "true")
               {
                 push_nodestack(new const_expr(theRootSctx, loc, true));
                 return (void*)1;
-              } else if (lLocal == "false")
+              }
+              else if (lLocal == "false")
               {
                 push_nodestack(new const_expr(theRootSctx, loc, false));
                 return (void*)1;
-              } else if (lLocal == "null")
+              }
+              else if (lLocal == "null")
               {
                 store::Item_t lNull;
                 GENV_ITEMFACTORY->createJSONNull(lNull);
@@ -10082,10 +10093,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   //  Check if it is a zorba builtin function, and if so,
   // make sure that the module it belongs to has been imported.
   if (f != NULL &&
-           f->isBuiltin() &&
-           fn_ns != static_context::W3C_FN_NS &&
-           fn_ns != XQUERY_MATH_FN_NS &&
-           fn_ns != theModuleNamespace)
+      f->isBuiltin() &&
+      fn_ns != static_context::W3C_FN_NS &&
+      fn_ns != static_context::JSONIQ_FN_NS &&
+      fn_ns != XQUERY_MATH_FN_NS &&
+      fn_ns != theModuleNamespace)
   {
     if (! theSctx->is_imported_builtin_module(fn_ns))
     {
@@ -11848,8 +11860,6 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
     valueExpr = pop_nodestack();
 
     valueExpr = wrap_in_enclosed_expr(valueExpr, loc);
-
-    valueExpr = wrap_in_atomization(valueExpr);
   }
 
   QName* constQName = v.get_qname_expr().dyn_cast<QName>().getp();

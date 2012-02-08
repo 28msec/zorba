@@ -331,6 +331,14 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 #ifdef ZORBA_WITH_JSON
 
 const char*
+static_context::JSONIQ_NS =
+"http://www.jsoniq.org";
+
+const char*
+static_context::JSONIQ_FN_NS =
+"http://www.jsoniq.org/functions";
+
+const char*
 static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS =
 "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
 

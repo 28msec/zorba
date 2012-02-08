@@ -31,7 +31,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
-#include "zorbamisc/ns_consts.h"
+#include "context/static_context.h"
 
 namespace zorba
 {
@@ -282,7 +282,10 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
 
 #ifdef ZORBA_WITH_JSON
-  GENV_STORE.getItemFactory()->createQName(JDM_NULL_QNAME, JSONIQ_NS, "", "null");
+  GENV_STORE.getItemFactory()->createQName(JDM_NULL_QNAME,
+                                           static_context::JSONIQ_NS,
+                                           "",
+                                           "null");
 #endif
 
   store::Item* tempQN = NULL;
