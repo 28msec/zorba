@@ -209,6 +209,112 @@ example_6(Zorba* aZorba)
   return true;
 }
 
+/**
+ * Utility function: Given an item, bind that item to a simple query and
+ * serialize the result, then ensure the result matches the expected string.
+ */
+bool
+serialize(Zorba* aZorba, Item aItem, std::string aExpected)
+{
+  Zorba_SerializerOptions lSerialOpt;
+  lSerialOpt.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+  XQuery_t lQuery = aZorba->compileQuery("declare variable $i external; $i");
+  lQuery->getDynamicContext()->setVariable("i", aItem);
+  std::stringstream lStream;
+  lQuery->execute(lStream, &lSerialOpt);
+  std::string lResult = lStream.str();
+  std::cout << lResult << std::endl;
+  if (lResult.compare(aExpected) != 0) {
+    std::cout << "Wrong value! Expected " << aExpected << std::endl;
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Test creating a JSON null value.
+ */
+bool
+example_7(Zorba* aZorba)
+{
+  Item lNull = aZorba->getItemFactory()->createJSONNull();
+  return serialize(aZorba, lNull, "null");
+}
+
+/**
+ * Test creating some JSON numbers.
+ */
+bool
+example_8(Zorba* aZorba)
+{
+  Item lNum = aZorba->getItemFactory()->createJSONNumber(String("12345"));
+  if (lNum.getType().getLocalName().compare("integer") != 0) {
+    std::cout << "Didn't create an xs:integer!";
+    return false;
+  }
+  if (!serialize(aZorba, lNum, "12345")) {
+    return false;
+  }
+
+  lNum = aZorba->getItemFactory()->createJSONNumber(String("123.345"));
+  if (lNum.getType().getLocalName().compare("decimal") != 0) {
+    std::cout << "Didn't create an xs:decimal!";
+    return false;
+  }
+  if (!serialize(aZorba, lNum, "123.345")) {
+    return false;
+  }
+
+  lNum = aZorba->getItemFactory()->createJSONNumber(String("12.34e5"));
+  if (lNum.getType().getLocalName().compare("double") != 0) {
+    std::cout << "Didn't create an xs:double!";
+    return false;
+  }
+  if (!serialize(aZorba, lNum, "1.234E6")) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Test creating a JSON pair.
+ */
+bool example_9(Zorba* aZorba)
+{
+  Item lValue = aZorba->getItemFactory()->createJSONNumber("1234");
+  Item lPair = aZorba->getItemFactory()->createJSONPair("name", lValue);
+  // Standalone Pairs get boxed into a JSON Object
+  return serialize(aZorba, lPair, "{ \"name\" : 1234 }");
+}
+
+/**
+ * Test creating a JSON array.
+ */
+bool example_10(Zorba* aZorba)
+{
+  std::vector<Item> lMembers;
+  for (int i = 1; i <= 4; i++) {
+    // xs:int is fine for JSON arrays
+    lMembers.push_back(aZorba->getItemFactory()->createInt(i));
+  }
+  Item lArray = aZorba->getItemFactory()->createJSONArray(lMembers);
+  return serialize(aZorba, lArray, "[ 1, 2, 3, 4 ]");
+}
+
+/**
+ * Test creating a JSON object.
+ */
+bool example_11(Zorba* aZorba)
+{
+  Item lValue = aZorba->getItemFactory()->createInt(1234);
+  std::vector<Item> lPairs;
+  lPairs.push_back(aZorba->getItemFactory()->createJSONPair("foo", lValue));
+
+  Item lObject = aZorba->getItemFactory()->createJSONObject(lPairs);
+  return serialize(aZorba, lObject, "{ \"foo\" : 1234 }");
+}
+
 } /* namespace jsoniq-test */
 
 int 
@@ -219,35 +325,66 @@ jsoniq(int argc, char* argv[])
 
   bool res = false;
 
-  std::cout << "executing jsoniq example 1" << std::endl;
-  res = jsoniq_test::example_1(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+  try {
+    std::cout << "executing jsoniq example 1" << std::endl;
+    res = jsoniq_test::example_1(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
 
-  std::cout << "executing jsoniq example 2" << std::endl;
-  res = jsoniq_test::example_2(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+    std::cout << "executing jsoniq example 2" << std::endl;
+    res = jsoniq_test::example_2(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
 
-  std::cout << "executing jsoniq example 3" << std::endl;
-  res = jsoniq_test::example_3(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+    std::cout << "executing jsoniq example 3" << std::endl;
+    res = jsoniq_test::example_3(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
 
-  std::cout << "executing jsoniq example 4" << std::endl;
-  res = jsoniq_test::example_4(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+    std::cout << "executing jsoniq example 4" << std::endl;
+    res = jsoniq_test::example_4(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
 
-  std::cout << "executing jsoniq example 5" << std::endl;
-  res = jsoniq_test::example_5(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+    std::cout << "executing jsoniq example 5" << std::endl;
+    res = jsoniq_test::example_5(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
 
-  std::cout << "executing jsoniq example 6" << std::endl;
-  res = jsoniq_test::example_6(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
+    std::cout << "executing jsoniq example 6" << std::endl;
+    res = jsoniq_test::example_6(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+
+    std::cout << "executing jsoniq example 7" << std::endl;
+    res = jsoniq_test::example_7(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+
+    std::cout << "executing jsoniq example 8" << std::endl;
+    res = jsoniq_test::example_8(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+
+    std::cout << "executing jsoniq example 9" << std::endl;
+    res = jsoniq_test::example_9(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+
+    std::cout << "executing jsoniq example 10" << std::endl;
+    res = jsoniq_test::example_10(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+
+    std::cout << "executing jsoniq example 11" << std::endl;
+    res = jsoniq_test::example_11(lZorba);
+    if (!res) return 1;
+    std::cout << std::endl;
+  }
+  catch (ZorbaException& e) {
+    std::cout << "ZorbaException raised: " << e.what() << std::endl;
+    return 2;
+  }
 
   lZorba->shutdown();
   StoreManager::shutdownStore(lStore);

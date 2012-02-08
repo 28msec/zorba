@@ -244,6 +244,24 @@ namespace zorba {
         Item   parent,
         String content);
 
+#ifdef ZORBA_WITH_JSON
+      virtual Item
+      createJSONNull();
+
+      virtual Item
+      createJSONNumber(String aString);
+
+      virtual Item
+      createJSONObject(std::vector<Item>& aPairs);
+
+      virtual Item
+      createJSONArray(std::vector<Item>& aItems);
+
+      virtual Item
+      createJSONPair(String aName, Item aValue);
+
+#endif /* ZORBA_WITH_JSON */
+
     protected:
       store::ItemFactory* theItemFactory;
 

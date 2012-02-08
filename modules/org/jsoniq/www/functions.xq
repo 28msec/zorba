@@ -1,3 +1,15 @@
+(:~
+ : This module provides the functions defined by the JSONiq specification,
+ : sections 1.7 (Functions) and 1.10 (Update Primitives). JSONiq extends
+ : the XQuery specification to also deal with JSON data natively. See
+ :
+ :     http://www.jsoniq.org/
+ :
+ : for details.
+ :
+ : This module depends on having the JSONiq feature enabled in Zorba,
+ : ie, Zorba must be compiled with ZORBA_WITH_JSON.
+ :)
 module namespace j = "http://www.jsoniq.org/functions";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";

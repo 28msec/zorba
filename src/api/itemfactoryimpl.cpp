@@ -24,6 +24,7 @@
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 #include "api/unmarshaller.h"
 #include "types/casting.h"
 
@@ -804,6 +805,66 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
                                  lContent);
   return &*lItem;
 }
+
+#ifdef ZORBA_WITH_JSON
+
+zorba::Item ItemFactoryImpl::createJSONNull()
+{
+  store::Item_t lItem;
+  theItemFactory->createJSONNull(lItem);
+  return &*lItem;
+}
+
+zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
+{
+  store::Item_t lItem;
+  zstring &lString = Unmarshaller::getInternalString(aString);
+  theItemFactory->createJSONNumber(lItem, lString);
+  return &*lItem;
+}
+
+static void addItems(store::Item* parent, std::vector<Item> &items)
+{
+  // "Copy" the items into the parent
+  store::CopyMode noCopy;
+  noCopy.theDoCopy = false;
+  std::vector<Item>::iterator i = items.begin();
+  std::vector<Item>::iterator end = items.end();
+  for (; i != end; i++) {
+    Unmarshaller::getInternalItem(*i)->copy(parent, noCopy);
+  }
+}
+
+zorba::Item ItemFactoryImpl::createJSONObject(std::vector<Item> &aPairs)
+{
+  store::Item_t lItem;
+  theItemFactory->createJSONObject(lItem);
+  addItems(lItem.getp(), aPairs);
+  return &*lItem;
+}
+
+zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item> &aItems)
+{
+  store::Item_t lItem;
+  theItemFactory->createJSONArray(lItem);
+  addItems(lItem.getp(), aItems);
+  return &*lItem;
+}
+
+zorba::Item ItemFactoryImpl::createJSONPair(String aName, Item aValue)
+{
+  store::Item_t lNameItem;
+  theItemFactory->createString(lNameItem, Unmarshaller::getInternalString(aName));
+
+  store::Item_t lValueItem = Unmarshaller::getInternalItem(aValue);
+  store::Item_t lItem;
+  theItemFactory->createJSONObjectPair(lItem, lNameItem, lValueItem);
+  return &*lItem;
+}
+
+
+
+#endif /* ZORBA_WITH_JSON */
 
 
 } // namespace zorba

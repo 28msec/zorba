@@ -123,7 +123,7 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base64 binary data.
+       * @param aBinData a pointer to the base6c4 binary data.
        * @param aLength the length of the base64 binary data.
        * @return The Base64Binary Item.
        */
@@ -679,6 +679,51 @@ namespace zorba {
       virtual Item createTextNode(
         Item   parent,
         String content) = 0;
+
+#ifdef ZORBA_WITH_JSON
+
+      /**
+       * Create a JSON null item.
+       */
+      virtual Item createJSONNull() = 0;
+
+      /**
+       * Create a JSON Number item from a string. This will actually be
+       * an xs:integer, xs:double, or xs:decimal, depending on the content
+       * of the string.
+       *
+       * @param aString The input string.
+       */
+      virtual Item createJSONNumber(String aString) = 0;
+
+      /**
+       * Create a JSON Object containing the specified JSON Pairs.
+       *
+       * @param aPairs A std::vector<Item> containing JSON Pair items.
+       */
+      virtual Item createJSONObject(std::vector<Item>& aPairs) = 0;
+
+      /**
+       * Create a JSON Array containing the specified items.
+       *
+       * @param aItems A std::vector<Item> containing Items which may
+       * be stored in a JSON Array (namely JSON Arrays, JSON Objects,
+       * JSON nulls, valid JSON numeric types, or xs:strings).
+       */
+      virtual Item createJSONArray(std::vector<Item>& aItems) = 0;
+
+      /**
+       * Create a JSON Pair, suitable for putting into a JSON Object.
+       *
+       * @param aName The name for the pair.
+       * @param aValue The value for the pair. This must be of a type
+       * which may be the value of a JSON pair (namely JSON Arrays, JSON Objects,
+       * JSON nulls, valid JSON numeric types, or xs:strings).
+       */
+      virtual Item createJSONPair(String aName, Item aValue) = 0;
+
+#endif /* ZORBA_WITH_JSON */
+
 }; // class ItemFactory
 
 } // namespace zorba
