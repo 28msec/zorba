@@ -20,12 +20,12 @@ let $sats :=
   }
 return {
   "visible" : [
-     for $sat in j:pairs(j:value($sats("satellites")))
+     for $sat in j:pairs($sats("satellites"))
      where $sat("visible")
      return j:name($sat)
   ],
   "invisible" : [
-     for $sat in j:pairs(j:value($sats("satellites")))
+     for $sat in j:pairs($sats("satellites"))
      where not($sat("visible"))
      return j:name($sat)
   ]

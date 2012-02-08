@@ -1020,6 +1020,29 @@ JSONReplaceValueIterator::nextImpl(
 
   STACK_END (state);
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+JSONUnboxingIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  while (consumeNext(result, theChild.getp(), planState))
+  {
+    if (result->isJSONPair())
+    {
+      result = result->getValue();
+    }
+    STACK_PUSH(true, state);
+  }
+  STACK_END (state);
+}
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
 #endif /* ZORBA_WITH_JSON */

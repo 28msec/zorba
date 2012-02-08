@@ -25,5 +25,5 @@ dml:insert-nodes-last(xs:QName("users"),
 
 
 let $sarah := dml:collection(xs:QName("users"))[.("name") = "Sarah"]
-for $friend in j:values(j:value($sarah("friends")))
+for $friend in j:values($sarah("friends"))
 return dml:collection(xs:QName("users"))[.("name") = $friend]
