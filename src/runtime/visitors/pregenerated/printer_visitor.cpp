@@ -1994,6 +1994,21 @@ void PrinterVisitor::endVisit ( const JSONReplaceValueIterator& ) {
 // </JSONReplaceValueIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONUnboxingIterator>
+void PrinterVisitor::beginVisit ( const JSONUnboxingIterator& a) {
+  thePrinter.startBeginVisit("JSONUnboxingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONUnboxingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONUnboxingIterator>
+
+#endif
 
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {

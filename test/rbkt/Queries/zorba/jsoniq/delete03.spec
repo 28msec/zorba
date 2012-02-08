@@ -1,1 +1,1 @@
-Error: http://www.jsoniq.org/errors:JUDY0062
+Error: http://www.w3.org/2005/xqt-errors:XPTY0004

@@ -267,6 +267,18 @@ PlanIter_t fn_jsoniq_replace_value_in_object::codegen(
 }
 
 #endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_json_unbox::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new JSONUnboxingIterator(sctx, loc, argv[0]);
+}
+
+#endif
 
 void populate_context_jsoniq_functions(static_context* sctx)
 {
@@ -665,6 +677,22 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::FN_JSONIQ_REPLACE_VALUE_IN_ARRAY_3);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_json_unbox,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-unbox"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_JSON_UNBOX_1);
 
   }
 

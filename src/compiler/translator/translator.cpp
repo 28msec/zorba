@@ -1381,6 +1381,10 @@ void normalize_fo(fo_expr* foExpr)
       }
       else
       {
+#ifdef ZORBA_WITH_JSON
+        argExpr = wrap_in_unbox(argExpr, paramType);
+#endif
+
         argExpr = wrap_in_type_match(argExpr, paramType, loc);
       }
     }
@@ -1388,6 +1392,32 @@ void normalize_fo(fo_expr* foExpr)
     foExpr->set_arg(i, argExpr);
   }
 }
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+  Wrap the given expr in an op:unbox() function
+********************************************************************************/
+expr_t wrap_in_unbox(expr* e, xqtref_t& type)
+{
+  TypeManager* tm = e->get_type_manager();
+
+  const QueryLoc& loc = e->get_loc();
+  if (TypeOps::is_subtype(tm, *type, *theRTM.ANY_NODE_TYPE_STAR, loc) ||
+      (TypeOps::is_subtype(tm, *type, *theRTM.JSON_ITEM_TYPE_STAR, loc) &&
+       !TypeOps::is_subtype(tm, *type, *theRTM.JSON_PAIR_TYPE_STAR, loc)))
+  {
+    return new fo_expr(theRootSctx,
+                       loc,
+                       GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_UNBOX_1),
+                       e);
+  }
+  else
+  {
+    return e;
+  }
+}
+#endif
 
 
 /*******************************************************************************

@@ -648,6 +648,31 @@ JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 // </JSONReplaceValueIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONUnboxingIterator>
+const char* JSONUnboxingIterator::class_name_str = "JSONUnboxingIterator";
+JSONUnboxingIterator::class_factory<JSONUnboxingIterator>
+JSONUnboxingIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONUnboxingIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONUnboxingIterator::class_versions_count =
+sizeof(JSONUnboxingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONUnboxingIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONUnboxingIterator::~JSONUnboxingIterator() {}
+
+// </JSONUnboxingIterator>
+
+#endif
 
 }
 
