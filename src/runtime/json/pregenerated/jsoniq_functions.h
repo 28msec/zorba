@@ -883,6 +883,42 @@ public:
 
 #endif
 
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONUnboxingIterator : public UnaryBaseIterator<JSONUnboxingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONUnboxingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONUnboxingIterator,
+    UnaryBaseIterator<JSONUnboxingIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<JSONUnboxingIterator, PlanIteratorState>*)this);
+  }
+
+  JSONUnboxingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONUnboxingIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONUnboxingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
 }
 #endif
 /*

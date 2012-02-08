@@ -25,6 +25,6 @@ dml:insert-nodes-last(xs:QName("users"),
 for $sarah in dml:collection(xs:QName("users")),
     $friend in dml:collection(xs:QName("users"))
  where $sarah("name") = "Sarah"
-  and (some $name in j:values(j:value($sarah("friends")))
+  and (some $name in j:values($sarah("friends"))
       satisfies $friend("name") = $name)
 return $friend

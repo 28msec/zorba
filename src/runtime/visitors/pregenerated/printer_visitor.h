@@ -490,6 +490,11 @@ namespace zorba {
     void endVisit  ( const JSONReplaceValueIterator& );
 #endif
 
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONUnboxingIterator& );
+    void endVisit  ( const JSONUnboxingIterator& );
+#endif
+
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
 

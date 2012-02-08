@@ -15,16 +15,16 @@ return
     <tr> (: Column headings :)
     {
        <th> </th>,
-       for $th in j:values(j:value($j("col labels")))
+       for $th in j:values($j("col labels"))
        return <th>{ $th }</th>
     }
     </tr>
     {  (: Data for each row :)
-       for $r at $i in j:values(j:value($j("data")))
+       for $r at $i in j:values($j("data"))
        return
           <tr>
            {
-             <td>{ j:values(j:value($j("row labels")))[$i] }</td>,
+             <td>{ j:values($j("row labels"))[$i] }</td>,
              for $c in j:values($r)
              return <td>{ $c }</td>
            }
