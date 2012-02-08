@@ -18,9 +18,9 @@ dml:insert-nodes-last(xs:QName("sales"),
   )
 );
 
-object {
+{
   for $sales in dml:collection(xs:QName("sales"))
   let $pname := $sales("product")
   group by $pname
-  return pair { $pname : sum(for $s in $sales return $s("quantity")) }
+  return $pname : sum(for $s in $sales return $s("quantity"))
 }

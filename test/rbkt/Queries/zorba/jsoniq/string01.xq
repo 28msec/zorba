@@ -1,1 +1,1 @@
-fn:string(pair { "foo" : 1 })
+fn:string("foo" : 1)

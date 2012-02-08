@@ -1,1 +1,1 @@
-fn:data(pair { "foo" : [ 1 to 3 ] })
+fn:data("foo" : [ 1 to 3 ])

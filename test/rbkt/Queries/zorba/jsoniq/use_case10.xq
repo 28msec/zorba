@@ -15,6 +15,6 @@ dml:insert-nodes-last(xs:QName("users"),
 );
 
 let $dbj := dml:collection(xs:QName("users"))[ .("name") = "Deadbeat Jim" ]
-return j:insert-into($dbj, pair { "status" : "credit card declined" });
+return j:insert-into($dbj, "status" : "credit card declined");
 
 dml:collection(xs:QName("users"))

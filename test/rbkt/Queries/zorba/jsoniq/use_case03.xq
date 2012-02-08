@@ -37,26 +37,23 @@ dml:insert-nodes-last(xs:QName("stores"),
   )
 );
 
-object {
+{
   for $store in dml:collection(xs:QName("stores"))
   let $state := $store("state")
   group by $state
-  return pair {
-     $state : object {
+  return 
+     $state : {
        for $product in dml:collection(xs:QName("products"))
        let $category := $product("category")
        group by $category
        return
-         pair {
-           $category : object {
+           $category : {
               for $sales in dml:collection(xs:QName("sales"))
               where $sales("store number") = $store("store number")
                 and $sales("product") = $product("name")
               let $pname := $sales("product")
               group by $pname
-              return pair { $pname : sum( $sales("quantity") ) }
+              return $pname : sum( $sales("quantity") )
           }
-        }
-      }
-   }
+     }
 }

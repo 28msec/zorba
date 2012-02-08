@@ -1,7 +1,7 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
 declare variable $input :=
-  object {
+  {
    "color" : "blue",
    "closed" : true(),
    "points" : [[10,10], [20,10], [20,20], [10,20]]
