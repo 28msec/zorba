@@ -33,6 +33,36 @@
 #include "curl_stream_buffer.h"
 
 namespace zorba {
+
+static bool parse_content_type( std::string const &s, std::string *mime_type,
+                                std::string *charset ) {
+  std::string::size_type pos = s.find( ';' );
+  *mime_type = s.substr( 0, pos );
+
+  if ( pos != std::string::npos ) {
+    //
+    // Parse: charset="?XXXXX"?[ (comment)]
+    //
+    if ( (pos = s.find( '=' )) != std::string::npos ) {
+      std::string t = s.substr( pos + 1 );
+      if ( !t.empty() ) {
+        if ( t[0] == '"' ) {
+          t.erase( 0, 1 );
+          if ( (pos = t.find( '"' )) != std::string::npos )
+            t.erase( pos );
+        } else {
+          if ( (pos = t.find( ' ' )) != std::string::npos )
+            t.erase( pos );
+        }
+        *charset = t;
+      } 
+    }
+  } else {
+    // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
+    *charset = "ISO-8859-1";
+  }
+}
+
 namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
@@ -63,6 +93,12 @@ namespace http_client {
       return lCode; 
     if (!theStatusOnly) {
 
+      if (!theOverridenContentType.empty()) {
+        parse_content_type(
+          theOverridenContentType, &theCurrentContentType, &theCurrentCharset
+        );
+      }
+
       std::auto_ptr<std::istream> lStream;
       if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
         lStream.reset(
@@ -74,9 +110,6 @@ namespace http_client {
         lStream.reset(new std::istream(theStreamBuffer));
 
       Item lItem;
-      if (!theOverridenContentType.empty()) {
-        theCurrentContentType = theOverridenContentType;
-      }
       if (theCurrentContentType == "text/xml" ||
           theCurrentContentType == "application/xml" ||
           theCurrentContentType == "text/xml-external-parsed-entity" ||
@@ -180,31 +213,9 @@ namespace http_client {
     }
     String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type") {
-      std::string::size_type pos = lValue.find( ';' );
-      lParser->theCurrentContentType = lValue.substr( 0, pos );
-
-      if ( pos != std::string::npos ) {
-        //
-        // Parse: charset="?XXXXX"?[ (comment)]
-        //
-        if ( (pos = lValue.find( '=' )) != std::string::npos ) {
-          std::string charset = lValue.substr( pos + 1 );
-          if ( !charset.empty() ) {
-            if ( charset[0] == '"' ) {
-              charset.erase( 0, 1 );
-              if ( (pos = charset.find( '"' )) != std::string::npos )
-                charset.erase( pos );
-            } else {
-              if ( (pos = charset.find( ' ' )) != std::string::npos )
-                charset.erase( pos );
-            }
-            lParser->theCurrentCharset = charset;
-          } 
-        }
-      } else {
-        // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
-        lParser->theCurrentCharset = "ISO-8859-1";
-      }
+      parse_content_type(
+        lValue, &lParser->theCurrentContentType, &lParser->theCurrentCharset
+      );
     } else if (lNameS == "content-id") {
       lParser->theId = lValue;
     } else if (lNameS == "content-description") {
