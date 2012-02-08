@@ -73,13 +73,14 @@ void root_static_context::init()
   {
     //"err", XQUERY_ERR_NS,
     "fn", static_context::W3C_FN_NS,
+#ifdef ZORBA_WITH_JSON
+    "jn", static_context::ZORBA_JSON_FN_NS,
+#endif
     "local", XQUERY_LOCAL_FN_NS,
-    //"math", XQUERY_MATH_FN_NS,
     "xml", XML_NS,
     "xs", XML_SCHEMA_NS,
     "xsi", XSI_NS,
-    //"zerr", ZORBA_ERR_NS,
-      NULL, NULL
+    NULL, NULL
   };
 
   for (const char* const* p = default_ns_initializers; *p != NULL; p += 2)

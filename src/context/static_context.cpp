@@ -1957,11 +1957,8 @@ void static_context::bind_ns(
 
   if (!theNamespaceBindings->insert(prefix, temp))
   {
-    throw XQUERY_EXCEPTION_VAR(
-      err,
-      ERROR_PARAMS(
-				prefix, temp
-  		),
+    throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(prefix, temp),
       ERROR_LOC(loc));
   }
 }
