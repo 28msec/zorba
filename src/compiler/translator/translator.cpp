@@ -10095,7 +10095,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   if (f != NULL &&
       f->isBuiltin() &&
       fn_ns != static_context::W3C_FN_NS &&
+#ifdef ZORBA_WITH_JSON
       fn_ns != static_context::JSONIQ_FN_NS &&
+#endif
       fn_ns != XQUERY_MATH_FN_NS &&
       fn_ns != theModuleNamespace)
   {

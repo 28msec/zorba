@@ -127,8 +127,8 @@ bool FnBooleanIterator::effectiveBooleanValue(
           lPairFound = true;
           continue;
         }
-      }
 #endif
+      }
   
       if (!is_sequence)
       {
