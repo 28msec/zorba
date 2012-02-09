@@ -22,17 +22,17 @@
 
 //#include "zorbatypes/datetime.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "simple_temp_seq.h"
+#include "simple_pul.h"
+#include "qname_pool.h"
+#include "string_pool.h"
+#include "node_factory.h"
 
 #ifdef ZORBA_WITH_JSON
 #  include "store/naive/json_items.h"

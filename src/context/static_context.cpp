@@ -1619,9 +1619,10 @@ void static_context::apply_url_resolvers(
   for (std::vector<zstring>::iterator url = aUrls.begin();
        url != aUrls.end(); url++) 
   {
-    // if the http-client module is not available, we must not search
-    // for it by calling the http-client...
-    if (*url == "http://www.zorba-xquery.com/modules/http-client")
+    // We should never try to load the http-client module using its original URI,
+    // because that URI starts with http:, so we'll try to load the http-client
+    // module, leading to a stack overflow.
+    if (ascii::begins_with(*url, "http://www.zorba-xquery.com/modules/http-client"))
     {
       continue;
     }

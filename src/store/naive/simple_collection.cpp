@@ -18,16 +18,16 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_index.h"
+#include "simple_collection.h"
+#include "simple_index.h"
 #include "store/api/ic.h"
 #include "store/api/annotation.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/node_items.h"
+#include "loader.h"
+#include "simple_store.h"
+#include "store_defs.h"
+#include "node_items.h"
 #ifdef ZORBA_WITH_JSON
-#  include "store/naive/json_items.h"
+#  include "json_items.h"
 #endif
 #include "zorbatypes/numconversions.h"
 

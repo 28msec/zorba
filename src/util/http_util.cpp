@@ -28,7 +28,7 @@
 namespace zorba {
   
   HttpStream::HttpStream(const zstring& aUri)
-  : theDidInit(false), theUri(aUri)
+    : theUri(aUri)
   {
   }
   
@@ -42,6 +42,9 @@ namespace zorba {
   
   void HttpStream::init()
   {
+    bool succeed = false;
+
+#ifdef ZORBA_HAVE_CURL
     Zorba* lInstance = Zorba::getInstance(0);
     theStaticContext = lInstance->createStaticContext();
     ItemFactory* lFactory = lInstance->getItemFactory();
@@ -75,7 +78,7 @@ namespace zorba {
     Iterator_t lIter = lItem.getAttributes();
     lIter->open();
     Item lAttr;
-    bool succeed = true;
+    succeed = true;
     while (lIter->next(lAttr)) {
       Item lName;
       lAttr.getNodeName(lName);
@@ -89,6 +92,8 @@ namespace zorba {
       }
     }
     lIter->close();
+#endif /* ZORBA_HAVE_CURL */
+
     if (!succeed)
       throw os_error::exception("", theUri.c_str(), "Could not create stream resource");
     theIterator->next(theStreamableString);

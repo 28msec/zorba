@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include "zorbautils/fatal.h"
-#include "store/naive/dataguide.h"
+#include "dataguide.h"
 
 
 namespace zorba 

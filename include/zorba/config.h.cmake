@@ -69,6 +69,9 @@
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
 
+// Platform libraries
+#cmakedefine ZORBA_HAVE_CURL
+
 #ifdef ZORBA_HAVE_STDINT_H
 # include <stdint.h>
 #endif
