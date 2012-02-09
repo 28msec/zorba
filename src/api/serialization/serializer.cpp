@@ -2601,9 +2601,12 @@ serializer::serialize(
   // in case we use SAX event notifications
   if (aHandler) 
   {
-    // only allow XML-based methods for SAX notifications
+    // only allow XML-based methods for SAX notifications. For now at least,
+    // the "JSONIQ" method is consider "XML-based", although you will certainly
+    // get errors if you attempt to serialize JDM this way.
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML) {
+        method != PARAMETER_VALUE_XHTML &&
+        method != PARAMETER_VALUE_JSONIQ) {
       throw ZORBA_EXCEPTION(
         zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
         ERROR_PARAMS( method )
