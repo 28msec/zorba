@@ -94,6 +94,7 @@ public:
   {
     std::stringstream lStream; 
     Zorba_SerializerOptions_t lOptions; 
+    lOptions.indent = ZORBA_INDENT_YES;
     zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(lOptions); 
     zorba::SingletonItemSequence lSequence(theItem); 
     lSerializer->serialize(&lSequence, lStream); 
