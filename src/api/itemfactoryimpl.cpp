@@ -24,11 +24,13 @@
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include <store/api/store.h>
 #include "store/api/copymode.h"
 #include "api/unmarshaller.h"
 #include "types/casting.h"
 
 #include "store/api/item.h"
+#include <runtime/util/item_iterator.h>
 
 
 namespace zorba {
@@ -823,23 +825,18 @@ zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
   return &*lItem;
 }
 
-static void addItems(store::Item* parent, std::vector<Item> &items)
-{
-  // "Copy" the items into the parent
-  store::CopyMode noCopy;
-  noCopy.theDoCopy = false;
-  std::vector<Item>::iterator i = items.begin();
-  std::vector<Item>::iterator end = items.end();
-  for (; i != end; i++) {
-    Unmarshaller::getInternalItem(*i)->copy(parent, noCopy);
-  }
-}
-
 zorba::Item ItemFactoryImpl::createJSONObject(std::vector<Item> &aPairs)
 {
   store::Item_t lItem;
   theItemFactory->createJSONObject(lItem);
-  addItems(lItem.getp(), aPairs);
+  // "Copy" the items into the parent
+  store::CopyMode noCopy;
+  noCopy.theDoCopy = false;
+  std::vector<Item>::iterator i = aPairs.begin();
+  std::vector<Item>::iterator end = aPairs.end();
+  for (; i != end; i++) {
+    Unmarshaller::getInternalItem(*i)->copy(lItem, noCopy);
+  }
   return &*lItem;
 }
 
@@ -847,7 +844,19 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item> &aItems)
 {
   store::Item_t lItem;
   theItemFactory->createJSONArray(lItem);
-  addItems(lItem.getp(), aItems);
+  // Convert vector of Items to vector of store::Item_ts
+  store::CopyMode noCopy;
+  noCopy.theDoCopy = false;
+  std::vector<store::Item_t> lItems;
+  std::vector<Item>::iterator i = aItems.begin();
+  std::vector<Item>::iterator end = aItems.end();
+  for (; i != end; i++) {
+    lItems.push_back(Unmarshaller::getInternalItem(*i));
+  }
+  store::Iterator_t lIterator = new ItemIterator(lItems);
+  lIterator->open();
+  GENV_STORE.populateJSONArray(lItem, lIterator, noCopy);
+  lIterator->close();
   return &*lItem;
 }
 

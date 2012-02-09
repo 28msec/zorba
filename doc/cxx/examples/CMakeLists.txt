@@ -67,11 +67,6 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST(${TName} examples ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
-# Any known bugs
-IF (ZORBA_WITH_JSON)
-  EXPECTED_FAILURE(doc/cxx/examples/jsoniq.cpp 928710)
-ENDIF (ZORBA_WITH_JSON)
-
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba") 
 
