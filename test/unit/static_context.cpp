@@ -57,7 +57,7 @@ sctx_test_1(Zorba* const zorba)
     }
   }
 
-  return lFooFound && lBindings.size() == 6;
+  return lFooFound && lBindings.size() == 7;
 }
 
 int static_context( int argc, char *argv[] ) {
