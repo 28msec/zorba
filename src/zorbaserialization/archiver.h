@@ -202,7 +202,7 @@ protected:
   SerializationCallback*      theUserCallback;
 
 public:
-  CompilerCB  *compiler_cb;///to workaround user defined function compile-at-runtime
+  //CompilerCB  *compiler_cb;///to workaround user defined function compile-at-runtime
   bool        dont_allow_delay_for_plan_sctx;
 public:
   Archiver(bool is_serializing_out, bool internal_archive=false);
