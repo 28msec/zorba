@@ -410,7 +410,9 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createQName(
     item, static_context::ZORBA_FULL_TEXT_FN_NS, "", "tokenizer-properties"
   );
+
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+
   GENV_ITEMFACTORY->createElementNode(
     result, nullptr, item, type_name, false, false, ns_bindings, base_uri
   );
@@ -418,7 +420,11 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createQName(
     attr_name, "", "", "elements-separate-tokens"
   );
+
   GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
+
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+
   GENV_ITEMFACTORY->createAttributeNode(
     attr_node, result, attr_name, type_name, item
   );

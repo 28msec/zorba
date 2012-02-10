@@ -110,6 +110,19 @@ public:
     return testFlag(FunctionConsts::isBuiltin);
   }
 
+  bool isBuiltinExternal() const
+  {
+    return testFlag(FunctionConsts::isBuiltinExternal);
+  }
+
+  void setBuiltinExternal(bool v)
+  {
+    if (v)
+      setFlag(FunctionConsts::isBuiltinExternal);
+    else
+      resetFlag(FunctionConsts::isBuiltinExternal);
+  }
+
   bool isUdf() const
   {
     return testFlag(FunctionConsts::isUDF);

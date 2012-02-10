@@ -132,15 +132,29 @@
 </zorba:iterator>
 
 <zorba:iterator name="TokenizerPropertiesIterator">
+
   <zorba:function>
+
     <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
       <zorba:output>node()</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>node()</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <!-- 
+        Mark the function as accessing the dyn ctx so that it won't be
+        const-folded. We must prevent const-folding because the function
+        returns a node that is validated with a schema that may not be
+        imported in the module where the function is invoked from.  -->
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 </zorba:iterators>

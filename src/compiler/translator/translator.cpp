@@ -3287,6 +3287,7 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
+        f->setBuiltinExternal(true);
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
 
