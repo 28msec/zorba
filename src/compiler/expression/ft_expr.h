@@ -37,13 +37,14 @@ public:
   void serialize( serialization::Archiver& );
 
   ftcontains_expr(
-    static_context* sctx,
+    static_context*,
     QueryLoc const&,
     expr_t range,
     ftnode *ftselection,
     expr_t ftignore
   );
 
+  expr_t clone( substitution_t& ) const;
   void compute_scripting_kind();
 
   expr_t get_range() const { return range_; }
@@ -63,7 +64,6 @@ private:
 } // namespace zorba
 
 #endif /* ZORBA_FT_EXPR_H */
-
 /*
  * Local variables:
  * mode: c++
