@@ -20,9 +20,9 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/store_defs.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "store_defs.h"
 
 namespace zorba
 {
