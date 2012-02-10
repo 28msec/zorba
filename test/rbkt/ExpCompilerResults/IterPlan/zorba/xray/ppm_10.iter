@@ -2377,3 +2377,4 @@ Iterator tree for raytracer:test-ray:
     </UDFunctionCallIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
+
