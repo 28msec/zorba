@@ -24,10 +24,24 @@ xquery version "3.0";
   : tripable") and some lossy ("one way").  Loss-less representations preserve
   : the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
   : representations convert all data to strings.
-  :
+  : <p/>
   : For a loss-less representation, Zorba implements that proposed by
   : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
   : For example:
+  : <pre>
+  :   {
+  :     "firstName" : "John",
+  :     "lastName" : "Smith",
+  :     "address" : {
+  :       "streetAddress" : "21 2nd Street",
+  :       "city" : "New York",
+  :       "state" : "NY",
+  :       "postalCode" : 10021
+  :     },
+  :     "phoneNumbers" : [ "212 732-1234", "646 123-4567" ]
+  :   }
+  : </pre>
+  : would be represented as:
   : <pre>
   :   &lt;json type="object"&gt;
   :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
@@ -47,6 +61,22 @@ xquery version "3.0";
   : For a lossy representation, Zorba implements
   : <a href="http://jsonml.org/">JsonML</a> (the array form).
   : For example:
+  : <pre>
+  :   [ "person",
+  :     { "created" : "2006-11-11T19:23",
+  :       "modified" : "2006-12-31T23:59" },
+  :     [ "firstName", "Robert" ],
+  :     [ "lastName", "Smith" ],
+  :     [ "address",
+  :       { "type" : "home" },
+  :       [ "street", "12345 Sixth Ave" ],
+  :       [ "city", "Anytown" ],
+  :       [ "state", "CA" ],
+  :       [ "postalCode", "98765-4321" ]
+  :     ]
+  :   ]
+  : </pre>
+  : would be represented as:
   : <pre>
   :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
   :     &lt;firstName&gt;Robert&lt;/firstName&gt;
