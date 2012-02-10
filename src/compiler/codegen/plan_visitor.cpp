@@ -2307,6 +2307,7 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
+    /*
     if (func->isBuiltinExternal())
     {
       const zstring& ns = func->getName()->getNamespace();
@@ -2325,8 +2326,9 @@ void end_visit(fo_expr& v)
         }
       }
 
-      assert(ite != end);
+      //assert(ite != end);
     }
+    */
 
     PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
