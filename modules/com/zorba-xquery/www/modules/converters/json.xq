@@ -112,7 +112,12 @@ declare option ver:module-version "2.0";
  : representations described above.
  :
  : @param $json The JSON data to parse.
- : @param $options The parsing options.
+ : @param $options The parsing options, for example:
+ : <pre>
+ : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
+ :   &lt;json-format value="JsonML-array"/&gt;
+ : &lt;/options&gt;
+ : </pre>
  : @return said XDM instance.
  : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
@@ -161,7 +166,8 @@ declare function json:parse(
   json:parse-internal(
     $json,
     validate {
-      <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options" >
+      <options
+          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
         <json-format value="Snelson"/>
       </options>
     }
@@ -173,7 +179,13 @@ declare function json:parse(
  : above.
  :
  : @param $xml The XDM to serialize.
- : @param $options The serializing options.
+ : @param $options The serializing options, for example:
+ : <pre>
+ : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
+ :   &lt;json-format value="JsonML-array"/&gt;
+ :   &lt;whitespace value="indent"/&gt;
+ : &lt;/options&gt;
+ : </pre>
  : @return a JSON string.
  : @error err:XQDY0027 if $options can not be validated against the
  : json-options schema.
@@ -225,7 +237,8 @@ declare function json:serialize(
 {
   json:serialize-internal($xml,
     validate {
-      <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options" >
+      <options
+          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
         <json-format value="Snelson"/>
       </options>
    }
