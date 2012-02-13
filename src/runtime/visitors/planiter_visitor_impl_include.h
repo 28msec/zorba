@@ -84,11 +84,11 @@ class AndIterator;
   template < class DivideOperation> class GenericArithIterator;
   template < class IntegerDivideOperation> class GenericArithIterator;
   template < class ModOperation> class GenericArithIterator;
-  template < class AddOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
-  template < class SubtractOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
-  template < class MultiplyOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
-  template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
-  template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
+  template < class AddOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
+  template < class SubtractOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
+  template < class MultiplyOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
+  template < class DivideOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
+  template < store::SchemaTypeCode > class TypedValueCompareIterator;
 
   class OpNumericUnaryIterator;
   class OpDoubleUnaryIterator;

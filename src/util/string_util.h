@@ -28,6 +28,12 @@
 #include "cxx_util.h"
 #include "stl_util.h"
 
+#ifdef WIN32
+// Windows annoyingly defines these as macros.
+#undef max
+#undef min
+#endif /* WIN32 */
+
 namespace zorba {
 namespace ztd {
 
@@ -555,7 +561,6 @@ typedef char itoa_buf_type[48];
  * sufficient size.
  * @return Returns \a buf for convenience.
  */
-ZORBA_DLL_PUBLIC
 char* itoa( long long n, char *buf );
 
 /**
@@ -626,7 +631,6 @@ inline char* itoa( long n, char *buf ) {
  * sufficient size.
  * @return Returns \a buf for convenience.
  */
-ZORBA_DLL_PUBLIC
 char* itoa( unsigned long long n, char *buf );
 
 /**

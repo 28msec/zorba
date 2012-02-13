@@ -481,6 +481,21 @@ public:
 };
 
 
+//fn-zorba-string:split
+class fn_zorba_string_split : public function
+{
+public:
+  fn_zorba_string_split(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -74,6 +74,10 @@
 
     </zorba:function>
 
+    <zorba:method static="true" name="streamReleaser" return="void">
+      <zorba:param type="std::istream*" name="stream"/>
+    </zorba:method>
+
   </zorba:iterator>
   
 </zorba:iterators>

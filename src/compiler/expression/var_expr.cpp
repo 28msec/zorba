@@ -134,6 +134,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theCopyClause;
   ar & theParamPos;
   ar & theUDF;
+  ar & theSetExprs;
   ar & theIsPrivate;
   ar & theIsExternal;
   ar & theIsMutable;
@@ -244,6 +245,7 @@ void var_expr::remove_set_expr(expr* e)
 {
   assert(theKind == local_var || theKind == prolog_var);
 
+  bool found = false;
   std::vector<expr*>::iterator ite = theSetExprs.begin();
   std::vector<expr*>::iterator end = theSetExprs.end();
   for (; ite != end; ++ite)
@@ -251,11 +253,12 @@ void var_expr::remove_set_expr(expr* e)
     if (*ite == e)
     {
       theSetExprs.erase(ite);
+      found = true;
       break;
     }
   }
 
-  assert(ite != end);
+  ZORBA_ASSERT(found);
 }
 
 

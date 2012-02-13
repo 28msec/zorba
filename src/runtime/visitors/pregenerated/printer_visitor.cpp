@@ -4032,6 +4032,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
 // </StringIsStreamableIterator>
 
 
+// <StringSplitIterator>
+void PrinterVisitor::beginVisit ( const StringSplitIterator& a) {
+  thePrinter.startBeginVisit("StringSplitIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringSplitIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringSplitIterator>
+
+
 // <XQDocIterator>
 void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
   thePrinter.startBeginVisit("XQDocIterator", ++theId);

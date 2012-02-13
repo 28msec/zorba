@@ -16,6 +16,7 @@
 #
 # cURL
 #
+SET (CURL_FOUND)
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE(ZORBA_SUPPRESS_CURL)
@@ -36,6 +37,8 @@ ELSE(ZORBA_SUPPRESS_CURL)
     MESSAGE(STATUS "The cURL library was not found - http-client will not be built")
   ENDIF(CURL_FOUND)
 ENDIF(ZORBA_SUPPRESS_CURL)
+SET(ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE)
+MARK_AS_ADVANCED(ZORBA_HAVE_CURL)
 
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
 DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
@@ -58,7 +61,7 @@ DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
 DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/schema")
-DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.0
+DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
   URI "http://www.zorba-xquery.com/modules/string")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")

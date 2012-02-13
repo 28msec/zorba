@@ -26,6 +26,7 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
+#include "store/api/xs_type_codes.h"
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -50,7 +51,7 @@ typedef StoreConsts::NodeKind NodeKind;
  */
 class ZORBA_DLL_PUBLIC Item
 {
-protected:
+public:
   enum ItemKind
   {
     NODE       = 0x10,
@@ -61,6 +62,7 @@ protected:
     ERROR_     = 0x201
   };
 
+protected:
   typedef union 
   {
     long    * treeRCPtr;
@@ -101,6 +103,11 @@ public:
 
 
   /* -------------------   General Methods for Items ------------------------- */
+
+  /**
+   * @return the kind of the item
+   */
+  ItemKind getKind() const;
 
   /**
    *  @return  "true" if the item is a node
@@ -194,7 +201,7 @@ public:
    *
    *  @return  result of Effective Boolean Value
    */
-  virtual Item_t 
+  virtual bool 
   getEBV() const;
 
   /**
@@ -237,6 +244,11 @@ public:
   show() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
+
+  /**
+   * @return The numeric code coresponding to the data type of this item.
+   */
+  virtual SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return

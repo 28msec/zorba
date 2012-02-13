@@ -357,7 +357,7 @@ set_token:
         t.append( utf8_buf, utf8_len );
       else {
 #       if DEBUG_TOKENIZER
-        cout << "setting token" << endl;
+        cout << "  setting token" << endl;
 #       endif
         t.set(
           utf8_buf, utf8_len, numbers().token, numbers().sent, numbers().para
@@ -369,15 +369,24 @@ set_token:
 next:
 #   if DEBUG_TOKENIZER
     cout << "at next" << endl;
+    cout << "  word_start = " << word_start << endl;
+    cout << "  word_end   = " << word_end   << endl;
+    cout << "  sent_end   = " << sent_end   << endl;
 #   endif
     word_start = word_end, word_end = word_it_->next();
+#   if DEBUG_TOKENIZER
+    cout << "  word_start = " << word_start << endl;
+    cout << "  word_end   = " << word_end   << endl;
+#   endif
+
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
       sent_end = sent_it_->next();
+#     if DEBUG_TOKENIZER
+      cout << "  sent_end   = " << sent_end   << endl;
+#     endif
       // The addition of the "if" fixes:
       // https://bugs.launchpad.net/bugs/863320
-#if 0
       if ( sent_end != BreakIterator::DONE )
-#endif
         ++numbers().sent;
     }
   } // while
@@ -389,9 +398,7 @@ next:
   t.send( payload, callback );
   // Incrementing "sent" here fixes:
   // https://bugs.launchpad.net/bugs/897800
-#if 0
   ++numbers().sent;
-#endif
 #if DEBUG_TOKENIZER
   cout << "--------------------\n";
 #endif /* DEBUG_TOKENIZER */

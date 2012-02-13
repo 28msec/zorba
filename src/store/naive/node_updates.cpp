@@ -27,15 +27,15 @@
 #include "store/api/collection.h"
 #include "store/api/update_consts.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/node_items.h"
-#include "store/naive/pul_primitives.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "nsbindings.h"
+#include "node_items.h"
+#include "pul_primitives.h"
+#include "simple_pul.h"
+#include "atomic_items.h"
+#include "simple_item_factory.h"
+#include "node_factory.h"
 
 #include "store/api/validator.h"
 
@@ -621,13 +621,13 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
+      if (n->getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
       {
         revalidationNode = currNode;
         break;
       }
 
-      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_ANY]))
+      if (n->getType()->equals(GET_STORE().XS_ANY_QNAME))
       {
         revalidationNode = currNode;
         break;
@@ -635,11 +635,11 @@ void XmlNode::removeType(UpdatePrimitive& upd)
 
 #ifdef EMBEDED_TYPE
       tinfo.theTypeName.transfer(n->theTypeName);
-      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+      n->theTypeName = GET_STORE().XS_ANY_QNAME;
 #else
       assert(n->haveType());
       tinfo.theTypeName = n->getType();
-      n->setType(GET_STORE().theSchemaTypeNames[XS_ANY]);
+      n->setType(GET_STORE().XS_ANY_QNAME);
 #endif
       tinfo.theFlags = n->theFlags;
 
@@ -670,7 +670,7 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
       {
         undoList.resize(++undoSize);
         undoList[undoSize - 1].transfer(tinfo);
@@ -679,11 +679,11 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       {
 #ifdef EMBEDED_TYPE
         tinfo.theTypeName.transfer(n->theTypeName);
-        n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+        n->theTypeName = GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
 #else
         assert(n->haveType());
         tinfo.theTypeName = n->getType();
-        n->setType(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]);
+        n->setType(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]);
 #endif
 
         tinfo.theFlags = n->theFlags;
@@ -1349,8 +1349,8 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   store::Item* typeName = getType();
 
   if (theParent &&
-      (typeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
-       typeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY])))
+      (typeName->equals(GET_STORE().XS_UNTYPED_QNAME) ||
+       typeName->equals(GET_STORE().XS_ANY_QNAME)))
   {
     // Even if "this" is untyped, we must call removeType() on the parent
     // because renaming of an elelemt may require revalidation of the ancestors.
@@ -1469,7 +1469,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
 
-  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+  if (getType()->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
   {
     // We must call removeType() even if "this" is untyped, because renaming
     // of an attribute may require revalidation of the ancestors.

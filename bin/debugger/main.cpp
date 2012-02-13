@@ -24,77 +24,54 @@
 
 #include <zorba/config.h>
 
-#include "command_prompt.h"
-#include "command_line_handler.h"
+#include "xqdb_client.h"
 #include "process_listener.h"
+
 
 using namespace zorba;
 using namespace zorba::debugger;
 
-class XqdbClient {
 
-  public:
+std::auto_ptr<XqdbClient> theClient;
 
-    XqdbClient(unsigned int aPort)
-    {
-      theIdQueue = new LockFreeQueue<std::size_t>();
-      theQuitQueue = new LockFreeQueue<bool>();
-      theEventHandler = new EventHandler(*theIdQueue, *theQuitQueue);
-      theEventHandler->init();
-
-      theCommandPrompt = new CommandPrompt();
-      theCommandLineHandler = new CommandLineHandler(aPort, *theIdQueue, *theQuitQueue, theEventHandler, theCommandPrompt);
-    }
-
-    ~XqdbClient()
-    {
-      if (theCommandLineHandler) {
-        delete theCommandLineHandler;
-      }
-      if (theCommandPrompt) {
-        delete theCommandPrompt;
-      }
-      if (theEventHandler) {
-        delete theEventHandler;
-      }
-
-      delete theIdQueue;
-      delete theQuitQueue;
-    }
-
-    void start()
-    {
-      theCommandLineHandler->execute();
-    }
-
-  private:
-
-    LockFreeQueue<std::size_t>* theIdQueue;
-    LockFreeQueue<bool>*        theQuitQueue;
-
-    EventHandler*       theEventHandler;
-    CommandPrompt*      theCommandPrompt;
-    CommandLineHandler* theCommandLineHandler;
-};
+// this will make sure the xqdb process will not quit when Ctrl-C is pressed
+#ifdef WIN32
+BOOL WINAPI
+ctrlC_Handler(DWORD aCtrlType)
+{
+  if (CTRL_C_EVENT == aCtrlType) {
+    return true;
+  }
+  return false;
+}
+#else
+void
+ctrlC_Handler(int lParam)
+{
+  // an empty sugnal handler on Linux should do the job
+}
+#endif
 
 
-XqdbClient* theClient;
-
-
+// this handler function is passed the the zorba process listener and will
+// the client if the zorba process terminates
 void
 onExitProcess(ExitCode aExitCode) {
-  //if (aExitCode != -1) {
-  //  std::cout << "Zorba has exited with code: " << aExitCode << std::endl;
-  //}
-  std::cout << "Terminating debugger client."<< std::endl;
-  // TODO: and the memory?
+  std::cout << std::endl << "Terminating debugger client." << std::endl;
 
-  delete theClient;
+#ifndef WIN32
+  XqdbClient* lClient = theClient.release();
+  if (lClient) {
+    delete lClient;
+  }
+#endif
+
   exit(aExitCode);
 }
 
+
 int
-startZorba(std::string& aExec, std::vector<std::string>& aArgs) 
+startZorba(std::string& aExec, std::vector<std::string>& aArgs, std::auto_ptr<ProcessListener>& aProcessListener) 
 {
 #ifdef WIN32
   // **************************
@@ -143,7 +120,7 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
 
   if (lResult) {
     // Watch the process
-    ProcessListener* lPl = new ProcessListener(piProcessInfo.hProcess, &onExitProcess);
+    aProcessListener.reset(new ProcessListener(piProcessInfo.dwProcessId, &onExitProcess));
   }
   else {
     // CreateProcess failed
@@ -214,11 +191,8 @@ startZorba(std::string& aExec, std::vector<std::string>& aArgs)
       return pID;
     }
     
-    // pID > 0
-
     // Watch the process
-    //ProcessListener* lPl =
-    new ProcessListener(pID, &onExitProcess);
+    aProcessListener.reset(new ProcessListener(pID, &onExitProcess));
 
     return 0;
   }
@@ -328,6 +302,12 @@ int
 _tmain(int argc, _TCHAR* argv[])
 #endif
 {
+#ifdef WIN32
+  SetConsoleCtrlHandler(ctrlC_Handler, TRUE);
+#else
+  signal(SIGINT, ctrlC_Handler);
+#endif
+
   // **************************************************************************
   // processing arguments
 
@@ -360,8 +340,11 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start a zorba
 
+    // This is a process listener used to watch the Zorba process termination.
+    std::auto_ptr<ProcessListener> lProcessListener;
+
     if (!lStandalone) {
-      int lResult = startZorba(lZorbaExec, lZorbaArgs);
+      int lResult = startZorba(lZorbaExec, lZorbaArgs, lProcessListener);
       if (lResult) {
         return lResult;
       }
@@ -372,21 +355,19 @@ _tmain(int argc, _TCHAR* argv[])
     // **************************************************************************
     // start the debugger command line
 
-    theClient =  new XqdbClient(lPort);
+    theClient.reset(new XqdbClient(lPort));
     theClient->start();
 
-    //tCommandLineHandler.execute();
-
-#ifndef WIN32
-    wait();
-#endif
-
-    delete theClient;
-
   } catch (...) {
-    delete theClient;
     return -1;
   }
+
+#ifndef WIN32
+  XqdbClient* lClient = theClient.release();
+  if (lClient) {
+    delete lClient;
+  }
+#endif
 
   return 0;
 }

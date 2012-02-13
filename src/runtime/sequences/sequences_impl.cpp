@@ -21,7 +21,9 @@
 #include <sstream>
 
 #include <zorbautils/fatal.h>
-#include <diagnostics/xquery_diagnostics.h>
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include <zorbatypes/URI.h>
 #include <zorbamisc/ns_consts.h>
 
@@ -154,11 +156,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
-		throw XQUERY_EXCEPTION(
-			err::FORG0006,
-			ERROR_PARAMS( ZED( EmptySeqNoSearchItem ) ),
-			ERROR_LOC( loc )
-		);
+		RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
   }
 
   if ( theChildren.size() == 3 )
@@ -213,11 +211,12 @@ FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   if ( !consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
   }
   else
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, false ), state);
+    theChildren[0]->reset(planState);
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, false), state);
   }
 
   STACK_END (state);
@@ -235,6 +234,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   if ( consumeNext(lSequenceItem, theChildren[0].getp(), planState) )
   {
+    theChildren[0]->reset(planState);
     STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
   }
   else

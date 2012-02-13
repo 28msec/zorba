@@ -32,6 +32,7 @@
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -264,7 +265,12 @@ Item Item::getEBV() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return &*m_item->getEBV();
+    bool value = m_item->getEBV();
+
+    store::Item_t result;
+    GENV_ITEMFACTORY->createBoolean(result, value);
+
+    return result.getp();
 
   ITEM_CATCH
   return Item();
@@ -378,6 +384,32 @@ Item::getAttributes() const
 
   ITEM_CATCH
   return NULL;
+}
+
+void
+Item::getNamespaceBindings(NsBindings& aBindings,
+                           store::StoreConsts::NsScoping aNsScoping) const
+{
+  ITEM_TRY
+      SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+      store::NsBindings lStoreBindings;
+      m_item->getNamespaceBindings(lStoreBindings, aNsScoping);
+      aBindings.reserve(aBindings.size() + lStoreBindings.size());
+
+      store::NsBindings::iterator ite = lStoreBindings.begin();
+      store::NsBindings::iterator end = lStoreBindings.end();
+      for (; ite != end; ++ite) {
+        zstring& prefix = ite->first;
+        zstring& nsuri = ite->second;
+        aBindings.push_back(
+            std::pair<String, String>(
+              Unmarshaller::newString(prefix),
+              Unmarshaller::newString(nsuri))
+          );
+      }
+
+  ITEM_CATCH
 }
 
 Item

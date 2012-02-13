@@ -119,23 +119,23 @@ function* specializable_bin_num_arith_func::specialize(
   if (t0->type_kind() == XQType::ATOMIC_TYPE_KIND &&
       t1->type_kind() == XQType::ATOMIC_TYPE_KIND)
   {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+    store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
 
     if (tc0 == tc1)
     {
       switch(tc0)
       {
-      case TypeConstants::XS_DOUBLE:
+      case store::XS_DOUBLE:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DOUBLE);
         break;
-      case TypeConstants::XS_DECIMAL:
+      case store::XS_DECIMAL:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DECIMAL);
         break;
-      case TypeConstants::XS_FLOAT:
+      case store::XS_FLOAT:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, FLOAT);
         break;
-      case TypeConstants::XS_INTEGER:
+      case store::XS_INTEGER:
         SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, INTEGER);
         break;
       default:
@@ -180,7 +180,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_add_specific : public bin_num_arith_func
 {
 public:
@@ -198,25 +198,25 @@ public:
 
 
 typedef
-op_numeric_add_specific<TypeConstants::XS_DOUBLE,
+op_numeric_add_specific<store::XS_DOUBLE,
                         FunctionConsts::OP_NUMERIC_ADD_DOUBLE_2>
 op_numeric_add_double;
 
 
 typedef
-op_numeric_add_specific<TypeConstants::XS_FLOAT,
+op_numeric_add_specific<store::XS_FLOAT,
                         FunctionConsts::OP_NUMERIC_ADD_FLOAT_2>
 op_numeric_add_float;
 
 
 typedef
-op_numeric_add_specific<TypeConstants::XS_DECIMAL,
+op_numeric_add_specific<store::XS_DECIMAL,
                         FunctionConsts::OP_NUMERIC_ADD_DECIMAL_2>
 op_numeric_add_decimal;
 
 
 typedef
-op_numeric_add_specific<TypeConstants::XS_INTEGER,
+op_numeric_add_specific<store::XS_INTEGER,
                         FunctionConsts::OP_NUMERIC_ADD_INTEGER_2>
 op_numeric_add_integer;
 
@@ -254,7 +254,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_subtract_specific : public bin_num_arith_func
 {
 public:
@@ -272,25 +272,25 @@ public:
 
 
 typedef
-op_numeric_subtract_specific<TypeConstants::XS_DOUBLE,
+op_numeric_subtract_specific<store::XS_DOUBLE,
                              FunctionConsts::OP_NUMERIC_SUBTRACT_DOUBLE_2>
 op_numeric_subtract_double;
 
 
 typedef
-op_numeric_subtract_specific<TypeConstants::XS_FLOAT,
+op_numeric_subtract_specific<store::XS_FLOAT,
                              FunctionConsts::OP_NUMERIC_SUBTRACT_FLOAT_2>
 op_numeric_subtract_float;
 
 
 typedef
-op_numeric_subtract_specific<TypeConstants::XS_DECIMAL,
+op_numeric_subtract_specific<store::XS_DECIMAL,
                              FunctionConsts::OP_NUMERIC_SUBTRACT_DECIMAL_2>
 op_numeric_subtract_decimal;
 
 
 typedef
-op_numeric_subtract_specific<TypeConstants::XS_INTEGER,
+op_numeric_subtract_specific<store::XS_INTEGER,
                              FunctionConsts::OP_NUMERIC_SUBTRACT_INTEGER_2>
 op_numeric_subtract_integer;
 
@@ -327,7 +327,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_multiply_specific : public bin_num_arith_func
 {
 public:
@@ -345,25 +345,25 @@ public:
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_DOUBLE,
+op_numeric_multiply_specific<store::XS_DOUBLE,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_DOUBLE_2>
 op_numeric_multiply_double;
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_FLOAT,
+op_numeric_multiply_specific<store::XS_FLOAT,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_FLOAT_2>
 op_numeric_multiply_float;
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_DECIMAL,
+op_numeric_multiply_specific<store::XS_DECIMAL,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_DECIMAL_2>
 op_numeric_multiply_decimal;
 
 
 typedef
-op_numeric_multiply_specific<TypeConstants::XS_INTEGER,
+op_numeric_multiply_specific<store::XS_INTEGER,
                              FunctionConsts::OP_NUMERIC_MULTIPLY_INTEGER_2>
 op_numeric_multiply_integer;
 
@@ -409,7 +409,7 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
+template<store::SchemaTypeCode t, FunctionConsts::FunctionKind k>
 class op_numeric_divide_specific : public bin_num_arith_func
 {
 public:
@@ -427,25 +427,25 @@ public:
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_DOUBLE,
+op_numeric_divide_specific<store::XS_DOUBLE,
                            FunctionConsts::OP_NUMERIC_DIVIDE_DOUBLE_2>
 op_numeric_divide_double;
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_FLOAT,
+op_numeric_divide_specific<store::XS_FLOAT,
                            FunctionConsts::OP_NUMERIC_DIVIDE_FLOAT_2>
 op_numeric_divide_float;
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_DECIMAL,
+op_numeric_divide_specific<store::XS_DECIMAL,
                            FunctionConsts::OP_NUMERIC_DIVIDE_DECIMAL_2>
 op_numeric_divide_decimal;
 
 
 typedef
-op_numeric_divide_specific<TypeConstants::XS_INTEGER,
+op_numeric_divide_specific<store::XS_INTEGER,
                            FunctionConsts::OP_NUMERIC_DIVIDE_INTEGER_2>
 op_numeric_divide_integer;
 
@@ -788,8 +788,8 @@ DECL_ARITH(sctx, op, integer, INTEGER)
 
 void populateContext_Numerics(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL_ALL_ARITH (sctx, add);
   DECL_ALL_ARITH (sctx, subtract);
