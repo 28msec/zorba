@@ -133,7 +133,7 @@ void parse( json::parser &p, store::Item_t *result ) {
     switch ( token.get_type() ) {
 
       case '[':
-        if ( !IN_STATE( in_array ) )
+        if ( IN_STATE( in_object ) )
           PUSH_ITEM( cur_item );
         ADD_TYPE_ATTRIBUTE( "array" );
         ADD_ITEM_ELEMENT( "array" );
@@ -141,7 +141,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case '{':
-        if ( !IN_STATE( in_array ) )
+        if ( IN_STATE( in_object ) )
           PUSH_ITEM( cur_item );
         ADD_TYPE_ATTRIBUTE( "object" );
         ADD_ITEM_ELEMENT( "object" );
@@ -160,7 +160,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case ',':
-        next_string_is_key = (state_stack.top() == in_object);
+        next_string_is_key = IN_STATE( in_object );
         break;
 
       case json::token::number:
