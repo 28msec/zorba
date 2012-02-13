@@ -226,13 +226,22 @@ SimpleTempSeqIter::SimpleTempSeqIter(const SimpleTempSeq* aTempSeq)
 
 
 SimpleTempSeqIter::SimpleTempSeqIter(
-    const SimpleTempSeq* aTempSeq,
+    const SimpleTempSeq* seq,
     xs_integer startPos,
     xs_integer endPos)
-	:
-  theTempSeq(const_cast<SimpleTempSeq*>(aTempSeq)),
-  theBorderType(startEnd)
 {
+  init(const_cast<SimpleTempSeq*>(seq), startPos, endPos);
+}
+
+
+void SimpleTempSeqIter::init(
+    const store::TempSeq_t& aTempSeq,
+    xs_integer startPos,
+    xs_integer endPos)
+{
+  theTempSeq = aTempSeq;
+  theBorderType = startEnd;
+
   xs_long start;
   xs_long end;
 
