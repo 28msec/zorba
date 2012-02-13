@@ -16,7 +16,12 @@
 
 %module zorba_api
 %include "std_string.i"
+%include "std_pair.i"
 %include "exception.i"
+
+#ifndef SWIGRUBY
+%include "std_vector.i"
+#endif
 
 %exception {
   try {
@@ -34,6 +39,14 @@
   }
 }
 
+#ifndef SWIGRUBY
+namespace std {
+  %template(StringPairVector) vector< pair<string, string> >;
+  %template(StringPair) pair<string, string>;
+  %template(StringVector) vector< string >;
+}
+#endif
+
 %{  // Implementations
 
 
@@ -49,11 +62,9 @@
 
   class CompilerHints;
   //class DiagnosticHandler;
-  class Item;
-  class Iterator;
-  class XQuery;
   class Store;
   class Zorba;
+  class Iterator;
 
   class DynamicException;
   class XQueryException;
@@ -64,21 +75,36 @@
   class UserException;
   class ZorbaException;
 
+  #include "SerializationOptions.h"
+  #include "TypeIdentifier.h"
+  #include "Item.h"
+  #include "Iterator.h"
+  #include "DynamicContext.h"
   #include "StaticContext.h"
+  #include "XQuery.h"
   #include "ItemFactory.h"
-
+  #include "XmlDataManager.h"
 %}
 
+#ifndef SWIGRUBY
+namespace std {
+  %template(ItemVector) vector<Item>; 
+}
+#endif
 
-
-%include "XQuery.i"
-%include "Store.i"
-%include "XmlDataManager.i"
-%include "Exceptions.i"
-//%include "DiagnosticHandler.i"
+//%include "ZorbaStreamProxy.i"
+%include "SerializationOptions.i"
+%include "TypeIdentifier.i"
+%include "Item.i"
+%include "Iterator.i"
+%include "DynamicContext.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
+%include "XQuery.i"
+%include "Store.i"
+%include "Exceptions.i"
+//%include "DiagnosticHandler.i"
 %include "Zorba.i"
 %include "ItemFactory.i"
-
+%include "XmlDataManager.i"
 

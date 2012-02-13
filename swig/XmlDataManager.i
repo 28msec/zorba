@@ -15,55 +15,33 @@
  */
 
 %{  // start Implementation
-
-
-class DocumentManager
-{
-private:
-  zorba::DocumentManager* theManager;
-
-public:
-  DocumentManager() : theManager(0) {}
-  DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
-  DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
-
-  void put(const std::string& aName, Item aDoc)
+  void DocumentManager::put(const std::string& aName, Item aDoc)
   {
     theManager->put(aName, aDoc.theItem);
   }
 
-  void remove(const std::string& aName)
+  void DocumentManager::remove(const std::string& aName)
   {
     theManager->remove(aName);
   }
 
-  Item document(const std::string& aName)
+  Item DocumentManager::document(const std::string& aName)
   {
     return theManager->document(aName);
   }
 
-  bool isAvailableDocument(const std::string& aName)
+  bool DocumentManager::isAvailableDocument(const std::string& aName)
   {
     return theManager->isAvailableDocument(aName);
   }
-};
 
-class XmlDataManager
-{
-private:
-  zorba::XmlDataManager* theManager;
-
-public:
-  XmlDataManager() : theManager(0) {}
-  XmlDataManager(const XmlDataManager& aMgr) : theManager(aMgr.theManager) {}
-  XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
-
-  DocumentManager getDocumentManager()
+  
+  DocumentManager XmlDataManager::getDocumentManager()
   {
     return DocumentManager(theManager->getDocumentManager()); 
   }
 
-  Iterator parseXML(const std::string& aDoc)
+  Iterator XmlDataManager::parseXML(const std::string& aDoc)
   {
     std::stringstream lDoc;
     lDoc << aDoc;
@@ -71,28 +49,7 @@ public:
     return Iterator(lItem);
   }
 
-};
 
 %}  // end   Implementation
 
-class DocumentManager
-{
-public:
-  void put(const std::string& aName, Item aDoc);
-
-  void remove(const std::string& aName);
-
-  Item document(const std::string& aName);
-
-  bool isAvailableDocument(const std::string& aName);
-};
-
-
-class XmlDataManager 
-{
-public:
-  DocumentManager getDocumentManager();
-
-  Iterator parseXML(const std::string& aDoc);
-   
-}; // class XmlDataManager
+%include "XmlDataManager.h"
