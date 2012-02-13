@@ -2307,29 +2307,6 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
-    /*
-    if (func->isBuiltinExternal())
-    {
-      const zstring& ns = func->getName()->getNamespace();
-
-      // look for the sctx of the module where this function is declared in, and
-      // use that sctx for the iterator.
-      CompilerCB::SctxMap::const_iterator ite = theCCB->theSctxMap.begin();
-      CompilerCB::SctxMap::const_iterator end = theCCB->theSctxMap.end();
-      for (; ite != end; ++ite)
-      {
-        static_context* curSctx = ite->second.getp();
-        if (ns == curSctx->get_module_namespace())
-        {
-          sctx = curSctx;
-          break;
-        }
-      }
-
-      //assert(ite != end);
-    }
-    */
-
     PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);

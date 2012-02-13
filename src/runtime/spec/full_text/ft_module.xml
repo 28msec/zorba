@@ -113,27 +113,33 @@
 
 <zorba:iterator name="TokenizeIterator"
                 generateResetImpl="true">
-  <zorba:function>
+
+  <zorba:function generateCodegen="false">
+
     <zorba:signature localname="tokenize" prefix="zorba-full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="tokenize" prefix="zorba-full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
+
   </zorba:function>
+
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
     <zorba:member type="store::Item_t" name="token_qname_"/>
   </zorba:state>
+
 </zorba:iterator>
 
 <zorba:iterator name="TokenizerPropertiesIterator">
 
-  <zorba:function>
+  <zorba:function generateCodegen="false">
 
     <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
       <zorba:output>node()</zorba:output>

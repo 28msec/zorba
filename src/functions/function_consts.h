@@ -247,10 +247,9 @@ typedef enum
   isDeterministic = 4,
   isPrivate = 8,
   isBuiltin = 16,
-  isBuiltinExternal = 32,
-  isUDF = 64,
-  propagatesInputNodes = 128,
-  mustCopyInputNodes = 256
+  isUDF = 32,
+  propagatesInputNodes = 64,
+  mustCopyInputNodes = 128
 } AnnotationFlags;
 
 };

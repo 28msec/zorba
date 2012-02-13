@@ -29,7 +29,6 @@ namespace zorba
 
 /*******************************************************************************
   theLoc           : The location of the declaration of this external function.
-  theModuleContext : The root sctx of the module containing the declaration.
   theNamespace     : The namespace of the module containing the declaration.
   theScriptingKind : Whether the external function is simple, updating, or
                      sequential (this property is part of the declaration).
@@ -40,7 +39,6 @@ class external_function : public function
 {
 protected:
   QueryLoc           theLoc;
-  static_context   * theModuleSctx;
   zstring            theNamespace;
   short              theScriptingKind;
   ExternalFunction * theImpl;
@@ -52,12 +50,12 @@ public:
 
 public:
   external_function(
-        const QueryLoc& loc,
-        static_context* modSctx,
-        const zstring& ns,
-        const signature& sig,
-        short scriptingType,
-        ExternalFunction* internal);
+      const QueryLoc& loc,
+      static_context* modSctx,
+      const zstring& ns,
+      const signature& sig,
+      short scriptingType,
+      ExternalFunction* internal);
 
   ~external_function() { }
 
@@ -70,12 +68,159 @@ public:
   bool mustCopyInputNodes(expr* fo, csize input) const;
 
   PlanIter_t codegen(
-        CompilerCB* /*cb*/,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const;
+      CompilerCB* /*cb*/,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const;
 };
+
+
+#if 0
+/*******************************************************************************
+  theLoc           : The location of the declaration of this external function.
+  theModuleContext : The root sctx of the module containing the declaration.
+********************************************************************************/
+class external_builtin_function : public function 
+{
+protected:
+  QueryLoc           theLoc;
+  static_context   * theModuleSctx;
+  function         * theImpl;
+
+public:
+  SERIALIZABLE_CLASS(external_builtin_function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_builtin_function, function)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  external_builtin_function(
+      function* impl,
+      const QueryLoc& loc,
+      static_context* modSctx);
+
+  ~external_builtin_function() { }
+
+  virtual short getScriptingKind() const 
+  {
+    return theImpl->();
+  }
+
+  virtual xqtref_t getReturnType(const fo_expr* caller) const
+  {
+    return theImpl->();
+  }
+
+  virtual bool accessesDynCtx() const 
+  {
+    return theImpl->();
+  }
+
+  virtual bool isMap(ulong input) const
+  {
+    return theImpl->();
+  }
+
+  virtual bool propagatesInputNodes(expr* fo, csize input) const
+  {
+    return theImpl->();
+  }
+
+  virtual bool mustCopyInputNodes(expr* fo, csize input) const
+  {
+    return theImpl->();
+  }
+
+  virtual bool propagatesSortedNodes(csize input) const 
+  {
+    return theImpl->propagatesSortedNodes();
+  }
+
+  virtual bool propagatesDistinctNodes(csize input) const 
+  {
+    return theImpl->propagatesDistinctNodes();
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return theImpl->producesDistinctNodes();
+  }
+
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return theImpl->producesSortedNodes();
+  }
+
+  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const
+  {
+    return theImpl->ignoresSortedNodes();
+  }
+
+  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const
+  {
+    return theImpl->ignoresDuplicateNodes();
+  }
+
+  virtual bool isArithmeticFunction() const 
+  {
+    return theImpl->isArithmeticFunction();
+  }
+
+  virtual ArithmeticConsts::OperationKind arithmeticKind() const
+  {
+    return theImpl->arithmeticKind();
+  }
+
+  virtual bool isComparisonFunction() const 
+  {
+    return theImpl->isComparisonFunction(); 
+  }
+
+  virtual bool isValueComparisonFunction() const 
+  {
+    return theImpl->isValueComparisonFunction();; 
+  }
+
+  virtual bool isGeneralComparisonFunction() const 
+  {
+    return theImpl->isGeneralComparisonFunction(); 
+  }
+
+  virtual CompareConsts::CompareType comparisonKind() const
+  {
+    return theImpl->comparisonKind();
+  }
+
+  virtual bool isNodeDistinctFunction() const 
+  {
+    return theImpl->isNodeDistinctFunction();
+  }
+
+  virtual bool isSource() const 
+  {
+    return theImpl->isSource();
+  }
+
+  virtual bool specializable() const 
+  {
+    return theImpl->specializable();
+  }
+
+  virtual function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const
+  {
+    return theImpl->specialize(sctx, argTypes);
+  }
+
+  PlanIter_t codegen(
+      CompilerCB* /*cb*/,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const;
+};
+#endif
 
 
 } /* namespace zorba */

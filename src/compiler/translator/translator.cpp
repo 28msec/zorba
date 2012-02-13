@@ -68,6 +68,7 @@
 #include "functions/signature.h"
 #include "functions/udf.h"
 #include "functions/external_function.h"
+#include "functions/func_ft_module.h"
 
 #include "annotations/annotations.h"
 
@@ -3287,7 +3288,39 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setBuiltinExternal(true);
+        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
+            (qnameItem->getLocalName() == "tokenizer-properties" ||
+             qnameItem->getLocalName() == "tokenize"))
+        {
+          FunctionConsts::FunctionKind kind;
+
+          if (qnameItem->getLocalName() == "tokenizer-properties")
+          {
+            assert(numParams <= 1);
+
+            if (numParams == 1)
+              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_1;
+            else
+              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_0;
+
+            f = new zorba_full_text_tokenizer_properties(f->getSignature(), kind);
+          }
+          else 
+          {
+            assert(numParams == 1 || numParams == 2);
+
+            if (numParams == 2)
+              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_2;
+            else
+              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_1;
+
+            f = new zorba_full_text_tokenize(f->getSignature(), kind);
+          }
+
+          f->setStaticContext(theRootSctx);
+          bind_fn(f, numParams, loc);
+        }
+
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
 
