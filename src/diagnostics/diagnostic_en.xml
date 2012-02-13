@@ -1100,7 +1100,14 @@
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
-    </diagnostic>
+    </diagnostic>  
+    
+    <diagnostic code="FOUT1170">
+      <comment>
+       Identifier cannot be used to retrive a resource containing text
+      </comment>
+      <value>"$1": error retrieving resource containing text${: 2}</value>
+    </diagnostic> 
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 

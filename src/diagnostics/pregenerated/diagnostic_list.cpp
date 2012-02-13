@@ -411,6 +411,9 @@ XQueryErrorCode FOTY0014( "FOTY0014" );
 XQueryErrorCode FOTY0015( "FOTY0015" );
 
 
+XQueryErrorCode FOUT1170( "FOUT1170" );
+
+
 XQueryErrorCode XUST0001( "XUST0001" );
 
 

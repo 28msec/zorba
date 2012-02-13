@@ -284,6 +284,8 @@ void dynamic_context::set_environment_variables()
       int size = lstrlen(envVarsSTR);
 
       char * envVar = new char[size+1];
+      
+      
       WideCharToMultiByte( CP_ACP, 
                            WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
                            envVarsSTR, 
@@ -292,7 +294,10 @@ void dynamic_context::set_environment_variables()
                            size+1,
                            NULL,
                            NULL);
+      
+
       zstring envVarZS(envVar);
+      
       int eqPos = envVarZS.find_first_of("=");
 
       if(eqPos > 0)
@@ -304,16 +309,24 @@ void dynamic_context::set_environment_variables()
           theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
       }
       
-
       delete envVar;
       envVarsSTR += lstrlen(envVarsSTR) + 1;
     }
     
     FreeEnvironmentStrings(envVarsCH);
-#else    
+#else
+    const char* invalid_char;
     for(char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
+
+      if((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+      {
+        throw XQUERY_EXCEPTION(err::FOCH0001, 
+        ERROR_PARAMS(zstring("#x") + 
+        BUILD_STRING(std::uppercase << std::hex
+                     << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      }
 
       int size = envVarZS.size();
             

@@ -1240,6 +1240,14 @@ declare variable $err:FOTY0015 as xs:QName := fn:QName($err:NS, "err:FOTY0015");
 
 (:~
  :
+ : Identifier cannot be used to retrive a resource containing text
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
+
+(:~
+ :
  : It is a static error if an updating expression is used in any position
  : other than one of the following:
  : - The topmost expression in the body of a query.
