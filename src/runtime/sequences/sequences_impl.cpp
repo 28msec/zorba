@@ -493,13 +493,21 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
-         CONSUME(result, 0))
+  if (theChildren.size() < 3)
   {
-    if (theChildren.size () >= 3)
+    while (CONSUME(result, 0))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    while (state->theRemaining > 0 && CONSUME(result, 0))
+    {
       state->theRemaining--;
-
-    STACK_PUSH (true, state);
+      
+      STACK_PUSH(true, state);
+    }
   }
 
 done:
@@ -571,13 +579,21 @@ bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planStat
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
-         CONSUME(result, 0))
+  if (theChildren.size() < 3)
   {
-    if (theChildren.size () >= 3)
+    while (CONSUME(result, 0))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    while (state->theRemaining > 0 && CONSUME(result, 0))
+    {
       state->theRemaining--;
 
-    STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
+    }
   }
 
 done:
@@ -586,6 +602,7 @@ done:
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   zorbaop:sequence-point-access
