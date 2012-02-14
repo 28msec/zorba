@@ -154,8 +154,8 @@ bool FragmentXmlLoader::fillBuffer(FragmentIStream* theFragmentStream)
   {
     memmove(theFragmentStream->theBuffer, theFragmentStream->theBuffer + theFragmentStream->current_offset,
             theFragmentStream->bytes_in_buffer - theFragmentStream->current_offset);
-    theFragmentStream->bytes_in_buffer -= theFragmentStream->current_offset;
   }
+  theFragmentStream->bytes_in_buffer -= theFragmentStream->current_offset;
 
   std::streamsize numChars = readPacket(*theFragmentStream->theStream, theFragmentStream->theBuffer + theFragmentStream->bytes_in_buffer,
                                          FragmentIStream::BUFFER_SIZE+FragmentIStream::LOOKAHEAD_BYTES - theFragmentStream->bytes_in_buffer);
@@ -214,7 +214,8 @@ store::Item_t FragmentXmlLoader::loadXml(
     if (theFragmentStream->theBuffer == NULL)
     {
       // Allocate input buffer
-      theFragmentStream->theBuffer = new char[FragmentIStream::BUFFER_SIZE + FragmentIStream::LOOKAHEAD_BYTES];
+      theFragmentStream->theBuffer = new char[FragmentIStream::BUFFER_SIZE + FragmentIStream::LOOKAHEAD_BYTES+1];
+      theFragmentStream->theBuffer[FragmentIStream::BUFFER_SIZE + FragmentIStream::LOOKAHEAD_BYTES] = 0;
 
       // Create the LibXml parser context
       theFragmentStream->ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, NULL, 0, 0);
