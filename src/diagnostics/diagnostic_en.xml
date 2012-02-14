@@ -2192,6 +2192,10 @@
       <value>stream transcoding error ($1)</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0007" name="UNKNOWN_ENCODING">
+      <value>"$1": unknown character encoding</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
