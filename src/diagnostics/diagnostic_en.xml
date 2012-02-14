@@ -1576,6 +1576,10 @@
       <value>"$1": feature not enabled</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0006" name="UNKNOWN_ENCODING">
+      <value>"$1": unknown character encoding</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0007" name="FUNCTION_SIGNATURE_NOT_EQUAL">
       <value>"$1": function signature does not match declaration</value>
     </diagnostic>
@@ -2190,10 +2194,6 @@
 
     <diagnostic code="ZOSE0006" name="TRANSCODING_ERROR">
       <value>stream transcoding error ($1)</value>
-    </diagnostic>
-
-    <diagnostic code="ZOSE0007" name="UNKNOWN_ENCODING">
-      <value>"$1": unknown character encoding</value>
     </diagnostic>
 
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
