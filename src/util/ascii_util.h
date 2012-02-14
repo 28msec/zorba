@@ -22,8 +22,6 @@
 #include <cstddef>
 #include <cstring>
 
-#include <zorba/config.h>
-
 #include "stl_util.h"
 
 namespace zorba {
@@ -205,7 +203,7 @@ bool is_space( CharType c ) {
  * @param s The NULL-terminated C string to check.
  * @return Returns \c true only if the entire string is whitespace.
  */
-ZORBA_DLL_PUBLIC bool is_whitespace( char const *s );
+bool is_whitespace( char const *s );
 
 /**
  * Checks whether an entire string is whitespace.
@@ -684,7 +682,6 @@ void trim( StringType &s, char const *chars ) {
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-ZORBA_DLL_PUBLIC
 char const* trim_start( char const *s, char const *chars );
 
 /**
@@ -696,7 +693,6 @@ char const* trim_start( char const *s, char const *chars );
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-ZORBA_DLL_PUBLIC
 char const* trim_start( char const *s, size_type s_len, char const *chars );
 
 /**
@@ -782,7 +778,6 @@ void trim_start_whitespace( StringType &s ) {
  * @param chars The characters to trim.
  * @return Returns the new length of \a s.
  */
-ZORBA_DLL_PUBLIC
 size_type trim_end( char const *s, size_type s_len, char const *chars );
 
 /**

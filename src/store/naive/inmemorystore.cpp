@@ -15,9 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/store_manager_impl.h"
+#include "store_manager_impl.h"
 
-#include "store/naive/simple_store.h"
+#include "simple_store.h"
 
 namespace zorba 
 { 

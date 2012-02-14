@@ -1029,7 +1029,7 @@ _tmain(int argc, _TCHAR* argv[])
       getline(knownFailuresFile, testname);
       knownFailures.insert(testname);
     }
-    queries.theOutput << "Loaded " << knownFailures.size() 
+    queries.theOutput << "Loaded " << (knownFailures.size()  -  1)
                       << " known failures" << std::endl << std::endl;
   }
 

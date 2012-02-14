@@ -469,7 +469,7 @@ public:
     getBaseURIInternal(uri, local);
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 

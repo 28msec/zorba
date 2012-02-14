@@ -38,19 +38,35 @@ FileizeURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris)
 {
-  // File-izing is only for schemas and modules.
+  // File-izing isn't for collections. Also, Thesauri use fake URIs that can
+  // choke our URI class, so skip them.
   EntityData::Kind lKind = aEntityData->getKind();
-  if (lKind != EntityData::SCHEMA && lKind != EntityData::MODULE) {
+  if (lKind == EntityData::COLLECTION
+#ifndef ZORBA_NO_FULL_TEXT
+      || lKind == EntityData::THESAURUS
+#endif
+      ) {
     return;
   }
 
-  // Append extension / filename as necessary
-  zstring lExtension(lKind == EntityData::SCHEMA ? ".xsd": ".xq");
+  // Append extension / filename as necessary.
+  zstring lExtension;
+  switch (lKind) {
+    case EntityData::SCHEMA:
+      lExtension = ".xsd";
+      break;
+    case EntityData::MODULE:
+      lExtension = ".xq";
+      break;
+    default:
+      lExtension = "";
+      break;
+  }
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
   if (ascii::ends_with(lPath, "/")) {
-    // If URI ends with /, append "index.xsd" or "index.xq".
+    // If URI ends with /, append "index.<extension>".
     lPath.append("index");
     lPath.append(lExtension);
     lChanged = true;
@@ -128,9 +144,13 @@ AutoFSURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris)
 {
-  // Automatic resolution is (currently?) only for schemas and modules
+  // Filesystem resolution doesn't make sense for collections
   EntityData::Kind lKind = aEntityData->getKind();
-  if (lKind != EntityData::SCHEMA && lKind != EntityData::MODULE) {
+  if (lKind == EntityData::COLLECTION
+#ifndef ZORBA_NO_FULL_TEXT
+      || lKind == EntityData::THESAURUS
+#endif
+      ) {
     return;
   }
   // Automatic resolution is for NON-file: URIs

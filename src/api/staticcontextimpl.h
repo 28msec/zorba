@@ -78,6 +78,9 @@ public:
 
   String getNamespaceURIByPrefix( const String& prefix ) const;
 
+  void
+  getNamespaceBindings( NsBindings& aBindings ) const;
+
   bool setDefaultElementAndTypeNamespace( const String& URI );
 
   String getDefaultElementAndTypeNamespace( ) const;

@@ -393,12 +393,11 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
-        lenExpr != NULL &&
         (inputVar->get_kind() == var_expr::let_var ||
          inputVar->get_kind() == var_expr::win_var ||
          inputVar->get_kind() == var_expr::non_groupby_var) &&
         letVarIter->setTargetPosIter(aArgs[1]) &&
-        letVarIter->setTargetLenIter(aArgs[2]))
+        letVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
@@ -408,10 +407,9 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
-        lenExpr != NULL &&
         !inputVar->is_context_item() &&
         ctxVarIter->setTargetPosIter(aArgs[1]) &&
-        ctxVarIter->setTargetLenIter(aArgs[2]))
+        ctxVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
@@ -978,9 +976,9 @@ PlanIter_t fn_tail::codegen(
 ********************************************************************************/
 void populate_context_sequences_impl(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
   DECL(sctx, fn_unordered,
        (createQName(fn_ns, "", "unordered"),
