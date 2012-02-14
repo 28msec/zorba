@@ -150,13 +150,11 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case ']':
+      case '}':
         POP_STATE();
         POP_ITEM_ELEMENT();
-        break;
-
-      case '}':
-        POP_ITEM();
-        POP_STATE();
+        if ( IN_STATE( in_object ) )
+          POP_ITEM();
         break;
 
       case ',':
