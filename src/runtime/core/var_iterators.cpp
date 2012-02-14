@@ -29,9 +29,11 @@
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/iterator.h"
+#include "store/api/iterator_factory.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
+#include "store/api/store.h"
 
 #include "util/string_util.h"
 
@@ -262,6 +264,9 @@ void CtxVarState::reset(PlanState& planState)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CtxVarIterator::CtxVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -273,7 +278,8 @@ CtxVarIterator::CtxVarIterator(
   theVarId(varid),
   theVarName(varName),
   theIsLocal(isLocal),
-  theTargetPos(0)
+  theTargetPos(0),
+  theInfLen(false)
 {
 }
 
@@ -289,6 +295,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
+  ar & theInfLen;
 }
 
 
@@ -316,15 +323,24 @@ bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == Integer(0) && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) &&
+      theTargetLenIter == NULL &&
+      theInfLen == false)
   {
-    theTargetLenIter = v;
+    if (v == NULL)
+      theInfLen = true;
+    else
+      theTargetLenIter = v;
+
     return true;
   }
   return false;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 uint32_t CtxVarIterator::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
@@ -345,6 +361,9 @@ uint32_t CtxVarIterator::getStateSizeOfSubtree() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
@@ -361,6 +380,9 @@ void CtxVarIterator::openImpl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::resetImpl(PlanState& planState) const
 {
   NoaryBaseIterator<CtxVarIterator, CtxVarState>::resetImpl(planState);
@@ -375,6 +397,9 @@ void CtxVarIterator::resetImpl(PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::closeImpl(PlanState& planState)
 {
   NoaryBaseIterator<CtxVarIterator, CtxVarState>::closeImpl(planState);
@@ -389,7 +414,9 @@ void CtxVarIterator::closeImpl(PlanState& planState)
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varSingleItem;
@@ -405,7 +432,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
 
-  if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  if (theTargetPosIter != NULL && theTargetLenIter == NULL && theInfLen == false)
   {
     result = NULL;
 
@@ -443,7 +470,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
-  else if (theTargetPosIter != NULL && theTargetLenIter != NULL)
+  else if (theTargetPosIter != NULL)
   {
     result = NULL;
 
@@ -454,12 +481,24 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     startPos = posItem->getIntegerValue();
 
-    if (!consumeNext(lenItem, theTargetLenIter, planState))
-    {
-      ZORBA_ASSERT(false);
-    }
+    dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
-    len = lenItem->getIntegerValue();
+    if (theInfLen)
+    {
+      if (varSingleItem != NULL)
+        len = 1;
+      else
+        len = state->theTempSeq->getSize();
+    }
+    else
+    {
+      if (!consumeNext(lenItem, theTargetLenIter, planState))
+      {
+        ZORBA_ASSERT(false);
+      }
+      
+      len = lenItem->getIntegerValue();
+    }
 
     if (startPos <= Integer(0))
     {
@@ -467,10 +506,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       startPos = 1;
     }
 
-    state->theLastPos = startPos + len;
-    state->thePos = startPos;
-
-    dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
+      state->theLastPos = startPos + len;
+      state->thePos = startPos;
 
     if (varSingleItem != NULL)
     {
@@ -542,7 +579,10 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      state->theSourceIter = state->theTempSeq->getIterator();
+      if (state->theSourceIter == NULL)
+        state->theSourceIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theSourceIter->init(state->theTempSeq);
       state->theSourceIter->open();
 
       while (state->theSourceIter->next(result))
@@ -551,7 +591,6 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
 
       state->theSourceIter->close();
-      state->theSourceIter = NULL;
     }
     else
     {
@@ -648,9 +687,15 @@ void LetVarState::reset(PlanState& planState)
 
   if (theSourceIter != NULL)
     theSourceIter->reset();
+
+  if (theTempSeqIter != NULL)
+    theTempSeqIter->reset();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 LetVarIterator::LetVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -658,7 +703,8 @@ LetVarIterator::LetVarIterator(
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
   theVarName(name),
-  theTargetPos(0)
+  theTargetPos(0),
+  theInfLen(false)
 {
 }
 
@@ -670,9 +716,13 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
+  ar & theInfLen;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool LetVarIterator::setTargetPos(xs_integer v)
 {
   if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
@@ -697,9 +747,15 @@ bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == Integer(0) && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) &&
+      theTargetLenIter == NULL && 
+      theInfLen == false)
   {
-    theTargetLenIter = v;
+    if (v == NULL)
+      theInfLen = true;
+    else
+      theTargetLenIter = v;
+
     return true;
   }
   return false;
@@ -721,7 +777,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
+void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
@@ -736,8 +792,11 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
     }
     else
     {
-      state->theSourceIter = state->theTempSeq->getIterator();
-      state->theSourceIter->open();
+      if (state->theTempSeqIter == NULL)
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theTempSeqIter->init(value);
+      state->theTempSeqIter->open();
     }
   }
 }
@@ -749,8 +808,8 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 void LetVarIterator::bind(
     store::TempSeq_t& value,
     PlanState& planState,
-    ulong startPos,
-    ulong endPos)
+    xs_integer startPos,
+    xs_integer endPos)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
@@ -761,12 +820,15 @@ void LetVarIterator::bind(
   {
     if (theTargetPos > Integer(0))
     {
-      value->getItem((Integer(startPos) + theTargetPos - Integer(1)), state->theItem);
+      value->getItem((startPos + theTargetPos - Integer(1)), state->theItem);
     }
     else
     {
-      state->theSourceIter = state->theTempSeq->getIterator(startPos, endPos, true);
-      state->theSourceIter->open();
+      if (state->theTempSeqIter == NULL)
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theTempSeqIter->init(value, startPos, endPos);
+      state->theTempSeqIter->open();
     }
   }
 }
@@ -849,7 +911,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     startPos = posItem->getIntegerValue();
 
-    if (theTargetLenIter == NULL)
+    if (theTargetLenIter == NULL && theInfLen == false)
     {
       if (startPos > Integer(0))
         state->theTempSeq->getItem(startPos, result);
@@ -859,12 +921,19 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      if (!consumeNext(lenItem, theTargetLenIter, planState))
+      if (theInfLen)
       {
-        ZORBA_ASSERT(false);
+        len = state->theTempSeq->getSize();
       }
+      else
+      {
+        if (!consumeNext(lenItem, theTargetLenIter, planState))
+        {
+          ZORBA_ASSERT(false);
+        }
 
-      len = lenItem->getIntegerValue();
+        len = lenItem->getIntegerValue();
+      }
 
       if (startPos <= Integer(0))
       {
@@ -892,9 +961,17 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (result)
       STACK_PUSH(true, state);
   }
+  else if (state->theTempSeqIter)
+  {
+    assert(state->theSourceIter == NULL);
+    while (state->theTempSeqIter->next(result))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
   else
   {
-    assert(state->theSourceIter != NULL);
+    assert(state->theSourceIter != NULL && state->theTempSeqIter == NULL);
     while (state->theSourceIter->next(result))
     {
       STACK_PUSH(true, state);
