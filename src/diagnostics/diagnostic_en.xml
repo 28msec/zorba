@@ -1307,7 +1307,10 @@
        [XQuery 1.0 and XPath 2.0 Data Model]. In this case, none of the updates
        in the query are made effective.
       </comment>
-      <value>updates violate constraint</value>
+      <value>updates violate constraint${ 1}</value>
+      <entry key="AppliedAt">
+        <value>applied at $2</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUTY0022">
