@@ -57,6 +57,7 @@
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
+#include "functions/func_uris.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
@@ -119,6 +120,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_schema(sctx);
   populate_context_sctx(sctx);
   populate_context_strings(sctx);
+  populate_context_uris(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
