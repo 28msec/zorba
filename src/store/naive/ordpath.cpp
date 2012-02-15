@@ -22,8 +22,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "store/naive/ordpath.h"
-#include "store/naive/store_defs.h"
+#include "ordpath.h"
+#include "store_defs.h"
 
 
 namespace zorba { namespace simplestore {

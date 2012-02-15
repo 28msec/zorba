@@ -3340,7 +3340,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
+      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
     }
 
     f->setAnnotations(theAnnotations);
@@ -10433,7 +10433,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     user_function* udf = new user_function(loc,
                                            fn->getSignature(),
                                            NULL, // no body for now
-                                           fn->getScriptingKind());
+                                           fn->getScriptingKind(),
+                                           theCCB);
 
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -10641,7 +10642,8 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -11943,11 +11945,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }

@@ -27,6 +27,7 @@
 #include "class_serializer.h"
 #include "mem_archiver.h"
 
+
 namespace zorba
 {
 
@@ -112,7 +113,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
     current_level(0),
     internal_archive(internal_archive),
     theUserCallback(0),
-    compiler_cb(0),
+    //compiler_cb(0),
     dont_allow_delay_for_plan_sctx(false)
 {
 
@@ -195,6 +196,7 @@ bool Archiver::add_simple_field(const char *type,
     ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
   {
+    assert((field_treat != ARCHIVE_FIELD_NORMAL) || (ref_field->field_treat != ARCHIVE_FIELD_NORMAL));
     if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR) && (allow_delay2 == ALLOW_DELAY))
       allow_delay2 = DONT_ALLOW_DELAY;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
@@ -309,6 +311,7 @@ bool Archiver::add_compound_field(const char *type,
   }
   if(ref_field)
   {
+    assert((field_treat != ARCHIVE_FIELD_NORMAL) || (ref_field->field_treat != ARCHIVE_FIELD_NORMAL));
     if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR) && (allow_delay2 == ALLOW_DELAY))
       allow_delay2 = DONT_ALLOW_DELAY;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
