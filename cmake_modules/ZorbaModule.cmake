@@ -161,41 +161,51 @@ MACRO (DECLARE_ZORBA_MODULE)
   MATH (EXPR num_zorba_modules "${num_zorba_modules} + 1")
   SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_COUNT ${num_zorba_modules})
 
-  # Compute the version numbers, if any provided.
-  IF (MODULE_VERSION)
-    STRING (REPLACE "." ";" version "${MODULE_VERSION}")
-    LIST (LENGTH version version_len)
-    IF (NOT (version_len EQUAL 2) OR (version_len EQUAL 3))
-      MESSAGE (FATAL_ERROR
-        "Version ${MODULE_VERSION} not of form 'major.minor[.patch]'")
-    ENDIF (NOT (version_len EQUAL 2) OR (version_len EQUAL 3))
-    LIST (GET version 0 major_ver)
-    LIST (GET version 1 minor_ver)
-    IF (version_len EQUAL 3)
-      LIST (GET version 2 patch_ver)
-      MATH (EXPR version_int
-        "${major_ver} * 100000000 + ${minor_ver} * 100000 + ${patch_ver}")
-    ELSE (version_len EQUAL 3)
-      SET (patch_ver)
-      MATH (EXPR version_int "${major_ver} * 100000000 + ${minor_ver} * 100000")
-    ENDIF (version_len EQUAL 3)
+  # If no version specified, it is effectively treated as 0.0.0.
+  IF (NOT MODULE_VERSION)
+    SET (MODULE_VERSION "0.0.0")
+  ENDIF (NOT MODULE_VERSION)
 
-    # We maintain a global CMake property named after the target URI
-    # which remembers all versions of this URI which have been
-    # declared. If a *lower* version has already been declared, the
-    # output file rules will be messed up, so die.
-    GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
-    FOREACH (known_ver ${target_versions})
-      IF (known_ver LESS version_int)
-        MESSAGE (FATAL_ERROR
-          "The module ${MODULE_URI} has already been declared with a "
-          "lower version number than ${MODULE_VERSION}. "
-          "Please call DECLARE_ZORBA_MODULE() for higher versions of the same "
-          "module first.")
-      ENDIF (known_ver LESS version_int)
-    ENDFOREACH (known_ver)
-    SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-versions" ${version_int})
-  ENDIF (MODULE_VERSION)
+  # Compute a unique integer, version_int, based on the version
+  # number, so we can more easily compare with other versions later.
+  STRING (REPLACE "." ";" version "${MODULE_VERSION}")
+  LIST (LENGTH version version_len)
+  IF (NOT ( (version_len EQUAL 2) OR (version_len EQUAL 3) ) )
+    MESSAGE (FATAL_ERROR
+      "Version ${version_len} ${MODULE_VERSION} not of form 'major.minor[.patch]'")
+  ENDIF (NOT ( (version_len EQUAL 2) OR (version_len EQUAL 3) ) )
+  LIST (GET version 0 major_ver)
+  LIST (GET version 1 minor_ver)
+  IF (version_len EQUAL 3)
+    LIST (GET version 2 patch_ver)
+    MATH (EXPR version_int
+      "${major_ver} * 100000000 + ${minor_ver} * 100000 + ${patch_ver}")
+  ELSE (version_len EQUAL 3)
+    SET (patch_ver)
+    MATH (EXPR version_int "${major_ver} * 100000000 + ${minor_ver} * 100000")
+  ENDIF (version_len EQUAL 3)
+
+  # We maintain a global CMake property named after the target URI
+  # which remembers all versions of this URI which have been
+  # declared. If a *lower* version has already been declared, the
+  # output file rules will be messed up, so die. If the *same* version
+  # has already been declare, XQdoc will be messed up, so die.
+  GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
+  FOREACH (known_ver ${target_versions})
+    IF (known_ver LESS version_int)
+      MESSAGE (FATAL_ERROR
+        "The module ${MODULE_URI} has already been declared with a "
+        "lower version number than ${MODULE_VERSION}. "
+        "Please call DECLARE_ZORBA_MODULE() for higher versions of the same "
+        "module first.")
+    ElSEIF (known_ver EQUAL version_int)
+      MESSAGE (FATAL_ERROR
+        "The module ${MODULE_URI} has already been declared with the "
+        "version number ${MODULE_VERSION}. You cannot declare the same "
+        "module twice.")
+    ENDIF (known_ver LESS version_int)
+  ENDFOREACH (known_ver)
+  SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-versions" ${version_int})
 
   # Add to module manifest (except test modules).
   IF (NOT MODULE_TEST_ONLY)

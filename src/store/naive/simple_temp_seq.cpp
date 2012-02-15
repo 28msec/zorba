@@ -21,7 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/simple_temp_seq.h"
+#include "simple_temp_seq.h"
 #include "store/api/copymode.h"
 
 namespace zorba { namespace simplestore {

@@ -35,16 +35,21 @@ namespace zorba {
 /*******************************************************************************
   Diagnostics iterators: a dummy iterator for dynamic exception stack traces
 ********************************************************************************/
-bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanState) const
+bool FunctionTraceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
-  try {
+  try 
+  {
     PlanIteratorState* lState = 0;
     DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
-    while (consumeNext(result, theChildren[0], aPlanState)) {
-      STACK_PUSH(true, lState);
-    }
-    STACK_END(lState);
-  } catch (ZorbaException& err) {
+ 
+   while (consumeNext(result, theChildren[0], aPlanState)) 
+   {
+     STACK_PUSH(true, lState);
+   }
+   STACK_END(lState);
+  }
+  catch (ZorbaException& err)
+  {
     recordStackTrace(
         theFunctionLocation,
         theFunctionCallLocation,
@@ -57,6 +62,7 @@ bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanStat
   // or record_stack_trace raises an error
   return false;
 }
+
 
 void FunctionTraceIterator::setFunctionName(const store::Item_t& aFunctionName)
 {
