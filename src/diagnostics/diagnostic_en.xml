@@ -51,6 +51,11 @@
        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
       <value>$1</value>
+
+      <entry key="FormatNumber_2">
+        <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
