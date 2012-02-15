@@ -140,7 +140,6 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
-
   MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
 
   # Compute a CMake-symbol-safe version of the target URI, for storing
@@ -314,7 +313,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (MODULE_VERSION)
   FOREACH (version_infix "" ${version_infixes})
     ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${module_path}/${module_filename}"
-      "${version_infix}" "" "${MODULE_TEST_ONLY}")
+      "${version_infix}" "" 1 "${MODULE_TEST_ONLY}")
   ENDFOREACH (version_infix)
 
   # Also copy the dynamic library from the location it was built.
@@ -322,7 +321,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     GET_TARGET_PROPERTY (lib_location "${module_lib_target}" LOCATION)
     GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
     ADD_COPY_RULE ("LIB" "${lib_location}" "${module_path}/${lib_filename}"
-      "" "${module_lib_target}" "${MODULE_TEST_ONLY}")
+      "" "${module_lib_target}" 0 "${MODULE_TEST_ONLY}")
   ENDIF (module_lib_target)
 
   # Last but not least, whip up a test case that ensures the module
@@ -375,7 +374,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
   ENDIF (NOT SCHEMA_TEST_ONLY)
 
   ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${schema_path}/${schema_filename}"
-    "" "" "${SCHEMA_TEST_ONLY}")
+    "" "" 1 "${SCHEMA_TEST_ONLY}")
 
 ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
@@ -407,25 +406,64 @@ MACRO (DECLARE_ZORBA_URI_FILE)
   MANGLE_URI (${URI_FILE_URI} "" uri_file_path uri_file_filename)
 
   ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${uri_file_path}/${uri_file_filename}"
-    "" "" "${URI_FILE_TEST_ONLY}")
+    "" "" 1 "${URI_FILE_TEST_ONLY}")
 
 ENDMACRO (DECLARE_ZORBA_URI_FILE)
 
+# Inform Zorba of a .jar file that should be made available on the CLASSPATH
+# of the JVM, should the JVM be started. QQQ more doc needed
+#
+# Args: FILE - path to file (must be absolute)
+#       EXTERNAL - (optional) FILE specifies a path that should be added
+#              to CLASSPATH as-is
+#       TEST_ONLY - (optional) Jar file is for testcases only and should not
+#              be installed
+
+MACRO (DECLARE_ZORBA_JAR)
+  PARSE_ARGUMENTS (JAR "" "FILE" "TEST_ONLY;EXTERNAL" ${ARGN})
+  IF (NOT JAR_FILE)
+    MESSAGE (FATAL_ERROR "'JAR' argument is required for DECLARE_ZORBA_JAR")
+  ENDIF (NOT JAR_FILE)
+  IF (NOT IS_ABSOLUTE "${JAR_FILE}")
+    SET (JAR_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${JAR_FILE}")
+  ENDIF (NOT IS_ABSOLUTE "${JAR_FILE}")
+
+  IF (JAR_EXTERNAL)
+    SET (_LIST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-jars.txt")
+    # Remember whether we've seen external jars for this project yet
+    GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars")
+    IF (NOT _known_project)
+      FILE (REMOVE "${_LIST_FILE}")
+      SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars" 1)
+      ADD_COPY_RULE ("LIB" "${_LIST_FILE}" "jars/${PROJECT_NAME}-jars.txt"
+	"" "" 1 0)
+    ENDIF (NOT _known_project)
+    FILE (APPEND "${_LIST_FILE}" "${JAR_FILE}\n")
+  ELSE (JAR_EXTERNAL)
+    GET_FILENAME_COMPONENT (_output_filename "${JAR_FILE}" NAME)
+    ADD_COPY_RULE ("LIB" "${JAR_FILE}" "jars/${_output_filename}" "" ""
+      1 "${JAR_TEST_ONLY}")
+  ENDIF (JAR_EXTERNAL)
+ENDMACRO (DECLARE_ZORBA_JAR)
+
+
 # Utility macro for setting up a build rule to copy a file to a
-# particular (possibly versioned) file in a shared directory if such a file has
-# not already been output.
+# particular (possibly versioned) file in a shared directory if such a
+# file has not already been output.
+#
 # FILE_TYPE: Either "URI" or "LIB"; will be used to determine which shared
-#    directory to place output in (URI_PATH or LIB_PATH). Also, "URI" files
-#    will have an INSTALL() directive to put them in the install image.
+#    directory to place output in (URI_PATH or LIB_PATH).
 # INPUT_FILE: Absolute path to file to copy.
 # OUTPUT_FILE: Relative path to output file (relative to URI_PATH).
 # VERSION_ARG: Version; may be "" for non-versioned files.
 # DEPEND_TARGET: A CMake target name upon which the copy rule should depend;
 #    may be "".
+# INSTALL: If 1, an INSTALL() directive will be executed to put the
+#    file into the install image.
 # TEST_ONLY: If 1, file is for testcases only; will be copied into
-#    TEST_URI_PATH/TEST_LIB_PATH and will not be installed
+#    TEST_URI_PATH/TEST_LIB_PATH and will not be installed.
 MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
-       DEPEND_TARGET TEST_ONLY)
+       DEPEND_TARGET INSTALL TEST_ONLY)
   # Choose output base directory
   IF (${TEST_ONLY} EQUAL 1)
     SET (_output_basedir "${CMAKE_BINARY_DIR}/TEST_${FILE_TYPE}_PATH")
@@ -470,13 +508,13 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
     SET_PROPERTY (GLOBAL APPEND PROPERTY ZORBA_URI_FILES
       "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}" "${_is_core}")
 
-    # Also set up an INSTALL rule (unless TEST_ONLY or LIB).
-    IF ( (NOT "${FILE_TYPE}" STREQUAL "LIB") AND (NOT ${TEST_ONLY} EQUAL 1) )
+    # Also set up an INSTALL rule (unless TEST_ONLY).
+    IF ( (${INSTALL} EQUAL 1) AND (NOT ${TEST_ONLY} EQUAL 1) )
         
       IF(NOT _is_core)
         STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
         INSTALL (FILES "${INPUT_FILE}"
-          DESTINATION "${ZORBA_NONCORE_URI_DIR}/${_output_path}"
+          DESTINATION "${ZORBA_NONCORE_${FILE_TYPE}_DIR}/${_output_path}"
           RENAME "${_output_filename}"
           COMPONENT "${component_name}")
           
@@ -496,11 +534,11 @@ MACRO (ADD_COPY_RULE FILE_TYPE INPUT_FILE OUTPUT_FILE VERSION_ARG
             
       ELSE(NOT _is_core)
         INSTALL (FILES "${INPUT_FILE}"
-          DESTINATION "${ZORBA_CORE_URI_DIR}/${_output_path}"
+          DESTINATION "${ZORBA_CORE_${FILE_TYPE}_DIR}/${_output_path}"
           RENAME "${_output_filename}")
       ENDIF(NOT _is_core)
           
-    ENDIF ( (NOT "${FILE_TYPE}" STREQUAL "LIB") AND (NOT ${TEST_ONLY} EQUAL 1) )
+    ENDIF ( (${INSTALL} EQUAL 1) AND (NOT ${TEST_ONLY} EQUAL 1) )
   ENDIF (file_found EQUAL -1)
 ENDMACRO (ADD_COPY_RULE)
 
