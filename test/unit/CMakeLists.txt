@@ -14,6 +14,7 @@
 # create the testing file and list of tests
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mini_http.xq ${CMAKE_CURRENT_BINARY_DIR}/mini_http.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
 #belongs to test cxx_api_changes.cpp

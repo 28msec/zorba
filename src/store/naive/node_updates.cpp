@@ -229,12 +229,12 @@ void XmlNode::attach(InternalNode* parent, csize pos)
       // Attach the attributes of this node to the new tree.
       AttributeNode* baseUriAttr = NULL;
       AttributeNode* hiddenBaseUriAttr = NULL;
-      ulong numAttrs = elem->numAttrs();
+      csize numAttrs = elem->numAttrs();
 
       InternalNode::iterator ite = elem->attrsBegin();
       InternalNode::iterator end = elem->attrsEnd();
 
-      for (ulong i = 0; ite != end; ++i, ++ite)
+      for (csize i = 0; ite != end; ++i, ++ite)
       {
         AttributeNode* attr = static_cast<AttributeNode*>(*ite);
 
@@ -1360,6 +1360,24 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   else
   {
     removeType(upd);
+  }
+
+  if (theParent)
+  {
+    XmlNode* ancestor = theParent;
+
+    while (ancestor != NULL &&
+           ancestor->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      ElementNode* elemAncestor = reinterpret_cast<ElementNode*>(ancestor);
+      if (elemAncestor->theName->equals(theName))
+      {
+        elemAncestor->setRecursive();
+        break;
+      }
+      
+      ancestor = ancestor->theParent;
+    }
   }
 }
 
