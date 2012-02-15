@@ -657,6 +657,7 @@ extern entry const dict_en[] = {
   { "~VariabledUndeclared", "undeclared variable" },
   { "~WindowClause11", "\"window\" clause only available in XQuery 1.1 or later" },
   { "~XMLSchema", "XML schema" },
+  { "~XPTY0004_FormatNumber_2", "\"the first parameter to the format-number() function is of type $2, which is not allowed" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XQueryVersionAtLeast10_2", "\"$2\": XQuery version must be at least 1.0" },
