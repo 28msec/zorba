@@ -147,8 +147,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
       if (child->getNodeKind() == store::StoreConsts::attributeNode)
       {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(NoAttrNodesInDocument)));
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoAttrNodesInDocument)));
       }
 
       if (child->getParent() != result.getp())
@@ -846,8 +845,10 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   try
   {
     if (!consumeNext(lItem, theChild0, planState))
-      // TODO: needs type in error message
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
+    {
+      // translator places a cast to xs:NCName op
+      ZORBA_ASSERT(false);
+    }
   }
   catch (ZorbaException const& e)
   {
@@ -858,10 +859,11 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if (consumeNext(temp, theChild0, planState))
-    // TODO: needs type in error message
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
+  {
+    // translator places a cast to xs:NCName op
+    ZORBA_ASSERT(false);  
+  }
 
-  // TODO: check if lItem is string, raise XPTY0004 if not
   lItem->getStringValue2(target);
 
   if (target.empty())
@@ -1320,19 +1322,13 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(EmptySeqNoCastToQName)));
   }
   valid = true;
 
   if (consumeNext(temp, theChild, planState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004, ERROR_PARAMS( ZED( SeqNoCastToQName ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(SeqNoCastToQName)));
   }
 
   try
@@ -1355,19 +1351,13 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         // this needs to be checked and thrown here as the optimizer
         // might try to fold a const expression and would return a different error code
         if (theIsAttrName)
-          throw XQUERY_EXCEPTION(
-            err::XQDY0044, ERROR_PARAMS(name), ERROR_LOC(loc)
-          );
+          RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(name));
         else
-          throw XQUERY_EXCEPTION(
-            err::XQDY0096, ERROR_PARAMS(name), ERROR_LOC(loc)
-          );
+          RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(name));
       }
       else
         // the returned error codes are wrong for name casting => they must be changed
-        throw XQUERY_EXCEPTION(
-          err::XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("item"));
     }
     else
     {

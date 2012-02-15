@@ -27,15 +27,15 @@
 #include "store/api/collection.h"
 #include "store/api/update_consts.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/node_items.h"
-#include "store/naive/pul_primitives.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "nsbindings.h"
+#include "node_items.h"
+#include "pul_primitives.h"
+#include "simple_pul.h"
+#include "atomic_items.h"
+#include "simple_item_factory.h"
+#include "node_factory.h"
 
 #include "store/api/validator.h"
 
@@ -229,12 +229,12 @@ void XmlNode::attach(InternalNode* parent, csize pos)
       // Attach the attributes of this node to the new tree.
       AttributeNode* baseUriAttr = NULL;
       AttributeNode* hiddenBaseUriAttr = NULL;
-      ulong numAttrs = elem->numAttrs();
+      csize numAttrs = elem->numAttrs();
 
       InternalNode::iterator ite = elem->attrsBegin();
       InternalNode::iterator end = elem->attrsEnd();
 
-      for (ulong i = 0; ite != end; ++i, ++ite)
+      for (csize i = 0; ite != end; ++i, ++ite)
       {
         AttributeNode* attr = static_cast<AttributeNode*>(*ite);
 
@@ -1360,6 +1360,24 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   else
   {
     removeType(upd);
+  }
+
+  if (theParent)
+  {
+    XmlNode* ancestor = theParent;
+
+    while (ancestor != NULL &&
+           ancestor->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      ElementNode* elemAncestor = reinterpret_cast<ElementNode*>(ancestor);
+      if (elemAncestor->theName->equals(theName))
+      {
+        elemAncestor->setRecursive();
+        break;
+      }
+      
+      ancestor = ancestor->theParent;
+    }
   }
 }
 
