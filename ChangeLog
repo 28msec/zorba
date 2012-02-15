@@ -20,6 +20,7 @@ version 2.2
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
   * Added index management function to the C++ api's StaticCollectionManager.
+  * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
   * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
@@ -28,6 +29,10 @@ version 2.2
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
   * Fixed bug involving positional var and groupby 
+  * Optimization: preallocate and reuse temp sequence iterator for LetVarITerator
+    and CtxVarIterator.
+  * Optimization: enhanced push-down of positional predicate into LetVarITerator
+    and CtxVarIterator.
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
