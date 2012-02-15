@@ -711,7 +711,7 @@ void FlworState::init(
 {
   PlanIteratorState::init(planState);
 
-  ulong numVars = (ulong)forletClauses.size();
+  csize numVars = forletClauses.size();
   std::vector<long> v(numVars, 0);
   theVarBindingState.swap(v);
   assert(theVarBindingState.size() > 0);
@@ -775,7 +775,7 @@ void FlworState::reset(PlanState& planState)
 
   assert(theVarBindingState.size() > 0);
 
-  size_t size = theVarBindingState.size();
+  csize size = theVarBindingState.size();
 
   ::memset(&theVarBindingState[0], 0, size * sizeof(long));
 
@@ -805,9 +805,9 @@ void FlworState::reset(PlanState& planState)
 ********************************************************************************/
 void FlworState::clearSortTable()
 {
-  ulong numTuples = (ulong)theSortTable.size();
+  csize numTuples = theSortTable.size();
 
-  for (ulong i = 0; i < numTuples; ++i)
+  for (csize i = 0; i < numTuples; ++i)
   {
     theSortTable[i].clear();
   }
