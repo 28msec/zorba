@@ -158,6 +158,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
     lang = get_lang_from( item, loc );
   }
 
+  // TODO: why is this always the default StemmerProvider?
   provider = &internal::StemmerProvider::get_default();
   stemmer = provider->get_stemmer( lang );
   if ( stemmer ) {
@@ -325,34 +326,34 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
 
       if ( token->lang() ) {
         value_string = iso639_1::string_of[ token->lang() ];
-        type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
         GENV_ITEMFACTORY->createString( item, value_string );
+        type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createAttributeNode(
           attr_node, result, attr_name, type_name, item
         );
       }
 
       ztd::to_string( token->para(), &value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "paragraph" );
       GENV_ITEMFACTORY->createString( item, value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createAttributeNode(
         attr_node, result, attr_name, type_name, item
       );
 
       ztd::to_string( token->sent(), &value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "sentence" );
       GENV_ITEMFACTORY->createString( item, value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createAttributeNode(
         attr_node, result, attr_name, type_name, item
       );
 
       value_string = token->value();
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "value" );
       GENV_ITEMFACTORY->createString( item, value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createAttributeNode(
         attr_node, result, attr_name, type_name, item
       );
@@ -412,7 +413,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   );
 
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
   GENV_ITEMFACTORY->createElementNode(
     result, nullptr, item, type_name, false, false, ns_bindings, base_uri
   );
@@ -424,7 +424,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
 
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-
   GENV_ITEMFACTORY->createAttributeNode(
     attr_node, result, attr_name, type_name, item
   );
