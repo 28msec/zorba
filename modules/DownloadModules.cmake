@@ -77,37 +77,56 @@ foreach (modline ${modlines})
     # Download
     if (_getmod)
       message ("Downloading module '${_modname}'...")
-      if (${_modvc} STREQUAL "svn")
-        if (NOT svn)
-          message (FATAL_ERROR
-            "Subversion client not found - required for ${_modname} module!")
-        endif (NOT svn)
-        # QQQ Ridiculous and slow hack, but Sourceforge has been
-        # incredibly unreliable lately so this is the best choice I've
-        # got to make the remote queue semi-stable
-        foreach (s 1 2)
+      # We try three times, to account for network weirdnesses
+      foreach (i 1 2 3)
+	# First delete the output directory, in case there's a partial
+	# download from a previous attempt
+	file (REMOVE_RECURSE "${outdir}/${_modname}")
+
+	set (_status)
+
+	if (${_modvc} STREQUAL "svn")
+          if (NOT svn)
+            message (FATAL_ERROR
+              "Subversion client not found - required for ${_modname} module!")
+          endif (NOT svn)
           execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
-            WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
-        endforeach (s 1 2)
+            WORKING_DIRECTORY "${outdir}" TIMEOUT 60 RESULT_VARIABLE _status)
 
-      elseif (${_modvc} STREQUAL "bzr")
-        if (NOT bzr)
-          message (FATAL_ERROR
-            "Bazaar client not found - required for ${_modname} module!")
-        endif (NOT bzr)
+	elseif (${_modvc} STREQUAL "bzr")
+          if (NOT bzr)
+            message (FATAL_ERROR
+              "Bazaar client not found - required for ${_modname} module!")
+          endif (NOT bzr)
 
-        set (_modtagargs)
-        if (_modtag AND NOT notags)
-          set (_modtagargs "-r" "${_modtag}")
-        endif (_modtag AND NOT notags)
-        execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
-          ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
+          set (_modtagargs)
+          if (_modtag AND NOT notags)
+            set (_modtagargs "-r" "${_modtag}")
+          endif (_modtag AND NOT notags)
+          execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
+            ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60
+	    RESULT_VARIABLE _status)
 
-      else (${_modvc} STREQUAL "svn")
-        message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
-          "'${_modname}' in modules/ExternalModules.conf!")
+	else (${_modvc} STREQUAL "svn")
+          message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
+            "'${_modname}' in modules/ExternalModules.conf!")
 
-      endif (${_modvc} STREQUAL "svn")
+	endif (${_modvc} STREQUAL "svn")
+
+	if ("${_status}" EQUAL 0)
+	  # Success
+	  break ()
+	else ("${_status}" EQUAL 0)
+	  message (WARNING "Attempt ${i}: Failed to download '${_modname}' (${_status})")
+	endif ("${_status}" EQUAL 0)
+
+      endforeach (i)
     endif (_getmod)
+
+    # Ensure we successfully downloaded something good
+    if (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
+      message (FATAL_ERROR "Failed to download '${_modname}' after 3 attempts, giving up.")
+    endif (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
+
   endif (modline)
 endforeach (modline)
