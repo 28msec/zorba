@@ -36,7 +36,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ActivateICIterator(sctx, loc, argv[0]);
 }
@@ -46,7 +46,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_deactivate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
@@ -56,7 +56,7 @@ PlanIter_t zorba_store_integrity_constraints_static_dml_check_integrity_constrai
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CheckICIterator(sctx, loc, argv[0]);
 }

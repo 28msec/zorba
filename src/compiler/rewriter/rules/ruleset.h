@@ -22,7 +22,6 @@
 #include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/rules/rule_base.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 
 
 namespace zorba 
