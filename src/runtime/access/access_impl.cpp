@@ -42,6 +42,7 @@
 #include "store/api/index.h"
 #include "store/api/annotation.h"
 #include "store/api/ic.h"
+#include "store/api/load_properties.h"
 #include "api/dynamiccontextimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
