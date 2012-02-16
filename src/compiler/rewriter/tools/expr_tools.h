@@ -21,7 +21,6 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
 #include "functions/function.h"
