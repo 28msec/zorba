@@ -1141,69 +1141,6 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
   }
 }
 
-void
-StaticContextImpl::setJVMClassPath(const std::vector<String> &aClassPath)
-{
-  try
-  {
-    std::vector<zstring> lInternalClassPath;
-    toInternalPath(aClassPath, lInternalClassPath);
-    theCtx->set_jvm_class_path(lInternalClassPath);
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-void
-StaticContextImpl::getJVMClassPath(std::vector<String> &aClassPath) const
-{
-  try
-  {
-    std::vector<zstring> lInternalClassPath;
-    theCtx->get_jvm_class_path(lInternalClassPath);
-    toPublicPath(lInternalClassPath, aClassPath);
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-void
-StaticContextImpl::getFullJVMClassPath(std::vector<String> &aClassPath) const
-{
-  try
-  {
-    std::vector<zstring> lInternalClassPath;
-    theCtx->get_full_jvm_class_path(lInternalClassPath);
-    toPublicPath(lInternalClassPath, aClassPath);
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-String
-StaticContextImpl::getFullJVMClassPath() const
-{
-  std::vector<zstring> lInternalClassPath;
-  theCtx->get_full_jvm_class_path(lInternalClassPath);
-
-  zstring delimiter(filesystem_path::get_path_separator());
-
-  zstring lResult;
-  for (std::vector<zstring>::iterator lIter = lInternalClassPath.begin();
-       lIter != lInternalClassPath.end(); ++lIter)
-  {
-    lResult += delimiter + *lIter;
-  }
-
-  String res(lResult.str());
-  return res;
-}
 
 String
 StaticContextImpl::resolve(const String& aRelativeUri) const

@@ -355,7 +355,7 @@ public:
 "--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
 "--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
 "--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
-"--classpath\nJVM classpath to used by modules using Java implementations\n\n"
+"--classpath\nJVM classpath to be used by modules using Java implementations\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"

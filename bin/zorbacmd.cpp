@@ -749,6 +749,13 @@ _tmain(int argc, _TCHAR* argv[])
     return 3;
   }
 
+  // Add command line option in front of config/env CLASSPATH
+  Properties* globalProperties = Properties::instance();
+  std::string cmdJvmClassPath;
+  lProperties.getJVMClassPath(cmdJvmClassPath);
+  std::string configJvmClassPath;
+  globalProperties->setJVMClassPath(cmdJvmClassPath +
+      filesystem_path::get_path_separator() + configJvmClassPath);
 
   // Start the engine
 

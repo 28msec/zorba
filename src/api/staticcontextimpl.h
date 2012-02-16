@@ -272,17 +272,6 @@ public:
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
 
-  virtual void
-  setJVMClassPath(const std::vector<String>& aClassPath);
-
-  virtual void
-  getJVMClassPath(std::vector<String>& aClassPath) const;
-
-  virtual void
-  getFullJVMClassPath(std::vector<String>& aClassPath) const;
-
-  virtual String
-  getFullJVMClassPath() const;
 
 protected:
   String

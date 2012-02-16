@@ -31,7 +31,7 @@
 ("uri-path", po::value<std::string>(), "URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.")
 ("lib-path", po::value<std::string>(), "Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.")
 ("module-path", po::value<std::string>(), "Path (list of directories) to add to both the URI and Library paths.")
-("classpath", po::value<std::string>(), "JVM classpath to used by modules using Java implementations")
+("classpath", po::value<std::string>(), "JVM classpath to be used by modules using Java implementations")
 ("option", po::value<std::vector<std::string> >(), "Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value").
 ("trailing-nl", "Output a trailing newline after the result of the query.")
 ("stop-words", po::value<std::vector<std::string> >(), "Mapping specifying a stop-words URI to another.")

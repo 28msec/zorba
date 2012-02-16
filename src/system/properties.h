@@ -67,6 +67,12 @@ class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties
 
   std::ostream& debug_out() { return *debug_stream; }
 
+  void getJVMClassPath(std::string & jvmClasspath)
+  { jvmClasspath = theCLASSPATH ; }
+
+  void setJVMClassPath(const std::string & jvmClasspath)
+  { theCLASSPATH = jvmClasspath; }
+
  protected:
   /**
    * Gets the Operation System folder where the properties of the current 

@@ -43,3 +43,4 @@
       ("iter-plan-test", "run as iterator plan test")
       ("dot-plan-file", po::value<std::string>(), "generate the dot iterator plan")
       ("max-udf-call-depth", po::value<uint32_t>()->default_value(1024), "maximum stack depth of udf function calls")
+      ("CLASSPATH", po::value<std::string>(), "JVM classpath to be used by modules using Java implementations")

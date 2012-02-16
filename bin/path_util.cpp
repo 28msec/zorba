@@ -49,7 +49,7 @@ getPathFromEnvironment(std::string const& aEnvVar)
 }
 
 
-static void
+void
 tokenizePath(
   const std::string&    aPathStr,
   std::vector<String>&  aResult)
@@ -67,7 +67,7 @@ tokenizePath(
 }
 
 
-static String
+String
 concatenatePaths( const std::vector<String>& aPathList)
 {
   String delimiter(filesystem_path::get_path_separator());
@@ -123,23 +123,6 @@ setPathsOnContext(
     tokenizePath(lEnvStr, lPath);
     aStaticCtx->setLibPath(lPath);
   }
-
-  // Compute and set JVM class path
-//  aProperties.getJVMClassPath(lPathStr);
-//  tokenizePath(lPathStr, lPath);
-//  lEnvStr = getPathFromEnvironment("CLASSPATH");
-//  lPath.push_back(lCWD.get_path());
-//  tokenizePath(lEnvStr, lPath);
-//  aStaticCtx->setJVMClassPath(lPath);
-
-
-  lPath.clear();
-  aStaticCtx->getLibPath(lPath);
-  aProperties.getJVMClassPath(lPathStr);
-  tokenizePath(lPathStr, lPath);
-  lEnvStr = getPathFromEnvironment("CLASSPATH");
-  tokenizePath(lEnvStr, lPath);
-  aStaticCtx->setLibPath(lPath);
 }
 
 } /* namespace ModulePath */

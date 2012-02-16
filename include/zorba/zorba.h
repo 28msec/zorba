@@ -34,6 +34,7 @@
 #include <zorba/xquery.h>
 #include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
+#include <zorba/properties_base.h>
 
 namespace zorba {
 
@@ -321,6 +322,12 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual audit::Provider*
   getAuditProvider() = 0;
+
+  /** \brief Gets the singleton instance of Zorba's properties object.
+   *
+   * @return zorba::Properties the singelton instance of Zorba's properties object.
+   */
+  virtual PropertiesBase* getProperties() = 0;
 
 }; /* class Zorba */
 

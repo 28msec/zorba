@@ -34,7 +34,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", "--CLASSPATH", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -80,6 +80,7 @@ protected:
   bool theIterPlanTest;
   std::string theDotPlanFile;
   uint32_t theMaxUdfCallDepth;
+  std::string theCLASSPATH;
 
   void initialize () {
     theTraceParsing = false;
@@ -163,6 +164,7 @@ public:
   const bool &iterPlanTest () const { return theIterPlanTest; }
   const std::string &dotPlanFile () const { return theDotPlanFile; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
+  const std::string &CLASSPATH () const { return theCLASSPATH; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -340,6 +342,11 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --max-udf-call-depth option"; break; }        init_val (*argv, theMaxUdfCallDepth, d);
       }
+      else if (strcmp (*argv, "--CLASSPATH") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --CLASSPATH option"; break; }        init_val (*argv, theCLASSPATH, d);
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -401,6 +408,7 @@ public:
 "--iter-plan-test\nrun as iterator plan test\n\n"
 "--dot-plan-file\ngenerate the dot iterator plan\n\n"
 "--max-udf-call-depth\nmaximum stack depth of udf function calls\n\n"
+"--CLASSPATH\nJVM classpath to be used by modules using Java implementations\n\n"
 ;
   }
 
