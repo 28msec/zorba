@@ -109,7 +109,7 @@ public:
         xs_integer position = -1);
 
   // virtual to allow extension by subclasses
-  virtual ulong addNodes(
+  virtual xs_integer addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);

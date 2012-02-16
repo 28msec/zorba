@@ -1112,7 +1112,7 @@ class UpdInsertBeforeIntoCollection : public  UpdCollection
 
 protected:
   store::Item_t theFirstNode;
-  ulong         theFirstPos;
+  xs_integer    theFirstPos;
 
   UpdInsertBeforeIntoCollection(
         CollectionPul* pul,
@@ -1146,7 +1146,7 @@ class UpdInsertAfterIntoCollection : public  UpdCollection
 
 protected:
   store::Item_t theFirstNode;
-  ulong         theFirstPos;
+  xs_integer    theFirstPos;
 
   UpdInsertAfterIntoCollection(
         CollectionPul* pul,

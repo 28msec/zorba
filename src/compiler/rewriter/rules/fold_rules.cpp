@@ -951,23 +951,16 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     }
     else
     {
-      store::Item_t pVal;
-      store::Item_t iVal = val;
-      GenericCast::promote(pVal, iVal, &*rtm.DOUBLE_TYPE_ONE, tm, val_expr->get_loc());
-      expr_t dpos = new const_expr(val_expr->get_sctx(), LOC(val_expr), pVal);
-
       std::vector<expr_t> args(3);
       args[0] = count_expr->get_arg(0);
-      args[1] = dpos;
-      args[2] = new const_expr(val_expr->get_sctx(),
-                               LOC(val_expr),
-                               xs_double(2.0));
+      args[1] = val_expr;
+      args[2] = new const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
 
-      expr_t subseq_expr = 
-      expr_tools::fix_annotations(new fo_expr(count_expr->get_sctx(),
-                                              LOC(count_expr),
-                                              GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3),
-                                              args));
+      expr_t subseq_expr = expr_tools::fix_annotations(
+      new fo_expr(count_expr->get_sctx(),
+                  LOC(count_expr),
+                  GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                  args));
 
       return expr_tools::fix_annotations(
              new fo_expr(fo.get_sctx(),
