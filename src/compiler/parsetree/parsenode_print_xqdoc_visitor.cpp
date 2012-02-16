@@ -698,7 +698,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createElementNode(
       lSigElem, lFuncElem, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
-
+     
   const ParamList* paramList = n.get_paramlist();
   if(paramList != NULL) {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -721,7 +721,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       zstring lParamNameVal(lParam->get_name()->get_qname());
       store::Item_t lParamNameText;
       theFactory->createTextNode(lParamNameText, lParamNameElem, lParamNameVal);
-
+      
       if(lParam->get_typedecl()) {
         if(lParam->get_typedecl()->get_itemtype()) {
           ostringstream lType;
@@ -760,13 +760,61 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
               theFactory->createAttributeNode(
                 lOccurAttrQName, lParamTypeElem, lOccurAttrQName, lTypeName, lOccurValue
               );
-            }}
+            }
+          }
         }
       }
     }
   }
 
-  zstring lNameString = n.get_name()->get_qname();
+  if(n.get_return_type()) {
+    
+    store::Item_t lReturnElem, lReturnQName, lTypeElem, lTypeQName;
+    theFactory->createQName(lReturnQName, theXQDocNS, theXQDocPrefix, "return");
+    theFactory->createElementNode(
+      lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI     
+    );
+
+    ostringstream lType;
+    print_parsetree_xquery(lType, n.get_return_type());
+    zstring lReturnType(lType.str());
+
+    store::Item_t lReturnTypeElem, lReturnTypeQName;
+    theFactory->createQName(lReturnTypeQName, theXQDocNS, theXQDocPrefix, "type");
+    theFactory->createElementNode(lReturnTypeElem, lReturnElem, lReturnTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
+  
+    store::Item_t lReturnTypeText;
+    theFactory->createTextNode(lReturnTypeText, lReturnTypeElem, lReturnType);
+          
+    if(n.get_return_type()->get_occur()){
+      stringstream os;
+      switch(n.get_return_type()->get_occur()->get_type()) {
+        case ParseConstants::occurs_never:
+          break;
+        case ParseConstants::occurs_exactly_one:
+          break;
+        case ParseConstants::occurs_optionally:
+          os << '?';
+          break;
+        case ParseConstants::occurs_zero_or_more:
+          os << '*';
+          break;
+        case ParseConstants::occurs_one_or_more:
+          os << '+';
+          break;
+        }
+        if(os.str().size() == 1) {
+          zstring lOccur(os.str());
+          store::Item_t lOccurValue, lOccurAttrQName;
+          theFactory->createString(lOccurValue, lOccur);
+          theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+          theFactory->createAttributeNode(
+            lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+          );
+        }
+      }
+ }
+ zstring lNameString = n.get_name()->get_qname();
   theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
   ostringstream lSig;
