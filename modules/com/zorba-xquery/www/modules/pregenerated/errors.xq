@@ -81,6 +81,10 @@ declare variable $zerr:ZXQP0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0005
 
 (:~
 :)
+declare variable $zerr:ZXQP0006 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0006");
+
+(:~
+:)
 declare variable $zerr:ZXQP0007 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0007");
 
 (:~
@@ -661,6 +665,10 @@ declare variable $zerr:ZOSE0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZOSE0004
 (:~
 :)
 declare variable $zerr:ZOSE0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZOSE0005");
+
+(:~
+:)
+declare variable $zerr:ZOSE0006 as xs:QName := fn:QName($zerr:NS, "zerr:ZOSE0006");
 
 (:~
 :)

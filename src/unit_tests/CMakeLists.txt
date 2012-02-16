@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-                                  
 
 SET(UNIT_TEST_SRCS
   string_instantiate.cpp
@@ -30,10 +29,9 @@ IF (NOT ZORBA_NO_FULL_TEXT)
     tokenizer.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
-IF(ZORBA_WITH_DEBUGGER)
-  LIST(APPEND UNIT_TEST_SRCS
-#    test_debugger_protocol.cpp
-  )
-ENDIF(ZORBA_WITH_DEBUGGER)
+IF (NOT ZORBA_NO_UNICODE)
+  LIST (APPEND UNIT_TEST_SRCS
+    test_icu_streambuf.cpp)
+ENDIF (NOT ZORBA_NO_UNICODE)
 
 # vim:set et sw=2 tw=2:

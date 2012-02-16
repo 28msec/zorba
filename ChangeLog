@@ -34,6 +34,10 @@ version 2.2
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
+  * Added a transcoding streambuffer to the API which allows transcoding arbitrary encodings
+    from and to UTF-8
+  * file:read-text is able to handle arbitrary encodings (fixes bug #867159)
+  * http:send-request is able to handle arbitrary encodings
   * Fixed bug #917981 (disallow declaring same module twice).
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
