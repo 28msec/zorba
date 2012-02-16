@@ -18,19 +18,116 @@ xquery version "3.0";
 
 (:~
  : This module provides an XQuery API to full-text functions.
+ : <p/>
+ : The <code>ft:thesaurus-lookup</code> function has "levels"
+ : and "relationship" parameters.
+ : The values for these are implementation-defined.
+ : Zorba's default implementation uses the
+ : <a href="http://wordnet.princeton.edu/">WordNet lexical database</a>,
+ : version 3.0.
+ : <p/>
+ : In WordNet,
+ : the number of "levels" that two phrases are apart
+ : are how many hierarchical meanings apart they are.
+ : For example,
+ : "canary" is 5 levels away from "vertebrate"
+ : (carary &gt; finch &gt; oscine &gt; passerine &gt; bird &gt; vertebrate).
+ : <p/>
+ : When using the WordNet implementation,
+ : Zorba supports all of the relationships (and their abbreviations)
+ : specified by ISO 2788 and ANSI/NISO Z39.19-2005
+ : with the exceptions of "HN" (history note)
+ : and "X SN" (see scope note for).
+ : Additionally, Zorba also supports all WordNet relationships.
+ : <table>
+ :   <tr>
+ :     <th>Rel.</th>
+ :     <th>Meaning</th>
+ :     <th>WordNet Rel.</th>
+ :   </tr>
+ :   <tr>
+ :     <td>BT</td>
+ :     <td>broader term</td>
+ :     <td>hypernym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>BTG</td>
+ :     <td>broader term generic</td>
+ :     <td>hypernym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>BTI</td>
+ :     <td>broader term instance</td>
+ :     <td>instance hypernym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>BTP</td>
+ :     <td>broader term partitive</td>
+ :     <td>part meronym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>NT</td>
+ :     <td>narrower term</td>
+ :     <td>hyponym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>NTG</td>
+ :     <td>narrower term generic</td>
+ :     <td>hyponym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>NTI</td>
+ :     <td>narrower term instance</td>
+ :     <td>instance hyponym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>NTP</td>
+ :     <td>narrower term partitive</td>
+ :     <td>part holonym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>RT</td>
+ :     <td>related term</td>
+ :     <td>also see</td>
+ :   </tr>
+ :   <tr>
+ :     <td>SN</td>
+ :     <td>scope note</td>
+ :     <td>n/a</td>
+ :   </tr>
+ :   <tr>
+ :     <td>TT</td>
+ :     <td>top term</td>
+ :     <td>hypernym</td>
+ :   </tr>
+ :   <tr>
+ :     <td>UF</td>
+ :     <td>non-preferred term</td>
+ :     <td>n/a</td>
+ :   </tr>
+ :   <tr>
+ :     <td>USE</td>
+ :     <td>preferred term</td>
+ :     <td>n/a</td>
+ :   </tr>
+ : </table>
+ : Relationships are case-insensitive.
  :)
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
 import schema namespace ft-schema =
   "http://www.zorba-xquery.com/modules/full-text";
 
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
  : Gets the current language: either the langauge specified by the
- : <code>declare ft-option using language</code> statement or the host's
- : current language if none.
+ : <code>declare ft-option using language</code> statement or the one returned
+ : by <code>ft:host-lang()</code>.
  :
  : @return said language.
  :)
@@ -38,7 +135,30 @@ declare function ft:current-lang()
   as xs:language external;
 
 (:~
- : Gets the host's current language.
+ : Gets the host's current language.  The "host" is the computer on which Zorba
+ : is running.  The host's current language is obtained as follows:
+ :  <ul>
+ :    <li>
+ :      For *nix systems:
+ :      <ol>
+ :        <li>
+ :          If <code>setlocale</code>(3) returns non-null,
+ :          the language corresponding to that locale is used.
+ :        </li>
+ :        <li>
+ :          Else, if the <code>LANG</code> environment variable is set,
+ :          that language is ued.
+ :        </li>
+ :        <li>
+ :          Otherwise, there is no default language.
+ :        </li>
+ :      </ol>
+ :    </li>
+ :    <li>
+ :      For Windows systems, the language corresponding to the locale returned
+ :      by the <code>GetLocaleInfoA()</code> function is used.
+ :    </li>
+ :  </ul>
  :
  : @return said language.
  :)
@@ -59,8 +179,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : Checks whether the given word is a stop-word.
  :
  : @param $word The word to check.  The word's language is assumed to be the
- : one in the static context (if specified via <code>declare ft-option</code>)
- : or the host's current language (if not).
+ : one returned by <code>ft:current-lang()</code>.
  : @return <code>true</code> only if the <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string )
@@ -83,8 +202,7 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
  : Stems the given word.
  :
  : @param $word The word to stem.  The word's language is assumed to be the
- : one in the static context (if specified via <code>declare ft-option</code>)
- : or the host's current language (if not).
+ : one returned by <code>ft:current-lang()</code>.
  : @return the stem of <code>$word</code>.
  :)
 declare function ft:stem( $word as xs:string )
@@ -106,9 +224,14 @@ declare function ft:strip-diacritics( $string as xs:string )
  : Looks-up the given phrase in the default thesaurus.
  :
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be the one in the static context (if specified via <code>declare
- : ft-option</code>) or the host's current language (if not).
+ : be the one returned by <code>ft:current-lang()</code>.
  : @return the related phrases.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
+ : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
+ : by the currently running version of Zorba.
+ : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
+ : that of the CPU on which Zorba is currently running.
+ : @error zerr:ZXQP8403 if there was an error reading the thesaurus data.
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
   as xs:string+ external;
@@ -120,6 +243,16 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @param $phrase The phrase to look up.
  : @param $lang The language of <code>$phrase</code>.
  : @return the related phrases.
+ : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
+ : that is not found in the statically known thesauri.
+ : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
+ : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
+ : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
+ : by the currently running version of Zorba.
+ : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
+ : that of the CPU on which Zorba is currently running.
+ : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language )
@@ -130,9 +263,18 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be the one in the static context (if specified via <code>declare
- : ft-option</code>) or the host's current language (if not).
+ : be the one the one returned by <code>ft:current-lang()</code>.
  : @return the related phrases.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
+ : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
+ : that is not found in the statically known thesauri.
+ : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
+ : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
+ : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
+ : by the currently running version of Zorba.
+ : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
+ : that of the CPU on which Zorba is currently running.
+ : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
   as xs:string+
@@ -148,7 +290,17 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @param $lang The language of <code>$phrase</code>.
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
- : @return the related phrases.
+ : @return the original and related phrases.
+ : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
+ : that is not found in the statically known thesauri.
+ : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
+ : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
+ : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
+ : by the currently running version of Zorba.
+ : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
+ : that of the CPU on which Zorba is currently running.
+ : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language,
@@ -167,7 +319,19 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : travers$ed.
  : @param $level-most The maximum number of levels within the thesaurus to be
  : traversed.
- : @return the related phrases.
+ : @return the original and related phrases.
+ : @error err:FOCA0003 if either <code>$level-least</code> or
+ : <code>$level-most</code> is either negative or too large.
+ : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
+ : that is not found in the statically known thesauri.
+ : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
+ : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
+ : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
+ : by the currently running version of Zorba.
+ : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
+ : that of the CPU on which Zorba is currently running.
+ : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language,
@@ -190,8 +354,7 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : Tokenizes the given document.
  :
  : @param $doc The XML document to tokenize.  The document's default language
- : is assumed to be the one in the static context (if specified via
- : <code>declare ft-option</code>) or the host's current language (if not).
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize( $doc as node() )
