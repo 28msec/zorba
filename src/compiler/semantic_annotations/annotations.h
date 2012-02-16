@@ -30,27 +30,8 @@ class AnnotationValue : public SimpleRCObject
 {
 public:
   virtual ~AnnotationValue() {}
-
-  virtual bool equals(const AnnotationValue& other) { return this == &other; }
 };
 
-
-class IntAnnotationValue : public AnnotationValue 
-{
-public:
-  int theValue;
-  
-  IntAnnotationValue(int n) : theValue(n) {}
-};
-
-
-inline bool operator==(const AnnotationValue_t& v1, const AnnotationValue_t& v2) 
-{
-  if (v2 == NULL || v1 == NULL)
-    return v2 == NULL && v1 == NULL;
-
-  return v2->equals(*v1.getp());
-}
 
 }
 

@@ -70,32 +70,6 @@ void replace_var(expr*, const var_expr* oldVar, var_expr* newVar);
 /*******************************************************************************
 
 ********************************************************************************/
-typedef std::set<const var_expr *> var_ptr_set;
-
-
-class VarSetAnnVal : public AnnotationValue
-{
-public:
-  var_ptr_set theVarset;
-
-public:
-  VarSetAnnVal() {}
-
-  VarSetAnnVal(var_ptr_set& varset) 
-  {
-    theVarset.swap(varset);
-  }
-
-  void add(const var_expr* v) { theVarset.insert(theVarset.begin(), v); }
-};
-
-
-const var_ptr_set& get_varset_annotation(const expr* e);
-
-
-/*******************************************************************************
-
-********************************************************************************/
 inline bool is_data(expr* e)
 {
   return (e->get_expr_kind() == fo_expr_kind &&

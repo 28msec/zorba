@@ -124,20 +124,6 @@ int count_variable_uses(
 
 
 /*******************************************************************************
-
-********************************************************************************/
-const var_ptr_set& get_varset_annotation(const expr* e) 
-{
-  static var_ptr_set no_free_vars;
-
-  AnnotationValue_t ann = e->get_annotation(Annotations::FREE_VARS);
-  return (ann == NULL ?
-          no_free_vars :
-          dynamic_cast<VarSetAnnVal *>(ann.getp())->theVarset);
-}
-
-
-/*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
 expr_t fix_annotations(expr* new_expr, const expr* old_expr) 
@@ -155,25 +141,18 @@ expr_t fix_annotations(expr* new_expr, const expr* old_expr)
     }
   }
   
-  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
-  {
-    if (k == Annotations::FREE_VARS)
-    {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr);
-      const var_ptr_set& new_set = get_varset_annotation(new_expr);
+  const expr::FreeVars& old_set = old_expr->getFreeVars();
+  const expr::FreeVars& new_set = new_expr->getFreeVars();
 
-      var_ptr_set s;
-      std::set_union(old_set.begin(),
-                     old_set.end(),
-                     new_set.begin(),
-                     new_set.end(),
-                     inserter(s, s.begin()));
+  expr::FreeVars s;
+  std::set_union(old_set.begin(),
+                 old_set.end(),
+                 new_set.begin(),
+                 new_set.end(),
+                 inserter(s, s.begin()));
 
-      new_expr->put_annotation(static_cast<Annotations::Key>(k),
-                               AnnotationValue_t(new VarSetAnnVal(s)));
-    }
-  }
-  
+  new_expr->setFreeVars(s);
+
   return new_expr;
 }
 

@@ -40,12 +40,6 @@ public:
   AnnotationHolder() {}
 
   virtual ~AnnotationHolder() {}
-
-  void put_annotation(Annotations::Key key, AnnotationValue_t annot);
-
-  const AnnotationValue_t get_annotation(Annotations::Key key) const;
-
-  void remove_annotation(Annotations::Key key);
 };
 
 }

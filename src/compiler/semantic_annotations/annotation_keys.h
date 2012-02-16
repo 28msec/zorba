@@ -25,8 +25,6 @@ namespace Annotations
 
 typedef enum 
 {
-  FREE_VARS,
-
   MAX_ANNOTATION
 } Key;
 

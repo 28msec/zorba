@@ -96,7 +96,7 @@ PlanIter_t fn_zorba_eval::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -107,7 +107,7 @@ PlanIter_t fn_zorba_eval_n::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -119,7 +119,7 @@ PlanIter_t fn_zorba_eval_u::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -131,7 +131,7 @@ PlanIter_t fn_zorba_eval_s::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;

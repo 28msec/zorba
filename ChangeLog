@@ -10,6 +10,8 @@ version 2.2
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
+  * Optimization: change the implementation of the free-vars annotation and got rid
+    of the annotations map in expressions.
   * Fixed bug 909126 (bug in cloning of var_expr)
   * Fixed bug in destruction of exit_catcher_expr
   * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
@@ -31,6 +33,8 @@ version 2.2
     and CtxVarIterator.
   * Optimization: enhanced push-down of positional predicate into LetVarITerator
     and CtxVarIterator.
+  * Fixed bug #867266 (do not hoist updating expressions)
+  * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added API method Item::getNamespaceBindings().
