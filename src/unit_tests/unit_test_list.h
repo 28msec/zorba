@@ -39,6 +39,7 @@ namespace zorba {
 #ifndef ZORBA_NO_UNICODE
     int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_UNICODE */
+    int json_parser( int, char*[] );
 
     void initializeTestList();
   };

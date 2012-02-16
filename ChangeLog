@@ -45,6 +45,7 @@ version 2.2
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
   * Fixed bug with unversioned modules with C++ external functions
+  * Fixed bug #878508 (JSON Module not escaping escape characters)
 
 version 2.1
 
