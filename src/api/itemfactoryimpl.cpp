@@ -212,7 +212,11 @@ Item ItemFactoryImpl::createBase64Binary(std::istream& aEncodedStream)
   std::stringstream lSs;
   while (aEncodedStream.good()) 
   {
-    lSs.put(aEncodedStream.get());
+    char c = aEncodedStream.get();
+    if(aEncodedStream.good())
+    {
+      lSs.put(c);
+    }
   }
   std::string lContent = lSs.str();
   return createBase64Binary(lContent.c_str(), lContent.size());
