@@ -79,9 +79,15 @@ zorba::diagnostic::category ZorbaErrQName::category() const {
     case 'C': return ZORBA_SERIALIZATION;
     case 'D': return ZORBA_DDF;
     case 'G': return ZORBA_DEBUGGER;
+    case 'J': switch ( name[2] ) {
+                case 'P': return JSON_PARSER;
+                case 'S': return JSON_SERIALIZATION;
+                default : ZORBA_ASSERT( false );
+              }
     case 'O': return ZORBA_OS;
     case 'S': return ZORBA_STORE;
     case 'X': return ZORBA_XQP;
+
     default : ZORBA_ASSERT( false );
   }
 }

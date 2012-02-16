@@ -19,6 +19,8 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   unique_ptr.cpp
   unit_tests.cpp
+  test_uri.cpp
+  json_parser.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

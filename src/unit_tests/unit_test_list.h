@@ -34,6 +34,7 @@ namespace zorba {
     /**
      * ADD NEW UNIT TESTS HERE
      */
+    int json_parser( int, char*[] );
 
     void initializeTestList();
   };
