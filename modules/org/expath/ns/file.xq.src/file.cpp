@@ -28,6 +28,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
 #include <zorba/user_exception.h>
+#include <zorba/transcode_stream.h>
 
 #include "file_module.h"
 
@@ -188,6 +189,7 @@ ReadTextFunction::evaluate(
 {
   String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
+  String lEncoding("UTF-8");
 
   // preconditions
   if (!lFile->exists()) {
@@ -198,18 +200,30 @@ ReadTextFunction::evaluate(
   }
 
   if (aArgs.size() == 2) {
-    // since Zorba currently only supports UTF-8 we only call this function
-    // to reject any other encoding requested bu the user
-    getEncodingArg(aArgs, 1);
+    lEncoding = getEncodingArg(aArgs, 1);
   }
   
-  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
-  lFile->openInputStream(*lSeq->theStream, false, true);
+  zorba::Item lResult;
+  std::unique_ptr<std::ifstream> lInStream;
+  if ( transcode::is_necessary( lEncoding.c_str() ) )
+  {
+    try {
+      lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
+    } catch (std::invalid_argument const& e)
+    {
+      raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
+    }
+  }
+  else
+  {
+    lInStream.reset( new std::ifstream() );
+  }
+  lFile->openInputStream(*lInStream.get(), false, true);
+  lResult = theModule->getItemFactory()->createStreamableString(
+      *lInStream.release(), &FileModule::streamReleaser
+    );
+  return ItemSequence_t(new SingletonItemSequence(lResult));
 
-  lSeq->theItem = theModule->getItemFactory()->createStreamableString(
-      *lSeq->theStream, &StreamableItemSequence::streamReleaser);
-
-  return ItemSequence_t(lSeq.release());
 }
 
 //*****************************************************************************
@@ -722,3 +736,4 @@ AppendBinaryFunction::isBinary() const {
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::filemodule::FileModule();
 }
+/* vim:set et sw=2 ts=2: */

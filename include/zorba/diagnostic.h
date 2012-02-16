@@ -239,7 +239,10 @@ enum category {
   ZORBA_DEBUGGER,                       // Zorba Debugger
   ZORBA_OS,                             // Operating System
   ZORBA_SERIALIZATION,
-  ZORBA_STORE
+  ZORBA_STORE,
+
+  JSON_PARSER,
+  JSON_SERIALIZATION
 };
 
 /**
