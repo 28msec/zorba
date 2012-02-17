@@ -333,10 +333,10 @@ associated the collection, and finally destroys the document container itself.
 \subsection collection_declaration Collection Declaration
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  CollectionDecl ::= 'declare'  Annotation* 'collection' QName CollectionTypeDecl?
+  AnnotatedDecl
+          ::= 'declare' ( CompatibilityAnnotation | Annotation )*
+              ( VarDecl | FunctionDecl | CollectionDecl | IndexDecl | ICDecl )
+  CollectionDecl ::= 'collection' QName CollectionTypeDecl?
 
   CollectionTypeDecl ::= 'as' KindTest OccurrenceIndicator?
 \endcode
@@ -1355,10 +1355,7 @@ receive an error.
 
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  IndexDecl ::= 'declare' Annotation* 'index' IndexName
+  IndexDecl ::= 'index' IndexName
                'on' 'nodes' IndexDomainExpr
                'by' IndexKeySpec (',' IndexKeySpec)*
 
@@ -2103,7 +2100,7 @@ function populates an empty index container).</li>
 \section integrity_constraints Integrity Constraints in Zorba 
 
 \code
-  ICDecl                ::=  'declare' 'integrity' 'constraint' QName (ICCollection | ICForeignKey)
+  ICDecl                ::=  'integrity' 'constraint' QName (ICCollection | ICForeignKey)
 
   ICCollection          ::=  'on' 'collection' QName
        ( ICCollSequence | ICCollSequenceUnique | ICCollNode )
