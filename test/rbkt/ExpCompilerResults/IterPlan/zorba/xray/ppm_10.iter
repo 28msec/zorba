@@ -2302,13 +2302,12 @@ Iterator tree for vector:sum-internal:
         <ForVarIterator varname="remaining"/>
         <ForVarIterator varname="stride"/>
       </TypedValueCompareIterator_INTEGER>
-      <SubsequenceIntIterator>
-        <LetVarIterator varname="v"/>
+      <LetVarIterator varname="v">
         <SpecificNumArithIterator_AddOperation_INTEGER>
           <ForVarIterator varname="offset"/>
           <SingletonIterator value="xs:integer(1)"/>
         </SpecificNumArithIterator_AddOperation_INTEGER>
-      </SubsequenceIntIterator>
+      </LetVarIterator>
       <flwor::FLWORIterator>
         <ForVariable name="x">
           <UDFunctionCallIterator>

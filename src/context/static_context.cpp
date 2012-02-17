@@ -280,6 +280,11 @@ const char*
 static_context::ZORBA_BASE64_FN_NS = 
 "http://www.zorba-xquery.com/modules/converters/base64";
 
+
+const char*
+static_context::ZORBA_JSON_FN_NS =
+"http://www.zorba-xquery.com/modules/converters/json";
+
 const char*
 static_context::ZORBA_NODEREF_FN_NS = 
 "http://www.zorba-xquery.com/modules/node-reference";
@@ -436,6 +441,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
@@ -482,6 +488,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS);
   }
 

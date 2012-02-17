@@ -51,6 +51,11 @@
        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
       <value>$1</value>
+
+      <entry key="FormatNumber_2">
+        <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -1576,6 +1581,10 @@
       <value>"$1": feature not enabled</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0006" name="UNKNOWN_ENCODING">
+      <value>"$1": unknown character encoding</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0007" name="FUNCTION_SIGNATURE_NOT_EQUAL">
       <value>"$1": function signature does not match declaration</value>
     </diagnostic>
@@ -2188,6 +2197,10 @@
       <value>"$1": error loading dynamic library${: 2}</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0006" name="TRANSCODING_ERROR">
+      <value>stream transcoding error ($1)</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2305,6 +2318,63 @@
     </diagnostic>
     <diagnostic code="XSST0010">
       <value>"continue loop" statement not inside while statement</value>
+    </diagnostic>
+
+   <!--////////// JSON Parse Errors ////////////////////////////////////////-->
+
+    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
+      <value>'$1': illegal JSON character</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+      <value>"$1": illegal Unicode code-point</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+      <value>'\\$1': illegal JSON character escape</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+      <value>illegal JSON literal</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+      <value>illegal JSON number</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+      <value>"$1": unexpected JSON token</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+      <value>unterminated JSON string</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
+      <value>"$1": illegal QName</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
+      <value>illegal empty string</value>
+    </diagnostic>
+
+   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+
+    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
+      <value>JSON serialization requires document or element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
+      <value>"$1" element missing required "$2" attribute</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
+      <value>"$1": illegal value for attribute "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
+      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
+      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
+      <value>JSON type "$1" can not have a child element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
+      <value>JSON type "$1" can not have a child text node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+      <value>"$1": illegal value for JSON type "$2"</value>
     </diagnostic>
 
   </namespace>
@@ -3262,6 +3332,14 @@
 
     <entry key="Zorba warning">
       <value>Zorba warning</value>
+    </entry>
+
+    <entry key="JSON parser error">
+      <value>JSON parser error</value>
+    </entry>
+
+    <entry key="JSON serialization error">
+      <value>JSON serialization error</value>
     </entry>
 
     <entry key="dynamic error">

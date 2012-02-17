@@ -15,6 +15,7 @@
  */
  #include "stdafx.h"
 
+#include "diagnostics/util_macros.h"
 
 #include "runtime/function_item/dynamic_fncall_iterator.h"
 #include "runtime/function_item/function_item.h"
@@ -26,6 +27,10 @@
 #include "context/static_context.h"
 
 #include "store/api/item_factory.h"
+
+#include "types/root_typemanager.h"
+
+#include "system/globalenv.h"
 
 
 namespace zorba 
@@ -156,12 +161,27 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(funcItem, theChildren[0], planState) ||
-      !funcItem->isFunction() ||
-      consumeNext(item, theChildren[0], planState)) 
+  if (!consumeNext(funcItem, theChildren[0], planState))
   {
-    // TODO: needs type in error message
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(EmptySeqNoPromoteTo),
+                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+  }
+
+  if (consumeNext(item, theChildren[0], planState))
+  {
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqTypePromotion)));
+  }
+
+  if (!funcItem->isFunction())
+  {
+    const TypeManager* tm = theSctx->get_typemanager();
+    xqtref_t type = tm->create_value_type(funcItem);
+
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(NoTypePromotion_23),
+                 type->toSchemaString(),
+                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
   fnItem = static_cast<FunctionItem*>(funcItem.getp());
