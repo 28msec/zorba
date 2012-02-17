@@ -336,7 +336,7 @@ associated the collection, and finally destroys the document container itself.
   AnnotatedDecl
           ::= 'declare' ( CompatibilityAnnotation | Annotation )*
               ( VarDecl | FunctionDecl | CollectionDecl | IndexDecl | ICDecl )
-  CollectionDecl ::= 'collection' QName CollectionTypeDecl?
+  CollectionDecl ::= 'collection' EQName CollectionTypeDecl?
 
   CollectionTypeDecl ::= 'as' KindTest OccurrenceIndicator?
 \endcode
@@ -1359,7 +1359,7 @@ receive an error.
                'on' 'nodes' IndexDomainExpr
                'by' IndexKeySpec (',' IndexKeySpec)*
 
-  IndexName ::= QName
+  IndexName ::= EQName
 
   IndexDomainExpr ::= PathExpr
 
@@ -1369,7 +1369,7 @@ receive an error.
 
   IndexKeyTypeDecl ::= 'as' AtomicType OccurrenceIndicator?
 
-  AtomicType ::= QName
+  AtomicType ::= EQName
 
   IndexKeyCollation ::= 'collation' URILiteral
 
@@ -2100,16 +2100,16 @@ function populates an empty index container).</li>
 \section integrity_constraints Integrity Constraints in Zorba 
 
 \code
-  ICDecl                ::=  'integrity' 'constraint' QName (ICCollection | ICForeignKey)
+  ICDecl                ::=  'integrity' 'constraint' EQName (ICCollection | ICForeignKey)
 
-  ICCollection          ::=  'on' 'collection' QName
+  ICCollection          ::=  'on' 'collection' EQName
        ( ICCollSequence | ICCollSequenceUnique | ICCollNode )
 
-  ICCollSequence        ::=  '\$' QName 'check' ExprSingle
+  ICCollSequence        ::=  '\$' EQName 'check' ExprSingle
 
-  ICCollSequenceUnique  ::=  'node' '\$' QName 'check' 'unique' 'key' PathExpr
+  ICCollSequenceUnique  ::=  'node' '\$' EQName 'check' 'unique' 'key' PathExpr
 
-  ICCollNode            ::=  'foreach' 'node' '\$' QName 'check' ExprSingle
+  ICCollNode            ::=  'foreach' 'node' '\$' EQName 'check' ExprSingle
 
   ICForeignKey          ::=  'foreign' 'key' ICForeignKeySource ICForeignKeyTarget
 
@@ -2117,7 +2117,7 @@ function populates an empty index container).</li>
 
   ICForeignKeyTarget    ::=  'to' ICForeignKeyValues
 
-  ICForeignKeyValues    ::=  'collection' QName 'node' '\$' QName 'key' PathExpr
+  ICForeignKeyValues    ::=  'collection' EQName 'node' '\$' QName 'key' PathExpr
 \endcode
 
 
