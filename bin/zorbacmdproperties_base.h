@@ -34,7 +34,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", "--compile", "--execute", NULL };
     return result;
   }
   bool theTiming;
@@ -74,6 +74,8 @@ protected:
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
+  bool theCompile;
+  bool theExecute;
 
   void initialize () {
     theTiming = false;
@@ -97,6 +99,8 @@ protected:
     theNoLogo = false;
     theTimeout = -1;
     theTrailingNl = false;
+    theCompile = false;
+    theExecute = false;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -136,6 +140,8 @@ public:
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
+  const bool &compile () const { return theCompile; }
+  const bool &execute () const { return theExecute; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -299,6 +305,12 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }        init_val (*argv, theThesaurus, d);
       }
+      else if (strcmp (*argv, "--compile") == 0 || strncmp (*argv, "-c", 2) == 0) {
+        theCompile = true;
+      }
+      else if (strcmp (*argv, "--execute") == 0 || strncmp (*argv, "-e", 2) == 0) {
+        theExecute = true;
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -352,6 +364,8 @@ public:
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
 "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
+"--compile, -c\nCompile query plan.\n\n"
+"--execute, -e\nExecute query plan.\n\n"
 ;
   }
 

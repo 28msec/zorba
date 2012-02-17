@@ -149,7 +149,7 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theStopWordsMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->registerURIMapper(&theStopWordsMapper);
+    //aStaticContext->registerURIMapper(&theStopWordsMapper);
   }
   {
     ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
@@ -157,7 +157,7 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->registerURIMapper(&theThesaurusMapper);
+    //aStaticContext->registerURIMapper(&theThesaurusMapper);
   }
 #endif
   return true;
@@ -503,7 +503,9 @@ compileAndExecute(
   unsigned long lNumExecutions = properties.multiple();
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
-
+  bool compilePlan = properties.compile();
+  bool executePlan = properties.execute();
+  std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
   // default is O1 in the Zorba_CompilerHints constructor
@@ -568,7 +570,11 @@ compileAndExecute(
         query->registerDiagnosticHandler(&diagnosticHandler);
         query->setFileName(qfilepath);
 
-        query->compile(qfile, staticContext, lHints);
+        if(executePlan) {
+          query->loadExecutionPlan(qfile);
+        } else {
+          query->compile(qfile, staticContext, lHints);
+        }
 
         if (doTiming)
         {
@@ -631,7 +637,11 @@ compileAndExecute(
         }
         else
         {
-          query->execute(outputStream, &lSerOptions);
+          if (compilePlan) {
+            query->saveExecutionPlan(outputStream, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+          } else {
+            query->execute(outputStream, &lSerOptions);
+          }
           if (properties.trailingNl()) {
             outputStream << std::endl;
           }
