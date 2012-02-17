@@ -21,6 +21,7 @@
 
 #include "util/uuid/sysdep.h"
 #include "util/uuid/uuid.h"
+#include "util/fs_util.h"
 
 namespace zorba {
 
@@ -93,6 +94,16 @@ typedef struct {
 
 static uuid_state st;
 
+zstring get_tmp_state_name()
+{
+  zstring lTmpFileName;
+#ifdef ZORBA_WITH_FILE_ACCESS
+  fs::get_temp_file<zstring>(&lTmpFileName);
+  lTmpFileName = lTmpFileName.substr(0, lTmpFileName.find_last_of(fs::dir_separator) + 1);
+#endif
+  return lTmpFileName += "state";
+}
+
 //read_state -- read UUID generator state from non-volatile store
 int read_state(xs_short *clockseq, xs_unsignedLong *timestamp,
                uuid_node_t *node)
@@ -103,11 +114,11 @@ int read_state(xs_short *clockseq, xs_unsignedLong *timestamp,
   //only need to read state once per boot
   if (!inited) {
 #ifdef WIN32
-    errno_t err = fopen_s( &fp, "state", "rb");
+    errno_t err = fopen_s( &fp, get_tmp_state_name().c_str(), "rb");
     if ( err != 0)
       return 0;
 #else
-    fp = fopen("state", "rb");
+    fp = fopen(get_tmp_state_name().c_str(), "rb");
     if (fp == NULL)
       return 0;
 #endif
@@ -143,11 +154,11 @@ void write_state(xs_short clockseq, xs_unsignedLong timestamp,
   st.node = node;
   if (timestamp >= next_save) {
 #ifdef WIN32
-    errno_t err = fopen_s( &fp, "state", "wb");
+    errno_t err = fopen_s( &fp, get_tmp_state_name().c_str(), "wb");
     if ( err != 0)
       return ;
 #else
-    fp = fopen("state", "wb");
+    fp = fopen(get_tmp_state_name().c_str(), "wb");
     if (fp == NULL)
       return ;
 #endif
