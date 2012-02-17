@@ -1374,7 +1374,7 @@ receive an error.
 
   AtomicType ::= QName
 
-  IndexKeyCollation ::= 'collation' UriLiteral
+  IndexKeyCollation ::= 'collation' URILiteral
 
   Note: the following annotations are accepted within the context of an index declaration:
 
