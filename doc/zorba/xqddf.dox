@@ -338,7 +338,7 @@ associated the collection, and finally destroys the document container itself.
   
   CollectionDecl ::= 'declare'  Annotation* 'collection' QName CollectionTypeDecl?
 
-  CollectionTypeDeclaration ::= 'as' KindTest OccurrenceIndicator?
+  CollectionTypeDecl ::= 'as' KindTest OccurrenceIndicator?
 \endcode
 
 Collections are defined by <strong>collection declaration statements</strong>,
