@@ -18,101 +18,101 @@
 
   void SerializationOptions::setSerializationMethod ( SerializationMethod aSerializationMethod ) {
     switch (aSerializationMethod) {
-      case SerializationMethod::ZORBA_SERIALIZATION_METHOD_HTML:
-        lOptions.ser_method = Zorba_serialization_method_t::ZORBA_SERIALIZATION_METHOD_HTML;
+      case ZORBA_API_SERIALIZATION_METHOD_HTML:
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
         break;
-      case SerializationMethod::ZORBA_SERIALIZATION_METHOD_XHTML:
-        lOptions.ser_method = Zorba_serialization_method_t::ZORBA_SERIALIZATION_METHOD_XHTML;
+      case ZORBA_API_SERIALIZATION_METHOD_XHTML:
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
         break;
-      case SerializationMethod::ZORBA_SERIALIZATION_METHOD_TEXT:
-        lOptions.ser_method = Zorba_serialization_method_t::ZORBA_SERIALIZATION_METHOD_TEXT;
+      case ZORBA_API_SERIALIZATION_METHOD_TEXT:
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
         break;
-      case SerializationMethod::ZORBA_SERIALIZATION_METHOD_BINARY:
-        lOptions.ser_method = Zorba_serialization_method_t::ZORBA_SERIALIZATION_METHOD_BINARY;
+      case ZORBA_API_SERIALIZATION_METHOD_BINARY:
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
         break;
-      case SerializationMethod::ZORBA_SERIALIZATION_METHOD_XML:
+      case ZORBA_API_SERIALIZATION_METHOD_XML:
       default:
-        lOptions.ser_method = Zorba_serialization_method_t::ZORBA_SERIALIZATION_METHOD_XML;
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
         break;
     }
   }
   void SerializationOptions::setByteOrderMark ( ByteOrderMark aByteOrderMark ) {
-    if (aByteOrderMark == ByteOrderMark::ZORBA_BYTE_ORDER_MARK_YES) {
-      lOptions.byte_order_mark = Zorba_byte_order_mark_t::ZORBA_BYTE_ORDER_MARK_YES;
+    if (aByteOrderMark == ZORBA_API_BYTE_ORDER_MARK_YES) {
+      lOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
     } else {
-      lOptions.byte_order_mark = Zorba_byte_order_mark_t::ZORBA_BYTE_ORDER_MARK_NO;
+      lOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
     }
   }
   void SerializationOptions::setEscapeUriAttributes ( EscapeUriAttributes aEscapeUriAttributes ) {
-    if (aEscapeUriAttributes == EscapeUriAttributes::ZORBA_ESCAPE_URI_ATTRIBUTES_YES) {
-      lOptions.escape_uri_attributes = Zorba_escape_uri_attributes_t::ZORBA_ESCAPE_URI_ATTRIBUTES_YES;
+    if (aEscapeUriAttributes == ZORBA_API_ESCAPE_URI_ATTRIBUTES_YES) {
+      lOptions.escape_uri_attributes = ZORBA_ESCAPE_URI_ATTRIBUTES_YES;
     } else {
-      lOptions.escape_uri_attributes = Zorba_escape_uri_attributes_t::ZORBA_ESCAPE_URI_ATTRIBUTES_NO;
+      lOptions.escape_uri_attributes = ZORBA_ESCAPE_URI_ATTRIBUTES_NO;
     }
   }
   void SerializationOptions::setIncludeContentType ( IncludeContentType aIncludeContentType ) {
-    if (aIncludeContentType == IncludeContentType::ZORBA_INCLUDE_CONTENT_TYPE_YES) {
-      lOptions.include_content_type = Zorba_include_content_type_t::ZORBA_INCLUDE_CONTENT_TYPE_YES;
+    if (aIncludeContentType == ZORBA_API_INCLUDE_CONTENT_TYPE_YES) {
+      lOptions.include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_YES;
     } else {
-      lOptions.include_content_type = Zorba_include_content_type_t::ZORBA_INCLUDE_CONTENT_TYPE_NO;
+      lOptions.include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_NO;
     }
   }
   void SerializationOptions::setIndent ( Indent aIndent ) {
-    if (aIndent == Indent::ZORBA_INDENT_YES) {
-      lOptions.indent = Zorba_indent_t::ZORBA_INDENT_YES;
+    if (aIndent == ZORBA_API_INDENT_YES) {
+      lOptions.indent = ZORBA_INDENT_YES;
     } else {
-      lOptions.indent = Zorba_indent_t::ZORBA_INDENT_NO;
+      lOptions.indent = ZORBA_INDENT_NO;
     }
   }
   void SerializationOptions::setNormalizationForm ( NormalizationForm aNormalizationForm ) {
     switch (aNormalizationForm) {
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_NFC:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_NFC;
+      case ZORBA_API_NORMALIZATION_FORM_NFC:
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_NFC;
         break;
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_NFD:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_NFD;
+      case ZORBA_API_NORMALIZATION_FORM_NFD:
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_NFD;
         break;
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_NFKC:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_NFKC;
+      case ZORBA_API_NORMALIZATION_FORM_NFKC:
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_NFKC;
         break;
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_NFKD:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_NFKD;
+      case ZORBA_API_NORMALIZATION_FORM_NFKD:
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_NFKD;
         break;
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_FULLY_normalized:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_FULLY_normalized;
+      case ZORBA_API_NORMALIZATION_FORM_FULLY_normalized:
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_FULLY_normalized;
         break;
-      case NormalizationForm::ZORBA_NORMALIZATION_FORM_NONE:
+      case ZORBA_API_NORMALIZATION_FORM_NONE:
       default:
-        lOptions.normalization_form = Zorba_normalization_form_t::ZORBA_NORMALIZATION_FORM_NONE;
+        lOptions.normalization_form = ZORBA_NORMALIZATION_FORM_NONE;
         break;
     }
   }
   void SerializationOptions::setOmitXMLDeclaration ( OmitXMLDeclaration aOmitXMLDeclaration ) {
-    if (aOmitXMLDeclaration == OmitXMLDeclaration::ZORBA_OMIT_XML_DECLARATION_YES) {
-      lOptions.omit_xml_declaration = Zorba_omit_xml_declaration_t::ZORBA_OMIT_XML_DECLARATION_YES;
+    if (aOmitXMLDeclaration == ZORBA_API_OMIT_XML_DECLARATION_YES) {
+      lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     } else {
-      lOptions.omit_xml_declaration = Zorba_omit_xml_declaration_t::ZORBA_OMIT_XML_DECLARATION_NO;
+      lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
     }
   }
   void SerializationOptions::setStandalone ( Standalone aStandalone ) {
     switch (aStandalone) {
-      case Standalone::ZORBA_STANDALONE_YES:
-        lOptions.standalone = Zorba_standalone_t::ZORBA_STANDALONE_YES;
+      case ZORBA_API_STANDALONE_YES:
+        lOptions.standalone = ZORBA_STANDALONE_YES;
         break;
-      case Standalone::ZORBA_STANDALONE_NO:
-        lOptions.standalone = Zorba_standalone_t::ZORBA_STANDALONE_NO;
+      case ZORBA_API_STANDALONE_NO:
+        lOptions.standalone = ZORBA_STANDALONE_NO;
         break;
-      case Standalone::ZORBA_STANDALONE_OMIT:
+      case ZORBA_API_STANDALONE_OMIT:
       default:
-        lOptions.standalone = Zorba_standalone_t::ZORBA_STANDALONE_OMIT;
+        lOptions.standalone = ZORBA_STANDALONE_OMIT;
         break;
     }
   }
   void SerializationOptions::setUndeclarePrefixes ( UndeclarePrefixes aUndeclarePrefixes ) {
-    if (aUndeclarePrefixes == UndeclarePrefixes::ZORBA_UNDECLARE_PREFIXES_YES) {
-      lOptions.undeclare_prefixes = Zorba_undeclare_prefixes_t::ZORBA_UNDECLARE_PREFIXES_YES;
+    if (aUndeclarePrefixes == ZORBA_API_UNDECLARE_PREFIXES_YES) {
+      lOptions.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES;
     } else {
-      lOptions.undeclare_prefixes = Zorba_undeclare_prefixes_t::ZORBA_UNDECLARE_PREFIXES_NO;
+      lOptions.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
     }
   }
 

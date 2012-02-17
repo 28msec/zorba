@@ -36,7 +36,7 @@ public:
   static Item createEmptyItem();
   std::string getStringValue() const;
   std::string serialize() const;
-  std::string Item::serialize(SerializationOptions serOptions) const;
+  std::string serialize(SerializationOptions serOptions) const;
   Iterator getAtomizationValue () const;
   Iterator getAttributes () const;
   bool getBooleanValue () const;
