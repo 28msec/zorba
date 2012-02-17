@@ -36,31 +36,14 @@ TreeId* ZorbaTreeId::copy()
   return new ZorbaTreeId(theId);
 }
 
-TreeId_t ZorbaTreeIdGenerator::create(
-    zorba::store::Item_t aCollectionName) {
-  if (aCollectionName == NULL)
-  {
-    TreeId_t lStoreRes(new ZorbaTreeId(theNextStoreWideId));
-    ++theNextStoreWideId;
-    return lStoreRes;
-  }
-  
-  zorba::ItemHandleHashMap<ulong>::iterator lIt =
-      theNextIds.find(aCollectionName);
-  if (lIt == theNextIds.end())
-  {
-    ulong lStartingId = 0;
-    theNextIds.insert(aCollectionName, lStartingId);
-    lIt = theNextIds.find(aCollectionName);
-    assert(lIt != theNextIds.end());
-  }
-  TreeId_t lRes (new ZorbaTreeId(lIt.getValue()));
-  lIt.setValue(lIt.getValue() + 1);
-  return lRes;
+TreeId_t ZorbaTreeIdGenerator::create() {
+  TreeId_t lStoreRes(new ZorbaTreeId(theNextId));
+  ++theNextId;
+  return lStoreRes;
 }
 
 bool ZorbaTreeIdGenerator::equals(const TreeId_t& anId,
-                                  const TreeId_t& anotherId)
+                                  const TreeId_t& anotherId) const
 {
   const ZorbaTreeId* lId1 = dynamic_cast<ZorbaTreeId*>(anId.get());
   const ZorbaTreeId* lId2 = dynamic_cast<ZorbaTreeId*>(anotherId.get());
@@ -68,20 +51,31 @@ bool ZorbaTreeIdGenerator::equals(const TreeId_t& anId,
 }
 
 bool ZorbaTreeIdGenerator::isBefore(const TreeId_t& anId,
-                                    const TreeId_t& anotherId)
+                                    const TreeId_t& anotherId) const
 {
   const ZorbaTreeId* lId1 = dynamic_cast<ZorbaTreeId*>(anId.get());
   const ZorbaTreeId* lId2 = dynamic_cast<ZorbaTreeId*>(anotherId.get());
   return lId1->theId < lId2->theId;
 }
 
-TreeId_t ZorbaTreeIdGenerator::fromString(const zstring& s)
+TreeId_t ZorbaTreeIdGenerator::fromString(const zstring& s) const
 {
   std::istringstream iss(s.str());
   ulong lId;
   iss >> std::dec >> lId;
   TreeId_t lRes(new ZorbaTreeId(lId));
   return lRes;
+}
+
+TreeIdGenerator* ZorbaTreeIdGeneratorFactory::createTreeGenerator()
+{
+  return new ZorbaTreeIdGenerator();
+}
+
+TreeIdGenerator& ZorbaTreeIdGeneratorFactory::getDefaultTreeIdGenerator()
+{
+  static ZorbaTreeIdGenerator lSingleton;
+  return lSingleton;
 }
 
 }

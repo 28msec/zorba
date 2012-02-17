@@ -103,7 +103,7 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
   thePULFactory(NULL),
-  theTreeIdGenerator(NULL),
+  theTreeIdGeneratorFactory(NULL),
   theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(0),
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -172,7 +172,7 @@ void SimpleStore::init()
 
     thePULFactory = createPULPrimitiveFactory();
     
-    theTreeIdGenerator = createTreeIdGenerator();
+    theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -404,10 +404,10 @@ SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
 /*******************************************************************************
 
 *******************************************************************************/
-TreeIdGenerator*
-SimpleStore::createTreeIdGenerator() const
+TreeIdGeneratorFactory*
+SimpleStore::createTreeIdGeneratorFactory() const
 {
-  return new ZorbaTreeIdGenerator();
+  return new ZorbaTreeIdGeneratorFactory();
 }
 
 
@@ -415,7 +415,7 @@ SimpleStore::createTreeIdGenerator() const
 
 *******************************************************************************/
 void
-SimpleStore::destroyTreeIdGenerator(TreeIdGenerator* g) const
+SimpleStore::destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const
 {
   delete g;
 }
@@ -499,7 +499,7 @@ ulong SimpleStore::createCollectionId()
 TreeId_t SimpleStore::createTreeId()
 {
   SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
-  return getTreeIdGenerator().create(NULL);
+  return getTreeIdGeneratorFactory().getDefaultTreeIdGenerator().create();
 }
 
 

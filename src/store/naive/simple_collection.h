@@ -69,7 +69,7 @@ protected:
   checked_vector<store::Item_t>   theXmlTrees;
   bool                            theIsDynamic;
 
-  ulong                           theTreeCounter;
+  TreeIdGenerator*                theTreeIdGenerator;
 
   const std::vector<store::Annotation_t> theAnnotations;
   store::Item_t                   theNodeType;

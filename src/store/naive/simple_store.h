@@ -49,7 +49,7 @@ namespace store
   class ValueIndexSpecification;
 }
 
-class TreeIdGenerator;
+class TreeIdGeneratorFactory;
 
 namespace simplestore
 {
@@ -129,9 +129,10 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   -----------------------
   A hashmap that maps nodes into their references
   
-  theTreeIdGenerator:
-  ===================
-  An ID generator.
+  theTreeIdGeneratorFactory:
+  --------------------------
+  An factory of ID generators (each collection can have its own in
+  addition to the default one).
 
 ********************************************************************************/
 class SimpleStore : public store::Store
@@ -180,7 +181,7 @@ protected:
   store::IteratorFactory      * theIteratorFactory;
   NodeFactory                 * theNodeFactory;
   PULPrimitiveFactory         * thePULFactory;
-  TreeIdGenerator             * theTreeIdGenerator;
+  TreeIdGeneratorFactory      * theTreeIdGeneratorFactory;
   
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
@@ -211,7 +212,8 @@ public:
 
   PULPrimitiveFactory& getPULFactory() const { return *thePULFactory; }
 
-  TreeIdGenerator& getTreeIdGenerator() const { return *theTreeIdGenerator; }
+  TreeIdGeneratorFactory& getTreeIdGeneratorFactory() const
+      { return *theTreeIdGeneratorFactory; }
 
   StringPool& getNamespacePool() const { return *theNamespacePool; }
 
@@ -425,9 +427,9 @@ protected:
 
   virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
   
-  virtual TreeIdGenerator* createTreeIdGenerator() const;
+  virtual TreeIdGeneratorFactory* createTreeIdGeneratorFactory() const;
 
-  virtual void destroyTreeIdGenerator(TreeIdGenerator*) const;
+  virtual void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory*) const;
 
   virtual CollectionSet* createCollectionSet() const;
 

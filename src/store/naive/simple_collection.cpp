@@ -41,11 +41,11 @@ SimpleCollection::SimpleCollection(
   : 
   theName(aName),
   theIsDynamic(aDynamicCollection),
-  theTreeCounter(1),
   theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
 
 /*******************************************************************************
@@ -54,9 +54,9 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theTreeCounter(1),
   theNodeType(NULL)
 {
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
 
 /*******************************************************************************
@@ -379,7 +379,7 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   std::size_t lPosition = to_xs_unsignedInt(position);
 
   if (lPosition < theXmlTrees.size() &&
-      GET_STORE().getTreeIdGenerator().equals(
+      GET_DEFAULT_TREE_ID_GENERATOR().equals(
           BASE_NODE(theXmlTrees[lPosition])->getTreeId(),
           n->getTreeId()))
   {
@@ -498,7 +498,7 @@ void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
 ********************************************************************************/
 TreeId_t SimpleCollection::createTreeId()
 {
-  return GET_STORE().getTreeIdGenerator().create(theName);
+  return theTreeIdGenerator->create();
 }
 
 /*******************************************************************************
