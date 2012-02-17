@@ -120,7 +120,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId_t& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
@@ -128,7 +128,7 @@ bool BasicItemFactory::createStructuralAnyURI(
   std::ostringstream stream;
   stream   << "zorba:"
            << collectionId << "."
-           << treeId << "."
+           << treeId->toString() << "."
            << static_cast<int>(nodeKind) << "."
            << ordPath.serialize();
   zstring uri = stream.str();

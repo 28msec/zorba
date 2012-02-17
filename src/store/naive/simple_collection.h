@@ -20,6 +20,7 @@
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
+#include "tree_id.h"
 
 #include "zorbautils/latch.h"
 #include "zorbautils/checked_vector.h"
@@ -100,7 +101,7 @@ public:
   void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
 
   // virtual to allow extension by subclasses
-  virtual ulong createTreeId() { return theTreeCounter++; }
+  virtual TreeId_t createTreeId();
 
   store::Iterator_t getIterator();
 

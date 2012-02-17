@@ -29,6 +29,8 @@
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+#include "tree_id.h"
+#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -177,7 +179,7 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong                     theId;
+  TreeId_t                  theId;
   ulong                     thePos;
 
   SimpleCollection        * theCollection;
@@ -200,7 +202,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, TreeId_t id);
 
 public:
   XmlTree();
@@ -215,9 +217,9 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(ulong id) { theId = id; }
+  void setId(TreeId_t id) { theId = id; }
 
-  ulong getId() const { return theId; }
+  const TreeId_t& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
@@ -512,7 +514,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  ulong getTreeId() const { return getTree()->getId(); }
+  const TreeId_t& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -1618,13 +1620,13 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      const TreeId_t& tree1 = this->getTreeId();
+      const TreeId_t& tree2 = other->getTreeId();
 
-      if (tree1 < tree2)
+      if (GET_STORE().getTreeIdGenerator().isBefore(tree1, tree2))
         return -1;
 
-      if (tree1 == tree2)
+      if (GET_STORE().getTreeIdGenerator().equals(tree1, tree2))
         return compareInSameTree(this, other);
     }
     else

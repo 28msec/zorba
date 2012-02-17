@@ -19,6 +19,7 @@
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/hashmap_nodep.h"
+#include "tree_id.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -47,6 +48,8 @@ namespace store
   class IteratorFactory;
   class ValueIndexSpecification;
 }
+
+class TreeIdGenerator;
 
 namespace simplestore
 {
@@ -125,6 +128,10 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theNodeToReferencesMap:
   -----------------------
   A hashmap that maps nodes into their references
+  
+  theTreeIdGenerator:
+  ===================
+  An ID generator.
 
 ********************************************************************************/
 class SimpleStore : public store::Store
@@ -173,7 +180,8 @@ protected:
   store::IteratorFactory      * theIteratorFactory;
   NodeFactory                 * theNodeFactory;
   PULPrimitiveFactory         * thePULFactory;
-
+  TreeIdGenerator             * theTreeIdGenerator;
+  
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
   IndexSet                      theIndices;
@@ -203,6 +211,8 @@ public:
 
   PULPrimitiveFactory& getPULFactory() const { return *thePULFactory; }
 
+  TreeIdGenerator& getTreeIdGenerator() const { return *theTreeIdGenerator; }
+
   StringPool& getNamespacePool() const { return *theNamespacePool; }
 
   QNamePool& getQNamePool() const { return *theQNamePool; }
@@ -217,7 +227,7 @@ public:
 
   ulong createCollectionId();
 
-  ulong createTreeId();
+  TreeId_t createTreeId();
 
   store::Collection_t createCollection(
       const store::Item_t& aName,
@@ -414,6 +424,10 @@ protected:
   virtual PULPrimitiveFactory* createPULPrimitiveFactory() const;
 
   virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
+  
+  virtual TreeIdGenerator* createTreeIdGenerator() const;
+
+  virtual void destroyTreeIdGenerator(TreeIdGenerator*) const;
 
   virtual CollectionSet* createCollectionSet() const;
 

@@ -47,6 +47,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     inmemorystore.cpp
     inmemorystorec.cpp
     dataguide.cpp
+    tree_id.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

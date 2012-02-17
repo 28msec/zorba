@@ -56,6 +56,7 @@
 #include "name_iterator.h"
 #include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
+#include "tree_id.h"
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
@@ -102,6 +103,7 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
   thePULFactory(NULL),
+  theTreeIdGenerator(NULL),
   theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(0),
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -169,6 +171,8 @@ void SimpleStore::init()
     theNodeFactory = createNodeFactory();
 
     thePULFactory = createPULPrimitiveFactory();
+    
+    theTreeIdGenerator = createTreeIdGenerator();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -400,6 +404,25 @@ SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
 /*******************************************************************************
 
 *******************************************************************************/
+TreeIdGenerator*
+SimpleStore::createTreeIdGenerator() const
+{
+  return new ZorbaTreeIdGenerator();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void
+SimpleStore::destroyTreeIdGenerator(TreeIdGenerator* g) const
+{
+  delete g;
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
 CollectionSet* SimpleStore::createCollectionSet() const
 {
   return new CollectionSet();
@@ -473,10 +496,10 @@ ulong SimpleStore::createCollectionId()
 /*******************************************************************************
   create a tree id for a new tree that does not belong to any collection.
 ********************************************************************************/
-ulong SimpleStore::createTreeId()
+TreeId_t SimpleStore::createTreeId()
 {
   SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
-  return theTreeCounter++;
+  return getTreeIdGenerator().create(NULL);
 }
 
 

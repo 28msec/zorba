@@ -379,7 +379,9 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   std::size_t lPosition = to_xs_unsignedInt(position);
 
   if (lPosition < theXmlTrees.size() &&
-      BASE_NODE(theXmlTrees[lPosition])->getTreeId() == n->getTreeId())
+      GET_STORE().getTreeIdGenerator().equals(
+          BASE_NODE(theXmlTrees[lPosition])->getTreeId(),
+          n->getTreeId()))
   {
     return true;
   }
@@ -491,6 +493,13 @@ void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
   activeICNames->close();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+TreeId_t SimpleCollection::createTreeId()
+{
+  return GET_STORE().getTreeIdGenerator().create(theName);
+}
 
 /*******************************************************************************
 
