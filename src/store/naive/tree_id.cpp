@@ -15,29 +15,32 @@
  */
 
 #include "tree_id.h"
+#include <iostream>
+#include <sstream>
 
 namespace zorba {
   
-ZorbaTreeId::ZorbaTreeId(zorba::store::Item_t aName, ulong id)
-: theId(id), theCollectionName(aName)
+ZorbaTreeId::ZorbaTreeId(ulong id)
+: theId(id)
 {};
 
 zstring ZorbaTreeId::toString()
 {
-  zstring s = "" + theId;
-  return s;
+  std::ostringstream oss;
+  oss << std::dec << theId;
+  return oss.str();
 }
 
 TreeId* ZorbaTreeId::copy()
 {
-  return new ZorbaTreeId(theCollectionName, theId);
+  return new ZorbaTreeId(theId);
 }
 
 TreeId_t ZorbaTreeIdGenerator::create(
     zorba::store::Item_t aCollectionName) {
   if (aCollectionName == NULL)
   {
-    TreeId_t lStoreRes(new ZorbaTreeId(NULL, theNextStoreWideId));
+    TreeId_t lStoreRes(new ZorbaTreeId(theNextStoreWideId));
     ++theNextStoreWideId;
     return lStoreRes;
   }
@@ -51,7 +54,7 @@ TreeId_t ZorbaTreeIdGenerator::create(
     lIt = theNextIds.find(aCollectionName);
     assert(lIt != theNextIds.end());
   }
-  TreeId_t lRes (new ZorbaTreeId(lIt.getKey(), lIt.getValue()));
+  TreeId_t lRes (new ZorbaTreeId(lIt.getValue()));
   lIt.setValue(lIt.getValue() + 1);
   return lRes;
 }
@@ -61,24 +64,24 @@ bool ZorbaTreeIdGenerator::equals(const TreeId_t& anId,
 {
   const ZorbaTreeId* lId1 = dynamic_cast<ZorbaTreeId*>(anId.get());
   const ZorbaTreeId* lId2 = dynamic_cast<ZorbaTreeId*>(anotherId.get());
-  return ((lId1->theCollectionName == NULL && lId2->theCollectionName == NULL) ||
-             lId1->theCollectionName->equals(lId2->theCollectionName)) &&
-         lId1->theId == lId2->theId;
+  return lId1->theId == lId2->theId;
 }
 
 bool ZorbaTreeIdGenerator::isBefore(const TreeId_t& anId,
-                                   const TreeId_t& anotherId)
+                                    const TreeId_t& anotherId)
 {
   const ZorbaTreeId* lId1 = dynamic_cast<ZorbaTreeId*>(anId.get());
   const ZorbaTreeId* lId2 = dynamic_cast<ZorbaTreeId*>(anotherId.get());
-  assert((lId1->theCollectionName == NULL && lId2->theCollectionName == NULL) ||
-      lId1->theCollectionName->equals(lId2->theCollectionName));
   return lId1->theId < lId2->theId;
 }
 
-TreeId* ZorbaTreeIdGenerator::fromString(const zstring&)
+TreeId_t ZorbaTreeIdGenerator::fromString(const zstring& s)
 {
-  return NULL;
+  std::istringstream iss(s.str());
+  ulong lId;
+  iss >> std::dec >> lId;
+  TreeId_t lRes(new ZorbaTreeId(lId));
+  return lRes;
 }
 
 }

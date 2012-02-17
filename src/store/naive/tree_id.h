@@ -31,17 +31,6 @@ public:
 
 typedef std::auto_ptr<TreeId> TreeId_t;
 
-class ZorbaTreeId : public TreeId {
-friend class ZorbaTreeIdGenerator;
-private:
-  ulong theId;
-  const zorba::store::Item_t theCollectionName;
-  ZorbaTreeId(zorba::store::Item_t aName, ulong idKey);
-public:
-  zstring toString();  
-  virtual TreeId* copy();
-};
-
 class TreeIdGenerator {
 public:
   virtual ~TreeIdGenerator() {};
@@ -49,7 +38,17 @@ public:
   virtual TreeId_t create(zorba::store::Item_t aCollectionName) = 0;
   virtual bool equals(const TreeId_t& id1, const TreeId_t& id2) = 0;
   virtual bool isBefore(const TreeId_t& id1, const TreeId_t& id2) = 0;
-  virtual TreeId* fromString(const zstring&) = 0;
+  virtual TreeId_t fromString(const zstring&) = 0;
+};
+
+class ZorbaTreeId : public TreeId {
+friend class ZorbaTreeIdGenerator;
+private:
+  ulong theId;
+  ZorbaTreeId(ulong idKey);
+public:
+  zstring toString();  
+  virtual TreeId* copy();
 };
 
 class ZorbaTreeIdGenerator : public TreeIdGenerator {
@@ -61,7 +60,7 @@ public:
   virtual TreeId_t create(zorba::store::Item_t aCollectionName);
   virtual bool equals(const TreeId_t& id1, const TreeId_t& id2);
   virtual bool isBefore(const TreeId_t& id1, const TreeId_t& id2);
-  virtual TreeId* fromString(const zstring&);
+  virtual TreeId_t fromString(const zstring&);
 };
 
 }

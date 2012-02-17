@@ -1093,7 +1093,8 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   // Decode tree id
   //
   ulong ulid = strtoul(start, &next, 10);
-  // theTreeId = NULL;
+  zstring sid = "" + ulid;
+  theTreeId = GET_STORE().getTreeIdGenerator().fromString(sid);
   if (errno != 0 || start == next)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
