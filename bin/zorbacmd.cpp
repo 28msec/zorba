@@ -38,6 +38,7 @@
 #include <zorba/iterator.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/uri_resolvers.h>
+#include <zorba/serialization_callback.h>
 
 #include <zorba/store_manager.h>
 
@@ -72,15 +73,24 @@ const char *copyright_str =
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
 OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
-class URIResolverSerializationCallback : public SerializationCallback
+class URIMapperSerializationCallback : public SerializationCallback
 {
+  private:
+    std::vector<URIMapper*> theURIMappers;
+
   public:
-    virtual URLResolver*
-    getURLResolver(size_t /*i*/) const
+    void addURIMapper(URIMapper* lURIMapper)
+    {
+      theURIMappers.push_back(lURIMapper);
+    }
+
+    virtual URIMapper*
+    getURIMapper(size_t i) const
     {   
-      return 0;
+      return theURIMappers[i];
     }   
 };
+URIMapperSerializationCallback theSerializationCallback;
 
 bool
 populateStaticContext(
@@ -158,7 +168,11 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theStopWordsMapper.addMapping(lIter->uri, lIter->value);
     }
-    //aStaticContext->registerURIMapper(&theStopWordsMapper);
+    if(aProperties.executePlan()) {
+      theSerializationCallback.addURIMapper(&theStopWordsMapper);
+    } else {
+      aStaticContext->registerURIMapper(&theStopWordsMapper);
+    }
   }
   {
     ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
@@ -166,7 +180,11 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
-    //aStaticContext->registerURIMapper(&theThesaurusMapper);
+    if(aProperties.executePlan()) {
+      theSerializationCallback.addURIMapper(&theStopWordsMapper);
+    } else {
+      aStaticContext->registerURIMapper(&theThesaurusMapper);
+    }
   }
 #endif
   return true;
@@ -580,7 +598,7 @@ compileAndExecute(
         query->setFileName(qfilepath);
 
         if(executePlan) {
-          query->loadExecutionPlan(qfile);
+          query->loadExecutionPlan(qfile, &theSerializationCallback);
         } else {
           query->compile(qfile, staticContext, lHints);
         }
