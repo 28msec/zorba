@@ -17,6 +17,9 @@
 #ifndef ZORBA_FS_UTIL_H
 #define ZORBA_FS_UTIL_H
 
+#include <vector>
+#include <dirent.h>
+
 #include <zorba/config.h>
 
 #include <stdexcept>
@@ -132,8 +135,6 @@ zstring curdir();
  */
 void mkdir( char const *path );
 
-
-
 /**
  * Creates a directory.
  *
@@ -144,6 +145,26 @@ void mkdir( char const *path );
 template<class PathStringType> inline
 void mkdir( PathStringType const &path ) {
   mkdir( path.c_str() );
+}
+
+/**
+ * List files in dir
+ *
+ * @param path The full path of the directory to list.
+ * @throws fs::exception if the list fails.
+ */
+void lsdir( char const *path, std::vector<std::string> & list );
+
+/**
+ * List files in dir
+ *
+ * @tparam PathStringType The \a path string type.
+ * @param path The full path of the directory to list.
+ * @throws fs::exception if the list fails.
+ */
+template<class PathStringType> inline
+void lsdir( PathStringType const &path, std::vector<std::string> & list ) {
+  lsdir( path.c_str(), list );
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */

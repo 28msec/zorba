@@ -277,6 +277,41 @@ void mkdir( char const *path ) {
 #endif
 }
 
+void lsdir( char const *path, std::vector<std::string> &list )
+{
+#ifndef WIN32
+  DIR *dir;
+  struct dirent *ent;
+
+  dir = opendir (path);
+  if (dir != NULL)
+  {
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL)
+    {
+      //printf ("%s\n", ent->d_name);
+      std::string item(ent->d_name);
+      list.push_back(item);
+    }
+    closedir (dir);
+  }
+  else
+  {
+    /* could not open directory */
+    throw fs::exception( "lsdir()", path );
+  }
+#else
+  WCHAR wpath[ MAX_PATH ];
+  win32::to_wchar( path, wpath );
+  //if ( !::CreateDirectory( wpath, NULL ) )
+    throw fs::exception( "LsDirectory() not implemented", path );
+  /* check FindFirstFile / FindNextFile / FindClose Win32 functions
+     http://msdn.microsoft.com/en-us/library/aa364418%28VS.85%29.aspx
+     http://msdn.microsoft.com/en-us/library/aa365200%28v=vs.85%29.aspx
+   */
+#endif
+}
+
 bool remove( char const *path ) {
 #ifndef WIN32
   return ::remove( path ) == 0;
