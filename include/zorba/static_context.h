@@ -412,6 +412,27 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual void
   getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const = 0;
 
+  /** \brief Get all functions declared in the given static context
+   *
+   * @return aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(std::vector<Function_t>& aFunctions) const = 0;
+
+  /** \brief Get all functions with a specified namespace and airty\
+   *    declared in the given static context.
+   *
+   * @param aFnNameUri the namespace for the functions to return
+   * @param arity the arity for the functions to return
+   *
+   * @return aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(
+      const String& aFnNameUri,
+      uint32_t arity,
+      std::vector<Function_t>& aFunctions) const = 0;
+
   /** \brief Set the type of the context item.
    */
   virtual void
