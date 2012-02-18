@@ -425,27 +425,28 @@ MACRO (DECLARE_ZORBA_JAR)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for DECLARE_ZORBA_JAR")
   ENDIF (NOT JAR_FILE)
 
+  # Initialize classpath file and set up copy rule (once per project)
+  SET (_CP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-classpath.txt")
+  GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-jars")
+  IF (NOT _known_project)
+    FILE (REMOVE "${_CP_FILE}")
+    SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-jars" 1)
+    ADD_COPY_RULE ("LIB" "${_CP_FILE}" "jars/${PROJECT_NAME}-classpath.txt"
+      "" "" 1 "${JAR_TEST_ONLY}")
+  ENDIF (NOT _known_project)
+
   # Iterate over all supplied jar files
   FOREACH (_jar_file ${JAR_FILE})
-    IF (NOT IS_ABSOLUTE "${_jar_file}")
-      SET (_jar_file "${CMAKE_CURRENT_SOURCE_DIR}/${_jar_file}")
-    ENDIF (NOT IS_ABSOLUTE "${_jar_file}")
 
     IF (JAR_EXTERNAL)
-      SET (_LIST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-jars.txt")
-      # Remember whether we've seen external jars for this project yet
-      GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars")
-      IF (NOT _known_project)
-	FILE (REMOVE "${_LIST_FILE}")
-	SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars" 1)
-	ADD_COPY_RULE ("LIB" "${_LIST_FILE}" "jars/${PROJECT_NAME}-jars.txt"
-	  "" "" 1 0)
-      ENDIF (NOT _known_project)
-      FILE (APPEND "${_LIST_FILE}" "${_jar_file}\n")
+      # Put absolute path into classpath file
+      FILE (APPEND "${_CP_FILE}" "${_jar_file}\n")
     ELSE (JAR_EXTERNAL)
+      # Copy jar to jars/ directory and add relative path to classpath file
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
       ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" ""
 	1 "${JAR_TEST_ONLY}")
+      FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
     ENDIF (JAR_EXTERNAL)
 
   ENDFOREACH (_jar_file)
