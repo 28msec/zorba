@@ -72,6 +72,15 @@ const char *copyright_str =
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
 OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
+class URIResolverSerializationCallback : public SerializationCallback
+{
+  public:
+    virtual URLResolver*
+    getURLResolver(size_t /*i*/) const
+    {   
+      return 0;
+    }   
+};
 
 bool
 populateStaticContext(
@@ -503,8 +512,8 @@ compileAndExecute(
   unsigned long lNumExecutions = properties.multiple();
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
-  bool compilePlan = properties.compile();
-  bool executePlan = properties.execute();
+  bool compilePlan = properties.compilePlan();
+  bool executePlan = properties.executePlan();
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
