@@ -18,7 +18,7 @@ xquery version "3.0";
 
 (:~
  : This module provides an XQuery API to full-text functions.
- : <p/>
+ : <h2>Notes on the thesaurus</h2>
  : The <code>ft:thesaurus-lookup</code> function has "levels"
  : and "relationship" parameters.
  : The values for these are implementation-defined.
@@ -112,6 +112,28 @@ xquery version "3.0";
  :   </tr>
  : </table>
  : Relationships are case-insensitive.
+ : <h2>Notes on tokenizer properties</h2>
+ : The <code>ft:tokenizer-properties()</code> functions
+ : return a single <code>&lt;tokenizer-properties&gt;</code> element
+ : containing attributes that describe the tokenizer's properties:
+ :  <table>
+ :    <tr>
+ :      <th>Attribute</th>
+ :      <th>Type</th>
+ :      <th>Meaning</th>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap"><code>elements-separate-tokens</code></td>
+ :      <td><code>xs:boolean</code></td>
+ :      <td>
+ :        If true,
+ :        XML elements separate tokens,
+ :        for example
+ :        &lt;b&gt;B&lt;/b&gt;old
+ :        would be 2 tokens instead of 1.
+ :      </td>
+ :    </tr>
+ :  </table>
  :)
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
@@ -225,7 +247,7 @@ declare function ft:strip-diacritics( $string as xs:string )
  :
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
  : be the one returned by <code>ft:current-lang()</code>.
- : @return the related phrases.
+ : @return the original and related phrases.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
  : by the currently running version of Zorba.
@@ -242,7 +264,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.
  : @param $lang The language of <code>$phrase</code>.
- : @return the related phrases.
+ : @return the original and related phrases.
  : @error err:FTST0009 if <code>$lang</code> is unsupported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -264,7 +286,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
  : be the one the one returned by <code>ft:current-lang()</code>.
- : @return the related phrases.
+ : @return the original and related phrases.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -381,7 +403,7 @@ declare function ft:tokenize-string( $string as xs:string,
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.  The string's default language is
- : assumed to be the host's current language.
+ : assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize-string( $string as xs:string )
@@ -400,7 +422,8 @@ declare function ft:tokenizer-properties( $lang as xs:language )
   as node() external;
 
 (:~
- : Gets properties of the tokenizer for the current language.
+ : Gets properties of the tokenizer for the language returned by
+ : <code>ft:current-lang()</code>.
  :
  : @return said properties.
  :)

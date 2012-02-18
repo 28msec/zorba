@@ -293,9 +293,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
-  sctx = getStaticContext();
-  lang = get_lang_from( sctx );
+  lang = get_lang_from( getStaticContext() );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
@@ -318,6 +316,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
           "token"
         );
 
+      base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
         result, nullptr, state->token_qname_, type_name, false, false,
@@ -359,6 +358,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
 #ifndef ZORBA_NO_XMLSCHEMA
+      sctx = getStaticContext();
       sctx->validate( result, result, StaticContextConsts::strict_validation );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
