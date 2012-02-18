@@ -21,13 +21,19 @@ IF (${RESULT} GREATER -1)
   FIND_PACKAGE (Java COMPONENTS Development)
   IF (Java_Development_FOUND)
     INCLUDE (UseJava)
+
+    # Declare two "different" jars, for testing
     ADD_JAR (JavaTest Test.java)
+    ADD_JAR (JavaTest2 Test.java)
 
-    # Tell Zorba about the jar
+    # Tell Zorba about the jars
     GET_PROPERTY (JavaTest_JAR_FILE TARGET JavaTest PROPERTY JAR_FILE)
-    DECLARE_ZORBA_JAR(FILE ${JavaTest_JAR_FILE} TEST_ONLY)
+    GET_PROPERTY (JavaTest2_JAR_FILE TARGET JavaTest2 PROPERTY JAR_FILE)
+    DECLARE_ZORBA_JAR(FILE ${JavaTest_JAR_FILE} ${JavaTest2_JAR_FILE} TEST_ONLY)
 
-    # Pretend to tell Zorba about a system jar
-    DECLARE_ZORBA_JAR(FILE "${PROJECT_SOURCE_DIR}/MyJar.jar" EXTERNAL)
+    # Pretend to tell Zorba about some system jars
+    DECLARE_ZORBA_JAR(EXTERNAL FILE
+      "${PROJECT_SOURCE_DIR}/MyJar.jar" "${PROJECT_SOURCE_DIR}/MyJar2.jar")
+
   ENDIF (Java_Development_FOUND)
 ENDIF (${RESULT} GREATER -1)

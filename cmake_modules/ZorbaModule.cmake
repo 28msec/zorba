@@ -420,30 +420,35 @@ ENDMACRO (DECLARE_ZORBA_URI_FILE)
 #              be installed
 
 MACRO (DECLARE_ZORBA_JAR)
-  PARSE_ARGUMENTS (JAR "" "FILE" "TEST_ONLY;EXTERNAL" ${ARGN})
+  PARSE_ARGUMENTS (JAR "FILE" "" "TEST_ONLY;EXTERNAL" ${ARGN})
   IF (NOT JAR_FILE)
-    MESSAGE (FATAL_ERROR "'JAR' argument is required for DECLARE_ZORBA_JAR")
+    MESSAGE (FATAL_ERROR "'FILE' argument is required for DECLARE_ZORBA_JAR")
   ENDIF (NOT JAR_FILE)
-  IF (NOT IS_ABSOLUTE "${JAR_FILE}")
-    SET (JAR_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${JAR_FILE}")
-  ENDIF (NOT IS_ABSOLUTE "${JAR_FILE}")
 
-  IF (JAR_EXTERNAL)
-    SET (_LIST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-jars.txt")
-    # Remember whether we've seen external jars for this project yet
-    GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars")
-    IF (NOT _known_project)
-      FILE (REMOVE "${_LIST_FILE}")
-      SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars" 1)
-      ADD_COPY_RULE ("LIB" "${_LIST_FILE}" "jars/${PROJECT_NAME}-jars.txt"
-	"" "" 1 0)
-    ENDIF (NOT _known_project)
-    FILE (APPEND "${_LIST_FILE}" "${JAR_FILE}\n")
-  ELSE (JAR_EXTERNAL)
-    GET_FILENAME_COMPONENT (_output_filename "${JAR_FILE}" NAME)
-    ADD_COPY_RULE ("LIB" "${JAR_FILE}" "jars/${_output_filename}" "" ""
-      1 "${JAR_TEST_ONLY}")
-  ENDIF (JAR_EXTERNAL)
+  # Iterate over all supplied jar files
+  FOREACH (_jar_file ${JAR_FILE})
+    IF (NOT IS_ABSOLUTE "${_jar_file}")
+      SET (_jar_file "${CMAKE_CURRENT_SOURCE_DIR}/${_jar_file}")
+    ENDIF (NOT IS_ABSOLUTE "${_jar_file}")
+
+    IF (JAR_EXTERNAL)
+      SET (_LIST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-jars.txt")
+      # Remember whether we've seen external jars for this project yet
+      GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars")
+      IF (NOT _known_project)
+	FILE (REMOVE "${_LIST_FILE}")
+	SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars" 1)
+	ADD_COPY_RULE ("LIB" "${_LIST_FILE}" "jars/${PROJECT_NAME}-jars.txt"
+	  "" "" 1 0)
+      ENDIF (NOT _known_project)
+      FILE (APPEND "${_LIST_FILE}" "${_jar_file}\n")
+    ELSE (JAR_EXTERNAL)
+      GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
+      ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" ""
+	1 "${JAR_TEST_ONLY}")
+    ENDIF (JAR_EXTERNAL)
+
+  ENDFOREACH (_jar_file)
 ENDMACRO (DECLARE_ZORBA_JAR)
 
 
