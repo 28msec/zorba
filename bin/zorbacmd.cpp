@@ -754,6 +754,7 @@ _tmain(int argc, _TCHAR* argv[])
   std::string cmdJvmClassPath;
   lProperties.getJVMClassPath(cmdJvmClassPath);
   std::string configJvmClassPath;
+  globalProperties->getJVMClassPath(configJvmClassPath);
   globalProperties->setJVMClassPath(cmdJvmClassPath +
       filesystem_path::get_path_separator() + configJvmClassPath);
 
