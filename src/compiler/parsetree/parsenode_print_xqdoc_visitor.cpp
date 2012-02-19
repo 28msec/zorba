@@ -737,21 +737,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
           
           if(lParam->get_typedecl()->get_occur()){
             stringstream os;
-            switch(lParam->get_typedecl()->get_occur()->get_type()) {
-              case ParseConstants::occurs_never:
-                break;
-              case ParseConstants::occurs_exactly_one:
-                break;
-              case ParseConstants::occurs_optionally:
-                os << '?';
-                break;
-              case ParseConstants::occurs_zero_or_more:
-                os << '*';
-                break;
-              case ParseConstants::occurs_one_or_more:
-                os << '+';
-                break;
-            }
+            print_parsetree_xquery(os, lParam->get_typedecl()->get_occur());
             if(os.str().size() == 1) {
               zstring lOccur(os.str());
               store::Item_t lOccurValue, lOccurAttrQName;
@@ -788,30 +774,16 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
           
     if(n.get_return_type()->get_occur()){
       stringstream os;
-      switch(n.get_return_type()->get_occur()->get_type()) {
-        case ParseConstants::occurs_never:
-          break;
-        case ParseConstants::occurs_exactly_one:
-          break;
-        case ParseConstants::occurs_optionally:
-          os << '?';
-          break;
-        case ParseConstants::occurs_zero_or_more:
-          os << '*';
-          break;
-        case ParseConstants::occurs_one_or_more:
-          os << '+';
-          break;
-        }
-        if(os.str().size() == 1) {
-          zstring lOccur(os.str());
-          store::Item_t lOccurValue, lOccurAttrQName;
-          theFactory->createString(lOccurValue, lOccur);
-          theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
-          theFactory->createAttributeNode(
-            lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
-          );
-        }
+      print_parsetree_xquery(os, n.get_return_type()->get_occur());
+      if(os.str().size() == 1) {
+        zstring lOccur(os.str());
+        store::Item_t lOccurValue, lOccurAttrQName;
+        theFactory->createString(lOccurValue, lOccur);
+        theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+        theFactory->createAttributeNode(
+          lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+        );
+      }
       }
  }
  zstring lNameString = n.get_name()->get_qname();
