@@ -171,31 +171,40 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  if ((whereExpr = flwor.get_where()) != NULL && !flwor.has_sequential_clauses())
+  for(int i = 0; i < numClauses; ++i)
   {
-    const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
-    expr::FreeVars diff;
-    std::set_intersection(myVars.begin(),
-                          myVars.end(),
-                          whereVars.begin(),
-                          whereVars.end(),
-                          std::inserter(diff, diff.begin()));
-    if (diff.empty())
+    flwor_clause *clause = flwor.get_clause(i);
+
+    if (clause->get_kind() == flwor_clause::where_clause &&
+        !flwor.has_sequential_clauses())
     {
-      expr_t oldWhere = whereExpr;
-      flwor.remove_where_clause();
+      whereExpr = clause->get_expr();
+      const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
-      rchandle<if_expr> ifExpr = new if_expr(sctx,
-                                             loc,
-                                             oldWhere,
-                                             &flwor,
-                                             fo_expr::create_seq(sctx, loc));
+      expr::FreeVars diff;
+      std::set_intersection(myVars.begin(),
+                            myVars.end(),
+                            whereVars.begin(),
+                            whereVars.end(),
+                            std::inserter(diff, diff.begin()));
+      if (diff.empty())
+      {
+        expr_t oldWhere = whereExpr;
+        flwor.remove_where_clause();
 
-      fix_if_annotations(ifExpr);
+        rchandle<if_expr> ifExpr = new if_expr(sctx,
+                                               loc,
+                                               oldWhere,
+                                               &flwor,
+                                               fo_expr::create_seq(sctx, loc));
 
-      return ifExpr.getp();
+        fix_if_annotations(ifExpr);
+
+        return ifExpr.getp();
+      }
     }
+
   }
 
   bool modified = false;
