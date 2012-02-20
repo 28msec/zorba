@@ -1,7 +1,6 @@
 /** \page installation Installation
-\section installation Installation
 
-\subsection SourceInstallation Installing the Source Distribution
+\section SourceInstallation Installing the Source Distribution
 
 The Zorba source is available as tar.gz and zip files.
 The Zorba sources can be installed by extracting the compressed files 
@@ -12,7 +11,7 @@ in your current working directory.
 To build Zorba,
 please follow the build instructions (see \ref buildingzorba). 
 
-\subsection Installing Installing
+\section Installing Installing
 
 Once you have successfully built Zorba using the "Unix Makefile" generator
 (see \ref SourceInstallation),
@@ -82,7 +81,7 @@ In order to make the installation process easier,
 we also provide graphical installers
 for Windows and Mac OS X.
   
-\subsection UbuntuInstallation Additional notes for Ubuntu systems installations
+\section UbuntuInstallation Additional notes for Ubuntu systems installations
   
 The recommended way of installing the Zorba library on an Ubuntu system
 is to add the lib directory as a \c .conf file in \c /etc/ld.so.conf
