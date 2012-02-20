@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
