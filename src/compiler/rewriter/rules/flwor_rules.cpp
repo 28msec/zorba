@@ -142,7 +142,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   static_context* sctx = node->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
 
-  if (node->get_expr_kind() != flwor_expr_kind)
+  if (node->get_expr_kind() != flwor_expr_kind &&
+      node->get_expr_kind() != gflwor_expr_kind)
     return NULL;
 
   flwor_expr* flworp = static_cast<flwor_expr *>(node);
@@ -171,7 +172,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  for(int i = 0; i < numClauses; ++i)
+  for(unsigned int i = 0; i < numClauses; ++i)
   {
 
     flwor_clause *clause = flwor.get_clause(i);
