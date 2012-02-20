@@ -26,17 +26,17 @@
 
 #include <zorba/store_consts.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "string_pool.h"
+#include "qname_pool.h"
+#include "simple_store.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "dataguide.h"
+#include "nsbindings.h"
+#include "loader.h"
+#include "simple_item_factory.h"
+#include "node_factory.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"

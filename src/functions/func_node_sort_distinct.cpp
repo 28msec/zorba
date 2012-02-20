@@ -231,7 +231,7 @@ PlanIter_t op_node_sort_distinct_base::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const 
+    expr& ann) const 
 {
   const bool* myActions = action();
   bool sort = (myActions[SORT_ASC]  || myActions[SORT_DESC]);

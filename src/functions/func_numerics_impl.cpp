@@ -56,7 +56,7 @@ PlanIter_t codegen(                                                        \
     static_context* sctx,                                                  \
     const QueryLoc& loc,                                                   \
     std::vector<PlanIter_t>& argv,                                         \
-    AnnotationHolder&) const                                               \
+    expr&) const                                               \
 {                                                                          \
   return new SpecificNumArithIterator<op, t>(sctx, loc, argv[0], argv[1]); \
 }
@@ -627,7 +627,7 @@ PlanIter_t op_numeric_unary_plus::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new OpNumericUnaryIterator(sctx, loc, argv[0], true);
 }
@@ -653,7 +653,7 @@ PlanIter_t op_double_unary_plus::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new OpDoubleUnaryIterator(sctx, loc, argv[0], true);
 }
@@ -689,7 +689,7 @@ PlanIter_t op_numeric_unary_minus::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new OpNumericUnaryIterator(sctx, loc, argv[0], false);
 }
@@ -715,7 +715,7 @@ PlanIter_t op_double_unary_minus::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new OpDoubleUnaryIterator(sctx, loc, argv[0], false);
 }
