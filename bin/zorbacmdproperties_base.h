@@ -364,8 +364,8 @@ public:
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
 "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
-"--compile-plan, -c\nCompile query plan.\n\n"
-"--execute-plan, -e\nExecute query plan.\n\n"
+"--compile-plan, -c\nOutput the query plan as binary.\n\n"
+"--execute-plan, -e\nExecute a binary query plan. Binary query plans can be generated using the --compile-plan option.\n\n"
 ;
   }
 
