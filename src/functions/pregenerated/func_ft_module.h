@@ -68,6 +68,51 @@ public:
 };
 
 
+//zorba-full-text:is-stem-lang-supported
+class zorba_full_text_is_stem_lang_supported : public function
+{
+public:
+  zorba_full_text_is_stem_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-full-text:is-stop-word-lang-supported
+class zorba_full_text_is_stop_word_lang_supported : public function
+{
+public:
+  zorba_full_text_is_stop_word_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-full-text:is-thesaurus-lang-supported
+class zorba_full_text_is_thesaurus_lang_supported : public function
+{
+public:
+  zorba_full_text_is_thesaurus_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-full-text:is-stop-word
 class zorba_full_text_is_stop_word : public function
 {

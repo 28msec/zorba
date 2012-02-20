@@ -425,6 +425,15 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8403", "thesaurus data error${: 1}" },
 #endif
+#if !defined(ZORBA_NO_FULL_TEXT)
+  { "ZXQP8404", "\"$1\": langauge not supported for stemming" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
+  { "ZXQP8405", "\"$1\": langauge not supported for stop-words" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
+  { "ZXQP8406", "\"$1\": langauge not supported for thesaurus" },
+#endif
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },

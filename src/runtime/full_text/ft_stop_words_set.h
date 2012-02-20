@@ -28,7 +28,7 @@
 namespace zorba {
 
 /**
- * An %ft_stop_words_set is (as its name suggests) a set of stop-wors.
+ * An %ft_stop_words_set is (as its name suggests) a set of stop-words.
  */
 class ft_stop_words_set {
 public:
@@ -40,12 +40,13 @@ public:
   }
 
   /**
-   * Constructs an %ft_stop_words_set.
+   * Constructs an %ft_stop_words_set for the given language.
    *
    * @param option The ftstop_word_option to use to possibly add or remove
    * stop-words.
    * @param lang The language of the stop-words.
-   * @return Returns a new %ft_stop_words_set.
+   * @return Returns a new %ft_stop_words_set or \c nullptr if stop-words for
+   * \a lang are unsupported.
    */
   static ptr construct( ftstop_word_option const &option,
                         locale::iso639_1::type lang,
@@ -67,7 +68,8 @@ public:
    * Gets the default %ft_stop_words_set.
    *
    * @param lang The language of the stop-words.
-   * @return Returns said default.
+   * @return Returns said default or \c nullptr if stop-words for \a lang are
+   * unsupported.
    */
   static ft_stop_words_set const* get_default( locale::iso639_1::type lang );
 

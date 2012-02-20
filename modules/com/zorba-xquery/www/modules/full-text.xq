@@ -148,8 +148,8 @@ declare option ver:module-version "2.0";
 
 (:~
  : Gets the current language: either the langauge specified by the
- : <code>declare ft-option using language</code> statement or the one returned
- : by <code>ft:host-lang()</code>.
+ : <code>declare ft-option using language</code> statement (if any)
+ : or the one returned by <code>ft:host-lang()</code> (if none).
  :
  : @return said language.
  :)
@@ -181,18 +181,26 @@ declare function ft:current-lang()
  :      by the <code>GetLocaleInfoA()</code> function is used.
  :    </li>
  :  </ul>
- :
  : @return said language.
  :)
 declare function ft:host-lang()
   as xs:language external;
 
 (:~
+ : Checks whether the given language is supported for stemming.
+ :
+ : @param $lang The language to check.
+ : @return <code>true</code> only if the language is supported.
+ :)
+declare function ft:is-stem-lang-supported( $lang as xs:language )
+  as xs:boolean external;
+
+(:~
  : Checks whether the given word is a stop-word.
  :
  : @param $word The word to check.
  : @param $lang The language of <code>$word</code>.
- : @return <code>true</code> only if the <code>$word</code> is a stop-word.
+ : @return <code>true</code> only if <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
@@ -202,13 +210,44 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  :
  : @param $word The word to check.  The word's language is assumed to be the
  : one returned by <code>ft:current-lang()</code>.
- : @return <code>true</code> only if the <code>$word</code> is a stop-word.
+ : @return <code>true</code> only if <code>$word</code> is a stop-word.
  :)
 declare function ft:is-stop-word( $word as xs:string )
   as xs:boolean
 {
   ft:is-stop-word( $word, ft:current-lang() )
 };
+
+(:~
+ : Checks whether the given language is supported for stop words.
+ :
+ : @param $lang The language to check.
+ : @return <code>true</code> only if the language is supported.
+ :)
+declare function ft:is-stop-word-lang-supported( $lang as xs:language )
+  as xs:boolean external;
+
+(:~
+ : Checks whether the given language is supported for look-up using the default
+ : thesaurus.
+ :
+ : @param $lang The language to check.
+ : @return <code>true</code> only if the language is supported.
+ :)
+declare function ft:is-thesaurus-lang-supported( $lang as xs:language )
+  as xs:boolean external;
+
+(:~
+ : Checks whether the given language is supported for look-up using the
+ : thesaurus specified by the given URI.
+ :
+ : @param $uri The URI specifying the thesaurus to use.
+ : @param $lang The language to check.
+ : @return <code>true</code> only if the language is supported.
+ :)
+declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
+                                                 $lang as xs:language )
+  as xs:boolean external;
 
 (:~
  : Stems the given word.
@@ -259,7 +298,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
   as xs:string+ external;
 
 (:~
- : Looks-up the given phrase in a thesaurus.
+ : Looks-up the given phrase in the thesaurus specified by the given URI.
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.

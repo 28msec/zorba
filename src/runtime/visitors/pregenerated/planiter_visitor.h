@@ -193,6 +193,12 @@ namespace zorba{
 
     class HostLangIterator;
 
+    class IsStemLangSupportedIterator;
+
+    class IsStopWordLangSupportedIterator;
+
+    class IsThesaurusLangSupportedIterator;
+
     class IsStopWordIterator;
 
     class StemIterator;
@@ -861,6 +867,15 @@ public:
 
     virtual void beginVisit ( const HostLangIterator& ) = 0;
     virtual void endVisit   ( const HostLangIterator& ) = 0;
+
+    virtual void beginVisit ( const IsStemLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsStemLangSupportedIterator& ) = 0;
+
+    virtual void beginVisit ( const IsStopWordLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsStopWordLangSupportedIterator& ) = 0;
+
+    virtual void beginVisit ( const IsThesaurusLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsThesaurusLangSupportedIterator& ) = 0;
 
     virtual void beginVisit ( const IsStopWordIterator& ) = 0;
     virtual void endVisit   ( const IsStopWordIterator& ) = 0;

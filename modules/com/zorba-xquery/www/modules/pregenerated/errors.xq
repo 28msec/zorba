@@ -184,6 +184,7 @@ declare variable $zerr:ZXQP8401 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8401
 
 (:~
  :
+ : The thesaurus data file's endianness does not match that of the CPU.
  : 
 :)
 declare variable $zerr:ZXQP8402 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8402");
@@ -194,6 +195,18 @@ declare variable $zerr:ZXQP8402 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8402
  : 
 :)
 declare variable $zerr:ZXQP8403 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8403");
+
+(:~
+:)
+declare variable $zerr:ZXQP8404 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8404");
+
+(:~
+:)
+declare variable $zerr:ZXQP8405 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8405");
+
+(:~
+:)
+declare variable $zerr:ZXQP8406 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8406");
 
 (:~
 :)

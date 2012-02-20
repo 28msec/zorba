@@ -89,6 +89,90 @@ HostLangIterator::~HostLangIterator() {}
 // </HostLangIterator>
 
 
+// <IsStemLangSupportedIterator>
+const char* IsStemLangSupportedIterator::class_name_str = "IsStemLangSupportedIterator";
+IsStemLangSupportedIterator::class_factory<IsStemLangSupportedIterator>
+IsStemLangSupportedIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsStemLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsStemLangSupportedIterator::class_versions_count =
+sizeof(IsStemLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsStemLangSupportedIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
+
+// </IsStemLangSupportedIterator>
+
+
+// <IsStopWordLangSupportedIterator>
+const char* IsStopWordLangSupportedIterator::class_name_str = "IsStopWordLangSupportedIterator";
+IsStopWordLangSupportedIterator::class_factory<IsStopWordLangSupportedIterator>
+IsStopWordLangSupportedIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsStopWordLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsStopWordLangSupportedIterator::class_versions_count =
+sizeof(IsStopWordLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsStopWordLangSupportedIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsStopWordLangSupportedIterator::~IsStopWordLangSupportedIterator() {}
+
+// </IsStopWordLangSupportedIterator>
+
+
+// <IsThesaurusLangSupportedIterator>
+const char* IsThesaurusLangSupportedIterator::class_name_str = "IsThesaurusLangSupportedIterator";
+IsThesaurusLangSupportedIterator::class_factory<IsThesaurusLangSupportedIterator>
+IsThesaurusLangSupportedIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsThesaurusLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsThesaurusLangSupportedIterator::class_versions_count =
+sizeof(IsThesaurusLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsThesaurusLangSupportedIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
+
+// </IsThesaurusLangSupportedIterator>
+
+
 // <IsStopWordIterator>
 const char* IsStopWordIterator::class_name_str = "IsStopWordIterator";
 IsStopWordIterator::class_factory<IsStopWordIterator>

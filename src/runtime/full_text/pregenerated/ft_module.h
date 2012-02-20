@@ -106,6 +106,108 @@ public:
  * 
  * Author: 
  */
+class IsStemLangSupportedIterator : public NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsStemLangSupportedIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStemLangSupportedIterator,
+    NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>*)this);
+  }
+
+  IsStemLangSupportedIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsStemLangSupportedIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class IsStopWordLangSupportedIterator : public NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsStopWordLangSupportedIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordLangSupportedIterator,
+    NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>*)this);
+  }
+
+  IsStopWordLangSupportedIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsStopWordLangSupportedIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class IsThesaurusLangSupportedIterator : public NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsThesaurusLangSupportedIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsThesaurusLangSupportedIterator,
+    NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>*)this);
+  }
+
+  IsThesaurusLangSupportedIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsThesaurusLangSupportedIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class IsStopWordIterator : public NaryBaseIterator<IsStopWordIterator, PlanIteratorState>
 { 
 public:

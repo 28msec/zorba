@@ -51,6 +51,36 @@ PlanIter_t zorba_full_text_host_lang::codegen(
   return new HostLangIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_full_text_is_stem_lang_supported::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsStemLangSupportedIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_full_text_is_stop_word_lang_supported::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsStopWordLangSupportedIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_full_text_is_thesaurus_lang_supported::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsThesaurusLangSupportedIterator(sctx, loc, argv);
+}
+
 PlanIter_t zorba_full_text_is_stop_word::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -113,6 +143,55 @@ void populate_context_ft_module(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/full-text","","host-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
         FunctionConsts::ZORBA_FULL_TEXT_HOST_LANG_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_is_stem_lang_supported,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stem-lang-supported"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_IS_STEM_LANG_SUPPORTED_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_is_stop_word_lang_supported,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word-lang-supported"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_IS_STOP_WORD_LANG_SUPPORTED_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_is_thesaurus_lang_supported,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_is_thesaurus_lang_supported,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_2);
 
   }
 

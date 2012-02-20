@@ -16,6 +16,8 @@
 
 #include <limits>
 
+#include <zorba/diagnostic_list.h>
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -110,6 +112,26 @@ bool HostLangIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
+bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
+                                            PlanState &plan_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  internal::StemmerProvider const *provider;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( item, theChildren[0], plan_state );
+  lang = get_lang_from( item, loc );
+
+  // TODO: why is this always the default StemmerProvider?
+  provider = &internal::StemmerProvider::get_default();
+  GENV_ITEMFACTORY->createBoolean( result, provider->get_stemmer( lang ) );
+  STACK_PUSH( true, state );
+
+  STACK_END( state );
+}
+
 bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   store::Item_t item;
@@ -131,7 +153,78 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   }
 
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
+  if ( !stop_words )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP8405_STOP_WORDS_LANG_NOT_SUPPORTED,
+      ERROR_PARAMS( lang ),
+      ERROR_LOC( loc )
+    );
   GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
+  STACK_PUSH( true, state );
+
+  STACK_END( state );
+}
+
+bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
+                                                PlanState &plan_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  ft_stop_words_set::ptr stop_words;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( item, theChildren[0], plan_state );
+  lang = get_lang_from( item, loc );
+
+  stop_words.reset( ft_stop_words_set::get_default( lang ) );
+  GENV_ITEMFACTORY->createBoolean( result, stop_words );
+  STACK_PUSH( true, state );
+
+  STACK_END( state );
+}
+
+bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
+                                                 PlanState &plan_state ) const {
+  vector<zstring> comp_uris;
+  zstring error_msg;
+  store::Item_t item;
+  iso639_1::type lang;
+  auto_ptr<internal::Resource> rsrc;
+  static_context const *sctx;
+  zstring uri;
+  internal::Thesaurus::ptr thesaurus;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  sctx = getStaticContext();
+
+  consumeNext( item, theChildren[0], plan_state );
+  if ( theChildren.size() > 1 ) {
+    item->getStringValue2( uri );
+    consumeNext( item, theChildren[1], plan_state );
+  } else {
+    uri = "##default";
+  }
+  lang = get_lang_from( item, loc );
+
+  sctx->get_component_uris(
+    uri, internal::EntityData::THESAURUS, comp_uris
+  );
+  if ( comp_uris.size() != 1 )
+    throw XQUERY_EXCEPTION(
+      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+    );
+
+  rsrc = sctx->resolve_uri(
+    comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
+  );
+  thesaurus.reset(
+    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
+  );
+
+  GENV_ITEMFACTORY->createBoolean( result, thesaurus.get() );
   STACK_PUSH( true, state );
 
   STACK_END( state );
@@ -160,11 +253,16 @@ bool StemIterator::nextImpl( store::Item_t &result,
 
   // TODO: why is this always the default StemmerProvider?
   provider = &internal::StemmerProvider::get_default();
-  stemmer = provider->get_stemmer( lang );
-  if ( stemmer ) {
+  if ( stemmer = provider->get_stemmer( lang ) ) {
     stemmer->stem( word, lang, &stem );
     GENV_ITEMFACTORY->createString( result, stem );
     STACK_PUSH( true, state );
+  } else {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP8404_STEM_LANG_NOT_SUPPORTED,
+      ERROR_PARAMS( lang ),
+      ERROR_LOC( loc )
+    );
   }
 
   STACK_END( state );
@@ -245,7 +343,12 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   state->thesaurus_.reset(
     dynamic_cast<internal::Thesaurus*>( rsrc.release() )
   );
-  ZORBA_ASSERT( state->thesaurus_.get() );
+  if ( !state->thesaurus_.get() )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
+      ERROR_PARAMS( lang ),
+      ERROR_LOC( loc )
+    );
 
   state->tresult_ = std::move(
     state->thesaurus_->lookup(

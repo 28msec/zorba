@@ -1680,7 +1680,7 @@
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The version of the thesaurus is not the expected version.
+        The version of the thesaurus is not the expected version.
       </comment>
      <value>"$1": wrong WordNet file version; should be "$2"</value>
     </diagnostic>
@@ -1688,17 +1688,32 @@
     <diagnostic code="ZXQP8402" name="THESAURUS_ENDIANNESS_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
+        The thesaurus data file's endianness does not match that of the CPU.
       </comment>
      <value>thesaurus data endianness does not match CPU</value>
-       The thesaurus data file's endianness does not match that of the CPU.
     </diagnostic>
 
     <diagnostic code="ZXQP8403" name="THESAURUS_DATA_ERROR"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The thesaurus data contains an unexpected value.
+        The thesaurus data contains an unexpected value.
       </comment>
      <value>thesaurus data error${: 1}</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP8404" name="STEM_LANG_NOT_SUPPORTED"
+      if="!defined(ZORBA_NO_FULL_TEXT)">
+      <value>"$1": langauge not supported for stemming</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP8405" name="STOP_WORDS_LANG_NOT_SUPPORTED"
+      if="!defined(ZORBA_NO_FULL_TEXT)">
+      <value>"$1": langauge not supported for stop-words</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP8406" name="THESAURUS_LANG_NOT_SUPPORTED"
+      if="!defined(ZORBA_NO_FULL_TEXT)">
+      <value>"$1": langauge not supported for thesaurus</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED">

@@ -29,6 +29,38 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="IsStemLangSupportedIterator">
+  <zorba:function>
+    <zorba:signature localname="is-stem-lang-supported" prefix="zorba-full-text">
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="IsStopWordLangSupportedIterator">
+  <zorba:function>
+    <zorba:signature localname="is-stop-word-lang-supported" prefix="zorba-full-text">
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="IsThesaurusLangSupportedIterator">
+  <zorba:function>
+    <zorba:signature localname="is-thesaurus-lang-supported" prefix="zorba-full-text">
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="is-thesaurus-lang-supported" prefix="zorba-full-text">
+      <zorba:param>xs:string</zorba:param>    <!-- URI -->
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <zorba:iterator name="IsStopWordIterator">
   <zorba:function>
     <zorba:signature localname="is-stop-word" prefix="zorba-full-text">

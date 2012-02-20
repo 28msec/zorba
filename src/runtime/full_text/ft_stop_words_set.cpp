@@ -128,25 +128,24 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 
       zstring error_msg;
       std::auto_ptr<internal::Resource> rsrc =
-          sctx.resolve_uri(uri, internal::EntityData::STOP_WORDS, error_msg);
-      internal::StreamResource* stream_rsrc =
-          dynamic_cast<internal::StreamResource*>(rsrc.get());
+        sctx.resolve_uri( uri, internal::EntityData::STOP_WORDS, error_msg );
+      internal::StreamResource *const stream_rsrc =
+        dynamic_cast<internal::StreamResource*>( rsrc.get() );
       if ( !stream_rsrc ) {
         // Technically this should be thrown during static analysis.
-        throw ZORBA_EXCEPTION(err::FTST0008, ERROR_PARAMS(uri));
+        throw ZORBA_EXCEPTION( err::FTST0008, ERROR_PARAMS( uri ) );
       }
-      std::istream* stream = stream_rsrc->getStream();
+      std::istream *const stream = stream_rsrc->getStream();
 
       bool in_word = false;
       zstring cur_word;
-      cur_word.reserve(128);
+      cur_word.reserve( 128 );
       char c;
-      while (stream->good()) {
-        stream->get(c);
+      while ( stream->good() ) {
+        stream->get( c );
         // Have to check for EOF *after* attempting the read
-        if (stream->eof()) {
+        if ( stream->eof() )
           break;
-        }
         if ( is_word_char( c ) ) {
           if ( !in_word ) {
             cur_word.clear();
@@ -179,7 +178,8 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 
 ft_stop_words_set const*
 ft_stop_words_set::get_default( iso639_1::type lang ) {
-  return new ft_stop_words_set( get_default_word_set_for( lang ), false );
+  word_set_t const *const word_set = get_default_word_set_for( lang );
+  return word_set ? new ft_stop_words_set( word_set, false ) : nullptr;
 }
 
 ft_stop_words_set::word_set_t*
