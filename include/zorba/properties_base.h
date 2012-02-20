@@ -102,7 +102,7 @@ template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val(
     unsigned delta);
 
 /**
- * This class provides access to global properties set for Zorba in evironment
+ * This class provides access to global properties set for Zorba in environment
  * and configuration file.
  * It is available using Zorba.getProperties() method.
  * \see { Zorba::getProperties() }
