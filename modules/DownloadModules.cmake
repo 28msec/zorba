@@ -75,7 +75,7 @@ foreach (modline ${modlines})
     endif (allmodules)
 
     # Download
-    if (_getmod)
+    if ("${_getmod}" EQUAL 1)
       message ("Downloading module '${_modname}'...")
       # We try three times, to account for network weirdnesses
       foreach (i 1 2 3)
@@ -121,12 +121,12 @@ foreach (modline ${modlines})
 	endif ("${_status}" EQUAL 0)
 
       endforeach (i)
-    endif (_getmod)
 
     # Ensure we successfully downloaded something good
     if (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
       message (FATAL_ERROR "Failed to download '${_modname}' after 3 attempts, giving up.")
     endif (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
 
+    endif ("${_getmod}" EQUAL 1)
   endif (modline)
 endforeach (modline)
