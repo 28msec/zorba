@@ -102,6 +102,8 @@ template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val(
     unsigned delta);
 
 /**
+ * \brief This class provides access to global properties.
+ *
  * This class provides access to global properties set for Zorba in environment
  * and configuration file.
  * It is available using Zorba.getProperties() method.
@@ -113,6 +115,8 @@ public:
   virtual ~PropertiesGlobal() {}
 
   /**
+   * \brief Get global JVM classpath property.
+   *
    * Before the JVM is started this will return the classpath set by
    * command line option, the CLASSPATH environment variable and in Zorba
    * config file.
@@ -123,6 +127,8 @@ public:
   virtual void getJVMClassPath(std::string & jvmClasspath) {}
 
   /**
+   * \brief Set global JVM classpath property.
+   *
    * This method should be used to set additional JVM classpath for modules
    * that make use of JVM. This will overide the classpath set by CLASSPATH
    * environment variable or Zorba config file.
