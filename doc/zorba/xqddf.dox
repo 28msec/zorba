@@ -293,12 +293,12 @@ associated the collection, and finally destroys the document container itself.
 \subsection collection_declaration Collection Declaration
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  CollectionDecl ::= 'declare'  Annotation* 'collection' QName CollectionTypeDecl?
+  AnnotatedDecl
+          ::= 'declare' ( CompatibilityAnnotation | Annotation )*
+              ( VarDecl | FunctionDecl | CollectionDecl | IndexDecl | ICDecl )
+  CollectionDecl ::= 'collection' EQName CollectionTypeDecl?
 
-  CollectionTypeDeclaration ::= 'as' KindTest OccurrenceIndicator?
+  CollectionTypeDecl ::= 'as' KindTest OccurrenceIndicator?
 \endcode
 
 Collections are defined by <strong>collection declaration statements</strong>,
@@ -1315,14 +1315,11 @@ receive an error.
 
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  IndexDecl ::= 'declare' Annotation* 'index' IndexName
+  IndexDecl ::= 'index' IndexName
                'on' 'nodes' IndexDomainExpr
                'by' IndexKeySpec (',' IndexKeySpec)*
 
-  IndexName ::= QName
+  IndexName ::= EQName
 
   IndexDomainExpr ::= PathExpr
 
@@ -1332,9 +1329,9 @@ receive an error.
 
   IndexKeyTypeDecl ::= 'as' AtomicType OccurrenceIndicator?
 
-  AtomicType ::= QName
+  AtomicType ::= EQName
 
-  IndexKeyCollation ::= 'collation' UriLiteral
+  IndexKeyCollation ::= 'collation' URILiteral
 
   Note: the following annotations are accepted within the context of an index declaration:
 
@@ -2063,16 +2060,16 @@ function populates an empty index container).</li>
 \section integrity_constraints Integrity Constraints in Zorba 
 
 \code
-  ICDecl                ::=  'declare' 'integrity' 'constraint' QName (ICCollection | ICForeignKey)
+  ICDecl                ::=  'integrity' 'constraint' EQName (ICCollection | ICForeignKey)
 
-  ICCollection          ::=  'on' 'collection' QName
+  ICCollection          ::=  'on' 'collection' EQName
        ( ICCollSequence | ICCollSequenceUnique | ICCollNode )
 
-  ICCollSequence        ::=  '\$' QName 'check' ExprSingle
+  ICCollSequence        ::=  '\$' EQName 'check' ExprSingle
 
-  ICCollSequenceUnique  ::=  'node' '\$' QName 'check' 'unique' 'key' PathExpr
+  ICCollSequenceUnique  ::=  'node' '\$' EQName 'check' 'unique' 'key' PathExpr
 
-  ICCollNode            ::=  'foreach' 'node' '\$' QName 'check' ExprSingle
+  ICCollNode            ::=  'foreach' 'node' '\$' EQName 'check' ExprSingle
 
   ICForeignKey          ::=  'foreign' 'key' ICForeignKeySource ICForeignKeyTarget
 
@@ -2080,7 +2077,7 @@ function populates an empty index container).</li>
 
   ICForeignKeyTarget    ::=  'to' ICForeignKeyValues
 
-  ICForeignKeyValues    ::=  'collection' QName 'node' '\$' QName 'key' PathExpr
+  ICForeignKeyValues    ::=  'collection' EQName 'node' '\$' QName 'key' PathExpr
 \endcode
 
 
