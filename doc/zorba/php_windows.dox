@@ -1,6 +1,4 @@
 /** \page php_windows_tutorial Zorba XQuery in PHP 5 - Windows Installation
-by Rodolfo Ochoa,
-May 24th, 2011
 
 These steps were checked on Windows 7. It should work fine with any PHP 5.X version and any other W32 platform.
 

@@ -37,6 +37,7 @@ version 2.2
   * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
+  * Added two API methods StaticContext::getFunctions to introspect the functions of a static context
   * Added API method Item::getNamespaceBindings().
   * Added a transcoding streambuffer to the API which allows transcoding arbitrary encodings
     from and to UTF-8
