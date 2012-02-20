@@ -2,6 +2,7 @@ Zorba - The XQuery Processor
 
 version 2.2
 
+  * Add --compile-plan (-c) and --execute-plan (-e) options to zorba command line.
   * Fixed bug 923015 (clone() not implemented for full-text expressions)
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
   * Added external function annotations %ann:propagates-input-nodes and 
