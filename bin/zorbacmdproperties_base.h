@@ -365,7 +365,7 @@ public:
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
 "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
 "--compile-plan, -c\nOutput the query plan as binary.\n\n"
-"--execute-plan, -e\nExecute a binary query plan. Binary query plans can be generated using the --compile-plan option.\n\n"
+"--execute-plan, -e\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
 ;
   }
 

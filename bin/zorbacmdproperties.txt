@@ -36,4 +36,4 @@
 ("stop-words", po::value<std::vector<std::string> >(), "Mapping specifying a stop-words URI to another.")
 ("thesaurus", po::value<std::vector<std::string> >(), "Mapping specifying a thesaurus URI to another.")
 ("compile-plan,c", "Output the query plan as binary.")
-("execute-plan,e", "Execute a binary query plan. Binary query plans can be generated using the --compile-plan option.")
+("execute-plan,e", "Take a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.")
