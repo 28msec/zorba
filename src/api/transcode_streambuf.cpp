@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <zorba/transcode_stream.h>
 
 #include "util/transcode_streambuf.h"
