@@ -134,7 +134,7 @@ public:
 
   audit::Provider* getAuditProvider();
 
-  PropertiesBase* getProperties();
+  PropertiesGlobal* getProperties();
 
 protected:
   ZorbaImpl();

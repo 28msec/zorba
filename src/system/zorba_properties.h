@@ -31,7 +31,7 @@
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
 namespace zorba { 
-class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
+class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesGlobal {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", "--CLASSPATH", NULL };

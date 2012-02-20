@@ -273,7 +273,7 @@ audit::Provider* ZorbaImpl::getAuditProvider()
 /*******************************************************************************
 
 ********************************************************************************/
-PropertiesBase* ZorbaImpl::getProperties()
+PropertiesGlobal* ZorbaImpl::getProperties()
 {
   return Properties::instance();
 }

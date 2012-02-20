@@ -41,8 +41,11 @@ namespace zorba {
 /**
  * The Zorba class is the single point of access to the %Zorba engine.
  * There exists one instance of the Zorba class per process.
- * It can be used to (1) create and compile queries, (2) create static contexts,
- * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
+ * It can be used to (1) create and compile queries,
+ * (2) create static contexts,
+ * (3) provides access to the XmlDataManager,
+ * (4) provides access to the ItemFactory, and
+ * (5) provides access to the PropertiesGlobal.
  */
 class ZORBA_DLL_PUBLIC Zorba
 {
@@ -327,7 +330,7 @@ class ZORBA_DLL_PUBLIC Zorba
    *
    * @return zorba::Properties the singelton instance of Zorba's properties object.
    */
-  virtual PropertiesBase* getProperties() = 0;
+  virtual PropertiesGlobal* getProperties() = 0;
 
 }; /* class Zorba */
 
