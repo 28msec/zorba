@@ -132,6 +132,12 @@ Mapping specifying a stop-words URI to another.
 
 --thesaurus
 Mapping specifying a thesaurus URI to another.
+
+--compile, -c
+Output the query plan as binary.
+
+--execute-plan, -e
+Execute a binary query plan. Binary query plans can be generated using the --compile-plan option.
 \endverbatim
 
 \section commandlineexamples Examples
