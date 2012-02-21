@@ -17,10 +17,9 @@
 #include "file.h"
 #include "file_module.h"
 #include "file_function.h"
+#include <cassert>
 
 namespace zorba { namespace filemodule {
-
-  ItemFactory* FileModule::theFactory = 0;
 
   const char* FileModule::theNamespace = "http://expath.org/ns/file";
 
@@ -39,9 +38,7 @@ FileModule::getExternalFunction(const String& aLocalname)
 {
   ExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (1 == 0) {
-
-    } else if (aLocalname == "create-directory") {
+    if (aLocalname == "create-directory") {
       lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname == "delete-file-impl") {
       lFunc = new DeleteFileImplFunction(this);

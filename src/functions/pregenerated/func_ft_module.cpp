@@ -36,7 +36,7 @@ PlanIter_t zorba_full_text_current_lang::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentLangIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t zorba_full_text_host_lang::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new HostLangIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t zorba_full_text_is_stem_lang_supported::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsStemLangSupportedIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t zorba_full_text_is_stop_word_lang_supported::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsStopWordLangSupportedIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t zorba_full_text_is_thesaurus_lang_supported::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsThesaurusLangSupportedIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t zorba_full_text_is_stop_word::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsStopWordIterator(sctx, loc, argv);
 }
@@ -96,7 +96,7 @@ PlanIter_t zorba_full_text_stem::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StemIterator(sctx, loc, argv);
 }
@@ -106,7 +106,7 @@ PlanIter_t zorba_full_text_strip_diacritics::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StripDiacriticsIterator(sctx, loc, argv);
 }
@@ -116,7 +116,7 @@ PlanIter_t zorba_full_text_thesaurus_lookup::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ThesaurusLookupIterator(sctx, loc, argv);
 }
