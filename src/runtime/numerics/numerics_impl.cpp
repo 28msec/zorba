@@ -20,6 +20,7 @@
 #include "common/shared_types.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
@@ -121,24 +122,19 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:abs" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:abs" ));
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:abs" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:abs"));
     }
-    STACK_PUSH ( true, state );
+
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 //6.4.2 fn:ceiling
@@ -186,24 +182,18 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:ceiling" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:ceiling" ));
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:ceiling" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:ceiling"));
     }
-    STACK_PUSH ( true, state );
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 //6.4.3 fn:floor
@@ -251,20 +241,14 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:floor" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:floor"));
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ) )
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:floor" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:floor" ));
     }
     STACK_PUSH (true, state );
   }
@@ -329,20 +313,14 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:round"));
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:round" ));
     }
     STACK_PUSH (true, state );
   }
@@ -404,20 +382,14 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round-half-to-even" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:round-half-to-even"));
     }
 
     if ( consumeNext(item, theChildren [0].getp(), planState ))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round-half-to-even" ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:round-half-to-even"));
     }
     STACK_PUSH ( true, state );
   }
@@ -807,7 +779,6 @@ static void formatNumber(
 
   store::Item_t zero;
   store::Item_t doubleItem;
-  bool positive = true;
   FormatNumberInfo::SubPictureInfo& sub_picture = info.pos_subpicture;
 
   GENV_ITEMFACTORY->createDouble(zero, xs_double::zero());
@@ -816,7 +787,6 @@ static void formatNumber(
 
   if (doubleItem->compare(zero) == -1)
   {
-    positive = false;
     sub_picture = info.neg_subpicture;
   }
 
@@ -910,7 +880,8 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     info.loc = loc;
     if (!isAllowedType(result->getType()))
     {
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS("the first paramter to the format-number() function is of type \"" + result->getType()->getStringValue() + "\", which is not allowed"), ERROR_LOC(info.loc));
+      RAISE_ERROR(err::XPTY0004, info.loc,
+      ERROR_PARAMS(ZED(FormatNumber_2), result->getType()->getStringValue()));
     }
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
@@ -923,7 +894,8 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       do // use a do/while to avoid a horde of nested if/then/elses
       {
-        // The formatName is a string, which must be interpreted as a QName -> must resolve the namespace, if any
+        // The formatName is a string, which must be interpreted as a QName -> 
+        // must resolve the namespace, if any
         consumeNext(formatName, theChildren[2].getp(), planState);
         zstring tmpFormatName = formatName->getStringValue();
         formatName = NULL;

@@ -50,7 +50,8 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    short scriptingKind)
+    short scriptingKind,
+    CompilerCB  *compilerCB)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -68,6 +69,8 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
+  theLocalUdfs = compilerCB->get_local_udfs();
+  theLocalUdfs->push_back(this);
 }
 
 
@@ -88,8 +91,22 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
+  if(theLocalUdfs != NULL)
+    theLocalUdfs->remove(this);
 }
 
+
+void user_function::prepare_for_serialize(CompilerCB *compilerCB)
+{
+  uint32_t planStateSize;
+  getPlan(compilerCB, planStateSize);
+  std::vector<user_function*>::iterator udf_it;
+  for(udf_it=theMutuallyRecursiveUDFs.begin(); udf_it!=theMutuallyRecursiveUDFs.end();udf_it++)
+  {
+    if((*udf_it)->thePlan == NULL)
+      (*udf_it)->prepare_for_serialize(compilerCB);
+  }
+}
 
 /*******************************************************************************
 
@@ -124,8 +141,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         getPlan(ar.compiler_cb);
       }
 #else
-      uint32_t planStateSize;
-      getPlan(ar.compiler_cb, planStateSize);
+      //uint32_t planStateSize;
+      //getPlan(ar.compiler_cb, planStateSize);
+      assert(thePlan != NULL);
+      ZORBA_ASSERT(thePlan != NULL);
 #endif
     }
     catch(...)
@@ -579,7 +598,7 @@ PlanIter_t user_function::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new UDFunctionCallIterator(sctx, loc, argv, this);
 }

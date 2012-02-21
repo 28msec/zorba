@@ -77,7 +77,7 @@ Zorba provides email support using the CClient library part of the <a href="http
 \subsubsection cclientunix Unix/Linux/Mac OS X
 Notes:
 - There are some known issues with the CClient packages
-  that come with diffrent Linux distributions.
+  that come with different Linux distributions.
 - On x32 bit OpenSuse and also on x64 bit Ubuntu,
   we noticed that the CClient shared library is broken
   (undefined symbol: mm_dlog).

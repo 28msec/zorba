@@ -25,7 +25,9 @@
 
 #include <fstream>
 
-namespace zorba { namespace filemodule {
+namespace zorba {
+
+  namespace filemodule {
 
   class FileModule;
 
@@ -136,17 +138,11 @@ namespace zorba { namespace filemodule {
             next(Item& aResult);
         };
 
-        Item           theItem;
-        std::ifstream* theStream;
+        Item                 theItem;
+        std::ifstream*       theStream;
 
         StreamableItemSequence() 
           : theStream(new std::ifstream()) {}
-
-        static void
-        streamReleaser(std::istream* stream)
-        {
-          delete stream;
-        }
 
         Iterator_t  getIterator()
         {

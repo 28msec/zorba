@@ -2,7 +2,7 @@ The command ./zorba -f -q /tmp/XQTS_current/run_xqts.xq generates:
 - /tmp/XQTS_current/conformanceXQTS.dox
 - /tmp/XQTS_current/conformanceXQTSSummary.dox
 Note: this takes quite a long time because there are over 28000 tests to be processed(14000 XQuery and the same for XQueryX)
-Also there are over 580 XQueryX tests for wich there are no results reported in the submission XML.
+Also there are over 580 XQueryX tests for which there are no results reported in the submission XML.
 
 The command ./zorba -f -q /tmp/XQTS_current/run_xquts.xq generates:
 - /tmp/XQUTS_current/conformanceXQUTS.dox

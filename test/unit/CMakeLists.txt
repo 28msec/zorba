@@ -14,6 +14,7 @@
 # create the testing file and list of tests
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mini_http.xq ${CMAKE_CURRENT_BINARY_DIR}/mini_http.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
 #belongs to test cxx_api_changes.cpp
@@ -83,9 +84,7 @@ SET(UNIT_TESTS_SRCS
   ext_in_opt.cpp
   collection.cpp
   test_audit.cpp
-  string_instantiate.cpp
   streamable_string.cpp
-  unique_ptr.cpp
   main_sequential.cpp
   context_item.cpp
   datetime.cpp
@@ -93,18 +92,8 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
   xmldatamanager.cpp
   staticcollectionmanager.cpp
+  static_context.cpp
 )
-
-#IF(NOT ZORBA_NO_ICU)
-  LIST(APPEND UNIT_TESTS_SRCS string_test.cpp)
-#ENDIF(NOT ZORBA_NO_ICU)
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND UNIT_TESTS_SRCS
-    stemmer.cpp
-    thesaurus.cpp
-    tokenizer.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 # multithread_simple.cpp
 # multithread_stress_test.cpp
@@ -143,5 +132,15 @@ ENDFOREACH(test)
 ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 
 # ADD NEW UNIT TESTS HERE
+ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
+ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
+ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
+IF (NOT ZORBA_NO_FULL_TEXT)
+  ZORBA_ADD_TEST("test/libunit/stemmer" LibUnitTest stemmer)
+  ZORBA_ADD_TEST("test/libunit/thesaurus" LibUnitTest thesaurus)
+  ZORBA_ADD_TEST("test/libunit/tokenizer" LibUnitTest tokenizer)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+# vim:set et sw=2 ts=2:

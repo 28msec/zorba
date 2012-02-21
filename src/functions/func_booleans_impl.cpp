@@ -76,7 +76,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const
+        expr &ann) const
   {
     return createIterator(sctx, loc, argv);
   }
@@ -583,7 +583,7 @@ public:
                     static_context* sctx,
                     const QueryLoc& loc,
                     std::vector<PlanIter_t>& argv,
-                    AnnotationHolder& ann) const
+                    expr& ann) const
   {
     return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
   }
@@ -623,7 +623,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new AndIterator(sctx, loc, argv);
@@ -660,7 +660,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new OrIterator(sctx, loc, argv);
@@ -686,7 +686,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, true);
@@ -708,7 +708,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, false);
@@ -745,7 +745,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0], true);
   }
@@ -783,7 +783,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0]);
   }
@@ -795,7 +795,7 @@ public:
 ********************************************************************************/
 void populateContext_Comparison(static_context* sctx)
 {
-  const char* zorba_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_ns = static_context::ZORBA_OP_NS;
 
   // General Comparison;
   DECL(sctx, op_equal,
@@ -874,15 +874,14 @@ DECL(sctx, op_atomic_values_equivalent,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Atomic Values Equivalent
 
 }
 
 
 void populate_context_booleans_impl(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
   // Boolean
   DECL(sctx, fn_true,

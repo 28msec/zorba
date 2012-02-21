@@ -99,7 +99,6 @@ typedef zstring string;
  * @return Returns \c true only if the character is invalid in an IRI.
  * See RFC 3987.
  */
-ZORBA_DLL_PUBLIC
 bool is_invalid_in_iri( code_point c );
 
 /**
@@ -109,7 +108,6 @@ bool is_invalid_in_iri( code_point c );
  * @return Returns \c true only if the character is a "iprivate".
  * See RFC 3987.
  */
-ZORBA_DLL_PUBLIC
 bool is_iprivate( code_point c );
 
 /**
@@ -135,7 +133,6 @@ inline bool is_space( code_point c ) {
  * @return Returns \c true only if the character is a "ucschar".
  * See RFC 3987.
  */
-ZORBA_DLL_PUBLIC
 bool is_ucschar( code_point c );
 
 /**
@@ -161,7 +158,6 @@ is_valid( CodePointType c ) {
  * @param c The character.
  * @return Returns \c true only if the character is lower-case.
  */
-ZORBA_DLL_PUBLIC
 bool is_lower( code_point c );
 
 /**
@@ -170,7 +166,6 @@ bool is_lower( code_point c );
  * @param c The character.
  * @return Returns \c true only if the character is upper-case.
  */
-ZORBA_DLL_PUBLIC
 bool is_upper( code_point c );
 
 /**
@@ -180,7 +175,6 @@ bool is_upper( code_point c );
  * @return Returns the given character converted to lower-case or the original
  * character if either it was already lower-case or not a letter.
  */
-ZORBA_DLL_PUBLIC
 code_point to_lower( code_point c );
 
 /**
@@ -190,7 +184,6 @@ code_point to_lower( code_point c );
  * @return Returns the given character converted to upper-case or the original
  * character if either it was already upper-case or not a letter.
  */
-ZORBA_DLL_PUBLIC
 code_point to_upper( code_point c );
 
 ////////// normalization //////////////////////////////////////////////////////
@@ -203,7 +196,6 @@ code_point to_upper( code_point c );
  * @param out The normalized string.  It is overwritten.
  * @return Returns \c true only if the normalization succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool normalize( string const &in, normalization::type n, string *out );
 #endif /* ZORBA_NO_ICU */
 

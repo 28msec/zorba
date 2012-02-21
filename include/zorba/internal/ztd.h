@@ -355,7 +355,8 @@ to_string( T const &t ) {
 template<typename T> inline
 typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
 to_string( T p ) {
-  return p ? to_string( *p ) : "<null>";
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
+  return p ? to_string( *static_cast<T_const_ptr>( p ) ) : "<null>";
 }
 
 /**

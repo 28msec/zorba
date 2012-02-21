@@ -261,7 +261,7 @@ PlanIter_t fn_subsequence::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
 
@@ -344,7 +344,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
 
@@ -393,12 +393,11 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
-        lenExpr != NULL &&
         (inputVar->get_kind() == var_expr::let_var ||
          inputVar->get_kind() == var_expr::win_var ||
          inputVar->get_kind() == var_expr::non_groupby_var) &&
         letVarIter->setTargetPosIter(aArgs[1]) &&
-        letVarIter->setTargetLenIter(aArgs[2]))
+        letVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
@@ -408,10 +407,9 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
-        lenExpr != NULL &&
         !inputVar->is_context_item() &&
         ctxVarIter->setTargetPosIter(aArgs[1]) &&
-        ctxVarIter->setTargetLenIter(aArgs[2]))
+        ctxVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
@@ -441,7 +439,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
 
@@ -534,7 +532,7 @@ PlanIter_t fn_count::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   const std::type_info& counted_type = typeid(*argv[0]);
 
@@ -595,7 +593,7 @@ PlanIter_t fn_unordered::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ) const
+    expr& ) const
 {
   return argv[0];
 }
@@ -626,7 +624,7 @@ PlanIter_t fn_zero_or_one::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   return new FnZeroOrOneIterator(aSctx,
                                  aLoc,
@@ -681,7 +679,7 @@ PlanIter_t fn_exactly_one_noraise::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   return new FnExactlyOneIterator(aSctx,
                                   aLoc,
@@ -699,7 +697,7 @@ PlanIter_t fn_union::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new FnConcatIterator(sctx, loc, argv);
 }
@@ -713,7 +711,7 @@ PlanIter_t fn_intersect::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
 #if 0  // we can't access PRODUCES_* from the inputs, must rethink
   bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
@@ -738,7 +736,7 @@ PlanIter_t fn_except::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
   return new HashSemiJoinIterator(sctx, loc, argv, true);
@@ -771,7 +769,7 @@ PlanIter_t fn_max::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& /*aAnn*/) const
+    expr& /*aAnn*/) const
 {
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MAX);
 }
@@ -785,7 +783,7 @@ PlanIter_t fn_min::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& /*ann*/) const
+    expr& /*ann*/) const
 {
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
 }
@@ -951,7 +949,7 @@ PlanIter_t fn_head::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& /*aAnn*/) const
+    expr& /*aAnn*/) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -966,7 +964,7 @@ PlanIter_t fn_tail::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& /*aAnn*/) const
+    expr& /*aAnn*/) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -978,9 +976,9 @@ PlanIter_t fn_tail::codegen(
 ********************************************************************************/
 void populate_context_sequences_impl(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
   DECL(sctx, fn_unordered,
        (createQName(fn_ns, "", "unordered"),

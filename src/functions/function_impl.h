@@ -69,7 +69,7 @@ PlanIter_t codegen(CompilerCB* cb,                        \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder& ann) const;          \
+                   expr& ann) const;                      \
 
 
 #define CODEGEN_DEF(class)                                \
@@ -77,7 +77,7 @@ PlanIter_t class::codegen(CompilerCB* aCb,                \
                           static_context* aSctx,          \
                           const QueryLoc& aLoc,           \
                           std::vector<PlanIter_t>& aArgs, \
-                          AnnotationHolder& aAnn) const
+                          expr& aAnn) const
 
 
 #define DEFAULT_NARY_CODEGEN(Iter)                        \
@@ -85,7 +85,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv);                       \
 }
@@ -96,7 +96,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv[0], argv[1]);           \
 }
@@ -107,7 +107,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv[0]);                    \
 }
@@ -118,7 +118,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc);                             \
 }
