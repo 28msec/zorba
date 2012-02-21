@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_random_seeded_random::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SeededRandomIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_random_random::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RandomIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_zorba_util_uuid::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new UuidIterator(sctx, loc, argv);
 }

@@ -141,11 +141,6 @@ FileFunction::getEncodingArg(
     arg_iter->close();
   }
 
-  if (!(lEncoding == "UTF-8" || lEncoding == "UTF8")) {
-    // the rest are not supported encodings
-    raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
-  }
-
   return lEncoding;
 }
 

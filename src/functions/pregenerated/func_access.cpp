@@ -36,7 +36,7 @@ PlanIter_t fn_unparsed_text::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnUnparsedTextIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_unparsed_text_available::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
 }

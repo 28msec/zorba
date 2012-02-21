@@ -36,7 +36,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_create::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapCreateIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_delete::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapDestroyIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_get::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapGetIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_insert::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapInsertIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_remove::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapRemoveIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_keys::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapKeysIterator(sctx, loc, argv);
 }
@@ -96,7 +96,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_size::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new MapSizeIterator(sctx, loc, argv);
 }
@@ -106,7 +106,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_available_maps::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AvailableMapsIterator(sctx, loc, argv);
 }

@@ -36,7 +36,7 @@ PlanIter_t fn_abs::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AbsIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_ceiling::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CeilingIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_floor::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FloorIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_round_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RoundIterator(sctx, loc, argv);
 }
@@ -75,7 +75,7 @@ PlanIter_t fn_round::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RoundIterator(sctx, loc, argv);
 }
@@ -85,7 +85,7 @@ PlanIter_t fn_round_half_to_even::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RoundHalfToEvenIterator(sctx, loc, argv);
 }
@@ -95,7 +95,7 @@ PlanIter_t fn_format_number_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FormatNumberIterator(sctx, loc, argv);
 }
@@ -105,7 +105,7 @@ PlanIter_t fn_format_integer_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FormatIntegerIterator(sctx, loc, argv);
 }

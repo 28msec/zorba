@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeReferenceIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_ref_node_by_reference::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeByReferenceIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_local_name::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnLocalNameIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_namespace_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnNamespaceUriIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_lang::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnLangIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_number::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_has_children_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnHasChildrenIterator(sctx, loc, argv);
 }
@@ -106,7 +106,7 @@ PlanIter_t fn_innermost_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnInnermostIterator(sctx, loc, argv);
 }
@@ -116,7 +116,7 @@ PlanIter_t fn_outermost_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnOutermostIterator(sctx, loc, argv);
 }
@@ -126,7 +126,7 @@ PlanIter_t fn_generate_id_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnGenerateIdIterator(sctx, loc, argv);
 }
@@ -136,7 +136,7 @@ PlanIter_t fn_zorba_node_ancestor_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsAncestorIterator(sctx, loc, argv);
 }
@@ -146,7 +146,7 @@ PlanIter_t fn_zorba_node_descendant_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDescendantIterator(sctx, loc, argv);
 }
@@ -156,7 +156,7 @@ PlanIter_t fn_zorba_node_parent_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsParentIterator(sctx, loc, argv);
 }
@@ -166,7 +166,7 @@ PlanIter_t fn_zorba_node_child_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsChildIterator(sctx, loc, argv);
 }
@@ -176,7 +176,7 @@ PlanIter_t fn_zorba_node_following_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsFollowingIterator(sctx, loc, argv);
 }
@@ -186,7 +186,7 @@ PlanIter_t fn_zorba_node_preceding_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsPrecedingIterator(sctx, loc, argv);
 }
@@ -196,7 +196,7 @@ PlanIter_t fn_zorba_node_following_sibling_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsFollowingSiblingIterator(sctx, loc, argv);
 }
@@ -206,7 +206,7 @@ PlanIter_t fn_zorba_node_preceding_sibling_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsPrecedingSiblingIterator(sctx, loc, argv);
 }
@@ -216,7 +216,7 @@ PlanIter_t fn_zorba_node_level::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LevelIterator(sctx, loc, argv);
 }
@@ -226,7 +226,7 @@ PlanIter_t fn_zorba_node_least_common_ancestor::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LeastCommonAncestor(sctx, loc, argv);
 }

@@ -1510,8 +1510,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
-  const StaticallyKnownCollection* collectionDecl;
-  store::Item_t                    collectionName;
+  store::Item_t                    name;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
@@ -1521,10 +1520,12 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) {
+    if (! node->getCollection()) 
+    {
       throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
     }
-    if (collection && collection != node->getCollection()) {
+    if (collection && collection != node->getCollection()) 
+    {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0018_NODES_NOT_IN_SAME_COLLECTION, ERROR_LOC( loc )
       );
@@ -1536,18 +1537,14 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   if (!nodes.empty())
   {
-    collectionName = collection->getName();
+    name = collection->getName();
 
-    collectionDecl = getCollection(theSctx,
-                                   collectionName,
-                                   loc,
-                                   theDynamicCollection,
-                                   collection);
+    (void)getCollection(theSctx, name, loc, theDynamicCollection, collection);
 
     // create the pul and add the primitive
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
+    pul->addDeleteFromCollection(&loc, name, nodes, false, theDynamicCollection);
 
     // this should not be necessary. we reset everything in the sequential iterator
     theChildren[theChildren.size()-1]->reset(planState);

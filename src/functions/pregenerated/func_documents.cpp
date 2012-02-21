@@ -36,7 +36,7 @@ PlanIter_t zorba_store_documents_put::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PutDocumentIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t zorba_store_documents_remove::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RemoveDocumentIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t zorba_store_documents_document::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RetrieveDocumentIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t zorba_store_documents_available_documents::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AvailableDocumentsIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t zorba_store_documents_is_available_document::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsAvailableDocumentIterator(sctx, loc, argv);
 }

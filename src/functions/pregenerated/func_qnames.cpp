@@ -36,7 +36,7 @@ PlanIter_t fn_resolve_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ResolveQNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new QNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -56,7 +56,7 @@ PlanIter_t op_QName_equal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new QNameEqualIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_prefix_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PrefixFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_local_name_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LocalNameFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_namespace_uri_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NamespaceUriFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_namespace_uri_for_prefix::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NamespaceUriForPrefixIterator(sctx, loc, argv);
 }
@@ -106,7 +106,7 @@ PlanIter_t fn_in_scope_prefixes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopePrefixesIterator(sctx, loc, argv[0]);
 }

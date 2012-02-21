@@ -36,7 +36,7 @@ PlanIter_t fn_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnCollectionIterator(sctx, loc, argv);
 }
@@ -63,7 +63,7 @@ PlanIter_t zorba_store_collections_static_dml_collection_name::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaCollectionNameIterator(sctx, loc, argv);
 }
@@ -75,7 +75,7 @@ PlanIter_t zorba_store_indexes_static_ddl_is_available_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsAvailableIndexIterator(sctx, loc, argv);
 }
@@ -85,7 +85,7 @@ PlanIter_t zorba_store_indexes_static_ddl_available_indexes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AvailableIndexesIterator(sctx, loc, argv);
 }
@@ -95,7 +95,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_activated_integrity_c
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsActivatedICIterator(sctx, loc, argv);
 }
@@ -105,7 +105,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activated_integrity_cons
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ActivatedICsIterator(sctx, loc, argv);
 }
@@ -115,7 +115,7 @@ PlanIter_t zorba_store_collections_static_ddl_is_declared_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredCollectionIterator(sctx, loc, argv);
 }
@@ -125,7 +125,7 @@ PlanIter_t zorba_store_collections_static_ddl_declared_collections::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredCollectionsIterator(sctx, loc, argv);
 }
@@ -135,7 +135,7 @@ PlanIter_t zorba_store_indexes_static_ddl_is_declared_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredIndexIterator(sctx, loc, argv);
 }
@@ -145,7 +145,7 @@ PlanIter_t zorba_store_indexes_static_ddl_declared_indexes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredIndexesIterator(sctx, loc, argv);
 }
@@ -155,7 +155,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_declared_integrity_co
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredICIterator(sctx, loc, argv);
 }
@@ -165,7 +165,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_declared_integrity_const
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredICsIterator(sctx, loc, argv);
 }
@@ -175,7 +175,7 @@ PlanIter_t fn_uri_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnURICollectionIterator(sctx, loc, argv);
 }

@@ -36,7 +36,7 @@ PlanIter_t math_sqrt::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SqrtIterator(sctx, loc, argv[0]);
 }
@@ -46,7 +46,7 @@ PlanIter_t math_exp::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ExpIterator(sctx, loc, argv[0]);
 }
@@ -56,7 +56,7 @@ PlanIter_t math_exp10::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new Exp10Iterator(sctx, loc, argv[0]);
 }
@@ -66,7 +66,7 @@ PlanIter_t math_log::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LogIterator(sctx, loc, argv[0]);
 }
@@ -76,7 +76,7 @@ PlanIter_t math_log10::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new Log10Iterator(sctx, loc, argv[0]);
 }
@@ -86,7 +86,7 @@ PlanIter_t math_sin::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SinIterator(sctx, loc, argv[0]);
 }
@@ -96,7 +96,7 @@ PlanIter_t math_cos::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CosIterator(sctx, loc, argv[0]);
 }
@@ -106,7 +106,7 @@ PlanIter_t math_tan::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new TanIterator(sctx, loc, argv[0]);
 }
@@ -116,7 +116,7 @@ PlanIter_t math_asin::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ArcSinIterator(sctx, loc, argv[0]);
 }
@@ -126,7 +126,7 @@ PlanIter_t math_acos::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ArcCosIterator(sctx, loc, argv[0]);
 }
@@ -136,7 +136,7 @@ PlanIter_t math_atan::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ArcTanIterator(sctx, loc, argv[0]);
 }
@@ -146,7 +146,7 @@ PlanIter_t math_atan2::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new Atan2Iterator(sctx, loc, argv[0], argv[1]);
 }
@@ -156,7 +156,7 @@ PlanIter_t fn_zorba_math_cosh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CoshIterator(sctx, loc, argv[0]);
 }
@@ -166,7 +166,7 @@ PlanIter_t fn_zorba_math_acosh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AcoshIterator(sctx, loc, argv[0]);
 }
@@ -176,7 +176,7 @@ PlanIter_t fn_zorba_math_fmod::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FmodIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -186,7 +186,7 @@ PlanIter_t fn_zorba_math_ldexp::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LdexpIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -196,7 +196,7 @@ PlanIter_t math_pow::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PowIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -206,7 +206,7 @@ PlanIter_t fn_zorba_math_sinh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SinhIterator(sctx, loc, argv[0]);
 }
@@ -216,7 +216,7 @@ PlanIter_t fn_zorba_math_asinh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AsinhIterator(sctx, loc, argv[0]);
 }
@@ -226,7 +226,7 @@ PlanIter_t fn_zorba_math_tanh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new TanhIterator(sctx, loc, argv[0]);
 }
@@ -236,7 +236,7 @@ PlanIter_t fn_zorba_math_atanh::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AtanhIterator(sctx, loc, argv[0]);
 }
@@ -246,7 +246,7 @@ PlanIter_t math_pi::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PiNumberIterator(sctx, loc);
 }
@@ -256,7 +256,7 @@ PlanIter_t fn_zorba_math_is_inf::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsInfIterator(sctx, loc, argv[0]);
 }
@@ -266,7 +266,7 @@ PlanIter_t fn_zorba_math_is_nan::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsNaNIterator(sctx, loc, argv[0]);
 }
@@ -276,7 +276,7 @@ PlanIter_t fn_zorba_math_modf::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ModfIterator(sctx, loc, argv[0]);
 }
@@ -286,7 +286,7 @@ PlanIter_t fn_zorba_math_frexp::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FrexpIterator(sctx, loc, argv[0]);
 }

@@ -58,6 +58,7 @@
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
+#include "functions/func_json.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
@@ -109,6 +110,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_fnput(sctx);
   populate_context_index_ddl(sctx);
   populate_context_ic_ddl(sctx);
+  populate_context_json(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_node_position(sctx);

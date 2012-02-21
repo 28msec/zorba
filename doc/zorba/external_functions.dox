@@ -111,7 +111,7 @@ external functions. If for some reason you do not wish to use the
 be necessary for you to place the shared object such that Zorba can
 load it at runtime.
 
-To locate a dynamic libary, Zorba first transforms its target
+To locate a dynamic library, Zorba first transforms its target
 namespace URI to a relative file path and then uses the "Library Path"
 mechanism (described in \ref libpath) to turn this relative path
 to the absolute path name of the dynamic library file. The
@@ -131,7 +131,7 @@ URI is "com/example/www".
 
 <li>
 The path component of the URI is extracted and separated into a branch name and
-a file name: (a) if the path component does not contain any "/" charcters, the 
+a file name: (a) if the path component does not contain any "/" characters, the 
 branch name is empty and the file name is the full path component, else (b) if 
 the path component ends with a "/", the branch name is the full path component 
 and the file name is empty, else (c) the file name is set to the last step of 
