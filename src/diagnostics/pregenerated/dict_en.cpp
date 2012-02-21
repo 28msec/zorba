@@ -543,6 +543,7 @@ extern entry const dict_en[] = {
   { "~NoSeqAsCollationParam", "sequence of more than one item not allowed as collation parameter" },
   { "~NoSeqCastToTypeWithQuantOneOrQuestion", "sequence of more than one item can not be cast to type with quantifier '1' or '?'" },
   { "~NoSeqForFnOp_2", "sequence of more than one item can not be operand for function \"$2()\"" },
+  { "~NoSeqForFnOp_3", "sequence of more than one item can not be operand to concatenation" },
   { "~NoSeqInValueComp", "sequnce of more than one item can not be in value comparisons" },
   { "~NoSeqTestedForAtomicEquiv", "sequence of more than one item can not be tested for atomic value equivalence" },
   { "~NoSeqTypePromotion", "type promotion not possible on sequence of more than one item" },

@@ -333,7 +333,7 @@ bool ConcatStrIterator::nextImpl(
       {
         throw XQUERY_EXCEPTION(
           err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:concat" ),
+          ERROR_PARAMS( ZED( NoSeqForFnOp_3 ) ),
           ERROR_LOC( loc )
         );
       }
