@@ -114,19 +114,26 @@ bool HostLangIterator::nextImpl( store::Item_t &result,
 
 bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
+  bool is_supported;
   store::Item_t item;
-  iso639_1::type lang;
-  internal::StemmerProvider const *provider;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   consumeNext( item, theChildren[0], plan_state );
-  lang = get_lang_from( item, loc );
+  try {
+    // TODO: why is this always the default StemmerProvider?
+    internal::StemmerProvider const *const provider =
+      &internal::StemmerProvider::get_default();
+    is_supported = provider->get_stemmer( get_lang_from( item, loc ) );
+  }
+  catch ( XQueryException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 )
+      throw;
+    is_supported = false;
+  }
 
-  // TODO: why is this always the default StemmerProvider?
-  provider = &internal::StemmerProvider::get_default();
-  GENV_ITEMFACTORY->createBoolean( result, provider->get_stemmer( lang ) );
+  GENV_ITEMFACTORY->createBoolean( result, is_supported );
   STACK_PUSH( true, state );
 
   STACK_END( state );
@@ -167,18 +174,23 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
 
 bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
                                                 PlanState &plan_state ) const {
+  bool is_supported;
   store::Item_t item;
-  iso639_1::type lang;
-  ft_stop_words_set::ptr stop_words;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   consumeNext( item, theChildren[0], plan_state );
-  lang = get_lang_from( item, loc );
+  try {
+    is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
+  }
+  catch ( XQueryException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 )
+      throw;
+    is_supported = false;
+  }
 
-  stop_words.reset( ft_stop_words_set::get_default( lang ) );
-  GENV_ITEMFACTORY->createBoolean( result, stop_words );
+  GENV_ITEMFACTORY->createBoolean( result, is_supported );
   STACK_PUSH( true, state );
 
   STACK_END( state );
@@ -186,19 +198,12 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
 
 bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
                                                  PlanState &plan_state ) const {
-  vector<zstring> comp_uris;
-  zstring error_msg;
+  bool is_supported;
   store::Item_t item;
-  iso639_1::type lang;
-  auto_ptr<internal::Resource> rsrc;
-  static_context const *sctx;
   zstring uri;
-  internal::Thesaurus::ptr thesaurus;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  sctx = getStaticContext();
 
   consumeNext( item, theChildren[0], plan_state );
   if ( theChildren.size() > 1 ) {
@@ -207,24 +212,36 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   } else {
     uri = "##default";
   }
-  lang = get_lang_from( item, loc );
 
-  sctx->get_component_uris(
-    uri, internal::EntityData::THESAURUS, comp_uris
-  );
-  if ( comp_uris.size() != 1 )
-    throw XQUERY_EXCEPTION(
-      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+  try {
+    vector<zstring> comp_uris;
+    iso639_1::type lang = get_lang_from( item, loc );
+    static_context const *const sctx = getStaticContext();
+
+    sctx->get_component_uris(
+      uri, internal::EntityData::THESAURUS, comp_uris
     );
+    if ( comp_uris.size() != 1 )
+      throw XQUERY_EXCEPTION(
+        err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+      );
 
-  rsrc = sctx->resolve_uri(
-    comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
-  );
-  thesaurus.reset(
-    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
-  );
+    zstring error_msg;
+    auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
+      comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
+    );
+    internal::Thesaurus::ptr thesaurus(
+      dynamic_cast<internal::Thesaurus*>( rsrc.release() )
+    );
+    is_supported = thesaurus;
+  }
+  catch ( XQueryException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 )
+      throw;
+    is_supported = false;
+  }
 
-  GENV_ITEMFACTORY->createBoolean( result, thesaurus.get() );
+  GENV_ITEMFACTORY->createBoolean( result, is_supported );
   STACK_PUSH( true, state );
 
   STACK_END( state );

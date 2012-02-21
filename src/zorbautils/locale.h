@@ -329,6 +329,20 @@ namespace zorba {
     namespace iso639_2 {
       enum type {
         unknown,
+        abk,  // Abkhazian
+        aar,  // Afar
+        afr,  // Afrikaans
+        aka,  // Akan
+        alb,  // Albanian
+        amh,  // Amharic
+        ara,  // Arabic
+        arg,  // Aragonese
+        arm,  // Armenian
+        asm_, // Assamese
+        ava,  // Avaric
+        ave,  // Avestan
+        aym,  // Aymara
+        aze,  // Azerbaijani
         dan,  // Danish
         deu,  // German (T)
         dut,  // Dutch (B)

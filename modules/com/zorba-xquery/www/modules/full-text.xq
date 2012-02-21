@@ -201,6 +201,7 @@ declare function ft:is-stem-lang-supported( $lang as xs:language )
  : @param $word The word to check.
  : @param $lang The language of <code>$word</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
+ : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for stop-words.
  :)
 declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
@@ -211,6 +212,10 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : @param $word The word to check.  The word's language is assumed to be the
  : one returned by <code>ft:current-lang()</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
+ : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
+ : stop-words specifically.
  :)
 declare function ft:is-stop-word( $word as xs:string )
   as xs:boolean
@@ -255,6 +260,9 @@ declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
  : @param $word The word to stem.
  : @param $lang The language of <code>$word</code>.
  : @return the stem of <code>$word</code>.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
+ : @error zerr:ZXQP8404 if <code>$lang</code> is not supported for stemming
+ : specifically.
  :)
 declare function ft:stem( $word as xs:string, $lang as xs:language )
   as xs:string external;
@@ -265,6 +273,10 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
  : @param $word The word to stem.  The word's language is assumed to be the
  : one returned by <code>ft:current-lang()</code>.
  : @return the stem of <code>$word</code>.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
+ : @error zerr:ZXQP8404 if <code>ft:current-lang()</code> is not supported for
+ : stemming specifically.
  :)
 declare function ft:stem( $word as xs:string )
   as xs:string
@@ -287,12 +299,15 @@ declare function ft:strip-diacritics( $string as xs:string )
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
  : be the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
  : by the currently running version of Zorba.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data.
+ : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
+ : thesaurus look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
   as xs:string+ external;
@@ -304,7 +319,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @param $phrase The phrase to look up.
  : @param $lang The language of <code>$phrase</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
@@ -314,6 +329,8 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
+ : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for thesaurus
+ : look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language )
@@ -326,7 +343,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @param $phrase The phrase to look up.  The phrase's language is assumed to
  : be the one the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported in
+ : general.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
@@ -336,6 +354,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
+ : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
+ : thesaurus look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
   as xs:string+
@@ -354,7 +374,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @return the original and related phrases.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
- : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
@@ -362,6 +382,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
+ : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for thesaurus
+ : look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language,
@@ -385,7 +407,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : <code>$level-most</code> is either negative or too large.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
- : @error err:FTST0009 if <code>$lang</code> is unsupported.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
@@ -393,6 +415,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
+ : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for thesaurus
+ : look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language,
@@ -407,6 +431,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @param $doc The document to tokenize.
  : @param $lang The default language of <code>$doc</code>.
  : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
 declare function ft:tokenize( $doc as node(), $lang as xs:language )
   as node()* external;
@@ -417,6 +442,8 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : @param $doc The XML document to tokenize.  The document's default language
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
  :)
 declare function ft:tokenize( $doc as node() )
   as node()*
@@ -430,6 +457,7 @@ declare function ft:tokenize( $doc as node() )
  : @param $string The string to tokenize.
  : @param $lang The default language of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
 declare function ft:tokenize-string( $string as xs:string,
                                      $lang as xs:language )
@@ -444,6 +472,8 @@ declare function ft:tokenize-string( $string as xs:string,
  : @param $string The string to tokenize.  The string's default language is
  : assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
  :)
 declare function ft:tokenize-string( $string as xs:string )
   as xs:string*
@@ -456,6 +486,7 @@ declare function ft:tokenize-string( $string as xs:string )
  :
  : @param $lang The langauage of the tokenizer to get the properties of.
  : @return said properties.
+ : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )
   as node() external;
@@ -465,6 +496,8 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  : <code>ft:current-lang()</code>.
  :
  : @return said properties.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
+ : general.
  :)
 declare function ft:tokenizer-properties()
   as node()

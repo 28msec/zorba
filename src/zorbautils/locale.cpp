@@ -36,10 +36,10 @@
 
 #define DEF_END(CHAR_ARRAY)                             \
   static char const *const *const end =                 \
-    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
+    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* )
 
-#define FIND(what) \
-  static_cast<type>( find_index( string_of, end, what ) )
+#define FIND(WHAT) \
+  static_cast<type>( find_index( string_of, end, WHAT ) )
 
 using namespace std;
 
@@ -70,10 +70,10 @@ inline int find_index( char const *const *begin, char const *const *end,
 static char* get_win32_locale_info( int constant ) {
   int bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, NULL, 0 );
   ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
-  char *const info = new char[ bytes ];
-  bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, info, bytes );
+  unique_ptr<char[]> info = new char[ bytes ];
+  bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, info.get(), bytes );
   ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
-  return info;
+  return info.release();
 }
 
 #else /* WIN32 */
@@ -379,21 +379,149 @@ namespace iso639_1 {
 
 char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
+  "aa", // Afar
+  "ab", // Abkhazian
+  "ae", // Avestan
+  "af", // Afrikaans
+  "ak", // Akan
+  "am", // Amharic
+  "an", // Aragonese
+  "ar", // Arabic
+  "as", // Assamese
+  "av", // Avaric
+  "ay", // Aymara
+  "az", // Azerbaijani
+  "ba", // Bashkir
+  "be", // Byelorussian
+  "bg", // Bulgarian
+  "bh", // Bihari
+  "bi", // Bislama
+  "bn", // Bengali; Bangla
+  "bo", // Tibetan
+  "br", // Breton
+  "ca", // Catalan
+  "co", // Corsican
+  "cs", // Czech
+  "cy", // Welsh
   "da", // Danish
   "de", // German
+  "dz", // Bhutani
+  "el", // Greek
   "en", // English
+  "eo", // Esperanto
   "es", // Spanish
+  "et", // Estonian
+  "eu", // Basque
+  "fa", // Persian
   "fi", // Finnish
+  "fj", // Fiji
+  "fo", // Faroese
   "fr", // French
+  "fy", // Frisian
+  "ga", // Irish
+  "gd", // Scots Gaelic
+  "gl", // Galician
+  "gn", // Guarani
+  "gu", // Gujarati
+  "ha", // Hausa
+  "he", // Hebrew (formerly iw)
+  "hi", // Hindi
+  "hr", // Croatian
   "hu", // Hungarian
+  "hy", // Armenian
+  "ia", // Interlingua
+  "id", // Indonesian (formerly in)
+  "ie", // Interlingue
+  "ik", // Inupiak
+  "is", // Icelandic
   "it", // Italian
+  "iu", // Inuktitut
+  "ja", // Japanese
+  "jw", // Javanese
+  "ka", // Georgian
+  "kk", // Kazakh
+  "kl", // Greenlandic
+  "km", // Cambodian
+  "kn", // Kannada
+  "ko", // Korean
+  "ks", // Kashmiri
+  "ku", // Kurdish
+  "ky", // Kirghiz
+  "la", // Latin
+  "ln", // Lingala
+  "lo", // Laothian
+  "lt", // Lithuanian
+  "lv", // Latvian, Lettish
+  "mg", // Malagasy
+  "mi", // Maori
+  "mk", // Macedonian
+  "ml", // Malayalam
+  "mn", // Mongolian
+  "mo", // Moldavian
+  "mr", // Marathi
+  "ms", // Malay
+  "mt", // Maltese
+  "my", // Burmese
+  "na", // Nauru
+  "ne", // Nepali
   "nl", // Dutch
   "no", // Norwegian
+  "oc", // Occitan
+  "om", // (Afan) Oromo
+  "or", // Oriya
+  "pa", // Punjabi
+  "pl", // Polish
+  "ps", // Pashto, Pushto
   "pt", // Portuguese
+  "qu", // Quechua
+  "rm", // Rhaeto-Romance
+  "rn", // Kirundi
   "ro", // Romanian
   "ru", // Russian
+  "rw", // Kinyarwanda
+  "sa", // Sanskrit
+  "sd", // Sindhi
+  "sg", // Sangho
+  "sh", // Serbo-Croatian
+  "si", // Sinhalese
+  "sk", // Slovak
+  "sl", // Slovenian
+  "sm", // Samoan
+  "sn", // Shona
+  "so", // Somali
+  "sq", // Albanian
+  "sr", // Serbian
+  "ss", // Siswati
+  "st", // Sesotho
+  "su", // Sundanese
   "sv", // Swedish
+  "sw", // Swahili
+  "ta", // Tamil
+  "te", // Telugu
+  "tg", // Tajik
+  "th", // Thai
+  "ti", // Tigrinya
+  "tk", // Turkmen
+  "tl", // Tagalog
+  "tn", // Setswana
+  "to", // Tonga
   "tr", // Turkish
+  "ts", // Tsonga
+  "tt", // Tatar
+  "tw", // Twi
+  "ug", // Uighur
+  "uk", // Ukrainian
+  "ur", // Urdu
+  "uz", // Uzbek
+  "vi", // Vietnamese
+  "vo", // Volapuk
+  "wo", // Wolof
+  "xh", // Xhosa
+  "yi", // Yiddish (formerly ji)
+  "yo", // Yoruba
+  "za", // Zhuang
+  "zh", // Chinese
+  "zu", // Zulu
 };
 
 type find( char const *lang ) {
@@ -409,6 +537,20 @@ namespace iso639_2 {
 
 char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
+  "abk",  // Abkhazian
+  "aar",  // Afar
+  "afr",  // Afrikaans
+  "aka",  // Akan
+  "alb",  // Albanian
+  "amh",  // Amharic
+  "ara",  // Arabic
+  "arg",  // Aragonese
+  "arm",  // Armenian
+  "asm",  // Assamese
+  "ava",  // Avaric
+  "ave",  // Avestan
+  "aym",  // Aymara
+  "aze",  // Azerbaijani
   "dan",  // Danish
   "deu",  // German (T)
   "dut",  // Dutch (B)
@@ -447,6 +589,20 @@ iso639_1::type find_lang( char const *lang ) {
 
   static type const iso639_2_to_639_1[] = {
     unknown,
+    ab, // abk
+    aa, // aar
+    af, // arf
+    ak, // aka
+    sq, // alb
+    am, // amh
+    ar, // ara
+    an, // arg
+    ay, // aym
+    az, // aze
+    hy, // arm
+    as, // asm
+    av, // ava
+    ae, // ave
     da, // dan
     de, // deu
     nl, // dut
