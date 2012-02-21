@@ -2894,8 +2894,8 @@
       <value>sequence of more than one item can not be operand for function "$2()"</value>
     </entry>
 
-    <entry key="NoSeqForFnOp_3">
-      <value>sequence of more than one item can not be operand to concatenation</value>
+    <entry key="NoSeqForConcat">
+      <value>multi-item sequence can not be operand for concatenation</value>
     </entry>
 
     <entry key="NoSeqInValueComp">
