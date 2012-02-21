@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(com)
+ADD_SUBDIRECTORY(org)
 
 # QQQ Note: this file was originally the 1998 version of xml.xsd. It should
 # probably be replaced with a later revision.

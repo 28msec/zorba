@@ -9,10 +9,12 @@
     targetNamespace="http://www.28msec.com/schemas/pul"
     xmlns:pul="http://www.28msec.com/schemas/pul"
     xmlns:xdm="http://www.28msec.com/schemas/xdm"
+    xmlns:xqx="http://www.w3.org/2005/XQueryX"
     elementFormDefault="qualified">
 
   <xs:import namespace="http://www.28msec.com/schemas/xdm" schemaLocation="xdm.xsd"/>
-
+  <xs:import namespace="http://www.w3.org/2005/XQueryX" schemaLocation="../../../../org/w3/www/2005/XQueryX.xsd"/>
+  
     <!--
     ****************
     The root element
@@ -118,6 +120,8 @@
   <xs:complexType name="createCollection-type">
     <xs:sequence>
       <xs:element name="name" type="xs:QName"/>
+      <xs:element name="type" type="xqx:sequenceType" minOccurs="0"/>
+      <xs:element name="annotation" type="xqx:annotation" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
     </xs:sequence>
   </xs:complexType>
@@ -151,7 +155,7 @@
       <xs:element name="collection" type="xs:QName"/>
     </xs:sequence>
   </xs:complexType>
-
+  
 <!--
   ****************************************************************
   Definition of proprietary integrity constraint update primitives

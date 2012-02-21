@@ -1,0 +1,1962 @@
+<?xml version="1.0"?>
+<!--  ================================================================================  -->
+<!--  NOTES TO READERS OF THIS SCHEMA:                                                  -->
+<!--  The default value for both minOccurs and maxOccurs is "1".                        -->
+<!--  The XQueryX schema has been designed to provide the ability to extend definitions -->
+<!--    of top-level elements in extensions such as Full-Text and the Update Facility.  -->
+<!--    The nature of the modification is to define named complex types and redefine    -->
+<!--    those top-level elements in terms of the named complex types.                   -->
+<!--  ================================================================================  -->
+<!--  Changes from Recommendation (edition 1):                                          -->
+<!--  * Element defs using anon complex types changed to use named types (bug #4924)    -->
+<!--  * In Example 4, replaced xqx:parentheziedExpr with xqx:sequenceExpr (bug #4963)   -->
+<!--  * In XSLT stylesheet, deleted template for xqx:parenthesizedExpr (bug #4963)      -->
+<!--  * Replaced link to grammar applet with correct link (bug #5323)                   -->
+<!--  * In XSLT stylesheet, corrected template for xqx:namespaceDeclaration (bug #5343) -->
+<!--  Changes from Recommendation (edition 2):                                          -->
+<!--  * Added support for new Windowing clause in FLWOR expression                      -->
+<!--  * Added support for new Group By Clause in FLWOR expression                       -->
+<!--  * Added support for new Count Clause in FLWOR expression                          -->
+<!--  * Added support for keyword "outer" on for expression                             -->
+<!--  * Modified structure of FLWOR clause per "simplified FLWOR expressions"           -->
+<!--  * Modified validation syntax per Bugzilla Bug 5472                                -->
+<!--  * Modified function declaration so that external functions can be nondeterminstic -->
+<!--  * Modified variable declaration so external variables can have an initial value   -->
+<!--  * Added support for new try-catch expression                                      -->
+<!--  * Added support for new decimal formatting declaration                            -->
+<!--  * Added support for encoding in the version declaration                           -->
+<!--  * Added support for new context item declaration                                  -->
+<!--  * Added support for computed namespace constructor                                -->
+<!--  * Made changes triggered by Bugzilla Bugs 6309, 6310, and 6311                    -->
+<!--  * Modified errlist syntax per Bugzilla Bug 7053                                   -->
+<!--  * Added support for public/private functions                                      -->
+<!--  * Replaced "outer for" support with support for "allowing empty"                  -->
+<!--  * Added support for higher-order functions                                        -->
+<!--  * Added support for value-based "switch" expression                               -->
+<!--  * Use pattern to prohibit "#)" in pragma contents per Bugzilla Bug 2711           -->
+<!--  * Changed functionItemExpr child element QName to be functionName for consistency -->
+<!--  * Replaced "public", "private", and "[non]deterministic" with %-annotations       -->
+<!--  * Added EQName to permit "URI-literal":NCNAME as alternative to NCName:NCName     -->
+<!--  * Changed type of atomicType to EQName, so it's really atomicOrUnionType          -->
+<!--  ================================================================================  -->
+<!--  Errata applied:                                                                   -->
+<!--    XQX.E1 - Editorial (Bugzilla Bug 4924)                                          -->
+<!--    XQX.E7 - Substantive (Bugzilla Bug 2711)                                        -->
+<!--  ================================================================================  -->
+<!--  Modifications:                                                                    -->
+<!--    2008-07-30 - Add XQuery 1.1 grouping and windowing support                      -->
+<!--    2008-09-18 - Add XQuery 1.1 count and outer-for support, simplified FLWOR       -->
+<!--    2008-09-27 - Add validation type, nondeterministic function declarations,       -->
+<!--                 initial values for external variables, try-catch expression        -->
+<!--    2008-11-25 - Add support for number formatting, Snelson's version declaration   -->
+<!--                 proposal, context item declaration, computed namespace constructor,-->
+<!--                 fixes for validate expression, and change to allow the count       -->
+<!--                 clause to only be an intermediate expression                       -->
+<!--    2009-01-13 - Bugs 6309 and 6310 (fixes to details of certain windowing clauses  -->
+<!--    2009-03-03 - tumblingWindowClause syntax now matches slidingWindowClause syntax -->
+<!--    2009-09-06 - Modified errlist syntax per Bugzilla Bug 7053                      -->
+<!--    2009-10-09 - Added support for private/public functions                         -->
+<!--                 Replace "outer for" with "allowing empty"                          -->
+<!--    2009-10-22 - Add support for higher-order functions & switch expression         -->
+<!--    2010-04-06 - Changed functionItemExpr child QName -> functionName (consistency) -->
+<!--    2010-05-10 - Added %-annotation support for varDecl and functionDecl            -->
+<!--    2010-06-23 - Added support for partial function application                     -->
+<!--    2011-02-02 - Added support for EQNames and atomicOrUnionType                    -->
+<!--    2011-05-04 - Updated structure of catch component of try-catch expression       -->
+<!--    2011-05-04 - Updated validationexpr, mode/type alternatives, type is EQName     -->
+<!--  ================================================================================  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.w3.org/2005/XQueryX"
+            targetNamespace="http://www.w3.org/2005/XQueryX"
+            elementFormDefault="qualified" attributeFormDefault="qualified">
+
+
+<!-- A few helper declarations                                                          -->
+  <xsd:complexType name="emptyContent"/>
+
+  <xsd:element name="NCName" type="xsd:NCName"/>
+
+  <xsd:complexType name="QName">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:NCName">
+        <xsd:attribute name="prefix" type="xsd:NCName" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="EQName">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:NCName">
+        <xsd:attribute name="prefix" type="xsd:NCName" use="optional"/>
+        <xsd:attribute name="URI" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+<!-- The base expression class                                                          -->
+  <xsd:complexType name="expr"/>
+
+  <xsd:element name="expr" type="expr" abstract="true"/>
+
+
+<!-- A list of expressions                                                              -->
+  <xsd:complexType name="exprList">
+    <xsd:sequence>
+      <xsd:element ref="expr" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- A list of expressions or placeholders                                              -->
+<!-- 2010-06-23 - Added support for partial function application                        -->
+  <xsd:complexType name="exprOrPlaceholderList">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element ref="expr"/>
+        <xsd:element name="argumentPlaceholder" type="emptyContent"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- A type to be used by elements that comprise an optional expr                       -->
+  <xsd:complexType name="exprWrapperOptional">
+    <xsd:sequence>
+      <xsd:element ref="expr" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- Simple wrapper class                                                               -->
+  <xsd:complexType name="exprWrapper">
+    <xsd:sequence>
+      <xsd:element ref="expr"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- constant expressions. We have 4 different subclasses for this                      -->
+  <xsd:complexType name="constantExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:anyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="constantExpr" type="constantExpr" abstract="true"
+               substitutionGroup="expr"/>
+
+
+  <xsd:complexType name="integerConstantExpr">
+    <xsd:complexContent>
+      <xsd:restriction base="constantExpr">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:integer"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="integerConstantExpr" type="integerConstantExpr"
+               substitutionGroup="constantExpr"/>
+
+
+  <xsd:complexType name="decimalConstantExpr">
+    <xsd:complexContent>
+      <xsd:restriction base="constantExpr">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:decimal"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="decimalConstantExpr" type="decimalConstantExpr"
+               substitutionGroup="constantExpr"/>
+
+
+  <xsd:complexType name="doubleConstantExpr">
+    <xsd:complexContent>
+      <xsd:restriction base="constantExpr">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:double"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="doubleConstantExpr" type="doubleConstantExpr"
+               substitutionGroup="constantExpr"/>
+
+
+  <xsd:complexType name="stringConstantExpr">
+    <xsd:complexContent>
+      <xsd:restriction base="constantExpr">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="stringConstantExpr" type="stringConstantExpr"
+               substitutionGroup="constantExpr"/>
+
+
+<!-- Variables                                                                          -->
+  <xsd:complexType name="varRef">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="name" type="EQName"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="varRef" type="varRef" substitutionGroup="expr"/>
+
+
+<!-- root and context-item expressions                                                  -->
+<!-- rootExpr deleted per Bugzilla Bug #2523                                            -->
+  <xsd:complexType name="contextItemExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="contextItemExpr" type="contextItemExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Pragmas and extension expressions                                                  -->
+<!--   2010-01-01, JM replaced pragmaContents elem def'n with one that has a pattern    -->
+  <xsd:complexType name="pragma">
+    <xsd:sequence>
+      <xsd:element name="pragmaName" type="EQName"/>
+      <xsd:element name="pragmaContents">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(([^#]|#+[^\)#])*#*)"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="pragma" type="pragma"/>
+
+
+  <xsd:complexType name="extensionExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element ref="pragma" maxOccurs="unbounded"/>
+          <xsd:element name="argExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="extensionExpr" type="extensionExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Function call expressions                                                          -->
+<!-- 2010-06-23 - Added support for partial function application                        -->
+  <xsd:complexType name="functionCallExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="functionName" type="EQName"/>
+          <xsd:element name="arguments" type="exprOrPlaceholderList" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="functionCallExpr" type="functionCallExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Constructor functions                                                              -->
+  <xsd:complexType name="constructorFunctionExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="typeName" type="EQName"/>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="constructorFunctionExpr" type="constructorFunctionExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Sequence expressions                                                               -->
+  <xsd:complexType name="sequenceExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element ref="expr" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="sequenceExpr" type="sequenceExpr" substitutionGroup="expr"/>
+
+
+  <xsd:complexType name="rangeSequenceExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="startExpr" type="exprWrapper"/>
+          <xsd:element name="endExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="rangeSequenceExpr" type="rangeSequenceExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Builtin operator expressions                                                       -->
+  <xsd:complexType name="operatorExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="unaryOperatorExpr">
+    <xsd:complexContent>
+      <xsd:extension base="operatorExpr">
+        <xsd:sequence>
+          <xsd:element name="operand" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="binaryOperatorExpr">
+    <xsd:complexContent>
+      <xsd:extension base="operatorExpr">
+        <xsd:sequence>
+          <xsd:element name="firstOperand" type="exprWrapper"/>
+          <xsd:element name="secondOperand" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:element name="operatorExpr" type="operatorExpr"
+               abstract="true" substitutionGroup="expr"/>
+
+  <xsd:element name="arithmeticOp" type="operatorExpr"
+               abstract="true" substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="addOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="subtractOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="multiplyOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="divOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="idivOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="modOp" type="binaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="unaryMinusOp" type="unaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="unaryPlusOp" type="unaryOperatorExpr"
+               substitutionGroup="arithmeticOp"/>
+
+  <xsd:element name="comparisonOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="valueComparisonOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="eqOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="neOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="gtOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="geOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="ltOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="leOp" type="binaryOperatorExpr"
+               substitutionGroup="valueComparisonOp"/>
+
+  <xsd:element name="generalComparisonOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="equalOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="notEqualOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="lessThanOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="lessThanOrEqualOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="greaterThanOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="greaterThanOrEqualOp" type="binaryOperatorExpr"
+               substitutionGroup="generalComparisonOp"/>
+
+  <xsd:element name="nodeComparisonOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="isOp" type="binaryOperatorExpr"
+               substitutionGroup="nodeComparisonOp"/>
+
+  <xsd:element name="orderComparisonOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="nodeBeforeOp" type="binaryOperatorExpr"
+               substitutionGroup="orderComparisonOp"/>
+
+  <xsd:element name="nodeAfterOp" type="binaryOperatorExpr"
+               substitutionGroup="orderComparisonOp"/>
+
+  <xsd:element name="logicalOp" type="binaryOperatorExpr" abstract="true"
+               substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="andOp" type="binaryOperatorExpr"
+               substitutionGroup="logicalOp"/>
+
+  <xsd:element name="orOp" type="binaryOperatorExpr"
+               substitutionGroup="logicalOp"/>
+
+  <xsd:element name="setOp" type="binaryOperatorExpr"
+               abstract="true" substitutionGroup="operatorExpr"/>
+
+  <xsd:element name="unionOp" type="binaryOperatorExpr"
+               substitutionGroup="setOp"/>
+
+  <xsd:element name="intersectOp" type="binaryOperatorExpr"
+               substitutionGroup="setOp"/>
+
+  <xsd:element name="exceptOp" type="binaryOperatorExpr"
+               substitutionGroup="setOp"/>
+
+
+<!-- Basic typenames                                                                    -->
+<!-- By changing the type attribute from QName to EQName, this is now atomicOrUnionType -->
+<!--   However, for backwards compatibility w/XQueryX 1.0, the name had to stay the same-->
+  <xsd:element name="atomicType" type="EQName" substitutionGroup="itemType"/>
+
+
+<!-- Used in castable expression and cast expression                                    -->
+  <xsd:complexType name="singleType">
+    <xsd:sequence>
+      <xsd:element ref="atomicType"/>
+      <xsd:element name="optional" type="emptyContent" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="singleType" type="singleType"/>
+
+
+<!-- Item type schema types and elements                                                -->
+  <xsd:element name="itemType" abstract="true"/>
+
+
+  <xsd:complexType name="emptyItemTypeContent"/>
+
+  <xsd:element name="anyItemType" type="emptyItemTypeContent"
+               substitutionGroup="itemType"/>
+
+
+  <xsd:simpleType name="occurrenceIndicator">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="?"/>
+      <xsd:enumeration value="*"/>
+      <xsd:enumeration value="+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+<!-- Sequence type                                                                      -->
+  <xsd:complexType name="sequenceType">
+    <xsd:choice>
+      <xsd:element name="voidSequenceType" type="emptyContent"/>
+      <xsd:sequence>
+        <xsd:element ref="itemType"/>
+        <xsd:element name="occurrenceIndicator" type="occurrenceIndicator"
+                     minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="sequenceType" type="sequenceType"/>
+
+  <xsd:element name="typeDeclaration" type="sequenceType"/>
+
+
+<!-- Represents a "typed" variable (for clause, let clause etc)                         -->
+  <xsd:complexType name="typedVariableBinding">
+    <xsd:sequence>
+      <xsd:element name="varName" type="EQName"/>
+      <xsd:element ref="typeDeclaration" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="typedVariableBinding" type="typedVariableBinding"/>
+
+
+<!-- Represents an untyped variable for the "at" clause in a for clause                 -->
+  <xsd:element name="positionalVariableBinding" type="EQName"/>
+
+  <xsd:element name="variableBinding" type="EQName"/>
+
+
+<!-- Represents all variable bindings in a for or let clause except typed and           -->
+<!--   positional variable bindings                                                     -->
+  <xsd:element name="forLetClauseItemExtensions" abstract="true"/>
+
+
+<!-- Major syntax productions: FLWOR clause components                                  -->
+<!-- for clause                                                                         -->
+  <xsd:complexType name="forClauseItem">
+    <xsd:sequence>
+      <xsd:element ref="typedVariableBinding"/>
+      <xsd:element name="allowingEmpty" type="emptyContent"
+                   minOccurs="0"/>
+      <xsd:element ref="positionalVariableBinding" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="forLetClauseItemExtensions" minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="forExpr" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="forClauseItem" type="forClauseItem"/>
+
+
+  <xsd:complexType name="forClause">
+    <xsd:sequence>
+      <xsd:element ref="forClauseItem" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="forClause" type="forClause"/>
+
+
+<!-- let clause                                                                         -->
+  <xsd:complexType name="letClauseItem">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:sequence>
+          <xsd:element ref="typedVariableBinding"/>
+          <xsd:element ref="forLetClauseItemExtensions"
+                       minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:element ref="forLetClauseItemExtensions"
+                     minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:element name="letExpr" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="letClauseItem" type="letClauseItem"/>
+
+
+  <xsd:complexType name="letClause">
+    <xsd:sequence>
+      <xsd:element ref="letClauseItem" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="letClause" type="letClause"/>
+
+
+<!-- This is the windowClause (part of FLWOR expression)                                -->
+<!-- It corresponds to the following XQuery grammar                                     -->
+<!-- WindowClause ::= "for" (TumblingWindowClause | SlidingWindowClause)               -->
+  <xsd:complexType name="windowClause">
+    <xsd:choice>
+      <xsd:element ref="tumblingWindowClause"/>
+      <xsd:element ref="slidingWindowClause"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="windowClause" type="windowClause"/>
+
+
+<!-- This is the tumblingWindowClause                                                   -->
+<!-- It corresponds to the following XQuery grammar                                     -->
+<!-- TumblingWindowClause ::= "tumbling" "window" "$" VarName TypeDeclaration?          -->
+<!--                           "in" ExprSingle WindowStartCondition WindowEndCondition? -->
+  <xsd:complexType name="tumblingWindowClause">
+    <xsd:sequence>
+      <xsd:element ref="typedVariableBinding"/>
+      <xsd:element name="bindingSequence" type="exprWrapper"/>
+      <xsd:element ref="windowStartCondition"/>
+      <xsd:element ref="windowEndCondition" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="tumblingWindowClause" type="tumblingWindowClause"/>
+
+
+<!-- This is the slidingWindowClause                                                    -->
+<!-- It corresponds to the following XQuery grammar                                     -->
+<!-- SlidingWindowClause ::= "sliding" "window" "$" VarName TypeDeclaration?            -->
+<!--                         "in" ExprSingle WindowStartCondition WindowEndCondition    -->
+  <xsd:complexType name="slidingWindowClause">
+    <xsd:sequence>
+      <xsd:element ref="typedVariableBinding"/>
+      <xsd:element name="bindingSequence" type="exprWrapper"/>
+      <xsd:element ref="windowStartCondition"/>
+      <xsd:element ref="windowEndCondition"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="slidingWindowClause" type="slidingWindowClause"/>
+
+
+<!-- windowStartCondition                                                               -->
+<!-- Corresponds to the following XQuery grammar                                        -->
+<!-- WindowStartCondition ::= "start" WindowVars "when" ExprSingle                      -->
+  <xsd:complexType name="windowStartCondition">
+    <xsd:sequence>
+      <xsd:element ref="windowVars" minOccurs="0"/>
+      <xsd:element name="winStartExpr" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="windowStartCondition" type="windowStartCondition"/>
+
+
+<!-- windowEndCondition                                                                 -->
+<!-- Corresponds to the following XQuery grammar                                        -->
+<!-- WindowEndCondition         ::=          "only"? "end" WindowVars "when" ExprSingle        -->
+  <xsd:complexType name="windowEndCondition">
+    <xsd:sequence>
+      <xsd:element ref="windowVars" minOccurs="0"/>
+      <xsd:element name="winEndExpr" type="exprWrapper"/>
+    </xsd:sequence>
+    <xsd:attribute name="onlyEnd" type="xsd:boolean" default="false"/>
+  </xsd:complexType>
+
+  <xsd:element name="windowEndCondition" type="windowEndCondition"/>
+
+
+<!-- windowVars                                                                         -->
+<!-- Corresponds to the following XQuery grammar                                        -->
+<!-- WindowVars ::= ("$" \)? PositionalVar? ("previous" "$" PreviousItem)?    -->
+<!--                ("next" "$" NextItem)?                                              -->
+  <xsd:complexType name="windowVars">
+    <xsd:sequence>
+      <xsd:element name="currentItem" type="EQName" minOccurs="0"/>
+      <xsd:element ref="positionalVariableBinding" minOccurs="0"/>
+      <xsd:element name="previousItem" type="EQName" minOccurs="0"/>
+      <xsd:element name="nextItem" type="EQName" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="windowVars" type="windowVars"/>
+
+
+<!-- countClause (part of FLWOR expression)                                             -->
+  <xsd:complexType name="countClause">
+    <xsd:sequence>
+      <xsd:element ref="varRef"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="countClause" type="countClause"/>
+
+
+<!-- whereClause (part of FLWOR expression)                                             -->
+  <xsd:element name="whereClause" type="exprWrapper"/>
+
+
+<!-- groupByClause (part of FLWOR expression)                                           -->
+<!-- Corresponds to the following XQuery syntax                                         -->
+<!-- GroupByClause ::= "group" "by" GroupingSpecList                                    -->
+<!-- GroupingSpecList ::= GroupingSpec ("," GroupingSpec)*                              -->
+  <xsd:complexType name="groupByClause">
+    <xsd:sequence maxOccurs="unbounded">
+      <xsd:element ref="groupingSpec"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="groupByClause" type="groupByClause"/>
+
+
+<!-- Corresponds to the following XQuery syntax                                         -->
+<!-- GroupingSpec ::= "$" VarName ("collation" URILiteral)?                             -->
+  <xsd:complexType name="groupingSpec">
+    <xsd:sequence>
+      <xsd:element name="varName" type="EQName"/>
+      <xsd:element name="collation" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="groupingSpec" type="groupingSpec"/>
+
+
+<!-- order by clause                                                                    -->
+  <xsd:simpleType name="emptyOrderingMode">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="empty greatest"/>
+      <xsd:enumeration value="empty least"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="orderingKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ascending"/>
+      <xsd:enumeration value="descending"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+  <xsd:complexType name="orderModifier">
+    <xsd:sequence>
+      <xsd:element name="orderingKind" type="orderingKind" minOccurs="0"/>
+      <xsd:element name="emptyOrderingMode" type="emptyOrderingMode" minOccurs="0"/>
+      <xsd:element name="collation" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="orderModifier" type="orderModifier"/>
+
+
+  <xsd:complexType name="orderBySpec">
+    <xsd:sequence>
+      <xsd:element name="orderByExpr" type="exprWrapper"/>
+      <xsd:element ref="orderModifier" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="orderBySpec" type="orderBySpec"/>
+
+
+  <xsd:complexType name="orderByClause">
+    <xsd:sequence>
+      <xsd:element name="stable" type="emptyContent" minOccurs="0"/>
+      <xsd:element ref="orderBySpec" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="orderByClause" type="orderByClause"/>
+
+
+<!-- return clause                                                                      -->
+  <xsd:element name="returnClause" type="exprWrapper"/>
+
+
+<!-- This is the XQuery 1.1 flwor expression                                            -->
+<!-- Corresponds to the following XQuery syntax:                                        -->
+<!-- 1.1 FLWORExpr ::= (ForClause | LetClause | WindowClause)                           -->
+<!--                   (ForClause | LetClause | WindowClause | CountClause |            -->
+<!--                    WhereClause | GroupByClause | OrderByClause)*                   -->
+<!--                   ReturnClause                                                     -->
+  <xsd:complexType name="flworExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element ref="forClause"/>
+            <xsd:element ref="letClause"/>
+            <xsd:element ref="windowClause"/>
+          </xsd:choice>
+          <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+              <xsd:element ref="forClause"/>
+              <xsd:element ref="letClause"/>
+              <xsd:element ref="windowClause"/>
+              <xsd:element ref="countClause"/>
+              <xsd:element ref="whereClause"/>
+              <xsd:element ref="groupByClause"/>
+              <xsd:element ref="orderByClause"/>
+            </xsd:choice>
+          <xsd:element ref="returnClause"/>
+        </xsd:sequence>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="flworExpr" type="flworExpr" substitutionGroup="expr"/>
+
+
+<!-- conditional expressions                                                            -->
+  <xsd:complexType name="ifThenElseExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="ifClause" type="exprWrapper"/>
+          <xsd:element name="thenClause" type="exprWrapper"/>
+          <xsd:element name="elseClause" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ifThenElseExpr" type="ifThenElseExpr" 
+               substitutionGroup="expr"/>
+
+
+<!-- The following clauses describe quantified expressions                              -->
+  <xsd:simpleType name="quantifier">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="some"/>
+      <xsd:enumeration value="every"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+  <xsd:complexType name="quantifiedExprInClause">
+    <xsd:sequence>
+      <xsd:element ref="typedVariableBinding"/>
+      <xsd:element name="sourceExpr" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="quantifiedExprInClause" type="quantifiedExprInClause"/>
+
+
+  <xsd:complexType name="quantifiedExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="quantifier" type="quantifier"/>
+          <xsd:element ref="quantifiedExprInClause" maxOccurs="unbounded"/>
+          <xsd:element name="predicateExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="quantifiedExpr" type="quantifiedExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- handle the switch expression                                                       -->
+<!-- Note: no substitutionGroup as we cannot use this anywhere except within switch     -->
+  <xsd:complexType name="switchExprCaseClause">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="switchCaseExpr" type="exprWrapper" maxOccurs="unbounded"/>
+          <xsd:element name="resultExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="switchExprCaseClause"
+               type="switchExprCaseClause"/>
+
+
+<!-- Note: no substitutionGroup as we cannot use this anywhere except within switch     -->
+  <xsd:complexType name="switchExprDefaultClause">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="resultExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="switchExprDefaultClause"
+               type="switchExprDefaultClause"/>
+
+
+  <xsd:complexType name="switchExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="switchExprCaseClause" maxOccurs="unbounded"/>
+          <xsd:element ref="switchExprDefaultClause"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="switchExpr" type="switchExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- handle the typeswitch expression                                                   -->
+<!-- Note: no substitutionGroup as we cannot use this anywhere except within typeswitch -->
+  <xsd:complexType name="typeswitchExprCaseClause">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element ref="variableBinding" minOccurs="0"/>
+          <xsd:element ref="sequenceType"/>
+          <xsd:element name="resultExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="typeswitchExprCaseClause"
+               type="typeswitchExprCaseClause"/>
+
+
+<!-- Note: no substitutionGroup as we cannot use this anywhere except within typeswitch -->
+  <xsd:complexType name="typeswitchExprDefaultClause">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element ref="variableBinding" minOccurs="0"/>
+          <xsd:element name="resultExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="typeswitchExprDefaultClause"
+               type="typeswitchExprDefaultClause"/>
+
+
+  <xsd:complexType name="typeswitchExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="typeswitchExprCaseClause" maxOccurs="unbounded"/>
+          <xsd:element ref="typeswitchExprDefaultClause"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="typeswitchExpr" type="typeswitchExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- TryCatchExpression                                                                 -->
+<!-- Corresponds to the following XQuery syntax                                         -->
+<!-- TryCatchExpression ::= TryClause CatchClause+                                      -->
+<!-- TryClause ::= "{" TryTargetExpr "}"                                                -->
+<!-- TryTargetExpr ::= Expr                                                             -->
+  <xsd:complexType name="tryCatchExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="tryClause" type="exprWrapper"/>
+          <xsd:element ref="catchClause" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="tryCatchExpr" type="tryCatchExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- CatchClause (part of the TryCatchExpression)                                       -->
+<!-- Corresponds to the following XQuery syntax                                         -->
+<!-- CatchClause ::= "catch" CatchErrorList "{" Expr "}"                                -->
+  <xsd:complexType name="catchClause">
+    <xsd:sequence>
+      <xsd:element ref="catchErrorList"/>
+      <xsd:element name="catchExpr" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="catchClause" type="catchClause"/>
+
+
+<!-- CatchErrorList (part of the TryCatchExpression)                                    -->
+<!-- Corresponds to the following XQuery syntax                                         -->
+<!-- CatchErrorList ::= NameTest ( "|" NameTest )*                                      -->
+<!-- (remembering that NameTest is either QName or Wildcard)                            -->
+  <xsd:complexType name="catchErrorList">
+    <xsd:sequence maxOccurs="unbounded">
+      <xsd:choice>
+        <xsd:element ref="nameTest"/>
+        <xsd:element ref="Wildcard"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="catchErrorList" type="catchErrorList"/>
+
+
+<!-- instance-of expressions                                                            -->
+  <xsd:complexType name="instanceOfExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="sequenceType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="instanceOfExpr" type="instanceOfExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- treat-as expressions                                                               -->
+  <xsd:complexType name="treatExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="sequenceType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="treatExpr" type="treatExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- castable and cast expressions                                                      -->
+  <xsd:complexType name="castableExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="singleType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="castableExpr" type="castableExpr"
+               substitutionGroup="expr"/>
+
+
+  <xsd:complexType name="castExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+          <xsd:element ref="singleType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="castExpr" type="castExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Validate expressions                                                               -->
+  <xsd:simpleType name="validationMode">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="lax"/>
+      <xsd:enumeration value="strict"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="validateExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="validationMode" type="validationMode" minOccurs="0"/>
+            <xsd:element name="typeName" type="EQName" minOccurs="0"/>
+          </xsd:choice>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="validateExpr" type="validateExpr"
+               substitutionGroup="expr"/>
+
+
+<!-- Direct constructors. Only elementConstructor for now                               -->
+<!-- Note the absence of constructors corresponding to                                  -->
+<!-- the directCommentConstructor and the directPIConstructor                           -->
+<!-- productions in the XQuery grammar. This is because they are                        -->
+<!-- trivially identical to the computed variants                                       -->
+
+<!-- attributeConstructor is no longer a subclass of expr                               -->
+  <xsd:complexType name="attributeConstructor">
+    <xsd:sequence>
+      <xsd:element name="attributeName" type="QName"/>
+      <xsd:choice>
+        <xsd:element name="attributeValueExpr" type="exprList"/>
+        <xsd:element name="attributeValue" type="xsd:string"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="namespaceDeclaration">
+    <xsd:sequence>
+      <xsd:element name="prefix" type="xsd:NCName" minOccurs="0"/>
+      <xsd:element name="uri" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+<!-- element constructors                                                               -->
+  <xsd:complexType name="attributeList">
+    <xsd:sequence>
+      <xsd:choice maxOccurs="unbounded">
+        <xsd:element name="attributeConstructor" type="attributeConstructor"/>
+        <xsd:element name="namespaceDeclaration" type="namespaceDeclaration"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="attributeList" type="attributeList"/>
+
+
+  <xsd:element name="elementContent" type="exprList"/>
+
+
+  <xsd:complexType name="elementConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="tagName" type="QName"/>
+          <xsd:element ref="attributeList" minOccurs="0"/>
+          <xsd:element ref="elementContent" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="elementConstructor" type="elementConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed constructors                                                              -->
+<!-- computed element constructor                                                       -->
+  <xsd:complexType name="computedElementConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="tagName" type="EQName"/>
+            <xsd:element name="tagNameExpr" type="exprWrapper"/>
+          </xsd:choice>
+          <xsd:element name="contentExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedElementConstructor" type="computedElementConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed attribute constructor                                                     -->
+  <xsd:complexType name="computedAttributeConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="tagName" type="EQName"/>
+            <xsd:element name="tagNameExpr" type="exprWrapper"/>
+          </xsd:choice>
+          <xsd:element name="valueExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedAttributeConstructor" type="computedAttributeConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed document constructor                                                      -->
+  <xsd:complexType name="computedDocumentConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedDocumentConstructor" type="computedDocumentConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed text constructor                                                          -->
+  <xsd:complexType name="computedTextConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedTextConstructor" type="computedTextConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed comment constructor                                                       -->
+  <xsd:complexType name="computedCommentConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedCommentConstructor" type="computedCommentConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed namespace constructor                                                     -->
+  <xsd:complexType name="computedNamespaceConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="prefix" type="xsd:NCName"/>
+            <xsd:element name="prefixExpr" type="exprWrapper"/>
+          </xsd:choice>
+          <xsd:element name="URIExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedNamespaceConstructor" type="computedNamespaceConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- computed processing instruction constructor                                        -->
+  <xsd:complexType name="computedPIConstructor">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="piTarget" type="xsd:NCName"/>
+            <xsd:element name="piTargetExpr" type="exprWrapper"/>
+          </xsd:choice>
+          <xsd:element name="piValueExpr" type="exprWrapper" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="computedPIConstructor" type="computedPIConstructor"
+               substitutionGroup="expr"/>
+
+
+<!-- ordered and unordered expressions                                                  -->
+  <xsd:complexType name="unorderedExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="unorderedExpr" type="unorderedExpr" substitutionGroup="expr"/>
+
+
+  <xsd:complexType name="orderedExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="argExpr" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="orderedExpr" type="orderedExpr" substitutionGroup="expr"/>
+
+
+<!-- function item expressions                                                          -->
+<!-- literal function item expression                                                   -->
+<!-- 2010-04-06: Jim changed child element QName to be functionName for consistency     -->
+  <xsd:complexType name="literalFunctionItemExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="functionName" type="EQName"/>
+          <xsd:element name="integerConstantExpr" type="integerConstantExpr"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="literalFunctionItemExpr" type="literalFunctionItemExpr" substitutionGroup="expr"/>
+
+
+<!-- inline function item expression                                                    -->
+  <xsd:complexType name="inlineFunctionItemExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element ref="paramList"/>
+          <xsd:element ref="typeDeclaration" minOccurs="0"/>
+          <xsd:element name="functionBody" type="exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="inlineFunctionItemExpr" type="inlineFunctionItemExpr" substitutionGroup="expr"/>
+
+
+<!-- dynamic function invocations                                                       -->
+<!-- 2010-06-23 - Added support for partial function application                        -->
+  <xsd:complexType name="dynamicFunctionInvocationExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:sequence>
+          <xsd:element name="functionItem">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:group ref="filterExpr"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="predicates" type="exprList" minOccurs="0"/>
+          <xsd:element name="arguments" type="exprOrPlaceholderList" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="dynamicFunctionInvocationExpr" type="dynamicFunctionInvocationExpr" substitutionGroup="expr"/>
+
+
+<!-- wildcards                                                                          -->
+  <xsd:complexType name="simpleWildcard">
+    <xsd:choice>
+      <xsd:element name="QName" type="EQName"/>
+      <xsd:element name="star" type="emptyContent"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+<!-- 2011-06-10: Redesigned to allow "URliteral:*"                                                  -->
+<!-- Corresponds to the following XQuery syntax:                                                    -->
+<!--   [44] Wildcard ::= "*"                                                                        -->
+<!--                  | (NCName ":" "*")                                                            -->
+<!--                  | ("*" ":" NCName)                                                            -->
+<!--                  | (URILiteral ":" "*")                                                        -->
+
+  <xsd:complexType name="Wildcard">
+    <xsd:choice minOccurs="0">
+      <xsd:sequence>
+        <xsd:element name="star" type="emptyContent"/>
+        <xsd:element ref="NCName"/>
+      </xsd:sequence>
+      <xsd:sequence>
+        <xsd:element ref="NCName"/>
+        <xsd:element name="star" type="emptyContent"/>
+      </xsd:sequence>
+      <xsd:sequence>
+        <xsd:element name="uri" type="xsd:string"/>
+        <xsd:element name="star" type="emptyContent"/>
+      </xsd:sequence>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="Wildcard" type="Wildcard"/>
+
+
+<!-- tests (name and/or type)                                                           -->
+  <xsd:element name="schemaAttributeTest" type="EQName"
+               substitutionGroup="kindTest"/>
+
+
+  <xsd:complexType name="attributeTest">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence minOccurs="0">
+          <xsd:element name="attributeName" type="simpleWildcard"/>
+          <xsd:element name="typeName" type="EQName" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="attributeTest" type="attributeTest"
+               substitutionGroup="kindTest"/>
+
+
+  <xsd:element name="anyElementTest" abstract="true"
+               substitutionGroup="kindTest"/>
+
+
+  <xsd:element name="schemaElementTest" type="EQName"
+               substitutionGroup="anyElementTest"/>
+
+
+  <xsd:complexType name="elementTest">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence minOccurs="0">
+          <xsd:element name="elementName" type="simpleWildcard"/>
+          <xsd:sequence minOccurs="0">
+            <xsd:element name="typeName" type="EQName"/>
+            <xsd:element name="nillable" type="emptyContent" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="elementTest" type="elementTest"
+               substitutionGroup="anyElementTest"/>
+
+
+  <xsd:complexType name="documentTest">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence>
+           <xsd:element ref="anyElementTest" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="documentTest" type="documentTest"
+               substitutionGroup="kindTest"/>
+
+
+  <xsd:complexType name="piTest">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence>
+          <xsd:element name="piTarget" type="xsd:NCName" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="piTest" type="piTest" substitutionGroup="kindTest"/>
+
+
+  <xsd:element name="nameTest" type="EQName"/>
+
+  <xsd:element name="kindTest" substitutionGroup="itemType"/>
+
+  <xsd:element name="textTest" type="emptyItemTypeContent"
+               substitutionGroup="kindTest"/>
+
+  <xsd:element name="commentTest" type="emptyItemTypeContent"
+               substitutionGroup="kindTest"/>
+
+  <xsd:element name="namespaceTest" type="emptyItemTypeContent"
+               substitutionGroup="kindTest"/>
+
+  <xsd:element name="anyKindTest" type="emptyItemTypeContent"
+               substitutionGroup="kindTest"/>
+
+
+<!-- functionTest variations -->
+  <xsd:element name="anyFunctionTest" type="emptyItemTypeContent" substitutionGroup="itemType"/>
+
+  <xsd:complexType name="typedFunctionTest">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence>
+          <xsd:element ref="paramTypeList" minOccurs="0"/>
+          <xsd:element ref="sequenceType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="typedFunctionTest" type="typedFunctionTest" substitutionGroup="itemType"/>
+
+
+  <xsd:complexType name="paramTypeList">
+    <xsd:sequence>
+      <xsd:element ref="sequenceType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="paramTypeList" type="paramTypeList"/>
+
+
+  <xsd:complexType name="parenthesizedItemType">
+    <xsd:complexContent>
+      <xsd:extension base="emptyItemTypeContent">
+        <xsd:sequence>
+          <xsd:element ref="itemType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="parenthesizedItemType" type="parenthesizedItemType" substitutionGroup="itemType"/>
+
+
+<!-- XPath axes                                                                         -->
+  <xsd:simpleType name="xpathAxis">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="child"/>
+      <xsd:enumeration value="attribute"/>
+      <xsd:enumeration value="self"/>
+      <xsd:enumeration value="parent"/>
+      <xsd:enumeration value="descendant-or-self"/>
+      <xsd:enumeration value="descendant"/>
+      <xsd:enumeration value="following"/>
+      <xsd:enumeration value="following-sibling"/>
+      <xsd:enumeration value="ancestor"/>
+      <xsd:enumeration value="ancestor-or-self"/>
+      <xsd:enumeration value="preceding"/>
+      <xsd:enumeration value="preceding-sibling"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="xpathAxis" type="xpathAxis"/>
+
+
+<!-- filter expressions                                                                 -->
+<!-- added literalFunctionItemExpr, inlineFunctionItemExpr, and                         -->
+<!--   dynamicFunctionInvocation for higher-order functions                             -->
+  <xsd:group name="filterExpr">
+    <xsd:choice>
+      <xsd:element ref="constantExpr"/>
+      <xsd:element ref="varRef"/>
+      <xsd:element ref="contextItemExpr"/>
+      <xsd:element ref="functionCallExpr"/>
+      <xsd:element ref="sequenceExpr"/>
+      <xsd:element ref="elementConstructor"/>
+      <xsd:element ref="computedElementConstructor"/>
+      <xsd:element ref="computedAttributeConstructor"/>
+      <xsd:element ref="computedDocumentConstructor"/>
+      <xsd:element ref="computedTextConstructor"/>
+      <xsd:element ref="computedCommentConstructor"/>
+      <xsd:element ref="computedNamespaceConstructor"/>
+      <xsd:element ref="computedPIConstructor"/>
+      <xsd:element ref="orderedExpr"/>
+      <xsd:element ref="unorderedExpr"/>
+      <xsd:element ref="literalFunctionItemExpr"/>
+      <xsd:element ref="inlineFunctionItemExpr"/>
+      <xsd:element ref="dynamicFunctionInvocationExpr"/>
+    </xsd:choice>
+  </xsd:group>
+
+
+<!-- step expression                                                                    -->
+<!-- removed nameTest and Wildcard outer choices per Bugzilla Bug #2523                 -->
+<!-- replaced element "predicates" with choice of "predicates" & "dynamicfunctioninv'n" -->
+  <xsd:complexType name="stepExpr">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:sequence>
+          <xsd:element ref="xpathAxis"/>
+          <xsd:choice>
+            <xsd:element ref="kindTest"/>
+            <xsd:element ref="nameTest"/>
+            <xsd:element ref="Wildcard"/>
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:element name="filterExpr">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:group ref="filterExpr"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:element name="predicates" type="exprList" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="stepExpr" type="stepExpr"/>
+
+
+<!-- path expression                                                                    -->
+<!-- rewrote pathExpr definition per Bugzilla Bug #2523                                 -->
+  <xsd:complexType name="pathExpr">
+    <xsd:complexContent>
+      <xsd:extension base="expr">
+        <xsd:choice>
+          <xsd:sequence>
+            <xsd:element name="rootExpr" type="emptyContent"/>
+            <xsd:element ref="stepExpr" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+          <xsd:element ref="stepExpr" maxOccurs="unbounded"/>
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="pathExpr" type="pathExpr" substitutionGroup="expr"/>
+
+
+<!-- The following constructs deal with the query prolog                                -->
+  <xsd:complexType name="module">
+    <xsd:sequence>
+      <xsd:element ref="versionDecl" minOccurs="0"/>
+      <xsd:choice>
+        <xsd:element ref="mainModule"/>
+        <xsd:element ref="libraryModule"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="module" type="module"/>
+
+
+  <xsd:complexType name="mainModule">
+    <xsd:sequence>
+      <xsd:element ref="prolog" minOccurs="0"/>
+      <xsd:element name="queryBody" type="exprWrapper"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="mainModule" type="mainModule"/>
+
+
+  <xsd:complexType name="libraryModule">
+    <xsd:sequence>
+      <xsd:element ref="moduleDecl"/>
+      <xsd:element ref="prolog" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="libraryModule" type="libraryModule"/>
+
+
+  <xsd:complexType name="versionDecl">
+    <xsd:sequence>
+      <xsd:element name="version" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="encoding" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="versionDecl" type="versionDecl"/>
+
+
+  <xsd:complexType name="prolog">
+    <xsd:sequence>
+            <xsd:element ref="prologPartOneItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="prologPartTwoItem" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+
+  <xsd:element name="prolog" type="prolog"/>
+
+
+  <xsd:element name="prologPartOneItem" abstract="true"/>
+
+
+  <xsd:element name="prologPartTwoItem" abstract="true"/>
+
+
+  <xsd:simpleType name="boundarySpaceDecl">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="strip"/>
+      <xsd:enumeration value="preserve"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="boundarySpaceDecl" type="boundarySpaceDecl"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:element name="defaultCollationDecl" type="xsd:string"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:element name="baseUriDecl" type="xsd:string"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:simpleType name="constructionDecl">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="strip"/>
+      <xsd:enumeration value="preserve"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="constructionDecl" type="constructionDecl"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:simpleType name="orderingModeDecl">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="ordered"/>
+      <xsd:enumeration value="unordered"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="orderingModeDecl" type="orderingModeDecl"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:element name="emptyOrderingDecl" type="emptyOrderingMode"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:complexType name="copyNamespacesDecl">
+    <xsd:sequence>
+      <xsd:element name="preserveMode">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NMTOKEN">
+            <xsd:enumeration value="preserve"/>
+            <xsd:enumeration value="no-preserve"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="inheritMode">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NMTOKEN">
+            <xsd:enumeration value="inherit"/>
+            <xsd:enumeration value="no-inherit"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="copyNamespacesDecl" type="copyNamespacesDecl"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:simpleType name="defaultNamespaceCategory">
+    <xsd:restriction base="xsd:NMTOKEN">
+      <xsd:enumeration value="function"/>
+      <xsd:enumeration value="element"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="defaultNamespaceDecl">
+    <xsd:sequence>
+      <xsd:element name="defaultNamespaceCategory" type="defaultNamespaceCategory"/>
+      <xsd:element name="uri" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="defaultNamespaceDecl" type="defaultNamespaceDecl"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:complexType name="namespaceDeclType">
+    <xsd:sequence>
+      <xsd:element name="prefix" type="xsd:NCName"/>
+      <xsd:element name="uri" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="namespaceDecl" type="namespaceDeclType"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:element name="moduleDecl" type="namespaceDeclType"/>
+
+
+  <xsd:complexType name="decimalFormatDeclType">
+        <xsd:sequence>
+          <xsd:element name="decimalFormatName" type="EQName" minOccurs="0"/>
+          <xsd:element name="decimalFormatParam" minOccurs="0" maxOccurs="unbounded">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="decimalFormatParamName">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:NMTOKEN">
+                      <xsd:enumeration value="decimal-separator"/>
+                      <xsd:enumeration value="grouping-separator"/>
+                      <xsd:enumeration value="infinity"/>
+                      <xsd:enumeration value="minus-sign"/>
+                      <xsd:enumeration value="NaN"/>
+                      <xsd:enumeration value="percent"/>
+                      <xsd:enumeration value="per-mille"/>
+                      <xsd:enumeration value="zero-digit"/>
+                      <xsd:enumeration value="digit"/>
+                      <xsd:enumeration value="pattern-separator"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="decimalFormatParamValue" type="xsd:string"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="default" default="false">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:NMTOKEN">
+              <xsd:enumeration value="true"/>
+              <xsd:enumeration value="false"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+  </xsd:complexType>
+
+  <xsd:element name="decimalFormatDecl" type="decimalFormatDeclType"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:complexType name="schemaImport">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="namespacePrefix" type="xsd:NCName"/>
+        <xsd:element name="defaultElementNamespace" type="emptyContent"/>
+      </xsd:choice>
+      <xsd:element name="targetNamespace" type="xsd:string"/>
+      <xsd:element name="targetLocation" type="xsd:string"
+                   minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="schemaImport" type="schemaImport"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:complexType name="moduleImport">
+    <xsd:sequence>
+      <xsd:element name="namespacePrefix" type="xsd:NCName" minOccurs="0"/>
+      <xsd:element name="targetNamespace" type="xsd:string"/>
+      <xsd:element name="targetLocation" type="xsd:string"
+                   minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="moduleImport" type="moduleImport"
+               substitutionGroup="prologPartOneItem"/>
+
+
+  <xsd:complexType name="contextItemDecl">
+    <xsd:sequence>
+      <xsd:element ref="typeDeclaration" minOccurs="0"/>
+      <xsd:choice>
+        <xsd:element name="varValue" type="exprWrapper"/>
+        <xsd:sequence>
+          <xsd:element name="external">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="varValue" type="exprWrapper" minOccurs="0"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="contextItemDecl" type="contextItemDecl"
+               substitutionGroup="prologPartTwoItem"/>
+
+
+<!-- For %-annotations                                                                  -->
+  <xsd:complexType name="annotation">
+    <xsd:sequence>
+      <xsd:element name="annotationName" type="EQName"/>
+      <xsd:element name="arguments" type="exprList" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="varDecl">
+    <xsd:sequence>
+      <xsd:element name="annotation" type="annotation"
+                   minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="varName" type="EQName"/>
+      <xsd:element ref="typeDeclaration" minOccurs="0"/>
+      <xsd:choice>
+        <xsd:element name="varValue" type="exprWrapper"/>
+        <xsd:sequence>
+          <xsd:element name="external">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="varValue" type="exprWrapper" minOccurs="0"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="varDecl" type="varDecl"
+               substitutionGroup="prologPartTwoItem"/>
+
+
+  <xsd:complexType name="optionDecl">
+    <xsd:sequence>
+      <xsd:element name="optionName" type="EQName"/>
+      <xsd:element name="optionContents" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="optionDecl" type="optionDecl"
+               substitutionGroup="prologPartTwoItem"/>
+
+
+  <xsd:complexType name="functionDecl">
+    <xsd:sequence>
+      <xsd:element name="annotation" type="annotation"
+                   minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="functionName" type="EQName"/>
+      <xsd:element ref="paramList"/>
+      <xsd:element ref="typeDeclaration" minOccurs="0"/>
+      <xsd:choice>
+        <xsd:element name="functionBody" type="exprWrapper"/>
+        <xsd:element name="externalDefinition" type="emptyContent"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="nondeterministic" use="optional"
+                   type="xsd:boolean" default="false"/>
+    <xsd:attribute name="private" use="optional"
+                   type="xsd:boolean" default="false"/>
+  </xsd:complexType>
+
+  <xsd:element name="functionDecl" type="functionDecl"
+               substitutionGroup="prologPartTwoItem"/>
+
+
+  <xsd:complexType name="param">
+    <xsd:sequence>
+      <xsd:element name="varName" type="EQName"/>
+      <xsd:element ref="typeDeclaration" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="param" type="param"/>
+
+
+  <xsd:complexType name="paramList">
+    <xsd:sequence>
+      <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="paramList" type="paramList"/>
+
+
+</xsd:schema>
