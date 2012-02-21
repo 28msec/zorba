@@ -30,6 +30,8 @@
 // For timing
 #include <zorba/util/time.h>
 
+#include <zorba/transcode_stream.h>
+
 #include <util/fs_util.h>
 #include <util/uri_util.h>
 
@@ -1986,7 +1988,149 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
     PlanIteratorState::reset(planState);
     theIterator = 0;
   }
+ 
+/*******************************************************************************
+  14.8.5 fn:unparsed-text
+********************************************************************************/
+  static void streamReleaser(std::istream* aStream)
+  {
+    delete aStream;
+  }
+  /**
+   * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
+   */
 
+  static void readDocument(
+    zstring const& aUri,
+    zstring const& aEncoding,
+    static_context* aSctx,
+    PlanState& aPlanState,
+    QueryLoc const& loc,
+    store::Item_t& oResult)
+  {
+    //Normilize input to handle filesystem paths, etc.
+    zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+
+    store::LoadProperties lLoadProperties;
+
+    //Resolve URI to stream
+    zstring lErrorMessage;
+    std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
+      (lNormUri, internal::EntityData::SOME_CONTENT, lErrorMessage);
+
+    internal::StreamResource* lStreamResource =
+      dynamic_cast<internal::StreamResource*>(lResource.get());
+    
+    if(lStreamResource == NULL)
+    {
+      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+    }
+
+    std::istream *c = lStreamResource->getStream();
+    std::unique_ptr<std::istream> lInStream;
+
+    //check if encoding is needed
+    if( transcode::is_necessary(aEncoding.c_str()) )
+    {
+      try
+      {
+        lInStream.reset( new transcode::stream<std::istream>(aEncoding.c_str(), c->rdbuf()) );
+      }
+      catch (std::invalid_argument const& e)
+      {
+        throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+      }
+    }
+    else
+    {
+      lInStream.reset( new std::istream(c->rdbuf()) );
+    }
+
+    //creates stream item
+    GENV_ITEMFACTORY->createStreamableString(
+      oResult,
+      *lInStream.release(),
+      &streamReleaser
+      );
+    lStreamResource->setStreamReleaser(nullptr);
+    
+    if(oResult.isNull())
+    {
+      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
+    }
+  }
+
+  bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+  {
+    store::Item_t unparsedText;
+    store::Item_t uriItem;
+    store::Item_t encodingItem;
+    zstring uriString;
+    zstring encodingString("UTF-8");
+
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+    if(!consumeNext(uriItem, theChildren[0].getp(), planState))
+    {
+      STACK_PUSH(false, state);
+    }
+
+    if (theChildren.size() == 2)
+    {
+      consumeNext(encodingItem, theChildren[1].getp(), planState);
+      encodingItem->getStringValue2(encodingString);
+    }
+
+    uriItem->getStringValue2(uriString);
+    readDocument(uriString, encodingString, theSctx, planState, loc, result);
+    STACK_PUSH(true, state);
+
+    STACK_END(state);
+  }
+
+
+/*******************************************************************************
+  14.8.7 fn:unparsed-text-available
+********************************************************************************/
+   
+  bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+  {
+    store::Item_t unparsedText;
+    store::Item_t uriItem;
+    store::Item_t encodingItem;
+    zstring uriString;
+    zstring encodingString("UTF-8");
+
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+    
+    if(!consumeNext(uriItem, theChildren[0].getp(), planState))
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
+    }
+
+    if (theChildren.size() == 2)
+    {
+      consumeNext(encodingItem, theChildren[1].getp(), planState);
+      encodingItem->getStringValue2(encodingString);
+    }
+
+    uriItem->getStringValue2(uriString);
+
+    try
+    {
+      readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
+    }
+    catch(XQueryException const& e)
+    {
+      unparsedText = NULL;
+    }
+
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, !(unparsedText.isNull()) ), state);
+    
+    STACK_END(state);
+  }
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

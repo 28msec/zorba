@@ -35,7 +35,6 @@
 
 #include "util/string_util.h"
 
-#include "runtime/access/access.h"
 #include "runtime/accessors/accessors.h"
 #include "runtime/any_uri/any_uri.h"
 #include "runtime/base64/base64.h"
@@ -109,34 +108,6 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
 }
-
-
-// <FnUnparsedTextIterator>
-void PrinterVisitor::beginVisit ( const FnUnparsedTextIterator& a) {
-  thePrinter.startBeginVisit("FnUnparsedTextIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnUnparsedTextIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnUnparsedTextIterator>
-
-
-// <FnUnparsedTextAvailableIterator>
-void PrinterVisitor::beginVisit ( const FnUnparsedTextAvailableIterator& a) {
-  thePrinter.startBeginVisit("FnUnparsedTextAvailableIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnUnparsedTextAvailableIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnUnparsedTextAvailableIterator>
 
 
 // <NodeNameIterator>
@@ -3485,6 +3456,34 @@ void PrinterVisitor::endVisit ( const FnEnvironmentVariableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnEnvironmentVariableIterator>
+
+
+// <FnUnparsedTextIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextIterator>
+
+
+// <FnUnparsedTextAvailableIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextAvailableIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextAvailableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextAvailableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextAvailableIterator>
 
 
 // <PutDocumentIterator>

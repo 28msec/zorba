@@ -279,6 +279,26 @@ PlanIter_t fn_environment_variable::codegen(
   return new FnEnvironmentVariableIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_unparsed_text::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text_available::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
+}
+
 void populate_context_sequences(static_context* sctx)
 {
   {
@@ -806,6 +826,56 @@ void populate_context_sequences(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
         FunctionConsts::FN_ENVIRONMENT_VARIABLE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_2);
 
   }
 

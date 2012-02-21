@@ -1487,6 +1487,81 @@ public:
 };
 
 
+/**
+ * 
+ *    Summary: The fn:unparsed-text function reads an external resource (for
+ *    example, a file) and returns its contents as a string.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextIterator : public NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextIterator,
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>*)this);
+  }
+
+  FnUnparsedTextIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Because errors in evaluating the fn:unparsed-text function are
+ *    non-recoverable, these two functions are provided to allow an application
+ *    to determine whether a call with particular arguments would succeed.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextAvailableIterator : public NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextAvailableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextAvailableIterator,
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>*)this);
+  }
+
+  FnUnparsedTextAvailableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextAvailableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

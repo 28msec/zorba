@@ -652,6 +652,36 @@ public:
 };
 
 
+//fn:unparsed-text
+class fn_unparsed_text : public function
+{
+public:
+  fn_unparsed_text(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text-available
+class fn_unparsed_text_available : public function
+{
+public:
+  fn_unparsed_text_available(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -1080,6 +1080,62 @@ FnEnvironmentVariableIterator::~FnEnvironmentVariableIterator() {}
 // </FnEnvironmentVariableIterator>
 
 
+// <FnUnparsedTextIterator>
+const char* FnUnparsedTextIterator::class_name_str = "FnUnparsedTextIterator";
+FnUnparsedTextIterator::class_factory<FnUnparsedTextIterator>
+FnUnparsedTextIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnUnparsedTextIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnUnparsedTextIterator::class_versions_count =
+sizeof(FnUnparsedTextIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnUnparsedTextIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnUnparsedTextIterator::~FnUnparsedTextIterator() {}
+
+// </FnUnparsedTextIterator>
+
+
+// <FnUnparsedTextAvailableIterator>
+const char* FnUnparsedTextAvailableIterator::class_name_str = "FnUnparsedTextAvailableIterator";
+FnUnparsedTextAvailableIterator::class_factory<FnUnparsedTextAvailableIterator>
+FnUnparsedTextAvailableIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnUnparsedTextAvailableIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnUnparsedTextAvailableIterator::class_versions_count =
+sizeof(FnUnparsedTextAvailableIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnUnparsedTextAvailableIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnUnparsedTextAvailableIterator::~FnUnparsedTextAvailableIterator() {}
+
+// </FnUnparsedTextAvailableIterator>
+
+
 
 }
 

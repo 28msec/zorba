@@ -24,7 +24,6 @@
 #include "functions/function.h"
 #include "functions/signature.h"
 
-#include "functions/func_access.h"
 #include "functions/func_accessors.h"
 #include "functions/func_accessors_impl.h"
 #include "functions/func_any_uri.h"
@@ -95,7 +94,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
 
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
-  populate_context_access(sctx);
   populate_context_accessors(sctx);
   populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
