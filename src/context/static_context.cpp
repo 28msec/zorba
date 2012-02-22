@@ -1577,7 +1577,7 @@ void static_context::apply_url_resolvers(
     std::auto_ptr<internal::Resource>& oResource, 
     zstring& oErrorMessage) const
 {
-  oErrorMessage = "";
+  oErrorMessage.clear();
 
   // Iterate through all candidate URLs...
   for (std::vector<zstring>::iterator url = aUrls.begin();
@@ -1613,7 +1613,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e) 
         {
-          if (oErrorMessage == "") 
+          if (oErrorMessage.empty()) 
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
