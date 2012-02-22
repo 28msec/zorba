@@ -17,7 +17,7 @@
 #define ZORBA_SIMPLE_STORE_COLLECTION_SET_H
 
 #include "store/api/shared_types.h"
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 #include "zorbautils/hashmap_itemp.h"
 #include "store/api/collection.h"
 

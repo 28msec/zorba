@@ -29,18 +29,18 @@
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
 #include "store/api/xs_type_codes.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/shared_types.h"
+#include "store_defs.h"
+#include "shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include "store/naive/naive_ft_token_iterator.h"
+#include "naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
 
 #include "diagnostics/xquery_diagnostics.h"
-#include "store/naive/ordpath.h"
+#include "ordpath.h"
 
 
 namespace zorba

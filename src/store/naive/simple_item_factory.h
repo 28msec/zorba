@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
