@@ -1913,18 +1913,28 @@ void serializer::binary_emitter::emit_item(store::Item* item)
   }
   else
   {
-    char* value;
-    size_t len = item->getBase64BinaryValue(value);
-
-    if (item->isEncoded())
+    if (!item->isNode() && 
+        item->getTypeCode() == store::XS_BASE64BINARY)
     {
-      std::stringstream tmp;
-      tmp.write(value, len);
-      tr << Base64::decode(tmp);
+      char* value;
+      size_t len = item->getBase64BinaryValue(value);
+
+      if (item->isEncoded())
+      {
+        std::stringstream tmp;
+        tmp.write(value, len);
+        tr << Base64::decode(tmp);
+      }
+      else
+      {
+        tr.write(value, len);
+      }
     }
     else
     {
-      tr.write(value, len);
+      zstring lStringValue;
+      item->getStringValue2(lStringValue);
+      tr << lStringValue;
     }
   }
 }
