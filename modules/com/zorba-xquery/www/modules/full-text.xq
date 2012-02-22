@@ -112,6 +112,43 @@ xquery version "3.0";
  :   </tr>
  : </table>
  : Relationships are case-insensitive.
+ : <h2>Notes on tokens</h2>
+ : The <code>ft:tokenize()</code>
+ : and <code>ft:tokenize-string()</code> functions
+ : return a sequence of &lt;token&gt; elements
+ : containing attributes for each token:
+ :  <table>
+ :    <tr>
+ :      <th>Attribute</th>
+ :      <th>Type</th>
+ :      <th>Meaning</th>
+ :    </tr>
+ :    <tr>
+ :      <td>lang</td>
+ :      <td><code>xs:language</code></td>
+ :      <td>The language of the token.</td>
+ :    </tr>
+ :    <tr>
+ :      <td>sentence</td>
+ :      <td><code>xs:nonNegativeInteger</code></td>
+ :      <td>The sentence number.</td>
+ :    </tr>
+ :    <tr>
+ :      <td>paragraph</td>
+ :      <td><code>xs:nonNegativeInteger</code></td>
+ :      <td>The paragraph number.</td>
+ :    </tr>
+ :    <tr>
+ :      <td>value</td>
+ :      <td><code>xs:string</code></td>
+ :      <td>The token string value.</td>
+ :    </tr>
+ :    <tr>
+ :      <td>node-ref</td>
+ :      <td><code>xs:string</code></td>
+ :      <td>A reference to the originating node.</td>
+ :    </tr>
+ :  </table>
  : <h2>Notes on tokenizer properties</h2>
  : The <code>ft:tokenizer-properties()</code> functions
  : return a single <code>&lt;tokenizer-properties&gt;</code> element
