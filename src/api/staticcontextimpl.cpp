@@ -849,6 +849,59 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
 
 
 void
+StaticContextImpl::getFunctions(std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+      aFunctions.push_back(lFunc);
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
+StaticContextImpl::getFunctions(
+    const String& aFnNameUri,
+    uint32_t arity,
+    std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      const zstring& lNamespace = (*lIter)->getName()->getNamespace();
+      if (lNamespace == aFnNameUri.c_str() && (*lIter)->getArity() == arity)
+      {
+        Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+        aFunctions.push_back(lFunc);
+      }
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
 StaticContextImpl::getFunctionAnnotations(
     const Item& aQName,
     int arity,

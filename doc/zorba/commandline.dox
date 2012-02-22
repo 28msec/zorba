@@ -1,18 +1,5 @@
 /** \page commandline Command Line Utility
 
-<ul>
-  <li> Table of Contents
-  <ul>
-    <li> \ref commandLineUsage
-    <li> \ref commandLineHelp
-    <li> \ref commandlineexamples
-    <ul>
-      <li> \ref cmdlineExample1
-      <li> \ref cmdlineExample2
-    </ul>
-  </ul>
-</ul>
-
 \section commandLineUsage Usage
 %zorba [options] [-q Inline_Query ...] or \n
 %zorba [options] -f [-q Query_File ...]

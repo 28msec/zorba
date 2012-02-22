@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_fetch_content::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FetchContentIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_fetch_content_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FetchContentTypeIterator(sctx, loc, argv);
 }

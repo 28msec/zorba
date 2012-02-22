@@ -3848,7 +3848,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  bool recognised = false;
+  //bool recognised = false;
 
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
@@ -3869,7 +3869,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
                     + ":" + lExpandedQName->getLocalName())));
     }
 
-    recognised = true;
+    //recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -9385,6 +9385,26 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr_t> concat_args;
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  concat_args.push_back(left);
+  concat_args.push_back(right);
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  push_nodestack(concat);
+}
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -11945,11 +11965,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
