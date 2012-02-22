@@ -33,7 +33,7 @@ bool Base64DecodeIterator::nextImpl(
 {
   store::Item_t lItem;
   zstring lResultString;
-  char* lContent;
+  const char* lContent;
   size_t lSize;
   result = NULL;
 
@@ -61,7 +61,7 @@ bool Base64DecodeIterator::nextImpl(
   }
   else
   {
-    lSize = lItem->getBase64BinaryValue(lContent);
+    lContent = lItem->getBase64BinaryValue(lSize);
 
     if (lItem->isEncoded())
     {

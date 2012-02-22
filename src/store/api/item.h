@@ -274,7 +274,7 @@ public:
 
   /** Accessor for xs:base64Binary
    */
-  virtual size_t getBase64BinaryValue(char*& data) const;
+  virtual const char* getBase64BinaryValue(size_t& size) const;
 
   /**
    * Checks whether a base64 item's content is already encoded

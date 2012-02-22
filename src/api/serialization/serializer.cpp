@@ -1916,8 +1916,8 @@ void serializer::binary_emitter::emit_item(store::Item* item)
     if (!item->isNode() && 
         item->getTypeCode() == store::XS_BASE64BINARY)
     {
-      char* value;
-      size_t len = item->getBase64BinaryValue(value);
+      size_t len;
+      const char* value = item->getBase64BinaryValue(len);
 
       if (item->isEncoded())
       {

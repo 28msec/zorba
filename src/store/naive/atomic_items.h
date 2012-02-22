@@ -154,9 +154,9 @@ public:
 
   const zstring& getString() const { return theBaseItem->getString(); }
 
-  size_t getBase64BinaryValue(char*& c) const
+  const char* getBase64BinaryValue(size_t& s) const
   {
-    return theBaseItem->getBase64BinaryValue(c);
+    return theBaseItem->getBase64BinaryValue(s);
   }
 
   xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
@@ -2237,7 +2237,7 @@ protected:
   }
 
 public:
-  size_t getBase64BinaryValue(char*& data) const;
+  const char* getBase64BinaryValue(size_t& data) const;
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
 
@@ -2325,7 +2325,7 @@ public:
 
   void setStreamReleaser(StreamReleaser aReleaser);
 
-  size_t getBase64BinaryValue(char*&) const;
+  const char* getBase64BinaryValue(size_t&) const;
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
 

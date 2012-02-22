@@ -3067,9 +3067,9 @@ Base64BinaryItem::equals(
 {
   if (isEncoded() == other->isEncoded())
   {
-    char* this_data, *other_data;
-    size_t this_size = getBase64BinaryValue(this_data);
-    size_t other_size = other->getBase64BinaryValue(other_data);
+    size_t this_size, other_size;
+    const char* this_data = getBase64BinaryValue(this_size);
+    const char* other_data = other->getBase64BinaryValue(other_size);
     return this_size == other_size &&
       memcmp(this_data, other_data, this_size) == 0;
   }
@@ -3090,11 +3090,11 @@ Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-size_t
-Base64BinaryItem::getBase64BinaryValue(char*& data) const
+const char*
+Base64BinaryItem::getBase64BinaryValue(size_t& size) const
 {
-  data = const_cast<char*>(&theValue[0]);
-  return theValue.size();
+  size = theValue.size();
+  return &theValue[0];
 }
 
 
@@ -3220,14 +3220,14 @@ StreamableBase64BinaryItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
-size_t
-StreamableBase64BinaryItem::getBase64BinaryValue(char*& data) const
+const char*
+StreamableBase64BinaryItem::getBase64BinaryValue(size_t& s) const
 {
   if (!theIsMaterialized)
   {
     materialize();
   }
-  return Base64BinaryItem::getBase64BinaryValue(data);
+  return Base64BinaryItem::getBase64BinaryValue(s);
 }
 
 

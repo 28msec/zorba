@@ -430,7 +430,7 @@ const zstring& Item::getString() const
 /**
  * Accessor for xs:base64Binary
  */
-size_t Item::getBase64BinaryValue(char*&) const
+const char* Item::getBase64BinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,

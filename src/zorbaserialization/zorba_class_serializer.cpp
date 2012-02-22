@@ -675,8 +675,8 @@ void operator&(Archiver &ar, store::Item* &obj)
       {
         if (ar.is_serializing_out())
         {
-          char* c;
-          size_t s = obj->getBase64BinaryValue(c);
+          size_t s;
+          const char* c = obj->getBase64BinaryValue(s);
           if (obj->isEncoded())
           {
             Base64 tmp;

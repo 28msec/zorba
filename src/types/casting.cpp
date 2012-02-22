@@ -1267,8 +1267,8 @@ T1_TO_T2(b64, str)
 
 T1_TO_T2(b64, hxB)
 {
-  char* c;
-  size_t s = aItem->getBase64BinaryValue(c);
+  size_t s;
+  const char* c = aItem->getBase64BinaryValue(s);
   Base64 tmp;
   if (aItem->isEncoded())
   {
