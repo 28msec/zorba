@@ -405,6 +405,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 ":" { return token::COLON; }
 "::" { return token::DOUBLE_COLON; }
 "%" { return token::PERCENTAGE; }
+"||" { return token::CONCAT; }
 
 "declare" {
   std::string lDocComment = theDriver->theDocComment.str();

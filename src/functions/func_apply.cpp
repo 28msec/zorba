@@ -46,7 +46,7 @@ PlanIter_t xqsx_apply::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   ZORBA_ASSERT(false);
 }
