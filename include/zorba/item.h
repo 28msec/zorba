@@ -363,6 +363,14 @@ public:
   std::istream&
   getStream();
 
+  /**
+   * Returns true if the contents of a binary item is already encoded
+   * 
+   * @return true if the content is already encoded, false otherwise
+   */
+  bool
+  isEncoded() const;
+
   /** \brief Returns the name of the collection this node is stored in.
    *
    * @return The name of the collection or 0 if the given item is not

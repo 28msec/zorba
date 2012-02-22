@@ -149,6 +149,25 @@ namespace zorba {
       virtual Item 
       createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
 
+      /** \brief Creates a streamable Base64Binary Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param stream An istream whence to read the binary's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableBase64Binary is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param seekable is the given stream seekable
+       * @param encoded is the contents of the given stream already base64
+       *        encoded
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false) = 0;
+
       /** \brief Creates a Boolean Item
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
        *

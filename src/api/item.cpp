@@ -470,6 +470,17 @@ Item::getStream()
   // TODO: throw exception
 }
 
+bool
+Item::isEncoded() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->isEncoded();
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
 Item
 Item::getCollectionName() const
 {
