@@ -114,13 +114,23 @@ Resource*
 ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   if ( data->getKind() != internal::EntityData::THESAURUS )
     return nullptr;
-  ThesaurusEntityData const *const t_data =
+
+  ThesaurusEntityData const *const te_data =
     dynamic_cast<ThesaurusEntityData const*>( data );
-  iso639_1::type const lang = t_data->getLanguage();
+  ZORBA_ASSERT( te_data );
+  iso639_1::type const lang = te_data->getLanguage();
+
+  // TODO: This really should ask the thesaurus implementation, "Can you look-up
+  // TODO: words in the given language?"
+  if ( lang != iso639_1::en )
+    return nullptr;
 
   thesaurus_impl::type t_impl;
   zstring mapped_url;
   parse_mapping( url, &t_impl, &mapped_url );
+
+  cout << "url=" << url << endl;
+  cout << "mapped_url=" << mapped_url << endl;
 
   zstring t_path;
   switch ( uri::get_scheme( mapped_url ) ) {

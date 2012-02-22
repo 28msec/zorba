@@ -48,7 +48,7 @@ namespace zorba
       {
         EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
         retval->theThesaurusLang =
-            dynamic_cast<const internal::ThesaurusEntityData*>(aData)->getLanguage();
+          dynamic_cast<const internal::ThesaurusEntityData*>(aData)->getLanguage();
         return retval;
       }
       case internal::EntityData::STOP_WORDS:

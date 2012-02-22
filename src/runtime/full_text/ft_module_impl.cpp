@@ -214,10 +214,10 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   }
 
   try {
-    vector<zstring> comp_uris;
     iso639_1::type lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
 
+    vector<zstring> comp_uris;
     sctx->get_component_uris(
       uri, internal::EntityData::THESAURUS, comp_uris
     );

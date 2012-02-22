@@ -249,6 +249,8 @@ declare function ft:is-thesaurus-lang-supported( $lang as xs:language )
  : @param $uri The URI specifying the thesaurus to use.
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
+ : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
+ : that is not found in the statically known thesauri.
  :)
 declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
                                                  $lang as xs:language )
