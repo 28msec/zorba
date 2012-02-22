@@ -95,7 +95,7 @@
   <xs:complexType name="replaceElementContent-type">
     <xs:sequence>
       <xs:element name="target" type="xs:anyURI"/>
-      <xs:element name="text" type="xdm:one-text-node-type"/>
+      <xs:element name="text" type="xdm:zero-or-one-text-node-type"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="rename-type">
@@ -163,12 +163,12 @@
 -->
   <xs:complexType name="activateIntegrityConstraint-type">
     <xs:sequence>
-      <xs:element name="indentity-constraint-name" type="xs:QName"/>
+      <xs:element name="identity-constraint-name" type="xs:QName"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="deActivateIntegrityConstraint-type">
     <xs:sequence>
-      <xs:element name="indentity-constraint-name" type="xs:QName"/>
+      <xs:element name="identity-constraint-name" type="xs:QName"/>
     </xs:sequence>
   </xs:complexType>
     
@@ -180,13 +180,30 @@
   <xs:complexType name="createIndex-type">
     <xs:sequence>
       <xs:element name="index-name" type="xs:QName"/>
+      <xs:element name="domain-expression">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:expr"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="key-expressions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:expr" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="annotation" type="xqx:annotation" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+
   <xs:complexType name="deleteIndex-type">
     <xs:sequence>
       <xs:element name="index-name" type="xs:QName"/>
     </xs:sequence>
   </xs:complexType>
+
   <xs:complexType name="refreshIndex-type">
     <xs:sequence>
       <xs:element name="index-name" type="xs:QName"/>

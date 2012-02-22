@@ -224,7 +224,7 @@
   </xs:complexType>
   <xs:complexType name="namespaces-sequence-type">
     <xs:sequence>
-      <xs:element ref="xdm:namespace"/>
+      <xs:element ref="xdm:namespace" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -240,9 +240,9 @@
     </xs:choice>
   </xs:complexType>
   
-  <xs:complexType name="one-text-node-type">
+  <xs:complexType name="zero-or-one-text-node-type">
     <xs:sequence>
-      <xs:element ref="xdm:text"/>
+      <xs:element ref="xdm:text" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="one-document-or-element-node-type">
