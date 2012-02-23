@@ -31,7 +31,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     simple_store.cpp
     simple_iterator_factory.cpp
     simple_collection.cpp
-    collection_set.cpp
+    simple_collection_set.cpp
     simple_index.cpp
     simple_index_value.cpp
     simple_index_general.cpp

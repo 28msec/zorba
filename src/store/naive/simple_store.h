@@ -143,6 +143,10 @@ public:
 
 protected:
   static const ulong NAMESPACE_POOL_SIZE;
+  static const ulong DEFAULT_DOCUMENT_SET_SIZE;
+  static const ulong DEFAULT_URI_COLLECTION_SET_SIZE;
+  static const ulong DEFAULT_INDICES_SET_SIZE;
+  static const ulong DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE;
 
 public:
   zstring                       theEmptyNs;
@@ -175,7 +179,7 @@ protected:
   PULPrimitiveFactory         * thePULFactory;
 
   DocumentSet                   theDocuments;
-  CollectionSet*                theCollections;
+  zorba::store::CollectionSet*  theCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
   IndexSet                      theHashMaps;
@@ -415,9 +419,9 @@ protected:
 
   virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
 
-  virtual CollectionSet* createCollectionSet() const;
+  virtual zorba::store::CollectionSet* createCollectionSet() const;
 
-  virtual void destroyCollectionSet(CollectionSet*) const;
+  virtual void destroyCollectionSet(zorba::store::CollectionSet*) const;
 
 #ifndef ZORBA_NO_FULL_TEXT
   TokenizerProvider const* getTokenizerProvider() const;

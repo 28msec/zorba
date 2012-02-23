@@ -68,6 +68,11 @@ typedef rchandle<TempSeqIterator> TempSeqIterator_t;
 class Collection;
 typedef rchandle<Collection> Collection_t;
 
+class CollectionSet;
+
+class CollectionSetIterator;
+typedef rchandle<CollectionSetIterator> CollectionSetIterator_t;
+
 class Index;
 typedef rchandle<Index> Index_t;
 
