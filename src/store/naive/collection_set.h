@@ -23,7 +23,7 @@
 
 namespace zorba {
   
-  namespace store {
+  namespace simplestore {
 
     class CollectionIterator;
     

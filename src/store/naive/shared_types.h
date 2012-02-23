@@ -44,6 +44,10 @@ typedef rchandle<IndexImpl> IndexImpl_t;
 
 typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 
+class CollectionSet;
+
+class CollectionSetIterator;
+typedef rchandle<CollectionSetIterator> CollectionSetIterator_t;
 
 }
 

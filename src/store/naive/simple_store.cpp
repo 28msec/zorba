@@ -404,7 +404,7 @@ SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
 /*******************************************************************************
 
 *******************************************************************************/
-zorba::store::CollectionSet* SimpleStore::createCollectionSet() const
+CollectionSet* SimpleStore::createCollectionSet() const
 {
   return new SimpleCollectionSet();
 }
@@ -413,7 +413,7 @@ zorba::store::CollectionSet* SimpleStore::createCollectionSet() const
 /*******************************************************************************
 
 *******************************************************************************/
-void SimpleStore::destroyCollectionSet(zorba::store::CollectionSet* c) const
+void SimpleStore::destroyCollectionSet(CollectionSet* c) const
 {
   delete c;
 }

@@ -179,7 +179,7 @@ protected:
   PULPrimitiveFactory         * thePULFactory;
 
   DocumentSet                   theDocuments;
-  zorba::store::CollectionSet*  theCollections;
+  CollectionSet*  theCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
   IndexSet                      theHashMaps;
@@ -419,9 +419,9 @@ protected:
 
   virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
 
-  virtual zorba::store::CollectionSet* createCollectionSet() const;
+  virtual CollectionSet* createCollectionSet() const;
 
-  virtual void destroyCollectionSet(zorba::store::CollectionSet*) const;
+  virtual void destroyCollectionSet(CollectionSet*) const;
 
 #ifndef ZORBA_NO_FULL_TEXT
   TokenizerProvider const* getTokenizerProvider() const;
