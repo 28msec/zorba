@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <sstream>
 
 #include "util/json_parser.h"

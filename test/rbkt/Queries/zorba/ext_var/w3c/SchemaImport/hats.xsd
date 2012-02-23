@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3.org/XQueryTest/hats"
+  xmlns:hats="http://www.w3.org/XQueryTest/hats"
+  elementFormDefault="qualified">
+
+<!-- A hodge-podge of random type declarations -->
+
+
+<xsd:element name="ArrayTest">
+	<xsd:complexType>
+	    <xsd:sequence>
+	        <xsd:element name="array1" type="xsd:string" maxOccurs="10"/>
+	        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+		        <xsd:element name="array2" type="xsd:boolean" minOccurs="2" maxOccurs="2"/>
+		        <xsd:element name="array3" type="xsd:string" maxOccurs="4"/>
+	        </xsd:choice>
+	    </xsd:sequence>
+    </xsd:complexType>
+</xsd:element>
+
+<xsd:simpleType name="hatsize">
+  <xsd:restriction base="xsd:integer">
+    <xsd:minInclusive value="4"/>
+    <xsd:maxInclusive value="10"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="bighatsize">
+  <xsd:restriction base="hats:hatsize">
+    <xsd:minInclusive value="7"/>
+    <!--<xsd:maxInclusive value="10"/>--> <!-- inherit the maxInclusive facet -->
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="shoesize">
+  <xsd:restriction base="xsd:negativeInteger">
+    <xsd:minExclusive value="-8"/>
+    <xsd:maxExclusive value="-2"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:simpleType name="date2003">
+  <xsd:restriction base="xsd:date">
+    <xsd:minInclusive value="2003-01-01"/>
+    <xsd:maxInclusive value="2003-12-31"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="vreg">
+  <xsd:restriction base="xsd:string">
+    <xsd:pattern value="[a-z]{3}[0-9]{3}"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="abfType">
+    <xsd:sequence>
+      <xsd:element name="a" minOccurs="1" type="xsd:string"/>
+      <xsd:element name="b" minOccurs="0" maxOccurs="2"/>
+      <xsd:element name="f" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="abf" type="hats:abfType"/>
+
+<xsd:element name="s" type="xsd:string"/>
+
+</xsd:schema>

@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.2
 
   * Add --compile-plan (-c) and --execute-plan (-e) options to zorba command line.
+  * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr) 
   * Fixed bug 923015 (clone() not implemented for full-text expressions)
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
   * Added external function annotations %ann:propagates-input-nodes and 
@@ -38,6 +39,7 @@ version 2.2
   * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
+  * Added two API methods StaticContext::getFunctions to introspect the functions of a static context
   * Added API method Item::getNamespaceBindings().
   * Added a transcoding streambuffer to the API which allows transcoding arbitrary encodings
     from and to UTF-8
