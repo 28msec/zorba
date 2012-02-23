@@ -41,19 +41,19 @@ namespace zorba {
     
       virtual bool
       insert(
-          const Item* aName,
-          Collection_t& aCollection) = 0;
+          const zorba::store::Item* aName,
+          zorba::store::Collection_t& aCollection) = 0;
     
       virtual bool
       get(
-          const store::Item* aName,
-          Collection_t& aCollection,
+          const zorba::store::Item* aName,
+          zorba::store::Collection_t& aCollection,
           bool aDynamicCollection = false) = 0;
     
       virtual bool
-      remove(const Item* aName, bool aDynamicCollection = false) = 0;
+      remove(const zorba::store::Item* aName, bool aDynamicCollection = false) = 0;
     
-      virtual Iterator_t
+      virtual zorba::store::Iterator_t
       names(bool aDynamicCollection = false) = 0;
     
       virtual CollectionSetIterator_t
@@ -74,7 +74,7 @@ namespace zorba {
       open() = 0;
     
       virtual bool
-      next(Collection_t&) = 0;
+      next(zorba::store::Collection_t&) = 0;
     
       virtual void
       reset() = 0;

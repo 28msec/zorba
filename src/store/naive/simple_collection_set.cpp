@@ -154,7 +154,7 @@ zorba::store::Iterator_t SimpleCollectionSet::names(bool aDynamicCollections)
 }
 
 
-zorba::store::CollectionSetIterator_t SimpleCollectionSet::collections(bool aDynamicCollections) 
+CollectionSetIterator_t SimpleCollectionSet::collections(bool aDynamicCollections) 
 {
   return new SimpleCollectionSetIterator(&theCollections,
                                          aDynamicCollections);

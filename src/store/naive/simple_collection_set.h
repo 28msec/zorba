@@ -31,7 +31,7 @@ namespace zorba {
       a different kind of memory management. For the simplestore, the Collections
       is only a wrapper class around an ItemPointerHashMap.
     ********************************************************************************/
-    class SimpleCollectionSet : public zorba::store::CollectionSet
+    class SimpleCollectionSet : public CollectionSet
     {
     public:
       typedef ItemPointerHashMap<zorba::store::Collection_t> Set;
@@ -67,7 +67,7 @@ namespace zorba {
       names(bool aDynamicCollection = false);
     
       // needs to be virtual to allow implementation of additional stores
-      virtual zorba::store::CollectionSetIterator_t
+      virtual CollectionSetIterator_t
       collections(bool aDynamicCollection = false);
     
     }; /* class CollectionSet */
@@ -76,7 +76,7 @@ namespace zorba {
       Collection iterator
       Returned by the CollectionSet::collections function
     ********************************************************************************/
-    class SimpleCollectionSetIterator : public zorba::store::CollectionSetIterator
+    class SimpleCollectionSetIterator : public CollectionSetIterator
     {
     protected:
       SimpleCollectionSet::Set*          theCollections;
