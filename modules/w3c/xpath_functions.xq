@@ -1005,3 +1005,33 @@ declare function fn:available-environment-variables() as xs:string* external;
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-environment-variable">fn:environment-variable</a>
  :)
 declare function fn:environment-variable($arg as xs:string) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text">fn:unparsed-text</a>
+ :)
+declare function fn:unparsed-text($href as xs:string?) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text">fn:unparsed-text</a>
+ :)
+declare function fn:unparsed-text($href as xs:string?, $encoding as xs:string) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available">fn:unparsed-text-available</a>
+ :)
+declare function fn:unparsed-text-available($href as xs:string?) as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available">fn:unparsed-text-available</a>
+ :)
+declare function fn:unparsed-text-available(	$href	 as xs:string?, $encoding	 as xs:string) as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-uri-collection">fn:uri-collection</a>
+ :)
+declare function fn:uri-collection() as xs:anyURI* external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-uri-collection">fn:uri-collection</a>
+ :)
+declare function fn:uri-collection($arg as xs:string?) as xs:anyURI* external;
