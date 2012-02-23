@@ -128,7 +128,11 @@ public:
   bool setDefaultOrderForEmptySequences (ZorbaConstants::OrderEmptyMode aMode);
   bool setOrderingMode (ZorbaConstants::OrderingMode aMode);
   void setRevalidationMode (ZorbaConstants::RevalidationMode aMode);
+
   void setURIPath(std::vector< std::string > &aURIPath );
+  void setLIBPath(std::vector< std::string > &aLIBPath );
+  void setModulePath(std::vector< std::string > &aModulePath );
+
   bool setXPath1_0CompatibMode (ZorbaConstants::XPath1_0CompatibleMode aMode);
   
   void setDefaultCollation (const std::string &aURI);

@@ -279,6 +279,28 @@ void StaticContext::setURIPath(std::vector< std::string > &aURIPath )
     theStaticContext->setURIPath(lURIPath);
   }
 
+void StaticContext::setLIBPath(std::vector< std::string > &aLIBPath )
+  {
+    std::vector< zorba::String > lLIBPath;
+    lLIBPath.reserve(aLIBPath.size());
+    std::vector< std::string >::iterator iter;
+    for(iter = aLIBPath.begin(); iter != aLIBPath.end(); iter++) {
+      lLIBPath.push_back((*iter));
+    }    
+    theStaticContext->setLibPath(lLIBPath);
+  }
+
+void StaticContext::setModulePath(std::vector< std::string > &aModulePath )
+  {
+    std::vector< zorba::String > lModulePath;
+    lModulePath.reserve(aModulePath.size());
+    std::vector< std::string >::iterator iter;
+    for(iter = aModulePath.begin(); iter != aModulePath.end(); iter++) {
+      lModulePath.push_back((*iter));
+    }    
+    theStaticContext->setModulePaths(lModulePath);
+  }
+
 bool StaticContext::setXPath1_0CompatibMode (ZorbaConstants::XPath1_0CompatibleMode aMode)
   {
     zorba::xpath1_0compatib_mode_t lMode = zorba::xpath2_0;
