@@ -514,7 +514,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3299356)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
@@ -530,6 +530,14 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
+
+# external variable default expected failures
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 900688) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 900688) # forward references not implemented -> cycles cannot be detected
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 900688) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
 
 # Failing windowing tests.
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)

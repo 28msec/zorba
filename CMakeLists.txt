@@ -508,14 +508,15 @@ ADD_SUBDIRECTORY(cmake_modules)
 # Subdirectory ordering: We need to include "test" before "config" so
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
-# ZorbaConfig.cmake.
+# ZorbaConfig.cmake. We need to include "modules" before "include" so
+# config.h can know eg. whether we found CURL.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)

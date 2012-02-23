@@ -14,6 +14,7 @@
 # create the testing file and list of tests
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mini_http.xq ${CMAKE_CURRENT_BINARY_DIR}/mini_http.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
 #belongs to test cxx_api_changes.cpp
@@ -134,6 +135,7 @@ ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
+ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
 ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
 IF (NOT ZORBA_NO_FULL_TEXT)
   ZORBA_ADD_TEST("test/libunit/stemmer" LibUnitTest stemmer)
