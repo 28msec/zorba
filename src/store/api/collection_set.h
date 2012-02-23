@@ -80,7 +80,7 @@ namespace zorba {
       reset() = 0;
     
       virtual void
-      close() = 0;
+      close() throw() = 0;
     };
 
   } /* namespace simplestore */
