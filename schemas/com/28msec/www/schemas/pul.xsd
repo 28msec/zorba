@@ -36,11 +36,11 @@
         <xs:element name="rename" type="pul:rename-type"/>
         <xs:element name="put" type="pul:put-type"/>
         <xs:element name="createCollection" type="pul:createCollection-type"/>
-        <xs:element name="insertNodesAfter" type="pul:insertNodesRelative-type"/>
-        <xs:element name="insertNodesBefore" type="pul:insertNodesRelative-type"/>
-        <xs:element name="insertNodesFirst" type="pul:insertNodesAbsolute-type"/>
-        <xs:element name="insertNodesLast" type="pul:insertNodesAbsolute-type"/>
-        <xs:element name="insertNodes" type="pul:insertNodes-type"/>
+        <xs:element name="insertAfterIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertBeforeIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertAsFirstIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertAsLastIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertIntoCollection" type="pul:insertNodes-type"/>
         <xs:element name="deleteNodes" type="pul:deleteNodes-type"/>
         <xs:element name="deleteCollection" type="pul:deleteCollection-type"/>
         <xs:element name="activateIntegrityConstraint" type="pul:activateIntegrityConstraint-type"/>
@@ -120,7 +120,13 @@
   <xs:complexType name="createCollection-type">
     <xs:sequence>
       <xs:element name="name" type="xs:QName"/>
-      <xs:element name="type" type="xqx:sequenceType" minOccurs="0"/>
+      <xs:element name="type" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:sequenceType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="annotation" type="xqx:annotation" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
     </xs:sequence>

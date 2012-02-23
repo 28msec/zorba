@@ -55,7 +55,7 @@
         The dm:base-uri accessor returns the base URI of a node as a sequence containing
         zero or one URI reference. For more information about base URIs, see [XML Base].
       -->
-      <xs:attribute name="base-uri" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="base-uri" type="xs:anyURI"/>
       <!--
         dm:document-uri($node as node()) as xs:anyURI?
         
@@ -65,14 +65,14 @@
         constructed, or if it is used on a node other than a Document Node, the empty
         sequence is returned.
       -->
-      <xs:attribute name="document-uri" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="document-uri" type="xs:anyURI"/>
       <!--
         dm:reference-uri($node as node()) as xs:anyURI?
         
         An additional, proprietary accessor reference-uri is used to store Sausalito's
         UUID references.
       -->
-      <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="reference-uri" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="element">
@@ -103,14 +103,14 @@
         xs:QNames. Note that the QName value includes an optional prefix as described in 3.3.3
         QNames and NOTATIONS.
       -->
-     <xs:attribute name="node-name" type="xs:QName"/>
+      <xs:attribute name="node-name" type="xs:QName" use="required"/>
       <!--
         dm:type-name($n as node()) as xs:QName?
         
         The dm:type-name accessor returns the name of the schema type of a node as a sequence of
         zero or one xs:QNames.
       -->
-      <xs:attribute name="type-name" type="xs:QName"/>
+      <xs:attribute name="type-name" type="xs:QName" use="required"/>
       <!--
         dm:is-id($node as node()) as xs:boolean?
         
@@ -136,18 +136,18 @@
         allow empty content.
       -->
       <xs:attribute name="nilled" type="xs:boolean" default="false"/>
-      <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="reference-uri" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="attribute">
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="node-name" type="xs:QName"/>
-          <xs:attribute name="type-name" type="xs:QName"/>
+          <xs:attribute name="node-name" type="xs:QName" use="required"/>
+          <xs:attribute name="type-name" type="xs:QName" use="required"/>
           <xs:attribute name="is-id" type="xs:boolean" default="false"/>
           <xs:attribute name="is-idrefs" type="xs:boolean" default="false"/>
-          <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -156,8 +156,8 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="node-name" type="xs:QName"/>
-          <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+          <xs:attribute name="node-name" type="xs:QName" use="required"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -166,8 +166,8 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="node-name" type="xs:NCName"/>
-          <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+          <xs:attribute name="node-name" type="xs:NCName" use="required"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -176,7 +176,7 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -185,7 +185,7 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="reference-uri" type="xs:anyURI" use="optional"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
