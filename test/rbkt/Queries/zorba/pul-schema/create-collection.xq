@@ -10,7 +10,9 @@ validate strict {
         <xqx:occurrenceIndicator>*</xqx:occurrenceIndicator>
       </xqx:sequenceType>
     </pul:type>
-    <pul:nodes></pul:nodes>
+    <pul:nodes>
+      <xdm:element xmlns:xdm="http://www.28msec.com/schemas/xdm" xmlns:xs="http://www.w3.org/2001/XMLSchema" node-name="el" type-name="xs:untyped"/>
+    </pul:nodes>
   </pul:createCollection>
 </pul:pending-update-list>
 }
