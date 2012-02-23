@@ -74,8 +74,6 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
-  { "FOUT1170", "\"$1\": error retrieving resource containing text" },
-  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -544,6 +542,7 @@ extern entry const dict_en[] = {
   { "~NoSeqAsArithOp", "sequence of more than one item can not be operand for arithmetic operation" },
   { "~NoSeqAsCollationParam", "sequence of more than one item not allowed as collation parameter" },
   { "~NoSeqCastToTypeWithQuantOneOrQuestion", "sequence of more than one item can not be cast to type with quantifier '1' or '?'" },
+  { "~NoSeqForConcat", "multi-item sequence can not be operand for concatenation" },
   { "~NoSeqForFnOp_2", "sequence of more than one item can not be operand for function \"$2()\"" },
   { "~NoSeqInValueComp", "sequnce of more than one item can not be in value comparisons" },
   { "~NoSeqTestedForAtomicEquiv", "sequence of more than one item can not be tested for atomic value equivalence" },
