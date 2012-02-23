@@ -60,13 +60,15 @@ static void test_pod() {
   ASSERT_TRUE( ztd::mem_sizeof( p ) == sizeof( p ) );
 }
 
+template<class StringType>
 static void test_string_empty() {
-  string const s;
+  StringType const s;
   ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) );
 }
 
+template<class StringType>
 static void test_string_not_empty() {
-  string const s( "hello" );
+  StringType const s( "hello" );
   ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.size() );
 }
 
@@ -112,8 +114,12 @@ namespace UnitTests {
 int mem_sizeof( int, char*[] ) {
   test_int();
   test_pod();
-  test_string_empty();
-  test_string_not_empty();
+
+  test_string_empty<string>();
+  test_string_not_empty<string>();
+  test_string_empty<zstring>();
+  test_string_not_empty<zstring>();
+
   test_map_string_int();
   test_vector_int();
 
@@ -123,6 +129,8 @@ int mem_sizeof( int, char*[] ) {
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace UnitTests
 } // namespace zorba

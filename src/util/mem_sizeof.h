@@ -25,6 +25,8 @@
 
 #include <zorba/internal/ztd.h>
 
+#include "zorbatypes/zstring.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace zorba {
@@ -178,7 +180,7 @@ inline size_t mem_sizeof( T const &t ) {
   return sizeof( T ) + alloc_sizeof( t );
 }
 
-////////// Specializations ////////////////////////////////////////////////////
+////////// C++ Specializations ////////////////////////////////////////////////
 
 /**
  * Size traits specialization for std::string.
@@ -262,7 +264,17 @@ struct size_traits<std::vector<T>,false> :
   }
 };
 
-// more specializations go here ....
+////////// Zorba specializations //////////////////////////////////////////////
+
+/**
+ * Size traits specialization for rstring.
+ */
+template<class RepType>
+struct size_traits<rstring<RepType>,false> {
+  static size_t alloc_sizeof( rstring<RepType> const &s ) {
+    return s.size();
+  }
+};
 
 ////////// alloc_size_provider ////////////////////////////////////////////////
 
