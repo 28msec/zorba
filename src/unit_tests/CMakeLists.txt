@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(UNIT_TEST_SRCS
+  mem_sizeof.cpp
   string_instantiate.cpp
   string.cpp
   test_uri.cpp

@@ -42,6 +42,7 @@ namespace zorba {
 #ifndef ZORBA_NO_UNICODE
       libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_UNICODE */
+      libunittests["mem_sizeof"] = mem_sizeof;
       libunittests["json_parser"] = json_parser;
       libunittests["unique_ptr"] = test_unique_ptr;
 #ifndef ZORBA_NO_FULL_TEXT
