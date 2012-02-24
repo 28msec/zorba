@@ -21,11 +21,14 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "runtime/uris/uris.h"
 
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+
+#include "zorba/transcode_stream.h"
 
 #include "util/uri_util.h"
 
@@ -38,10 +41,8 @@ namespace zorba {
 bool
 DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lString;
-  store::Item_t lDecodePlus;
-  store::Item_t lEncoding;
-  zstring       lDecodedString;
+  store::Item_t lString, lDecodePlus, lEncoding;
+  zstring       lDecodedString, lCharset;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -51,15 +52,47 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   consumeNext(lEncoding, theChildren[2].getp(), planState);
 
   lString->getStringValue2(lDecodedString);
+  lEncoding->getStringValue2(lCharset);
+
+  uri::decode(lDecodedString);
 
   if (lDecodePlus->getBooleanValue())
   {
     std::replace( lDecodedString.begin(), lDecodedString.end(), '+', ' ' );
   }
 
-  uri::decode(lDecodedString);
+  if (transcode::is_necessary(lCharset.c_str()))
+  {
+    if (!transcode::is_supported(lCharset.c_str()))
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0006_UNKNOWN_ENCODING,
+        ERROR_PARAMS( lCharset ),
+        ERROR_LOC( loc )
+      );
+    }
 
-  // TODO: do encoding once the transcode_streambuf is there
+    try
+    {
+      transcode::stream<istringstream> lTranscoder( "ISO-8859-1", lDecodedString.c_str() );
+
+      lDecodedString.clear();
+      char buf[1024];
+      while (lTranscoder.good())
+      {
+        lTranscoder.read(buf, 1024);
+        lDecodedString.append(buf, lTranscoder.gcount());
+      }
+    }
+    catch (ZorbaException& e)
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZOSE0006_TRANSCODING_ERROR,
+        ERROR_PARAMS( e.what() ),
+        ERROR_LOC( loc )
+      );
+    }
+  }
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDecodedString), state );
 

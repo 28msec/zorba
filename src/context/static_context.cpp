@@ -493,11 +493,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-<<<<<<< TREE
             ns == ZORBA_STRING_FN_NS ||
-=======
             ns == ZORBA_JSON_FN_NS ||
->>>>>>> MERGE-SOURCE
             ns == ZORBA_RANDOM_FN_NS);
   }
 

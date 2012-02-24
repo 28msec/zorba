@@ -24,9 +24,11 @@ xquery version "1.0";
  :
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
+
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
-
 
 (:~
  : Percent-decodes (aka URL decoding) the given string.
@@ -83,6 +85,10 @@ declare function uri:decode(
  : @param $charset the source charset of the string after percent decoding
  :
  : @return the percent decoded string
+ :
+ : @error zerr:ZXQP0006 if the given charset is unknown or not supported
+ :
+ : @error zerr:ZOSE0006 if there is an error transcoding the string
  :)
 declare function uri:decode(
   $s as xs:string,

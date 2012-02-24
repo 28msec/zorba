@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_uri_decode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DecodeURIIterator(sctx, loc, argv);
 }
