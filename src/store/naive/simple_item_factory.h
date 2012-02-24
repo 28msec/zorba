@@ -91,7 +91,7 @@ public:
   bool createStructuralAnyURI(
       store::Item_t& result,
       ulong collectionId,
-      const TreeId_t& treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 

@@ -17,94 +17,42 @@
 #define ZORBA_TREE_ID_H
 
 #include "store/naive/shared_types.h"
-#include "zorbautils/hashmap_itemh.h"
+#include "store/naive/store_defs.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
+namespace simplestore {
+
 /*
-This class is an abstract class for tree IDs.
-You can convert an ID to a string, or copy it to another instance.
+This file (typedef, traits) can be changed to implement a different kind of tree ID
 */
 
-class TreeId {
+typedef ulong TreeId;
+
+class TreeIdTraits {
 public:
-  virtual ~TreeId() {}
-public:
-  virtual zstring toString() = 0;
-  // Caller gets pointer ownership.
-  virtual TreeId* copy() = 0;
+  static bool equals(const TreeId& id1, const TreeId& id2)
+  {
+    return id1 == id2;
+  }
+  static bool isBefore(const TreeId& id1, const TreeId& id2)
+  {
+    return id1 < id2;
+  }
+  static unsigned long int decode(const char* str, char** endptr)
+  {
+    return strtoul(str, endptr, 10);
+  }
+  static zstring toString(const TreeId& id)
+  {
+    std::ostringstream oss;
+    oss << std::dec << id;
+    return oss.str();
+  }
 };
 
-/*
-The type alias used everywhere in the program.
-Only assign IDs with = if lvalue is taking over ownership.
-Otherwise, copy.
-*/
-typedef std::auto_ptr<TreeId> TreeId_t;
-
-/*
-This class is an abstract class for tree ID generation. It provides
-a creation method, two comparison methods (= and <) as well as a way
-to parse a string back to an ID.
-*/
-class TreeIdGenerator {
-public:
-  virtual ~TreeIdGenerator() {}
-
-  virtual TreeId_t create() = 0;
-  virtual bool equals(const TreeId_t& id1, const TreeId_t& id2) const = 0;
-  virtual bool isBefore(const TreeId_t& id1, const TreeId_t& id2) const = 0;
-  virtual TreeId_t fromString(const zstring&) const = 0;
-};
-
-/*
-This class allows generation of independent tree ID generators (each of
-them might have its own counter).
-*/
-class TreeIdGeneratorFactory {
-public:
-  virtual ~TreeIdGeneratorFactory() {}
-  
-  virtual TreeIdGenerator* createTreeGenerator() = 0;
-  virtual TreeIdGenerator& getDefaultTreeIdGenerator() = 0;
-};
-
-/*
-Zorba's implementation of tree IDs, using an unsigned long.
-*/
-class ZorbaTreeId : public TreeId {
-friend class ZorbaTreeIdGenerator;
-private:
-  ulong theId;
-  ZorbaTreeId(ulong idKey);
-public:
-  zstring toString();  
-  virtual TreeId* copy();
-};
-
-/*
-Zorba's implementation of the tree ID generator.
-*/
-class ZorbaTreeIdGenerator : public TreeIdGenerator {
-private:
-  ulong theNextId;
-public:
-  ZorbaTreeIdGenerator() : theNextId(1) {}
-  virtual TreeId_t create();
-  virtual bool equals(const TreeId_t& id1, const TreeId_t& id2) const;
-  virtual bool isBefore(const TreeId_t& id1, const TreeId_t& id2) const;
-  virtual TreeId_t fromString(const zstring&) const;
-};
-
-/*
-Zorba's implementation of the tree ID generator factory.
-*/
-class ZorbaTreeIdGeneratorFactory : public TreeIdGeneratorFactory {
-public:
-  virtual TreeIdGenerator* createTreeGenerator();
-  virtual TreeIdGenerator& getDefaultTreeIdGenerator();
-};
-
-}
+} // simplestore
+} // zorba
 
 #endif /* ZORBA_TREE_ID_H */

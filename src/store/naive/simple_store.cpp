@@ -496,7 +496,7 @@ ulong SimpleStore::createCollectionId()
 /*******************************************************************************
   create a tree id for a new tree that does not belong to any collection.
 ********************************************************************************/
-TreeId_t SimpleStore::createTreeId()
+TreeId SimpleStore::createTreeId()
 {
   SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
   return getTreeIdGeneratorFactory().getDefaultTreeIdGenerator().create();

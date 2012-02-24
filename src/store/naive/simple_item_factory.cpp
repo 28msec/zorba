@@ -33,6 +33,7 @@
 #include "qname_pool.h"
 #include "string_pool.h"
 #include "node_factory.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 
@@ -120,7 +121,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    const TreeId_t& treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
@@ -128,7 +129,7 @@ bool BasicItemFactory::createStructuralAnyURI(
   std::ostringstream stream;
   stream   << "zorba:"
            << collectionId << "."
-           << treeId->toString() << "."
+           << TreeIdTraits::toString(treeId) << "."
            << static_cast<int>(nodeKind) << "."
            << ordPath.serialize();
   zstring uri = stream.str();

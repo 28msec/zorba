@@ -49,8 +49,6 @@ namespace store
   class ValueIndexSpecification;
 }
 
-class TreeIdGeneratorFactory;
-
 namespace simplestore
 {
 
@@ -62,6 +60,7 @@ class Index;
 class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
+class TreeIdGeneratorFactory;
 
 typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
@@ -229,7 +228,7 @@ public:
 
   ulong createCollectionId();
 
-  TreeId_t createTreeId();
+  TreeId createTreeId();
 
   store::Collection_t createCollection(
       const store::Item_t& aName,

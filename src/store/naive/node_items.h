@@ -179,7 +179,7 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  TreeId_t                  theId;
+  TreeId                    theId;
   ulong                     thePos;
 
   SimpleCollection        * theCollection;
@@ -202,7 +202,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, TreeId_t id);
+  XmlTree(XmlNode* root, const TreeId& id);
 
 public:
   XmlTree();
@@ -217,9 +217,9 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(TreeId_t id) { theId = id; }
+  void setId(const TreeId& id) { theId = id; }
 
-  const TreeId_t& getId() const { return theId; }
+  const TreeId& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
@@ -514,7 +514,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId_t& getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -1620,13 +1620,13 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      const TreeId_t& tree1 = this->getTreeId();
-      const TreeId_t& tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
-      if (GET_DEFAULT_TREE_ID_GENERATOR().isBefore(tree1, tree2))
+      if (TreeIdTraits::isBefore(tree1, tree2))
         return -1;
 
-      if (GET_DEFAULT_TREE_ID_GENERATOR().equals(tree1, tree2))
+      if (TreeIdTraits::equals(tree1, tree2))
         return compareInSameTree(this, other);
     }
     else

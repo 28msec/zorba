@@ -616,7 +616,7 @@ class StructuralAnyUriItem : public AnyUriItem
 
 protected:
   ulong                        theCollectionId;
-  TreeId_t                     theTreeId;
+  TreeId                       theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
 
@@ -631,7 +631,7 @@ protected:
   StructuralAnyUriItem(
       zstring& value,
       ulong collectionId,
-      const TreeId_t& treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 
