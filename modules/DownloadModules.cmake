@@ -122,10 +122,10 @@ foreach (modline ${modlines})
 
       endforeach (i)
 
-    # Ensure we successfully downloaded something good
-    if (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
-      message (FATAL_ERROR "Failed to download '${_modname}' after 3 attempts, giving up.")
-    endif (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
+      # Ensure we successfully downloaded something good
+      if (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
+	message (FATAL_ERROR "Failed to download '${_modname}' after 3 attempts, giving up.")
+      endif (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
 
     endif ("${_getmod}" EQUAL 1)
   endif (modline)
