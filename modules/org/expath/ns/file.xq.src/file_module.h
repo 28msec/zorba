@@ -27,7 +27,7 @@ namespace zorba { namespace filemodule {
 class FileModule : public ExternalModule
 {
 private:
-  static ItemFactory* theFactory;
+  mutable ItemFactory* theFactory;
 
 public:
   static const char* theNamespace;
@@ -43,10 +43,17 @@ protected:
   };
   
   typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
-
   FuncMap_t theFunctions;
-  
+
 public:
+  static void
+  streamReleaser(std::istream* stream)
+  {
+    delete stream;
+  }
+
+  FileModule() : theFactory(0) {}
+
   virtual ~FileModule();
   
   virtual String
@@ -58,10 +65,10 @@ public:
   virtual void
   destroy();
 
-  static ItemFactory*
-  getItemFactory()
+  ItemFactory*
+  getItemFactory() const
   {
-    if(!theFactory)
+    if (!theFactory)
     {
       theFactory = Zorba::getInstance(0)->getItemFactory();
     }

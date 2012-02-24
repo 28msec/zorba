@@ -2,6 +2,7 @@ Zorba - The XQuery Processor
 
 version 2.2
 
+  * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr) 
   * Fixed bug 923015 (clone() not implemented for full-text expressions)
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
   * Added external function annotations %ann:propagates-input-nodes and 
@@ -10,6 +11,8 @@ version 2.2
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
+  * Optimization: change the implementation of the free-vars annotation and got rid
+    of the annotations map in expressions.
   * Fixed bug 909126 (bug in cloning of var_expr)
   * Fixed bug in destruction of exit_catcher_expr
   * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
@@ -18,6 +21,7 @@ version 2.2
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
   * Added index management function to the C++ api's StaticCollectionManager.
+  * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
   * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
@@ -26,9 +30,20 @@ version 2.2
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
   * Fixed bug involving positional var and groupby 
+  * Optimization: preallocate and reuse temp sequence iterator for LetVarITerator
+    and CtxVarIterator.
+  * Optimization: enhanced push-down of positional predicate into LetVarITerator
+    and CtxVarIterator.
+  * Fixed bug #867266 (do not hoist updating expressions)
+  * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
+  * Added two API methods StaticContext::getFunctions to introspect the functions of a static context
   * Added API method Item::getNamespaceBindings().
+  * Added a transcoding streambuffer to the API which allows transcoding arbitrary encodings
+    from and to UTF-8
+  * file:read-text is able to handle arbitrary encodings (fixes bug #867159)
+  * http:send-request is able to handle arbitrary encodings
   * Fixed bug #917981 (disallow declaring same module twice).
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
@@ -36,6 +51,7 @@ version 2.2
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
   * Fixed bug with unversioned modules with C++ external functions
+  * Fixed bug #878508 (JSON Module not escaping escape characters)
 
 version 2.1
 

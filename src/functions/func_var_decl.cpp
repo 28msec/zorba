@@ -67,7 +67,7 @@ PlanIter_t ctx_var_get::codegen(
     static_context* sctx, 
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
 

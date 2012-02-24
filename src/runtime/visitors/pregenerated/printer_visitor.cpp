@@ -50,6 +50,7 @@
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/json/json.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/node_position.h"
 #include "runtime/nodes/nodes.h"
@@ -1649,6 +1650,34 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionAnnotationsIterator>
+
+
+// <JSONParseInternal>
+void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
+  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONParseInternal>
+
+
+// <JSONSerializeInternal>
+void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
+  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONSerializeInternal>
 
 
 // <SqrtIterator>

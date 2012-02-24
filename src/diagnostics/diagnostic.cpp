@@ -134,6 +134,9 @@ ostream& operator<<( ostream &o, category c ) {
     case ZORBA_STORE         : o << "Zorba store"           ; break;
     case ZORBA_XQP           : o << "Zorba"                 ; break;
 
+    case JSON_PARSER         : o << "JSON parser"           ; break;
+    case JSON_SERIALIZATION  : o << "JSON serialization"    ; break;
+
     default                  : /* suppresses warning */       break;
   }
   return o;
