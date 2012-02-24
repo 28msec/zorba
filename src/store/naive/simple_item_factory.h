@@ -107,6 +107,19 @@ public:
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
+  bool createBase64Binary(
+      store::Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded);
+
+  bool createStreamableBase64Binary(
+      store::Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false);
+
   bool createBoolean(store::Item_t& result, xs_boolean value);
 
 

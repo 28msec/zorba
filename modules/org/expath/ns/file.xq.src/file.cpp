@@ -144,19 +144,14 @@ ReadBinaryFunction::evaluate(
   // actual read
   Item lItem;
   try {
-    std::ifstream lInStream;
-    lFile->openInputStream(lInStream, true, false);
+    std::unique_ptr<std::ifstream> lInStream;
+    lInStream.reset( new std::ifstream() );
+    lFile->openInputStream(*lInStream.get(), true, false);
 
-    std::stringstream lStrStream;
-    char lBuf[1024];
-    while (!lInStream.eof()) {
-      lInStream.read(lBuf, 1024);
-      lStrStream.write(lBuf, lInStream.gcount());
-    }  
+    lItem = theModule->getItemFactory()->createStreamableBase64Binary(
+        *lInStream.release(), &FileModule::streamReleaser, true
+      );
 
-    String lContent(lStrStream.str());
-    String lEncodedContent = encoding::Base64::encode(lContent);
-    lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.data(), lEncodedContent.size());
   } catch (ZorbaException& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not read file";

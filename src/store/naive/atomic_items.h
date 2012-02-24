@@ -20,6 +20,7 @@
 #include <zorba/config.h>
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 #include <zorba/streams.h>
 #ifndef ZORBA_NO_FULL_TEXT
@@ -153,7 +154,10 @@ public:
 
   const zstring& getString() const { return theBaseItem->getString(); }
 
-  xs_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
+  const char* getBase64BinaryValue(size_t& s) const
+  {
+    return theBaseItem->getBase64BinaryValue(s);
+  }
 
   xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
 
@@ -2218,29 +2222,114 @@ class Base64BinaryItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xs_base64Binary theValue;
+  std::vector<char> theValue;
+  bool        theIsEncoded;
 
 protected:
-  Base64BinaryItem(xs_base64Binary aValue) : theValue(aValue) {}
+  Base64BinaryItem(bool aIsEncoded)
+    : theIsEncoded(aIsEncoded) {}
 
-  Base64BinaryItem() {}
+  Base64BinaryItem(const char* aValue, size_t aSize, bool aIsEncoded = true)
+    : theIsEncoded(aIsEncoded)
+  {
+    theValue.reserve(aSize);
+    theValue.insert(theValue.begin(), aValue, aValue + aSize);
+  }
 
 public:
-  xs_base64Binary getBase64BinaryValue() const { return theValue; }
+  const char* getBase64BinaryValue(size_t& data) const;
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
 
   store::Item* getType() const;
+
+  bool isEncoded() const { return theIsEncoded; }
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* aCollation = 0 ) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
+  
+protected:
+  // used in hash doing simple xor of the data
+  struct hash_functor
   {
-    return theValue.equal(other->getBase64BinaryValue());
+    uint32_t hash_value;
+
+    void operator() (char c)
+    {
+      hash_value ^= (uint32_t) c;
+    }
+  };
+};
+
+
+/*******************************************************************************
+  class StreamableBase64BinaryItem
+********************************************************************************/
+class StreamableBase64BinaryItem : public Base64BinaryItem
+{
+  friend class BasicItemFactory;
+
+protected:
+  std::istream & theIstream;
+
+  bool theIsMaterialized;
+  bool theIsConsumed;
+  bool theIsSeekable;
+
+  StreamReleaser theStreamReleaser;
+
+protected:
+  StreamableBase64BinaryItem(
+      std::istream& aStream,
+      StreamReleaser streamReleaser,
+      bool seekable = false,
+      bool is_encoded = false)
+    : Base64BinaryItem(is_encoded),
+      theIstream(aStream),
+      theIsMaterialized(false),
+      theIsConsumed(false),
+      theIsSeekable(seekable),
+      theStreamReleaser(streamReleaser)
+  {}
+
+  void materialize() const;
+
+public:
+  virtual ~StreamableBase64BinaryItem()
+  {
+    if (theStreamReleaser) 
+    {
+      theStreamReleaser(&theIstream);
+    }
   }
+
+  bool isStreamable() const;
+
+  bool isSeekable() const;
+
+  std::istream& getStream();
+
+  StreamReleaser getStreamReleaser();
+
+  void setStreamReleaser(StreamReleaser aReleaser);
+
+  const char* getBase64BinaryValue(size_t&) const;
+
+  store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   zstring getStringValue() const;
 
