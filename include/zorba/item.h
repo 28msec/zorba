@@ -379,8 +379,9 @@ public:
    * data.
    *
    * If the given item is streamable (i.e. isStreamable() returns true),
-   * the stream returned by getStream() needs to be used to retrieve
-   * the value.
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
    */
   const char*
   getBase64BinaryValue(size_t& s) const;

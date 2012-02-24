@@ -54,7 +54,7 @@ namespace zorba {
       /** \brief Creates a streamable String Item
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
-       * @param stream An istream whence to read the string's content.
+       * @param stream An istream from where to read the string's content.
        * @param streamReleaser A function pointer which is invoked once
        *        the StreamableStringItem is destroyed. Normally this function
        *        will delete the std::istream object passed to it.
@@ -152,7 +152,7 @@ namespace zorba {
       /** \brief Creates a streamable Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param stream An istream whence to read the binary's content.
+       * @param stream An istream from where to read the binary's content.
        * @param streamReleaser A function pointer which is invoked once
        *        the StreamableBase64Binary is destroyed. Normally this function
        *        will delete the std::istream object passed to it.

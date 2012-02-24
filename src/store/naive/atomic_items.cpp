@@ -3106,35 +3106,16 @@ store::Item* Base64BinaryItem::getType() const
 
 zstring Base64BinaryItem::getStringValue() const
 {
-  if (theIsEncoded)
-  {
-    zstring tmp(&theValue[0], theValue.size());
-    return tmp;
-  }
-  else
-  {
-    std::vector<char> encoded;
-    encoded.reserve(theValue.size());
-    Base64::encode(theValue, encoded);
-    zstring tmp(&encoded[0], encoded.size());
-    return tmp;
-  }
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void Base64BinaryItem::getStringValue2(zstring& val) const
 {
-  if (theIsEncoded)
-  {
-    val.insert(0, &theValue[0], theValue.size());
-  }
-  else
-  {
-    std::vector<char> encoded;
-    encoded.reserve(theValue.size());
-    Base64::encode(theValue, encoded);
-    val.insert(0, &encoded[0], encoded.size());
-  }
+  val.clear();
+  appendStringValue(val);
 }
 
 
