@@ -19,13 +19,16 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include <fstream>
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
+
+namespace serialization
+{
 
 #define ZORBA_BIN_SERIALIZED_PLAN_STRING    "ZORBA-XQUERY BINARY SERIALIZED PLAN"
 #define BUFFER_SEGMENT_SIZE  2*1024*1024
 
-BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
+BinArchiver::BinArchiver(std::istream* is) : Archiver(false)
 {
   //open archiver for input
   this->is = is;
@@ -68,9 +71,9 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   }
   in_current = in_buffer;
 
-  read_string(archive_name);
-  read_string(archive_info);
-  archive_version = read_int();
+  read_string(theArchiveName);
+  read_string(theArchiveInfo);
+  theArchiveVersion = read_int();
   nr_ids = read_int();
   unsigned int is_release = read_int();
 #ifndef NDEBUG
@@ -88,10 +91,12 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   read_string_pool();
 
   root_tag_is_read();
-
 }
 
-BinArchiver::BinArchiver(std::ostream *os) : Archiver(true)
+
+BinArchiver::BinArchiver(std::ostream* os)
+  :
+  Archiver(true)
 {
   //open archiver for output
   this->is = NULL;
@@ -103,11 +108,13 @@ BinArchiver::BinArchiver(std::ostream *os) : Archiver(true)
   in_buffer = NULL;
 }
 
+
 BinArchiver::~BinArchiver()
 {
   if(in_buffer)
     free(in_buffer);
 }
+
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
 void add_indentation(std::ostream &os, unsigned int indent)
@@ -118,7 +125,8 @@ void add_indentation(std::ostream &os, unsigned int indent)
   }
 }
 
-void write_xml_name(std::ostream &os, const char *type)
+
+void write_xml_name(std::ostream& os, const char* type)
 {
   if(!type || !*type)
   {
@@ -135,29 +143,33 @@ void write_xml_name(std::ostream &os, const char *type)
   }
 }
 
-void output_statistics_archive_field(std::ostream &os, unsigned int indent, archive_field *parent)
+
+void output_statistics_archive_field(
+    std::ostream& os,
+    unsigned int indent,
+    archive_field* parent)
 {
   add_indentation(os, indent);
   os << "<";
-  write_xml_name(os, parent->type);
+  write_xml_name(os, parent->theTypeName);
   os << " n=\"" << parent->objects_saved << "\"";
-  os << " s=\"" << parent->bytes_saved << "\"";
-  if(parent->field_treat == ARCHIVE_FIELD_IS_REFERENCING)
+  os << " s=\"" << parent->thebytesSaved << "\"";
+  if(parent->theKind == ARCHIVE_FIELD_IS_REFERENCING)
       os << " t=\"ref\"";
-  else if(parent->field_treat == ARCHIVE_FIELD_IS_PTR)
+  else if(parent->theKind == ARCHIVE_FIELD_IS_PTR)
       os << " t=\"ptr\"";
-  if((!parent->is_simple) && (parent->field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+  if((!parent->theIsSimple) && (parent->theKind != ARCHIVE_FIELD_IS_REFERENCING))
   {
     os << ">" << std::endl;
     archive_field   *current_field = parent->first_child;
     while(current_field)
     {
       output_statistics_archive_field(os, indent+2, current_field);
-      current_field = current_field->next;
+      current_field = current_field->theNextSibling;
     }
     add_indentation(os, indent);
     os << "</";
-    write_xml_name(os, parent->type);
+    write_xml_name(os, parent->theTypeName);
     os << ">" << std::endl;
   }
   else
@@ -167,9 +179,10 @@ void output_statistics_archive_field(std::ostream &os, unsigned int indent, arch
 }
 #endif
 
+
 void BinArchiver::serialize_out()
 {
-  if(!os)
+  if (!os)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
@@ -185,9 +198,9 @@ void BinArchiver::serialize_out()
 
   os->write(ZORBA_BIN_SERIALIZED_PLAN_STRING, sizeof(ZORBA_BIN_SERIALIZED_PLAN_STRING));
 
-  os->write(archive_name.c_str(), (std::streamsize)archive_name.length()+1);
-  os->write(archive_info.c_str(), (std::streamsize)archive_info.length()+1);
-  write_int(archive_version);
+  os->write(theArchiveName.c_str(), (std::streamsize)theArchiveName.length()+1);
+  os->write(theArchiveInfo.c_str(), (std::streamsize)theArchiveInfo.length()+1);
+  write_int(theArchiveVersion);
   write_int(nr_ids);
 #ifndef NDEBUG
   write_int(0);//for debug
@@ -196,13 +209,13 @@ void BinArchiver::serialize_out()
 #endif
 
   //first gather all strings in a string pool
-  collect_strings(out_fields);
+  collect_strings(theRootField);
   //now serialize the string pool
   serialize_out_string_pool();
 
   //now serialize the fields
-  serialize_compound_fields(out_fields);
-  if(bitfill)
+  serialize_compound_fields(theRootField);
+  if (bitfill)
   {
     current_byte <<= (8-bitfill);
     os->write((char*)&current_byte, 1);
@@ -210,6 +223,7 @@ void BinArchiver::serialize_out()
     bytes_saved++;
 #endif
   }
+
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   std::ofstream   plan_xml("plan.xml");
   plan_xml << "<plan objects_saved=\"" << objects_saved << "\""
@@ -228,6 +242,7 @@ void BinArchiver::serialize_out()
   std::cout << "Get some other details in plan.xml" << std::endl;
 #endif
 }
+
 
 int BinArchiver::add_to_string_pool(const char *str)
 {
@@ -252,42 +267,46 @@ int BinArchiver::add_to_string_pool(const char *str)
   return str_pos;
 }
 
-void BinArchiver::collect_strings(archive_field   *parent_field)
+
+void BinArchiver::collect_strings(archive_field* parent_field)
 {
-  archive_field   *current_field = parent_field->first_child;
-  while(current_field)
+  archive_field* current_field = parent_field->theFirstChild;
+  while (current_field)
   {
-    if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
+    if(current_field->theKind != ARCHIVE_FIELD_IS_NULL)
     {
 #ifdef NDEBUG
-      if(current_field->is_class && (current_field->field_treat == ARCHIVE_FIELD_IS_PTR))
+      if(current_field->theIsClass && (current_field->theKind == ARCHIVE_FIELD_IS_PTR))
 #endif
-        current_field->type_str_pos_in_pool = add_to_string_pool(current_field->type);
-      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+        current_field->theTypeNamePosInPool = add_to_string_pool(current_field->theTypeName);
+      if(current_field->theKind != ARCHIVE_FIELD_IS_REFERENCING)
       {
-        current_field->value_str_pos_in_pool = add_to_string_pool(current_field->value);
+        current_field->theValuePosInPool = add_to_string_pool(current_field->theValue);
       }
     }
-    if(!current_field->is_simple)
+
+    if(!current_field->theIsSimple)
     {
-      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+      if(current_field->theKind != ARCHIVE_FIELD_IS_REFERENCING)
       {
         collect_strings(current_field);
       }
     }
-    current_field = current_field->next;
+
+    current_field = current_field->theNextSibling;
   }
 }
 
-void   BinArchiver::serialize_out_string_pool()
+
+void BinArchiver::serialize_out_string_pool()
 {
   //sort strings based on use count
   unsigned int i,j;
-  for(i=0;i<strings_pos.size();i++)
+  for (i = 0; i < strings_pos.size(); i++)
   {
-    for(j=i+1;j<strings_pos.size();j++)
+    for (j = i+1; j < strings_pos.size(); j++)
     {
-      if(strings.at(strings_pos[i]).count < strings.at(strings_pos[j]).count)
+      if (strings.at(strings_pos[i]).count < strings.at(strings_pos[j]).count)
       {
         unsigned int temp;
         temp = strings_pos[i];
@@ -317,27 +336,29 @@ void   BinArchiver::serialize_out_string_pool()
   }
 }
 
+
 void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 {
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   unsigned int    bytes_saved1 = bytes_saved;
   unsigned int    objects_saved1 = objects_saved;
 #endif
-  archive_field   *current_field = parent_field->first_child;
+  archive_field* current_field = parent_field->theFirstChild;
+
   while(current_field)
   {
 #ifndef NDEBUG
     unsigned char tempbyte;
     tempbyte = 0;
-    tempbyte |= current_field->is_simple ? 1 : 0;
-    tempbyte |= current_field->is_class ? 1<<1 : 0;
-    tempbyte |= (current_field->field_treat&0x0F)<<4;
+    tempbyte |= current_field->theIsSimple ? 1 : 0;
+    tempbyte |= current_field->theIsClass ? 1<<1 : 0;
+    tempbyte |= (current_field->theKind&0x0F)<<4;
     write_bits(tempbyte, 8);
 #else
-    //write_bit(current_field->is_class ? 1 : 0);
-    //write_bits(current_field->field_treat, 3);
+    //write_bit(current_field->theIsClass ? 1 : 0);
+    //write_bits(current_field->theKind, 3);
     unsigned char small_treat = 0;
-    switch(current_field->field_treat)
+    switch(current_field->theKind)
     {
     case ARCHIVE_FIELD_IS_NULL:          small_treat = 1;break;
     case ARCHIVE_FIELD_IS_REFERENCING:   small_treat = 2;break;
@@ -345,41 +366,41 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
     }
     write_bits(small_treat, 2);
 #endif
-    if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
+    if(current_field->theKind != ARCHIVE_FIELD_IS_NULL)
     {
 #ifdef NDEBUG
-      if(current_field->is_class && (current_field->field_treat == ARCHIVE_FIELD_IS_PTR))
+      if(current_field->theIsClass && (current_field->theKind == ARCHIVE_FIELD_IS_PTR))
 #endif
       {
-        if(!current_field->type)
+        if(!current_field->theTypeName)
           write_int_exp2(0);
         else
-          write_int_exp2(strings.at(current_field->type_str_pos_in_pool-1).final_pos);
+          write_int_exp2(strings.at(current_field->theTypeNamePosInPool-1).final_pos);
       }
-      write_int_exp(current_field->id - this->last_id);
-      last_id = current_field->id;
-      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+      write_int_exp(current_field->theId - this->last_id);
+      last_id = current_field->theId;
+      if(current_field->theKind != ARCHIVE_FIELD_IS_REFERENCING)
       {
 #ifndef NDEBUG
-        write_int(current_field->version);
+        write_int(current_field->theClassVersion);
 #endif
-        if(!current_field->value_str_pos_in_pool)
-          write_int_exp2(current_field->value_str_pos_in_pool);
+        if(!current_field->theValuePosInPool)
+          write_int_exp2(current_field->theValuePosInPool);
         else
-          write_int_exp2(strings.at(current_field->value_str_pos_in_pool-1).final_pos);
+          write_int_exp2(strings.at(current_field->theValuePosInPool-1).final_pos);
       }
       else
         write_int(current_field->referencing);
     }
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
     objects_saved++;
-    if(current_field->field_treat == ARCHIVE_FIELD_IS_PTR)
+    if(current_field->theKind == ARCHIVE_FIELD_IS_PTR)
       nr_ptrs++;
 #endif
 
-    if(!current_field->is_simple)
+    if(!current_field->theIsSimple)
     {
-      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+      if(current_field->theKind != ARCHIVE_FIELD_IS_REFERENCING)
       {
         serialize_compound_fields(current_field);
 #ifndef NDEBUG
@@ -389,15 +410,16 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 #endif
       }
     }
-    current_field = current_field->next;
+    current_field = current_field->theNextSibling;
   }
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   //gather statistics for this node
-  parent_field->bytes_saved = bytes_saved - bytes_saved1;
-  parent_field->objects_saved = objects_saved - objects_saved1;
+  parent_field->thebytesSaved = bytes_saved - bytes_saved1;
+  parent_field->theObjectsSaved = objects_saved - objects_saved1;
 #endif
 }
+
 
 void BinArchiver::write_string(const char *str)
 {
@@ -406,6 +428,7 @@ void BinArchiver::write_string(const char *str)
   strings_saved += strlen(str)+1;
 #endif
 }
+
 
 void BinArchiver::write_bit(unsigned char bit)
 {
@@ -423,6 +446,7 @@ void BinArchiver::write_bit(unsigned char bit)
   }
 }
 
+
 void BinArchiver::write_bits(unsigned int value, unsigned int bits)
 {
   while(bits)
@@ -431,6 +455,7 @@ void BinArchiver::write_bits(unsigned int value, unsigned int bits)
     bits--;
   }
 }
+
 
 void BinArchiver::write_int(unsigned int intval)
 {
@@ -448,8 +473,8 @@ void BinArchiver::write_int(unsigned int intval)
   tmp = (intval & 0x7F) | 0x80;
   //os->write((char*)&tmp, 1);
   write_bits(tmp, 8);
-
 }
+
 
 void BinArchiver::write_int_exp(unsigned int intval)
 {
@@ -478,6 +503,7 @@ void BinArchiver::write_int_exp(unsigned int intval)
     write_bits(intval, 32);
   }
 }
+
 
 void BinArchiver::write_int_exp2(unsigned int intval)
 {
@@ -533,6 +559,7 @@ void BinArchiver::read_string(std::string &str)
   in_current++;
 }
 
+
 void BinArchiver::read_string(char* str)
 {
   //char c;
@@ -560,6 +587,7 @@ void BinArchiver::read_string(char* str)
   in_current++;
 }
 
+
 unsigned char BinArchiver::read_bit()
 {
   if(bitfill == 0)
@@ -573,6 +601,7 @@ unsigned char BinArchiver::read_bit()
   *in_current <<= 1;
   return result;
 }
+
 
 unsigned int BinArchiver::read_bits(unsigned int bits)
 {
@@ -607,6 +636,7 @@ unsigned int BinArchiver::read_bits(unsigned int bits)
   return result;
 }
 
+
 unsigned int BinArchiver::read_int()
 {
   unsigned int outval = 0;
@@ -622,6 +652,7 @@ unsigned int BinArchiver::read_int()
 
   return outval;
 }
+
 
 unsigned int BinArchiver::read_int_exp()
 {
@@ -641,6 +672,7 @@ unsigned int BinArchiver::read_int_exp()
     return read_bits(32);
 }
 
+
 unsigned int BinArchiver::read_int_exp2()
 {
   unsigned char bit;
@@ -659,6 +691,7 @@ unsigned int BinArchiver::read_int_exp2()
     return read_bits(32);
 
 }
+
 
 void BinArchiver::read_string_pool()
 {
@@ -681,13 +714,14 @@ void BinArchiver::read_string_pool()
   bitfill = 8;
 }
 
+
 bool BinArchiver::read_next_field_impl( char **type, 
                               std::string *value,
                               int *id, 
                               int *version, 
                               bool *is_simple, 
                               bool *is_class,
-                              enum ArchiveFieldTreat *field_treat,
+                              enum ArchiveFieldKind *field_treat,
                               int *referencing)
 {
   if(!is)
@@ -701,7 +735,7 @@ bool BinArchiver::read_next_field_impl( char **type,
 #ifndef NDEBUG 
   *is_simple = false; 
   *is_class = false;
-  *field_treat = (enum ArchiveFieldTreat)-1;
+  *field_treat = (enum ArchiveFieldKind)-1;
 #endif
   *referencing = -1;
 
@@ -713,10 +747,10 @@ bool BinArchiver::read_next_field_impl( char **type,
     return false;
   *is_simple = tempbyte & 0x01 ? true : false;
   *is_class = tempbyte & 0x02 ? true : false;
-  *field_treat = (enum ArchiveFieldTreat)((tempbyte>>4)&0x0F);
+  *field_treat = (enum ArchiveFieldKind)((tempbyte>>4)&0x0F);
 #else
   //*is_class = read_bit();
-  //*field_treat = (enum ArchiveFieldTreat)read_bits(3);
+  //*field_treat = (enum ArchiveFieldKind)read_bits(3);
   unsigned char small_treat = read_bits(2);
   switch(small_treat)
   {
@@ -758,8 +792,6 @@ bool BinArchiver::read_next_field_impl( char **type,
 
   return true;
 }
-
-
 
 
 void BinArchiver::read_end_current_level_impl()

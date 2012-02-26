@@ -118,7 +118,7 @@ void operator&(Archiver &ar, checked_vector<T> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -180,7 +180,7 @@ void operator&(Archiver &ar, store::ItemHandle<T>& obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -253,7 +253,7 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -328,7 +328,7 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -417,13 +417,13 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "rchandle<T>", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_nonclass_field(retval, type, "rchandle<T>", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       assert(!ar.is_serialize_base_class());
@@ -541,7 +541,7 @@ void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
