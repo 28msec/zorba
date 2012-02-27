@@ -18,7 +18,7 @@
 #define ZORBA_DYNAMIC_LOADER_H
 
 #include "common/common.h"
-#include <set>
+#include <map>
 #include "common/shared_types.h"
 
 namespace zorba {
@@ -45,10 +45,10 @@ private:
 #ifdef WIN32
   typedef std::set<HMODULE> LibrarySet_t;
 #else
-  typedef std::set<void*> LibrarySet_t;
+  typedef std::map<const zstring, void*> LibraryMap_t;
 #endif
 
-  mutable LibrarySet_t theLibraries;
+  mutable LibraryMap_t theLibraries;
 };
 
 } /* namespace zorba */

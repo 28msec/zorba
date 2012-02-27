@@ -132,8 +132,35 @@ static zstring computeLibraryName(
 ExternalModule*
 DynamicLoader::loadModule(const zstring& aFile) const
 {
+  void* handle;
   // function pointer to create a module
   ExternalModule* (*createModule)() = NULL;
+
+  std::map<const zstring, void*>::const_iterator lIter = theLibraries.find(aFile);
+  if (lIter != theLibraries.end())
+  {
+    handle = lIter->second;
+
+#ifdef WIN32
+    createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
+    if (createModule == NULL)
+      throw ZORBA_EXCEPTION(
+        zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
+        ERROR_PARAMS( aFile, os_error::get_err_string() )
+      );
+#else
+    createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
+    if (createModule == NULL)
+    {
+      dlclose(handle);
+      throw ZORBA_EXCEPTION(
+        zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
+        ERROR_PARAMS( aFile, dlerror() )
+      );
+    }
+#endif
+    return createModule();
+  }
 
 #ifdef WIN32
   WCHAR wpath_str[1024];
@@ -146,7 +173,8 @@ DynamicLoader::loadModule(const zstring& aFile) const
                       0, aFile.c_str(), -1,
                       wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
-  HMODULE handle = LoadLibraryW(wpath_str);
+
+  handle = LoadLibraryW(wpath_str);
   if (!handle)
     throw ZORBA_EXCEPTION(
       zerr::ZOSE0005_DLL_LOAD_FAILED,
@@ -161,7 +189,7 @@ DynamicLoader::loadModule(const zstring& aFile) const
     );
 
 #else
-  void* handle = dlopen(aFile.c_str(), RTLD_NOW);
+  handle = dlopen(aFile.c_str(), RTLD_NOW);
   if (!handle)
     throw ZORBA_EXCEPTION(
       zerr::ZOSE0005_DLL_LOAD_FAILED, ERROR_PARAMS( aFile, zstring(dlerror()) )
@@ -177,11 +205,8 @@ DynamicLoader::loadModule(const zstring& aFile) const
     );
   }
 #endif
-  if (theLibraries.find(handle) == theLibraries.end())
-  {
-    theLibraries.insert(handle);
-  }
 
+  theLibraries[aFile] = handle;
   return createModule();
 }
 
@@ -193,13 +218,13 @@ DynamicLoader::DynamicLoader()
 
 DynamicLoader::~DynamicLoader()
 {
-  for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
+  for (LibraryMap_t::const_iterator lIter = theLibraries.begin();
        lIter != theLibraries.end(); ++lIter)
   {
 #ifdef WIN32
-    FreeLibrary(*lIter);
+    FreeLibrary(lIter->second);
 #else
-    dlclose(*lIter);
+    dlclose(lIter->second);
 #endif
   }
 }
