@@ -169,15 +169,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsLeaf;
   ar & theMutuallyRecursiveUDFs;
   ar & theIsOptimized;
-  //ar.set_is_temp_field(true);
-  //ar & save_plan;
-  //ar.set_is_temp_field(false);
-  //if(save_plan)
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
 
-  //+ar & theCache;
   ar & theCacheResults;
   ar & theCacheComputed;
 }

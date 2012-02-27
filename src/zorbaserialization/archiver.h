@@ -271,6 +271,15 @@ public:
 
 /*******************************************************************************
 
+  theArchiveName:
+  ---------------
+
+  theArchiveInfo:
+  ---------------
+
+  theArchiveVersion:
+  ------------------
+
   theSerializingOut :
   -------------------
   Whether the archiver is used to serialize or deserialize a plan.
@@ -279,9 +288,9 @@ public:
   --------------
   The root of the fields tree.
 
-  theCCB :
-  --------
-  to workaround user defined function compile-at-runtime.
+  theCurrentLevel:
+  ----------------
+  The tree level of the most recently added field
 
 ********************************************************************************/
 class Archiver
@@ -290,7 +299,7 @@ class Archiver
 
   struct SIMPLE_HASHOUT_FIELD
   {
-    std::string   type;
+    std::string    type;
     const void   * ptr;
 
     SIMPLE_HASHOUT_FIELD() {}
@@ -298,10 +307,11 @@ class Archiver
     SIMPLE_HASHOUT_FIELD(const char* typestr, const void* ptrptr)
     {
       type = typestr;
-      if(type[type.length()-1] == '*')
-        type.resize(type.length()-1);
-      ptr = ptrptr;
 
+      if (type[type.length()-1] == '*')
+        type.resize(type.length()-1);
+
+      ptr = ptrptr;
     }
   };
 
@@ -310,14 +320,15 @@ class Archiver
   public: 
     uint32_t hash(const SIMPLE_HASHOUT_FIELD& f) const
     {
-      uint32_t  h = 0;
+      uint32_t h = 0;
       h = hashfun::h32(f.type);
       h = hashfun::h32((void*)&f.ptr, sizeof(void*), h);
       return h;
     }
+
     bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2) const
     {
-      if((f1.ptr == f2.ptr) && (f1.type == f2.type))
+      if (f1.ptr == f2.ptr && f1.type == f2.type)
         return true;
       else
         return false;
@@ -384,9 +395,11 @@ public:
 
   virtual ~Archiver();
 
+  bool is_serializing_out() { return theSerializingOut; }
+
   SerializationCallback* getUserCallback() const { return theUserCallback; }
 
-  void setUserCallback(SerializationCallback* aCallback) { theUserCallback = aCallback; }
+  void setUserCallback(SerializationCallback* cb) { theUserCallback = cb; }
 
   bool add_simple_field( 
       const char* type, 
@@ -405,12 +418,6 @@ public:
   void add_end_compound_field();
 
   void set_class_type(const char* class_name);
-
-  //return the id of previous object if it is the same
-  archive_field* check_nonclass_pointer(const char* type, const void* ptr);
-
-  archive_field* check_class_pointer(const SerializeBaseClass* ptr);
-  
 
   bool read_next_field( 
       char** type, 
@@ -438,11 +445,9 @@ public:
 
 
 protected:
+  archive_field* lookup_nonclass_field(const char* type, const void* ptr);
 
-  virtual void create_archive(
-      const char* archive_name, 
-      const char* archive_info,
-      int archive_version);
+  archive_field* lookup_class_field(const SerializeBaseClass* ptr);
 
   virtual void serialize_out() = 0;
 
@@ -457,16 +462,6 @@ protected:
     *archive_version = theArchiveVersion;
     *nr_ids = this->nr_ids;
   }
-
-
-protected:
-  archive_field* check_nonclass_pointer_internal(
-      const void* ptr,
-      archive_field* fields);
-
-  archive_field* check_class_pointer_internal(
-      const SerializeBaseClass* ptr,
-      archive_field* fields);
 
   void replace_field(archive_field* new_field, archive_field* ref_field);
 
@@ -569,15 +564,7 @@ public:
     assert(serialize_base_class <= 1);
   }
 
-  bool is_serialize_base_class()
-  {
-    return serialize_base_class > 0;
-  }
-
-  bool is_serializing_out()
-  {
-    return theSerializingOut;
-  }
+  bool is_serialize_base_class() { return serialize_base_class > 0; }
 
   void* get_reference_value(int refid);
 
