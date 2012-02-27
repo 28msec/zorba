@@ -308,7 +308,7 @@ public:
       else if (strcmp (*argv, "--compile-plan") == 0 || strncmp (*argv, "-c", 2) == 0) {
         theCompilePlan = true;
       }
-      else if (strcmp (*argv, "--execute-plan") == 0 || strncmp (*argv, "-e", 2) == 0) {
+      else if (strcmp (*argv, "--execute-plan") == 0) {
         theExecutePlan = true;
       }
       else if (strcmp (*argv, "--") == 0) {
@@ -365,7 +365,7 @@ public:
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
 "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
 "--compile-plan, -c\nOutput the query plan as binary.\n\n"
-"--execute-plan, -e\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
+"--execute-plan\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
 ;
   }
 
