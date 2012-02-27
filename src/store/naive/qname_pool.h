@@ -24,7 +24,7 @@
 #include "common/shared_types.h"
 #include "common/common.h"
 
-#include "store/naive/atomic_items.h"
+#include "atomic_items.h"
 
 namespace zorba { namespace simplestore {
 

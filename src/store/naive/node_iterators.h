@@ -17,8 +17,8 @@
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
 #include "store/api/iterator.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/node_items.h"
+#include "shared_types.h"
+#include "node_items.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset_itemh.h"

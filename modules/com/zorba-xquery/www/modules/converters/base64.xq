@@ -28,14 +28,17 @@ module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
-
 (:~
  : Decode a xs:base64Binary.
  :
+ : The function assumes that the content after decoding is valid
+ : UTF-8. 
+ :
  : @param $base64 The xs:base64Binary item to decode
- : @return the decoded xs:base64Binary item as string
+ : @return the base64 decoded value as string
  :)
-declare function base64:decode($base64 as xs:base64Binary) as xs:string external;
+declare function base64:decode($base64 as xs:base64Binary)
+as xs:string external;
 
 (:~
  : Encode a xs:string as xs:base64Binary.

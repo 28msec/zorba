@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "store/naive/shared_types.h"
-#include "store/naive/text_node_content.h"
+#include "shared_types.h"
+#include "text_node_content.h"
 #include "store/api/update_consts.h"
 #include "store/api/collection.h"
 #include "store/api/iterator.h"

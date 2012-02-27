@@ -30,20 +30,13 @@
 
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
-namespace zorba 
-{ 
-
-class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase 
-{
+namespace zorba { 
+class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
-  const char** get_all_options() const 
-  {
-    static const char* result [] = 
-      { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
-
+  const char **get_all_options () const {
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
     return result;
   }
-
   bool theTraceParsing;
   bool theTraceScanning;
   bool theUseSerializer;
@@ -75,7 +68,7 @@ protected:
   bool theLoopHoisting;
   bool theInferJoins;
   bool theNoCopyOptim;
-  int theSerializeOnlyQuery;
+  bool theSerializeOnlyQuery;
   bool theTraceTranslator;
   bool theTraceCodegen;
   bool theTraceFulltext;
@@ -88,8 +81,7 @@ protected:
   std::string theDotPlanFile;
   uint32_t theMaxUdfCallDepth;
 
-  void initialize() 
-  {
+  void initialize () {
     theTraceParsing = false;
     theTraceScanning = false;
     theUseSerializer = false;
@@ -118,7 +110,7 @@ protected:
     theLoopHoisting = true;
     theInferJoins = true;
     theNoCopyOptim = true;
-    theSerializeOnlyQuery = -1;
+    theSerializeOnlyQuery = false;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theTraceFulltext = false;
@@ -127,7 +119,6 @@ protected:
     theIterPlanTest = false;
     theMaxUdfCallDepth = 1024;
   }
-
 public:
   const bool &traceParsing () const { return theTraceParsing; }
   const bool &traceScanning () const { return theTraceScanning; }
@@ -159,8 +150,8 @@ public:
   const bool &inlineUdf () const { return theInlineUdf; }
   const bool &loopHoisting () const { return theLoopHoisting; }
   const bool &inferJoins () const { return theInferJoins; }
-  const bool &noCopyOptim() const { return theNoCopyOptim; }
-  const int& serializeOnlyQuery() const { return theSerializeOnlyQuery; }
+  const bool &noCopyOptim () const { return theNoCopyOptim; }
+  const bool &serializeOnlyQuery () const { return theSerializeOnlyQuery; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
   const bool &traceFulltext () const { return theTraceFulltext; }
@@ -173,8 +164,7 @@ public:
   const std::string &dotPlanFile () const { return theDotPlanFile; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
 
-  std::string load_argv (int argc, const char **argv) 
-  {
+  std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
 
     std::string result;
@@ -195,14 +185,12 @@ public:
       else if (strcmp (*argv, "--optimizer") == 0 || strncmp (*argv, "-O", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --optimizer option"; break; }
-        init_val (*argv, theOptimizer, d);
+        if (*argv == NULL) { result = "No value given for --optimizer option"; break; }        init_val (*argv, theOptimizer, d);
       }
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --result-file option"; break; }
-        init_val (*argv, theResultFile, d);
+        if (*argv == NULL) { result = "No value given for --result-file option"; break; }        init_val (*argv, theResultFile, d);
       }
       else if (strcmp (*argv, "--debug-file") == 0) {
         int d = 2;
@@ -297,20 +285,15 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }        init_val (*argv, theInferJoins, d);
       }
-      else if (strcmp (*argv, "--no-copy-optim") == 0)
-      {
+      else if (strcmp (*argv, "--no-copy-optim") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --no-copy-optim option"; break; }
-        init_val (*argv, theNoCopyOptim, d);
+        if (*argv == NULL) { result = "No value given for --no-copy-optim option"; break; }        init_val (*argv, theNoCopyOptim, d);
       }
-      else if (strcmp (*argv, "--serialize-only-query") == 0)
-      {
+      else if (strcmp (*argv, "--serialize-only-query") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL)
-        { result = "No value given for --serialize-only-query option"; break; }
-        init_val(*argv, theSerializeOnlyQuery, d);
+        if (*argv == NULL) { result = "No value given for --serialize-only-query option"; break; }        init_val (*argv, theSerializeOnlyQuery, d);
       }
 #ifndef NDEBUG
       else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {
@@ -371,9 +354,7 @@ public:
     return result;
   }
 
-
-  const char* get_help_msg() const 
-  {
+  const char *get_help_msg () const {
     return
 "--trace-parsing, -p\ntrace parsing\n\n"
 "--trace-scanning, -s\ntrace scanning\n\n"
@@ -405,8 +386,8 @@ public:
 "--inline-udf\ninline functions (1=enabled (default), 0=off)\n\n"
 "--loop-hoisting\nhoist expressions out of loops (1=enabled (default), 0=off)\n\n"
 "--infer-joins\ninfer joins (1=enabled (default), 0=off)\n\n"
-"--no-copy-optim\napply the no-copy optimization (1=enabled (default), 0=off)\n\n"
-"--serialize-only-query\nserialize-only-query (<0=unknown (default), 1=enabled, 0=off)\n\n"
+"--no-copy-optim\nno copy optim (1=enabled (default), 0=off)\n\n"
+"--serialize-only-query\nserialize-only query (1=true, 0=false (default))\n\n"
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
@@ -423,15 +404,14 @@ public:
 ;
   }
 
-  static const ZorbaProperties* instance() 
-  {
+  static const ZorbaProperties *instance () {
     static ZorbaProperties result;
     return &result;
   }
 
-  ZorbaProperties() { initialize (); }
+  ZorbaProperties () { initialize (); }
+  
 };
-
 
 }   // namespaces
 

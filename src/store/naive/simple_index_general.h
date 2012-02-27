@@ -18,8 +18,8 @@
 
 #include <map>
 
-#include "store/naive/simple_index.h"
-#include "store/naive/store_defs.h"
+#include "simple_index.h"
+#include "store_defs.h"
 
 namespace zorba 
 { 
