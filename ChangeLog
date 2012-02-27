@@ -26,6 +26,7 @@ version 2.2
   * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
   * Fixed bug #905050 (setting and getting the context item type via the c++ api).
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
+  * Fixed bug in codegen: do not create a materialize clause if one exists already
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
     support.
   * Fixed bug involving positional var and groupby 
