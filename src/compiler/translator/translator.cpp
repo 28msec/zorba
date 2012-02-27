@@ -9401,7 +9401,26 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   expr_t right = pop_nodestack();
   expr_t left  = pop_nodestack();
   concat_args.push_back(left);
-  concat_args.push_back(right);
+ 
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+  bool rightLeafIsConcatExpr = false;
+  if(lFoExpr != NULL) {
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N)) {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+  
+  if(!rightLeafIsConcatExpr){
+    concat_args.push_back(right);
+  }
+
   rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
   push_nodestack(concat);
 }
