@@ -272,7 +272,7 @@ store::Item_t dynamic_context::get_current_date_time() const
 ********************************************************************************/
 void dynamic_context::set_environment_variables()
 {
-  if(!theEnvironmentVariables)
+  if (!theEnvironmentVariables)
     theEnvironmentVariables = new EnvVarMap();
 
 #if defined (WIN32)
@@ -300,7 +300,7 @@ void dynamic_context::set_environment_variables()
       
       int eqPos = envVarZS.find_first_of("=");
 
-      if(eqPos > 0)
+      if (eqPos > 0)
       {
         zstring varname(envVarZS.substr(0, eqPos));
         zstring varvalue(envVarZS.substr(eqPos+1, size));
@@ -316,17 +316,17 @@ void dynamic_context::set_environment_variables()
     FreeEnvironmentStrings(envVarsCH);
 #else    
     const char* invalid_char;
-    for(char **env = environ; *env; ++env)
+    for (char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
       
-      if((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+      if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
         throw XQUERY_EXCEPTION(err::FOCH0001,
           ERROR_PARAMS(zstring("#x") + 
           BUILD_STRING(std::uppercase << std::hex 
             << (static_cast<unsigned int>(*invalid_char)&0xFF))));
 
-      if((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+      if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
       {
         throw XQUERY_EXCEPTION(err::FOCH0001, 
         ERROR_PARAMS(zstring("#x") + 
@@ -338,7 +338,7 @@ void dynamic_context::set_environment_variables()
             
       int eqPos = envVarZS.find_first_of("=");
             
-      if(eqPos > 0)
+      if (eqPos > 0)
       {
         zstring varname(envVarZS.substr(0, eqPos));
         zstring varvalue(envVarZS.substr(eqPos+1, size));
@@ -356,7 +356,7 @@ void dynamic_context::set_environment_variables()
 ********************************************************************************/
 store::Iterator_t dynamic_context::available_environment_variables()
 {
-  if(!theEnvironmentVariables)
+  if (!theEnvironmentVariables)
   {
     set_environment_variables();
   }
@@ -366,7 +366,7 @@ store::Iterator_t dynamic_context::available_environment_variables()
 
   std::vector<store::Item_t> lVarNames;
 
-  for(;lIte != lEnd; ++lIte)
+  for (;lIte != lEnd; ++lIte)
   {
     store::Item_t varname;
     zstring zsvarname = lIte->first;
@@ -374,7 +374,7 @@ store::Iterator_t dynamic_context::available_environment_variables()
     lVarNames.push_back(varname);
   }
 
-  if(lVarNames.empty())
+  if (lVarNames.empty())
   {
     return NULL;
   }
@@ -385,17 +385,17 @@ store::Iterator_t dynamic_context::available_environment_variables()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t dynamic_context::get_environment_variable(const zstring varname)
+store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
 {
 
-  if(!theEnvironmentVariables)
+  if (!theEnvironmentVariables)
   {
     set_environment_variables();
   }
 
   EnvVarMap::iterator lIter = theEnvironmentVariables->find(varname);
 
-  if(lIter == theEnvironmentVariables->end())
+  if (lIter == theEnvironmentVariables->end())
   {
     return NULL;
   }

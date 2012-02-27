@@ -1172,6 +1172,10 @@
                   brief="the current iterator"/>
   </zorba:state>
 
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+  </zorba:methods>
+
 </zorba:iterator>
 
 <!--
@@ -1193,9 +1197,12 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
-
   </zorba:function>
 
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+  </zorba:methods>
+  
 </zorba:iterator>
 
 <!--
@@ -1222,9 +1229,13 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
-
   </zorba:function>
 
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+    <zorba:isSource returnValue="true"/>
+  </zorba:methods>
+  
 </zorba:iterator>
 
 <!--
@@ -1255,6 +1266,11 @@
 
   </zorba:function>
 
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+    <zorba:isSource returnValue="true"/>
+  </zorba:methods>
+  
 </zorba:iterator>
 
 </zorba:iterators>

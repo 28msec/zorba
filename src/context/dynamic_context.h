@@ -149,7 +149,7 @@ public:
 
   void set_environment_variables();
 
-  store::Item_t get_environment_variable(const zstring varname);
+  store::Item_t get_environment_variable(const zstring& varname);
 
   store::Iterator_t available_environment_variables();
 
