@@ -51,7 +51,7 @@ user_function::user_function(
     const signature& sig,
     expr_t expr_body,
     short scriptingKind,
-    CompilerCB  *compilerCB)
+    CompilerCB* compilerCB)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
