@@ -1118,12 +1118,13 @@ static bool is_subseq_pred(
           csize checkPosClause = whereClausePos;
           do
           {
-            if(checkPosClause < 0) //Can this even happen?
+            if(checkPosClause < 0) //Yes this is possible, it happens with test flwor/flwor20.xq
               return false;
             checkClause = flworExpr->get_clause(checkPosClause);
             if(checkClause->get_kind() == flwor_clause::group_clause ||
                 checkClause->get_kind() == flwor_clause::count_clause)
               return false;
+			--checkPosClause;
           }while(checkClause != forClause);
 
           var_expr* forVar = forClause->get_var();
