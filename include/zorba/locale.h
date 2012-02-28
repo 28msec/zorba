@@ -22,6 +22,9 @@ namespace zorba {
 
     /////////////////////////////////////////////////////////////////////////// 
 
+    /**
+     * Defines constants for all ISO 639-1 language codes.
+     */
     namespace iso639_1 {
       enum type {
         unknown,
@@ -42,16 +45,25 @@ namespace zorba {
         bg,   // Bulgarian
         bh,   // Bihari
         bi,   // Bislama
+        bm,   // Bambara
         bn,   // Bengali; Bangla
         bo,   // Tibetan
         br,   // Breton
+        bs,   // Bosnian
         ca,   // Catalan
+        ce,   // Chechen
+        ch,   // Chamorro
         co,   // Corsican
+        cr,   // Cree
         cs,   // Czech
+        cu,   // Church Slavic; Church Slavonic
+        cv,   // Chuvash
         cy,   // Welsh
         da,   // Danish
         de,   // German
+        dv,   // Divehi
         dz,   // Bhutani
+        ee,   // Ewe
         el,   // Greek
         en,   // English
         eo,   // Esperanto
@@ -59,6 +71,7 @@ namespace zorba {
         et,   // Estonian
         eu,   // Basque
         fa,   // Persian
+        ff,   // Fulah
         fi,   // Finnish
         fj,   // Fiji
         fo,   // Faroese
@@ -69,36 +82,54 @@ namespace zorba {
         gl,   // Galician
         gn,   // Guarani
         gu,   // Gujarati
+        gv,   // Manx
         ha,   // Hausa
         he,   // Hebrew (formerly iw)
         hi,   // Hindi
+        ho,   // Hiri Motu
         hr,   // Croatian
+        ht,   // Haitian Creole
         hu,   // Hungarian
         hy,   // Armenian
+        hz,   // Herero
         ia,   // Interlingua
         id,   // Indonesian (formerly in)
         ie,   // Interlingue
+        ig,   // Igbo
+        ii,   // Nuosu
         ik,   // Inupiak
+        io,   // Ido
         is,   // Icelandic
         it,   // Italian
         iu,   // Inuktitut
         ja,   // Japanese
         jw,   // Javanese
         ka,   // Georgian
+        kg,   // Kongo
+        ki,   // Gikuyu
+        kj,   // Kuanyama
         kk,   // Kazakh
         kl,   // Greenlandic
         km,   // Cambodian
         kn,   // Kannada
         ko,   // Korean
+        kr,   // Kanuri
         ks,   // Kashmiri
         ku,   // Kurdish
+        kv,   // Komi
+        kw,   // Cornish
         ky,   // Kirghiz
         la,   // Latin
+        lb,   // Letzeburgesch
+        lg,   // Ganda
+        li,   // Limburgan; Limburger; Limburgish
         ln,   // Lingala
         lo,   // Laothian
         lt,   // Lithuanian
-        lv,   // Latvian, Lettish
+        lu,   // Luba-Katanga
+        lv,   // Latvian
         mg,   // Malagasy
+        mh,   // Marshallese
         mi,   // Maori
         mk,   // Macedonian
         ml,   // Malayalam
@@ -109,24 +140,36 @@ namespace zorba {
         mt,   // Maltese
         my,   // Burmese
         na,   // Nauru
+        nb,   // Norwegian Bokmal
+        nd,   // Ndebele, North
         ne,   // Nepali
+        ng,   // Ndonga
         nl,   // Dutch
+        nn,   // Norwegian Nynorsk
         no,   // Norwegian
+        nr,   // Ndebele, South
+        nv,   // Navajo; Navaho
+        ny,   // Chichewa; Chewa; Nyanja
         oc,   // Occitan
-        om,   // (Afan) Oromo
+        oj,   // Ojibwa
+        om,   // Oromo
         or_,  // Oriya
-        pa,   // Punjabi
+        os,   // Ossetian; Ossetic
+        pa,   // Panjabi; Punjabi
+        pi,   // Pali
         pl,   // Polish
         ps,   // Pashto, Pushto
         pt,   // Portuguese
         qu,   // Quechua
-        rm,   // Rhaeto-Romance
+        rm,   // Romansh
         rn,   // Kirundi
         ro,   // Romanian
         ru,   // Russian
         rw,   // Kinyarwanda
         sa,   // Sanskrit
+        sc,   // Sardinian
         sd,   // Sindhi
+        se,   // Northern Sami
         sg,   // Sangho
         sh,   // Serbo-Croatian
         si,   // Sinhalese
@@ -155,12 +198,15 @@ namespace zorba {
         ts,   // Tsonga
         tt,   // Tatar
         tw,   // Twi
+        ty,   // Tahitian
         ug,   // Uighur
         uk,   // Ukrainian
         ur,   // Urdu
         uz,   // Uzbek
+        ve,   // Venda
         vi,   // Vietnamese
         vo,   // Volapuk
+        wa,   // Walloon
         wo,   // Wolof
         xh,   // Xhosa
         yi,   // Yiddish (formerly ji)
