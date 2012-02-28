@@ -1105,8 +1105,8 @@ static bool is_subseq_pred(
           expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
 
           for_clause* forClause = posVar->get_for_clause();
-          //forClause is NULL if the clause is a windowing for clause
-          if (forClause == NULL || forClause->is_allowing_empty()) return false;
+
+          if (forClause->is_allowing_empty()) return false;
 
           // We check that there isn't any clause that breaks the optimization
           const flwor_clause* checkClause;
