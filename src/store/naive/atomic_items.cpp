@@ -1579,6 +1579,11 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
   }
 }
 
+size_t StructuralAnyUriItem::alloc_size() const
+{
+  return AnyUriItem::alloc_size() + ztd::alloc_sizeof( theOrdPath );
+}
+
 
 /*******************************************************************************
   class StringItem

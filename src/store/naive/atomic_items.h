@@ -719,6 +719,8 @@ public:
 
   bool
   inSameCollection(const store::Item_t&) const;
+
+  size_t alloc_size() const;
 };
 
 

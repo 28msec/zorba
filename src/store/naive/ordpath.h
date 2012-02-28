@@ -64,6 +64,8 @@ public:
     MAX_BIT_LEN = MAX_BYTE_LEN * 8
   };
 
+  size_t alloc_size() const;
+
 protected:
   static const ulong MAX_EMBEDDED_BYTE_LEN = 8;
   static const ulong MAX_EMBEDDED_BIT_LEN = MAX_EMBEDDED_BYTE_LEN * 8 - 1;
