@@ -179,7 +179,7 @@ protected:
   PULPrimitiveFactory         * thePULFactory;
 
   DocumentSet                   theDocuments;
-  CollectionSet*  theCollections;
+  CollectionSet*                theCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
   IndexSet                      theHashMaps;
