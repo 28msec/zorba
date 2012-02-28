@@ -597,34 +597,58 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-QNameItem::QNameItem(const char* aNamespace,
-                     const char* aPrefix,
-                     const char* aLocalName)
-  : isInPool(false)
-{
-  initializeAsQNameNotInPool(zstring(aNamespace),
-                             zstring(aPrefix),
-                             zstring(aLocalName));
-}
-  
-QNameItem::QNameItem(const zstring& aNamespace,
-                     const zstring& aPrefix,
-                     const zstring& aLocalName)
-  : isInPool(false)
+QNameItem::QNameItem(
+    const char* aNamespace,
+    const char* aPrefix,
+    const char* aLocalName)
+  :
+  theIsInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
 }
 
+
+QNameItem::QNameItem(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+  :
+  theIsInPool(false)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+void QNameItem::initializeAsQNameNotInPool(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+{
+  assert(!isValid());
+
+  store::Item_t lPoolQName =
+  GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
+
+  initializeAsUnnormalizedQName(
+      static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
+      aPrefix);
+
+  theIsInPool = false;
+}
+
+
 void QNameItem::free()
 {
   QNamePool& thePool = GET_STORE().getQNamePool();
-  if (isInPool)
+
+  if (theIsInPool)
   {
     thePool.remove(this);
     return;
   }
   
   assert(!isNormalized());
+
   QNameItem* lNormalizationVictim;
   invalidate(false, &lNormalizationVictim);
   delete this;
@@ -744,27 +768,15 @@ zstring QNameItem::show() const
   return res;
 }
 
-void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
-                                           const zstring& aPrefix,
-                                           const zstring& aLocalName)
-{
-  assert(!isValid());
-
-  store::Item_t lPoolQName =
-      GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
-  initializeAsUnnormalizedQName(
-      static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
-      aPrefix);
-  isInPool = false;
-}
 
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
-NotationItem::NotationItem(const zstring& nameSpace,
-                           const zstring& prefix,
-                           const zstring& localName)
+NotationItem::NotationItem(
+    const zstring& nameSpace,
+    const zstring& prefix,
+    const zstring& localName)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -778,9 +790,10 @@ NotationItem::NotationItem(store::Item* qname)
 }
 
 
-bool NotationItem::equals(const store::Item* item,
-                          long timezone,
-                          const XQPCollator* aCollation) const
+bool NotationItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
   return theQName->equals(
       static_cast<const NotationItem*>(item)->theQName);

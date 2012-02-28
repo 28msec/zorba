@@ -331,29 +331,30 @@ public:
 
 /*******************************************************************************
   class QNameItem
+
+  Instances of this class can be classified into two categories:
+  - QNames in the pool. They are owned by the pool. There can be only one
+    QName in the pool with a given namespace, prefix and local name.
+  - QNames that are not in the pool. The user owns them and is responsible
+    for their destruction. The ternary constructors construct such QNames.
+   
+  Normalized QNames are QNames without a prefix and that are in the pool. There
+  is only one normalized QName with a given namespace and local name, so that 
+  direct pointer comparison can be used to compare them.
+   
+  Each QName points to the equivalent normalized QName (same namespace and prefix)
+  which provides an efficient way of comparing two QNames.
+
+  Pointer comparison on normalized QNames is equivalent to using the equals() 
+  method. For example, a pointer to the normalized QName can be used as a key.
+
+  A newly constructed instance of this class can be initialized as a normalized
+  QName (always in the pool), as an unnormalized QName in the pool or as an
+  unnormalized QName not in the pool. It can also be invalidated and initialized
+  again.
 ********************************************************************************/
 class QNameItem : public AtomicItem
 {
-  /*****************************************************************************
-   Instances of this class can be classified into two categories:
-   - QNames in the pool. They are owned by the pool. There
-   can be only one QName in the pool with a given namespace, prefix and local name.
-   - QNames that are not in the pool. The user owns them and is responsible
-   for their destruction. The ternary constructors construct such QNames.
-   
-   Normalized QNames are QNames without a prefix and that are in the
-   pool. There is only one normalized QName with a given namespace and local name,
-   so that direct pointer comparison can be used to compare them.
-   
-   Each QName points to the equivalent normalized QName (same namespace and prefix)
-   which provides an efficient way of comparing two QNames.
-
-   A newly constructed instance of this class can be initialized as a normalized
-   QName (always in the pool), as an unnormalized QName in the pool or as an
-   unnormalized QName not in the pool. It can also be invalidated and initialized
-   again.
-  ****************************************************************************/
-  
   // The QName pool is the only class authorized to edit namespace/prefix/local name.
   friend class QNamePool;
 
@@ -365,7 +366,7 @@ private:
   // Points to the corresponding normalized QName in the pool (pool owns this pointer).
   const QNameItem* theNormalizedQName;
   
-  bool             isInPool;
+  bool             theIsInPool;
 
   // Used by the pool for managing the cache.
   uint16_t         thePosition;
@@ -376,8 +377,6 @@ public:
   virtual ~QNameItem() {}
 
   // zorba::store::Item interface.
-  void appendStringValue(zstring& buf) const;
-    
   bool equals(const store::Item* item,
               long timezone = 0,
               const XQPCollator* aCollation = 0) const;
@@ -394,6 +393,8 @@ public:
   
   void getStringValue2(zstring& val) const;
   
+  void appendStringValue(zstring& buf) const;
+
   store::Item* getType() const;
     
   store::SchemaTypeCode getTypeCode() const { return store::XS_QNAME; }
@@ -401,9 +402,7 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   // Class-specific extensions.
-  // Returns the normalized QName. Pointer comparison on normalized QNames is
-  // equivalent to using the equals() method. For example, a pointer to the
-  // normalized QName can be used as a key.
+
   const QNameItem* getNormalized() const { return theNormalizedQName; }
   
   bool isBaseUri() const;
@@ -413,27 +412,35 @@ public:
   zstring show() const;
 
 protected:
-  QNameItem() : theNormalizedQName(NULL),
-                isInPool(true),
-                thePosition(0),
-                theNextFree(0),
-                thePrevFree(0) {}
+  QNameItem() 
+    :
+    theNormalizedQName(NULL),
+    theIsInPool(true),
+    thePosition(0),
+    theNextFree(0),
+    thePrevFree(0)
+  {
+  }
   
-  QNameItem(const char* aNamespace,
-            const char* aPrefix,
-            const char* aLocalName);
+  QNameItem(
+      const char* aNamespace,
+      const char* aPrefix,
+      const char* aLocalName);
 
-  QNameItem(const zstring& aNamespace,
-            const zstring& aPrefix,
-            const zstring& aLocalName);
+  QNameItem(
+      const zstring& aNamespace,
+      const zstring& aPrefix,
+      const zstring& aLocalName);
 
   void free();
 
-  bool isValid() const {
-    assert(theNormalizedQName == NULL || (
-        theNormalizedQName->isNormalized() &&
-        theNamespace == theNormalizedQName->theNamespace &&
-        theLocal == theNormalizedQName->theLocal));
+  bool isValid() const 
+  {
+    assert(theNormalizedQName == NULL || 
+           (theNormalizedQName->isNormalized() &&
+            theNamespace == theNormalizedQName->theNamespace &&
+            theLocal == theNormalizedQName->theLocal));
+
     return theNormalizedQName != NULL;
   }
 
@@ -441,14 +448,17 @@ protected:
 
   bool isOverflow() const { return thePosition == 0; }
 
-  bool isNormalized() const {
+  bool isNormalized() const 
+  {
     assert(theNormalizedQName != this || thePrefix.empty());
     assert(theNormalizedQName == this || !thePrefix.empty());
+
     return theNormalizedQName == this;
   }
 
-  void initializeAsNormalizedQName(const zstring& aNamespace,
-                                   const zstring& aLocalName)
+  void initializeAsNormalizedQName(
+      const zstring& aNamespace,
+      const zstring& aLocalName)
   {
     assert(!isValid());
 
@@ -461,8 +471,9 @@ protected:
     assert(isValid());
   }
   
-  void initializeAsUnnormalizedQName(const QNameItem* aNormalizedQName,
-                                     const zstring& aPrefix)
+  void initializeAsUnnormalizedQName(
+      const QNameItem* aNormalizedQName,
+      const zstring& aPrefix)
   {
     assert(!isValid());
 
@@ -476,11 +487,11 @@ protected:
     assert(isValid());
   }
 
-  void initializeAsQNameNotInPool(const zstring& aNamespace,
-                                  const zstring& aPrefix,
-                                  const zstring& aLocalName);
+  void initializeAsQNameNotInPool(
+      const zstring& aNamespace,
+      const zstring& aPrefix,
+      const zstring& aLocalName);
   
-  // If asynchronous is true, caller must later remove reference to returned aNormalizationVictim.
   void invalidate(bool asynchronous, QNameItem** aNormalizationVictim)
   {
     assert(isValid());
@@ -489,6 +500,7 @@ protected:
     {
       if (asynchronous)
       {
+        // caller must later remove reference to returned aNormalizationVictim.
         *aNormalizationVictim = const_cast<QNameItem*>(theNormalizedQName);
       }
       else
@@ -497,11 +509,11 @@ protected:
         lNormalized->removeReference();
       }
     }
+
     theNormalizedQName = NULL;
 
     assert(!isValid());
   }
-
 };
 
 
@@ -515,9 +527,11 @@ protected:
 
 protected:
   friend class BasicItemFactory;
-  NotationItem(const zstring& nameSpace,
-               const zstring& prefix,
-               const zstring& localName);
+
+  NotationItem(
+      const zstring& nameSpace,
+      const zstring& prefix,
+      const zstring& localName);
 
   NotationItem(store::Item* qname);
 
@@ -526,9 +540,10 @@ public:
 
   store::Item* getType() const;
 
-  bool equals(const store::Item* item,
-              long timezone = 0,
-              const XQPCollator* aCollation = 0) const;
+  bool equals(
+      const store::Item* item,
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const;
 
   zstring getStringValue() const;
 
@@ -572,7 +587,7 @@ public:
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_ANY_URI; }
 
-  store::Item* getType( ) const;
+  store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
