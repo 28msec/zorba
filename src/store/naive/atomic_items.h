@@ -28,7 +28,8 @@
 
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
-#include "store/api/xs_type_codes.h"
+//#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store/naive/store_defs.h"
 #include "store/naive/shared_types.h"
 

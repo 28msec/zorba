@@ -23,7 +23,8 @@
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 
-#include "store/api/xs_type_codes.h"
+//#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 namespace zorba
 {

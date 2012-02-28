@@ -20,7 +20,8 @@
 #include "common/shared_types.h"
 #include "types/root_typemanager.h"
 
-#include "store/api/xs_type_codes.h"
+//#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 
 namespace zorba

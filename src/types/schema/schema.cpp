@@ -62,7 +62,7 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(Schema)
 END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
-#define DO_TRACE
+//#define DO_TRACE
 //#define DO_PRINT_SCHEMA_INFO
 
 #ifdef DO_TRACE
@@ -742,13 +742,14 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
 
   if (decl)
   {
-    XSAnnotation* xsa = decl->getAnnotation();
-    if(xsa == NULL){
-      TRACE("Error!! xsa is NULL --- " << xsa << "\n");
-    } else {
-      TRACE( "DEBUG>> decl->getAnnotation()->getAnnotationString(): " 
-        << StrX(xsa->getAnnotationString()) << "\n");
-    }
+    //XSAnnotation* xsa = NULL;
+    //xsa = decl->getAnnotation();
+    //if(xsa == NULL){
+    //  TRACE("Error!! xsa is NULL --- " << xsa << "\n");
+    //} else {
+    //  TRACE( "DEBUG>> decl->getAnnotation()->getAnnotationString(): " 
+    //    << StrX(xsa->getAnnotationString()) << "\n");
+    //}
 
     typeDef = decl->getTypeDefinition();
 

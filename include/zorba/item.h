@@ -131,6 +131,11 @@ public:
   bool
   isAtomic() const;
 
+  /**
+   * @return the type of this item based on the enum values in store_const.h
+   */
+  store::SchemaTypeCode getTypeCode() const;
+
   /** \brief Get the type of the Item.
    *
    * See http://www.w3.org/TR/xpath-datamodel/#types.
