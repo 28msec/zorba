@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"

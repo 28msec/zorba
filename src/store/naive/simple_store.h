@@ -16,12 +16,12 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/shared_types.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/hashmap_nodep.h"
+#include "shared_types.h"
+#include "store_defs.h"
+#include "hashmap_nodep.h"
 
 #if (defined (WIN32) || defined (WINCE))
-#include "store/naive/node_items.h"
+#include "node_items.h"
 #include "store/api/collection.h"
 #include "store/api/index.h"
 #include "store/api/ic.h"

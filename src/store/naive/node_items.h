@@ -23,16 +23,16 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/text_node_content.h"
-#include "store/naive/item_vector.h"
-#include "store/naive/ordpath.h"
-#include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+#include "store_defs.h"
+#include "shared_types.h"
+#include "text_node_content.h"
+#include "item_vector.h"
+#include "ordpath.h"
+#include "nsbindings.h" // TODO remove by introducing explicit destructors
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
-#include "store/naive/hashmap_nodep.h"
+#include "hashmap_nodep.h"
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT

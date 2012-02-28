@@ -997,9 +997,36 @@ bool BasicItemFactory::createDayTimeDuration(
 }
 
 
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xs_base64Binary value)
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    xs_base64Binary value)
 {
-  result = new Base64BinaryItem(value);
+  const std::vector<char>& data = value.getData();
+  result = new Base64BinaryItem(&data[0], data.size(), true);
+  return true;
+}
+
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    const char* value,
+    size_t size,
+    bool encoded)
+{
+  result = new Base64BinaryItem(value, size, encoded);
+  return true;
+}
+
+
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(
+      aStream, aReleaser, seekable, encoded
+    );
   return true;
 }
 

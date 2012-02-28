@@ -875,7 +875,7 @@ bool begin_visit(flwor_expr& v)
 
   bool isGeneral = v.is_general();
 
-  ulong numClauses = v.num_clauses();
+  csize numClauses = v.num_clauses();
 
   if (v.is_sequential())
   {
@@ -883,9 +883,9 @@ bool begin_visit(flwor_expr& v)
     {
       if (v.has_sequential_clauses())
       {
-        ulong numForClauses = 0;
+        csize numForClauses = 0;
 
-        for (ulong i = 0; i < numClauses; ++i)
+        for (csize i = 0; i < numClauses; ++i)
         {
           const flwor_clause* c = v[i];
 
@@ -921,8 +921,11 @@ bool begin_visit(flwor_expr& v)
         }
       }
 
+      // Note: a materialize clause may exist already in case plan serialization
+      // is on (see comment in materialize_clause::clone)
       if (!isGeneral &&
           v.get_return_expr()->is_sequential() &&
+          v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
       {
         materialize_clause* mat = 
@@ -938,8 +941,8 @@ bool begin_visit(flwor_expr& v)
       std::vector<OrderModifier> modifiers;
       std::vector<expr_t> orderingExprs;
 
-      ulong numForClauses = 0;
-      ulong i = 0;
+      csize numForClauses = 0;
+      csize i = 0;
 
       while (i < numClauses)
       {
@@ -1038,7 +1041,7 @@ bool begin_visit(flwor_expr& v)
     }
   }
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = v[i];
 
