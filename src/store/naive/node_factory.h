@@ -21,7 +21,7 @@
 #include "zorbamisc/config/platform.h"
 #include "common/shared_types.h"
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 
 namespace zorba 
