@@ -205,6 +205,31 @@ public:
   virtual bool createBase64Binary(Item_t& result, xs_base64Binary value) = 0;
 
   /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * creates a base64Binary item with the given content
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createBase64Binary(
+      Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createStreamableBase64Binary(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false) = 0;
+
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
    * @param value
    */
