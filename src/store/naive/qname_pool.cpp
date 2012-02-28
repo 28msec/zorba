@@ -115,6 +115,7 @@ void QNamePool::remove(QNameItem* qn)
   }
 }
 
+
 /*******************************************************************************
   If the pool does not already contain a qname with the given namespace, prefix,
   and local name, then create such a qname, insert it in the pool and return an
@@ -155,7 +156,9 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
-                                  (ulong)pooledNs.size(), (ulong)strlen(pre), (ulong)strlen(ln),
+                                  (ulong)pooledNs.size(),
+                                  (ulong)strlen(pre),
+                                  (ulong)strlen(ln),
                                   hval);
     if (entry == 0)
     {
@@ -244,7 +247,9 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
-                                  (ulong)ns.size(), (ulong)pre.size(), (ulong)ln.size(),
+                                  (ulong)ns.size(),
+                                  (ulong)pre.size(), 
+                                  (ulong)ln.size(),
                                   hval);
     if (entry == 0)
     {
@@ -288,7 +293,7 @@ retry:
   }
   catch (...)
   {
-  SYNC_CODE(  if (haveLock) \
+    SYNC_CODE(if (haveLock) \
       theHashSet.theMutex.unlock();)
 
     ZORBA_FATAL(0, "Unexpected exception");

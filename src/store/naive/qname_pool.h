@@ -49,9 +49,6 @@ class StringPool;
   theHashSet     : A hash set mapping qnames (i.e. triplets of strings) to
                    QName slots.
 
- theWhoNormalizesToMe : theWhoNormalizesToMe[q] is the array of all QNames of 
-                   which q is the normalized QName. This allows to prevent
-                   removing q from the pool if there are QNames pointing to it.
 ********************************************************************************/
 class QNamePool
 {
@@ -109,15 +106,17 @@ public:
 
   ~QNamePool();
 
-  store::Item_t insert(const char* ns,
-                       const char* pre,
-                       const char* ln,
-                       bool        sync = true);
+  store::Item_t insert(
+      const char* ns,
+      const char* pre,
+      const char* ln,
+      bool sync = true);
   
-  store::Item_t insert(const zstring& ns,
-                       const zstring& pre,
-                       const zstring& ln,
-                       bool sync = true);
+  store::Item_t insert(
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& ln,
+      bool sync = true);
   
   void remove(QNameItem* qn);
 
@@ -127,14 +126,13 @@ protected:
   void cachePin(QNameItem* qn);
 
   QNHashEntry* hashFind(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        ulong       nslen,
-        ulong       prelen,
-        ulong       lnlen,
-        ulong       hval);
-  
+      const char* ns,
+      const char* pre,
+      const char* ln,
+      ulong       nslen,
+      ulong       prelen,
+      ulong       lnlen,
+      ulong       hval);
 };
 
 
