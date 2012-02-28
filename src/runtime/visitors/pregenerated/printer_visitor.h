@@ -379,6 +379,12 @@ namespace zorba {
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
 
+    void beginVisit( const JSONParseInternal& );
+    void endVisit  ( const JSONParseInternal& );
+
+    void beginVisit( const JSONSerializeInternal& );
+    void endVisit  ( const JSONSerializeInternal& );
+
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
 
@@ -456,6 +462,78 @@ namespace zorba {
 
     void beginVisit( const FrexpIterator& );
     void endVisit  ( const FrexpIterator& );
+
+    void beginVisit( const NodePositionIterator& );
+    void endVisit  ( const NodePositionIterator& );
+
+    void beginVisit( const IsAncestorPositionIterator& );
+    void endVisit  ( const IsAncestorPositionIterator& );
+
+    void beginVisit( const IsFollowingSiblingPositionIterator& );
+    void endVisit  ( const IsFollowingSiblingPositionIterator& );
+
+    void beginVisit( const IsFollowingPositionIterator& );
+    void endVisit  ( const IsFollowingPositionIterator& );
+
+    void beginVisit( const IsInSubtreeOfPositionIterator& );
+    void endVisit  ( const IsInSubtreeOfPositionIterator& );
+
+    void beginVisit( const IsDescendantPositionIterator& );
+    void endVisit  ( const IsDescendantPositionIterator& );
+
+    void beginVisit( const IsPrecedingSiblingPositionIterator& );
+    void endVisit  ( const IsPrecedingSiblingPositionIterator& );
+
+    void beginVisit( const IsPrecedingPositionIterator& );
+    void endVisit  ( const IsPrecedingPositionIterator& );
+
+    void beginVisit( const IsChildPositionIterator& );
+    void endVisit  ( const IsChildPositionIterator& );
+
+    void beginVisit( const IsAttributeOfPositionIterator& );
+    void endVisit  ( const IsAttributeOfPositionIterator& );
+
+    void beginVisit( const IsParentPositionIterator& );
+    void endVisit  ( const IsParentPositionIterator& );
+
+    void beginVisit( const IsPrecedingInDocumentOrderPositionIterator& );
+    void endVisit  ( const IsPrecedingInDocumentOrderPositionIterator& );
+
+    void beginVisit( const IsFollowingInDocumentOrderPositionIterator& );
+    void endVisit  ( const IsFollowingInDocumentOrderPositionIterator& );
+
+    void beginVisit( const LevelPositionIterator& );
+    void endVisit  ( const LevelPositionIterator& );
+
+    void beginVisit( const IsAttributePositionIterator& );
+    void endVisit  ( const IsAttributePositionIterator& );
+
+    void beginVisit( const IsCommentPositionIterator& );
+    void endVisit  ( const IsCommentPositionIterator& );
+
+    void beginVisit( const IsDocumentPositionIterator& );
+    void endVisit  ( const IsDocumentPositionIterator& );
+
+    void beginVisit( const IsElementPositionIterator& );
+    void endVisit  ( const IsElementPositionIterator& );
+
+    void beginVisit( const IsProcessingInstructionPositionIterator& );
+    void endVisit  ( const IsProcessingInstructionPositionIterator& );
+
+    void beginVisit( const IsTextPositionIterator& );
+    void endVisit  ( const IsTextPositionIterator& );
+
+    void beginVisit( const IsSiblingPositionIterator& );
+    void endVisit  ( const IsSiblingPositionIterator& );
+
+    void beginVisit( const InSameTreePositionIterator& );
+    void endVisit  ( const InSameTreePositionIterator& );
+
+    void beginVisit( const InCollectionPositionIterator& );
+    void endVisit  ( const InCollectionPositionIterator& );
+
+    void beginVisit( const InSameCollectionPositionIterator& );
+    void endVisit  ( const InSameCollectionPositionIterator& );
 
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
@@ -741,6 +819,9 @@ namespace zorba {
     void beginVisit( const SubstringIterator& );
     void endVisit  ( const SubstringIterator& );
 
+    void beginVisit( const SubstringIntOptIterator& );
+    void endVisit  ( const SubstringIntOptIterator& );
+
     void beginVisit( const StringLengthIterator& );
     void endVisit  ( const StringLengthIterator& );
 
@@ -800,6 +881,9 @@ namespace zorba {
 
     void beginVisit( const StringIsStreamableIterator& );
     void endVisit  ( const StringIsStreamableIterator& );
+
+    void beginVisit( const StringSplitIterator& );
+    void endVisit  ( const StringSplitIterator& );
 
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );

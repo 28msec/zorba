@@ -23,6 +23,7 @@
 #include "zorbatypes/zstring.h"
 
 #include "debugger_common.h"
+#include "debugger_commons.h"
 #include "debugger_protocol.h"
 
 
@@ -58,6 +59,15 @@ class DebuggerServer {
 
   private:
 
+#ifdef WIN32
+    static BOOL WINAPI
+    ctrlC_Handler(DWORD aCtrlType);
+#else
+    static void
+    ctrlC_Handler(int lParam);
+#endif
+
+
     std::string
     processCommand(DebuggerCommand command);
 
@@ -70,6 +80,18 @@ class DebuggerServer {
 
     std::string
     getVariableName(std::string& aFullName);
+
+    void
+    buildStackFrame(
+      StackFrame& frame,
+      int stackFrameNumber,
+      std::ostream& stream);
+
+    void
+    buildBreakpoint(
+      Breakable& breakpoint,
+      int breakpointID,
+      std::ostream& stream);
 
     void
     buildProperty(
@@ -94,7 +116,8 @@ class DebuggerServer {
 
     DebuggerCommunicator* theCommunicator;
     DebuggerRuntime*      theRuntime;
-
+    std::string           theFileName;
+    bool                  theStopping;
   };
 }
 

@@ -38,6 +38,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(apply_expr)
 SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(exit_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
 
@@ -53,6 +56,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
 DEF_EXPR_ACCEPT(block_expr)
 DEF_EXPR_ACCEPT(apply_expr)
 DEF_EXPR_ACCEPT(var_decl_expr)
+DEF_EXPR_ACCEPT(var_set_expr)
 DEF_EXPR_ACCEPT(exit_expr)
 DEF_EXPR_ACCEPT(exit_catcher_expr)
 DEF_EXPR_ACCEPT(flowctl_expr)
@@ -76,6 +80,11 @@ block_expr::block_expr(
 }
 
 
+block_expr::~block_expr()
+{
+}
+
+
 void block_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -83,15 +92,10 @@ void block_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void block_expr::add_at(ulong pos, const expr_t& arg)
+void block_expr::add_at(csize pos, const expr_t& arg)
 {
-#ifndef NDEBUG
-  if (arg->get_expr_kind() == fo_expr_kind)
-  {
-    fo_expr* fo = static_cast<fo_expr*>(arg.getp());
-    assert(fo->get_func()->getKind() != FunctionConsts::OP_VAR_ASSIGN_1);
-  }
-#endif
+  assert(arg->get_expr_kind() != var_set_expr_kind);
+
   theArgs.insert(theArgs.begin() + pos, arg);
   compute_scripting_kind2(NULL, false);
 }
@@ -113,9 +117,9 @@ void block_expr::compute_scripting_kind2(
 
   theScriptingKind = VACUOUS_EXPR;
 
-  ulong numChildren = (ulong)theArgs.size();
+  csize numChildren = theArgs.size();
 
-  for (ulong i = 0; i < numChildren; ++i)
+  for (csize i = 0; i < numChildren; ++i)
   {
     short kind = theArgs[i]->get_scripting_detail();
 
@@ -193,7 +197,7 @@ void block_expr::compute_scripting_kind2(
 expr_t block_expr::clone(substitution_t& subst) const
 {
   checked_vector<expr_t> seq2;
-  for (unsigned i = 0; i < theArgs.size(); ++i)
+  for (csize i = 0; i < theArgs.size(); ++i)
     seq2.push_back(theArgs[i]->clone(subst));
 
   return new block_expr(theSctx, get_loc(), true, seq2, NULL);
@@ -259,6 +263,18 @@ var_decl_expr::var_decl_expr(
 
   // var_decl_expr is unfoldable because it requires access to the dyn ctx.
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+
+  if (initExpr)
+    varExpr->add_set_expr(this);
+}
+
+
+var_decl_expr::~var_decl_expr()
+{
+  // Note: var_expr objs for global vars live longer than their associated
+  // var_decl_expr, because such var_expr objs are also registered in the sctx.
+  if (theInitExpr)
+    theVarExpr->remove_set_expr(this);
 }
 
 
@@ -290,12 +306,78 @@ void var_decl_expr::compute_scripting_kind()
 
 expr_t var_decl_expr::clone(substitution_t& s) const
 {
-  assert(theVarExpr.getp() == theVarExpr->clone(s).getp());
+  var_expr_t varCopy(new var_expr(*theVarExpr));
+  s[theVarExpr.getp()] = varCopy.getp();
 
   return new var_decl_expr(theSctx,
                            get_loc(),
-                           theVarExpr,
+                           varCopy,
                            (theInitExpr ? theInitExpr->clone(s) : NULL));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+var_set_expr::var_set_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const var_expr_t& varExpr,
+    const expr_t& setExpr)
+  :
+  expr(sctx, loc, var_set_expr_kind),
+  theVarExpr(varExpr),
+  theExpr(setExpr)
+{
+  assert(varExpr->get_kind() == var_expr::prolog_var || 
+         varExpr->get_kind() == var_expr::local_var);
+
+  compute_scripting_kind();
+
+  // var_set_expr is unfoldable because it requires access to the dyn ctx.
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+
+  varExpr->add_set_expr(this);
+}
+
+
+var_set_expr::~var_set_expr()
+{
+  theVarExpr->remove_set_expr(this);
+}
+
+
+void var_set_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theVarExpr;
+  ar & theExpr;
+}
+
+
+void var_set_expr::compute_scripting_kind()
+{
+  checkNonUpdating(theExpr);
+
+  theScriptingKind = VAR_SETTING_EXPR;
+  theScriptingKind |= theExpr->get_scripting_detail();
+  theScriptingKind &= ~VACUOUS_EXPR;
+  theScriptingKind &= ~SIMPLE_EXPR;
+
+  checkScriptingKind();
+}
+
+
+expr_t var_set_expr::clone(substitution_t& s) const
+{
+  expr_t varClone = theVarExpr->clone(s);
+
+  ZORBA_ASSERT(varClone->get_expr_kind() == var_expr_kind);
+
+  return new var_set_expr(theSctx,
+                          get_loc(),
+                          static_cast<var_expr*>(varClone.getp()),
+                          theExpr->clone(s));
 }
 
 
@@ -308,7 +390,8 @@ exit_expr::exit_expr(
     const expr_t& inExpr)
   :
   expr(sctx, loc, exit_expr_kind),
-  theExpr(inExpr)
+  theExpr(inExpr),
+  theCatcherExpr(NULL)
 {
   compute_scripting_kind();
 
@@ -318,10 +401,20 @@ exit_expr::exit_expr(
 }
 
 
+exit_expr::~exit_expr()
+{
+  if (theCatcherExpr)
+  {
+    theCatcherExpr->removeExitExpr(this);
+  }
+}
+
+
 void exit_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
+  ar & theCatcherExpr;
 }
 
 
@@ -333,7 +426,11 @@ void exit_expr::compute_scripting_kind()
 
 expr_t exit_expr::clone(substitution_t& subst) const
 {
-  return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
+  expr* clone = new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
+
+  subst[this] = clone;
+
+  return clone;
 }
 
 
@@ -343,14 +440,35 @@ expr_t exit_expr::clone(substitution_t& subst) const
 exit_catcher_expr::exit_catcher_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr)
+    const expr_t& inExpr,
+    std::vector<expr*>& exitExprs)
   :
   expr(sctx, loc, exit_catcher_expr_kind),
   theExpr(inExpr)
 {
+  theExitExprs.swap(exitExprs);
+
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    static_cast<exit_expr*>(*ite)->setCatcherExpr(this);
+  }
+
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+exit_catcher_expr::~exit_catcher_expr()
+{
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    static_cast<exit_expr*>(*ite)->setCatcherExpr(NULL);
+  }
 }
 
 
@@ -358,6 +476,7 @@ void exit_catcher_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
+  ar & theExitExprs;
 }
 
 
@@ -367,9 +486,36 @@ void exit_catcher_expr::compute_scripting_kind()
 }
 
 
+void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
+{
+  std::vector<expr*>::iterator ite = theExitExprs.begin();
+  std::vector<expr*>::iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    if (*ite == exitExpr)
+    {
+      theExitExprs.erase(ite);
+      return;
+    }
+  }
+}
+
+
 expr_t exit_catcher_expr::clone(substitution_t& subst) const
 {
-  return new exit_catcher_expr(theSctx, get_loc(), get_expr()->clone(subst));
+  expr_t clonedInput = get_expr()->clone(subst);
+
+  std::vector<expr*> clonedExits;
+  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
+  std::vector<expr*>::const_iterator end = theExitExprs.end();
+  for (; ite != end; ++ite)
+  {
+    assert(subst.find(*ite) != subst.end());
+
+    clonedExits.push_back(subst[*ite]);
+  }
+
+  return new exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
 }
 
 

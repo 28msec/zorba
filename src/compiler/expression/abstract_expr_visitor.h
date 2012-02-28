@@ -84,6 +84,7 @@ public:
   EXPR_VISITOR_METHODS (block_expr);
   EXPR_VISITOR_METHODS (apply_expr);
   EXPR_VISITOR_METHODS (var_decl_expr);
+  EXPR_VISITOR_METHODS (var_set_expr);
   EXPR_VISITOR_METHODS (exit_expr);
   EXPR_VISITOR_METHODS (exit_catcher_expr);
   EXPR_VISITOR_METHODS (flowctl_expr);

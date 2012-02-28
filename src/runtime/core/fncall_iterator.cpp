@@ -28,6 +28,7 @@
 #include "diagnostics/user_exception.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/xquery_stack_trace.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/dynamic_context.h"
 
@@ -46,6 +47,11 @@
 #include "api/dynamiccontextimpl.h"
 
 #include "util/string_util.h"
+
+#include "store/api/index.h"
+#include "store/api/store.h"
+#include "store/api/iterator_factory.h"
+#include "store/api/temp_seq.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -91,7 +97,9 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   thePlan(NULL),
   thePlanState(NULL),
   thePlanStateSize(0),
-  thePlanOpen(false)
+  theLocalDCtx(NULL),
+  thePlanOpen(false),
+  theCache(0)
 {
 }
 
@@ -102,19 +110,13 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
-  {
     thePlan->close(*thePlanState);
-    thePlanOpen = false;
-  }
 
   if (thePlanState != NULL)
-  {
-    if (thePlanState->theLocalDynCtx)
-      delete thePlanState->theLocalDynCtx;
-
     delete thePlanState;
-    thePlanState = NULL;
-  }
+
+  if (theLocalDCtx != NULL)
+    delete theLocalDCtx;
 }
 
 
@@ -123,17 +125,17 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB).getp();
+  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf
   // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
-  dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
   thePlanState = new PlanState(planState.theGlobalDynCtx,
-                               localDCtx,
+                               theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
@@ -157,6 +159,8 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(*thePlanState);
   }
+
+  theArgValues.clear();
 }
 
 
@@ -202,6 +206,113 @@ bool UDFunctionCallIterator::isUpdating() const
 /*******************************************************************************
 
 ********************************************************************************/
+bool UDFunctionCallIterator::isCached() const
+{
+  return theUDF->cacheResults();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFunctionCallIterator::createCache(
+    PlanState& planState,
+    UDFunctionCallIteratorState* state)
+{
+  store::Index_t lIndex = theUDF->getCache();
+
+  if (!lIndex && theUDF->cacheResults())
+  {
+    const signature& sig = theUDF->getSignature();
+
+    csize numArgs = theChildren.size();
+
+    store::IndexSpecification lSpec;
+    lSpec.theNumKeyColumns = numArgs;
+    lSpec.theKeyTypes.resize(numArgs);
+    lSpec.theCollations.resize(numArgs);
+    lSpec.theIsTemp = true;
+    lSpec.theIsUnique = true;
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
+    }
+
+    lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
+
+    theUDF->setCache(lIndex.getp()); // cache the cache in the function itself
+
+    state->theArgValues.reserve(numArgs);
+  }
+
+  state->theCache = lIndex.getp();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool UDFunctionCallIterator::probeCache(
+    PlanState& planState,
+    UDFunctionCallIteratorState* state,
+    store::Item_t& result,
+    std::vector<store::Item_t>& aKey) const
+{
+  if (!state->theCache)
+    return false;
+
+  store::IndexCondition_t lCond =
+  state->theCache->createCondition(store::IndexCondition::POINT_VALUE);
+
+  std::vector<store::Iterator_t>::iterator lIter = state->theArgWrappers.begin();
+
+  for (; lIter != state->theArgWrappers.end(); ++lIter)
+  {
+    store::Iterator_t& argWrapper = (*lIter);
+    store::Item_t lArg;
+    if (argWrapper) // might be 0 if argument is not used
+    {
+      argWrapper->next(lArg); // guaranteed to have exactly one result
+    }
+    aKey.push_back(lArg);
+    lCond->pushItem(lArg);
+  }
+
+  store::IndexProbeIterator_t probeIte = 
+  GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
+
+  probeIte->init(lCond);
+  probeIte->open();
+  return probeIte->next(result);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFunctionCallIterator::insertCacheEntry(
+  UDFunctionCallIteratorState* state,
+  std::vector<store::Item_t>& aKey,
+  store::Item_t& aValue) const
+{
+  if (state->theCache)
+  {
+    std::auto_ptr<store::IndexKey> k(new store::IndexKey());
+    store::IndexKey* k2 = k.get();
+    k->theItems = aKey;
+    store::Item_t lTmp = aValue; // insert will eventually transfer the Item_t
+    if (!state->theCache->insert(k2, lTmp))
+    {
+      k.release();
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UDFunctionCallIteratorState* state;
@@ -224,17 +335,23 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > planState.theMaxStackDepth)
-    throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-                           ERROR_PARAMS(ZED(StackOverflow)),
-                           ERROR_LOC(loc));
+  {
+    RAISE_ERROR(zerr::ZXQP0003_INTERNAL_ERROR, loc,
+    ERROR_PARAMS(ZED(StackOverflow)));
+  }
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
   state->open(planState, theUDF);
 
+  // if the results of the function should be cached (prereq: atomic in and out)
+  // this functions stores an index in the dynamic context that contains
+  // the cached results. The name of the index is the name of the function.
+  createCache(planState, state);
+
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
-  ulong numArgs = (ulong)theChildren.size();
+  csize numArgs = theChildren.size();
 
   state->theArgWrappers.resize(numArgs);
 
@@ -304,31 +421,47 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   try
   {
+    std::vector<store::Item_t> lKey;
+    bool lCacheHit;
+
     UDFunctionCallIteratorState* state;
     DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen) {
+    if (!state->thePlanOpen) 
+    {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;
     }
 
-    // Bind the args.
+    // check if there is a cache and the result is already in the cache
+    lCacheHit = probeCache(planState, state, result, lKey);
+
+    // if not in the cache, we bind the arguments to the function
+    if (!lCacheHit)
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-      std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
-      std::vector<ArgVarRefs>::const_iterator argsRefsEnd = argsRefs.end();
+      const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
 
-      std::vector<store::Iterator_t>::iterator argWrapsIte = 
-      state->theArgWrappers.begin();
-
-      for (; argsRefsIte != argsRefsEnd; ++argsRefsIte, ++argWrapsIte)
+      for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        store::Iterator_t& argWrapper = (*argWrapsIte);
-        const ArgVarRefs& argVarRefs = (*argsRefsIte);
+        const ArgVarRefs& argVarRefs = argsRefs[i];
+        store::Iterator_t argWrapper;
+        if (state->theCache)
+        {
+          std::vector<store::Item_t> lParam(1, lKey[i]);
+          state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
+          argWrapper = state->theArgValues.back()->getIterator();
+          argWrapper->open();
+        }
+        else
+        {
+          argWrapper = argWraps[i];
+        }
+
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
         ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
 
@@ -345,25 +478,34 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
 
-#ifdef ZORBA_WITH_DEBUGGER
-    DEBUGGER_PUSH_FRAME;
-#endif
-
-    while (consumeNext(result, state->thePlan, *state->thePlanState))
+    if (lCacheHit)
     {
-#ifdef ZORBA_WITH_DEBUGGER
-      DEBUGGER_POP_FRAME;
-#endif
       STACK_PUSH(true, state);
-
+    }
+    else
+    {
 #ifdef ZORBA_WITH_DEBUGGER
       DEBUGGER_PUSH_FRAME;
 #endif
-    }
+      while (consumeNext(result, state->thePlan, *state->thePlanState))
+      {
+#ifdef ZORBA_WITH_DEBUGGER
+        DEBUGGER_POP_FRAME;
+#endif
+
+        insertCacheEntry(state, lKey, result);
+        STACK_PUSH(true, state);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    DEBUGGER_POP_FRAME;
+        DEBUGGER_PUSH_FRAME;
 #endif
+      }
+
+#ifdef ZORBA_WITH_DEBUGGER
+      DEBUGGER_POP_FRAME;
+#endif
+
+    }
 
     STACK_END(state);
 
@@ -488,7 +630,7 @@ ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
 
   for (csize i = 0; i < n; ++i)
   {
-    delete m_extArgs[i];
+    m_extArgs[i]->removeReference();
   }
 }
 
@@ -595,6 +737,8 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   for(ulong i = 0; i < n; ++i)
   {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
+    // the iterator does not have exlcusive ownership over the sequences
+    state->m_extArgs[i]->addReference();
   }
 }
 

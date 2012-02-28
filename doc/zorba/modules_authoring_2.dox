@@ -118,6 +118,9 @@ the filename of your module <tt>.xq</tt> file need not directly
 correspond with the namespace URI. You may use different filenames for
 supporting different versions if you wish.)
 
+Finally, note that if you declare a module <i>without</i> a VERSION
+argument, it will internally be treated as though the version was "0.0.0".
+
 \section mod_author_schemas Adding schemas
 
 If you develop modules that make use of your own XML Schemas, then you
@@ -280,11 +283,12 @@ directory)
 2. Link them together into an appropriately-named shared library for
 your operating system
 
-3. Copy the resulting shared library into <tt>URI_PATH</tt> with the
-correct name and location, and
+3. Copy the resulting shared library into
+<tt><build_dir>/LIB_PATH</tt> with the correct name and location, and
 
 4. Create an <tt>INSTALL</tt> rule so that the shared library will be
-installed correctly along with your project.
+installed correctly along with your project. It will be automatically
+installed into Zorba's default non-core library path (see \libpath).
 
 If your code depends on other dynamic libraries, you can pass the full
 paths to those libraries to <tt>DECLARE_ZORBA_MODULE()</tt> using the

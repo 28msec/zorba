@@ -30,11 +30,6 @@ namespace zorba {
   class DiagnosticHandler;
   class StaticCollectionManagerImpl;
   class static_context;
-#ifndef ZORBA_NO_FULL_TEXT
-  namespace internal {
-    class ThesaurusProviderWrapper;
-  }
-#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 
@@ -62,14 +57,6 @@ protected:
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  typedef std::map<ThesaurusProvider const*,
-                   internal::ThesaurusProviderWrapper const*>
-          thesaurus_providers_t;
-
-  thesaurus_providers_t               theThesaurusProviders;
-#endif /* ZORBA_NO_FULL_TEXT */
-
   // allow for lazy creation
   mutable StaticCollectionManagerImpl* theCollectionMgr;
 
@@ -90,6 +77,9 @@ public:
   bool addNamespace( const String& prefix, const String& URI );
 
   String getNamespaceURIByPrefix( const String& prefix ) const;
+
+  void
+  getNamespaceBindings( NsBindings& aBindings ) const;
 
   bool setDefaultElementAndTypeNamespace( const String& URI );
 
@@ -186,14 +176,6 @@ public:
   virtual TypeIdentifier_t
   getCollectionType(const String& aCollectionUri) const;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  virtual void
-  addThesaurusProvider( ThesaurusProvider const* );
-
-  virtual void
-  removeThesaurusProvider( ThesaurusProvider const* );
-#endif /* ZORBA_NO_FULL_TEXT */
-
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
 
@@ -208,6 +190,15 @@ public:
 
   virtual void
   getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const;
+
+  virtual void
+  getFunctions(std::vector<Function_t>& aFunctions) const;
+
+  virtual void
+  getFunctions(
+      const String& aFnNameUri,
+      uint32_t arity,
+      std::vector<Function_t>& aFunctions) const;
 
   virtual void
   setContextItemStaticType(TypeIdentifier_t type);
@@ -265,9 +256,30 @@ public:
 
   virtual void
   setAuditEvent(audit::Event* anEvent);
-
+  
   virtual audit::Event*
-  getAuditEvent();
+  getAuditEvent() const;
+
+  virtual void
+  getExternalVariables(Iterator_t& aVarsIter) const;  
+
+  virtual void
+  setURIPath(const std::vector<String>& aURIPath);
+
+  virtual void
+  getURIPath(std::vector<String>& aURIPath) const;
+
+  virtual void
+  getFullURIPath(std::vector<String>& aURIPath) const;
+
+  virtual void
+  setLibPath(const std::vector<String>& aLibPath);
+
+  virtual void
+  getLibPath(std::vector<String>& aLibPath) const;
+
+  virtual void
+  getFullLibPath(std::vector<String>& aLibPath) const;
 
 protected:
   String

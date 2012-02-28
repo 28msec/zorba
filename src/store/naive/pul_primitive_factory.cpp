@@ -15,9 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/pul_primitive_factory.h"
-#include "store/naive/pul_primitives.h"
-#include "store/naive/simple_collection.h"
+#include "pul_primitive_factory.h"
+#include "pul_primitives.h"
+#include "simple_collection.h"
 
 namespace zorba { namespace simplestore {
 
@@ -230,7 +230,18 @@ PULPrimitiveFactory::createUpdSetAttributeType(
 {
   return new UpdSetAttributeType(pul, aLoc, target, typeName, typedValue, haveListValue);
 }
-    
+
+/***************************************************************************
+
+***************************************************************************/
+UpdRevalidate*
+PULPrimitiveFactory::createUpdRevalidate(
+    PULImpl*       pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target)
+{
+  return new UpdRevalidate(pul, aLoc, target);
+}
 
 /***************************************************************************
 

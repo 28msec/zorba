@@ -37,6 +37,8 @@ public:
 
   virtual ~StreamResourceImpl();
 
+  virtual void destroy() const;
+
 private:
 
   StreamResourceImpl(std::istream* aStream, StreamReleaser aStreamReleaser);

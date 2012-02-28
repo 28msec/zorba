@@ -22,6 +22,7 @@
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
 
+#include "functions/udf.h"
 #include "zorbaserialization/serialization_engine.h"
 
 #include "zorbamisc/ns_consts.h"
@@ -54,7 +55,9 @@
 #include "api/auditimpl.h"
 
 #include "api/uri_resolver_wrappers.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -207,7 +210,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     if (dyn_loaded_module)
     {
       ZORBA_ASSERT(sctx);
-      module = DynamicLoader::getExternalModule(lURI, *sctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
 
       // no way to get the module
       if (!module)
@@ -247,7 +250,6 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 /***************************************************************************//**
   Target namespaces of zorba builtin modules
 ********************************************************************************/
-#define NS_PRE static_context::ZORBA_NS_PREFIX
 
 const zstring
 static_context::DOT_VAR_NAME = "$$dot";
@@ -258,108 +260,156 @@ static_context::DOT_POS_VAR_NAME = "$$pos";
 const zstring
 static_context::DOT_SIZE_VAR_NAME = "$$last-idx";
 
-const zstring
+const char*
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
 
-const zstring
+const char*
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
 
-const zstring
-static_context::W3C_FN_NS = W3C_NS_PREFIX + "2005/xpath-functions";
+const char*
+static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
-const zstring
-static_context::W3C_XML_NS = W3C_NS_PREFIX + "XML/1998/namespace";
+const char*
+static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
-const zstring
-static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
+const char*
+static_context::ZORBA_MATH_FN_NS = 
+"http://www.zorba-xquery.com/modules/math";
 
-const zstring
-static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/converters/base64";
+const char*
+static_context::ZORBA_BASE64_FN_NS = 
+"http://www.zorba-xquery.com/modules/converters/base64";
 
-const zstring
-static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
-  = NS_PRE + "modules/store/dynamic/collections/ddl";
+const char*
+static_context::ZORBA_JSON_FN_NS =
+"http://www.zorba-xquery.com/modules/converters/json";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS
-  = NS_PRE + "modules/store/dynamic/collections/dml";
+const char*
+static_context::ZORBA_NODEREF_FN_NS = 
+"http://www.zorba-xquery.com/modules/node-reference";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS
-  = NS_PRE + "modules/store/static/collections/ddl";
+const char*
+static_context::ZORBA_NODEPOS_FN_NS = 
+"http://www.zorba-xquery.com/modules/node-position";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS
-  = NS_PRE + "modules/store/static/collections/dml";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS
-  = NS_PRE + "modules/store/static/indexes/ddl";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS
-  = NS_PRE + "modules/store/static/indexes/dml";
+const char*
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS
-  = NS_PRE + "modules/store/static/integrity_constraints/ddl";
+const char*
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS
-  = NS_PRE + "modules/store/static/integrity_constraints/dml";
+const char*
+static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
+const char*
+static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-const zstring
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/data-structures/unordered-map";
+const char*
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
-const zstring
-static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
+const char*
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
-const zstring
-static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
-const zstring
-static_context::ZORBA_RANDOM_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/random";
+const char*
+static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS = 
+"http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-const zstring
-static_context::ZORBA_INTROSP_SCTX_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/introspection/sctx";
+const char*
+static_context::ZORBA_SCHEMA_FN_NS = 
+"http://www.zorba-xquery.com/modules/schema";
 
-const zstring
-static_context::ZORBA_REFLECTION_FN_NS = NS_PRE + "modules/reflection";
+const char*
+static_context::ZORBA_XQDOC_FN_NS = 
+"http://www.zorba-xquery.com/modules/xqdoc";
 
-const zstring
-static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
+const char*
+static_context::ZORBA_RANDOM_FN_NS = 
+"http://www.zorba-xquery.com/modules/random";
 
-const zstring
-static_context::ZORBA_SCRIPTING_FN_NS = NS_PRE + "zorba/scripting";
+const char*
+static_context::ZORBA_INTROSP_SCTX_FN_NS = 
+"http://www.zorba-xquery.com/modules/introspection/sctx";
 
-const zstring
-static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
+const char*
+static_context::ZORBA_REFLECTION_FN_NS = 
+"http://www.zorba-xquery.com/modules/reflection";
 
-const zstring
-static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
+const char*
+static_context::ZORBA_UTIL_FN_NS = 
+"http://www.zorba-xquery.com/zorba/util-functions";
 
-const zstring
-static_context::ZORBA_NODE_FN_NS = NS_PRE + "modules/node";
+const char*
+static_context::ZORBA_SCRIPTING_FN_NS = 
+"http://www.zorba-xquery.com/zorba/scripting";
 
-const zstring
-static_context::ZORBA_XML_FN_NS = NS_PRE + "modules/xml";
+const char*
+static_context::ZORBA_STRING_FN_NS = 
+"http://www.zorba-xquery.com/modules/string";
+
+const char*
+static_context::ZORBA_FETCH_FN_NS = 
+"http://www.zorba-xquery.com/modules/fetch";
+
+const char*
+static_context::ZORBA_NODE_FN_NS = 
+"http://www.zorba-xquery.com/modules/node";
+
+const char*
+static_context::ZORBA_XML_FN_NS = 
+"http://www.zorba-xquery.com/modules/xml";
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
-const zstring
-static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
+const char*
+static_context::XQUERY_OP_NS = 
+"http://www.zorba-xquery.com/internal/xquery-ops";
 
-const zstring
-static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
+const char*
+static_context::ZORBA_OP_NS = 
+"http://www.zorba-xquery.com/internal/zorba-ops";
+
+/***************************************************************************//**
+  Options-related namespaces
+********************************************************************************/
+const char* 
+static_context::ZORBA_OPTIONS_NS = 
+"http://www.zorba-xquery.com/options";
+
+const char* 
+static_context::ZORBA_OPTION_WARN_NS = 
+"http://www.zorba-xquery.com/options/warnings";
+
+const char* 
+static_context::ZORBA_OPTION_FEATURE_NS = 
+"http://www.zorba-xquery.com/options/features";
+
+const char* 
+static_context::ZORBA_OPTION_OPTIM_NS = 
+"http://www.zorba-xquery.com/options/optimizer";
+
+const char* 
+static_context::ZORBA_VERSIONING_NS = 
+"http://www.zorba-xquery.com/options/versioning";
 
 
 /***************************************************************************//**
@@ -368,11 +418,12 @@ static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
 ********************************************************************************/
 bool static_context::is_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
+            ns == ZORBA_NODEPOS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
@@ -390,6 +441,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
@@ -411,7 +463,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_builtin_virtual_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
@@ -432,10 +484,11 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS);
   }
 
@@ -449,12 +502,34 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_reserved_module(const zstring& ns)
 {
-  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_OP_NS || ns == XQUERY_OP_NS);
   }
 
   return false;
+}
+
+
+/***************************************************************************//**
+  Static method
+********************************************************************************/
+zstring static_context::var_name(const store::Item* aVarName)
+{
+  zstring lVarName = aVarName->getStringValue();
+  if (lVarName == static_context::DOT_POS_VAR_NAME)
+  {
+    lVarName = "context position";
+  } 
+  else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
+  {
+    lVarName = "context size";
+  }
+  else if (lVarName == static_context::DOT_VAR_NAME)
+  {
+    lVarName = "context item";
+  }
+  return lVarName;
 }
 
 
@@ -471,11 +546,11 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(NULL),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -483,6 +558,7 @@ static_context::static_context()
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -518,11 +594,11 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -530,6 +606,7 @@ static_context::static_context(static_context* parent)
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -570,11 +647,11 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
+  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
@@ -582,6 +659,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theCachedDefaultCollator(NULL),
   theOptionMap(NULL),
   theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
@@ -648,9 +726,6 @@ static_context::~static_context()
 
     delete theFunctionArityMap;
   }
-
-  if (theAnnotationMap)
-    delete theAnnotationMap;
 
   if (theW3CCollectionMap)
     delete theW3CCollectionMap;
@@ -863,13 +938,14 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
-  ar & theModulePaths;
+  ar & theURIPath;
+  ar & theLibPath;
 
   // Options must be serialized BEFORE external modules
   ar & theOptionMap;
   ar & theExternalModulesMap;
 
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypeManager);
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
@@ -877,7 +953,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultFunctionNamespace;
   ar & theHaveDefaultFunctionNamespace;
 
-  ar & theCtxItemType;
+  ar & theContextItemType;
 
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;     
@@ -886,8 +962,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionMap;
   ar & theFunctionArityMap;
   ar.set_serialize_only_for_eval(false);
-
-  ar & theAnnotationMap;
 
   ar & theCollectionMap;
 
@@ -1364,71 +1438,57 @@ zstring static_context::resolve_relative_uri(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_uri_mapper(impl::URIMapper* aMapper)
+void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
+  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_url_resolver(impl::URLResolver* aResolver)
+void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
+  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
 }
 
 
 /***************************************************************************//**
-  Helper class for resolve_uri()
-********************************************************************************/
-class SimpleEntityData : public impl::EntityData
-{
-public:
-  SimpleEntityData(impl::EntityData::Kind aKind) : theKind(aKind)
-  {
-  }
-
-  virtual impl::EntityData::Kind getKind() const
-  {
-    return theKind;
-  }
-
-private:
-  impl::EntityData::Kind const theKind;
-};
-
-
-/***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<impl::Resource> static_context::resolve_uri(
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri, 
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  SimpleEntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
+  return this->resolve_uri(aUri, lData, oErrorMessage);
+}
 
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
+    zstring const& aUri,
+    internal::EntityData const& aEntityData,
+    zstring& oErrorMessage) const
+{
   std::vector<zstring> lUris;
-  apply_uri_mappers(aUri, &lData, impl::URIMapper::CANDIDATE, lUris);
+  apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<impl::Resource> lRetval;
-  apply_url_resolvers(lUris, &lData, lRetval, oErrorMessage);
+  std::auto_ptr<internal::Resource> lRetval;
+  apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
   return lRetval;
 }
 
-
 void static_context::get_component_uris(
     zstring const& aUri,
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  SimpleEntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
 
-  apply_uri_mappers(aUri, &lData, impl::URIMapper::COMPONENT, oComponents);
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::COMPONENT, oComponents);
   if (oComponents.size() == 0) 
   {
     oComponents.push_back(aUri);
@@ -1441,8 +1501,8 @@ void static_context::get_component_uris(
 ********************************************************************************/
 void static_context::apply_uri_mappers(
     zstring const& aUri, 
-    impl::EntityData const* aEntityData,
-    impl::URIMapper::Kind aMapperKind, 
+    internal::EntityData const* aEntityData,
+    internal::URIMapper::Kind aMapperKind, 
     std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
@@ -1453,7 +1513,7 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<impl::URIMapper>::const_iterator mapper =
+    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
@@ -1485,7 +1545,7 @@ void static_context::apply_uri_mappers(
           // Check the new entries for DENY_ACCESS.
           for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) 
           {
-            if (lResultUris.at(i) == impl::URIMapper::DENY_ACCESS) {
+            if (lResultUris.at(i) == internal::URIMapper::DENY_ACCESS) {
               throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
                                      ERROR_PARAMS(aUri));
             }
@@ -1506,8 +1566,8 @@ void static_context::apply_uri_mappers(
 ********************************************************************************/
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
-    impl::EntityData const* aEntityData,
-    std::auto_ptr<impl::Resource>& oResource, 
+    internal::EntityData const* aEntityData,
+    std::auto_ptr<internal::Resource>& oResource, 
     zstring& oErrorMessage) const
 {
   oErrorMessage = "";
@@ -1516,29 +1576,32 @@ void static_context::apply_url_resolvers(
   for (std::vector<zstring>::iterator url = aUrls.begin();
        url != aUrls.end(); url++) 
   {
+    // We should never try to load the http-client module using its original URI,
+    // because that URI starts with http:, so we'll try to load the http-client
+    // module, leading to a stack overflow.
+    if (ascii::begins_with(*url, "http://www.zorba-xquery.com/modules/http-client"))
+    {
+      continue;
+    }
+
     // Iterate upwards through the static_context tree...
     for (static_context const* sctx = this;
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<impl::URLResolver>::const_iterator resolver =
+      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
         try 
         {
-          // if the http-client module is not available, we must not search
-          // for it by calling the http-client...
-          if (*url != "http://www.zorba-xquery.com/modules/http-client") 
+          // Take ownership of returned Resource (if any)
+          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          if (oResource.get() != NULL)
           {
-            // Take ownership of returned Resource (if any)
-            oResource.reset((*resolver)->resolveURL(*url, aEntityData));
-            if (oResource.get() != NULL) 
-            {
-              // Populate the URL used to load this Resource
-              oResource->setUrl(*url);
-              return;
-            }
+            // Populate the URL used to load this Resource
+            oResource->setUrl(*url);
+            return;
           }
         }
         catch (const std::exception& e) 
@@ -1563,32 +1626,63 @@ void static_context::apply_url_resolvers(
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::set_module_paths(const std::vector<zstring>& paths)
+void static_context::set_uri_path(const std::vector<zstring>& path)
 {
-  theModulePaths = paths;
+  theURIPath = path;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_module_paths(std::vector<zstring>& paths) const
+void static_context::get_uri_path(std::vector<zstring>& path) const
 {
-  paths.insert(paths.end(), theModulePaths.begin(), theModulePaths.end());
+  path.insert(path.end(), theURIPath.begin(), theURIPath.end());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_full_module_paths(std::vector<zstring>& paths) const
+void static_context::get_full_uri_path(std::vector<zstring>& path) const
 {
   if (theParent != NULL)
   {
-    theParent->get_full_module_paths(paths);
+    theParent->get_full_uri_path(path);
   }
 
-  get_module_paths(paths);
+  get_uri_path(path);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::set_lib_path(const std::vector<zstring>& path)
+{
+  theLibPath = path;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_lib_path(std::vector<zstring>& path) const
+{
+  path.insert(path.end(), theLibPath.begin(), theLibPath.end());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_full_lib_path(std::vector<zstring>& path) const
+{
+  if (theParent != NULL)
+  {
+    theParent->get_full_lib_path(path);
+  }
+
+  get_lib_path(path);
 }
 
 
@@ -1702,13 +1796,13 @@ bool static_context::validateSimpleContent(
 ********************************************************************************/
 void static_context::set_typemanager(rchandle<TypeManager> typemgr)
 {
-  theTypemgr = typemgr;
+  theTypeManager = typemgr;
 }
 
 
 TypeManager* static_context::get_typemanager() const
 {
-  TypeManager* tm = theTypemgr.getp();
+  TypeManager* tm = theTypeManager.getp();
   if (tm != NULL)
   {
     return tm;
@@ -1719,7 +1813,7 @@ TypeManager* static_context::get_typemanager() const
 
 TypeManager* static_context::get_local_typemanager() const
 {
-  return theTypemgr.getp();
+  return theTypeManager.getp();
 }
 
 
@@ -1751,6 +1845,7 @@ const zstring& static_context::default_elem_type_ns() const
 ********************************************************************************/
 void static_context::set_default_elem_type_ns(
     const zstring& ns,
+    bool raiseError,
     const QueryLoc& loc)
 {
   if (!theHaveDefaultElementNamespace)
@@ -1758,9 +1853,13 @@ void static_context::set_default_elem_type_ns(
     theDefaultElementNamespace = ns;
     theHaveDefaultElementNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultElementNamespace = ns;
   }
 }
 
@@ -1786,6 +1885,7 @@ const zstring& static_context::default_function_ns() const
 ********************************************************************************/
 void static_context::set_default_function_ns(
    const zstring& ns,
+   bool raiseError,
    const QueryLoc& loc)
 {
   if (!theHaveDefaultFunctionNamespace)
@@ -1793,9 +1893,13 @@ void static_context::set_default_function_ns(
     theDefaultFunctionNamespace = ns;
     theHaveDefaultFunctionNamespace = true;
   }
-  else
+  else if (raiseError)
   {
     throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
+  }
+  else
+  {
+    theDefaultFunctionNamespace = ns;
   }
 }
 
@@ -2021,9 +2125,10 @@ var_expr* static_context::lookup_var(
   This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-  std::vector<var_expr_t>& vars,
-  bool aLocalsOnly,
-  bool returnPrivateVars) const
+    std::vector<var_expr_t>& vars,
+    bool aLocalsOnly,
+    bool returnPrivateVars,
+    bool externalVarsOnly) const
 {
   const static_context* sctx = this;
 
@@ -2036,8 +2141,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2045,7 +2150,17 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if (externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+          {
+            vars.push_back((*ite).second);
+          }
+        }
       }
     }
     
@@ -2056,8 +2171,8 @@ void static_context::getVariables(
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = (ulong)vars.size();
-        ulong i = 0;
+        csize numVars = vars.size();
+        csize i = 0;
         for (; i < numVars; ++i)
         {
           if (vars[i]->get_name()->equals((*ite).first))
@@ -2065,7 +2180,15 @@ void static_context::getVariables(
         }
 
         if (i == numVars)
-          vars.push_back((*ite).second);
+        {
+          if(externalVarsOnly)
+          {
+            if((*ite).second->is_external())          
+              vars.push_back((*ite).second);
+          }
+          else
+            vars.push_back((*ite).second);
+        }
       }
     }
 
@@ -2082,29 +2205,9 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t)
 {
-  theCtxItemType = t;
-}
-
-/***************************************************************************//**
-
-********************************************************************************/
-zstring
-static_context::var_name(const store::Item* aVarName)
-{
-  zstring lVarName = aVarName->getStringValue();
-  if (lVarName == static_context::DOT_POS_VAR_NAME)
-  {
-    lVarName = "context position";
-  } else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
-  {
-    lVarName = "context size";
-  } else if (lVarName == static_context::DOT_VAR_NAME)
-  {
-    lVarName = "context item";
-  }
-  return lVarName;
+  theContextItemType = t;
 }
 
 
@@ -2116,8 +2219,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theCtxItemType != NULL)
-      return theCtxItemType.getp();
+    if (theContextItemType != NULL)
+      return theContextItemType.getp();
 
     sctx = sctx->theParent;
   }
@@ -2594,7 +2697,7 @@ ExternalFunction* static_context::lookup_external_function(
   // dynamic loader
   if (!found)
   {
-    lModule = DynamicLoader::getExternalModule(aURI, *this);
+    lModule = GENV_DYNAMIC_LOADER->getExternalModule(aURI, *this);
 
     // no way to get the module
     if (!lModule)
@@ -2613,49 +2716,6 @@ ExternalFunction* static_context::lookup_external_function(
   return lModule->getExternalFunction(aLocalName.str());
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Annotations                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-void
-static_context::add_ann(
-    StaticContextConsts::annotations_t aAnnotation,
-    const store::Item_t& aQName)
-{
-  if (!theAnnotationMap) {
-    theAnnotationMap = new AnnotationMap();
-  }
-  (*theAnnotationMap)[static_cast<uint64_t>(aAnnotation)] = aQName;
-}
-
-store::Item_t
-static_context::lookup_ann(StaticContextConsts::annotations_t aAnnotation) const
-{
-  std::map<uint64_t, store::Item_t>::const_iterator lIter;
-  if (!theAnnotationMap ||
-      (lIter = theAnnotationMap->find(static_cast<uint64_t>(aAnnotation))) == theAnnotationMap->end()) {
-    return theParent?theParent->lookup_ann(aAnnotation):NULL;
-  }
-  return lIter->second;
-}
-
-StaticContextConsts::annotations_t
-static_context::lookup_ann(const store::Item_t& aQName) const
-{
-  if ( theAnnotationMap )
-  {
-    std::map<uint64_t, store::Item_t>::const_iterator lIter;
-    for (lIter = theAnnotationMap->begin(); lIter != theAnnotationMap->end(); ++lIter)
-    {
-      if (aQName->equals(lIter->second))
-      {
-        return static_cast<StaticContextConsts::annotations_t>(lIter->first);
-      }
-    }
-  }
-  return theParent?theParent->lookup_ann(aQName):StaticContextConsts::zann_end;
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -3088,8 +3148,12 @@ const std::string& static_context::get_default_collation(const QueryLoc& loc) co
 ********************************************************************************/
 XQPCollator* static_context::get_default_collator(const QueryLoc& loc) const
 {
-  const std::string& default_collation = get_default_collation(loc);
-  return get_collator(default_collation, loc);
+  if (!theCachedDefaultCollator)
+  {
+    const std::string& default_collation = get_default_collation(loc);
+    theCachedDefaultCollator = get_collator(default_collation, loc);
+  }
+  return theCachedDefaultCollator;
 }
 
 
@@ -3143,39 +3207,53 @@ void static_context::bind_option(
   
   zstring lNamespace = qname2->getNamespace();
 
-
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) // starts with zorba options namespace
+  // If option namespace starts with zorba options namespace
+  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) 
   {
     zstring lLocalName = qname2->getLocalName();
 
-    if ( lNamespace == ZORBA_OPTION_FEATURE_NS &&
-         ( lLocalName == "enable" || lLocalName == "disable" ) )
+    if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
+        (lLocalName == "enable" || lLocalName == "disable"))
     {
       zstring lVal1 = value;
       zstring lVal2;
       bool lCommaFound = false;
-      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
       {
         process_feature_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_feature_option(
-        lCommaFound?lVal2:lVal1, 
-        lLocalName == "enable",
-        loc);
+      process_feature_option(lCommaFound ? lVal2 : lVal1, 
+                             lLocalName == "enable",
+                             loc);
     }
-    else if ( lNamespace == ZORBA_OPTION_WARN_NS &&
-              ( lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error" ) )
+    else if (qname2->getNamespace() == ZORBA_OPTION_OPTIM_NS &&
+             (lLocalName == "enable" || lLocalName == "disable"))
     {
       zstring lVal1 = value;
       zstring lVal2;
       bool lCommaFound = false;
-      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
+      {
+        process_optim_option(lVal1, lLocalName == "enable", loc);
+        lCommaFound = true;
+      }
+      process_optim_option(lCommaFound ? lVal2 : lVal1, 
+                           lLocalName == "enable",
+                           loc);
+    }
+    else if (lNamespace == ZORBA_OPTION_WARN_NS &&
+             (lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error"))
+    {
+      zstring lVal1 = value;
+      zstring lVal2;
+      bool lCommaFound = false;
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
       {
         process_warning_option(lVal1, lLocalName, loc);
         lCommaFound = true;
       }
-      process_warning_option( lCommaFound?lVal2:lVal1, lLocalName, loc);
+      process_warning_option(lCommaFound ? lVal2 : lVal1, lLocalName, loc);
     }
 
     // process zorba-version option
@@ -3187,39 +3265,31 @@ void static_context::bind_option(
       {
         // Re-use "ModuleVersion" class since it does 98% of the work for us;
         // just use a fake URI
-        ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
-        if (! lOptVersion.is_valid_version()) {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
-                      ERROR_PARAMS(value), ERROR_LOC( loc ));
+        ModuleVersion lOptVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba", value);
+        if (! lOptVersion.is_valid_version()) 
+        {
+          RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
+          ERROR_PARAMS(value));
         }
-        ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
+
+        ModuleVersion lZorbaVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba",
                                     ZORBA_VERSION);
-        if ( ! lZorbaVersion.satisfies(lOptVersion)) {
-          throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
-                      ERROR_PARAMS(value, ZORBA_VERSION),
-                      ERROR_LOC( loc ));
+
+        if ( ! lZorbaVersion.satisfies(lOptVersion)) 
+        {
+          RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
+          ERROR_PARAMS(value, ZORBA_VERSION));
         }
       }
     }
-    // if the option is in (starts-with) Zorba's own namespace but not known, we raise an error
+
+    // If the option is in (starts-with) Zorba's own namespace but not known,
+    // we raise an error
     else 
     {
-      throw XQUERY_EXCEPTION(
-         zerr::ZXQP0060_OPTION_NOT_KNOWN,
-         ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-         ERROR_LOC( loc )
-       );
+      RAISE_ERROR(zerr::ZXQP0060_OPTION_NOT_KNOWN, loc,
+      ERROR_PARAMS(qname2->getNamespace() + ":" + qname2->getLocalName()));
     }
-  }
-
-  // if the option is in Zorba's own namespace but not known, we raise an error
-  else if ( qname2->getNamespace().find(ZORBA_OPTIONS_NS) == 0 )
-  {
-    throw XQUERY_EXCEPTION(
-       zerr::ZXQP0060_OPTION_NOT_KNOWN,
-       ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
-       ERROR_LOC( loc )
-     );
   }
 
   // in any case, we bind the option in the static context such that
@@ -3257,8 +3327,11 @@ static_context::parse_and_expand_qname(
   return lQName;
 }
 
-void
-static_context::process_warning_option(
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_warning_option(
   const zstring& value,
   const zstring& name,
   const QueryLoc& loc)
@@ -3313,48 +3386,58 @@ static_context::process_warning_option(
   }
 }
 
-void
-static_context::process_feature_option(
-  const zstring& value,
-  bool  enable,
-  const QueryLoc& loc)
-{
-  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_FEATURES_NS, loc );
 
-  if ( lQName->getNamespace() != ZORBA_FEATURES_NS )
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_feature_option(
+    const zstring& value,
+    bool enable,
+    const QueryLoc& loc)
+{
+  store::Item_t featureName = parse_and_expand_qname(value, ZORBA_FEATURES_NS, loc);
+
+  if (featureName->getNamespace() != ZORBA_FEATURES_NS)
   {
-    throw XQUERY_EXCEPTION(
-        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-        ERROR_PARAMS (
-          lQName->getStringValue(),
-          ZED( ZDST0060_unknown_namespace ),
-          lQName->getNamespace()
-        ), 
-        ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(featureName->getStringValue(),
+                 ZED(ZDST0060_unknown_namespace),
+                 featureName->getNamespace())); 
   }
 
   feature::kind k;
-  if ( feature::kind_for(lQName->getLocalName().c_str(), k) )
+  if (feature::kind_for(featureName->getLocalName().c_str(), k))
   {
-    if ( enable )
-      set_feature( k );
+    if (enable)
+      set_feature(k);
     else
-      unset_feature( k );
+      unset_feature(k);
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-        ERROR_PARAMS (
-          lQName->getStringValue(),
-          ZED( ZDST0060_unknown_localname ),
-          lQName->getLocalName()
-        ), 
-        ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(featureName->getStringValue(),
+                 ZED(ZDST0060_unknown_localname),
+                 featureName->getLocalName())); 
   }
 }
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_optim_option(
+    const zstring& value,
+    bool enable,
+    const QueryLoc& loc)
+{
+  if (value != "for-serialization-only")
+  {
+    RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
+    ERROR_PARAMS(value, ZED(ZDST0060_unknown_localname), value)); 
+  }
+}
+
 
 /***************************************************************************//**
 
@@ -3382,7 +3465,7 @@ bool static_context::lookup_option(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  Auditing                                                                    //
+//  Auditing                                                                   //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -3399,7 +3482,7 @@ void static_context::set_audit_event(audit::Event* ae)
 /***************************************************************************//**
 
 ********************************************************************************/
-audit::Event* static_context::get_audit_event()
+audit::Event* static_context::get_audit_event() const
 {
   const static_context* sctx = this;
   audit::Event* res = sctx->theAuditEvent;
@@ -4006,33 +4089,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     }
   }
 }
-
-
-#ifndef ZORBA_NO_FULL_TEXT
-
-internal::Thesaurus::ptr
-static_context::get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
-  FOR_EACH( thesaurus_providers_t, p, theThesaurusProviders ) {
-    internal::Thesaurus::ptr t( (*p)->get_thesaurus( uri, lang ) );
-    if ( t.get() )
-      return std::move( t );
-  }
-  return theParent ?
-    theParent->get_thesaurus( uri, lang ) :
-    internal::ThesaurusProvider::get_default_provider()
-      .get_thesaurus( uri, lang );
-}
-
-void static_context::remove_thesaurus_provider(
-    internal::ThesaurusProvider const *p ) {
-  ztd::erase_1st_if(
-    theThesaurusProviders,
-    std::bind2nd( std::equal_to<internal::ThesaurusProvider const*>(), p )
-  );
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

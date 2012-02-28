@@ -34,7 +34,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", "--compile-plan", "--execute-plan", NULL };
     return result;
   }
   bool theTiming;
@@ -67,11 +67,15 @@ protected:
   unsigned int theDebugPort;
   bool theNoLogo;
   long theTimeout;
+  std::string theUriPath;
+  std::string theLibPath;
   std::string theModulePath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
+  bool theCompilePlan;
+  bool theExecutePlan;
 
   void initialize () {
     theTiming = false;
@@ -95,6 +99,8 @@ protected:
     theNoLogo = false;
     theTimeout = -1;
     theTrailingNl = false;
+    theCompilePlan = false;
+    theExecutePlan = false;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -127,11 +133,15 @@ public:
   const unsigned int &debugPort () const { return theDebugPort; }
   const bool &noLogo () const { return theNoLogo; }
   const long &timeout () const { return theTimeout; }
+  const std::string &uriPath () const { return theUriPath; }
+  const std::string &libPath () const { return theLibPath; }
   const std::string &modulePath () const { return theModulePath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
+  const bool &compilePlan () const { return theCompilePlan; }
+  const bool &executePlan () const { return theExecutePlan; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -262,6 +272,16 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --timeout option"; break; }        init_val (*argv, theTimeout, d);
       }
+      else if (strcmp (*argv, "--uri-path") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --uri-path option"; break; }        init_val (*argv, theUriPath, d);
+      }
+      else if (strcmp (*argv, "--lib-path") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --lib-path option"; break; }        init_val (*argv, theLibPath, d);
+      }
       else if (strcmp (*argv, "--module-path") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -284,6 +304,12 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }        init_val (*argv, theThesaurus, d);
+      }
+      else if (strcmp (*argv, "--compile-plan") == 0 || strncmp (*argv, "-c", 2) == 0) {
+        theCompilePlan = true;
+      }
+      else if (strcmp (*argv, "--execute-plan") == 0) {
+        theExecutePlan = true;
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -327,15 +353,19 @@ public:
 "--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result.\n\n"
 "--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
-"--debug-host, -p\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
+"--debug-host, -h\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
 "--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
 "--no-logo\nPrint no logo when starting.\n\n"
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
-"--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
+"--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
+"--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
+"--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
 "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
 "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
+"--compile-plan, -c\nOutput the query plan as binary.\n\n"
+"--execute-plan\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
 ;
   }
 

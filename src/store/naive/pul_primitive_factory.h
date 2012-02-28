@@ -19,7 +19,7 @@
 #include "common/shared_types.h"
 #include "store/api/update_consts.h"
 #include "store/api/index.h"
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 namespace zorba { namespace simplestore {
 
@@ -40,6 +40,7 @@ namespace zorba { namespace simplestore {
   class UpdReplaceCommentValue;
   class UpdSetElementType;
   class UpdSetAttributeType;
+  class UpdRevalidate;
   class UpdPut;
   class UpdCreateCollection;
   class UpdDeleteCollection;
@@ -213,6 +214,14 @@ class PULPrimitiveFactory
         store::Item_t& typedValue,
         bool           haveListValue);
   
+  /***************************************************************************
+     ***************************************************************************/
+  virtual UpdRevalidate*
+  createUpdRevalidate(
+        PULImpl*       pul,
+        const QueryLoc*,
+        store::Item_t& target);
+
   /***************************************************************************
    ***************************************************************************/
   virtual UpdPut*

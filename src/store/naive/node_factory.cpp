@@ -15,10 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/node_factory.h"
-#include "store/naive/node_items.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/store_defs.h"
+#include "node_factory.h"
+#include "node_items.h"
+#include "simple_store.h"
+#include "store_defs.h"
 
 namespace zorba 
 {
@@ -57,8 +57,8 @@ DocumentNode* NodeFactory::createDocumentNode()
 
 DocumentNode* NodeFactory::createDocumentNode(
     XmlTree* tree,
-    zstring& baseUri,
-    zstring& docUri)
+    const zstring& baseUri,
+    const zstring& docUri)
 {
   return new DocumentNode(tree, baseUri, docUri);
 }

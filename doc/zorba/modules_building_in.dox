@@ -3,7 +3,7 @@
 Once you have created a module project (see \ref modules_authoring)
 containing modules and schemas, there are two different ways that you
 can build those modules directly into Zorba, such that they are on
-Zorba's default module path and will be found automatically.
+Zorba's default URI and Library paths and will be found automatically.
 
 These same techniques can be used with non-core modules developed by
 the Zorba team.
@@ -17,7 +17,7 @@ the module (including its external function shared library, if any)
 directly into the Zorba installation. Simply invoking the "install"
 target of the project will do this. Note that on many systems, if
 Zorba is installed into a system-wide location, you may require root
-or adminstrator priviledges to install your module in this location.
+or administrator privileges to install your module in this location.
 
 \section mod_baking_in Building Zorba With Additional Modules
 

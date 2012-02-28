@@ -23,16 +23,16 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/text_node_content.h"
-#include "store/naive/item_vector.h"
-#include "store/naive/ordpath.h"
-#include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+#include "store_defs.h"
+#include "shared_types.h"
+#include "text_node_content.h"
+#include "item_vector.h"
+#include "ordpath.h"
+#include "nsbindings.h" // TODO remove by introducing explicit destructors
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
-#include "store/naive/hashmap_nodep.h"
+#include "hashmap_nodep.h"
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -178,16 +178,15 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
   ulong                     theId;
-  ulong                     thePos;
-
-  zstring                   theDocUri;
-  zstring                   theBaseUri;
+  xs_integer                thePos;
 
   SimpleCollection        * theCollection;
 
   XmlNode                 * theRootNode;
 
+#ifdef DATAGUIDE
   GuideNode               * theDataGuideRootNode;
+#endif
 
   bool                      theIsValidated;
   bool                      theIsRecursive;
@@ -220,23 +219,15 @@ public:
 
   ulong getId() const { return theId; }
 
-  const zstring& getDocUri() const { return theDocUri; }
-
-  void setDocUri(const zstring& uri) { theDocUri = uri; }
-
-  const zstring& getBaseUri() const { return theBaseUri; }
-
-  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
-
   ulong getCollectionId() const;
 
   const SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, ulong pos);
+  void setCollection(SimpleCollection* coll, xs_integer pos);
 
-  void setPosition(ulong pos) { thePos = pos; }
+  void setPosition(xs_integer pos) { thePos = pos; }
 
-  ulong getPosition() const { return thePos; }
+  xs_integer getPosition() const { return thePos; }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -250,9 +241,11 @@ public:
 
   bool isRecursive() const { return theIsRecursive; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
+#endif
 
 #ifndef EMBEDED_TYPE
   store::Item* getType(const XmlNode* n) const;
@@ -291,6 +284,7 @@ class XmlNode : public store::Item
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class ConnectorNode;
 
   friend class PULImpl;
   friend class CollectionPul;
@@ -309,36 +303,69 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
-    NodeKindMask        =   0x7,
-    IsId                =   0x8,
-    IsIdRefs            =   0x10,
-    HaveTypedValue      =   0x20,    // for element nodes only
-    HaveEmptyValue      =   0x40,    // for element nodes only
-    IsTyped             =   0x80,    // for text nodes only
-    HaveListValue       =   0x100,   // for text and attribute nodes only
+    // Encodes the kind of the node (document, element, attribute, etc.)
+    NodeKindMask          = 0x7,
 
-    HaveLocalBindings   =   0x200,   // for element nodes only
-    HaveBaseUri         =   0x400,   // for element nodes only
-    IsBaseUri           =   0x800,   // for attribute nodes only
-    IsHidden            =   0x1000,  // for attribute nodes only
-    IsInSubstGroup      =   0x2000,  // for element nodes only
+    // For element nodes only.
+    HaveLocalBindings     = 0x80,
+
+    // For element nodes only.
+    HaveBaseUri           = 0x10,
+
+    // For element nodes only. Set if the target element node has a typed value.
+    // The only case when an element node does not have a typed value is when 
+    // the type of the node is complex with complex content, but with no mixed 
+    //content allowed.
+    HaveTypedValue        = 0x20,
+
+    // For element nodes only. Set if the target element node has a complex 
+    // type with empty content. In this case, the typed value of the node is
+    // the empty sequence.
+    HaveEmptyTypedValue   = 0x40,
+
+    // For text nodes only. Set if the text node is actually used to store the
+    // typed value of its parent element node. In such a case, the remaining
+    // children (if any) of the parent node can be comment and/or pi nodes only.
+    IsTyped               = 0x80,
+
+    // For text and attribute nodes only. Set if the typed value stored in the
+    // node is actually a sequence of atomic items.
+    HaveListValue         = 0x100,
+
+    // For attribute nodes only.
+    IsBaseUri             = 0x800,
+
+    // For attribute nodes only.
+    IsHidden              = 0x1000,
+
+    // For element nodes only.
+    IsInSubstGroup        = 0x2000,
 
     // For element nodes only. The flag is set for a node N if there is another
     // node M in its subtree such that N and M have the same name.
-    IsRecursive         =   0x4000,
+    IsRecursive           = 0x4000,
 
 #ifndef EMBEDED_TYPE
     // For element and attribute nodes only. The flag is set if the node has
     // a type other than untyped (for elements) or untypedAtomic (for attributes)
-    HaveType            =   0x8000,
+    HaveType              = 0x8000,
 #endif
 
-    HaveReference       = 0x10000
+    // For any kind of node. Set if an identifier has been generated for the node
+    // (see SimpleStore::getNodeReference() method).
+    HaveReference         = 0x10000,
+
+    IsConnectorNode       = 0x20000
   };
 
 protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
+
+private:
+#ifndef TEXT_ORDPATH
+  static long compareInSameTree(const XmlNode* n1, const XmlNode* n2);
+#endif
 
 protected:
   XmlNode() : theParent(NULL)
@@ -350,13 +377,34 @@ protected:
     theFlags = (uint32_t)k;
   }
 
-
   XmlNode(
       XmlTree* tree,
       InternalNode* parent,
       store::StoreConsts::NodeKind nodeKind);
 
+  virtual void getBaseURIInternal(zstring& uri, bool& local) const;
+
+  void attach(InternalNode* parent, csize pos);
+
+  void detach();
+
+  void destroy(bool removeType);
+
+  bool disconnect(csize& pos);
+
+  void connect(InternalNode* node, csize pos);
+
+#ifndef ZORBA_NO_FULL_TEXT
+  virtual void tokenize( XmlNodeTokenizerCallback& );
+#endif
+
+private:
+  void setTree(const XmlTree* t);
+
+  void destroyInternal(bool removeType);
+
 public:
+
 #ifndef NDEBUG
   virtual ~XmlNode();
 #else
@@ -382,10 +430,11 @@ public:
 
   const store::Collection* getCollection() const
   {
+    assert(!isConnectorNode());
     return reinterpret_cast<const store::Collection*>(getTree()->getCollection());
   }
 
-  void getDocumentURI(zstring& uri) const
+  virtual void getDocumentURI(zstring& uri) const
   {
     ;
   }
@@ -400,11 +449,13 @@ public:
       long timezone = 0,
       const XQPCollator* aCollation = 0) const
   {
+    assert(!isConnectorNode());
     return this == other;
   }
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
+    assert(!isConnectorNode());
     XmlNode* node = const_cast<XmlNode*>(this);
     return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
   }
@@ -413,31 +464,42 @@ public:
 
   void getBaseURI(zstring& uri) const
   {
+    assert(!isConnectorNode());
     bool local = false;
     getBaseURIInternal(uri, local);
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
-  store::Item* copy(
-      store::Item* parent,
-      const store::CopyMode& copymode) const;
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
-  store::Item* copy(
-      store::Item* parent,
-      csize pos,
-      const store::CopyMode& copymode) const;
+  virtual store::Item_t getNilled() const 
+  {
+    assert(!isConnectorNode());
+    return 0; 
+  }
 
-  virtual store::Item_t getNilled() const { return 0; }
+  virtual bool isId() const 
+  {
+    assert(!isConnectorNode());
+    return false;
+  }
 
-  virtual bool isId() const { return false; }
+  virtual bool isIdRefs() const 
+  {
+    assert(!isConnectorNode());
+    return false;
+  }
 
-  virtual bool isIdRefs() const { return false; }
-
-  bool isValidated() const { return getTree()->isValidated(); }
+  bool isValidated() const 
+  {
+    assert(!isConnectorNode());
+    return getTree()->isValidated();
+  }
 
   void markValidated()
   {
+    assert(!isConnectorNode());
     assert(theParent == NULL);
     getTree()->markValidated();
   }
@@ -454,26 +516,25 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos)
+  void setCollection(SimpleCollection* coll, xs_integer pos)
   {
+    assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
   }
 
-  ulong getCollectionId() const { return getTree()->getCollectionId(); }
+  ulong getCollectionId() const 
+  {
+    assert(!isConnectorNode());
+    return getTree()->getCollectionId(); 
+  }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
   void setParent(InternalNode* p) { theParent = p; }
 
+#ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
-
-  const zstring& getBaseUri() const { return getTree()->getBaseUri(); }
-
-  void setBaseUri(const zstring& uri) { getTree()->setBaseUri(uri); }
-
-  const zstring& getDocUri() const { return getTree()->getDocUri(); }
-
-  void setDocUri(const zstring& uri) { getTree()->setDocUri(uri); }
+#endif
 
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
@@ -496,40 +557,61 @@ public:
 
   void setFlags(uint32_t flags) { theFlags = flags; }
 
-  bool haveReference() const         { return (theFlags & HaveReference) != 0; }
-  void setHaveReference()            { theFlags |= HaveReference; }
-  void resetHaveReference()          { theFlags &= ~HaveReference; }
+  bool haveReference() const { return (theFlags & HaveReference) != 0; }
+
+  void setHaveReference() { theFlags |= HaveReference; }
+
+  void resetHaveReference() { theFlags &= ~HaveReference; }
+
+  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class ConnectorNode : public XmlNode
+{
+  friend class XmlNode;
 
 protected:
-  virtual void getBaseURIInternal(zstring& uri, bool& local) const;
+  XmlNode_t  theNode;
 
-  void attach(InternalNode* parent, csize pos);
+protected:
+  ConnectorNode(
+      XmlTree* tree,
+      InternalNode* parent,
+      const XmlNode* child);
 
-  void detach();
+public:
+  XmlNode* getNode() const { return theNode.getp(); }
 
-  void destroy(bool removeType);
+  store::Item* getNodeName() const { return theNode->getNodeName(); }
 
-  bool disconnect(csize& pos);
+  store::Item* getType() const { return theNode->getType(); }
 
-  void connect(InternalNode* node, csize pos);
+  zstring getStringValue() const { return theNode->getStringValue(); }
 
-#ifndef ZORBA_NO_FULL_TEXT
-  virtual void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
+  void getStringValue2(zstring& val) const { theNode->getStringValue2(val); }
 
-private:
-  void setTree(const XmlTree* t);
+  void appendStringValue(zstring& buf) const { theNode->appendStringValue(buf); }
 
-#ifndef TEXT_ORDPATH
-  long compareInSameTree(const XmlNode* n1, const XmlNode* n2) const;
-#endif
+  XmlNode* copyInternal(
+      InternalNode* rootParent,
+      InternalNode* parent,
+      csize pos,
+      const XmlNode* rootCopy,
+      const store::CopyMode& copyMode) const;
 
-  void destroyInternal(bool removeType);
+  zstring show() const;
 };
 
 
@@ -611,7 +693,6 @@ public:
 
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
-
 };
 
 
@@ -627,8 +708,10 @@ class InternalNode : public OrdPathNode
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class ConnectorNode;
   friend class UpdPut;
   friend class CollectionPul;
+  friend class SimpleStore;
 
 public:
   typedef std::vector<XmlNode*> NodeVector;
@@ -672,6 +755,7 @@ public:
   // SimpleStore Methods
   //
 
+  // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }
 
   csize numChildren() const { return theNodes.size() - theNumAttrs; }
@@ -692,7 +776,23 @@ public:
 
   const_reverse_iterator childrenREnd() const { return theNodes.rend() - theNumAttrs; }
 
-  XmlNode* getChild(csize i) const { return theNodes[theNumAttrs + i]; }
+  XmlNode* getChild(csize i) const 
+  {
+    XmlNode* child = theNodes[theNumAttrs + i];
+
+    if (child->isConnectorNode())
+      return static_cast<ConnectorNode*>(child)->getNode();
+
+    return child;
+  }
+
+  XmlNode* getChild(const_iterator& ite) const
+  {
+    if ((*ite)->isConnectorNode())
+      return static_cast<ConnectorNode*>(*ite)->getNode();
+
+    return *ite;
+  }
 
   csize numAttrs() const { return theNumAttrs; }
 
@@ -706,7 +806,24 @@ public:
 
   AttributeNode* getAttr(csize i) const
   {
-    return reinterpret_cast<AttributeNode*>(theNodes[i]);
+    XmlNode* attr = theNodes[i];
+
+    if (attr && attr->isConnectorNode())
+    {
+      return reinterpret_cast<AttributeNode*>
+             (static_cast<ConnectorNode*>(attr)->getNode());
+    }
+    return reinterpret_cast<AttributeNode*>(attr);
+  }
+
+  AttributeNode* getAttr(const_iterator& ite) const
+  {
+    if ((*ite) && (*ite)->isConnectorNode())
+    {
+      return reinterpret_cast<AttributeNode*>
+             (static_cast<ConnectorNode*>(*ite)->getNode());
+    }
+    return reinterpret_cast<AttributeNode*>(*ite);
   }
 
   void deleteChild(UpdDelete& upd);
@@ -726,7 +843,7 @@ public:
   void finalizeNode();
 
 protected:
-  csize findChild(XmlNode* child) const;
+  csize findChild(const XmlNode* child) const;
 
   void insertChild(XmlNode* child, csize pos);
 
@@ -735,6 +852,8 @@ protected:
   csize removeChild(XmlNode* child);
 
   void removeChildren(csize pos, csize numChildren);
+
+  void removeConnector(csize pos);
 
   csize findAttr(XmlNode* attr) const;
 
@@ -762,10 +881,14 @@ class DocumentNode : public InternalNode
   friend class NodeFactory;
 
 protected:
+  zstring  theBaseUri;
+  zstring  theDocUri;
+
+protected:
   DocumentNode(
       XmlTree* tree,
-      zstring& baseUri,
-      zstring& docUri);
+      const zstring& baseUri,
+      const zstring& docUri);
 
   DocumentNode();
 
@@ -776,7 +899,7 @@ public:
 
   store::Item* getType() const;
 
-  void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
+  void getDocumentURI(zstring& uri) const { uri = theDocUri; }
 
   store::Iterator_t getChildren() const;
 
@@ -806,6 +929,12 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copyMode) const;
+
+  const zstring& getBaseUri() const { return theBaseUri; }
+
+  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
+
+  void setDocUri(const zstring& uri) { theDocUri = uri; }
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -897,32 +1026,33 @@ public:
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
   void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
 
-  void setHaveValue()           { theFlags |= HaveTypedValue; }
-  void resetHaveValue()         { theFlags &= ~HaveTypedValue; }
-  bool haveValue() const        { return (theFlags & HaveTypedValue) != 0; }
-  void setHaveEmptyValue()      { theFlags |= HaveEmptyValue; }
-  void resetHaveEmptyValue()    { theFlags &= ~HaveEmptyValue; }
-  bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
+  void setHaveTypedValue()      { theFlags |= HaveTypedValue; }
+  void resetHaveTypedValue()    { theFlags &= ~HaveTypedValue; }
+  bool haveTypedValue() const   { return (theFlags & HaveTypedValue) != 0; }
+
+  void setHaveEmptyTypedValue()      { theFlags |= HaveEmptyTypedValue; }
+  void resetHaveEmptyTypedValue()    { theFlags &= ~HaveEmptyTypedValue; }
+  bool haveEmptyTypedValue() const   { return (theFlags & HaveEmptyTypedValue) != 0; }
 
   bool haveTypedTypedValue(TextNode*&) const;
 
   TextNode* getUniqueTextChild() const;
 
-  void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
+  void setInSubstGroup() { theFlags |= IsInSubstGroup; }
 
-  void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
+  void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
-  bool haveType() const         { return (theFlags & HaveType) != 0; }
+  bool haveType() const { return (theFlags & HaveType) != 0; }
 
-  void setHaveType()            { theFlags |= HaveType; }
+  void setHaveType() { theFlags |= HaveType; }
 
-  void resetHaveType()          { theFlags &= ~HaveType; }
+  void resetHaveType() { theFlags &= ~HaveType; }
 #endif
 
-  bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
+  bool isRecursive() const { return (theFlags & IsRecursive) != 0; }
 
-  void resetRecursive()         { theFlags &= ~IsRecursive; }
+  void resetRecursive() { theFlags &= ~IsRecursive; }
 
   void setRecursive()
   {
@@ -1180,7 +1310,7 @@ protected:
   TextNode() {}
 
 public:
-  ~TextNode()
+  virtual ~TextNode()
   {
     if (isTyped())
     {
@@ -1222,6 +1352,10 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
+
+#ifndef TEXT_ORDPATH
+  void getOrdPath(OrdPath& ordPath) const;
+#endif
 
   bool isTyped() const;
 
@@ -1448,8 +1582,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1495,8 +1629,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;

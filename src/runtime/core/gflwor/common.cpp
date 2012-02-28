@@ -43,11 +43,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(NonGroupingSpec)
 GroupingSpec::GroupingSpec(
     PlanIter_t inputVar,
     const std::vector<PlanIter_t>& varRefs,
-    const std::string& collation)
+    const std::string& collation,
+    bool doFastComparison)
   :
   theInput(inputVar),
   theCollation(collation),
-  theCollator(NULL)
+  theCollator(NULL),
+  theDoFastComparison(doFastComparison)
 {
   castIterVector<ForVarIterator>(theVarRefs, varRefs);
 }
@@ -59,6 +61,7 @@ void GroupingSpec::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarRefs;
   ar & theCollation;
   ar & theCollator;
+  ar & theDoFastComparison;
 }
 
 
@@ -170,7 +173,7 @@ GroupTupleCmp::GroupTupleCmp(
     const QueryLoc& loc,
     dynamic_context* dctx,
     const TypeManager* tm,
-    std::vector<GroupingSpec>* groupingSpecs) 
+    std::vector<GroupingSpec>* groupingSpecs)
   :
   theLocation(loc),
   theGroupingSpecs(groupingSpecs),
@@ -184,14 +187,15 @@ uint32_t GroupTupleCmp::hash(GroupTuple* t) const
 {
   uint32_t hash = 0;
 
-  ulong numCols = (ulong)theGroupingSpecs->size();
+  std::vector<store::Item_t>::const_iterator ite = t->theTypedValues.begin();
+  std::vector<store::Item_t>::const_iterator end = t->theTypedValues.end();
+  std::vector<GroupingSpec>::const_iterator ite2 = theGroupingSpecs->begin();
 
-  for (ulong i = 0; i < numCols; i++)
+  for (; ite != end; ++ite, ++ite2)
   {
-    if (t->theTypedValues[i] != NULL)
+    if (*ite)
     {
-      hash += t->theTypedValues[i]->hash(theTimezone,
-                                         (*theGroupingSpecs)[i].theCollator);
+      hash += (*ite)->hash(theTimezone, (*ite2).theCollator);
     }
   }
 
@@ -204,51 +208,65 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
   assert(theGroupingSpecs->size() == t1->theTypedValues.size());
   assert(t2->theTypedValues.size() == t1->theTypedValues.size());
 
+  std::vector<store::Item_t>::const_iterator end1 = t1->theTypedValues.end();
   std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedValues.begin();
   std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedValues.begin();
-  std::vector<store::Item_t>::const_iterator end = t1->theTypedValues.end();
-  long i = 0;
+  std::vector<GroupingSpec>::const_iterator iter3 = theGroupingSpecs->begin();
 
-  while(iter1 != end)
+  while (iter1 != end1)
   {
-    if(*iter1 == NULL)
+    const store::Item* item1 = (*iter1).getp();
+    const store::Item* item2 = (*iter2).getp();
+
+    if (item1 == NULL)
     {      
-      if(*iter2 != NULL)
+      if (item2 != NULL)
       {
         return false;
       }
     }
-    else if(*iter2 == NULL)
+    else if (item2 == NULL)
     {
       return false;
     }
     else
     {
-      store::Item_t item1 = *iter1;
-      store::Item_t item2 = *iter2;
-
       try
       {
-        if (!CompareIterator::valueEqual(theLocation,
-                                         item1,
-                                         item2,
-                                         theTypeManager,
-                                         theTimezone,
-                                         (*theGroupingSpecs)[i].theCollator))
+        if ((*iter3).theDoFastComparison)
         {
-          return false;                                 
+          if (!item1->equals(item2, theTimezone, (*iter3).theCollator))
+          {
+            return false;
+          }
+        }
+        else
+        {
+          store::Item_t tmp1 = (*iter1);
+          store::Item_t tmp2 = (*iter2);
+
+          if (!CompareIterator::valueEqual(theLocation,
+                                           tmp1,
+                                           tmp2,
+                                           theTypeManager,
+                                           theTimezone,
+                                           (*iter3).theCollator))
+          {
+            return false;                                 
+          }
         }
       }
       catch (ZorbaException const& e)
       {
-        if (e.diagnostic() == err::XPTY0004)
+        if (e.diagnostic() == err::XPTY0004 ||
+            e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
           return false;
         else
           throw;
       }
     }
     
-    ++i;
+    ++iter3;
     ++iter1;
     ++iter2;
   }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -69,7 +69,7 @@ PlanIter_t codegen(CompilerCB* cb,                        \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder& ann) const;          \
+                   expr& ann) const;                      \
 
 
 #define CODEGEN_DEF(class)                                \
@@ -77,7 +77,7 @@ PlanIter_t class::codegen(CompilerCB* aCb,                \
                           static_context* aSctx,          \
                           const QueryLoc& aLoc,           \
                           std::vector<PlanIter_t>& aArgs, \
-                          AnnotationHolder& aAnn) const
+                          expr& aAnn) const
 
 
 #define DEFAULT_NARY_CODEGEN(Iter)                        \
@@ -85,7 +85,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv);                       \
 }
@@ -96,7 +96,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv[0], argv[1]);           \
 }
@@ -107,7 +107,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc, argv[0]);                    \
 }
@@ -118,14 +118,14 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
-                   AnnotationHolder &/*ann*/) const       \
+                   expr&/*ann*/) const                    \
 {                                                         \
   return new Iter(sctx, loc);                             \
 }
 
 
 
-namespace zorba 
+namespace zorba
 {
 
 static inline store::Item_t createQName(

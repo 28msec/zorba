@@ -17,15 +17,170 @@
 
 #include <algorithm>
 
-#include "store/naive/simple_index_value.h"
+#include "simple_index_value.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
+
+#include "zorbatypes/collation_manager.h"
 
 namespace zorba 
 { 
 
 namespace simplestore 
 {
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ValueIndexCompareFunction                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+********************************************************************************/
+ValueIndexCompareFunction::ValueIndexCompareFunction(
+     csize numCols,
+     long timezone,
+     const std::vector<std::string>& collations)
+  :
+  theNumColumns(numCols),
+  theTimezone(timezone)
+{
+  theCollators.resize(theNumColumns);
+
+  for (csize i = 0; i < theNumColumns; ++i)
+  {
+    if (!collations[i].empty())
+    {
+      theCollators[i] = CollationFactory::createCollator(collations[i]);
+    }
+    else
+    {
+      theCollators[i] = NULL;
+    }
+  }
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+ValueIndexCompareFunction::~ValueIndexCompareFunction()
+{
+  for (csize i = 0; i < theCollators.size(); ++i)
+  {
+    if (theCollators[i])
+      delete theCollators[i]; 
+  }
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+uint32_t ValueIndexCompareFunction::hash(const store::IndexKey* key) const
+{
+  uint32_t hval = FNV_32_INIT;
+
+  for (csize i = 0; i < theNumColumns; ++i)
+  {
+    if ((*key)[i] == NULL)
+      continue;
+
+    hval = hashfun::h32<uint32_t>((*key)[i]->hash(theTimezone, theCollators[i]),
+                                  hval);
+  }
+
+  return hval;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+bool ValueIndexCompareFunction::equal(
+    const store::IndexKey* key1,
+    const store::IndexKey* key2) const
+{
+  for (csize i = 0; i < theNumColumns; ++i)
+  {
+    const store::Item_t& i1 = (*key1)[i];
+    const store::Item_t& i2 = (*key2)[i];
+
+    if (i1 == NULL && i2 == NULL)
+      continue;
+
+    if (i1 == NULL || i2 == NULL)
+      return false;
+
+    if (! (*key1)[i]->equals((*key2)[i].getp(), theTimezone, theCollators[i]))
+      return false;
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+long ValueIndexCompareFunction::compare(
+    const store::IndexKey* key1,
+    const store::IndexKey* key2) const
+{
+  long result;
+
+  csize size = std::min(key1->size(),  key2->size());
+
+  for (csize i = 0; i < size; i++)
+  {
+    const store::Item_t& i1 = (*key1)[i];
+    const store::Item_t& i2 = (*key2)[i];
+
+    if (i1 == NULL)
+    {
+      if (i2 != NULL)
+        return -1;
+    }
+    else if (i2 == NULL)
+    {
+      if (i1 != NULL)
+        return +1;
+    }
+    else if (i1 == IndexConditionImpl::theNegInf)
+    {
+      return -1;
+    }
+    else if (i1 == IndexConditionImpl::thePosInf)
+    {
+      return +1;
+    }
+    else if (i2 == IndexConditionImpl::theNegInf)
+    {
+      return +1;
+    }
+    else if (i2 == IndexConditionImpl::thePosInf)
+    {
+      return -1;
+    }
+    else if ((result = i1->compare(i2, theTimezone, theCollators[i])))
+    {
+      return result;
+    }
+  }
+
+  return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Value Index                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
@@ -35,8 +190,26 @@ ValueIndex::ValueIndex(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(qname, spec)
+  IndexImpl(qname, spec),
+  theCompFunction(getNumColumns(), spec.theTimezone, spec.theCollations)
 {
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+ValueIndex::~ValueIndex()
+{
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+const XQPCollator* ValueIndex::getCollator(ulong i) const 
+{
+  return theCompFunction.getCollator(i);
 }
 
 
@@ -108,7 +281,6 @@ ValueHashIndex::ValueHashIndex(
     const store::IndexSpecification& spec)
   :
   ValueIndex(qname, spec),
-  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theMap(theCompFunction, 1024, spec.theIsThreadSafe)
 {
 }
@@ -165,10 +337,7 @@ store::Index::KeyIterator_t ValueHashIndex::keys() const
   in the index already, then the key itself is inserted as well. Return true
   if the key was already in the index, false otherwise
 ********************************************************************************/
-bool ValueHashIndex::insert(
-    store::IndexKey*& key,
-    store::Item_t& value,
-    bool multikey)
+bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
@@ -278,21 +447,11 @@ bool ValueHashIndex::remove(
 ********************************************************************************/
 void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 {
-  if (cond->getKind() != store::IndexCondition::POINT_VALUE)
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-    ERROR_PARAMS(cond->getKindString(), theIndex->getName()->getStringValue()));
-  }
-
-  theCondition = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
+  theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
 
-  if (key->size() != theIndex->getNumColumns())
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-    ERROR_PARAMS(key->toString(), theIndex->getName()->getStringValue()));
-  }
+  assert(key->size() == theIndex->getNumColumns());
 
   theIndex->theMap.get(key, theResultSet);
 
@@ -392,7 +551,6 @@ ValueTreeIndex::ValueTreeIndex(
     const store::IndexSpecification& spec)
   :
   ValueIndex(qname, spec),
-  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theMap(theCompFunction)
 {
 }
@@ -446,10 +604,7 @@ store::Index::KeyIterator_t ValueTreeIndex::keys() const
 /******************************************************************************
 
 ********************************************************************************/
-bool ValueTreeIndex::insert(
-    store::IndexKey*& key, 
-    store::Item_t& value,
-    bool multikey)
+bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
@@ -565,7 +720,7 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (cond->getKind() == store::IndexCondition::POINT_VALUE)
   {
-    thePointCond = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
+    thePointCond = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
     initExact();
   }
@@ -585,11 +740,7 @@ void ProbeValueTreeIndexIterator::initExact()
 {
   const store::IndexKey& key = thePointCond->theKey;
 
-  if (key.size() != theIndex->getNumColumns())
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-    ERROR_PARAMS(key.toString(), theIndex->getName()->getStringValue()));
-  }
+  assert(key.size() == theIndex->getNumColumns());
 
   theMapBegin = theIndex->theMap.find(&key);
 
@@ -612,18 +763,7 @@ void ProbeValueTreeIndexIterator::initBox()
 {
   ulong numRanges = theBoxCond->numRanges();
 
-  if (numRanges == 0)
-  {
-    theMapBegin = theIndex->theMap.begin();
-    theMapEnd = theIndex->theMap.end();
-    return;
-  }
-
-  if (numRanges > theIndex->getNumColumns())
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
-    ERROR_PARAMS(theIndex->getName()->getStringValue(), ZED(BoxCondTooManyColumns)));
-  }
+  assert(numRanges > 0 && numRanges <= theIndex->getNumColumns());
 
   theDoExtraFiltering = (numRanges > 1);
 
@@ -637,7 +777,7 @@ void ProbeValueTreeIndexIterator::initBox()
   store::IndexKey& lowerBounds = theBoxCond->theLowerBounds;
   store::IndexKey& upperBounds = theBoxCond->theUpperBounds;
 
-  const std::vector<IndexBoxCondition::RangeFlags>& flags = 
+  const std::vector<IndexConditionImpl::RangeFlags>& flags = 
     theBoxCond->theRangeFlags;
 
   //
@@ -681,13 +821,13 @@ void ProbeValueTreeIndexIterator::initBox()
     if (haveLowerBound)
     {
       if (!flags[i].theHaveLowerBound)
-        lowerBounds[i] = IndexBoxCondition::theNegInf;
+        lowerBounds[i] = IndexConditionImpl::theNegInf;
     }
 
     if (haveUpperBound)
     {
       if (!flags[i].theHaveUpperBound)
-        upperBounds[i] = IndexBoxCondition::thePosInf;
+        upperBounds[i] = IndexConditionImpl::thePosInf;
     }
 
     if (flags[i].theHaveLowerBound && flags[i].theHaveUpperBound)
@@ -697,12 +837,8 @@ void ProbeValueTreeIndexIterator::initBox()
       if (comp > 0 || 
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
-        throw ZORBA_EXCEPTION(
-          zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
-          ERROR_PARAMS(
-            theIndex->getName()->getStringValue(), theBoxCond->toString()
-          )
-        );
+        theMapBegin = theMapEnd = theIndex->theMap.end();
+        return;
       }
     }
   }

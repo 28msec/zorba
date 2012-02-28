@@ -27,11 +27,15 @@ namespace zorba {
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
+class DynamicLoader;
 
-namespace impl {
+namespace internal {
 class HTTPURLResolver;
 class FileURLResolver;
 class AutoFSURIMapper;
+#ifndef ZORBA_NO_FULL_TEXT
+class ThesaurusURLResolver;
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 namespace store {
@@ -44,22 +48,29 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
 {
 private:
 
-  static GlobalEnvironment    * m_globalEnv;
+  static GlobalEnvironment        * m_globalEnv;
 
 private:
-  store::Store                * m_store;
+  store::Store                    * m_store;
 
-  root_static_context         * m_rootStaticContext;
+  RootTypeManager                 * theRootTypeManager;
 
-  XQueryCompilerSubsystem     * m_compilerSubSys;
+  root_static_context             * theRootStaticContext;
+
+  XQueryCompilerSubsystem         * m_compilerSubSys;
 
 #ifdef ZORBA_XQUERYX
-  XQueryXConvertor            * xqueryx_convertor;
+  XQueryXConvertor                * xqueryx_convertor;
 #endif
 
-  impl::HTTPURLResolver  * m_http_resolver;
-  impl::FileURLResolver  * m_file_resolver;
-  impl::AutoFSURIMapper  * m_autofs_mapper;
+  internal::HTTPURLResolver       * m_http_resolver;
+  internal::FileURLResolver       * m_file_resolver;
+  internal::AutoFSURIMapper       * m_autofs_mapper;
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::ThesaurusURLResolver  * m_thesaurus_resolver;
+#endif /* ZORBA_NO_FULL_TEXT */
+
+  mutable DynamicLoader           * m_dynamic_loader;
 
 public:
 
@@ -78,11 +89,11 @@ public:
 public:
   ~GlobalEnvironment();
 
-  RootTypeManager& getRootTypeManager();
+  RootTypeManager& getRootTypeManager() const;
 
-  static_context& getRootStaticContext();
+  static_context& getRootStaticContext() const;
 
-  bool isRootStaticContextInitialized();
+  bool isRootStaticContextInitialized() const;
 
   XQueryCompilerSubsystem& getCompilerSubsystem();
 
@@ -92,11 +103,17 @@ public:
 
   store::IteratorFactory* getIteratorFactory();
 
-  impl::HTTPURLResolver* getHTTPURLResolver() const { return m_http_resolver; }
+  internal::HTTPURLResolver* getHTTPURLResolver() const { return m_http_resolver; }
 
-  impl::FileURLResolver* getFileURLResolver() const { return m_file_resolver; }
+  internal::FileURLResolver* getFileURLResolver() const { return m_file_resolver; }
 
-  impl::AutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
+  internal::AutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::ThesaurusURLResolver* getThesaurusURLResolver() const { return m_thesaurus_resolver; }
+#endif /* ZORBA_NO_FULL_TEXT */
+
+  DynamicLoader* getDynamicLoader() const;
 
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();
@@ -108,8 +125,8 @@ private:
   void init_icu();
 
   void cleanup_icu();
-
 };
+
 
 #define GENV GlobalEnvironment::getInstance()
 
@@ -124,6 +141,8 @@ private:
 #define GENV_ITERATOR_FACTORY GlobalEnvironment::getInstance().getIteratorFactory()
 
 #define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
+
+#define GENV_DYNAMIC_LOADER GlobalEnvironment::getInstance().getDynamicLoader()
 
 }
 

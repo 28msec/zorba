@@ -56,6 +56,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
+#include "runtime/collections/collections_impl.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -186,24 +187,23 @@ void PrinterVisitor::endVisit(const SelfAxisIterator&)
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const TreatIterator& a ) 
+void PrinterVisitor::beginVisit ( const TreatIterator& a )
 {
   thePrinter.startBeginVisit("TreatIterator", ++theId);
   if (a.theCheckPrime)
     thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
-  thePrinter.addAttribute("quant", TypeOps::decode_quantifier
-      (a.theQuantifier));
+  thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit ( const TreatIterator& ) 
+void PrinterVisitor::endVisit ( const TreatIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) 
+void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a )
 {
   thePrinter.startBeginVisit("NumArithIterator_AddOperation", ++theId);
   printCommons( &a, theId );
@@ -336,7 +336,7 @@ void PrinterVisitor::endVisit ( const GenericArithIterator<ModOperation>& ) {
 }
 
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    TypeConstants::XS_DECIMAL>& a)
+                    store::XS_DECIMAL>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DECIMAL",
                              ++theId);
@@ -344,7 +344,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    TypeConstants::XS_INTEGER>& a)
+                    store::XS_INTEGER>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_INTEGER",
                              ++theId);
@@ -352,7 +352,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    TypeConstants::XS_FLOAT>& a)
+                    store::XS_FLOAT>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_FLOAT",
                              ++theId);
@@ -360,7 +360,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    TypeConstants::XS_DOUBLE>& a)
+                    store::XS_DOUBLE>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DOUBLE",
                              ++theId);
@@ -369,7 +369,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                    TypeConstants::XS_DECIMAL>& a)
+                    store::XS_DECIMAL>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DECIMAL",
                              ++theId);
@@ -379,7 +379,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DECIMAL",
 
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                    TypeConstants::XS_INTEGER>& a)
+                    store::XS_INTEGER>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_INTEGER",
                              ++theId);
@@ -388,7 +388,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_INTEGER",
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                    TypeConstants::XS_FLOAT>& a)
+                    store::XS_FLOAT>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_FLOAT",
                              ++theId);
@@ -397,7 +397,7 @@ SpecificNumArithIterator<SubtractOperation,
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                    TypeConstants::XS_DOUBLE>& a)
+                    store::XS_DOUBLE>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DOUBLE",
                              ++theId);
@@ -406,7 +406,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DOUBLE",
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                    TypeConstants::XS_DECIMAL>& a)
+                    store::XS_DECIMAL>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DECIMAL",
                              ++theId);
@@ -415,7 +415,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DECIMAL",
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                    TypeConstants::XS_INTEGER>& a)
+                    store::XS_INTEGER>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_INTEGER",
                              ++theId);
@@ -425,7 +425,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_INTEGER",
 
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                    TypeConstants::XS_FLOAT>& a)
+                    store::XS_FLOAT>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_FLOAT",
                              ++theId);
@@ -434,7 +434,7 @@ SpecificNumArithIterator<MultiplyOperation,
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                    TypeConstants::XS_DOUBLE>& a)
+                    store::XS_DOUBLE>& a)
 {
 thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DOUBLE",
                              ++theId);
@@ -443,7 +443,7 @@ thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DOUBLE",
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<DivideOperation,
-                    TypeConstants::XS_DECIMAL>& a)
+                    store::XS_DECIMAL>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DECIMAL",
                              ++theId);
@@ -452,7 +452,7 @@ SpecificNumArithIterator<DivideOperation,
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<DivideOperation,
-                    TypeConstants::XS_INTEGER>& a)
+                    store::XS_INTEGER>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_INTEGER",
                              ++theId);
@@ -461,7 +461,7 @@ SpecificNumArithIterator<DivideOperation,
 }
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<DivideOperation,
-                    TypeConstants::XS_FLOAT>& a)
+                    store::XS_FLOAT>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_FLOAT",
                              ++theId);
@@ -471,7 +471,7 @@ SpecificNumArithIterator<DivideOperation,
 
 void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<DivideOperation,
-                    TypeConstants::XS_DOUBLE>& a)
+                    store::XS_DOUBLE>& a)
 {
 
   thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DOUBLE",
@@ -480,7 +480,7 @@ SpecificNumArithIterator<DivideOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    TypeConstants::XS_DECIMAL>& a)
+                    store::XS_DECIMAL>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DECIMAL",
                              ++theId);
@@ -488,7 +488,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    TypeConstants::XS_INTEGER>& a)
+                    store::XS_INTEGER>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_INTEGER",
                              ++theId);
@@ -496,7 +496,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    TypeConstants::XS_FLOAT>& a)
+                    store::XS_FLOAT>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_FLOAT",
                              ++theId);
@@ -504,7 +504,7 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
   thePrinter.endBeginVisit(theId);
 }
 void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    TypeConstants::XS_DOUBLE>& a)
+                    store::XS_DOUBLE>& a)
 {
   thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DOUBLE",
                              ++theId);
@@ -513,32 +513,32 @@ void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
 }
 
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  TypeConstants::XS_DECIMAL>& )
+                  store::XS_DECIMAL>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  TypeConstants::XS_INTEGER>& )
+                  store::XS_INTEGER>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  TypeConstants::XS_FLOAT>& )
+                  store::XS_FLOAT>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  TypeConstants::XS_DOUBLE>& )
+                  store::XS_DOUBLE>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                    TypeConstants::XS_DECIMAL>& )
+                    store::XS_DECIMAL>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -546,35 +546,35 @@ SpecificNumArithIterator<SubtractOperation,
 
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                  TypeConstants::XS_INTEGER>& )
+                  store::XS_INTEGER>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                  TypeConstants::XS_FLOAT>& )
+                  store::XS_FLOAT>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<SubtractOperation,
-                  TypeConstants::XS_DOUBLE>& )
+                  store::XS_DOUBLE>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                  TypeConstants::XS_DECIMAL>& )
+                  store::XS_DECIMAL>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                  TypeConstants::XS_INTEGER>& )
+                  store::XS_INTEGER>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -582,63 +582,63 @@ SpecificNumArithIterator<MultiplyOperation,
 
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                  TypeConstants::XS_FLOAT>& )
+                  store::XS_FLOAT>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const
 SpecificNumArithIterator<MultiplyOperation,
-                  TypeConstants::XS_DOUBLE>& )
+                  store::XS_DOUBLE>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  TypeConstants::XS_DECIMAL>& )
+                  store::XS_DECIMAL>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  TypeConstants::XS_INTEGER>& )
+                  store::XS_INTEGER>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  TypeConstants::XS_FLOAT>& )
+                  store::XS_FLOAT>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  TypeConstants::XS_DOUBLE>& )
+                  store::XS_DOUBLE>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  TypeConstants::XS_DECIMAL>& )
+                  store::XS_DECIMAL>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  TypeConstants::XS_INTEGER>& )
+                  store::XS_INTEGER>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  TypeConstants::XS_FLOAT>& )
+                  store::XS_FLOAT>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  TypeConstants::XS_DOUBLE>& )
+                  store::XS_DOUBLE>& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -680,8 +680,8 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
-  if (a.getTargetPos() > 0)
-    thePrinter.addAttribute("targetPos", a.getTargetPos());
+  if (a.getTargetPos() > Integer(0))
+    thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
 
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
@@ -817,11 +817,13 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " <<
-      inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -852,10 +854,13 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  if (! Properties::instance()->noTreeIds())
+    str1 << inputVar.getp();
+
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -905,7 +910,10 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     ForVarIterator* iter = static_cast<ForVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : ";
+
+    if (! Properties::instance()->noTreeIds())
+      str1 <<  iter;
   }
   else
   {
@@ -913,11 +921,14 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     LetVarIterator* iter = static_cast<LetVarIterator*>(inputVar.getp());
 
-    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+    str1 << iter->getVarName()->getStringValue() << " : " ;
+
+    if (! Properties::instance()->noTreeIds())
+      str1 << iter;
   }
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1116,7 +1127,7 @@ void PrinterVisitor::endVisitFlworReturn(const PlanIterator& )
 }
 
 
-void PrinterVisitor::beginVisit(const CastIterator& a) 
+void PrinterVisitor::beginVisit(const CastIterator& a)
 {
   thePrinter.startBeginVisit("CastIterator", ++theId);
   std::ostringstream lStream;
@@ -1126,12 +1137,14 @@ void PrinterVisitor::beginVisit(const CastIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastIterator&) {
+void PrinterVisitor::endVisit(const CastIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const PromoteIterator& a) {
+void PrinterVisitor::beginVisit(const PromoteIterator& a) 
+{
   thePrinter.startBeginVisit("PromoteIterator", ++theId);
   std::ostringstream lStream;
   TypeOps::serialize(lStream, *a.thePromoteType);
@@ -1140,12 +1153,14 @@ void PrinterVisitor::beginVisit(const PromoteIterator& a) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const PromoteIterator&) {
+void PrinterVisitor::endVisit(const PromoteIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const CastableIterator& a) {
+void PrinterVisitor::beginVisit(const CastableIterator& a) 
+{
   thePrinter.startBeginVisit("CastableIterator", ++theId);
   std::ostringstream lStream;
   TypeOps::serialize(lStream, *a.theCastType);
@@ -1154,26 +1169,26 @@ void PrinterVisitor::beginVisit(const CastableIterator& a) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastableIterator&) 
+void PrinterVisitor::endVisit(const CastableIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const FTContainsIterator& a) 
+void PrinterVisitor::beginVisit(const FTContainsIterator& a)
 {
   thePrinter.startBeginVisit("FTContainsIterator", ++theId);
   // TODO
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const FTContainsIterator&) 
+void PrinterVisitor::endVisit(const FTContainsIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) 
+void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a)
 {
   thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
@@ -1181,7 +1196,7 @@ void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const flwor::OuterForIterator&) 
+void PrinterVisitor::endVisit(const flwor::OuterForIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -1189,13 +1204,13 @@ void PrinterVisitor::endVisit(const flwor::OuterForIterator&)
 
 
 #define TYPED_VAL_CMP( xqt )                                            \
-void PrinterVisitor::beginVisit(const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
+void PrinterVisitor::beginVisit(const TypedValueCompareIterator<store::XS_##xqt>& a){\
     thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \
     printCommons( &a, theId );                                          \
     thePrinter.endBeginVisit(theId);                                    \
 }                                                                     \
                                                                         \
-void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
+void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& a){\
     thePrinter.startEndVisit();                                         \
     thePrinter.endEndVisit();                                           \
 }
@@ -1208,14 +1223,63 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
 
 #undef TYPED_VAL_CMP
 
-  PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
+  void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
+  {
+    thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
+    printCommons(  &a, theId );
+    if (a.isCached())
+    {
+      thePrinter.addAttribute("cached", "true");
+    }
+    thePrinter.endBeginVisit( theId);
+  }
+
+  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   PRINTER_VISITOR_DEFINITION (ExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (OrIterator)
   PRINTER_VISITOR_DEFINITION (AndIterator)
   PRINTER_VISITOR_DEFINITION (CompareIterator)
   PRINTER_VISITOR_DEFINITION (AtomicValuesEquivalenceIterator)
-  PRINTER_VISITOR_DEFINITION (ElementIterator)
+
+  void PrinterVisitor::beginVisit(const DocumentIterator& a)
+  {
+    thePrinter.startBeginVisit("DocumentIterator", ++theId);
+    if (!a.copyInputNodes())
+    {
+      thePrinter.addAttribute("copyInputNodes", "false");
+    }
+    printCommons(&a, theId);
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const DocumentIterator&)
+  {                            
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit(); 
+  }
+
+  void PrinterVisitor::beginVisit(const ElementIterator& a)
+  {
+    thePrinter.startBeginVisit("ElementIterator", ++theId);
+    if (!a.copyInputNodes())
+    {
+      thePrinter.addAttribute("copyInputNodes", "false");
+    }
+    printCommons(&a, theId);
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const ElementIterator&)
+  {                            
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit(); 
+  }
 
   void PrinterVisitor::beginVisit(const AttributeIterator& a)
   {
@@ -1234,8 +1298,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
     thePrinter.endEndVisit();
   }
 
-  PRINTER_VISITOR_DEFINITION (DocumentIterator)
-  PRINTER_VISITOR_DEFINITION (DocumentContentIterator)
   PRINTER_VISITOR_DEFINITION (CommentIterator)
   PRINTER_VISITOR_DEFINITION (PiIterator)
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
@@ -1389,5 +1451,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
+
+  PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
 }
 /* vim:set et sw=2 ts=2: */

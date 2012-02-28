@@ -24,7 +24,7 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-class  UpdateConsts
+class UpdateConsts
 {
 public:
   typedef enum
@@ -66,6 +66,7 @@ public:
     UP_RENAME_PI,
     UP_SET_ATTRIBUTE_TYPE,
     UP_SET_ELEMENT_TYPE,
+    UP_REVALIDATE,
     UP_PUT,
 
     // collection primitives
@@ -206,6 +207,8 @@ static std::string toString(UpdPrimKind k)
       return "setAttributeType";
     case UP_SET_ELEMENT_TYPE:
       return "setElementType";
+    case UP_REVALIDATE:
+      return "revalidate";
     default:
       return "unknownUpdatePrimitive";
   }

@@ -18,6 +18,7 @@
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 
@@ -342,13 +343,14 @@ MaterializeClause::MaterializeClause(
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theLocation;
-  ar & theOrderSpecs;
-  ar & theStable;
 
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
   ar & theOutputLetVarsRefs;
+
+  ar & theOrderSpecs;
+  ar & theStable;
 }
 
 
@@ -710,7 +712,7 @@ void FlworState::init(
 {
   PlanIteratorState::init(planState);
 
-  ulong numVars = (ulong)forletClauses.size();
+  csize numVars = forletClauses.size();
   std::vector<long> v(numVars, 0);
   theVarBindingState.swap(v);
   assert(theVarBindingState.size() > 0);
@@ -774,7 +776,7 @@ void FlworState::reset(PlanState& planState)
 
   assert(theVarBindingState.size() > 0);
 
-  size_t size = theVarBindingState.size();
+  csize size = theVarBindingState.size();
 
   ::memset(&theVarBindingState[0], 0, size * sizeof(long));
 
@@ -804,9 +806,9 @@ void FlworState::reset(PlanState& planState)
 ********************************************************************************/
 void FlworState::clearSortTable()
 {
-  ulong numTuples = (ulong)theSortTable.size();
+  csize numTuples = theSortTable.size();
 
-  for (ulong i = 0; i < numTuples; ++i)
+  for (csize i = 0; i < numTuples; ++i)
   {
     theSortTable[i].clear();
   }
@@ -1236,7 +1238,7 @@ bool FLWORIterator::bindVariable(
     }
 
     store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
-    tmpSeq->init(iterState->theTempSeqIters[varNo], false);
+    tmpSeq->init(iterState->theTempSeqIters[varNo]);
 
     std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
@@ -1290,17 +1292,17 @@ void FLWORIterator::materializeStreamTuple(
 
   FlworState::TuplesTable& tuplesTable = iterState->theTuplesTable;
 
-  ulong numTuples = (ulong)tuplesTable.size();
+  csize numTuples = tuplesTable.size();
   tuplesTable.resize(numTuples + 1);
 
-  ulong numForVars = (ulong)theMaterializeClause->theInputForVars.size();
-  ulong numLetVars = (ulong)theMaterializeClause->theInputLetVars.size();
+  csize numForVars = theMaterializeClause->theInputForVars.size();
+  csize numLetVars = theMaterializeClause->theInputLetVars.size();
 
   StreamTuple& streamTuple = tuplesTable[numTuples];
   streamTuple.theItems.resize(numForVars);
   streamTuple.theSequences.resize(numLetVars);
 
-  for (ulong i = 0;  i < numForVars; ++i)
+  for (csize i = 0;  i < numForVars; ++i)
   {
     store::Item_t forItem;
     consumeNext(forItem,
@@ -1312,14 +1314,12 @@ void FLWORIterator::materializeStreamTuple(
     theMaterializeClause->theInputForVars[i]->reset(planState);
   }
 
-  for (ulong i = 0; i < numLetVars; ++i)
+  for (csize i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
-    const PlanIter_t    var_plan = theMaterializeClause->theInputLetVars[i];
-    createTempSeq(letTempSeq,
-                  var_plan,
-                  planState,
-                  false);
+    const PlanIter_t var_plan = theMaterializeClause->theInputLetVars[i];
+
+    createTempSeq(letTempSeq, var_plan, planState, false);
 
     streamTuple.theSequences[i].transfer(letTempSeq);
 
@@ -1329,7 +1329,7 @@ void FLWORIterator::materializeStreamTuple(
   // Create the sort tuple
 
   std::vector<OrderSpec>& orderSpecs = theMaterializeClause->theOrderSpecs;
-  ulong numSpecs = (ulong)orderSpecs.size();
+  csize numSpecs = orderSpecs.size();
 
   if (numSpecs == 0)
     return;
@@ -1340,7 +1340,7 @@ void FLWORIterator::materializeStreamTuple(
   std::vector<store::Item*>& sortTuple = sortTable[numTuples].theKeyValues;
   sortTuple.resize(numSpecs);
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
@@ -1350,9 +1350,8 @@ void FLWORIterator::materializeStreamTuple(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, theMaterializeClause->theLocation,
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -1383,19 +1382,19 @@ void FLWORIterator::materializeSortTupleAndResult(
   FlworState::SortTable& sortTable = iterState->theSortTable;
   FlworState::ResultTable& resultTable = iterState->theResultTable;
 
-  ulong numTuples = (ulong)sortTable.size();
+  csize numTuples = sortTable.size();
   sortTable.resize(numTuples + 1);
   resultTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
   std::vector<OrderSpec>& orderSpecs = theOrderByClause->theOrderSpecs;
-  ulong numSpecs = (ulong)orderSpecs.size();
+  csize numSpecs = orderSpecs.size();
 
   std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
   sortKey.resize(numSpecs);
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
@@ -1405,9 +1404,8 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation, 
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -1421,7 +1419,7 @@ void FLWORIterator::materializeSortTupleAndResult(
   sortTable[numTuples].theDataPos = numTuples;
 
   store::Iterator_t iterWrapper = new PlanIteratorWrapper(theReturnClause, planState);
-  store::TempSeq_t resultSeq = GENV_STORE.createTempSeq(iterWrapper, false, false);
+  store::TempSeq_t resultSeq = GENV_STORE.createTempSeq(iterWrapper, false);
   store::Iterator_t resultIter = resultSeq->getIterator();
 
   resultTable[numTuples].transfer(resultIter);
@@ -1474,9 +1472,9 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            throw XQUERY_EXCEPTION(err::XPTY0004,
-                                   ERROR_PARAMS(ZED(SingletonExpected_2o),
-                                                ZED(AtomizationHasMoreThanOneValue)));
+            RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
+            ERROR_PARAMS(ZED(SingletonExpected_2o),
+                         ZED(AtomizationHasMoreThanOneValue)));
           }
         }
       }
@@ -1485,9 +1483,8 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
 
@@ -1499,16 +1496,16 @@ void FLWORIterator::materializeGroupTuple(
 
   std::vector<NonGroupingSpec> nongroupingSpecs = theGroupByClause->theNonGroupingSpecs;
   std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
-  ulong numNonGroupingSpecs = (ulong)nongroupingSpecs.size();
+  csize numNonGroupingSpecs = nongroupingSpecs.size();
 
   if (groupMap->get(groupTuple, nongroupVarSequences))
   {
-    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
+    for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
-      new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
-                                                              planState);
-      (*nongroupVarSequences)[i]->append(iterWrapper, true);
+      new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
+
+      (*nongroupVarSequences)[i]->append(iterWrapper);
 
       nongroupingSpecs[i].reset(planState);
     }
@@ -1519,12 +1516,12 @@ void FLWORIterator::materializeGroupTuple(
   {
     nongroupVarSequences = new std::vector<store::TempSeq_t>();
 
-    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
+    for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
-      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, true, false);
+      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false);
 
       nongroupVarSequences->push_back(result);
 
@@ -1548,18 +1545,18 @@ void FLWORIterator::rebindStreamTuple(
   StreamTuple& streamTuple = 
   iterState->theTuplesTable[tuplePos];
 
-  ulong numForVarsRefs = (ulong)theMaterializeClause->theOutputForVarsRefs.size();
+  csize numForVarsRefs = theMaterializeClause->theOutputForVarsRefs.size();
 
-  for (ulong i = 0; i < numForVarsRefs; ++i)
+  for (csize i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i],
                   theMaterializeClause->theOutputForVarsRefs[i],
                   planState);
   }
   
-  ulong numLetVarsRefs = (ulong)theMaterializeClause->theOutputLetVarsRefs.size();
+  csize numLetVarsRefs = theMaterializeClause->theOutputLetVarsRefs.size();
   
-  for (ulong i = 0; i < numLetVarsRefs; ++i)
+  for (csize i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i],
                   theMaterializeClause->theOutputLetVarsRefs[i],

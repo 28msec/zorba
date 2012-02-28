@@ -24,7 +24,7 @@
 #include "common/shared_types.h"
 #include "common/common.h"
 
-#include "store/naive/atomic_items.h"
+#include "atomic_items.h"
 
 namespace zorba { namespace simplestore {
 
@@ -116,7 +116,7 @@ public:
         const zstring& ns,
         const zstring& pre,
         const zstring& ln,
-        bool                    sync = true);
+        bool sync = true);
 
   void remove(QNameItem* qn);
 

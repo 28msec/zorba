@@ -28,7 +28,7 @@
 namespace zorba {
   
   HttpStream::HttpStream(const zstring& aUri)
-  : theDidInit(false), theUri(aUri)
+    : theUri(aUri)
   {
   }
   
@@ -42,12 +42,15 @@ namespace zorba {
   
   void HttpStream::init()
   {
+    bool succeed = false;
+
+#ifdef ZORBA_HAVE_CURL
     Zorba* lInstance = Zorba::getInstance(0);
     theStaticContext = lInstance->createStaticContext();
     ItemFactory* lFactory = lInstance->getItemFactory();
     Item lNodeName = lFactory->createQName("http://expath.org/ns/http-client", "http", "request");
     Item lEmptyItem;
-    std::vector<std::pair<String, String> > nsPairs;
+    NsBindings nsPairs;
     nsPairs.push_back(std::make_pair(String("xs"), String("http://www.w3.org/2001/XMLSchema")));
     Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
                                                        lFactory->createQName("http://www.w3.org/2001/XMLSchema",
@@ -56,7 +59,7 @@ namespace zorba {
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "method"), Item(), lFactory->createString("GET"));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "href"), Item(), lFactory->createString(theUri.c_str()));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "override-media-type"), Item(), lFactory->createString("text/plain"));
-    lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "follow-redirect"), Item(), lFactory->createString("false"));
+    lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "follow-redirect"), Item(), lFactory->createString("true"));
     Zorba_CompilerHints_t lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O1;
     theStaticContext->loadProlog("import module namespace httpc = \"http://www.zorba-xquery.com/modules/http-client\";",
@@ -75,7 +78,7 @@ namespace zorba {
     Iterator_t lIter = lItem.getAttributes();
     lIter->open();
     Item lAttr;
-    bool succeed = true;
+    succeed = true;
     while (lIter->next(lAttr)) {
       Item lName;
       lAttr.getNodeName(lName);
@@ -89,6 +92,8 @@ namespace zorba {
       }
     }
     lIter->close();
+#endif /* ZORBA_HAVE_CURL */
+
     if (!succeed)
       throw os_error::exception("", theUri.c_str(), "Could not create stream resource");
     theIterator->next(theStreamableString);

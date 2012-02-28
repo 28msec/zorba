@@ -1,8 +1,8 @@
 Iterator tree for main query:
 <UDFunctionCallIterator>
-  <ElementIterator>
+  <ElementIterator copyInputNodes="false">
     <SingletonIterator value="xs:QName(,,a)"/>
-    <ElementIterator>
+    <ElementIterator copyInputNodes="false">
       <SingletonIterator value="xs:QName(,,b)"/>
       <FnConcatIterator>
         <AttributeIterator qname="xs:QName(,,att1)">

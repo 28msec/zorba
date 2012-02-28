@@ -25,7 +25,7 @@
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "types/typeconstants.h"
+#include "store/api/xs_type_codes.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -251,6 +251,10 @@ namespace zorba{
 
     class FunctionAnnotationsIterator;
 
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -302,6 +306,54 @@ namespace zorba{
     class ModfIterator;
 
     class FrexpIterator;
+
+    class NodePositionIterator;
+
+    class IsAncestorPositionIterator;
+
+    class IsFollowingSiblingPositionIterator;
+
+    class IsFollowingPositionIterator;
+
+    class IsInSubtreeOfPositionIterator;
+
+    class IsDescendantPositionIterator;
+
+    class IsPrecedingSiblingPositionIterator;
+
+    class IsPrecedingPositionIterator;
+
+    class IsChildPositionIterator;
+
+    class IsAttributeOfPositionIterator;
+
+    class IsParentPositionIterator;
+
+    class IsPrecedingInDocumentOrderPositionIterator;
+
+    class IsFollowingInDocumentOrderPositionIterator;
+
+    class LevelPositionIterator;
+
+    class IsAttributePositionIterator;
+
+    class IsCommentPositionIterator;
+
+    class IsDocumentPositionIterator;
+
+    class IsElementPositionIterator;
+
+    class IsProcessingInstructionPositionIterator;
+
+    class IsTextPositionIterator;
+
+    class IsSiblingPositionIterator;
+
+    class InSameTreePositionIterator;
+
+    class InCollectionPositionIterator;
+
+    class InSameCollectionPositionIterator;
 
     class NodeReferenceIterator;
 
@@ -492,6 +544,8 @@ namespace zorba{
 
     class SubstringIterator;
 
+    class SubstringIntOptIterator;
+
     class StringLengthIterator;
 
     class NormalizeSpaceIterator;
@@ -531,6 +585,8 @@ namespace zorba{
     class StringMaterializeIterator;
 
     class StringIsStreamableIterator;
+
+    class StringSplitIterator;
 
     class XQDocIterator;
 
@@ -877,6 +933,12 @@ public:
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
 
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
+
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
 
@@ -954,6 +1016,78 @@ public:
 
     virtual void beginVisit ( const FrexpIterator& ) = 0;
     virtual void endVisit   ( const FrexpIterator& ) = 0;
+
+    virtual void beginVisit ( const NodePositionIterator& ) = 0;
+    virtual void endVisit   ( const NodePositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAncestorPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAncestorPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsFollowingSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingSiblingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsFollowingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsInSubtreeOfPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsInSubtreeOfPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDescendantPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsDescendantPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsPrecedingSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingSiblingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsPrecedingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsChildPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsChildPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAttributeOfPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAttributeOfPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsParentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsParentPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsPrecedingInDocumentOrderPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingInDocumentOrderPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsFollowingInDocumentOrderPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingInDocumentOrderPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const LevelPositionIterator& ) = 0;
+    virtual void endVisit   ( const LevelPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAttributePositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAttributePositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsCommentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsCommentPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDocumentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsDocumentPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsElementPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsElementPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsProcessingInstructionPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsProcessingInstructionPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsTextPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsTextPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsSiblingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const InSameTreePositionIterator& ) = 0;
+    virtual void endVisit   ( const InSameTreePositionIterator& ) = 0;
+
+    virtual void beginVisit ( const InCollectionPositionIterator& ) = 0;
+    virtual void endVisit   ( const InCollectionPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const InSameCollectionPositionIterator& ) = 0;
+    virtual void endVisit   ( const InSameCollectionPositionIterator& ) = 0;
 
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
@@ -1238,6 +1372,9 @@ public:
     virtual void beginVisit ( const SubstringIterator& ) = 0;
     virtual void endVisit   ( const SubstringIterator& ) = 0;
 
+    virtual void beginVisit ( const SubstringIntOptIterator& ) = 0;
+    virtual void endVisit   ( const SubstringIntOptIterator& ) = 0;
+
     virtual void beginVisit ( const StringLengthIterator& ) = 0;
     virtual void endVisit   ( const StringLengthIterator& ) = 0;
 
@@ -1297,6 +1434,9 @@ public:
 
     virtual void beginVisit ( const StringIsStreamableIterator& ) = 0;
     virtual void endVisit   ( const StringIsStreamableIterator& ) = 0;
+
+    virtual void beginVisit ( const StringSplitIterator& ) = 0;
+    virtual void endVisit   ( const StringSplitIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_namespaces::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StaticNamespacesIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_introspect_sctx_default_function_namespace::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DefaultFunctionNamespaceIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_zorba_introspect_sctx_base_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SctxBaseUriIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_zorba_introspect_sctx_default_collation::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SctxDefaultCollationIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_namespace_binding::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StaticNamespaceBindingIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_variables::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InscopeVariablesIterator(sctx, loc, argv);
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_zorba_introspect_sctx_default_collection_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DefaultCollectionTypeIterator(sctx, loc, argv);
 }
@@ -106,7 +106,7 @@ PlanIter_t fn_zorba_introspect_sctx_xpath10_compatibility_mode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new XPath10CompatModeIterator(sctx, loc, argv);
 }
@@ -116,7 +116,7 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_documents::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StaticallyKnownDocumentsIterator(sctx, loc, argv);
 }
@@ -126,7 +126,7 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_document_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StaticallyKnownDocumentTypeIterator(sctx, loc, argv);
 }
@@ -136,7 +136,7 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_collations::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StaticallyKnownCollationsIterator(sctx, loc, argv);
 }
@@ -146,7 +146,7 @@ PlanIter_t fn_zorba_introspect_sctx_construction_mode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ConstructionModeIterator(sctx, loc, argv);
 }
@@ -156,7 +156,7 @@ PlanIter_t fn_zorba_introspect_sctx_ordering_mode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new OrderingModeIterator(sctx, loc, argv);
 }
@@ -166,7 +166,7 @@ PlanIter_t fn_zorba_introspect_sctx_default_order::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DefaultOrderIterator(sctx, loc, argv);
 }
@@ -176,7 +176,7 @@ PlanIter_t fn_zorba_introspect_sctx_boundary_space_policy::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new BoundarySpacePolicyIterator(sctx, loc, argv);
 }
@@ -186,7 +186,7 @@ PlanIter_t fn_zorba_introspect_sctx_copy_namespaces_mode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CopyNamespacesModeIterator(sctx, loc, argv);
 }
@@ -196,7 +196,7 @@ PlanIter_t fn_zorba_introspect_sctx_function_names::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionNamesIterator(sctx, loc, argv);
 }
@@ -206,7 +206,7 @@ PlanIter_t fn_zorba_introspect_sctx_function_arguments_count::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionArgumentsCountIterator(sctx, loc, argv);
 }
@@ -216,7 +216,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_schema_types::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopeSchemaTypesIterator(sctx, loc, argv);
 }
@@ -226,7 +226,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_element_declarations::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopeElementDeclarationsIterator(sctx, loc, argv);
 }
@@ -236,7 +236,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_attribute_declarations::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopeAttributeDeclarationsIterator(sctx, loc, argv);
 }
@@ -246,7 +246,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_element_groups::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopeElementGroupsIterator(sctx, loc, argv);
 }
@@ -256,7 +256,7 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_attribute_groups::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopeAttributeGroupsIterator(sctx, loc, argv);
 }
@@ -266,7 +266,7 @@ PlanIter_t fn_zorba_introspect_sctx_option::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new OptionIterator(sctx, loc, argv);
 }
@@ -276,7 +276,7 @@ PlanIter_t fn_zorba_introspect_sctx_function_annotations::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionAnnotationsIterator(sctx, loc, argv);
 }

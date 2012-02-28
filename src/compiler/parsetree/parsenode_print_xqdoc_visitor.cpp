@@ -338,7 +338,7 @@ store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
     // library
     for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
-      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library");
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library", true);
     }
 
     // example
@@ -658,13 +658,14 @@ XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName;
-  store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
+  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName, lParamsQName;
+  store::Item_t lFuncElem, lNameElem, lSigElem, lParamsElem, lFuncText, lNameText, lSigText;
   store::Item_t lArityAttr, lArityValue;
 
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
+  theFactory->createQName(lParamsQName, theXQDocNS, theXQDocPrefix, "parameters");
   theFactory->createQName(lArityQName, "", "", "arity");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -697,8 +698,95 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createElementNode(
       lSigElem, lFuncElem, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
+     
+  const ParamList* paramList = n.get_paramlist();
+  if(paramList != NULL) {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(lParamsElem, lFuncElem, lParamsQName, lTypeName, true, false, theNSBindings, theBaseURI);
+    store::Item_t lParamQName;
+    for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
+         it != paramList->end();
+         ++it)
+    {
+      const Param* lParam = &**it;
 
-  zstring lNameString = n.get_name()->get_qname();
+      store::Item_t lParamElem;
+      theFactory->createQName(lParamQName, theXQDocNS, theXQDocPrefix, "parameter");
+      theFactory->createElementNode(lParamElem, lParamsElem, lParamQName, lTypeName, true, false, theNSBindings, theBaseURI);
+     
+      store::Item_t lParamNameElem, lParamNameQName;
+      theFactory->createQName(lParamNameQName, theXQDocNS, theXQDocPrefix, "name");
+      theFactory->createElementNode(lParamNameElem, lParamElem, lParamNameQName, lTypeName, true, false, theNSBindings, theBaseURI);
+      
+      zstring lParamNameVal(lParam->get_name()->get_qname());
+      store::Item_t lParamNameText;
+      theFactory->createTextNode(lParamNameText, lParamNameElem, lParamNameVal);
+      
+      if(lParam->get_typedecl()) {
+        if(lParam->get_typedecl()->get_itemtype()) {
+          ostringstream lType;
+          print_parsetree_xquery(lType, lParam->get_typedecl()->get_itemtype());
+          zstring lParamTypeStr(lType.str());
+          
+          store::Item_t lParamTypeElem, lParamTypeQName;
+          theFactory->createQName(lParamTypeQName, theXQDocNS, theXQDocPrefix, "type");
+          theFactory->createElementNode(lParamTypeElem, lParamElem, lParamTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
+      
+          store::Item_t lParamTypeText;
+          theFactory->createTextNode(lParamTypeText, lParamTypeElem, lParamTypeStr);
+          
+          if(lParam->get_typedecl()->get_occur()){
+            stringstream os;
+            print_parsetree_xquery(os, lParam->get_typedecl()->get_occur());
+            if(os.str().size() == 1) {
+              zstring lOccur(os.str());
+              store::Item_t lOccurValue, lOccurAttrQName;
+              theFactory->createString(lOccurValue, lOccur);
+              theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+              theFactory->createAttributeNode(
+                lOccurAttrQName, lParamTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if(n.get_return_type()) {
+    
+    store::Item_t lReturnElem, lReturnQName, lTypeElem, lTypeQName;
+    theFactory->createQName(lReturnQName, theXQDocNS, theXQDocPrefix, "return");
+    theFactory->createElementNode(
+      lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI     
+    );
+
+    ostringstream lType;
+    print_parsetree_xquery(lType, n.get_return_type());
+    zstring lReturnType(lType.str());
+
+    store::Item_t lReturnTypeElem, lReturnTypeQName;
+    theFactory->createQName(lReturnTypeQName, theXQDocNS, theXQDocPrefix, "type");
+    theFactory->createElementNode(lReturnTypeElem, lReturnElem, lReturnTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
+  
+    store::Item_t lReturnTypeText;
+    theFactory->createTextNode(lReturnTypeText, lReturnTypeElem, lReturnType);
+          
+    if(n.get_return_type()->get_occur()){
+      stringstream os;
+      print_parsetree_xquery(os, n.get_return_type()->get_occur());
+      if(os.str().size() == 1) {
+        zstring lOccur(os.str());
+        store::Item_t lOccurValue, lOccurAttrQName;
+        theFactory->createString(lOccurValue, lOccur);
+        theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+        theFactory->createAttributeNode(
+          lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+        );
+      }
+      }
+ }
+ zstring lNameString = n.get_name()->get_qname();
   theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
   ostringstream lSig;
@@ -1127,6 +1215,7 @@ XQDOC_NO_BEGIN_END_TAG (SignList)
 XQDOC_NO_BEGIN_END_TAG (SIND_DeclList)
 XQDOC_NO_BEGIN_END_TAG (SingleType)
 XQDOC_NO_BEGIN_END_TAG (StringLiteral)
+XQDOC_NO_BEGIN_END_TAG (StringConcatExpr)
 XQDOC_NO_BEGIN_END_TAG (TextTest)
 XQDOC_NO_BEGIN_END_TAG (TransformExpr)
 XQDOC_NO_BEGIN_END_TAG (TreatExpr)

@@ -1,0 +1,28 @@
+
+module namespace num = "http://www.w3.org/TestModules/numbers";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+
+declare variable $num:collname := xs:QName("num:numbers");
+
+declare variable $num:idx-g-h-long := xs:QName("num:idx-g-h-long");
+declare variable $num:idx-g-t-long := xs:QName("num:idx-g-t-long");
+
+declare collection num:numbers as node()*;
+
+
+declare %ann:general-equality %ann:manual index num:idx-g-h-long
+on nodes dml:collection(xs:QName("num:numbers"))//xs_long
+by xs:long(.//@num);
+
+
+declare %ann:general-range %ann:manual index num:idx-g-t-long
+on nodes dml:collection(xs:QName("num:numbers"))//xs_long
+by xs:long(.//@num);
+

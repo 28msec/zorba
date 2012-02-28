@@ -39,19 +39,19 @@
 #endif /* WIN32 */
 
 // Platform headers
-#cmakedefine ZORBA_HAVE_COLL_H     
+#cmakedefine ZORBA_HAVE_COLL_H
 #cmakedefine ZORBA_HAVE_EXECINFO_H
 #cmakedefine ZORBA_HAVE_FLEXLEXER_H
 #cmakedefine ZORBA_HAVE_ICONV_H
-#cmakedefine ZORBA_HAVE_INTTYPES_H 
-#cmakedefine ZORBA_HAVE_LIMITS_H   
-#cmakedefine ZORBA_HAVE_PTHREAD_H  
-#cmakedefine ZORBA_HAVE_STDINT_H   
-#cmakedefine ZORBA_HAVE_STDLIB_H   
+#cmakedefine ZORBA_HAVE_INTTYPES_H
+#cmakedefine ZORBA_HAVE_LIMITS_H
+#cmakedefine ZORBA_HAVE_PTHREAD_H
+#cmakedefine ZORBA_HAVE_STDINT_H
+#cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
-#cmakedefine ZORBA_HAVE_USTRING_H  
-#cmakedefine ZORBA_HAVE_UTYPES_H   
+#cmakedefine ZORBA_HAVE_USTRING_H
+#cmakedefine ZORBA_HAVE_UTYPES_H
 
 // Platform functions
 #cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION
@@ -68,6 +68,9 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+
+// Platform libraries
+#cmakedefine ZORBA_HAVE_CURL
 
 #ifdef ZORBA_HAVE_STDINT_H
 # include <stdint.h>
@@ -138,7 +141,10 @@ typedef __int64 int64_t;
 #define ZORBA_MAJOR_NUMBER ${ZORBA_MAJOR_NUMBER}
 #define ZORBA_MINOR_NUMBER ${ZORBA_MINOR_NUMBER}
 #define ZORBA_PATCH_NUMBER ${ZORBA_PATCH_NUMBER}
-#define ZORBA_MODULES_INSTALL_DIR "${ZORBA_MODULES_INSTALL_DIR}"
+#define ZORBA_CORE_URI_DIR "${ZORBA_CORE_URI_DIR}"
+#define ZORBA_CORE_LIB_DIR "${ZORBA_CORE_LIB_DIR}"
+#define ZORBA_NONCORE_URI_DIR "${ZORBA_NONCORE_URI_DIR}"
+#define ZORBA_NONCORE_LIB_DIR "${ZORBA_NONCORE_LIB_DIR}"
 
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
@@ -150,7 +156,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
-#cmakedefine ZORBA_WITH_DEBUGGER_CLIENT
 
 // Zorba parser configuration
 #cmakedefine ZORBA_DEBUG_PARSER 

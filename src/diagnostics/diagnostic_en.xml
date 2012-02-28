@@ -51,6 +51,11 @@
        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
       <value>$1</value>
+
+      <entry key="FormatNumber_2">
+        <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -1123,6 +1128,22 @@
          specified.
       </comment>
       <value>$1</value>
+    
+      <entry key="CONCAT">
+        <value>comma expression with updating and non-updating branches</value>
+      </entry>
+
+      <entry key="Generic">
+        <value>updating expression illegal here</value>
+      </entry>
+
+      <entry key="IF">
+        <value>conditional expression with updating and non-updating branch</value>
+      </entry>
+
+      <entry key="UDF_2">
+        <value>"$2": function declared simple but body is updating</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUST0002">
@@ -1560,6 +1581,10 @@
       <value>"$1": feature not enabled</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0006" name="UNKNOWN_ENCODING">
+      <value>"$1": unknown character encoding</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0007" name="FUNCTION_SIGNATURE_NOT_EQUAL">
       <value>"$1": function signature does not match declaration</value>
     </diagnostic>
@@ -1706,6 +1731,10 @@
       <value>key with type $1 not subtype or castable to target type $2 of map ($3)</value>
     </diagnostic>
 
+    <diagnostic code="ZXQD0006" name="INVALID_UTF8_BYTE_SEQUENCE">
+      <value>"$1": invalid UTF-8 byte sequence</value>
+    </diagnostic>
+
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">
@@ -1739,7 +1768,11 @@
     <diagnostic code="ZAPI0009" name="XQUERY_NOT_COMPILED_IN_DEBUG_MODE">
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
-
+     
+     <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
+       <value>"$1": undefined $2</value>
+     </diagnostic>
+     
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
     </diagnostic>
@@ -1966,7 +1999,7 @@
     </diagnostic>
 
     <diagnostic code="ZDDY0025" name="INDEX_WRONG_NUMBER_OF_PROBE_ARGS">
-      <value>${"1": }invalid number of arguments in probe</value>
+      <value>"$1": invalid number of arguments to $2 operation; given $3 expected $4</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0026" name="INDEX_RANGE_PROBE_NOT_ALLOWED">
@@ -1991,6 +2024,10 @@
 
     <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
       <value>"$1": index range-value probe has search keys with incompatible types</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0035" name="INDEX_GENERAL_INSERT">
+      <value>"$1": index inserting more than one key not allowed for general index</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
@@ -2044,6 +2081,10 @@
 
     <diagnostic code="ZDST0024" name="INDEX_MULTIPLE_PROPERTY_VALUES">
       <value>index multiple property values</value>
+    </diagnostic>
+
+    <diagnostic code="ZDST0025" name="INDEX_BAD_UNIQUE_PROPERTY">
+      <value>"$1": index cannot be declared as unique</value>
     </diagnostic>
 
     <diagnostic code="ZDST0026" name="INDEX_INVALID_PROPERTY_VALUE">
@@ -2156,6 +2197,10 @@
       <value>"$1": error loading dynamic library${: 2}</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0006" name="TRANSCODING_ERROR">
+      <value>stream transcoding error ($1)</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2172,14 +2217,6 @@
 
     <diagnostic code="ZSTR0004" name="INDEX_PARTIAL_KEY_REMOVE">
       <value>"$1": partial key deletion from index "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZSTR0005" name="INDEX_PARTIAL_KEY_PROBE">
-      <value>"$1": partial key probe into index "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZSTR0006" name="INDEX_INVALID_BOX_PROBE">
-      <value>for index "$1": $2</value>
     </diagnostic>
 
     <diagnostic code="ZSTR0007" name="INDEX_UNSUPPORTED_PROBE_CONDITION">
@@ -2283,6 +2320,63 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+   <!--////////// JSON Parse Errors ////////////////////////////////////////-->
+
+    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
+      <value>'$1': illegal JSON character</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+      <value>"$1": illegal Unicode code-point</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+      <value>'\\$1': illegal JSON character escape</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+      <value>illegal JSON literal</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+      <value>illegal JSON number</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+      <value>"$1": unexpected JSON token</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+      <value>unterminated JSON string</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
+      <value>"$1": illegal QName</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
+      <value>illegal empty string</value>
+    </diagnostic>
+
+   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+
+    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
+      <value>JSON serialization requires document or element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
+      <value>"$1" element missing required "$2" attribute</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
+      <value>"$1": illegal value for attribute "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
+      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
+      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
+      <value>JSON type "$1" can not have a child element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
+      <value>JSON type "$1" can not have a child text node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+      <value>"$1": illegal value for JSON type "$2"</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -2305,6 +2399,37 @@
 
     <diagnostic code="ZWST0004" name="AMBIGUOUS_SEQUENTIAL_FLWOR">
       <value>Sequential FLWOR expr may not have the semantics you expect</value>
+    </diagnostic>
+
+    <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
+      <comment>
+        This warning is raised if the user explicitly enables caching
+        of function results (using the %ann:cache annotation) but the function
+        is updating or its parameter and return types are not subtypes of
+        xs:anyAtomicType.
+      </comment>
+      <value>"$1": function caching not possible; $2</value>
+      <entry key="RETURN_TYPE">
+        <value>return type ($3) is not subtype of xs:anyAtomicType</value>
+      </entry>
+      <entry key="PARAM_TYPE">
+        <value>type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType</value>
+      </entry>
+      <entry key="UPDATING">
+        <value>function is updating</value>
+      </entry>
+      <entry key="VARIADIC">
+        <value>function is variadic</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
+      <comment>
+        This warning is raised if the user explicitly enables caching
+        of function results (using the %ann:cache annotation) and the function
+        is annotated as sequential or nondeterministic.
+      </comment>
+      <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
     </diagnostic>
 
   </namespace>
@@ -2391,6 +2516,10 @@
 
     <entry key="BadLibraryModule">
       <value>invalid library module</value>
+    </entry>
+
+    <entry key="BadRegexEscape_3">
+      <value>"$3": illegal escape character</value>
     </entry>
 
     <entry key="BadPath">
@@ -2763,6 +2892,10 @@
 
     <entry key="NoSeqForFnOp_2">
       <value>sequence of more than one item can not be operand for function "$2()"</value>
+    </entry>
+
+    <entry key="NoSeqForConcat">
+      <value>multi-item sequence can not be operand for concatenation</value>
     </entry>
 
     <entry key="NoSeqInValueComp">
@@ -3141,22 +3274,6 @@
       <value>"$2": XQuery version must be at least 1.0</value>
     </entry>
 
-    <entry key="XUST0001_CONCAT">
-      <value>comma expression with updating and non-updating branches</value>
-    </entry>
-
-    <entry key="XUST0001_Generic">
-      <value>updating expression illegal here</value>
-    </entry>
-
-    <entry key="XUST0001_IF">
-      <value>conditional expression with updating and non-updating branch</value>
-    </entry>
-
-    <entry key="XUST0001_UDF_2">
-      <value>"$2": function declared simple but body is updating</value>
-    </entry>
-
     <entry key="XUST0002_Transform">
       <value>transform expression witn non-updating or vacuous modify clause</value>
     </entry>
@@ -3219,6 +3336,14 @@
 
     <entry key="Zorba warning">
       <value>Zorba warning</value>
+    </entry>
+
+    <entry key="JSON parser error">
+      <value>JSON parser error</value>
+    </entry>
+
+    <entry key="JSON serialization error">
+      <value>JSON serialization error</value>
     </entry>
 
     <entry key="dynamic error">

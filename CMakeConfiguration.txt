@@ -70,10 +70,6 @@ MESSAGE(STATUS "ZORBA_WITH_CODE_PROFILE:              " ${ZORBA_WITH_CODE_PROFIL
 SET(ZORBA_FOR_ONE_THREAD_ONLY OFF CACHE BOOL "compile zorba for single threaded use")
 MESSAGE(STATUS "ZORBA_FOR_ONE_THREAD_ONLY:            " ${ZORBA_FOR_ONE_THREAD_ONLY})
 
-# by default the zorba command line client is deactivated until it gets to a more stable and userfriendly state
-SET(ZORBA_WITH_DEBUGGER_CLIENT OFF CACHE BOOL "build and install zorbas command line debugger client")
-MESSAGE(STATUS "ZORBA_WITH_DEBUGGER_CLIENT:           " ${ZORBA_WITH_DEBUGGER_CLIENT})
-
 IF (DEFINED UNIX)
   IF (NOT DEFINED ZORBA_HAVE_PTHREAD_H AND NOT DEFINED ZORBA_FOR_ONE_THREAD_ONLY)
     MESSAGE(FATAL_ERROR "pthread is not available")

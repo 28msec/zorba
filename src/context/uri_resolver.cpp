@@ -26,13 +26,13 @@
 // We avoid the "static initialization order fiasco" by initializing both of
 // these constants here in the same file. This also makes it easy to ensure
 // both strings have the same value.
-const zorba::zstring zorba::impl::URIMapper::DENY_ACCESS("[~~Deny Access~~]");
-const zorba::String zorba::URIMapper::DENY_ACCESS(zorba::impl::URIMapper::DENY_ACCESS.c_str());
+const zorba::zstring zorba::internal::URIMapper::DENY_ACCESS("[~~Deny Access~~]");
+const zorba::String zorba::URIMapper::DENY_ACCESS(zorba::internal::URIMapper::DENY_ACCESS.c_str());
 
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /*************
  * Implementation of the Resource class hierarchy.
@@ -100,6 +100,35 @@ namespace impl {
     return theCollection;
   }
 
+/*************
+ * Implementation of EntityData hierarchy.
+ *************/
+  EntityData::EntityData(EntityData::Kind aKind)
+    : theKind(aKind)
+  {
+  }
+
+  EntityData::Kind EntityData::getKind() const
+  {
+    return theKind;
+  }
+
+  EntityData::~EntityData()
+  {
+  }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  ThesaurusEntityData::ThesaurusEntityData(locale::iso639_1::type aLang)
+    : EntityData(EntityData::THESAURUS),
+      theLang(aLang)
+  {
+  }
+
+  locale::iso639_1::type ThesaurusEntityData::getLanguage() const
+  {
+    return theLang;
+  }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*************
  * URIMapper is an abstract class, but we have to define its vtbl and
@@ -116,15 +145,6 @@ namespace impl {
 
   URLResolver::~URLResolver()
   {}
-
-  /*************
-   * EntityData is an abstract class, but we have to define its vtbl
-   * and base destructor somewhere.
-   *************/
-
-  EntityData::~EntityData()
-  {}
-
 
 } /* namespace zorba::impl */
 

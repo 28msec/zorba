@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/pul.h"
 #include "store/api/index.h"
@@ -166,6 +166,8 @@ protected:
 
   std::set<store::Item*>             theValidationNodes;
 
+  store::PUL_t                       theValidationPul;
+
   bool                               theAdjustTreePositions;
 
   bool                               theIsApplied;
@@ -182,6 +184,9 @@ protected:
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
+
+  // Validate in place primitives
+  std::vector<UpdatePrimitive*>      theRevalidateList;
 
   // Index Maintenance
   std::set<XmlNode*>                 theModifiedDocs;
@@ -251,6 +256,7 @@ protected:
 class PULImpl : public store::PUL
 {
   friend class CollectionPul;
+  friend class UpdRevalidate;
 
 public:
   enum UpdListKind
@@ -402,6 +408,10 @@ public:
         store::Item_t&              target,
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
+
+  void addRevalidate(
+          const QueryLoc* aQueryLoc,
+          store::Item_t&              target);
 
   // Collection primitives
   void addCreateCollection(
@@ -562,6 +572,10 @@ protected:
         std::vector<store::Item_t>& children);
 
   CollectionPul* getCollectionPul(const store::Item* target);
+
+  CollectionPul* getCollectionPulByName(
+        const store::Item* name,
+        bool dynamicCollection = false);
 
   void undoUpdates();
 };

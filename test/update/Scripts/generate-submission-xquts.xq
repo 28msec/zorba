@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='2.0.3'
+         version="2.1 'Basileia'"
          anonymous-result-column="false">
   
       <organization
@@ -54,23 +54,30 @@ else
 
     <syntax>XQuery</syntax>
     
-    <test-run dateRun="2011-09-23">
+    <test-run dateRun="2011-12-14">
       <test-suite version="current"/>
       <transformation><p>Standard</p></transformation>
       <comparison><p>Standard</p></comparison>
-      <otherComments><p>XQUTS version taken from CVS as of 2011-09-21.</p></otherComments>
+      <otherComments><p>XQUTS version taken from CVS as of 2011-12-09.</p></otherComments>
     </test-run>
   
     {
       for $test in $ctests/*:Site/*:Testing/*:Test
       let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+      order by $testname
       return
       if(fn:exists(fn:index-of(('revalidation-declaration-01-fail','revalidation-declaration-03-fail','revalidation-declaration-05-fail','revalidate-valtrans-ins-003'
-      ,'fn-put-003-fail','fn-put-004-fail','fn-put-005-fail','fn-put-006-fail'),$testname))) then
+      ,'fn-put-003-fail','fn-put-004-fail','fn-put-006-fail'),$testname))) then
       <test-case
          name="{$testname}"
          result="not applicable"
          comment="This test was not run by Zorba: please consult the 'Guidelines for Running the XML Query Update Test Suite' for more details."
+       />
+      else if (fn:exists(fn:index-of(('fn-put-005'),$testname))) then
+      <test-case
+         name="{$testname}"
+         result="not applicable"
+         comment="Zorba does not support fn:put() for attibute nodes."
        />
       else if (fn:contains(fn:data($test),'StaticTypingFeature')) then
       <test-case

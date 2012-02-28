@@ -17,14 +17,15 @@
 
 #include "diagnostics/assert.h"
 #include "zorbautils/hashfun.h"
-#include "zorbatypes/collation_manager.h"
+
+#include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_index.h"
-#include "store/naive/simple_index_general.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_store.h"
+#include "store_defs.h"
+#include "simple_index.h"
+//#include "simple_index_general.h"
+#include "atomic_items.h"
+#include "simple_store.h"
 
 #include <algorithm>
 
@@ -34,114 +35,6 @@ namespace zorba
 namespace simplestore 
 {
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  IndexCompareFunction                                                       //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-********************************************************************************/
-uint32_t IndexCompareFunction::hash(const store::IndexKey* key) const
-{
-  uint32_t hval = FNV_32_INIT;
-
-  for (ulong i = 0; i < theNumColumns; ++i)
-  {
-    if ((*key)[i] == NULL)
-      continue;
-
-    hval = hashfun::h32<uint32_t>((*key)[i]->hash(theTimezone, theCollators[i]),
-                                  hval);
-  }
-
-  return hval;
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-bool IndexCompareFunction::equal(
-    const store::IndexKey* key1,
-    const store::IndexKey* key2) const
-{
-  for (ulong i = 0; i < theNumColumns; ++i)
-  {
-    const store::Item_t& i1 = (*key1)[i];
-    const store::Item_t& i2 = (*key2)[i];
-
-    if (i1 == NULL && i2 == NULL)
-      continue;
-
-    if (i1 == NULL || i2 == NULL)
-      return false;
-
-    if (! (*key1)[i]->equals((*key2)[i].getp(), theTimezone, theCollators[i]))
-      return false;
-  }
-
-  return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-long IndexCompareFunction::compare(
-    const store::IndexKey* key1,
-    const store::IndexKey* key2) const
-{
-  long result;
-
-#ifndef WIN32
-  ulong size = std::min(key1->size(),  key2->size());
-#else
-  ulong size = std::min(key1->size(),  key2->size());
-#endif
-
-  for (ulong i = 0; i < size; i++)
-  {
-    const store::Item_t& i1 = (*key1)[i];
-    const store::Item_t& i2 = (*key2)[i];
-
-    if (i1 == NULL)
-    {
-      if (i2 != NULL)
-        return -1;
-    }
-    else if (i2 == NULL)
-    {
-      if (i1 != NULL)
-        return +1;
-    }
-    else if (i1 == IndexBoxCondition::theNegInf)
-    {
-      return -1;
-    }
-    else if (i1 == IndexBoxCondition::thePosInf)
-    {
-      return +1;
-    }
-    else if (i2 == IndexBoxCondition::theNegInf)
-    {
-      return +1;
-    }
-    else if (i2 == IndexBoxCondition::thePosInf)
-    {
-      return -1;
-    }
-    else if ((result = i1->compare(i2, theTimezone, theCollators[i])))
-    {
-      return result;
-    }
-  }
-
-  return 0;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -161,19 +54,6 @@ IndexImpl::IndexImpl(
   theQname(qname),
   theSpec(spec)
 {
-  theCollators.resize(theSpec.getNumColumns());
-
-  for (ulong i = 0; i < theSpec.getNumColumns(); ++i)
-  {
-    if (!spec.theCollations[i].empty())
-    {
-      theCollators[i] = CollationFactory::createCollator(spec.theCollations[i]);
-    }
-    else
-    {
-      theCollators[i] = NULL;
-    }
-  }
 }
 
 
@@ -182,11 +62,6 @@ IndexImpl::IndexImpl(
 ********************************************************************************/
 IndexImpl::~IndexImpl()
 {
-  for (size_t i = 0; i < theCollators.size(); ++i)
-  {
-    if (theCollators[i])
-      delete theCollators[i]; 
-  }
 }
 
 
@@ -195,25 +70,317 @@ IndexImpl::~IndexImpl()
 ********************************************************************************/
 store::IndexCondition_t IndexImpl::createCondition(store::IndexCondition::Kind k)
 {
-  switch (k)
+  if (!isSorted() &&
+      (k == store::IndexCondition::BOX_VALUE || 
+       k == store::IndexCondition::BOX_GENERAL))
   {
-  case store::IndexCondition::POINT_VALUE:
-    return new IndexPointValueCondition(this);
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ERROR_PARAMS(IndexConditionImpl::getKindString(k), getName()->getStringValue()));
+  }
 
-  case store::IndexCondition::POINT_GENERAL:
-    return new IndexPointGeneralCondition(this);
+  if (isGeneral())
+  {
+    return new GeneralIndexCondition(this, k);
+  }
+  else if (k == store::IndexCondition::POINT_VALUE)
+  {
+    return new IndexPointCondition(this, k);
+  }
+  else if (k == store::IndexCondition::BOX_VALUE)
+  {
+    return new IndexBoxValueCondition(this, k);
+  }
+  else
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ERROR_PARAMS(IndexConditionImpl::getKindString(k), getName()->getStringValue()));
 
-  case store::IndexCondition::BOX_VALUE:
-    return new IndexBoxValueCondition(this);
-
-  case store::IndexCondition::BOX_GENERAL:
-    return new IndexBoxGeneralCondition(this);
-
-  default:
     ZORBA_ASSERT(false);
   }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  IndexConditionImpl                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  TODO: proper initialization order is not guaranteed => use factory instead
+********************************************************************************/
+store::Item_t IndexConditionImpl::theNegInf(new DecimalItem);
+store::Item_t IndexConditionImpl::thePosInf(new DecimalItem);
+
+
+/*******************************************************************************
+  Static method
+********************************************************************************/
+std::string IndexConditionImpl::getKindString(store::IndexCondition::Kind k)
+{
+  switch (k)
+  {
+  case POINT_VALUE:
+    return "POINT_VALUE";
+  case POINT_GENERAL:
+    return "POINT_GENERAL";
+  case BOX_VALUE:
+    return "BOX_VALUE";
+  case BOX_GENERAL:
+    return "BOX_GENERAL";
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+IndexConditionImpl::IndexConditionImpl(
+    IndexImpl* idx,
+    store::IndexCondition::Kind kind)
+  :
+  theIndex(idx),
+  theKind(kind)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexConditionImpl::pushItem(store::Item_t& item)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexConditionImpl::pushRange(
+    store::Item_t& lower,
+    store::Item_t& upper,
+    bool haveLower,
+    bool haveUpper,
+    bool lowerIncl,
+    bool upperIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexConditionImpl::pushBound(
+    store::Item_t& bound,
+    bool isLower,
+    bool boundIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  GeneralIndexCondition                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+GeneralIndexCondition::GeneralIndexCondition(
+    IndexImpl* idx,
+    store::IndexCondition::Kind kind)
+  :
+  IndexConditionImpl(idx, kind),
+  theIsSet(false)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string GeneralIndexCondition::toString() const
+{
+  std::ostringstream str;
+  str << *this;
+  return str.str();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& operator<<(std::ostream& os, const GeneralIndexCondition& cond)
+{
+  os << "{ " << cond.getKindString() << " : ";
+
+  if (!cond.theIsSet)
+  {
+    os << "not set" << std::endl;
+    return os;
+  }
+
+  if (cond.theKind == store::IndexCondition::BOX_VALUE || 
+      cond.theKind == store::IndexCondition::BOX_GENERAL)
+  {
+    if (!cond.theRangeFlags.theHaveLowerBound)
+    {
+      os << "[-INF";
+    }
+    else 
+    {
+      if (cond.theRangeFlags.theLowerBoundIncl)
+        os << "[" << cond.theLowerBound->getStringValue();
+      else
+        os << "(" << cond.theLowerBound->getStringValue();
+    }
+    
+    os << ", ";
+  
+  
+    if (!cond.theRangeFlags.theHaveUpperBound)
+    {
+      os << "+INF] ";
+    }
+    else 
+    {
+      if (cond.theRangeFlags.theUpperBoundIncl)
+        os << cond.theUpperBound->getStringValue() << "] ";
+      else
+        os << cond.theUpperBound->getStringValue() << ") ";
+    }
+  }
+  else
+  {
+    os << "[" << cond.theKey->getStringValue() << "]";
+  }
+
+  os << std::endl;
+  return os;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void GeneralIndexCondition::clear()
+{
+  theIsSet = false;
+  theKey = NULL;
+  theLowerBound = NULL;
+  theUpperBound = NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void GeneralIndexCondition::pushItem(store::Item_t& item)
+{
+  assert(theKind == POINT_VALUE || theKind == POINT_GENERAL);
+  assert(!theIsSet);
+  assert(item && item->isAtomic());
+
+  theKey.transfer(item);
+
+  store::Item* baseItem = theKey->getBaseItem();
+  if (baseItem != NULL)
+    theKey = baseItem;
+
+  theIsSet = true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void GeneralIndexCondition::pushRange(
+    store::Item_t& lower,
+    store::Item_t& upper,
+    bool haveLower,
+    bool haveUpper,
+    bool lowerIncl,
+    bool upperIncl)
+{
+  assert(theKind == BOX_VALUE);
+  assert(!theIsSet);
+  assert(!haveLower || (lower && lower->isAtomic()));
+  assert(!haveUpper || (upper && upper->isAtomic()));
+
+  theRangeFlags.theHaveLowerBound = haveLower;
+  theRangeFlags.theHaveUpperBound = haveUpper;
+  theRangeFlags.theLowerBoundIncl = lowerIncl;
+  theRangeFlags.theUpperBoundIncl = upperIncl;
+
+  if (haveLower)
+  {
+    theLowerBound.transfer(lower);
+
+    store::Item* baseItem = theLowerBound->getBaseItem();
+    if (baseItem != NULL)
+      theLowerBound = baseItem;
+  }
+
+  if (haveUpper)
+  {
+    theUpperBound.transfer(upper);
+
+    store::Item* baseItem = theUpperBound->getBaseItem();
+    if (baseItem != NULL)
+      theUpperBound = baseItem;
+  }
+
+  theIsSet = true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void GeneralIndexCondition::pushBound(
+    store::Item_t& bound,
+    bool isLower,
+    bool boundIncl)
+{
+  assert(theKind == BOX_GENERAL);
+  assert(!theIsSet);
+
+  assert(bound != NULL);
+
+  if (isLower)
+  {
+    theRangeFlags.theHaveLowerBound = true;
+    theRangeFlags.theHaveUpperBound = false;
+
+    theLowerBound.transfer(bound);
+
+    store::Item* baseItem = theLowerBound->getBaseItem();
+    if (baseItem != NULL)
+      theLowerBound = baseItem;
+  }
+  else
+  {
+    theRangeFlags.theHaveLowerBound = false;
+    theRangeFlags.theHaveUpperBound = true;
+
+    theUpperBound.transfer(bound);
+
+    store::Item* baseItem = theUpperBound->getBaseItem();
+    if (baseItem != NULL)
+      theUpperBound = baseItem;
+  }
+
+  theRangeFlags.theLowerBoundIncl = boundIncl;
+  theRangeFlags.theUpperBoundIncl = boundIncl;
+
+  theIsSet = true;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -238,33 +405,6 @@ void IndexPointCondition::clear()
 void IndexPointCondition::pushItem(store::Item_t& item)
 {
   theKey.transfer_back(item);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexPointCondition::pushRange(
-    store::Item_t& lower,
-    store::Item_t& upper,
-    bool haveLower,
-    bool haveUpper,
-    bool lowerIncl,
-    bool upperIncl)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexPointCondition::pushBound(
-    store::Item_t& bound,
-    bool isLower,
-    bool boundIncl)
-{
-  ZORBA_ASSERT(false);
 }
 
 
@@ -307,51 +447,6 @@ std::ostream& operator<<(std::ostream& os, const IndexPointCondition& cond)
 {
   os << "{ " << cond.getKey() << " }";
   return os;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  IndexBoxCondition                                                          //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-// TODO: proper initialization order is not guaranteed => use factory instead
-store::Item_t IndexBoxCondition::theNegInf(new DecimalItem);
-store::Item_t IndexBoxCondition::thePosInf(new DecimalItem);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexBoxCondition::pushItem(store::Item_t& item)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexBoxCondition::pushRange(
-    store::Item_t& lower,
-    store::Item_t& upper,
-    bool haveLower,
-    bool haveUpper,
-    bool lowerIncl,
-    bool upperIncl)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-void IndexBoxCondition::pushBound(
-    store::Item_t& bound, 
-    bool isLower,
-    bool boundIncl)
-{
-  ZORBA_ASSERT(false);
 }
 
 
@@ -488,91 +583,6 @@ std::string IndexBoxValueCondition::toString() const
   str << *this;
   return str.str();
 }
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  IndexBoxGeneralCondition                                                   //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-IndexBoxGeneralCondition::IndexBoxGeneralCondition(IndexImpl* idx) 
-  :
-  IndexBoxCondition(idx)
-{
-  theRangeFlags.theHaveLowerBound = false;
-  theRangeFlags.theHaveUpperBound = false;
-  theRangeFlags.theLowerBoundIncl = true;
-  theRangeFlags.theUpperBoundIncl = true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexBoxGeneralCondition::clear()
-{
-  theBound.clear();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexBoxGeneralCondition::pushBound(
-    store::Item_t& bound,
-    bool isLower, 
-    bool boundIncl)
-{
-  theRangeFlags.theHaveLowerBound = isLower;
-  theRangeFlags.theHaveUpperBound = !isLower;
-  theRangeFlags.theLowerBoundIncl = boundIncl;
-  theRangeFlags.theUpperBoundIncl = boundIncl;
-
-  assert(bound != NULL);
-
-  theBound.transfer_back(bound);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool IndexBoxGeneralCondition::test(const store::IndexKey& key) const
-{
-  ZORBA_ASSERT(false);
-  return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::ostream& operator<<(std::ostream& os, const IndexBoxGeneralCondition& cond)
-{
-  os << "{ ";
-
-  os << "}";
-
-  return os;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::string IndexBoxGeneralCondition::toString() const
-{
-  std::ostringstream str;
-  str << *this;
-  return str.str();
-}
-
 
 
 }

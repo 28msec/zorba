@@ -162,6 +162,13 @@ namespace zorba {
      * @return The id of the request.
      */
     virtual std::size_t status() = 0;
+
+    /**
+     * @brief Get the variables in all the contexts in the topmost stack frame.
+     *
+     * @return The id of the request.
+     */
+    virtual std::size_t variables() = 0;
     
     /**
      * @brief Query the debug engine for supported features.
@@ -266,9 +273,13 @@ namespace zorba {
      * This command tells the debug engine, that it should
      * break the execution at the next point possible.
      *
+     * @param withQuit This is a Zorba extension of the DBGP protocol that
+     *    controls if the client should terminate execution and quit (true)
+     *    or only terminate execution but not quit (false). This is used
+     *    by command line clients that implement multiple query runs.
      * @return The id of this request
      */
-    virtual std::size_t stop() = 0;
+    virtual std::size_t stop(bool withQuit) = 0;
     
     /**
      * @brief Send the detach command to the debug engine.
@@ -521,6 +532,7 @@ namespace zorba {
      */
     virtual void quit() = 0;
   };
+
 }//end of namespace
+
 #endif
-/* vim:set et sw=2 ts=2: */

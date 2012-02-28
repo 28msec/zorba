@@ -43,9 +43,13 @@ class op_is_same_node : public function
 {
 public:
   op_is_same_node(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -56,9 +60,13 @@ class op_node_before : public function
 {
 public:
   op_node_before(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -69,9 +77,13 @@ class op_node_after : public function
 {
 public:
   op_node_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
+    : 
+    function(sig, kind)
+  {
 
-}
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

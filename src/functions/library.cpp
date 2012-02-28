@@ -44,6 +44,7 @@
 #include "functions/func_ic_ddl.h"
 #include "functions/func_maths.h"
 #include "functions/func_nodes.h"
+#include "functions/func_node_position.h"
 #include "functions/func_node_sort_distinct.h"
 #include "functions/func_numerics.h"
 #include "functions/func_numerics_impl.h"
@@ -56,6 +57,7 @@
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
+#include "functions/func_json.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
@@ -106,8 +108,10 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_fnput(sctx);
   populate_context_index_ddl(sctx);
   populate_context_ic_ddl(sctx);
+  populate_context_json(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
+  populate_context_node_position(sctx);
   populate_context_numerics(sctx);
   populate_context_other_diagnostics(sctx);
   populate_context_parsing_and_serializing(sctx);

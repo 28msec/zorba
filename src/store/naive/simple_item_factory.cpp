@@ -22,17 +22,17 @@
 
 //#include "zorbatypes/datetime.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "simple_temp_seq.h"
+#include "simple_pul.h"
+#include "qname_pool.h"
+#include "string_pool.h"
+#include "node_factory.h"
 
 #include "util/ascii_util.h"
 
@@ -43,15 +43,19 @@ namespace zorba { namespace simplestore {
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
-  theQNamePool(qnPool)
+  theQNamePool(qnPool),
+  theTrueItem(NULL),
+  theFalseItem(NULL)
 {
 }
 
 
 BasicItemFactory::~BasicItemFactory()
 {
+  theFalseItem = NULL;
+  theTrueItem  = NULL;
   theQNamePool = NULL;
-  theUriPool = NULL;
+  theUriPool   = NULL;
 }
 
 
@@ -106,6 +110,35 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
+bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
+{
+  result =  new StructuralAnyUriItem(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createStructuralAnyURI(
+    store::Item_t& result,
+    ulong collectionId,
+    ulong treeId,
+    store::StoreConsts::NodeKind nodeKind,
+    const OrdPath& ordPath)
+{
+  ZORBA_FATAL(nodeKind,"Unexpected node kind");
+  std::ostringstream stream;
+  stream   << "zorba:"
+           << collectionId << "."
+           << treeId << "."
+           << static_cast<int>(nodeKind) << "."
+           << ordPath.serialize();
+  zstring uri = stream.str();
+
+  theUriPool->insert(uri);
+  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  return true;
+}
+
+
 bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 {
   result = new StringItem(value);
@@ -117,7 +150,8 @@ bool BasicItemFactory::createStreamableString(
     store::Item_t& result,
     std::istream &stream,
     StreamReleaser streamReleaser,
-    bool seekable) {
+    bool seekable) 
+{
   result = new StreamableStringItem( stream, streamReleaser, seekable );
   return true;
 }
@@ -162,7 +196,7 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
     store::Item_t resultItem;
-    if ( createNMTOKENS(resultItem, atomicTextValues[i]) )
+    if ( createNMTOKEN(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -391,7 +425,22 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  result = new BooleanItem(value);
+  if (value)
+  {
+    if (!theTrueItem)
+    {
+      theTrueItem = new BooleanItem(true);
+    }
+    result = theTrueItem;
+  }
+  else
+  {
+    if (!theFalseItem)
+    {
+      theFalseItem = new BooleanItem(false);
+    }
+    result = theFalseItem;
+  }
   return true;
 }
 
@@ -905,6 +954,22 @@ bool BasicItemFactory::createYearMonthDuration(
   return true;
 }
 
+bool BasicItemFactory::createYearMonthDuration(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
+{
+  Duration d;
+  if (Duration::parseYearMonthDuration(str, strlen, d) == 0)
+  {
+    result = new DurationItem(&d);
+    return true;
+  }
+
+  result = NULL;
+  return false;
+}
+
 
 bool BasicItemFactory::createDayTimeDuration(
     store::Item_t& result,
@@ -915,9 +980,53 @@ bool BasicItemFactory::createDayTimeDuration(
 }
 
 
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xs_base64Binary value)
+bool BasicItemFactory::createDayTimeDuration(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
-  result = new Base64BinaryItem(value);
+  Duration d;
+  if (Duration::parseDayTimeDuration(str, strlen, d) == 0)
+  {
+    result = new DurationItem(&d);
+    return true;
+  }
+
+  result = NULL;
+  return false;
+}
+
+
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    xs_base64Binary value)
+{
+  const std::vector<char>& data = value.getData();
+  result = new Base64BinaryItem(&data[0], data.size(), true);
+  return true;
+}
+
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    const char* value,
+    size_t size,
+    bool encoded)
+{
+  result = new Base64BinaryItem(value, size, encoded);
+  return true;
+}
+
+
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(
+      aStream, aReleaser, seekable, encoded
+    );
   return true;
 }
 

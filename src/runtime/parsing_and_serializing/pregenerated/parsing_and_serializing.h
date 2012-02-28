@@ -95,6 +95,8 @@ public:
 
   virtual ~FnSerializeIterator();
 
+public:
+  static void streamReleaser(std::istream* stream);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

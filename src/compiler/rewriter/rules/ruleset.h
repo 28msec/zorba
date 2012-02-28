@@ -22,17 +22,18 @@
 #include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/rules/rule_base.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 
 
 namespace zorba 
 {
 
+
+class SourceFinder;
+
+
 PREPOST_RULE(EchoNodes);
 
 PREPOST_RULE(PlanPrinter);
-
-PREPOST_RULE(MarkProducerNodeProps);
 
 PREPOST_RULE(EliminateNodeOps);
 
@@ -109,6 +110,54 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class MarkProducerNodeProps : public RewriteRule 
+{
+public:
+  MarkProducerNodeProps() 
+    :
+    RewriteRule(RewriteRule::MarkProducerNodeProps, "MarkProducerNodeProps")
+  {
+  }
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MarkNodeCopyProps : public RewriteRule 
+{
+  typedef std::set<fo_expr*> UdfCalls;
+  //typedef std::vector<fo_expr*> UdfCalls;
+
+protected:
+  SourceFinder          * theSourceFinder;
+
+  UdfCalls              theProcessedUDFCalls;
+  //UdfCalls                theUdfCallPath;
+
+public:
+  MarkNodeCopyProps() 
+    :
+    RewriteRule(RewriteRule::MarkNodeCopyProps, "MarkNodeCopyProps")
+  {
+  }
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+
+protected:
+  void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
+
+  void markSources(const std::vector<expr*>& sources);
+
+  void markForSerialization(expr* node);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class HoistRule : public RewriteRule 
 {
 public:
@@ -129,9 +178,6 @@ public:
 
   expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
-
-
-#undef RULE
 
 
 }

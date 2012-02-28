@@ -236,15 +236,19 @@ PlanIter_t XQueryCompiler::compile(
     audit::ScopedRecord& aAuditRecord)
 {
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_TRANSLATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                                         lTimer);
+
     rootExpr = normalize(ast); // also does the translation
   }
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                                         lTimer);
+
     rootExpr = optimize(rootExpr);
   }
 
@@ -254,9 +258,11 @@ PlanIter_t XQueryCompiler::compile(
 
   PlanIter_t plan;
   {
-    zorba::time::Timer lTimer;
-    zorba::audit::DurationAuditor durationAudit(
-        aAuditRecord, zorba::audit::XQUERY_COMPILATION_CODEGENERATION_DURATION, lTimer);
+    time::Timer lTimer;
+    audit::DurationAuditor durationAudit(aAuditRecord,
+                                         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                                         lTimer);
+
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
 
@@ -328,7 +334,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   "stream URL" hack in StreamResource - this is the only place in the code where
   we use the two-arg StreamResource constructor.
 *******************************************************************************/
-class FakeLibraryModuleURLResolver : public impl::URLResolver
+class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
   FakeLibraryModuleURLResolver
@@ -341,8 +347,8 @@ public:
   virtual ~FakeLibraryModuleURLResolver()
   {}
 
-  virtual impl::Resource* resolveURL
-  (zstring const& aUrl, impl::EntityData const* aEntityData)
+  virtual internal::Resource* resolveURL
+  (zstring const& aUrl, internal::EntityData const* aEntityData)
   {
     if (aUrl != theLibraryModuleNamespace) {
       return NULL;
@@ -351,7 +357,7 @@ public:
     // Pass a nullptr StreamReleaser; memory ownership of the istream remains
     // with the caller of this method.
     // QQQ We can remove this third argument when we can compile modules individually
-    return new impl::StreamResource(&theStream, nullptr,
+    return new internal::StreamResource(&theStream, nullptr,
                                     theLibraryModuleFilename);
   }
 

@@ -22,8 +22,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "store/naive/ordpath.h"
-#include "store/naive/store_defs.h"
+#include "ordpath.h"
+#include "store_defs.h"
 
 
 namespace zorba { namespace simplestore {
@@ -614,6 +614,76 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
   }
 }
 
+/*******************************************************************************
+ Determine the position of the "other" ordpath relative to "this" ordpath.
+ The result is one of: PRECEDING_SIBLING, FOLLOWING_SIBLING, PARENT, CHILD or OTHER
+********************************************************************************/
+OrdPath::RelativePosition OrdPath::getRelativePosition2(const OrdPath& other) const
+{
+  int32_t dewey1[MAX_NUM_COMPS], dewey2[MAX_NUM_COMPS];
+  ulong offsets1[MAX_NUM_COMPS], offsets2[MAX_NUM_COMPS];
+  ulong numComps1 = 0, numComps2 = 0;
+  ulong bitLen1 = 0, bitLen2 = 0;
+  bool thisFirst;
+
+  decompress(0, dewey1, offsets1, numComps1, bitLen1);
+  other.decompress(0, dewey2, offsets2, numComps2, bitLen2);
+
+  // curr will be the first non-shared component
+  ulong curr = 0;
+
+  if (numComps1 < numComps2)
+  {
+    while (curr < numComps1 && dewey1[curr] == dewey2[curr])
+      ++curr;
+  }
+  else
+  {
+    while (curr < numComps2 && dewey1[curr] == dewey2[curr])
+      ++curr;
+
+    if (curr == numComps1 && numComps1 == numComps2)
+      return OTHER; //The two ordpaths are the same
+  }
+
+  if (curr < numComps1 && curr < numComps2 && dewey1[curr] < dewey2[curr])
+    thisFirst = true;
+  else
+    thisFirst = false;
+
+  ulong extraLevels1 = 0, extraLevels2 = 0;
+
+  for (ulong i = curr; i < numComps1; ++i)
+  {
+    if (dewey1[i] % 2 == 1)
+      ++extraLevels1;
+  }
+
+  for (ulong i = curr; i < numComps2; ++i)
+  {
+    if (dewey2[i] % 2 == 1)
+      ++extraLevels2;
+  }
+
+  // extraLevels1/2 == 0 means that we exhausted ordpath1/2, i.e. one ordpath
+  // is a prefix of the other ordpath.
+
+  if (extraLevels1 > 1 || extraLevels2 > 1)
+    return OTHER;
+
+  else if (extraLevels1 == 1 && extraLevels2 == 0)
+    return PARENT;
+
+  else if (extraLevels1 == 0 && extraLevels2 == 1)
+    return CHILD;
+
+  else if (extraLevels1 == 1 && extraLevels2 == 1)
+    return thisFirst ? FOLLOWING_SIBLING : PRECEDING_SIBLING;
+
+  ZORBA_FATAL(0,"");//The last component of an OrdPath is odd.
+                    //Since the two labels were different at least one
+                    //of the two must have a odd component left.
+}
 
 /*******************************************************************************
   Compress a dewey id into an ordpath.
@@ -1463,6 +1533,30 @@ zstring OrdPath::show() const
   }
 
   return str.str();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ulong OrdPath::getLevel() const
+{
+  int32_t dewey[MAX_NUM_COMPS];
+  ulong offsets[MAX_NUM_COMPS];
+  ulong numComps = 0;
+  ulong bitLen = 0;
+
+  decompress(0, dewey, offsets, numComps, bitLen);
+
+  ulong level = 0;
+
+  for (ulong i = 0; i < numComps; ++i)
+  {
+    if (dewey[i] % 2 == 1)
+      ++level;
+  }
+
+  return level;
 }
 
 

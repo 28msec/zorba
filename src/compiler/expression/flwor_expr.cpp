@@ -70,6 +70,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(where_clause)
 SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
+
+SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
+
 
 DEF_EXPR_ACCEPT (flwor_expr)
 
@@ -530,6 +536,25 @@ flwor_wincond::~flwor_wincond()
   set_flwor_clause(NULL);
 }
 
+void flwor_wincond::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theIsOnly;
+  ar & theInputVars;
+  ar & theOutputVars;
+  ar & theCondExpr;
+}
+
+void flwor_wincond::vars::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & posvar;
+  ar & curr;
+  ar & prev;
+  ar & next;
+}
+
+flwor_wincond::vars::vars()
+{
+}
 
 flwor_wincond::vars::~vars()
 {
@@ -616,26 +641,26 @@ group_clause::group_clause(
   theNonGroupVars(ngvars),
   theCollations(collations)
 {
-  ulong numGVars = (ulong)theGroupVars.size();
-  ulong numNGVars = (ulong)theNonGroupVars.size();
+  csize numGVars = theGroupVars.size();
+  csize numNGVars = theNonGroupVars.size();
 
-  for (ulong i = 0; i < numGVars; ++i)
+  for (csize i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(this);
 
-  for (ulong i = 0; i < numNGVars; ++i)
+  for (csize i = 0; i < numNGVars; ++i)
     theNonGroupVars[i].second->set_flwor_clause(this);
 }
 
 
 group_clause::~group_clause()
 {
-  ulong numGVars = (ulong)theGroupVars.size();
-  ulong numNGVars = (ulong)theNonGroupVars.size();
+  csize numGVars = theGroupVars.size();
+  csize numNGVars = theNonGroupVars.size();
 
-  for (ulong i = 0; i < numGVars; ++i)
+  for (csize i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(NULL);
 
-  for (ulong i = 0; i < numNGVars; ++i)
+  for (csize i = 0; i < numNGVars; ++i)
     theNonGroupVars[i].second->set_flwor_clause(NULL);
 }
 
@@ -651,8 +676,8 @@ void group_clause::serialize(::zorba::serialization::Archiver& ar)
 
 expr* group_clause::get_input_for_group_var(const var_expr* var)
 {
-  ulong numVars = (ulong)theGroupVars.size();
-  for (ulong i = 0; i < numVars; ++i)
+  csize numVars = theGroupVars.size();
+  for (csize i = 0; i < numVars; ++i)
   {
     if (theGroupVars[i].second.getp() == var)
       return theGroupVars[i].first.getp();
@@ -664,8 +689,8 @@ expr* group_clause::get_input_for_group_var(const var_expr* var)
 
 expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 {
-  ulong numVars = (ulong)theNonGroupVars.size();
-  for (ulong i = 0; i < numVars; ++i)
+  csize numVars = theNonGroupVars.size();
+  for (csize i = 0; i < numVars; ++i)
   {
     if (theNonGroupVars[i].second.getp() == var)
       return theNonGroupVars[i].first.getp();
@@ -677,20 +702,20 @@ expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 
 flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
 {
-  ulong numGroupVars = (ulong)theGroupVars.size();
-  ulong numNonGroupVars = (ulong)theNonGroupVars.size();
+  csize numGroupVars = theGroupVars.size();
+  csize numNonGroupVars = theNonGroupVars.size();
 
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
 
-  for (ulong i = 0; i < numGroupVars; ++i)
+  for (csize i = 0; i < numGroupVars; ++i)
   {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
     cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
     subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
   }
 
-  for (ulong i = 0; i < numNonGroupVars; ++i)
+  for (csize i = 0; i < numNonGroupVars; ++i)
   {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
     cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
@@ -778,7 +803,13 @@ void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
 
 flwor_clause_t materialize_clause::clone(expr::substitution_t& subst) const
 {
-  ZORBA_ASSERT(false);
+  // we will reach here under the following scenario:
+  // 1. We do plan seriazation
+  // 2. getPlan is called on udf A; this causes a mat clause to be created
+  //    during the codegen on A's body
+  // 3. getPlan is called on udf B, which invokes A, and A's body is
+  //    inlined (and as a result cloned) inside B's body.
+  return new materialize_clause(theContext, get_loc());
 }
 
 

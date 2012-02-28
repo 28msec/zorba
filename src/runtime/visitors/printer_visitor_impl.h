@@ -15,6 +15,11 @@
  */
 #pragma once
 
+//
+// This file is included inside <BUILD_DIR>/src/runtime/visitors/printer_visitor.h.
+// That file defines the PrinterVisitor class as a subclass of PlanIterVisitor.
+//
+
 #define DECLARE_VISITOR(class)          \
   void beginVisit(const class& a);      \
   void endVisit(const class& );
@@ -67,46 +72,46 @@ void endVisit  (const GenericArithIterator<DivideOperation>& );
 void endVisit  (const GenericArithIterator<IntegerDivideOperation>& );
 void endVisit  (const GenericArithIterator<ModOperation>& );
 
-void beginVisit( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& a);
-void beginVisit( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& a);
-void beginVisit( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& a);
-void beginVisit( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& a);
-void beginVisit( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& a);
-void beginVisit( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& a);
-void beginVisit( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& a);
-void beginVisit( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& a);
-void beginVisit( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& a);
-void beginVisit( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& a);
-void beginVisit( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& a);
-void beginVisit( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& a);
-void beginVisit( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& a);
-void beginVisit( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& a);
-void beginVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& a);
-void beginVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& a);
-void beginVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& a);
-void beginVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& a);
-void beginVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& a);
-void beginVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& a);
-void endVisit(const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& );
-void endVisit(const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& );
-void endVisit(const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& );
-void endVisit(const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& );
-void endVisit(const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& );
-void endVisit(const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& );
-void endVisit(const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& );
-void endVisit(const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& );
-void endVisit(const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& );
-void endVisit(const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& );
-void endVisit(const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& );
-void endVisit(const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& );
-void endVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& );
-void endVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& );
-void endVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& );
-void endVisit(const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& );
-void endVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& );
-void endVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& );
-void endVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& );
-void endVisit(const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& );
+void beginVisit( const SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>& a);
+void beginVisit( const SpecificNumArithIterator<AddOperation, store::XS_INTEGER>& a);
+void beginVisit( const SpecificNumArithIterator<AddOperation, store::XS_FLOAT>& a);
+void beginVisit( const SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>& a);
+void beginVisit( const SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>& a);
+void beginVisit( const SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>& a);
+void beginVisit( const SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>& a);
+void beginVisit( const SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>& a);
+void beginVisit( const SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>& a);
+void beginVisit( const SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>& a);
+void beginVisit( const SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>& a);
+void beginVisit( const SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>& a);
+void beginVisit( const SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>& a);
+void beginVisit( const SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>& a);
+void beginVisit(const SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>& a);
+void beginVisit(const SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>& a);
+void beginVisit(const SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>& a);
+void beginVisit(const SpecificNumArithIterator<ModOperation, store::XS_INTEGER>& a);
+void beginVisit(const SpecificNumArithIterator<ModOperation, store::XS_FLOAT>& a);
+void beginVisit(const SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>& a);
+void endVisit(const SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>& );
+void endVisit(const SpecificNumArithIterator<AddOperation, store::XS_INTEGER>& );
+void endVisit(const SpecificNumArithIterator<AddOperation, store::XS_FLOAT>& );
+void endVisit(const SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>& );
+void endVisit(const SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>& );
+void endVisit(const SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>& );
+void endVisit(const SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>& );
+void endVisit(const SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>& );
+void endVisit(const SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>& );
+void endVisit(const SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>& );
+void endVisit(const SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>& );
+void endVisit(const SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>& );
+void endVisit(const SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>& );
+void endVisit(const SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>& );
+void endVisit(const SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>& );
+void endVisit(const SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>& );
+void endVisit(const SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>& );
+void endVisit(const SpecificNumArithIterator<ModOperation, store::XS_INTEGER>& );
+void endVisit(const SpecificNumArithIterator<ModOperation, store::XS_FLOAT>& );
+void endVisit(const SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>& );
 
 void beginVisit ( const FnMinMaxIterator& a);
 void endVisit   ( const FnMinMaxIterator& );
@@ -205,16 +210,16 @@ void endVisitWindowVariable();
     void endVisit  (const PromoteIterator& );
     void beginVisit(const CastableIterator& a);
     void endVisit  (const CastableIterator& );
-    void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_DECIMAL>& a);
-    void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_INTEGER>& a);
-    void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_DOUBLE>& a);
-    void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_FLOAT>& a);
-    void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& a);
-    void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_DECIMAL>& a);
-    void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_INTEGER>& a);
-    void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_DOUBLE>& a);
-    void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_FLOAT>& a);
-    void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& a);
+    void beginVisit ( const TypedValueCompareIterator<store::XS_DECIMAL>& a);
+    void beginVisit ( const TypedValueCompareIterator<store::XS_INTEGER>& a);
+    void beginVisit ( const TypedValueCompareIterator<store::XS_DOUBLE>& a);
+    void beginVisit ( const TypedValueCompareIterator<store::XS_FLOAT>& a);
+    void beginVisit ( const TypedValueCompareIterator<store::XS_STRING>& a);
+    void endVisit ( const TypedValueCompareIterator<store::XS_DECIMAL>& a);
+    void endVisit ( const TypedValueCompareIterator<store::XS_INTEGER>& a);
+    void endVisit ( const TypedValueCompareIterator<store::XS_DOUBLE>& a);
+    void endVisit ( const TypedValueCompareIterator<store::XS_FLOAT>& a);
+    void endVisit ( const TypedValueCompareIterator<store::XS_STRING>& a);
 
   DECLARE_VISITOR (UDFunctionCallIterator)
   DECLARE_VISITOR (ExtFunctionCallIterator)
@@ -226,7 +231,6 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (ElementIterator)
   DECLARE_VISITOR (AttributeIterator)
   DECLARE_VISITOR (DocumentIterator)
-  DECLARE_VISITOR (DocumentContentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
   DECLARE_VISITOR (EmptyIterator)
@@ -307,4 +311,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(ExitCatcherIterator);
   DECLARE_VISITOR(LoopIterator);
   DECLARE_VISITOR(FlowCtlIterator);
+
+  DECLARE_VISITOR(CountCollectionIterator);
+
 /* vim:set et sw=2 ts=2: */

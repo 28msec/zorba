@@ -16,6 +16,7 @@
 #
 # cURL
 #
+SET (CURL_FOUND)
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE(ZORBA_SUPPRESS_CURL)
@@ -36,6 +37,8 @@ ELSE(ZORBA_SUPPRESS_CURL)
     MESSAGE(STATUS "The cURL library was not found - http-client will not be built")
   ENDIF(CURL_FOUND)
 ENDIF(ZORBA_SUPPRESS_CURL)
+SET(ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE)
+MARK_AS_ADVANCED(ZORBA_HAVE_CURL)
 
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
 DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
@@ -46,6 +49,8 @@ DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
+DECLARE_ZORBA_MODULE(FILE node-position.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/node-position")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE project_xqdoc.xq VERSION 2.0
@@ -56,7 +61,7 @@ DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
 DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/schema")
-DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.0
+DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
   URI "http://www.zorba-xquery.com/modules/string")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
@@ -66,6 +71,10 @@ DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/converters/base64")
+DECLARE_ZORBA_MODULE(FILE converters/json.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/converters/json")
+DECLARE_ZORBA_SCHEMA(FILE converters/json-options.xsd
+  URI "http://www.zorba-xquery.com/modules/converters/json-options")
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/error.xq VERSION 2.0
@@ -97,6 +106,13 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
+
+# debugger client DBGP message handler module
+IF (ZORBA_WITH_DEBUGGER)
+  DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
+    URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
+ENDIF (ZORBA_WITH_DEBUGGER)
+
 
 # error and warning modules
 DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq

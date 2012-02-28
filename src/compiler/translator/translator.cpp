@@ -101,6 +101,7 @@
 #include "util/tracer.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+#include "util/hashmap.h"
 
 
 #define NODE_SORT_OPT
@@ -160,8 +161,7 @@ static expr_t translate_aux(
 /*******************************************************************************
 
 ********************************************************************************/
-#define ZANN_CONTAINS( ann ) \
-  theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts:: ann))
+#define ZANN_CONTAINS( ann ) theAnnotations->contains(AnnotationInternal::ann)
 
 
 /*******************************************************************************
@@ -436,11 +436,20 @@ public:
   detect "leaf" udfs, i.e., udfs that do not invoke other udfs. Such udfs are
   inlined by the optimizer.
 
+  theExitExprs:
+  -------------
+  This vector stores the exit_exprs that are encountered during the translation
+  of the body of a UDF. It is used to associated those exot_exprs with the
+  exit_catcher_expr that is added at the top of the UDF body.
+
   theHaveUpdatingExitExprs :
   --------------------------
 
   theHaveSequentialExitExprs :
   ----------------------------
+
+  theHaveContextItemDecl :
+  ------------------------
 
   theAssignedVars :
   -------------------
@@ -572,9 +581,13 @@ protected:
   PrologGraph                            thePrologGraph;
   PrologGraphVertex                      theCurrentPrologVFDecl;
 
+  std::vector<expr*>                     theExitExprs;
+
   bool                                   theHaveUpdatingExitExprs;
 
   bool                                   theHaveSequentialExitExprs;
+
+  bool                                   theHaveContextItemDecl;
 
   std::vector<std::vector<var_expr*> >   theAssignedVars;
 
@@ -654,6 +667,7 @@ TranslatorImpl(
   thePrologGraph(rootSctx),
   theHaveUpdatingExitExprs(false),
   theHaveSequentialExitExprs(false),
+  theHaveContextItemDecl(false),
   theTempVarCounter(1),
   theIsInIndexDomain(false),
   hadBSpaceDecl(false),
@@ -696,10 +710,12 @@ TranslatorImpl(
   }
 }
 
-~TranslatorImpl() {
+
+~TranslatorImpl() 
+{
 #ifndef ZORBA_NO_FULL_TEXT
-  while ( !theFTNodeStack.empty() )
-    delete ztd::pop_stack( theFTNodeStack );
+  while (!theFTNodeStack.empty())
+    delete ztd::pop_stack(theFTNodeStack);
 #endif
 }
 
@@ -1304,11 +1320,25 @@ void normalize_fo(fo_expr* foExpr)
     if (qname != NULL)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
+      ERROR_PARAMS(
+        qname->getStringValue(),
+        "index",
+        n-1,
+        "multiple of 6"
+      )
+      );
     }
     else
     {
-      RAISE_ERROR_NO_PARAMS(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc);
+      RAISE_ERROR(
+          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+          ERROR_PARAMS(
+            "anonymous",
+            "index",
+            n-1,
+            "multiple of 6"
+          )
+      );
     }
   }
 
@@ -1638,14 +1668,15 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   return flworExpr;
 }
 
-QueryLoc
-expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
+
+QueryLoc expandQueryLoc(const QueryLoc& aLocationFrom, const QueryLoc& aLocationTo)
 {
   QueryLoc lExpandedLocation(aLocationFrom);
   lExpandedLocation.setColumnEnd(aLocationTo.getColumnEnd());
   lExpandedLocation.setLineEnd(aLocationTo.getLineEnd());
   return lExpandedLocation;
 }
+
 
 /*******************************************************************************
   In this expression branch, we create the debugger expressions.
@@ -1657,7 +1688,7 @@ expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
 void wrap_in_debugger_expr(
   expr_t& aExpr,
   const QueryLoc& aLoc,
-  bool aAddBreakable = true,
+  bool aIsMainModuleBreakable = false,
   bool aIsVarDeclaration = false)
 {
 #ifdef ZORBA_WITH_DEBUGGER
@@ -1666,16 +1697,13 @@ void wrap_in_debugger_expr(
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aLoc,
                                                          aExpr,
-                                                         thePrologVars,
                                                          theNSCtx,
                                                          aIsVarDeclaration));
 
     // add the breakable expression in the debugger commons as a possible
     // breakpoint location
     Breakable lBreakable(aLoc);
-    if (aAddBreakable) {
-      theCCB->theDebuggerCommons->addBreakable(lBreakable);
-    }
+    theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
     typedef std::vector<var_expr_t> VarExprVector;
@@ -1688,23 +1716,24 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      store::Item* lVarname = (*lIter)->get_name();
+      var_expr* argVar = *lIter;
+
+      store::Item* lVarname = argVar->get_name();
+
       if (lVarname->getStringValue() == "$$dot")
       {
         continue;
       }
 
-      var_expr_t ve = create_var(lBreakable.getLocation(),
-                                 lVarname,
-                                 var_expr::eval_var,
-                                 NULL).dyn_cast<var_expr>();
+      var_expr_t evalVar = create_var(lBreakable.getLocation(),
+                                      lVarname,
+                                      var_expr::eval_var,
+                                      NULL);
 
-      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
-
-      expr_t val = new wrapper_expr(theRootSctx,
-                                    lBreakable.getLocation(),
-                                    rchandle<expr>(lVe));
-      lExpr->add_var(ve, val);
+      expr_t argExpr = new wrapper_expr(theRootSctx,
+                                        lBreakable.getLocation(),
+                                        rchandle<expr>(argVar));
+      lExpr->add_var(evalVar, argExpr);
     }
 
     aExpr = lExpr.release();
@@ -1728,9 +1757,9 @@ void collect_flwor_vars (
 
   // Find the ordinal number of the "end-1" clause.
   int i;
-  for (i = (int)clauses.size () - 1; i >= 0; --i)
+  for (i = (int)clauses.size() - 1; i >= 0; --i)
   {
-    if (&*clauses [i] == end)
+    if (&*clauses[i] == end)
     {
       --i;
       break;
@@ -1743,17 +1772,26 @@ void collect_flwor_vars (
   {
     const FLWORClause& c = *clauses[i];
 
-    if (typeid (c) == typeid (ForClause))
+    if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
-      for (int j =  (int)lV.size() - 1; j >= 0; --j)
+      const VarInDeclList& varDecls = 
+      *(static_cast<const ForClause*>(&c)->get_vardecl_list());
+
+      for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
+        VarInDecl* varDecl = varDecls[j].getp();
+
+        vars.insert(lookup_var(varDecl->get_name(), loc, err::XPST0008));
+
+        if (varDecl->get_posvar() != NULL)
+          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
       }
     }
-    else if (typeid (c) == typeid (LetClause))
+    else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+      const VarGetsDeclList& lV = 
+      *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
@@ -1824,17 +1862,17 @@ void collect_flwor_vars (
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. var_dec_expr(varExpr, initExpr)
+  1. var_decl_expr(varExpr, initExpr)
 
-  2. var_dec_expr(varExpr, initExpr)
+  2. var_decl_expr(varExpr, initExpr)
 
-     In this case, the var_dec_expr will be a NOOP if a value has been assigned
+     In this case, the var_decl_expr will be a NOOP if a value has been assigned
      to the external var via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. var_dec_expr(varExpr)
+  3. var_decl_expr(varExpr)
 
-  4. var_dec_expr(varExpr)
+  4. var_decl_expr(varExpr)
 
      In this case, the variable must be initialized via the c++ api before the
      query is executed, and it is this external intialization that will declare
@@ -1897,8 +1935,8 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
   assert(theAssignedVars.size() == 1);
 
   for (std::list<GlobalBinding>::iterator i = thePrologVars.begin();
-      i != thePrologVars.end();
-      ++i)
+       i != thePrologVars.end();
+       ++i)
   {
     declare_var(*i, theModulesInfo->theInitExprs);
   }
@@ -1967,7 +2005,7 @@ void* import_schema(
       RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
 
     if (prefix->get_default_bit())
-      theSctx->set_default_elem_type_ns(targetNS, loc);
+      theSctx->set_default_elem_type_ns(targetNS, true, loc);
 
     if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
@@ -1997,16 +2035,16 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<impl::Resource> lSchema;
-    impl::StreamResource* lStream = NULL;
+    std::auto_ptr<internal::Resource> lSchema;
+    internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      lSchema = theSctx->resolve_uri(*lIter, impl::EntityData::SCHEMA,
+      lSchema = theSctx->resolve_uri(*lIter, internal::EntityData::SCHEMA,
                                      lErrorMessage);
-      lStream = dynamic_cast<impl::StreamResource*>(lSchema.get());
+      lStream = dynamic_cast<internal::StreamResource*>(lSchema.get());
       if (lStream != NULL)
       {
         break;
@@ -2100,23 +2138,26 @@ import_schema_auto_prefix(
 #endif
 }
 
+
 /******************************************************************************
   Wraps an expression in a validate expression. If the schema URI is a
   non-empty string, the corresponding schema is imported. If the location is
   QueryLoc::null, the wrapped expression's location will be used.
 *******************************************************************************/
-expr_t
-wrap_in_validate_expr_strict(
-  expr* aExpr,
-  std::string aSchemaURI)
+expr_t wrap_in_validate_expr_strict(
+    expr* aExpr,
+    const zstring& aSchemaURI)
 {
   QueryLoc lLoc = aExpr->get_loc();
-  import_schema_auto_prefix(lLoc, zstring(aSchemaURI.c_str()), NULL);
+  import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
 
   store::Item_t qname;
-  return new validate_expr(
-    theRootSctx, lLoc, ParseConstants::val_strict,
-    qname, aExpr, theSctx->get_typemanager());
+  return new validate_expr(theRootSctx,
+                           lLoc,
+                           ParseConstants::val_strict,
+                           qname,
+                           aExpr,
+                           theSctx->get_typemanager());
 }
 
 
@@ -2140,7 +2181,8 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
+  if (v.get_encoding().length() != 0 &&
+      !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
   std::string versionStr = v.get_version().str();
@@ -2210,8 +2252,7 @@ void* begin_visit(const MainModule& v)
   var_expr_t var = bind_var(loc,
                             DOT_VARNAME,
                             var_expr::prolog_var,
-                            GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  //var->set_external(true);
+                            theSctx->get_context_item_type());
   var->set_unique_id(1);
 
   //GlobalBinding b(var, NULL, true);
@@ -2228,10 +2269,21 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   assert(theCCB->theIsEval || !program->is_updating());
 
+  // If an appliaction set a type for the context item via the c++ api, then
+  // create a full declaration for it in order to enforce that type.
+  if (!theHaveContextItemDecl && 
+      theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
+  {
+    var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
+    var->set_external(true);
+    GlobalBinding b(var, NULL, true);
+    declare_var(b, theModulesInfo->theInitExprs);
+  }
+
   // the main module debug iterator has no location otherwise
   // this would take precedence over a child debug iterator
   // starting in the same line
-  wrap_in_debugger_expr(program, program->get_loc(), false);
+  wrap_in_debugger_expr(program, program->get_loc(), true);
 
   program = wrap_in_globalvar_assign(program);
 
@@ -2643,10 +2695,10 @@ void* begin_visit(DefaultNamespaceDecl const& v)
   switch (v.get_mode())
   {
   case ParseConstants::ns_element_default:
-    theSctx->set_default_elem_type_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_elem_type_ns(v.get_default_namespace(), true, loc);
     break;
   case ParseConstants::ns_function_default:
-    theSctx->set_default_function_ns(v.get_default_namespace(), loc);
+    theSctx->set_default_function_ns(v.get_default_namespace(), true, loc);
     break;
   }
   return NULL;
@@ -2810,7 +2862,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
     theSctx->get_component_uris(modVer.versioned_uri(),
-                                impl::EntityData::MODULE, compURIs);
+                                internal::EntityData::MODULE, compURIs);
   }
   else
   {
@@ -2884,13 +2936,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
-      std::auto_ptr<impl::Resource> lResource =
+      std::auto_ptr<internal::Resource> lResource =
       theSctx->resolve_uri(compModVer.versioned_uri(),
-                           impl::EntityData::MODULE,
+                           internal::EntityData::MODULE,
                            lErrorMessage);
 
-      impl::StreamResource* lStreamResource =
-      dynamic_cast<impl::StreamResource*> (lResource.get());
+      internal::StreamResource* lStreamResource =
+      dynamic_cast<internal::StreamResource*> (lResource.get());
 
       if (lStreamResource != NULL)
       {
@@ -2986,7 +3038,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
-                              zstring(ZORBA_VERSIONING_NS),
+                              static_context::ZORBA_VERSIONING_NS,
                               zstring(""),
                               zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
@@ -3080,7 +3132,17 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
-      theSctx->bind_option( qnameItem, value, opt_decl->get_location() );
+      theSctx->bind_option(qnameItem, value, opt_decl->get_location());
+
+      if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
+          value == "for-serialization-only")
+      {
+        if (qnameItem->getLocalName() == "enable")
+          theCCB->theConfig.for_serialization_only = true;
+        else
+          theCCB->theConfig.for_serialization_only = false;
+      }
+
       continue;
     }
 
@@ -3137,7 +3199,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    ulong numParams = (ulong)params->size();
+    csize numParams = params->size();
 
     std::vector<xqtref_t> paramTypes;
 
@@ -3173,12 +3235,6 @@ void* begin_visit(const VFO_DeclList& v)
       // have an updating expr as input to a treat expr, which is not allowed
       // yet.
       //returnType = theRTM.EMPTY_TYPE;
-
-      // TODO: remove this
-      if (func_decl->is_external())
-      {
-        returnType = theRTM.EMPTY_TYPE;
-      }
     }
 
     // Create the function signature.
@@ -3189,7 +3245,7 @@ void* begin_visit(const VFO_DeclList& v)
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ? 
+    bool isSequential = (theAnnotations ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -3211,9 +3267,9 @@ void* begin_visit(const VFO_DeclList& v)
       if (f.getp() != 0)
       {
         // We make sure that the types of the parameters and the return type
-        // are equal to the one that is declared in the module
+        // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!sig.equals(tm, s))
+        if (!s.subtype(tm, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -3276,7 +3332,7 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ASSERT(ef != NULL);
 
       f = new external_function(loc,
-                                theSctx,
+                                theRootSctx,
                                 qnameItem->getNamespace(),
                                 sig,
                                 scriptKind,
@@ -3284,7 +3340,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
+      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
     }
 
     f->setAnnotations(theAnnotations);
@@ -3352,7 +3408,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-  ulong numParams = v.get_param_count();
+  csize numParams = v.get_param_count();
 
   function* lFunc = lookup_fn(v.get_name(), numParams, loc);
 
@@ -3437,7 +3493,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
       ZORBA_ASSERT(flwor != NULL);
 
-      for (ulong i = 0; i < numParams; ++i)
+      for (csize i = 0; i < numParams; ++i)
       {
         const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3453,7 +3509,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (udf->isExiting())
     {
-      body = new exit_catcher_expr(theRootSctx, loc, body);
+      body = new exit_catcher_expr(theRootSctx, loc, body, theExitExprs);
     }
 
     // Wrap the UDF body to the type-related expr that enforce the declared
@@ -3539,14 +3595,18 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-  // theCurrentPrologVFDecl might be null in case
-  // of inline functions
+  // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull())
   {
-    //const function* f = theCurrentPrologVFDecl.getFunction();
     //lc->setLazyEval(!f->isSequential());
+
+    const user_function* udf = 
+    static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
+
+    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_udf(udf);
   }
   else
   {
@@ -3653,19 +3713,15 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   {
     if (v.is_global())
     {
-      if (theAnnotations->contains(
-
-            theSctx->lookup_ann(StaticContextConsts::fn_private)))
+      if (ZANN_CONTAINS(fn_private))
         ve->set_private(true);
     }
 
-    if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_assignable)))
+    if (ZANN_CONTAINS(zann_assignable))
     {
       ve->set_mutable(true);
     }
-    else if (theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_nonassignable)))
+    else if (ZANN_CONTAINS(zann_nonassignable))
     {
       ve->set_mutable(false);
     }
@@ -3706,19 +3762,22 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure the initExpr is a simple expr.
     if (initExpr != NULL)
+    {
       expr::checkSimpleExpr(initExpr);
+      ve->setHasInitializer(true);
+    }
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
-      QueryLoc lExpandedLocation = expandQueryLoc(
-        v.get_name()->get_location(),
-        initExpr->get_loc());
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    {
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                  initExpr->get_loc());
+
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 
@@ -3740,14 +3799,14 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
 
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
 #endif
 
     push_nodestack(initExpr);
   }
-  theAnnotations = NULL;
 
+  theAnnotations = NULL;
 }
 
 
@@ -3789,41 +3848,32 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  //bool recognised = false;
+
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
-  if (lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
-      lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
-      lExpandedQName->getNamespace() == XSI_NS ||
-      lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
-      lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
-      lExpandedQName->getNamespace() == ZORBA_ANNOTATIONS_NS)
+  zstring annotNS = lExpandedQName->getNamespace();
+
+  if (annotNS == static_context::W3C_XML_NS ||
+      annotNS == XML_SCHEMA_NS ||
+      annotNS == XSI_NS ||
+      annotNS == static_context::W3C_FN_NS ||
+      annotNS == XQUERY_MATH_FN_NS ||
+      annotNS == ZORBA_ANNOTATIONS_NS)
   {
-    if ( theSctx->lookup_ann(lExpandedQName) ==  StaticContextConsts::zann_end)
+    if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
-      throw XQUERY_EXCEPTION(
-          err::XQST0045,
-          ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                        "\'" + lExpandedQName->getNamespace() + "\'"
-                        : lExpandedQName->getPrefix())
-                        + ":" + lExpandedQName->getLocalName()),
-          ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0045, loc,
+      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
+                    + ":" + lExpandedQName->getLocalName())));
     }
-  }
-  else
-  {
-    // annotation in unknown namespace -- generate a warning
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(
-        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
-        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                      "\'" + lExpandedQName->getNamespace() + "\'"
-                      : lExpandedQName->getPrefix())
-                      + ":" + lExpandedQName->getLocalName()),
-        WARN_LOC(loc)));
+
+    //recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
+
   if (v.get_literals())
   {
     std::vector<rchandle<exprnode> >::const_iterator lIter;
@@ -3837,7 +3887,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     }
   }
 
-  theAnnotations->push_back(lExpandedQName, lLiterals);
+  //if (recognised)
+    theAnnotations->push_back(lExpandedQName, lLiterals);
 }
 
 
@@ -3864,13 +3915,10 @@ void* begin_visit(const CtxItemDecl& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_PARAMS(
-        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+
+  theHaveContextItemDecl = true;
 
   return no_state;
 }
@@ -3883,9 +3931,18 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_expr() != NULL)
     initExpr = pop_nodestack();
 
-  xqtref_t type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  xqtref_t type;
+
   if (v.get_type() != NULL)
+  {
     type = pop_tstack();
+    theSctx->set_context_item_type(type);
+  }
+  else
+  {
+    type = theSctx->get_context_item_type();
+    assert(type != NULL);
+  }
 
   var_expr_t var;
 
@@ -4016,62 +4073,62 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   StaticContextConsts::node_modifier_t lNodeModifier;
 
   std::vector<rchandle<const_expr> > lLiterals;
-  if ( ZANN_CONTAINS (zann_queue) )
+  if (ZANN_CONTAINS(zann_queue))
   {
     lUpdateMode = StaticContextConsts::decl_queue;
   }
-  else if ( ZANN_CONTAINS ( zann_append_only) )
+  else if (ZANN_CONTAINS(zann_append_only))
   {
     lUpdateMode = StaticContextConsts::decl_append_only;
   }
-  else if ( ZANN_CONTAINS ( zann_const ) )
+  else if (ZANN_CONTAINS(zann_const))
   {
     lUpdateMode = StaticContextConsts::decl_const;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable ) )
+  else if (ZANN_CONTAINS(zann_mutable))
   {
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable),
+              lLiterals);
+
     lUpdateMode = StaticContextConsts::decl_mutable;
   }
 
-  if ( ZANN_CONTAINS ( zann_ordered) )
+  if (ZANN_CONTAINS(zann_ordered))
   {
     lOrderMode = StaticContextConsts::decl_ordered;
   }
-  else if ( ZANN_CONTAINS ( zann_unordered ) )
+  else if (ZANN_CONTAINS(zann_unordered))
   {
     lOrderMode = StaticContextConsts::decl_unordered;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_unordered ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_unordered),
+              lLiterals);
+
     lOrderMode = StaticContextConsts::decl_unordered;
   }
 
-  if ( ZANN_CONTAINS ( zann_read_only_nodes) )
+  if (ZANN_CONTAINS(zann_read_only_nodes))
   {
     lNodeModifier = StaticContextConsts::read_only;
   }
-  else if ( ZANN_CONTAINS ( zann_mutable_nodes ) )
+  else if (ZANN_CONTAINS(zann_mutable_nodes))
   {
     lNodeModifier = StaticContextConsts::mutable_node;
   }
   else
   {
-    theAnnotations->push_back(
-        theSctx->lookup_ann( StaticContextConsts::zann_mutable_nodes ),
-        lLiterals
-    );
+    theAnnotations->
+    push_back(AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes),
+              lLiterals);
+
     lNodeModifier = StaticContextConsts::mutable_node;
   }
 
@@ -4122,11 +4179,8 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "data-definition (ddl)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("data-definition (ddl)"));
   }
 
   const QName* qname = v.getName();
@@ -4148,10 +4202,10 @@ void* begin_visit(const AST_IndexDecl& v)
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
-  index->setGeneral ( false );
-  index->setUnique ( false );
-  index->setMethod ( IndexDecl::HASH );
-  index->setMaintenanceMode ( IndexDecl::MANUAL );
+  index->setGeneral(false);
+  index->setUnique(false);
+  index->setMethod(IndexDecl::HASH);
+  index->setMaintenanceMode(IndexDecl::MANUAL);
 
   AnnotationListParsenode* lAnns = v.get_annotations();
   if (lAnns)
@@ -4159,27 +4213,28 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if ( theAnnotations )
+  if (theAnnotations)
   {
-    if ( ZANN_CONTAINS ( zann_general_equality ) ||
-         ZANN_CONTAINS ( zann_general_range ) ) 
+    if (ZANN_CONTAINS(zann_general_equality) ||
+        ZANN_CONTAINS(zann_general_range))
     {
-      index->setGeneral( true );
+      index->setGeneral(true);
     }
-    if ( ZANN_CONTAINS ( zann_general_range ) ||
-         ZANN_CONTAINS ( zann_value_range ) ) 
+    if (ZANN_CONTAINS(zann_general_range) ||
+        ZANN_CONTAINS(zann_value_range))
     {
-      index->setMethod( IndexDecl::TREE );
+      index->setMethod(IndexDecl::TREE);
     }
-    if ( ZANN_CONTAINS ( zann_unique ) )
+    if (ZANN_CONTAINS(zann_unique))
     {
-      index->setUnique( true );
+      index->setUnique(true);
     }
-    if ( ZANN_CONTAINS ( zann_automatic ) )
+    if (ZANN_CONTAINS(zann_automatic))
     {
       index->setMaintenanceMode(IndexDecl::REBUILD);
     }
   }
+
   theAnnotations = NULL;
 
   theIndexDecl = index;
@@ -5190,6 +5245,11 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
     theModulesInfo->theCCB->setIsUpdating(true);
   }
 
+  if(program->is_sequential())
+  {
+    theModulesInfo->theCCB->setIsSequential(true);
+  }
+
   if (program->is_updating() && !theCCB->theIsEval)
   {
     program = new apply_expr(theRootSctx,
@@ -5440,11 +5500,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   if (varType != NULL)
     valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
 
-  push_nodestack(new fo_expr(theRootSctx,
-                             loc,
-                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
-                             ve,
-                             valueExpr));
+  push_nodestack(new var_set_expr(theRootSctx, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve.getp());
 }
@@ -5504,6 +5560,8 @@ void end_visit(const ExitExpr& v, void* visit_state)
     theHaveSequentialExitExprs = true;
   }
 
+  expr_t exitExpr = new exit_expr(theRootSctx, loc, childExpr);
+
   if (inUDFBody())
   {
     function* f = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
@@ -5511,9 +5569,10 @@ void end_visit(const ExitExpr& v, void* visit_state)
     user_function* udf = static_cast<user_function*>(f);
 
     udf->setExiting(true);
+    theExitExprs.push_back(exitExpr.getp());
   }
 
-  push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
+  push_nodestack(exitExpr);
 }
 
 
@@ -5878,9 +5937,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = expandQueryLoc(
-    v.get_name()->get_location(),
-    domainExpr->get_loc());
+  QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                              domainExpr->get_loc());
+
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
@@ -5987,9 +6046,9 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     // it's important to insert the debugger before the scope is pushed.
     // Otherwise, the variable in question would already be in scope for
     // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(
-      v.get_name()->get_location(),
-      domainExpr->get_loc());
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                domainExpr->get_loc());
+
     wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
     push_scope();
@@ -7228,7 +7287,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 /*******************************************************************************
   QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
 
-  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle 
+  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle
                      ("," "$" VarName TypeDeclaration? "in" ExprSingle)*
 
   A universally quantified expr is translated into a flwor expr:
@@ -7437,8 +7496,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -7457,8 +7516,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -9173,13 +9232,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t condExpr;
   std::vector<expr_t> condOperands(3);
 
-  condOperands[0] = 
+  condOperands[0] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = 
+  condOperands[1] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = 
+  condOperands[2] =
   new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
@@ -9326,6 +9385,26 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr_t> concat_args;
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  concat_args.push_back(left);
+  concat_args.push_back(right);
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  push_nodestack(concat);
+}
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -9678,6 +9757,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
+      case FunctionConsts::FN_SUBSTRING_2:
+      case FunctionConsts::FN_SUBSTRING_3:
       {
         std::reverse(arguments.begin(), arguments.end());
 
@@ -9687,7 +9768,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -9697,7 +9781,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
               TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
           {
-            f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+            else
+              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
@@ -10053,9 +10140,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
@@ -10065,7 +10152,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           var_expr::eval_var,
                                           inscopeVars[i]->get_return_type());
 
-          // At this point, the domain expr of an eval var is always another var.
+          // At thgis point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
           expr_t valueExpr = inscopeVars[i].getp();
@@ -10208,9 +10295,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         std::vector<var_expr_t> inscopeVars;
         theSctx->getVariables(inscopeVars);
-        ulong numVars = inscopeVars.size();
+        csize numVars = inscopeVars.size();
 
-        for (ulong i = 0; i < numVars; ++i)
+        for (csize i = 0; i < numVars; ++i)
         {
           if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
             continue;
@@ -10220,14 +10307,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           var_expr::eval_var,
                                           inscopeVars[i]->get_return_type());
 
-          // At this point, the domain expr of an eval var is always another var.
-          // However, that other var may be later inlined, so in general, the domain
-          // expr of an eval var may be any expr.
           expr_t valueExpr = inscopeVars[i].getp();
           evalExpr->add_var(evalVar, valueExpr);
         }
 
-        for (ulong i=0; i<temp_vars.size(); i++)
+        for (csize i = 0; i < temp_vars.size(); ++i)
         {
           var_expr_t evalVar = create_var(loc,
                                           temp_vars[i]->get_name(),
@@ -10328,14 +10412,12 @@ void* begin_visit(const LiteralFunctionItem& v)
 
   if ( !theSctx->is_feature_set(feature::hof) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("higher-order functions (hof)"));
   }
   return no_state;
 }
+
 
 void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 {
@@ -10344,10 +10426,12 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  try {
+  try
+  {
     arity = to_xs_unsignedInt(v.getArity());
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }
@@ -10366,6 +10450,12 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (!fn->isUdf())
   {
+    user_function* udf = new user_function(loc,
+                                           fn->getSignature(),
+                                           NULL, // no body for now
+                                           fn->getScriptingKind(),
+                                           theCCB);
+
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
 
@@ -10373,17 +10463,17 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     {
       var_expr_t argVar = create_temp_var(loc, var_expr::arg_var);
 
+      argVar->set_param_pos(i);
+      argVar->set_udf(udf);
+
       udfArgs[i] = argVar;
       foArgs[i] = argVar.getp();
     }
 
     expr_t body = new fo_expr(theRootSctx, loc, fn, foArgs);
 
-    user_function* udf = new user_function(loc,
-                                           fn->getSignature(),
-                                           body,
-                                           fn->getScriptingKind());
     udf->setArgVars(udfArgs);
+    udf->setBody(body);
 
     fn = udf;
   }
@@ -10461,8 +10551,10 @@ void* begin_visit(const InlineFunction& v)
 
     var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
+
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
+    arg_var->set_param_pos(flwor->num_clauses());
     arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
@@ -10570,7 +10662,8 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -10666,12 +10759,16 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   nameExpr = new const_expr(theRootSctx, loc, qnameItem);
 
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
   push_nodestack(new elem_expr(theRootSctx,
                                loc,
                                nameExpr,
                                attrExpr,
                                contentExpr,
-                               theNSCtx));
+                               theNSCtx,
+                               copyNodes));
   pop_elem_scope();
   pop_scope();
 }
@@ -10839,35 +10936,29 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
       }
 
       if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
       theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
       theNSCtx->bind_ns(prefix, uri);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(uri, loc);
+        theSctx->set_default_elem_type_ns(uri, true, loc);
     }
     else if (valueExpr == NULL)
     {
       if (ZSTREQ(prefix, "xml"))
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+      }
 
       // unbind the prefix
       zstring empty;
@@ -10875,7 +10966,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       theNSCtx->bind_ns(prefix, empty);
 
       if (prefix.empty())
-        theSctx->set_default_elem_type_ns(empty, loc);
+        theSctx->set_default_elem_type_ns(empty, true, loc);
     }
     else
     {
@@ -11328,7 +11419,10 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 
   fo_expr* lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
 
-  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new doc_expr(theRootSctx, loc, lEnclosed, copyNodes));
 }
 
 
@@ -11370,7 +11464,15 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), theNSCtx, false);
   }
 
-  push_nodestack (new elem_expr(theRootSctx, loc, nameExpr, contentExpr, theNSCtx));
+  bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
+                    !Properties::instance()->noCopyOptim());
+
+  push_nodestack(new elem_expr(theRootSctx,
+                               loc,
+                               nameExpr,
+                               contentExpr,
+                               theNSCtx,
+                               copyNodes));
 }
 
 
@@ -11863,11 +11965,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }

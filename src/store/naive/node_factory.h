@@ -21,7 +21,7 @@
 #include "zorbamisc/config/platform.h"
 #include "common/shared_types.h"
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 
 namespace zorba 
@@ -68,8 +68,8 @@ public:
 
   virtual DocumentNode* createDocumentNode(
         XmlTree* tree,
-        zstring& baseUri,
-        zstring& docUri);
+        const zstring& baseUri,
+        const zstring& docUri);
 
   virtual ElementNode* createElementNode(
         store::Item_t&  nodeName,
@@ -108,7 +108,7 @@ public:
   virtual TextNode* createTextNode(
         XmlTree*       tree,
         InternalNode*  parent,
-        bool           aqppend,
+        bool           append,
         csize          pos,
         zstring&       content);
 

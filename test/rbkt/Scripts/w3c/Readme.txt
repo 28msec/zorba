@@ -14,18 +14,28 @@
 #
 To generate a report for submitting to the W3C:
 
-0.  For submitting reports to W3C one should compile Zorba with ZORBA_WITH_BIG_INTEGER=ON. 
-    In order to generate the report for XQueryX compile Zorba by setting:
-    ZORBA_XQUERYX=ON and ZORBA_TEST_XQUERYX=ON. These options are set to OFF by default.
-
+0.  For submitting reports to W3C one should compile Zorba with:
+    ZORBA_WITH_BIG_INTEGER=ON
+    ZORBA_XQUERYX=ON
+    ZORBA_TEST_XQUERYX=ON
+    ZORBA_TEST_W3C_TO_SUBMIT_RESULTS=ON
+    All these options are set to OFF by default.
+    
 1.  Import XQTS/XQFTTS.
 
-2.  Run a CTest dashboard from your build directory:
+2.  Use the "testdriver" to do the testing.
+    Run a CTest dashboard from your build directory:
 
-    ctest -T test -R w3c_testsuite/XQuery 
+    ctest -T test -R w3c_testsuite/XQuery -E XQueryX or
     ctest -T test -R w3c_testsuite/XQueryX
-    ctest -T test -R w3c_full_text_testsuite/XQuery
+    ctest -T test -R w3c_full_text_testsuite/XQuery -E XQueryX or
     ctest -T test -R w3c_full_text_testsuite/XQueryX
+
+or, *ONLY* for XQTS you can use the "testdriver_mt" to do the testing:
+
+    from the build/test/rbkt execute
+    ./testdriver_mt -b w3c_testsuite/XQuery -w3c or
+    ./testdriver_mt -b w3c_testsuite/XQueryX -w3c
 
 3.  From this directory (test/rbkt/Scripts/w3c), modify
     generate-submission-xqts.xq/generate-submission-xqftts.xq to reflect:

@@ -20,6 +20,7 @@
 #include <zorba/config.h>
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 #include <zorba/streams.h>
 #ifndef ZORBA_NO_FULL_TEXT
@@ -28,16 +29,19 @@
 
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
-#include "store/naive/store_defs.h"
+#include "store/api/xs_type_codes.h"
+#include "store_defs.h"
+#include "shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include "store/naive/naive_ft_token_iterator.h"
+#include "naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "ordpath.h"
 
 
 namespace zorba
@@ -45,6 +49,13 @@ namespace zorba
 
 namespace simplestore
 {
+
+
+enum AnyUriTypeCode
+{
+  NON_SPECIALIZED_ANY_URI,
+  STRUCTURAL_INFORMATION_ANY_URI
+};
 
 class AtomicItemTokenizerCallback;
 
@@ -64,26 +75,16 @@ protected:
 public:
   AtomicItem() : store::Item(ATOMIC) { }
 
-  ~AtomicItem() {}
+  virtual ~AtomicItem() {}
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  store::Item_t getAtomizationValue() const;
-
-  virtual SchemaTypeCode getTypeCode() const = 0;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   bool castToLong(store::Item_t& result) const;
 
-  void coerceToDouble(
-      store::Item_t& result,
-      bool force,
-      bool& lossy) const;
+  void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
 };
-
-
-typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
 
 /*******************************************************************************
@@ -112,7 +113,7 @@ protected:
 public:
   store::Item* getBaseItem() const;
 
-  SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
+  store::SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
 
   store::Item* getType() const { return theTypeName.getp(); }
 
@@ -143,7 +144,7 @@ public:
       return theBaseItem->compare(other->getBaseItem(), timezone, collation);
   }
 
-  store::Item_t getEBV() const { return theBaseItem->getEBV(); }
+  bool getEBV() const { return theBaseItem->getEBV(); }
 
   zstring getStringValue() const { return theBaseItem->getStringValue(); }
 
@@ -153,7 +154,10 @@ public:
 
   const zstring& getString() const { return theBaseItem->getString(); }
 
-  xs_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
+  const char* getBase64BinaryValue(size_t& s) const
+  {
+    return theBaseItem->getBase64BinaryValue(s);
+  }
 
   xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
 
@@ -299,7 +303,7 @@ public:
 
   bool castToBoolean(store::Item_t& result) const;
 
-  SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNTYPED_ATOMIC; }
 
   store::Item* getType() const;
 
@@ -308,12 +312,14 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue == other->getString();
-  }
+        const XQPCollator* collation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  long compare(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* collation = 0) const;
+
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -347,7 +353,7 @@ protected:
   uint16_t     thePrevFree;
 
 public:
-  ~QNameItem();
+  virtual ~QNameItem();
 
   QNameItem* getNormalized() const;
 
@@ -364,11 +370,11 @@ public:
 
   const zstring& getLocalName() const { return getNormalized()->theLocal; }
 
-  SchemaTypeCode getTypeCode() const { return XS_QNAME; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_QNAME; }
 
   store::Item* getType() const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -473,7 +479,7 @@ public:
 
   zstring show() const;
 
-  virtual SchemaTypeCode getTypeCode() const { return XS_NOTATION; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_NOTATION; }
 };
 
 
@@ -483,6 +489,7 @@ public:
 class AnyUriItem : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class StructuralAnyUriItem;
 
 protected:
   zstring theValue;
@@ -493,7 +500,12 @@ protected:
   AnyUriItem() {}
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_ANY_URI; }
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return NON_SPECIALIZED_ANY_URI;
+  }
+
+  store::SchemaTypeCode getTypeCode() const { return store::XS_ANY_URI; }
 
   store::Item* getType( ) const;
 
@@ -515,7 +527,7 @@ public:
     return theValue.compare(other->getString());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -526,6 +538,177 @@ public:
   const zstring& getString() const { return theValue; }
 
   zstring show() const;
+
+  virtual bool
+  isAncestor(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isFollowing(const store::Item_t&) const;
+
+  virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  virtual bool
+  isDescendant(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isPreceding(const store::Item_t&) const;
+
+  virtual bool
+  isChild(const store::Item_t&) const;
+
+  virtual bool
+  isAttribute(const store::Item_t&) const;
+
+  virtual bool
+  isParent(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
+
+  virtual store::Item_t
+  getLevel() const;
+
+  virtual bool
+  isAttribute() const;
+
+  virtual bool
+  isComment() const;
+
+  virtual bool
+  isDocument() const;
+
+  virtual bool
+  isElement() const;
+
+  virtual bool
+  isProcessingInstruction() const;
+
+  virtual bool
+  isText() const;
+
+  virtual bool
+  isSibling(const store::Item_t&) const;
+
+  virtual bool
+  inSameTree(const store::Item_t&) const;
+
+  virtual bool
+  inCollection() const;
+
+  virtual bool
+  inSameCollection(const store::Item_t&) const;
+};
+
+
+/*******************************************************************************
+  class StructuralAnyUriItem
+********************************************************************************/
+class StructuralAnyUriItem : public AnyUriItem
+{
+  friend class BasicItemFactory;
+
+protected:
+  ulong                        theCollectionId;
+  ulong                        theTreeId;
+  store::StoreConsts::NodeKind theNodeKind;
+  OrdPath                      theOrdPath;
+
+protected:
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return STRUCTURAL_INFORMATION_ANY_URI;
+  }
+
+  StructuralAnyUriItem(zstring& value);
+
+  StructuralAnyUriItem(
+      zstring& value,
+      ulong collectionId,
+      ulong treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
+
+  StructuralAnyUriItem() {}
+
+public:
+  bool
+  isAncestor(const store::Item_t&) const;
+
+  bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  bool
+  isFollowing(const store::Item_t&) const;
+
+  bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  bool
+  isDescendant(const store::Item_t&) const;
+
+  bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  bool
+  isPreceding(const store::Item_t&) const;
+
+  bool
+  isChild(const store::Item_t&) const;
+
+  bool
+  isAttribute(const store::Item_t&) const;
+
+  bool
+  isParent(const store::Item_t&) const;
+
+  bool
+  isPrecedingInDocumentOrder(const store::Item_t&) const;
+
+  bool
+  isFollowingInDocumentOrder(const store::Item_t&) const;
+
+  store::Item_t
+  getLevel() const;
+
+  bool
+  isAttribute() const;
+
+  bool
+  isComment() const;
+
+  bool
+  isDocument() const;
+
+  bool
+  isElement() const;
+
+  bool
+  isProcessingInstruction() const;
+
+  bool
+  isText() const;
+
+  bool
+  isSibling(const store::Item_t&) const;
+
+  bool
+  inSameTree(const store::Item_t&) const;
+
+  bool
+  inCollection() const;
+
+  bool
+  inSameCollection(const store::Item_t&) const;
 };
 
 
@@ -549,7 +732,7 @@ protected:
 
 public:
 
-  virtual SchemaTypeCode getTypeCode() const { return XS_STRING; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_STRING; }
 
   virtual store::Item* getType() const;
 
@@ -565,7 +748,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const { return theValue; }
 
@@ -578,8 +761,11 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 };
 
@@ -611,7 +797,7 @@ public:
         long timezone = 0,
         const XQPCollator* collator = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -635,9 +821,10 @@ public:
 
   void setStreamReleaser(StreamReleaser aReleaser);
 
-  ~StreamableStringItem()
+  virtual ~StreamableStringItem()
   {
-    if (theStreamReleaser) {
+    if (theStreamReleaser) 
+    {
       theStreamReleaser(&theIstream);
     }
   }
@@ -671,7 +858,7 @@ protected:
   NormalizedStringItem(zstring& value) : StringItem(value) {}
 
 public:
-  virtual SchemaTypeCode getTypeCode() const { return XS_NORMALIZED_STRING; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_NORMALIZED_STRING; }
 
   virtual store::Item* getType() const;
 
@@ -689,7 +876,7 @@ class TokenItem : public NormalizedStringItem
 public:
   TokenItem(zstring& value) : NormalizedStringItem(value) {}
 
-  virtual SchemaTypeCode getTypeCode() const { return XS_TOKEN; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_TOKEN; }
 
   virtual store::Item* getType() const;
 
@@ -708,7 +895,7 @@ protected:
   NMTOKENItem(zstring& value) : TokenItem(value) {}
 
 public:
-  virtual SchemaTypeCode getTypeCode() const { return XS_NMTOKEN; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_NMTOKEN; }
 
   virtual store::Item* getType() const;
 
@@ -727,7 +914,7 @@ protected:
   LanguageItem(zstring& value) : TokenItem(value) {}
 
 public:
-  virtual SchemaTypeCode getTypeCode() const { return XS_LANGUAGE; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_LANGUAGE; }
 
   virtual store::Item* getType() const;
 
@@ -746,7 +933,7 @@ protected:
   NameItem(zstring& value) : TokenItem(value) {}
 
 public:
-  virtual SchemaTypeCode getTypeCode() const { return XS_NAME; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_NAME; }
 
   virtual store::Item* getType() const;
 
@@ -765,7 +952,7 @@ protected:
   NCNameItem(zstring& value) : NameItem(value) {}
 
 public:
-  virtual SchemaTypeCode getTypeCode() const { return XS_NCNAME; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_NCNAME; }
 
   virtual store::Item* getType() const;
 
@@ -784,7 +971,7 @@ protected:
   IDItem(zstring& value) : NCNameItem(value) { }
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_ID; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_ID; }
 
   store::Item* getType() const;
 
@@ -802,7 +989,7 @@ protected:
   IDREFItem(zstring& value) : NCNameItem(value) { }
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_IDREF; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_IDREF; }
 
   store::Item* getType() const;
 
@@ -820,7 +1007,7 @@ protected:
   ENTITYItem(zstring& value) : NCNameItem(value) { }
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_ENTITY; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_ENTITY; }
 
   store::Item* getType() const;
 
@@ -860,7 +1047,7 @@ public:
 
   const xs_gDay& getGDayValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const;
+  store::SchemaTypeCode getTypeCode() const;
 
   store::Item* getType() const;
 
@@ -876,7 +1063,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -910,7 +1097,7 @@ public:
 
   const xs_yearMonthDuration& getYearMonthDurationValue() const;
 
-  SchemaTypeCode getTypeCode() const;
+  store::SchemaTypeCode getTypeCode() const;
 
   store::Item* getType() const;
 
@@ -936,7 +1123,7 @@ public:
     return theValue.compare(other->getDurationValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -970,7 +1157,7 @@ public:
 
   bool isPosOrNegInf() const;
 
-  SchemaTypeCode getTypeCode() const { return XS_DOUBLE; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_DOUBLE; }
 
 	store::Item* getType() const;
 
@@ -995,7 +1182,7 @@ public:
     return theValue.compare(other->getDoubleValue());
   }
 
-	store::Item_t getEBV( ) const;
+	bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1031,7 +1218,7 @@ public:
 
   bool isPosOrNegInf() const;
 
-  SchemaTypeCode getTypeCode() const { return XS_FLOAT; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_FLOAT; }
 
   store::Item* getType() const;
 
@@ -1056,7 +1243,7 @@ public:
     return getDoubleValue().compare(other->getDoubleValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1095,7 +1282,7 @@ public:
 class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class IndexBoxCondition;
+  friend class IndexConditionImpl;
   friend class AtomicItem;
 
 protected:
@@ -1108,7 +1295,7 @@ protected:
 public:
   xs_decimal getDecimalValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_DECIMAL; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_DECIMAL; }
 
   store::Item* getType() const;
 
@@ -1133,7 +1320,7 @@ public:
     return theValue.compare(other->getDecimalValue());
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1170,7 +1357,7 @@ public:
 
   xs_long getLongValue() const;
 
-  virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
+  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_INTEGER; }
 
   virtual store::Item* getType() const;
 
@@ -1186,7 +1373,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1213,7 +1400,7 @@ protected:
   NonPositiveIntegerItem() {}
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_NON_POSITIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1234,7 +1421,7 @@ protected:
   NegativeIntegerItem() {}
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_NEGATIVE_INTEGER; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_NEGATIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1259,7 +1446,7 @@ protected:
 public:
   xs_uinteger getUnsignedIntegerValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_NON_NEGATIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1282,7 +1469,7 @@ protected:
 public:
   xs_uinteger getUnsignedIntegerValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_POSITIVE_INTEGER; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_POSITIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1313,7 +1500,7 @@ public:
 
   xs_long getLongValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_LONG; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_LONG; }
 
   store::Item* getType() const;
 
@@ -1354,7 +1541,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1395,7 +1582,7 @@ public:
 
   int32_t getIntValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_INT; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_INT; }
 
   store::Item* getType( ) const;
 
@@ -1436,7 +1623,7 @@ public:
     }
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1475,7 +1662,7 @@ public:
 
   xs_short getShortValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_SHORT; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_SHORT; }
 
   store::Item* getType() const;
 
@@ -1516,7 +1703,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1559,7 +1746,7 @@ public:
 
   xs_byte getByteValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_BYTE; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_BYTE; }
 
   store::Item* getType() const;
 
@@ -1600,7 +1787,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1641,7 +1828,7 @@ protected:
 
   xs_unsignedLong getUnsignedLongValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNSIGNED_LONG; }
 
   store::Item* getType() const;
 
@@ -1682,7 +1869,7 @@ protected:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1725,7 +1912,7 @@ public:
 
   xs_unsignedInt getUnsignedIntValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_INT; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNSIGNED_INT; }
 
   store::Item* getType() const;
 
@@ -1773,7 +1960,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1818,7 +2005,7 @@ public:
 
   bool isNaN() const { return false; }
 
-  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_SHORT; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNSIGNED_SHORT; }
 
   store::Item* getType() const;
 
@@ -1866,7 +2053,7 @@ public:
     }
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -1913,7 +2100,7 @@ public:
 
   bool isNaN() const { return false; }
 
-  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_BYTE; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_UNSIGNED_BYTE; }
 
   store::Item* getType() const;
 
@@ -1961,7 +2148,7 @@ public:
     }
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   zstring getStringValue() const;
 
@@ -1991,7 +2178,7 @@ protected:
 public:
   xs_boolean getBooleanValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_BOOLEAN; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_BOOLEAN; }
 
   store::Item* getType() const;
 
@@ -2015,7 +2202,7 @@ public:
             (theValue == false ? -1 : 1));
   }
 
-  store::Item_t getEBV( ) const;
+  bool getEBV( ) const;
 
   zstring getStringValue() const;
 
@@ -2035,29 +2222,114 @@ class Base64BinaryItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xs_base64Binary theValue;
+  std::vector<char> theValue;
+  bool        theIsEncoded;
 
 protected:
-  Base64BinaryItem(xs_base64Binary aValue) : theValue(aValue) {}
+  Base64BinaryItem(bool aIsEncoded)
+    : theIsEncoded(aIsEncoded) {}
 
-  Base64BinaryItem() {}
+  Base64BinaryItem(const char* aValue, size_t aSize, bool aIsEncoded = true)
+    : theIsEncoded(aIsEncoded)
+  {
+    theValue.reserve(aSize);
+    theValue.insert(theValue.begin(), aValue, aValue + aSize);
+  }
 
 public:
-  xs_base64Binary getBase64BinaryValue() const { return theValue; }
+  const char* getBase64BinaryValue(size_t& data) const;
 
-  SchemaTypeCode getTypeCode() const { return XS_BASE64BINARY; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
 
   store::Item* getType() const;
+
+  bool isEncoded() const { return theIsEncoded; }
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* aCollation = 0 ) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
+  
+protected:
+  // used in hash doing simple xor of the data
+  struct hash_functor
   {
-    return theValue.equal(other->getBase64BinaryValue());
+    uint32_t hash_value;
+
+    void operator() (char c)
+    {
+      hash_value ^= (uint32_t) c;
+    }
+  };
+};
+
+
+/*******************************************************************************
+  class StreamableBase64BinaryItem
+********************************************************************************/
+class StreamableBase64BinaryItem : public Base64BinaryItem
+{
+  friend class BasicItemFactory;
+
+protected:
+  std::istream & theIstream;
+
+  bool theIsMaterialized;
+  bool theIsConsumed;
+  bool theIsSeekable;
+
+  StreamReleaser theStreamReleaser;
+
+protected:
+  StreamableBase64BinaryItem(
+      std::istream& aStream,
+      StreamReleaser streamReleaser,
+      bool seekable = false,
+      bool is_encoded = false)
+    : Base64BinaryItem(is_encoded),
+      theIstream(aStream),
+      theIsMaterialized(false),
+      theIsConsumed(false),
+      theIsSeekable(seekable),
+      theStreamReleaser(streamReleaser)
+  {}
+
+  void materialize() const;
+
+public:
+  virtual ~StreamableBase64BinaryItem()
+  {
+    if (theStreamReleaser) 
+    {
+      theStreamReleaser(&theIstream);
+    }
   }
+
+  bool isStreamable() const;
+
+  bool isSeekable() const;
+
+  std::istream& getStream();
+
+  StreamReleaser getStreamReleaser();
+
+  void setStreamReleaser(StreamReleaser aReleaser);
+
+  const char* getBase64BinaryValue(size_t&) const;
+
+  store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   zstring getStringValue() const;
 
@@ -2080,23 +2352,20 @@ protected:
   xs_hexBinary theValue;
 
 protected:
-  HexBinaryItem(xs_hexBinary aValue) : theValue(aValue) {}
+  HexBinaryItem(xs_hexBinary value) : theValue(value) {}
 
   HexBinaryItem() {}
 
 public:
   xs_hexBinary getHexBinaryValue() const { return theValue; }
 
-  SchemaTypeCode getTypeCode() const { return XS_HEXBINARY; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_HEXBINARY; }
 
   store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* coll = 0) const;
 
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+  bool equals(const store::Item* other, long tz = 0, const XQPCollator* coll = 0) const
   {
     return theValue.equal(other->getHexBinaryValue());
   }
@@ -2141,11 +2410,9 @@ protected:
   }
 
 public:
-  ~ErrorItem();
+  virtual ~ErrorItem();
 
   ZorbaException* getError() const { return theError; }
-
-  SchemaTypeCode getTypeCode() const { return ZXSE_ERROR; }
 
   zstring show() const;
 

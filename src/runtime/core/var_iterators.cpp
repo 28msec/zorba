@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -28,9 +29,11 @@
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/iterator.h"
+#include "store/api/iterator_factory.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
+#include "store/api/store.h"
 
 #include "util/string_util.h"
 
@@ -109,20 +112,18 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         store::Item_t item;
 
         if (! consumeNext(item, theChildren[0], planState))
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-            ERROR_LOC( loc )
-          );
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+        }
 
         dctx->set_variable(theVarId, theVarName, loc, item);
 
         if (consumeNext(item, theChildren[0], planState))
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-            ERROR_LOC( loc )
-          );
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+        }
       }
       else
       {
@@ -169,11 +170,10 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theSingleItem)
   {
     if (! consumeNext(item, theChild, planState))
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-        ERROR_LOC( loc )
-      );
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+    }
 
     if (theIsLocal)
       planState.theLocalDynCtx->set_variable(theVarId, theVarName, loc, item);
@@ -181,11 +181,10 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
       planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, item);
 
     if (consumeNext(item, theChild, planState))
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
-        ERROR_LOC( loc )
-      );
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+    }
   }
   else
   {
@@ -265,6 +264,9 @@ void CtxVarState::reset(PlanState& planState)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CtxVarIterator::CtxVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -276,7 +278,8 @@ CtxVarIterator::CtxVarIterator(
   theVarId(varid),
   theVarName(varName),
   theIsLocal(isLocal),
-  theTargetPos(0)
+  theTargetPos(0),
+  theInfLen(false)
 {
 }
 
@@ -292,12 +295,13 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
+  ar & theInfLen;
 }
 
 
-bool CtxVarIterator::setTargetPos(xs_long v)
+bool CtxVarIterator::setTargetPos(xs_integer v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPos = v;
     return true;
@@ -308,7 +312,7 @@ bool CtxVarIterator::setTargetPos(xs_long v)
 
 bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPosIter = v;
     return true;
@@ -319,15 +323,24 @@ bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) &&
+      theTargetLenIter == NULL &&
+      theInfLen == false)
   {
-    theTargetLenIter = v;
+    if (v == NULL)
+      theInfLen = true;
+    else
+      theTargetLenIter = v;
+
     return true;
   }
   return false;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 uint32_t CtxVarIterator::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
@@ -348,6 +361,9 @@ uint32_t CtxVarIterator::getStateSizeOfSubtree() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
@@ -364,6 +380,9 @@ void CtxVarIterator::openImpl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::resetImpl(PlanState& planState) const
 {
   NoaryBaseIterator<CtxVarIterator, CtxVarState>::resetImpl(planState);
@@ -378,6 +397,9 @@ void CtxVarIterator::resetImpl(PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CtxVarIterator::closeImpl(PlanState& planState)
 {
   NoaryBaseIterator<CtxVarIterator, CtxVarState>::closeImpl(planState);
@@ -392,14 +414,16 @@ void CtxVarIterator::closeImpl(PlanState& planState)
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varSingleItem;
   store::Item_t posItem;
   store::Item_t lenItem;
-  xs_long startPos;
-  xs_long len;
+  xs_integer startPos;
+  xs_integer len;
 
   dynamic_context* dctx = (theIsLocal ?
                            planState.theLocalDynCtx :
@@ -408,7 +432,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
 
-  if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  if (theTargetPosIter != NULL && theTargetLenIter == NULL && theInfLen == false)
   {
     result = NULL;
 
@@ -417,13 +441,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
+    startPos = posItem->getIntegerValue();
 
     dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
-      if (startPos == 1)
+      if (startPos == Integer(1))
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -431,9 +455,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      if (startPos > 0)
+      if (startPos > Integer(0))
       {
-        state->theTempSeq->getItem((ulong)startPos, result);
+        state->theTempSeq->getItem(startPos, result);
       }
 
       if (result)
@@ -441,17 +465,12 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
-  else if (theTargetPosIter != NULL && theTargetLenIter != NULL)
+  else if (theTargetPosIter != NULL)
   {
     result = NULL;
 
@@ -460,29 +479,39 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
-
-    if (!consumeNext(lenItem, theTargetLenIter, planState))
-    {
-      ZORBA_ASSERT(false);
-    }
-
-    len = lenItem->getLongValue();
-
-    if (startPos <= 0)
-    {
-      len += startPos - 1;
-      startPos = 1;
-    }
-
-    state->theLastPos = (ulong)(startPos + len);
-    state->thePos = (ulong)startPos;
+    startPos = posItem->getIntegerValue();
 
     dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
+    if (theInfLen)
+    {
+      if (varSingleItem != NULL)
+        len = 1;
+      else
+        len = state->theTempSeq->getSize();
+    }
+    else
+    {
+      if (!consumeNext(lenItem, theTargetLenIter, planState))
+      {
+        ZORBA_ASSERT(false);
+      }
+      
+      len = lenItem->getIntegerValue();
+    }
+
+    if (startPos <= Integer(0))
+    {
+      len += startPos - Integer(1);
+      startPos = 1;
+    }
+
+      state->theLastPos = startPos + len;
+      state->thePos = startPos;
+
     if (varSingleItem != NULL)
     {
-      if (state->thePos == 1 && state->thePos < state->theLastPos)
+      if (state->thePos == Integer(1) && state->thePos < state->theLastPos)
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -498,21 +527,16 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           STACK_PUSH(true, state);
         else
           break;
-        }
+      }
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
-  else if (theTargetPos > 0)
+  else if (theTargetPos > Integer(0))
   {
     result = NULL;
 
@@ -522,7 +546,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (varSingleItem != NULL)
     {
-      if (startPos == 1)
+      if (startPos == Integer(1))
       {
         result.transfer(varSingleItem);
         STACK_PUSH(true, state);
@@ -530,9 +554,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      if (startPos > 0)
+      if (startPos > Integer(0))
       {
-        state->theTempSeq->getItem((ulong)startPos, result);
+        state->theTempSeq->getItem(startPos, result);
       }
 
       if (result)
@@ -540,13 +564,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
   } // if (theTargetPos > 0)
 
@@ -560,7 +579,10 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (state->theTempSeq != NULL)
     {
-      state->theSourceIter = state->theTempSeq->getIterator();
+      if (state->theSourceIter == NULL)
+        state->theSourceIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theSourceIter->init(state->theTempSeq);
       state->theSourceIter->open();
 
       while (state->theSourceIter->next(result))
@@ -569,21 +591,15 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
 
       state->theSourceIter->close();
-      state->theSourceIter = NULL;
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::XPDY0002,
-        ERROR_PARAMS(
-          theVarName->getStringValue(), ZED( VariabledUndeclared )
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
 	}
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -671,9 +687,15 @@ void LetVarState::reset(PlanState& planState)
 
   if (theSourceIter != NULL)
     theSourceIter->reset();
+
+  if (theTempSeqIter != NULL)
+    theTempSeqIter->reset();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 LetVarIterator::LetVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -681,7 +703,8 @@ LetVarIterator::LetVarIterator(
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
   theVarName(name),
-  theTargetPos(0)
+  theTargetPos(0),
+  theInfLen(false)
 {
 }
 
@@ -693,12 +716,16 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
+  ar & theInfLen;
 }
 
 
-bool LetVarIterator::setTargetPos(xs_long v)
+/*******************************************************************************
+
+********************************************************************************/
+bool LetVarIterator::setTargetPos(xs_integer v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPos = v;
     return true;
@@ -709,7 +736,7 @@ bool LetVarIterator::setTargetPos(xs_long v)
 
 bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
   {
     theTargetPosIter = v;
     return true;
@@ -720,9 +747,15 @@ bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == 0 && theTargetLenIter == NULL)
+  if (theTargetPos == Integer(0) &&
+      theTargetLenIter == NULL && 
+      theInfLen == false)
   {
-    theTargetLenIter = v;
+    if (v == NULL)
+      theInfLen = true;
+    else
+      theTargetLenIter = v;
+
     return true;
   }
   return false;
@@ -744,7 +777,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
+void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
@@ -753,14 +786,17 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 
   if (theTargetPosIter == NULL)
   {
-    if (theTargetPos > 0)
+    if (theTargetPos > Integer(0))
     {
-      value->getItem((ulong)theTargetPos, state->theItem);
+      value->getItem(theTargetPos, state->theItem);
     }
     else
     {
-      state->theSourceIter = state->theTempSeq->getIterator();
-      state->theSourceIter->open();
+      if (state->theTempSeqIter == NULL)
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theTempSeqIter->init(value);
+      state->theTempSeqIter->open();
     }
   }
 }
@@ -772,8 +808,8 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 void LetVarIterator::bind(
     store::TempSeq_t& value,
     PlanState& planState,
-    ulong startPos,
-    ulong endPos)
+    xs_integer startPos,
+    xs_integer endPos)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
@@ -782,14 +818,17 @@ void LetVarIterator::bind(
 
   if (theTargetPosIter == NULL)
   {
-    if (theTargetPos > 0)
+    if (theTargetPos > Integer(0))
     {
-      value->getItem((ulong)(startPos + theTargetPos - 1), state->theItem);
+      value->getItem((startPos + theTargetPos - Integer(1)), state->theItem);
     }
     else
     {
-      state->theSourceIter = state->theTempSeq->getIterator(startPos, endPos, true);
-      state->theSourceIter->open();
+      if (state->theTempSeqIter == NULL)
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+
+      state->theTempSeqIter->init(value, startPos, endPos);
+      state->theTempSeqIter->open();
     }
   }
 }
@@ -855,8 +894,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t posItem;
   store::Item_t lenItem;
-  xs_long startPos;
-  xs_long len;
+  xs_integer startPos;
+  xs_integer len;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
@@ -870,33 +909,40 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT(false);
     }
 
-    startPos = posItem->getLongValue();
+    startPos = posItem->getIntegerValue();
 
-    if (theTargetLenIter == NULL)
+    if (theTargetLenIter == NULL && theInfLen == false)
     {
-      if (startPos > 0)
-        state->theTempSeq->getItem((ulong)startPos, result);
+      if (startPos > Integer(0))
+        state->theTempSeq->getItem(startPos, result);
 
       if (result)
         STACK_PUSH(true, state);
     }
     else
     {
-      if (!consumeNext(lenItem, theTargetLenIter, planState))
+      if (theInfLen)
       {
-        ZORBA_ASSERT(false);
+        len = state->theTempSeq->getSize();
+      }
+      else
+      {
+        if (!consumeNext(lenItem, theTargetLenIter, planState))
+        {
+          ZORBA_ASSERT(false);
+        }
+
+        len = lenItem->getIntegerValue();
       }
 
-      len = lenItem->getLongValue();
-
-      if (startPos <= 0)
+      if (startPos <= Integer(0))
       {
-        len += startPos - 1;
+        len += startPos - Integer(1);
         startPos = 1;
       }
 
-      state->theLastPos = (ulong)(startPos + len);
-      state->thePos = (ulong)startPos;
+      state->theLastPos = startPos + len;
+      state->thePos = startPos;
 
       while (state->thePos < state->theLastPos)
       {
@@ -909,15 +955,23 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     }
   }
-  else if (theTargetPos > 0)
+  else if (theTargetPos > Integer(0))
   {
     result = state->theItem;
     if (result)
       STACK_PUSH(true, state);
   }
+  else if (state->theTempSeqIter)
+  {
+    assert(state->theSourceIter == NULL);
+    while (state->theTempSeqIter->next(result))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
   else
   {
-    assert(state->theSourceIter != NULL);
+    assert(state->theSourceIter != NULL && state->theTempSeqIter == NULL);
     while (state->theSourceIter->next(result))
     {
       STACK_PUSH(true, state);

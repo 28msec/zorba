@@ -10,7 +10,7 @@ else
   validate {
   <test-suite-result>
       <implementation name="Zorba" 
-       version='2.0.3'
+       version="2.1 'Basileia'"
        anonymous-result-column="false">
       
       <organization
@@ -54,16 +54,17 @@ else
   
     <syntax>XQuery</syntax>
   
-    <test-run dateRun="2011-09-23">
+    <test-run dateRun="2011-12-09">
       <test-suite version="current"/>
       <transformation><p>Standard</p></transformation>
       <comparison><p>Standard</p></comparison>
-      <otherComments><p>XQTS taken from W3C CVS as of 2011-09-21.</p></otherComments>
+      <otherComments><p>XQTS taken from W3C CVS as of 2011-12-09.</p></otherComments>
     </test-run>
 
     {
       for $test in $ctests/*:Site/*:Testing/*:Test
       let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+      order by $testname
       return
       if (fn:contains(fn:data($test),'StaticTyping')) then
         <test-case
@@ -82,12 +83,6 @@ else
           name="{$testname}"
           result="pass"
           comment="Opened W3C bug #11584."
-        />
-      else if($testname = 'fn-collection-2')then
-      <test-case
-          name="{$testname}"
-          result="pass"
-          comment="Opened W3C bug #12542."
         />
       else
         <test-case

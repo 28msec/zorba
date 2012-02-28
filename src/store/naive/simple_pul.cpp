@@ -19,16 +19,16 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_index.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/pul_primitives.h"
-#include "store/naive/node_items.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/pul_primitive_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_collection.h"
+#include "simple_index_value.h"
+#include "simple_pul.h"
+#include "pul_primitives.h"
+#include "node_items.h"
+#include "atomic_items.h"
+#include "pul_primitive_factory.h"
+#include "node_factory.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -185,47 +185,46 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-  if (target->isNode())
+  assert(target->isNode());
+
+  const XmlNode* n = static_cast<const XmlNode*>(target);
+
+  const store::Collection* collection = n->getCollection();
+
+  if (collection != NULL)
   {
-    const XmlNode* n = static_cast<const XmlNode*>(target);
+    collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
 
-    const store::Collection* collection = n->getCollection();
-
-    if (collection != NULL)
-    {
-      collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
-
-      if (collName == theLastCollection)
-        return theLastPul;
-    }
-    else if (theNoCollectionPul != NULL)
-    {
-      return theNoCollectionPul;
-    }
-    else if (theCollectionPuls[NULL] != NULL)
-    {
-      theNoCollectionPul = theCollectionPuls[NULL];
-      return theNoCollectionPul;
-    }
-    else
-    {
-      theNoCollectionPul = new CollectionPul(this, NULL);
-      theCollectionPuls[NULL] = theNoCollectionPul;
-      return theNoCollectionPul;
-    }
+    if (collName == theLastCollection)
+      return theLastPul;
+    return getCollectionPulByName(collName,collection->isDynamic());
+  }
+  else if (theNoCollectionPul != NULL)
+  {
+    return theNoCollectionPul;
+  }
+  else if (theCollectionPuls[NULL] != NULL)
+  {
+    theNoCollectionPul = theCollectionPuls[NULL];
+    return theNoCollectionPul;
   }
   else
   {
-    // "taret" is the name of a collection.
-    if (target == theLastCollection)
-    {
-      return theLastPul;
-    }
-    else
-    {
-      collName = static_cast<const QNameItem*>(target)->getNormalized();
-    }
+    theNoCollectionPul = new CollectionPul(this, NULL);
+    theCollectionPuls[NULL] = theNoCollectionPul;
+    return theNoCollectionPul;
   }
+}
+
+CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dynamicCollection)
+{
+  const QNameItem* collName = static_cast<const QNameItem*>(name)->getNormalized();
+
+  assert(!name->isNode());
+
+  // "name" is the name of a collection.
+  if (name == theLastCollection)
+    return theLastPul;
 
   CollectionPulMap::iterator ite = theCollectionPuls.find(collName);
 
@@ -238,7 +237,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   else
   {
     SimpleCollection* collection = static_cast<SimpleCollection*>
-                                   (GET_STORE().getCollection(collName).getp());
+    (GET_STORE().getCollection(collName,dynamicCollection).getp());
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
   }
@@ -263,7 +262,7 @@ void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
 
   if (!found)
   {
-    UpdDelete* upd = GET_STORE().getPULFactory().createUpdDelete(pul, aQueryLoc, target);
+    UpdDelete* upd = GET_PUL_FACTORY().createUpdDelete(pul, aQueryLoc, target);
     pul->theDeleteList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -279,7 +278,7 @@ void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
         return;
     }
 
-    UpdDelete* upd = GET_STORE().getPULFactory().createUpdDelete(pul,  aQueryLoc,target);
+    UpdDelete* upd = GET_PUL_FACTORY().createUpdDelete(pul,  aQueryLoc,target);
     pul->theDeleteList.push_back(upd);
     updates->push_back(upd);
   }
@@ -362,7 +361,7 @@ void PULImpl::addInsertChildren(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertChildren* upd = GET_STORE().getPULFactory().
+  UpdInsertChildren* upd = GET_PUL_FACTORY().
   createUpdInsertChildren(pul, aQueryLoc, kind, target, sibling, children);
 
   if (kind == store::UpdateConsts::UP_INSERT_INTO)
@@ -404,7 +403,7 @@ void PULImpl::addInsertAttributes(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertAttributes* upd = GET_STORE().getPULFactory().
+  UpdInsertAttributes* upd = GET_PUL_FACTORY().
   createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
 
   pul->theDoFirstList.push_back(upd);
@@ -512,7 +511,7 @@ void PULImpl::addReplaceContent(
 
   if (!found)
   {
-    UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
     pul->theReplaceContentList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -528,7 +527,7 @@ void PULImpl::addReplaceContent(
         throw XQUERY_EXCEPTION(err::XUDY0017);
     }
 
-    UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
     pul->theReplaceContentList.push_back(upd);
     updates->push_back(upd);
   }
@@ -556,20 +555,20 @@ void PULImpl::addReplaceValue(
   {
   case store::StoreConsts::attributeNode:
   {
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceAttrValue(pul, aQueryLoc, target, newValue);
     break;
   }
   case store::StoreConsts::textNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceTextValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::piNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplacePiValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::commentNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceCommentValue(pul, aQueryLoc, target, newValue);
     break;
   default:
@@ -626,7 +625,7 @@ void PULImpl::addRename(
     ElementNode* elemTarget = ELEM_NODE(target);
     elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdRenameElem(pul, aQueryLoc, target, newName);
     break;
   }
@@ -637,14 +636,14 @@ void PULImpl::addRename(
     if (elemParent != NULL)
       elemParent->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
-    upd = GET_STORE().getPULFactory().createUpdRenameAttr(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, aQueryLoc, target, newName);
     break;
   }
   case store::StoreConsts::piNode:
   {
     zstring tmp;
     newName->getStringValue2(tmp);
-    upd = GET_STORE().getPULFactory().createUpdRenamePi(pul, aQueryLoc, target, tmp);
+    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, aQueryLoc, target, tmp);
     break;
   }
   default:
@@ -699,7 +698,7 @@ void PULImpl::addPut(
     }
   }
 
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdPut(this, aQueryLoc, target, uri);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdPut(this, aQueryLoc, target, uri);
 
   thePutList.push_back(upd);
 }
@@ -719,7 +718,7 @@ void PULImpl::addSetElementType(
     bool isInSubstitutionGroup)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdSetElementType(this,
+  GET_PUL_FACTORY().createUpdSetElementType(this,
                                                       aQueryLoc,
                                                       target,
                                                       typeName,
@@ -747,7 +746,7 @@ void PULImpl::addSetElementType(
   store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd =
-  GET_STORE().getPULFactory().createUpdSetElementType(this,
+  GET_PUL_FACTORY().createUpdSetElementType(this,
                                                       aQueryLoc,
                                                       target,
                                                       typeName,
@@ -769,7 +768,7 @@ void PULImpl::addSetAttributeType(
     store::Item_t& typedValue)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this, 
+  GET_PUL_FACTORY().createUpdSetAttributeType(this, 
                                                         aQueryLoc,
                                                         target,
                                                         typeName,
@@ -789,7 +788,7 @@ void PULImpl::addSetAttributeType(
   store::Item_t typedValue = new ItemVector(typedValueV);
 
   UpdatePrimitive* upd =
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this,
+  GET_PUL_FACTORY().createUpdSetAttributeType(this,
                                                         aQueryLoc,
                                                         target,
                                                         typeName,
@@ -797,6 +796,35 @@ void PULImpl::addSetAttributeType(
                                                         true);
 
   theValidationList.push_back(upd);
+}
+
+
+void PULImpl::addRevalidate(
+    const QueryLoc* aQueryLoc,
+    store::Item_t& target)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  XmlNode* n = BASE_NODE(target);
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(n, updates);
+
+  UpdRevalidate* upd = GET_PUL_FACTORY().
+  createUpdRevalidate(this, aQueryLoc, target);
+
+  pul->theRevalidateList.push_back(upd);
+
+  if (!found)
+  {
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(n, updates);
+  }
+  else
+  {
+    updates->push_back(upd);
+  }
 }
 
 
@@ -810,10 +838,10 @@ void PULImpl::addCreateCollection(
     const store::Item_t& nodeType,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theCreateCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdCreateCollection(
+  GET_PUL_FACTORY().createUpdCreateCollection(
     pul,
     aQueryLoc,
     name,
@@ -828,10 +856,10 @@ void PULImpl::addDeleteCollection(
     store::Item_t& name,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
+  GET_PUL_FACTORY().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
 }
 
 
@@ -841,10 +869,10 @@ void PULImpl::addInsertIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 } 
 
 
@@ -854,10 +882,10 @@ void PULImpl::addInsertFirstIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 }
 
 
@@ -867,10 +895,10 @@ void PULImpl::addInsertLastIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 }
 
 
@@ -881,10 +909,10 @@ void PULImpl::addInsertBeforeIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
 }
 
 
@@ -895,10 +923,10 @@ void PULImpl::addInsertAfterIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
 }
 
 
@@ -909,10 +937,10 @@ void PULImpl::addDeleteFromCollection(
     bool isLast,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteFromCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
+  GET_PUL_FACTORY().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
 }
 
 
@@ -925,7 +953,7 @@ void PULImpl::addCreateIndex(
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
   theCreateIndexList.push_back(upd);
 }
 
@@ -935,7 +963,7 @@ void PULImpl::addDeleteIndex(
     const store::Item_t& qname)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdDeleteIndex(this, aQueryLoc, qname);
+  GET_PUL_FACTORY().createUpdDeleteIndex(this, aQueryLoc, qname);
 
   theDeleteIndexList.push_back(upd);
 }
@@ -947,7 +975,7 @@ void PULImpl::addRefreshIndex(
     store::Iterator* sourceIter)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
+  GET_PUL_FACTORY().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
 
   theRefreshIndexList.push_back(upd);
 }
@@ -962,7 +990,7 @@ void PULImpl::addActivateIC(
       const store::Item_t& aCollectionName)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
+  GET_PUL_FACTORY().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
 
   theICActivationList.push_back(upd);
 }
@@ -973,7 +1001,7 @@ void PULImpl::addActivateForeignKeyIC(
       const store::Item_t& aFromCollectionName,
       const store::Item_t& aToCollectionName)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdActivateForeignKeyIC(this,
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdActivateForeignKeyIC(this,
       aQueryLoc,
       qname,
       aFromCollectionName,
@@ -985,7 +1013,7 @@ void PULImpl::addDeActivateIC(
     const QueryLoc* aQueryLoc,
       const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeActivateIC(this, aQueryLoc, qname);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeActivateIC(this, aQueryLoc, qname);
   theICActivationList.push_back(upd);
 }
 
@@ -998,7 +1026,7 @@ void PULImpl::addCreateDocument(
     const store::Item_t& uri,
     store::Item_t& doc)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateDocument(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateDocument(
       this, aQueryLoc, uri, doc);
   theCreateDocumentList.push_back(upd);
 }
@@ -1008,7 +1036,7 @@ void PULImpl::addDeleteDocument(
     const QueryLoc* aQueryLoc,
     const store::Item_t& uri)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteDocument(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeleteDocument(
       this, aQueryLoc, uri);
   theDeleteDocumentList.push_back(upd);
 }
@@ -1024,7 +1052,7 @@ void PULImpl::addCreateHashMap(
     const std::vector<zstring>& aCollations,
     long  aTimezone)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateHashMap(
       this, aQueryLoc, aQName, aKeyTypes, aCollations, aTimezone);
   theCreateHashMapList.push_back(upd);
 }
@@ -1033,7 +1061,7 @@ void PULImpl::addDestroyHashMap(
     const QueryLoc* aQueryLoc,
     const store::Item_t& aQName)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDestroyHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDestroyHashMap(
       this, aQueryLoc, aQName);
   theDestroyHashMapList.push_back(upd);
 }
@@ -1044,7 +1072,7 @@ void PULImpl::addInsertIntoHashMap(
     const std::vector<store::Item_t>& aKey,
     const store::Iterator_t& aValue)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdInsertIntoHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdInsertIntoHashMap(
       this, aQueryLoc, aQName, aKey, aValue);
   theInsertIntoHashMapList.push_back(upd);
 }
@@ -1054,7 +1082,7 @@ void PULImpl::addRemoveFromHashMap(
       const store::Item_t& aQName,
       const std::vector<store::Item_t>& aKey)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdRemoveFromHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdRemoveFromHashMap(
       this, aQueryLoc, aQName, aKey);
   theRemoveFromHashMapList.push_back(upd);
 }
@@ -1106,6 +1134,12 @@ void PULImpl::mergeUpdates(store::Item* other)
                       otherPul->theDeleteList,
                       UP_LIST_DELETE);
 
+      // Merge revalidation primitives
+      mergeUpdateList(thisPul,
+                      thisPul->theRevalidateList,
+                      otherPul->theRevalidateList,
+                      UP_LIST_NONE);
+
       // Merge collection primitives
       mergeUpdateList(thisPul,
                       thisPul->theCreateCollectionList,
@@ -1152,22 +1186,21 @@ void PULImpl::mergeUpdates(store::Item* other)
   }
 
   // Merge fn:put primitives
-  ulong numPuts = (ulong)thePutList.size();
-  ulong numOtherPuts = (ulong)otherp->thePutList.size();
+  csize numPuts = thePutList.size();
+  csize numOtherPuts = otherp->thePutList.size();
 
-  for (ulong i = 0; i < numOtherPuts; ++i)
+  for (csize i = 0; i < numOtherPuts; ++i)
   {
     UpdPut* otherUpd = static_cast<UpdPut*>(otherp->thePutList[i]);
 
-    for (ulong j = 0; j < numPuts; ++j)
+    for (csize j = 0; j < numPuts; ++j)
     {
       UpdPut* upd = static_cast<UpdPut*>(thePutList[j]);
       
       if (upd->theTargetUri->equals(otherUpd->theTargetUri))
       {
-        throw XQUERY_EXCEPTION(
-          err::XUDY0031, ERROR_PARAMS( upd->theTargetUri->getStringValue() )
-        );
+        throw XQUERY_EXCEPTION(err::XUDY0031,
+        ERROR_PARAMS(upd->theTargetUri->getStringValue()));
       }
     }
 
@@ -1242,18 +1275,18 @@ void PULImpl::mergeUpdateList(
     std::vector<UpdatePrimitive*>& otherList,
     UpdListKind listKind)
 {
-  ulong numUpdates;
-  ulong numOtherUpdates;
+  csize numUpdates;
+  csize numOtherUpdates;
 
-  numUpdates = (ulong)myList.size();
-  numOtherUpdates = (ulong)otherList.size();
+  numUpdates = myList.size();
+  numOtherUpdates = otherList.size();
 
-  for (ulong i = 0; i < numOtherUpdates; ++i)
+  for (csize i = 0; i < numOtherUpdates; ++i)
   {
     if (listKind == UP_LIST_CREATE_COLLECTION) 
     {
       UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
-      for (ulong j = 0; j < myList.size(); ++j) 
+      for (csize j = 0; j < numUpdates; ++j) 
       {
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) 
         {
@@ -1272,7 +1305,7 @@ void PULImpl::mergeUpdateList(
     else if (listKind == UP_LIST_CREATE_INDEX) 
     {
       UpdCreateIndex* otherUpd = static_cast<UpdCreateIndex*>(otherList[i]);
-      for (ulong j = 0; j < myList.size(); ++j) 
+      for (csize j = 0; j < numUpdates; ++j) 
       {
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_INDEX) 
         {
@@ -1334,22 +1367,18 @@ void PULImpl::mergeUpdateList(
           for (ulong j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(
-                  err::XUDY0015,
-                  ERROR_LOC( (*targetUpdates)[j]->theLoc )
-                );
+              throw XQUERY_EXCEPTION(err::XUDY0015,
+              ERROR_LOC((*targetUpdates)[j]->theLoc));
           }
         }
         else if (store::UpdateConsts::isReplaceValue(updKind))
         {
-          ulong numTargetUpdates = (ulong)targetUpdates->size();
-          for (ulong j = 0; j < numTargetUpdates; j++)
+          csize numTargetUpdates = targetUpdates->size();
+          for (csize j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(
-                  err::XUDY0017,
-                  ERROR_LOC( (*targetUpdates)[j]->theLoc )
-                );
+              throw XQUERY_EXCEPTION(err::XUDY0017,
+              ERROR_LOC((*targetUpdates)[j]->theLoc));
           }
         }
         break;
@@ -1358,14 +1387,12 @@ void PULImpl::mergeUpdateList(
       {
         if (store::UpdateConsts::isReplaceNode(updKind))
         {
-          ulong numTargetUpdates = (ulong)targetUpdates->size();
-          for (ulong j = 0; j < numTargetUpdates; ++j)
+          csize numTargetUpdates = (ulong)targetUpdates->size();
+          for (csize j = 0; j < numTargetUpdates; ++j)
           {
             if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(
-                  err::XUDY0016,
-                  ERROR_LOC( (*targetUpdates)[j]->theLoc )
-                );
+              throw XQUERY_EXCEPTION(err::XUDY0016,
+              ERROR_LOC((*targetUpdates)[j]->theLoc));
           }
         }
         break;
@@ -1374,14 +1401,12 @@ void PULImpl::mergeUpdateList(
       {
         if (updKind == store::UpdateConsts::UP_REPLACE_CONTENT)
         {
-          ulong numTargetUpdates = (ulong)targetUpdates->size();
-          for (ulong j = 0; j < numTargetUpdates; ++j)
+          csize numTargetUpdates = targetUpdates->size();
+          for (csize j = 0; j < numTargetUpdates; ++j)
           {
             if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
-              throw XQUERY_EXCEPTION(
-                  err::XUDY0017,
-                  ERROR_LOC( (*targetUpdates)[j]->theLoc )
-                );
+              throw XQUERY_EXCEPTION(err::XUDY0017,
+              ERROR_LOC((*targetUpdates)[j]->theLoc));
           }
         }
         break;
@@ -1390,8 +1415,8 @@ void PULImpl::mergeUpdateList(
       {
         if (updKind == store::UpdateConsts::UP_DELETE)
         {
-          ulong numTargetUpdates = (ulong)targetUpdates->size();
-          ulong j;
+          csize numTargetUpdates = targetUpdates->size();
+          csize j;
           for (j = 0; j < numTargetUpdates; ++j)
           {
             if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
@@ -1518,8 +1543,8 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       UpdCollection* upd = static_cast<UpdCollection*>
                            (pul->theInsertIntoCollectionList[i]);
 
-      ulong numDocs = upd->numNodes();
-      for (ulong j = 0; j < numDocs; ++j)
+      csize numDocs = upd->numNodes();
+      for (csize j = 0; j < numDocs; ++j)
         pul->theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
     }
 
@@ -1530,8 +1555,8 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       UpdCollection* upd = static_cast<UpdCollection*>
                            (pul->theDeleteFromCollectionList[i]);
 
-      ulong numDocs = upd->numNodes();
-      for (ulong j = 0; j < numDocs; ++j)
+      csize numDocs = upd->numNodes();
+      for (csize j = 0; j < numDocs; ++j)
         pul->theDeletedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
     }
   }
@@ -1581,7 +1606,7 @@ void PULImpl::addIndexEntryCreator(
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {
-  CollectionPul* pul = getCollectionPul(collectionName);
+  CollectionPul* pul = getCollectionPulByName(collectionName,false);
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
@@ -1710,6 +1735,8 @@ void PULImpl::undoUpdates()
 {
   try
   {
+    undoList(theValidationList);
+
     CollectionPulMap::iterator collIte = theCollectionPuls.begin();
     CollectionPulMap::iterator collEnd = theCollectionPuls.end();
 
@@ -1763,6 +1790,7 @@ CollectionPul::~CollectionPul()
   cleanList(theReplaceNodeList);
   cleanList(theReplaceContentList);
   cleanList(theDeleteList);
+  cleanList(theRevalidateList);
 
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
@@ -1788,6 +1816,8 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theReplaceNodeList);
   switchPulInPrimitivesList(theReplaceContentList);
   switchPulInPrimitivesList(theDeleteList);
+  switchPulInPrimitivesList(theRevalidateList);
+
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
@@ -1915,18 +1945,18 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  ulong numIncrementalIndices = (ulong)theIncrementalIndices.size();
+  csize numIncrementalIndices = theIncrementalIndices.size();
 
-  for (ulong idx = 0; idx < numIncrementalIndices; ++idx)
+  for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
-    IndexImpl* index = theIncrementalIndices[idx];
+    ValueIndex* index = static_cast<ValueIndex*>(theIncrementalIndices[idx]);
 
     //
     // Referesh the index w.r.t. modified docs.
     //
-    IndexCompareFunction keyCmp(index->getNumColumns(),
-                                index->getTimezone(),
-                                index->getCollators());
+    ValueIndexCompareFunction keyCmp(index->getNumColumns(),
+                                     index->getTimezone(),
+                                     index->getCollations());
     
     store::IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
     store::IndexDelta& afterDelta = theAfterIndexDeltas[idx];
@@ -2041,57 +2071,61 @@ void CollectionPul::applyUpdates()
     {
       InternalNode* node = (*it);
 
-    	for (csize i = 0; i < node->numChildren()-1; ++i)
-    	{
-    		if (node->getChild(i)->getNodeKind() == store::StoreConsts::textNode &&
+      for (csize i = 0; i < node->numChildren()-1; ++i)
+      {
+        if (node->getChild(i)->getNodeKind() == store::StoreConsts::textNode &&
             node->getChild(i+1)->getNodeKind() == store::StoreConsts::textNode)
-    		{
+        {
           TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(i));
 
-    			TextNodeMerge mergeInfo(node, i);
+          TextNodeMerge mergeInfo(node, i);
           mergeInfo.theMergedNodes.push_back(mergedNode);
           node->removeChild(i);
 
-    			zstring newContent = mergedNode->getText();
+          zstring newContent = mergedNode->getText();
           csize j = i;
 
-    			while (j < node->numChildren() &&
-                 node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
-    			{
-    			  TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
-    				newContent += mergedNode->getText();
-    				node->removeChild(j);
-    				mergeInfo.theMergedNodes.push_back(mergedNode);
-    			}
+          while (j < node->numChildren() &&
+              node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
+          {
+            TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
+            newContent += mergedNode->getText();
+            node->removeChild(j);
+            mergeInfo.theMergedNodes.push_back(mergedNode);
+          }
 
-    			theMergeList.push_back(mergeInfo);
+          theMergeList.push_back(mergeInfo);
 
           (void)GET_NODE_FACTORY().createTextNode(node->getTree(),
-                                                  node,
-                                                  false,
-                                                  i,
-                                                  newContent);
-    		}
-    	}
+              node,
+              false,
+              i,
+              newContent);
+        }
+      }
     }
 
 #ifndef ZORBA_NO_XMLSCHEMA
     // Revalidate the updated docs
     if (thePul->theValidator != NULL && !theValidationNodes.empty())
     {
-      store::PUL_t validationPul =
-      GET_STORE().getItemFactory()->createPendingUpdateList();
+      theValidationPul = GET_STORE().getItemFactory()->createPendingUpdateList();
       
-      thePul->theValidator->validate(theValidationNodes, *validationPul.getp());
+      thePul->theValidator->validate(theValidationNodes, *theValidationPul.getp());
 
       try
       {
-        validationPul->applyUpdates(false);
+        theValidationPul->applyUpdates(false);
       }
       catch (...)
       {
         ZORBA_FATAL(0, "Error during the application of the validation PUL");
       }
+    }
+
+    if (thePul->theValidator != NULL)
+    {
+      applyList(theRevalidateList);
     }
 #endif
 
@@ -2138,8 +2172,8 @@ void CollectionPul::finalizeUpdates()
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {
-      if (theCollection) // ??? not set if the collection is dynamic
-        theCollection->adjustTreePositions();
+      assert(theCollection);
+      theCollection->adjustTreePositions();
     }
 
     // Detach nodes that were deleted from their trees due to replace-node,
@@ -2234,6 +2268,17 @@ void CollectionPul::undoUpdates()
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    // Undo validate-in-place validation
+    undoList(theRevalidateList);
+
+    // Undo apply-updates caused validation
+    if (theValidationPul)
+    {
+      undoList(static_cast<PULImpl *>(theValidationPul.getp())->theValidationList);
+    }
+#endif
 
     // Undo text node merging
     std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();

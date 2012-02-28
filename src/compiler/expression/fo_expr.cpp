@@ -27,6 +27,8 @@
 #include "functions/udf.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba
 {
@@ -151,15 +153,17 @@ const store::Item* fo_expr::get_fname() const
 void fo_expr::compute_scripting_kind()
 {
   const function* func = get_func();
-  ulong numArgs = num_args();
+  csize numArgs = num_args();
 
-  if (func->getKind() == FunctionConsts::OP_CONCATENATE_N)
+  switch (func->getKind())
+  {
+  case FunctionConsts::OP_CONCATENATE_N:
   {
     bool vacuous = true;
 
     theScriptingKind = VACUOUS_EXPR;
 
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;
@@ -175,16 +179,14 @@ void fo_expr::compute_scripting_kind()
       {
         if (is_updating() && !(argKind & UPDATING_EXPR) && argKind != VACUOUS_EXPR)
         {
-          throw XQUERY_EXCEPTION(err::XUST0001,
-                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                                 ERROR_LOC(theArgs[i]->get_loc()));
+          RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+          ERROR_PARAMS(ZED(XUST0001_CONCAT)));
         }
         
         if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
         {
-          throw XQUERY_EXCEPTION(err::XUST0001,
-                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                                 ERROR_LOC(theArgs[i]->get_loc()));
+          RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+          ERROR_PARAMS(ZED(XUST0001_CONCAT)));
         }
       }
 
@@ -201,27 +203,22 @@ void fo_expr::compute_scripting_kind()
       theScriptingKind &= ~SIMPLE_EXPR;
 
     checkScriptingKind();
+
+    break;
   }
-  else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN_1)
+  case FunctionConsts::OP_HOIST_1:
+  case FunctionConsts::OP_UNHOIST_1:
   {
-    assert(numArgs == 2);
-
-    expr* valueExpr = theArgs[1];
-
-    theScriptingKind = VAR_SETTING_EXPR;
-    theScriptingKind |= valueExpr->get_scripting_detail();
-    theScriptingKind &= ~VACUOUS_EXPR;
-    theScriptingKind &= ~SIMPLE_EXPR;
-
-    checkScriptingKind();
+    theScriptingKind = theArgs[0]->get_scripting_detail();
+    break;
   }
-  else
+  default:
   {
     theScriptingKind = func->getScriptingKind();
 
     bool vacuous = (theScriptingKind == VACUOUS_EXPR);
 
-    for (ulong i = 0; i < numArgs; ++i)
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;
@@ -230,9 +227,8 @@ void fo_expr::compute_scripting_kind()
 
       if (arg->is_updating())
       {
-        throw XQUERY_EXCEPTION(err::XUST0001,
-                               ERROR_PARAMS(ZED(XUST0001_Generic)),
-                               ERROR_LOC(theArgs[i]->get_loc()));
+        RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_Generic)));
       }
 
       short argKind = arg->get_scripting_detail();
@@ -256,6 +252,7 @@ void fo_expr::compute_scripting_kind()
 
     checkScriptingKind();
   }
+  }
 }
 
 
@@ -272,7 +269,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
 
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));
 
-  for (ulong i = 0; i < theArgs.size(); ++i)
+  for (csize i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));
 
   fo->theScriptingKind  = theScriptingKind;

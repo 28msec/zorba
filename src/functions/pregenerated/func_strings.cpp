@@ -36,7 +36,7 @@ PlanIter_t fn_codepoints_to_string::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CodepointsToStringIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_string_to_codepoints::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringToCodepointsIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_compare::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CompareStrIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_codepoint_equal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CodepointEqualIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_concat::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ConcatStrIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_string_join_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringJoinIterator(sctx, loc, argv);
 }
@@ -95,7 +95,7 @@ PlanIter_t fn_string_join::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringJoinIterator(sctx, loc, argv);
 }
@@ -105,9 +105,19 @@ PlanIter_t fn_substring::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SubstringIterator(sctx, loc, argv);
+}
+
+PlanIter_t op_substring_int::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new SubstringIntOptIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_string_length::codegen(
@@ -115,7 +125,7 @@ PlanIter_t fn_string_length::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringLengthIterator(sctx, loc, argv);
 }
@@ -125,7 +135,7 @@ PlanIter_t fn_normalize_space::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NormalizeSpaceIterator(sctx, loc, argv);
 }
@@ -135,7 +145,7 @@ PlanIter_t fn_normalize_unicode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NormalizeUnicodeIterator(sctx, loc, argv);
 }
@@ -145,7 +155,7 @@ PlanIter_t fn_upper_case::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new UpperCaseIterator(sctx, loc, argv);
 }
@@ -155,7 +165,7 @@ PlanIter_t fn_lower_case::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LowerCaseIterator(sctx, loc, argv);
 }
@@ -165,7 +175,7 @@ PlanIter_t fn_translate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new TranslateIterator(sctx, loc, argv);
 }
@@ -175,7 +185,7 @@ PlanIter_t fn_encode_for_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new EncodeForUriIterator(sctx, loc, argv);
 }
@@ -185,7 +195,7 @@ PlanIter_t fn_iri_to_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IriToUriIterator(sctx, loc, argv);
 }
@@ -195,7 +205,7 @@ PlanIter_t fn_escape_html_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new EscapeHtmlUriIterator(sctx, loc, argv);
 }
@@ -205,7 +215,7 @@ PlanIter_t fn_contains::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ContainsIterator(sctx, loc, argv);
 }
@@ -215,7 +225,7 @@ PlanIter_t fn_starts_with::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StartsWithIterator(sctx, loc, argv);
 }
@@ -225,7 +235,7 @@ PlanIter_t fn_ends_with::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new EndsWithIterator(sctx, loc, argv);
 }
@@ -235,7 +245,7 @@ PlanIter_t fn_substring_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SubstringBeforeIterator(sctx, loc, argv);
 }
@@ -245,7 +255,7 @@ PlanIter_t fn_substring_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new SubstringAfterIterator(sctx, loc, argv);
 }
@@ -255,7 +265,7 @@ PlanIter_t fn_matches::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnMatchesIterator(sctx, loc, argv);
 }
@@ -265,7 +275,7 @@ PlanIter_t fn_replace::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnReplaceIterator(sctx, loc, argv);
 }
@@ -275,7 +285,7 @@ PlanIter_t fn_tokenize::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnTokenizeIterator(sctx, loc, argv);
 }
@@ -285,7 +295,7 @@ PlanIter_t fn_analyze_string_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnAnalyzeStringIterator(sctx, loc, argv);
 }
@@ -295,7 +305,7 @@ PlanIter_t fn_zorba_string_materialize::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringMaterializeIterator(sctx, loc, argv);
 }
@@ -305,9 +315,19 @@ PlanIter_t fn_zorba_string_is_streamable::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new StringIsStreamableIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_string_split::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new StringSplitIterator(sctx, loc, argv);
 }
 
 void populate_context_strings(static_context* sctx)
@@ -436,6 +456,33 @@ void populate_context_strings(static_context* sctx)
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_SUBSTRING_3);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_substring_int,
+        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::OP_SUBSTRING_INT_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_substring_int,
+        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::OP_SUBSTRING_INT_3);
 
   }
 
@@ -850,6 +897,19 @@ void populate_context_strings(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_STRING_IS_STREAMABLE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_string_split,
+        (createQName("http://www.zorba-xquery.com/modules/string","","split"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_STRING_SPLIT_2);
 
   }
 

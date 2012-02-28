@@ -18,6 +18,7 @@
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 
@@ -358,10 +359,10 @@ void GroupByIterator::matVarsAndGroupBy(
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
   std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
 
-  ulong numVars = (ulong)theGroupingSpecs.size();
+  csize numVars = theGroupingSpecs.size();
 
   // For each grouping variable
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     groupTupleItems.push_back(NULL);
     groupTupleValues.push_back(NULL);
@@ -379,11 +380,8 @@ void GroupByIterator::matVarsAndGroupBy(
       // than 1 item.
       if (consumeNext(temp, theGroupingSpecs[i].theInput.getp(), aPlanState)) 
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( GroupByVarHasMoreThanOneItem_2 ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(GroupByVarHasMoreThanOneItem_2)));
       }
 
       store::Iterator_t typedValueIter;
@@ -405,11 +403,8 @@ void GroupByIterator::matVarsAndGroupBy(
             
             if (typedValueIter->next(temp))
             {
-              throw XQUERY_EXCEPTION(
-                err::XPTY0004,
-                ERROR_PARAMS( ZED( AtomizationOfGroupByMakesMoreThanOneItem ) ),
-                ERROR_LOC( loc )
-              );
+              RAISE_ERROR(err::XPTY0004, loc,
+              ERROR_PARAMS(ZED(AtomizationOfGroupByMakesMoreThanOneItem)));
             }
           }
         }
@@ -442,7 +437,7 @@ void GroupByIterator::matVarsAndGroupBy(
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
 
       // FIXME are those settings right? I think copy is correct 
-      (*nonGroupTuple)[i]->append(iterWrapper, false);
+      (*nonGroupTuple)[i]->append(iterWrapper);
 
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
@@ -459,7 +454,7 @@ void GroupByIterator::matVarsAndGroupBy(
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
 
       // FIXME are those settings (no-copy and no-lazy) right? 
-      store::TempSeq_t tempSeq = GENV_STORE.createTempSeq(iterWrapper, false, false); 
+      store::TempSeq_t tempSeq = GENV_STORE.createTempSeq(iterWrapper, false); 
 
       nonGroupTuple->push_back(tempSeq);
 

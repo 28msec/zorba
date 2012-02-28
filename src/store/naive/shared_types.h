@@ -30,9 +30,8 @@ namespace store
 namespace simplestore 
 {
 
-class CollectionSet;
-class CollectionIterator;
-typedef rchandle<CollectionIterator> CollectionIterator_t;
+class AtomicItem;
+typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
 class XmlTree;
 typedef rchandle<XmlTree> XmlTree_t;
@@ -43,9 +42,12 @@ typedef store::ItemHandle<class XmlNode> XmlNode_t;
 class IndexImpl;
 typedef rchandle<IndexImpl> IndexImpl_t;
 
-
 typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 
+class CollectionSet;
+
+class CollectionSetIterator;
+typedef rchandle<CollectionSetIterator> CollectionSetIterator_t;
 
 }
 
