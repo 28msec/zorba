@@ -1649,7 +1649,15 @@ void *ParseNodePrintDOTVisitor::begin_visit(const StringLiteral &n)
     return no_state;
 }
 
+void *ParseNodePrintDOTVisitor::begin_visit(const StringConcatExpr &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"StringConcatExpr\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
 
+    NL;
+    return no_state;
+}
 
 void *ParseNodePrintDOTVisitor::begin_visit(const TreatExpr &n)
 {
@@ -3142,6 +3150,10 @@ void ParseNodePrintDOTVisitor::end_visit(const RelativePathExpr&, void*)
 
 
 void ParseNodePrintDOTVisitor::end_visit(const StringLiteral&, void*)
+{
+}
+
+void ParseNodePrintDOTVisitor::end_visit(const StringConcatExpr&, void*)
 {
 }
 

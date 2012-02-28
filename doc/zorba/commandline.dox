@@ -1,18 +1,5 @@
 /** \page commandline Command Line Utility
 
-<ul>
-  <li> Table of Contents
-  <ul>
-    <li> \ref commandLineUsage
-    <li> \ref commandLineHelp
-    <li> \ref commandlineexamples
-    <ul>
-      <li> \ref cmdlineExample1
-      <li> \ref cmdlineExample2
-    </ul>
-  </ul>
-</ul>
-
 \section commandLineUsage Usage
 %zorba [options] [-q Inline_Query ...] or \n
 %zorba [options] -f [-q Query_File ...]
@@ -132,6 +119,12 @@ Mapping specifying a stop-words URI to another.
 
 --thesaurus
 Mapping specifying a thesaurus URI to another.
+
+--compile, -c
+Output the query plan as binary.
+
+--execute-plan, -e
+Execute a binary query plan. Binary query plans can be generated using the --compile-plan option.
 \endverbatim
 
 \section commandlineexamples Examples

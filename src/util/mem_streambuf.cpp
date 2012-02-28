@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <cstring>                      /* for memcpy(3) */
 
 #include "diagnostics/assert.h"

@@ -20,7 +20,7 @@
 #include <fstream>
 #include <vector>
 
-#include "store/naive/store_properties.h"
+#include "store_properties.h"
 
 namespace zorba { namespace store {
 

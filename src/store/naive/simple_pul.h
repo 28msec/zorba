@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/pul.h"
 #include "store/api/index.h"
