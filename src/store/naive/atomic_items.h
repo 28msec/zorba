@@ -122,6 +122,8 @@ public:
     return theBaseItem->hash(timezone, collation);
   }
 
+  size_t alloc_size() const;
+
   bool equals(
         const store::Item* other,
         long timezone = 0,
@@ -309,6 +311,8 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
+  size_t alloc_size() const;
+
   bool equals(
         const store::Item* other,
         long timezone = 0,
@@ -358,6 +362,8 @@ public:
   QNameItem* getNormalized() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  size_t alloc_size() const;
 
   bool equals(
         const store::Item* item,
@@ -465,6 +471,8 @@ public:
               long timezone = 0,
               const XQPCollator* aCollation = 0) const;
 
+  size_t alloc_size() const;
+
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -518,6 +526,8 @@ public:
   {
     return item->getString() == theValue;
   }
+
+  size_t alloc_size() const;
 
   long compare(
         const Item* other,

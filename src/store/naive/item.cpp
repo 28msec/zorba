@@ -194,6 +194,10 @@ void Item::removeReference()
 #endif
 }
 
+size_t Item::alloc_size() const {
+  return 0;
+}
+
 
 Item::ItemKind Item::getKind() const
 {

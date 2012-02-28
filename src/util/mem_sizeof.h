@@ -17,6 +17,7 @@
 #ifndef ZORBA_MEM_SIZEOF
 #define ZORBA_MEM_SIZEOF
 
+#include <cstring>
 #include <map>
 #include <set>
 #include <stack>
@@ -64,10 +65,7 @@ namespace ztd {
  *      Template partial specialization of \c size_traits.
  *    </li>
  *    <li>
- *      Deriving from \c alloc_size_provider
- *      and implementing an \c alloc_size() member function.
- *      You do this if you can (and want) to modify the class
- *      and
+ *      Adding an \c alloc_size() member function to your class.
  *    </li>
  *  </ol>
  * Template partial specialization must be used
@@ -77,13 +75,10 @@ namespace ztd {
  * It also has the code for a class and its template specialization
  * in different places in the code.
  *
- * Deriving from \c alloc_size_provider
+ * Adding an \c alloc_size() member function
  * allows you to report the precise amount of memory an object is using
  * and also has the code directly in the class.
- * However, it is intrusive and adds a virtual function.
- * (If there were no virtual functions at all,
- * then adding one might be undesirable
- * since it increases the object's size.)
+ * However, it is intrusive and adds a (possibly virtual) function.
  *
  * An example of template partial specialization is for \c std::string.
  * Since the source code for \c std::string can not be (easily) modified,
@@ -103,8 +98,60 @@ namespace ztd {
  * much less how much memory it uses programatically,
  * but it's the best that can be done.
  *
- * For an example of deriving from \c alloc_size_provider,
- * see its documentation.
+ * An example of adding an \c alloc_size() member function is:
+ * \code
+ *  class my_class {
+ *  public:
+ *    // ...
+ *    size_t alloc_size() const {
+ *      return alloc_sizeof( s ) + mem_sizeof( *p );
+ *    }
+ *  private:
+ *    int i;
+ *    std::string s;
+ *    some_other_class *p;
+ *  };
+ * \endcode
+ * Notes:
+ *  <ul>
+ *    <li>
+ *      Doing \c alloc_sizeof(i) isn't necessary since it returns 0.
+ *      (You could do it if you wanted to for the sake of completeness
+ *      without incurring any run-time penalty
+ *      since the implementation of \c alloc_sizeof() for built-in C++ types
+ *      is an \c inline function that always returns 0.
+ *      The function will be optimized away by the compiler.)
+ *    </li>
+ *    <li>
+ *      The reason it's \c mem_sizeof(*p) rather than \c alloc_sizeof(*p)
+ *      is because the former adds in \c sizeof(*p)
+ *      (which is what we want).
+ *      For any pointer \c p, always use \c mem_sizeof(*p).
+ *    </li>
+ *  </ul>
+ *
+ * If your class has derived classes, then:
+ *  <ol>
+ *    <li>
+ *      \c alloc_size() must be virtual.
+ *    </li>
+ *    <li>
+ *      Derived classes must also implement of \c alloc_size()
+ *      and they must call their base class's implementations.
+ *    </li>
+ *  </ol>
+ * For example:
+ * \code
+ *  class my_derived_class : public my_class {
+ *  public:
+ *    // ...
+ *    size_t alloc_size() const {
+ *      return my_class::alloc_size() + alloc_size( u );
+ *    }
+ *  private:
+ *    std::string u;
+ *  };
+ * \endcode
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -148,7 +195,7 @@ struct size_traits {
 };
 
 /**
- * Size traits specialization for any type.
+ * Specialization for any type.
  * @tparam T The type to use.
  */
 template<typename T>
@@ -159,7 +206,8 @@ struct size_traits<T,false> {
 };
 
 /**
- * Gets the size of all the object's data.  It does \e not
+ * Gets the size of all the object's additional data.
+ * It does \e not include the size of the object itself.
  *
  * @tparam T The type to get the data size of.
  * @param t An instance of \a T to get the data size of.
@@ -183,7 +231,7 @@ inline size_t mem_sizeof( T const &t ) {
 ////////// C++ Specializations ////////////////////////////////////////////////
 
 /**
- * Size traits specialization for std::string.
+ * Specialization for std::string.
  */
 template<>
 struct size_traits<std::string> {
@@ -192,8 +240,15 @@ struct size_traits<std::string> {
   }
 };
 
+template<>
+struct size_traits<char const*> {
+  static size_t alloc_sizeof( char const *s ) {
+    return s ? std::strlen( s ) : 0;
+  }
+};
+
 /**
- * Size traits specialization for std::map.
+ * Specialization for std::map.
  */
 template<typename K,typename V>
 struct size_traits<std::map<K,V>,false> {
@@ -225,7 +280,7 @@ protected:
 };
 
 /**
- * Size traits specialization for std::set.
+ * Specialization for std::set.
  *
  * @tparam T The set's value_type.
  */
@@ -237,7 +292,7 @@ struct size_traits<std::set<T>,false> : sequence_size_traits< std::set<T> > {
 };
 
 /**
- * Size traits specialization for std::stack.
+ * Specialization for std::stack.
  *
  * @tparam T The stack's value_type.
  */
@@ -251,7 +306,7 @@ struct size_traits<std::stack<T>,false> :
 };
 
 /**
- * Size traits specialization for std::vector.
+ * Specialization for std::vector.
  *
  * @tparam T The vector's value_type.
  */
@@ -267,66 +322,13 @@ struct size_traits<std::vector<T>,false> :
 ////////// Zorba specializations //////////////////////////////////////////////
 
 /**
- * Size traits specialization for rstring.
+ * Specialization for rstring.
  */
 template<class RepType>
 struct size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
     return s.size();
   }
-};
-
-////////// alloc_size_provider ////////////////////////////////////////////////
-
-/**
- * A %alloc_size_provider provides a single function \c alloc_size().
- * An example of deriving from \c alloc_size_provider is:
- * \code
- *  class my_class : public alloc_size_provider {
- *  public:
- *    // ...
- *    size_t alloc_size() const {
- *      return alloc_size( s ) + alloc_size( t );
- *    }
- *  private:
- *    int i;
- *    std::string s;
- *    std::string t;
- *  };
- * \endcode
- * Note that doing \c alloc_size(i) isn't necessary since it returns 0.
- *
- * (Implementations of \c alloc_size()
- * should be defined in the \c .cpp file
- * since they're virtual functions.
- * They're only shown inline in the class here
- * for pedagogical reasons.)
- *
- * If you further derive classes,
- * then derived class's implementations of \c alloc_size()
- * must call their base class's implementations:
- * \code
- *  class my_derived_class : public my_class {
- *  public:
- *    // ...
- *    size_t alloc_size() const {
- *      return my_class::alloc_size() + alloc_size( u );
- *    }
- *  private:
- *    std::string u;
- *  };
- * \endcode
- */
-struct alloc_size_provider {
-  virtual ~alloc_size_provider() { }
-
-  /**
-   * Gets the size of all the object's dynamically allocated data (in bytes).
-   * It does \e not include the size of the object itself.
-   *
-   * @return Returns said size.
-   */
-  virtual size_t alloc_size() const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

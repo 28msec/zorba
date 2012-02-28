@@ -78,8 +78,8 @@ static void test_vector_int() {
   ASSERT_TRUE( ztd::mem_sizeof( vi ) == sizeof( vi ) + sizeof( int ) );
 }
 
-struct my_base : ztd::alloc_size_provider {
-  size_t alloc_size() const {
+struct my_base {
+  virtual size_t alloc_size() const {
     return ztd::alloc_sizeof( s ) + ztd::alloc_sizeof( t );
   }
 

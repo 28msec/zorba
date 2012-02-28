@@ -42,6 +42,7 @@
 #include "ordpath.h"
 
 #include "util/ascii_util.h"
+#include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -366,6 +367,12 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 }
 
 
+size_t UserTypedAtomicItem::alloc_size() const
+{
+  return ztd::mem_sizeof( *theBaseItem );
+}
+
+
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
@@ -556,6 +563,12 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
+size_t UntypedAtomicItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theValue );
+}
+
+
 bool UntypedAtomicItem::equals(
     const store::Item* other,
     long timezone,
@@ -623,6 +636,15 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = getNormalized();
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
+}
+
+
+size_t QNameItem::alloc_size() const
+{
+  return  ztd::alloc_sizeof( theNamespace )
+        + ztd::alloc_sizeof( thePrefix )
+        + ztd::alloc_sizeof( theLocal )
+        + theNormQName.isNull() ? 0 : ztd::mem_sizeof( *theNormQName );
 }
 
 
@@ -761,6 +783,12 @@ bool NotationItem::equals(const store::Item* item,
 }
 
 
+size_t NotationItem::alloc_size() const
+{
+  return ztd::mem_sizeof( *theQName );
+}
+
+
 store::Item* NotationItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
@@ -811,6 +839,12 @@ store::Item* AnyUriItem::getType() const
 uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return hashfun::h32(theValue.data(), (uint32_t)theValue.size());
+}
+
+
+size_t AnyUriItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theValue );
 }
 
 

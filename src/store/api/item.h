@@ -101,6 +101,7 @@ public:
 
   void removeReference();
 
+  virtual size_t alloc_size() const;
 
   /* -------------------   General Methods for Items ------------------------- */
 
