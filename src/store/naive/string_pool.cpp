@@ -26,20 +26,29 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
+  bool stringsInPool = false;
   ulong count = 0;
   ulong n = (ulong)theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  for (ulong i = 0; i < n, !stringsInPool; i++)
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      std::cerr << "i = " << i << " String " << theHashTab[i].theItem
-                << " is still in the pool" << std::endl;
-      //delete theHashTab[i].theString.getp();
-      count++;
+      stringsInPool = true;
     }
   }
-
-  ZORBA_FATAL(count == 0, count << " strings remain in the string pool");
+  if (stringsInPool) {
+    std::cerr << "Zorba did not close properly, objects may still in memory. For help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." << std::endl;
+    for (ulong i = 0; i < n; i++)
+    {
+      if (theHashTab[i].theItem.is_shared())
+      {
+      std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
+      //delete theHashTab[i].theString.getp();
+      count ++;
+      }
+    }
+    ZORBA_FATAL(stringsInPool==false, count << " referenced URI(s) remain in the string pool.");
+  }
 }
 
 

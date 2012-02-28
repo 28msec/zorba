@@ -1,0 +1,146 @@
+/** \page memory_leaks Memory Leaks
+
+\section memory_leaks_intro Introduction
+
+The Zorba XQuery processor manage automatically its own memory, but still, there are cases where you may receive the following message:
+
+\code
+Zorba did not close properly, objects may still in memory while shutdown the store. For help avoiding this message please refer to http://www.zorba-xquery.com/memory_leaks.
+ID: 1   Referenced URI:  [..uri...]
+...
+
+Zorba Internal Fatal Error in ....
+[n] referenced URIs remain in the string pool.
+\endcode
+
+
+This message means the store is being shutdown, but there are still URIs strings in the pool because 
+there are still references (smart pointers) to those strings.  
+The references may be somewhere in the zorba engine (which usually means there is a memory leak) or in the application. 
+For the application, the rule is that before shutting down the store, 
+all variables storing references to zorba objects must have gone out of scope, or explicitly set to NULL.
+
+So, strictly speaking, your program is leaking resources.
+
+There are several cases using Zorba's APIs in C++ or other languages where you can produce this error besides everything looks correct in your code, here is an example:
+
+
+\section memory_leaks_example_c Example in C++
+Here is a code example that shows how a StaticContext and a Query are pointing to the URI http://www.foo.com, 
+and they are still in memory when the store is being shutdown.
+
+\code
+int main(int argc, char* argv[])
+{
+  void* lStore = zorba::StoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance(lStore);
+  
+  StaticContext_t lContext = lZorba->createStaticContext();
+  lContext->addNamespace("foo", "http://www.foo.com");
+  XQuery_t lQuery = lZorba->compileQuery("<foo:e/>", lContext);
+  lQuery->execute();
+  
+  lZorba->shutdown();
+  zorba::StoreManager::shutdownStore(lStore);
+  return 0;
+}
+\endcode
+
+So, for this scenario, the ideal way to solve the problem is through scopes, 
+where you implement certain part of code in methods and release them when the objects loose their reference. 
+Other way to do it, is to explicitely set the object to null, the autopointer automatically will free the object.
+
+Solution example:
+\code
+int main(int argc, char* argv[])
+{
+  void* lStore = zorba::StoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance(lStore);
+  
+  {  // Use a scope
+
+  StaticContext_t lContext = lZorba->createStaticContext();
+    lContext->addNamespace("foo", "http://www.foo.com");
+    XQuery_t lQuery = lZorba->compileQuery("<foo:e/>", lContext);
+    lQuery->execute();
+    lContext = NULL;  // or explicitely free the resource
+    lQuery = NULL;
+  }
+  lZorba->shutdown();
+  zorba::StoreManager::shutdownStore(lStore);
+  return 0;
+}
+\endcode
+
+
+\section memory_leaks_example_java Example in Java
+This particular error is specially notorious when a memory managed language 
+shows the error because you expect the language frees all memory, here is an example:
+
+\code
+  public static void main ( String argv[] )
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+
+    StaticContext context = zorba.createStaticContext();
+    context.addNamespace("foo", "http://www.foo.com");
+    XQuery query = zorba.compileQuery("<foo:e/>", context);
+    String result = query.execute();
+    
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    
+  }    
+\endcode
+
+In this example, and for the rest of the languages because Zorba is created in C++, 
+we have created in the Zorba API the method \c destroy() \e that will set free the object
+that could be pointing to any resource from the store, this method is in every object that need to be released.
+
+*Java Note: Because Java is a garbage collected language you cannot predict when (or even if) an object will be destroyed. 
+Hence there is no direct equivalent of a destructor.
+There is an inherited method called finalize, but this is called entirely at the discretion of the garbage collector.
+So, destroy() is the best practice for any language including Java.
+
+Solution example:
+\code
+  public static void main ( String argv[] )
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+
+    StaticContext context = zorba.createStaticContext();
+    context.addNamespace("foo", "http://www.foo.com");
+    XQuery query = zorba.compileQuery("<foo:e/>", context);
+    String result = query.execute();
+    query.destroy();   // Release memory for this XQuery
+    context.destroy(); // Release memory for this StaticContext
+    
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    
+  }    
+\endcode
+
+
+\section memory_leaks_example_xqj Example in XQJ
+
+XQJ standard provides specific \c close() \e methods for this specific purpose:
+\code
+      XQDataSource xqdatasource = new XQDataSource();
+      XQConnection xqconnection = xqdatasource.getConnection();
+      XQStaticContext staticContext = xqconnection.getStaticContext();
+      staticContext.declareNamespace("foo", "http://www.foo.com");
+      xqconnection.setStaticContext(staticContext);
+      XQExpression xqexpression = xqconnection.createExpression();
+      XQSequence xqsequence = xqexpression.executeQuery("<foo:e/>");
+      // code to show the output
+      xqconnection.close();  // Closing connection and freeing all related resource
+\code
+
+\endcode
+
+
+*/
+/* vim:set et sw=2 ts=2: */
