@@ -944,6 +944,17 @@ void PULImpl::addDeleteFromCollection(
 }
 
 
+void PULImpl::addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool dyn_collection)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+
+  pul->theTruncateCollectionList.push_back(
+  GET_PUL_FACTORY().createUpdTruncateCollection(pul, aQueryLoc, name, dyn_collection));
+}
+
 /*******************************************************************************
   Index primitives
 ********************************************************************************/
@@ -1154,6 +1165,11 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeUpdateList(thisPul,
                       thisPul->theDeleteFromCollectionList,
                       otherPul->theDeleteFromCollectionList,
+                      UP_LIST_NONE);
+
+      mergeUpdateList(thisPul,
+                      thisPul->theTruncateCollectionList,
+                      otherPul->theTruncateCollectionList,
                       UP_LIST_NONE);
 
       mergeUpdateList(thisPul,
@@ -1795,6 +1811,7 @@ CollectionPul::~CollectionPul()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
+  cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -1821,6 +1838,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
+  switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
 }
 
@@ -2133,6 +2151,7 @@ void CollectionPul::applyUpdates()
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
+    applyList(theTruncateCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
@@ -2265,6 +2284,7 @@ void CollectionPul::undoUpdates()
 
   try
   {
+    undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);

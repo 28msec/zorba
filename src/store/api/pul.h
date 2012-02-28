@@ -203,6 +203,11 @@ public:
         bool isLast,
         bool dyn_collection = false) = 0;
 
+  virtual void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        bool dyn_collection = false) = 0;
+
   // functions to add primitives for indexes
 
   virtual void addCreateIndex(

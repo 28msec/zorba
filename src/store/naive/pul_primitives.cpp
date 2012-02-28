@@ -1276,6 +1276,36 @@ void UpdDeleteNodesFromCollection::undo()
 }
 
 
+/*******************************************************************************
+  UpdTruncateCollection
+********************************************************************************/
+void UpdTruncateCollection::apply()
+{
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+  assert(lColl);
+
+  lColl->theXmlTrees.swap(theTrees);
+
+  theIsApplied = true;
+
+}
+
+void UpdTruncateCollection::undo()
+{
+  if (!theIsApplied) return;
+
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+  assert(lColl);
+
+  lColl->theXmlTrees.clear();
+
+  theTrees.swap(lColl->theXmlTrees);
+
+  theIsApplied = false;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

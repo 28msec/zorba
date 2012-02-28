@@ -58,6 +58,7 @@ PlanIter_t fn_collection::codegen(
 
 
 
+
 PlanIter_t zorba_store_collections_static_dml_collection_name::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -679,6 +680,30 @@ void populate_context_collections(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_NODES_LAST_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_truncate,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","truncate"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_TRUNCATE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_truncate,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","truncate"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_TRUNCATE_1);
 
   }
 

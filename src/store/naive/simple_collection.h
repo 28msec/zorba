@@ -40,6 +40,7 @@ namespace zorba { namespace simplestore {
 class SimpleCollection : public store::Collection
 {
   friend class CollectionIter;
+  friend class UpdTruncateCollection;
 
 public:
   class CollectionIter : public store::Iterator

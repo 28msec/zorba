@@ -183,6 +183,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theTruncateCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
   // Validate in place primitives
@@ -463,6 +464,11 @@ public:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool dyn_collection = false);
+
+  void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
         bool dyn_collection = false);
 
   // Index primitives

@@ -92,6 +92,8 @@ namespace zorba{
 
     class ZorbaDeleteNodesLastIterator;
 
+    class ZorbaTruncateCollectionIterator;
+
     class ZorbaCollectionNameIterator;
 
     class IsAvailableCollectionIterator;
@@ -694,6 +696,9 @@ public:
 
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
