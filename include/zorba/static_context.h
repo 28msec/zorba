@@ -99,9 +99,20 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    *         could be found for the given prefix and an DiagnosticHandler has been
    *         registered.
    * @throw ZorbaException if an error occured (e.g. no URI could be found for the given prefix).
+   *
+   * @deprecated This function is deprecated. Use getNamespaceBindings instead.
    */
   virtual String
   getNamespaceURIByPrefix( const String& aPrefix ) const = 0;
+
+  /**
+   * \brief Get the list of all namespace bindings (prefix, uri)
+   *   declared in this and its parent static contexts.
+   *
+   * @param aBindings the bindings are added to this list
+   */
+  virtual void
+  getNamespaceBindings( NsBindings& aBindings ) const = 0;
 
   /** \brief Set the default element and type namespace
    *         (see http://www.w3.org/TR/xquery/#static_context)
@@ -400,6 +411,27 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
 
   virtual void
   getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const = 0;
+
+  /** \brief Get all functions declared in the given static context
+   *
+   * @return aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(std::vector<Function_t>& aFunctions) const = 0;
+
+  /** \brief Get all functions with a specified namespace and airty\
+   *    declared in the given static context.
+   *
+   * @param aFnNameUri the namespace for the functions to return
+   * @param arity the arity for the functions to return
+   *
+   * @return aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(
+      const String& aFnNameUri,
+      uint32_t arity,
+      std::vector<Function_t>& aFunctions) const = 0;
 
   /** \brief Set the type of the context item.
    */

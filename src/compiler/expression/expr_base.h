@@ -24,7 +24,6 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
-#include "compiler/semantic_annotations/annotation_holder.h"
 
 #include "functions/function_consts.h"
 
@@ -49,33 +48,41 @@ class expr_visitor;
 
 enum expr_kind_t
 {
-  attr_expr_kind,
-  axis_step_expr_kind,
-  castable_expr_kind,
-  cast_expr_kind,
   const_expr_kind,
-  doc_expr_kind,
-  elem_expr_kind,
-  extension_expr_kind,
-  flwor_expr_kind,
-  fo_expr_kind,
-  gflwor_expr_kind,
-  if_expr_kind,
-  instanceof_expr_kind,
-  match_expr_kind,
-  name_cast_expr_kind,
-  order_expr_kind,
-  pi_expr_kind,
-  promote_expr_kind,
-  relpath_expr_kind,
-  text_expr_kind,
-  treat_expr_kind,
-  validate_expr_kind,
+
   var_expr_kind,
 
+  doc_expr_kind,
+  elem_expr_kind,
+  attr_expr_kind,
+  text_expr_kind,
+  pi_expr_kind,
+
+  relpath_expr_kind,
+  axis_step_expr_kind,
+  match_expr_kind,
+
+  flwor_expr_kind,
+  gflwor_expr_kind,
+  if_expr_kind,
+  trycatch_expr_kind,
+
+  fo_expr_kind,
   dynamic_function_invocation_expr_kind,
   function_item_expr_kind,
-  trycatch_expr_kind,
+
+  castable_expr_kind,
+  cast_expr_kind,
+  instanceof_expr_kind,
+  treat_expr_kind,
+  promote_expr_kind,
+  name_cast_expr_kind,
+
+  validate_expr_kind,
+
+  extension_expr_kind,
+
+  order_expr_kind,
 
 #ifndef ZORBA_NO_FULL_TEXT
 	ft_expr_kind,
@@ -108,7 +115,7 @@ enum expr_kind_t
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public AnnotationHolder
+class expr : public SimpleRCObject
 {
   friend class expr_iterator_data;
   friend class ExprIterator;
@@ -125,6 +132,8 @@ public:
 
   typedef substitution_t::iterator subst_iter_t;
 
+  typedef std::set<const var_expr *> FreeVars;
+
   typedef enum
   {
     PRODUCES_SORTED_NODES   = 0,
@@ -133,18 +142,24 @@ public:
     IGNORES_DUPLICATE_NODES = 6,
     NON_DISCARDABLE         = 8,
     UNFOLDABLE              = 10,
-    CONTAINS_RECURSIVE_CALL = 12
+    CONTAINS_RECURSIVE_CALL = 12,
+    PROPAGATES_INPUT_NODES  = 14,
+    WILL_BE_SERIALIZED      = 16,
+    MUST_COPY_NODES         = 18
   } Annotationkey;
 
   typedef enum
   {
-    PRODUCES_SORTED_NODES_MASK   = 0x003,
-    PRODUCES_DISTINCT_NODES_MASK = 0x00C,
-    IGNORES_SORTED_NODES_MASK  = 0x030,
+    PRODUCES_SORTED_NODES_MASK    = 0x003,
+    PRODUCES_DISTINCT_NODES_MASK  = 0x00C,
+    IGNORES_SORTED_NODES_MASK     = 0x030,
     IGNORES_DUPLICATE_NODES_MASK  = 0x0C0,
-    NON_DISCARDABLE_MASK         = 0x300,
-    UNFOLDABLE_MASK              = 0xC00,
-    CONTAINS_RECURSIVE_CALL_MASK = 0x3000
+    NON_DISCARDABLE_MASK          = 0x300,
+    UNFOLDABLE_MASK               = 0xC00,
+    CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
+    PROPAGATES_INPUT_NODES_MASK   = 0xC000,
+    WILL_BE_SERIALIZED_MASK       = 0x30000,
+    MUST_COPY_NODES_MASK          = 0xC0000
   } AnnotationMask;
 
 
@@ -164,6 +179,8 @@ protected:
 
   ulong              theFlags1;
 
+  FreeVars           theFreeVars;
+
 public:
   static bool is_sequential(short theScriptingKind);
 
@@ -173,7 +190,7 @@ public:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, AnnotationHolder)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -244,6 +261,11 @@ public:
 
   bool producesDistinctNodes() const;
 
+  // Annotation : propagatesInputNodes
+  BoolAnnotationValue getPropagatesInputNodes() const;
+
+  void setPropagatesInputNodes(BoolAnnotationValue v);
+
   // Annotation : ignores-sorted-nodes
   BoolAnnotationValue getIgnoresSortedNodes() const;
 
@@ -279,6 +301,25 @@ public:
 
   bool containsRecursiveCall() const;
 
+  // Annotation : mustCopyNodes
+  BoolAnnotationValue getMustCopyNodes() const;
+
+  void setMustCopyNodes(BoolAnnotationValue v);
+
+  // Annotation : willBeSerialized
+  BoolAnnotationValue getWillBeSerialized() const;
+
+  void setWillBeSerialized(BoolAnnotationValue v);
+
+  bool willBeSerialized() const;
+
+  // Annotation : free vars
+  const FreeVars& getFreeVars() const { return theFreeVars; }
+
+  FreeVars& getFreeVars() { return theFreeVars; }
+
+  void setFreeVars(FreeVars& s);
+
   bool is_constant() const;
 
   bool is_nondeterministic() const;
@@ -289,7 +330,15 @@ public:
 
   bool contains_node_construction() const;
 
-  void get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const;
+  void get_exprs_of_kind(
+      expr_kind_t kind,
+      bool deep,
+      std::vector<expr*>& exprs) const;
+
+  void get_fo_exprs_of_kind(
+      FunctionConsts::FunctionKind kind,
+      bool deep,
+      std::vector<expr*>& exprs) const;
 
   bool is_map(expr* e, static_context* sctx) const;
 

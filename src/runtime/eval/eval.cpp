@@ -75,6 +75,7 @@ EvalIterator::EvalIterator(
     const std::vector<xqtref_t>& aVarTypes,
     expr_script_kind_t scriptingKind,
     const store::NsBindings& localBindings,
+    bool doNodeCopy,
     bool forDebugger)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
@@ -82,6 +83,7 @@ EvalIterator::EvalIterator(
   theVarTypes(aVarTypes),
   theScriptingKind(scriptingKind),
   theLocalBindings(localBindings),
+  theDoNodeCopy(doNodeCopy),
   theForDebugger(forDebugger)
 {
 }
@@ -108,6 +110,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarTypes;
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
+  ar & theDoNodeCopy;
   ar & theForDebugger;
 }
 
@@ -159,6 +162,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
     evalCCB->theIsEval = true;
     evalCCB->theRootSctx = evalSctx;
+    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
     (evalCCB->theSctxMap)[1] = evalSctx;
 
     state->ccb.reset(evalCCB);
@@ -218,38 +222,33 @@ void EvalIterator::copyOuterVariables(
 
   dynamic_context* outerDctx = evalDctx->getParent();
 
-  std::vector<var_expr_t> globalVars;
-  outerSctx->get_parent()->getVariables(globalVars, theForDebugger, true);
-  
-  FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+  const std::vector<dynamic_context::VarValue>& outerVars = outerDctx->get_variables();
+  csize numOuterVars = outerVars.size();
+
+  for (csize i = 0; i < numOuterVars; ++i)
   {
-    var_expr* globalVar = (*ite).getp();
+    const dynamic_context::VarValue& outerVar = outerVars[i];
 
-    ulong globalVarId = globalVar->get_unique_id();
+    if (!outerVar.isSet())
+      continue;
 
-    if (globalVarId > maxOuterVarId)
-      maxOuterVarId = globalVarId;
+    ulong outerVarId = static_cast<ulong>(i);
+
+    if (outerVarId > maxOuterVarId)
+      maxOuterVarId = outerVarId;
 
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
-    if (!outerDctx->exists_variable(globalVarId))
-      continue;
-
-    outerDctx->get_variable(globalVarId,
-                            globalVar->get_name(),
-                            loc,
-                            itemValue,
-                            seqValue);
-
-    if (itemValue != NULL)
+    if (outerVar.hasItemValue())
     {
-      evalDctx->add_variable(globalVarId, itemValue);
+      store::Item_t value = outerVar.theValue.item;
+      evalDctx->add_variable(outerVarId, value);
     }
     else
     {
-      store::Iterator_t iteValue = seqValue->getIterator();
-      evalDctx->add_variable(globalVarId, iteValue);
+      store::Iterator_t iteValue = outerVar.theValue.temp_seq->getIterator();
+      evalDctx->add_variable(outerVarId, iteValue);
     }
   }
 
@@ -292,7 +291,7 @@ void EvalIterator::setExternalVariables(
 
   for (; sctxIte != sctxEnd; ++sctxIte)
   {
-    sctxIte->second->getVariables(innerVars);
+    sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
   FOR_EACH(std::vector<var_expr_t>, ite, innerVars)
@@ -376,11 +375,10 @@ PlanIter_t EvalIterator::compile(
 
   expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,
-                                         false, // do not apply pul
+                                         false, // do not apply PUL
                                          rootExpr,
                                          maxOuterVarId,
                                          sar);
-
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (ccb->isSequential())

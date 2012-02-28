@@ -31,7 +31,7 @@ PlanIter_t zorba_store_collections_static_dml_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaCollectionIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -46,7 +46,7 @@ PlanIter_t zorba_store_collections_static_dml_index_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaIndexOfIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -61,7 +61,7 @@ PlanIter_t zorba_store_collections_static_ddl_create::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaCreateCollectionIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
@@ -76,7 +76,7 @@ PlanIter_t zorba_store_collections_static_ddl_delete::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaDeleteCollectionIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
@@ -91,7 +91,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaInsertNodesIterator(
       sctx, loc, argv, getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -106,7 +106,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaInsertNodesFirstIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -121,7 +121,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaInsertNodesLastIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -136,7 +136,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -151,7 +151,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaInsertNodesAfterIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -166,10 +166,18 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaApplyInsertNodesIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool zorba_store_collections_static_dml_apply_insert_nodes::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -181,10 +189,18 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool zorba_store_collections_static_dml_apply_insert_nodes_first::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -196,10 +212,18 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool zorba_store_collections_static_dml_apply_insert_nodes_last::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -211,10 +235,19 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_before::codegen
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool 
+zorba_store_collections_static_dml_apply_insert_nodes_before::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -226,10 +259,19 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+bool 
+zorba_store_collections_static_dml_apply_insert_nodes_after::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
 }
 
 
@@ -241,7 +283,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaDeleteNodesIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -256,7 +298,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_node_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -271,7 +313,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_node_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaDeleteNodesLastIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
@@ -286,7 +328,7 @@ PlanIter_t zorba_store_collections_static_ddl_is_available_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsAvailableCollectionIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
@@ -301,7 +343,7 @@ PlanIter_t zorba_store_collections_static_ddl_available_collections::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AvailableCollectionsIterator(sctx, loc, argv,
       getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
@@ -312,7 +354,7 @@ PlanIter_t zorba_store_collections_static_ddl_available_collections::codegen(
 ********************************************************************************/
 BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }
@@ -323,7 +365,7 @@ BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresSort
 ********************************************************************************/
 BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   return ANNOTATION_TRUE;
 }

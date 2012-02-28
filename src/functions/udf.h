@@ -20,6 +20,7 @@
 #include "functions/function.h"
 
 #include "compiler/expression/expr_base.h"
+#include "zorbatypes/rclist.h"
 
 
 namespace zorba 
@@ -127,21 +128,25 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache;
+  store::Index_t              theCache; //note: not for serialization
   bool                        theCacheResults;
   bool                        theCacheComputed;
+
+  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
+  void prepare_for_serialize(CompilerCB *compilerCB);
 
 public:
   user_function(
       const QueryLoc& loc,
       const signature& sig,
       expr_t expr_body,
-      short kind);
+      short kind,
+      CompilerCB  *compilerCB);
 
   virtual ~user_function();
 
@@ -167,11 +172,15 @@ public:
 
   const std::vector<var_expr_t>& getArgVars() const;
 
+  var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
+
   void setOptimized(bool v) { theIsOptimized = v; }
 
   bool isOptimized() const { return theIsOptimized; }
 
-  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
+  void addMutuallyRecursiveUDFs(
+      const std::vector<user_function*>& udfs,
+      const std::vector<user_function*>::const_iterator& cycle);
 
   bool isMutuallyRecursiveWith(const user_function* udf);
 
@@ -179,9 +188,11 @@ public:
 
   bool accessesDynCtx() const;
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
+
+  BoolAnnotationValue mustCopyNodes(expr* fo, csize input) const;
 
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
@@ -202,7 +213,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const;
+        expr& ann) const;
 };
 
 

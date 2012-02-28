@@ -46,7 +46,7 @@ PlanIter_t xqsx_apply::codegen(
     static_context* aSctx,
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+    expr& aAnn) const
 {
   ZORBA_ASSERT(false);
 }
@@ -54,7 +54,7 @@ PlanIter_t xqsx_apply::codegen(
 
 void populate_context_apply(static_context* sctx)
 {
-  const char* ns = static_context::ZORBA_SCRIPTING_FN_NS.c_str();
+  const char* ns = static_context::ZORBA_SCRIPTING_FN_NS;
 
   DECL(sctx, xqsx_apply,
        (createQName(ns, "", "apply"),

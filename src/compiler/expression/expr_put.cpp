@@ -210,17 +210,19 @@ ostream& for_clause::put(ostream& os) const
   PUT_SUB("IN", theDomainExpr);
 
 #else
-  os << indent << "FOR" << expr_addr(this) << " " << inc_indent;
+  os << indent << "FOR" << expr_addr(this) << " ";
 
   put_qname(theVarExpr->get_name(), os);
+
   os << expr_addr(theVarExpr.getp());
+
   if (thePosVarExpr != NULL)
   {
     os << " AT ";
     put_qname(thePosVarExpr->get_name(), os);
     os << expr_addr(thePosVarExpr.getp());
   }
-  os << endl << dec_indent << indent << "[\n" << inc_indent;
+  os << endl << indent << "[\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -241,8 +243,12 @@ ostream& let_clause::put(ostream& os) const
 
 #else
   os << indent << "LET" << expr_addr(this) << " ";
+
   put_qname(theVarExpr->get_name(), os);
-  os << expr_addr(theVarExpr.getp()) << " [\n" << inc_indent;
+
+  os << expr_addr(theVarExpr.getp());
+
+  os << endl << indent << " [\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -313,9 +319,9 @@ ostream& orderby_clause::put(ostream& os) const
 
   //os << indent << "ORDER BY ";
 
-  unsigned numColumns = num_columns();
+  csize numColumns = num_columns();
 
-  for (unsigned i = 0; i < numColumns; i++) 
+  for (csize i = 0; i < numColumns; i++) 
   {
     theOrderingExprs[i]->put(os);
   }
@@ -348,39 +354,58 @@ ostream& flwor_expr::put(ostream& os) const
 {
   BEGIN_PUT(flwor_expr);
 
-  for (unsigned i = 0; i < num_clauses(); i++) 
+  for (csize i = 0; i < num_clauses(); i++) 
   {
     const flwor_clause& c = *((*this)[i]);
 
-    if (c.get_kind() == flwor_clause::where_clause)
+    switch (c.get_kind())
+    {
+    case flwor_clause::where_clause:
     {
       PUT_SUB( "WHERE", static_cast<const where_clause *>(&c)->get_expr() );
+      break;
     }
-    else if (c.get_kind() == flwor_clause::count_clause) 
+    case flwor_clause::count_clause: 
     {
       os << indent << "COUNT $"; 
       put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
       os << endl;
+      break;
     }
-    else if (c.get_kind() == flwor_clause::for_clause) 
+    case flwor_clause::for_clause:
     {
       static_cast<const for_clause *>(&c)->put(os);
+      break;
     }
-    else if (c.get_kind() == flwor_clause::let_clause) 
+    case flwor_clause::let_clause:
     {
       static_cast<const let_clause *>(&c)->put(os);
+      break;
     }
-    else if (c.get_kind() == flwor_clause::window_clause) 
+    case flwor_clause::window_clause:
     {
       static_cast<const window_clause *>(&c)->put(os);
+      break;
     }
-    else if (c.get_kind() == flwor_clause::group_clause) 
+    case flwor_clause::group_clause:
     {
       static_cast<const group_clause *>(&c)->put(os);
+      break;
     }
-    else if (c.get_kind() == flwor_clause::order_clause) 
+    case flwor_clause::order_clause:
     {
       static_cast<const orderby_clause *>(&c)->put(os);
+      break;
+    }
+    case flwor_clause::materialize_clause:
+    {
+      static_cast<const materialize_clause *>(&c)->put(os);
+      break;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
     }
   }
 
@@ -761,31 +786,45 @@ ostream& order_expr::put(ostream& os) const
 
 ostream& elem_expr::put(ostream& os) const
 {
-  BEGIN_PUT( elem_expr );
+  BEGIN_PUT(elem_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
+
   if (theAttrs != NULL)
     theAttrs->put(os);
+
   if (theContent != NULL)
     theContent->put(os);
+
   END_PUT();
 }
 
-ostream& doc_expr::put( ostream& os) const
+
+ostream& doc_expr::put(ostream& os) const
 {
-  BEGIN_PUT( doc_expr );
+  BEGIN_PUT(doc_expr);
+
+  os << indent << "copy nodes = " << theCopyInputNodes << std::endl;
+
   theContent->put(os);
+
   END_PUT();
 }
 
-ostream& attr_expr::put( ostream& os) const
+
+ostream& attr_expr::put(ostream& os) const
 {
-  BEGIN_PUT( attr_expr );
+  BEGIN_PUT(attr_expr);
 
-  theQNameExpr->put (os);
+  theQNameExpr->put(os);
   PUT_SUB( "=", theValueExpr );
+
   END_PUT();
 }
+
 
 ostream& text_expr::put(ostream& os) const
 {
@@ -822,7 +861,7 @@ ostream& replace_expr::put( ostream& os) const
 {
   BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);
-  PUT_SUB( ",", theReplaceExpr );
+  PUT_SUB( ",", theSourceExpr );
   END_PUT();
 }
 
@@ -830,7 +869,7 @@ ostream& rename_expr::put(ostream& os) const
 {
   BEGIN_PUT(rename_expr);
   theTargetExpr->put(os);
-  PUT_SUB(",", theNameExpr);
+  PUT_SUB(",", theSourceExpr);
   END_PUT();
 }
 

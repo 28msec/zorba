@@ -18,10 +18,9 @@
 #define ZORBA_UTF8_UTIL_BASE_H
 
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <stdexcept>
-
-#include <zorba/config.h>
 
 #include "unicode_util.h"
 
@@ -62,7 +61,6 @@ size_type const npos = static_cast<size_type>( -1 );
  * @param char_pos The character position.
  * @return Returns the corresponding byte position.
  */
-ZORBA_DLL_PUBLIC
 size_type byte_pos( storage_type const *s, size_type char_pos );
 
 /**
@@ -74,7 +72,6 @@ size_type byte_pos( storage_type const *s, size_type char_pos );
  * @return Returns the corresponding byte position or \c npos if the result >=
  * \a s_size.
  */
-ZORBA_DLL_PUBLIC
 size_type byte_pos( storage_type const *s, size_type s_size,
                     size_type char_pos );
 
@@ -85,7 +82,6 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  * @param p A pointer to somewhere within \a s.
  * @return Returns said offset.
  */
-ZORBA_DLL_PUBLIC
 size_type char_pos( storage_type const *s, storage_type const *p );
 
 /**
@@ -110,7 +106,6 @@ inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
  * character.
  * @return Returns the number of bytes required to encode the character.
  */
-ZORBA_DLL_PUBLIC
 size_type encode( unicode::code_point c, storage_type **ps );
 
 /**
@@ -148,7 +143,6 @@ void encode( unicode::code_point c, StringType *out ) {
  * @return Returns the Unicode code-point of the next character.
  */
 template<class OctetIterator>
-ZORBA_DLL_PUBLIC
 unicode::code_point next_char( OctetIterator &i );
 
 /**
@@ -163,6 +157,32 @@ unicode::code_point next_char( OctetIterator &i );
  */
 template<class OctetIterator>
 unicode::code_point prev_char( OctetIterator &i );
+
+/**
+ * Reads bytes from an istream until an entire UTF-8 character has been read.
+ *
+ * @param i The istream to read from.
+ * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
+ * byte sequence.  The pointer is advanced to one byte past the newly read
+ * character.
+ * @return Returns the number of bytes comprising the UTF-8 character (which
+ * equals the number of bytes read) or \c npos if either EOF was reached or the
+ * bytes read are an invalid UTF-8 byte sequence.
+ */
+size_type read( std::istream &i, storage_type **ps );
+
+/**
+ * Reads bytes from an istream until an entire UTF-8 character has been read.
+ *
+ * @param i The istream to read from.
+ * @param p A pointer to what will be the first byte of a UTF-8 byte sequence.
+ * @return Returns the number of bytes comprising the UTF-8 character (which
+ * equals the number of bytes read) or \c npos if either EOF was reached or the
+ * bytes read are an invalid UTF-8 byte sequence.
+ */
+inline size_type read( std::istream &i, storage_type *p ) {
+  return read( i, &p );
+}
 
 ////////// Character access ///////////////////////////////////////////////////
 
@@ -207,7 +227,6 @@ inline unicode::code_point char_at( storage_type const *s, size_type s_size,
  * @return Returns a number in the range [1,6] if \a start is valid or 0 if
  * \a start is invalid.
  */
-ZORBA_DLL_PUBLIC
 size_type char_length( storage_type start );
 
 /**
@@ -217,7 +236,6 @@ size_type char_length( storage_type start );
  * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
  * @return Returns said number of characters.
  */
-ZORBA_DLL_PUBLIC
 size_type length( storage_type const *s );
 
 /**
@@ -229,7 +247,6 @@ size_type length( storage_type const *s );
  * sequence.
  * @return Returns said number of characters.
  */
-ZORBA_DLL_PUBLIC
 size_type length( storage_type const *begin, storage_type const *end );
 
 /**
@@ -294,7 +311,6 @@ inline bool is_valid_byte( storage_type b, bool check_start_byte ) {
  * @return Returns \c nullptr if the string is valid or a pointer to the first
  * invalid byte if invalid.
  */
-ZORBA_DLL_PUBLIC
 storage_type const* validate( storage_type const *s );
 
 /**
@@ -305,7 +321,6 @@ storage_type const* validate( storage_type const *s );
  * @return Returns \c nullptr if the string is valid or a pointer to the first
  * invalid byte if invalid.
  */
-ZORBA_DLL_PUBLIC
 storage_type const* validate( storage_type const *s, size_type s_size );
 
 ////////// iterator ///////////////////////////////////////////////////////////

@@ -957,22 +957,22 @@ declare %private function xqdoc2html:add-images(
       {if(contains($type, "updating")) then
         <a  href="{$xquSpec}"
             title="updating"
-            target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>
+            target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" alt="Updating"/></a>
        else ()}
        {if(contains($type, "sequential")) then
         <a  href="{$xqsSpec}"
             title="sequential"
-            target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>
+            target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" alt="Sequential"/></a>
        else ()}
        {if(contains($type, "nondeterministic ")) then
         <a  href="{$ZorbaOptAndAnn}"
             title="%ann:nondeterministic"
-            target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>
+            target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" alt="Nondeterministic"/></a>
        else ()}
        {if(contains($type, "variadic")) then
         <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments."
             href="{$ZorbaOptAndAnn}"
-            target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>
+            target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" alt="Variadic"/></a>
        else ()}
        {if(contains($type, "streamable")) then
         <a  href="{$ZorbaOptAndAnn}" title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is
@@ -983,10 +983,10 @@ declare %private function xqdoc2html:add-images(
         However, the disadvantage is that a streamable string can only be consumed exactly once.
         If a streamable string is consumed more than once, an error is raised.
         In order to enable multiple consumers of a streamable string, the string:materialize function can be used
-        to materialize the entire contents in an (regular) xs:string item." target="_blank"><img src="{concat($imagesPath, "Streamable.gif")}" /></a>
+        to materialize the entire contents in an (regular) xs:string item." target="_blank"><img src="{concat($imagesPath, "Streamable.gif")}" alt="Streamable"/></a>
        else ()}
        {if(contains($type, "external")) then
-        <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" /></a>
+        <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" alt="External"/></a>
        else ()}
     </span>
 };
@@ -1121,6 +1121,13 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      else
       (<div class="subsubsection">XQuery version and encoding for this module:</div>,
        <p class="annotationText">xquery version "{$module/xqdoc:comment/xqdoc:custom[@tag='XQuery version']/text()}" encoding "{$module/xqdoc:comment/xqdoc:custom[@tag='encoding']/text()}";</p>)
+     ),
+     let $modVersion := xqdoc2html:get-module-version($moduleUri)
+     return
+     if($modVersion = "") then ()
+     else
+     (<div class="subsubsection">Zorba version for this module:</div>,
+      <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information about module versioning in Zorba please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
      )
 };
 
@@ -1374,9 +1381,9 @@ declare %private function xqdoc2html:module-function-summary($functions)
             <td>
               <tt>{
                 if ($isDeprecated) then
-                  <span class="functName"><del><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></del></span>
+                  <span class="functName"><del><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></del></span>
                 else
-                  <span class="functName"><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></span>
+                  <span class="functName"><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></span>
               }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
@@ -1531,7 +1538,7 @@ declare %private function xqdoc2html:function-parameters($comment) {
     if (exists($params)) then
       (<div class="subsubsection">Parameters:</div>,
       <ul>
-      {for $param in $params return <li>{data($param)}</li>}
+      {for $param in $params return <li>{$param/node()}</li>}
       </ul>)
     else ()
 };

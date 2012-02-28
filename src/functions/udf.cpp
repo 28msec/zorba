@@ -50,7 +50,8 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    short scriptingKind)
+    short scriptingKind,
+    CompilerCB* compilerCB)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -68,6 +69,8 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
+  theLocalUdfs = compilerCB->get_local_udfs();
+  theLocalUdfs->push_back(this);
 }
 
 
@@ -88,8 +91,22 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
+  if(theLocalUdfs != NULL)
+    theLocalUdfs->remove(this);
 }
 
+
+void user_function::prepare_for_serialize(CompilerCB *compilerCB)
+{
+  uint32_t planStateSize;
+  getPlan(compilerCB, planStateSize);
+  std::vector<user_function*>::iterator udf_it;
+  for(udf_it=theMutuallyRecursiveUDFs.begin(); udf_it!=theMutuallyRecursiveUDFs.end();udf_it++)
+  {
+    if((*udf_it)->thePlan == NULL)
+      (*udf_it)->prepare_for_serialize(compilerCB);
+  }
+}
 
 /*******************************************************************************
 
@@ -124,8 +141,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         getPlan(ar.compiler_cb);
       }
 #else
-      uint32_t planStateSize;
-      getPlan(ar.compiler_cb, planStateSize);
+      //uint32_t planStateSize;
+      //getPlan(ar.compiler_cb, planStateSize);
+      assert(thePlan != NULL);
+      ZORBA_ASSERT(thePlan != NULL);
 #endif
     }
     catch(...)
@@ -148,6 +167,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theScriptingKind;
   ar & theIsExiting;
   ar & theIsLeaf;
+  ar & theMutuallyRecursiveUDFs;
   ar & theIsOptimized;
   //ar.set_is_temp_field(true);
   //ar & save_plan;
@@ -156,6 +176,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
+
+  //+ar & theCache;
+  ar & theCacheResults;
+  ar & theCacheComputed;
 }
 
 
@@ -235,10 +259,12 @@ const std::vector<var_expr_t>& user_function::getArgVars() const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs)
+void user_function::addMutuallyRecursiveUDFs(
+    const std::vector<user_function*>& udfs,
+    const std::vector<user_function*>::const_iterator& cycle)
 {
   theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
-                                  udfs.begin() + 1,
+                                  cycle,
                                   udfs.end());
 }
 
@@ -289,9 +315,7 @@ bool user_function::accessesDynCtx() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::ignoresSortedNodes(
-    expr* fo,
-    ulong input) const
+BoolAnnotationValue user_function::ignoresSortedNodes(expr* fo, csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
@@ -305,12 +329,30 @@ BoolAnnotationValue user_function::ignoresSortedNodes(
 ********************************************************************************/
 BoolAnnotationValue user_function::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const
+    csize input) const
 {
   assert(isOptimized());
   assert(input < theArgVars.size());
 
   return theArgVars[input]->getIgnoresDuplicateNodes();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
+{
+  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
+  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
+
+  if (argMustCopy == ANNOTATION_TRUE)
+  {
+    // The decision depends on the caller
+    return callerMustCopy;
+  }
+
+  return argMustCopy;
 }
 
 
@@ -556,7 +598,7 @@ PlanIter_t user_function::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new UDFunctionCallIterator(sctx, loc, argv, this);
 }

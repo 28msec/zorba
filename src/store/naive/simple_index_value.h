@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 
-#include "store/naive/simple_index.h"
+#include "simple_index.h"
 #include <map>
 
 namespace zorba

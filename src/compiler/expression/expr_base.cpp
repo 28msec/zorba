@@ -150,8 +150,6 @@ expr::~expr()
 ********************************************************************************/
 void expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
-  serialize_baseclass(ar, (AnnotationHolder*)this);
   ar & theSctx;
   ar & theLoc;
   ar & theType;
@@ -296,9 +294,18 @@ std::string expr::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+void expr::setFreeVars(FreeVars& s)
+{
+  theFreeVars.swap(s);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void expr::clear_annotations()
 {
-  m_annotations.clear();
+  theFreeVars.clear();
 
   if (getProducesSortedNodes() != ANNOTATION_TRUE_FIXED)
     setProducesSortedNodes(ANNOTATION_UNKNOWN);
@@ -526,6 +533,52 @@ bool expr::containsRecursiveCall() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getWillBeSerialized() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
+}
+
+
+void expr::setWillBeSerialized(BoolAnnotationValue v)
+{
+  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
+  theFlags1 |= (v << WILL_BE_SERIALIZED);
+}
+
+
+bool expr::willBeSerialized() const
+{
+  BoolAnnotationValue v = getWillBeSerialized();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether the expr must produce nodes that belong to 
+  "standalone" trees or not. A tree is standalone if it does not contain 
+  references to other trees. Such references are created when the optimizer 
+  decides that it is ok to avoid copying the referenced subtree (as would be
+  required by required by a strict implementation of the spec, eg., during 
+  node construction).
+********************************************************************************/
+BoolAnnotationValue expr::getMustCopyNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
+}
+
+
+void expr::setMustCopyNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~MUST_COPY_NODES_MASK;
+  theFlags1 |= (v << MUST_COPY_NODES);
+}
+
+
+/*******************************************************************************
   Return true if the expr does not reference any variables.
 ********************************************************************************/
 bool expr::is_constant() const
@@ -633,11 +686,17 @@ bool expr::contains_node_construction() const
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
+void expr::get_exprs_of_kind(
+    expr_kind_t kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
 {
   if (kind == get_expr_kind())
   {
     exprs.push_back(const_cast<expr*>(this));
+
+    if (!deep)
+      return;
   }
 
   ExprConstIterator iter(this);
@@ -646,7 +705,40 @@ void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
     const expr* ce = iter.get_expr();
     if (ce)
     {
-      ce->get_exprs_of_kind(kind, exprs);
+      ce->get_exprs_of_kind(kind, deep, exprs);
+    }
+
+    iter.next();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::get_fo_exprs_of_kind(
+    FunctionConsts::FunctionKind kind,
+    bool deep,
+    std::vector<expr*>& exprs) const
+{
+  if (get_expr_kind() == fo_expr_kind)
+  {
+    if (static_cast<const fo_expr*>(this)->get_func()->getKind() == kind)
+    {
+      exprs.push_back(const_cast<expr*>(this));
+
+      if (!deep)
+        return;
+    }
+  }
+
+  ExprConstIterator iter(this);
+  while(!iter.done())
+  {
+    const expr* ce = iter.get_expr();
+    if (ce)
+    {
+      ce->get_fo_exprs_of_kind(kind, deep, exprs);
     }
 
     iter.next();

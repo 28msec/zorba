@@ -36,7 +36,7 @@ PlanIter_t fn_parse_xml_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnParseXmlIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_serialize_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSerializeIterator(sctx, loc, argv);
 }

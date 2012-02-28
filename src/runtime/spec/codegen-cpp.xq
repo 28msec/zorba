@@ -206,7 +206,7 @@ declare function local:create-function($iter, $function, $suffix as xs:string) a
                      $gen:newline, $gen:indent, 'static_context* sctx,',
                      $gen:newline, $gen:indent, 'const QueryLoc&amp; loc,',
                      $gen:newline, $gen:indent, 'std::vector&lt;PlanIter_t&gt;&amp; argv,',
-                     $gen:newline, $gen:indent, 'AnnotationHolder&amp; ann) const',
+                     $gen:newline, $gen:indent, 'expr&amp; ann) const',
                      $gen:newline,'{', $gen:newline, $gen:indent, $ret, $gen:newline,'}'), '')
   else
     ''

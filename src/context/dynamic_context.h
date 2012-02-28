@@ -51,22 +51,7 @@ class dynamic_context
 {
   friend class DebugIterator;
 
-protected:
-
-  struct dctx_value_t
-  {
-    typedef enum
-    {
-      no_val,
-      ext_func_param, // params that can be used by ext. functions
-      ext_func_param_typed 
-    } val_type_t;
-
-    val_type_t  type;
-    void*       func_param;
-  };
-
-
+public:
   struct VarValue
   {
     typedef enum
@@ -81,7 +66,7 @@ protected:
     {
       store::Item*     item;
       store::TempSeq*  temp_seq;
-    }          theValue;
+    }           theValue;
 
     ValueState  theState;
 
@@ -92,7 +77,28 @@ protected:
 
     VarValue(const VarValue& other);
 
-    ~VarValue(); 
+    ~VarValue();
+
+    bool isSet() const { return (theState == item || theState == temp_seq); }
+
+    bool hasItemValue() const { return (theState == item); }
+
+    bool hasSeqValue() const { return (theState == temp_seq); }
+  };
+
+protected:
+
+  struct dctx_value_t
+  {
+    typedef enum
+    {
+      no_val,
+      ext_func_param, // params that can be used by ext. functions
+      ext_func_param_typed 
+    } val_type_t;
+
+    val_type_t  type;
+    void*       func_param;
   };
 
   typedef HashMapZString<dctx_value_t> ValueMap;
@@ -139,6 +145,8 @@ public:
   void set_implicit_timezone(long tzone_seconds);
 
   long get_implicit_timezone() const;
+
+  const std::vector<VarValue>& get_variables() const { return theVarValues; }
 
   void add_variable(ulong varid, store::Item_t& value);
 

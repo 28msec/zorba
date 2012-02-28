@@ -368,22 +368,50 @@ void serializer::emitter::emit_doctype(const zstring& elementName)
 void serializer::emitter::emit_streamable_item(store::Item* item)
 {
   // Streamable item
-  char buffer[1024];
-  int rollover = 0;
-  std::streambuf *  pbuf;
-  std::streamsize   read_bytes;
-  std::istream& is = item->getStream();
+  store::SchemaTypeCode lTypeCode = item->getTypeCode();
 
-  // read bytes and do string expansion
-  do
+  switch (lTypeCode)
   {
-    //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
-    pbuf = is.rdbuf();
-    read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
-    rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
-    memmove(buffer, buffer + 1024 - rollover, rollover);
+  case store::XS_STRING:
+  {
+    char buffer[1024];
+    int rollover = 0;
+    std::streambuf *  pbuf;
+    std::streamsize   read_bytes;
+    std::istream& is = item->getStream();
+
+    // read bytes and do string expansion
+    do
+    {
+      //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+      pbuf = is.rdbuf();
+      read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
+      rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
+      memmove(buffer, buffer + 1024 - rollover, rollover);
+    }
+    while (read_bytes > 0);
+    break;
   }
-  while (read_bytes > 0);
+  case store::XS_BASE64BINARY:
+  {
+    if (item->isEncoded())
+    {
+      std::istream& is = item->getStream();
+      char buf[1024];
+      while (is.good())
+      {
+        is.read(buf, 1024);
+        tr.write(buf, is.gcount());
+      }
+    }
+    else
+    {
+      tr << item->getStringValue();
+    }
+    break;
+  }
+  default: assert(false);
+  }
 
 }
 
@@ -692,11 +720,34 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
   // emit namespace bindings
   store::NsBindings nsBindings;
-
   if (depth == 0)
+  {
     item->getNamespaceBindings(nsBindings);
+  }
   else
-    item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  {
+    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+    item->getNamespaceBindings(nsBindings);
+
+    store::Item* nodeName = item->getNodeName();
+
+    const zstring& prefix = nodeName->getPrefix();
+    const zstring& nsuri = nodeName->getNamespace();
+    if (prefix.empty() && nsuri.empty())
+    {
+      store::NsBindings::const_iterator ite = nsBindings.begin();
+      store::NsBindings::const_iterator end = nsBindings.end();
+
+      for (; ite != end; ++ite)
+      {
+        if (ite->second.empty() && ite->first.empty())
+          break;
+      }
+
+      if (ite == end)
+        nsBindings.push_back(std::pair<zstring, zstring>(prefix, nsuri));
+    }
+  }
 
   csize numBindings = nsBindings.size();
 
@@ -1843,30 +1894,48 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
-  xs_base64Binary lValue;
-
-  // First assume the item is a base64Binary item and try to get its value.
-  try
+  if (item->isStreamable())
   {
-    lValue = item->getBase64BinaryValue();
+    std::istream& stream = item->getStream();
+    if (item->isEncoded())
+    {
+      tr << Base64::decode(stream);
+    }
+    else
+    {
+      char buf[1024];
+      while (!stream.eof())
+      {
+        stream.read(buf, 1024);
+        tr.write(buf, stream.gcount());
+      }
+    }
   }
-  catch (...)
+  else
   {
-    // If this fails, then just get the string value of the item and convert
-    // it to base64
-    zstring lStringValue;
-    item->getStringValue2(lStringValue);
-    Base64::encode(lStringValue, lValue);
-  }
+    if (!item->isNode() && 
+        item->getTypeCode() == store::XS_BASE64BINARY)
+    {
+      size_t len;
+      const char* value = item->getBase64BinaryValue(len);
 
-  std::vector<char> lDecodedData;
-  lValue.decode(lDecodedData);
-
-  for (std::vector<char>::const_iterator lIter = lDecodedData.begin();
-       lIter != lDecodedData.end();
-       ++lIter)
-  {
-    tr << *lIter;
+      if (item->isEncoded())
+      {
+        std::stringstream tmp;
+        tmp.write(value, len);
+        tr << Base64::decode(tmp);
+      }
+      else
+      {
+        tr.write(value, len);
+      }
+    }
+    else
+    {
+      zstring lStringValue;
+      item->getStringValue2(lStringValue);
+      tr << lStringValue;
+    }
   }
 }
 

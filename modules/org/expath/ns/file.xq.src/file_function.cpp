@@ -26,6 +26,7 @@
 #include <zorba/user_exception.h>
 #include <zorba/util/path.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba.h>
 
 #include "file_module.h"
@@ -139,11 +140,6 @@ FileFunction::getEncodingArg(
       lEncoding = fn::upper_case( lEncodingItem.getStringValue() );
     }
     arg_iter->close();
-  }
-
-  if (!(lEncoding == "UTF-8" || lEncoding == "UTF8")) {
-    // the rest are not supported encodings
-    raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
   }
 
   return lEncoding;
@@ -260,10 +256,25 @@ WriterFileFunction::evaluate(
 
     // if this is a binary write
     if (lBinary) {
-      Zorba_SerializerOptions lOptions;
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-      Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-      lSerializer->serialize(aArgs[1], lOutStream);
+      Item lBinaryItem;
+      Iterator_t lContentSeq = aArgs[1]->getIterator();
+      lContentSeq->open();
+      while (lContentSeq->next(lBinaryItem))
+      {
+        if (lBinaryItem.isStreamable() && !lBinaryItem.isEncoded())
+        {
+          lOutStream << lBinaryItem.getStream().rdbuf();
+        }
+        else
+        {
+          Zorba_SerializerOptions lOptions;
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
+          Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+          SingletonItemSequence lSeq(lBinaryItem);
+          lSerializer->serialize(&lSeq, lOutStream);
+        }
+
+      }
     }
     // if we only write text
     else {

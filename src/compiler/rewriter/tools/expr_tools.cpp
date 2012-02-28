@@ -19,6 +19,9 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/path_expr.h"
+#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -121,20 +124,6 @@ int count_variable_uses(
 
 
 /*******************************************************************************
-
-********************************************************************************/
-const var_ptr_set& get_varset_annotation(const expr* e) 
-{
-  static var_ptr_set no_free_vars;
-
-  AnnotationValue_t ann = e->get_annotation(Annotations::FREE_VARS);
-  return (ann == NULL ?
-          no_free_vars :
-          dynamic_cast<VarSetAnnVal *>(ann.getp())->theVarset);
-}
-
-
-/*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
 expr_t fix_annotations(expr* new_expr, const expr* old_expr) 
@@ -152,25 +141,18 @@ expr_t fix_annotations(expr* new_expr, const expr* old_expr)
     }
   }
   
-  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
-  {
-    if (k == Annotations::FREE_VARS)
-    {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr);
-      const var_ptr_set& new_set = get_varset_annotation(new_expr);
+  const expr::FreeVars& old_set = old_expr->getFreeVars();
+  const expr::FreeVars& new_set = new_expr->getFreeVars();
 
-      var_ptr_set s;
-      std::set_union(old_set.begin(),
-                     old_set.end(),
-                     new_set.begin(),
-                     new_set.end(),
-                     inserter(s, s.begin()));
+  expr::FreeVars s;
+  std::set_union(old_set.begin(),
+                 old_set.end(),
+                 new_set.begin(),
+                 new_set.end(),
+                 inserter(s, s.begin()));
 
-      new_expr->put_annotation(static_cast<Annotations::Key>(k),
-                               AnnotationValue_t(new VarSetAnnVal(s)));
-    }
-  }
-  
+  new_expr->setFreeVars(s);
+
   return new_expr;
 }
 
@@ -199,6 +181,13 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
     iter.next();
   }
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -521,6 +510,526 @@ static void set_bit(
   if (i != varmap.end())
     freeset.set(i->second, value);
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+#if 0
+/*******************************************************************************
+
+********************************************************************************/
+static void set_must_copy(expr* target, BoolAnnotationValue v) 
+{
+  assert(v != ANNOTATION_UNKNOWN);
+
+  if (target == NULL)
+    return;
+
+  switch (target->getMustCopyNodes())
+  {
+  case ANNOTATION_UNKNOWN:
+  {
+    target->setMustCopyNodes(v);
+    return;
+  }
+  case ANNOTATION_TRUE_FIXED:
+  {
+    return;
+  }
+  case ANNOTATION_TRUE:
+  {
+    if (v == ANNOTATION_TRUE_FIXED)
+      target->setMustCopyNodes(v);
+
+    return;
+  }
+  case ANNOTATION_FALSE:
+  {
+    target->setMustCopyNodes(v);
+    return;
+  }
+  }
+}
+
+
+/*******************************************************************************
+  If the no-node-copy annotation of the target expr is not set to false
+  already, set it to the value of the no-node-copy annotations of the
+  source expr.
+********************************************************************************/
+static void pushdown_must_copy(expr* src, expr* target) 
+{
+  set_must_copy(target, src->getMustCopyNodes());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void pushdown_window_vars(const flwor_wincond* cond, expr* target) 
+{
+  const flwor_wincond::vars& inVars = cond->get_in_vars();
+
+  if (inVars.curr)
+    pushdown_must_copy(inVars.curr.getp(), target);
+
+  if (inVars.prev)
+    pushdown_must_copy(inVars.prev.getp(), target);
+
+  if (inVars.next)
+    pushdown_must_copy(inVars.next.getp(), target);
+
+  const flwor_wincond::vars& outVars = cond->get_out_vars();
+
+  if (outVars.curr)
+    pushdown_must_copy(outVars.curr.getp(), target);
+
+  if (outVars.prev)
+    pushdown_must_copy(outVars.prev.getp(), target);
+  
+  if (outVars.next)
+    pushdown_must_copy(outVars.next.getp(), target);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void computeMustCopyProperty(expr* inExpr)
+{
+  switch(inExpr->get_expr_kind()) 
+  {
+  case const_expr_kind:
+  {
+    return;
+  }
+
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(inExpr);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::pos_var:
+    case var_expr::win_var:
+    case var_expr::score_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::count_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    case var_expr::copy_var:
+    {
+      return;
+    }
+
+    case var_expr::arg_var:
+    {
+      return;
+      //expr* argExpr = argExprs[e->get_param_pos()];
+      //pushdown_no_node_copy(inExpr, argExpr);
+    }
+
+    case var_expr::prolog_var: 
+    case var_expr::local_var:
+    {
+      // TODO: pass into this function a map with one entry per in-scope var.
+      // The entry maps the var to the most recently encountered assignment 
+      // expr for this var. 
+      return;
+    }
+
+    case var_expr::catch_var:
+    {
+      // TODO: associate the catch var with the try clause and keep track inside the
+      // try_catch expr of all the fn:error() calls that return an item()* seq.
+      return;
+    }
+
+    case var_expr::eval_var: // TODO
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+
+    break;
+  }
+
+  case doc_expr_kind:
+  {
+    doc_expr* e = static_cast<doc_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->getContent());
+    break;
+  }
+
+  case elem_expr_kind:
+  {
+    elem_expr* e = static_cast<elem_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->getContent());
+    pushdown_must_copy(inExpr, e->getAttrs());
+    set_must_copy(e->getQNameExpr(), ANNOTATION_FALSE);
+    break;
+  }
+
+  case attr_expr_kind:
+  {
+    attr_expr* e = static_cast<attr_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->getValueExpr());
+    set_must_copy(e->getQNameExpr(), ANNOTATION_FALSE);
+    break;
+  }
+
+  case text_expr_kind:
+  {
+    text_expr* e = static_cast<text_expr*>(inExpr);
+    set_must_copy(e->get_text(), ANNOTATION_FALSE);
+    break;
+  }
+
+  case pi_expr_kind:
+  {
+    pi_expr* e = static_cast<pi_expr*>(inExpr);
+    set_must_copy(e->get_target_expr(), ANNOTATION_FALSE);
+    set_must_copy(e->get_content_expr(), ANNOTATION_FALSE);
+    break;
+  }
+
+  case relpath_expr_kind:
+  {
+    const relpath_expr* e = static_cast<const relpath_expr*>(inExpr);
+
+    std::vector<expr_t>::const_iterator ite = e->begin();
+    std::vector<expr_t>::const_iterator end = e->end();
+
+    for (++ite; ite != end; ++ite)
+    {
+      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
+      axis_kind_t axisKind = axisExpr->getAxis();
+
+      if (axisKind != axis_kind_child &&
+          axisKind != axis_kind_descendant &&
+          axisKind != axis_kind_self &&
+          axisKind != axis_kind_attribute)
+      {
+        set_must_copy((*e)[0].getp(), ANNOTATION_TRUE_FIXED);
+        break;
+      }
+    }
+
+    break;
+  }
+
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
+  {
+    flwor_expr* e = static_cast<flwor_expr*>(inExpr);
+
+    pushdown_must_copy(inExpr, e->get_return_expr());
+
+    csize i = e->num_clauses();
+    for (; i > 0; --i)
+    {
+      flwor_clause* clause = e->get_clause(i-1);
+
+      switch(clause->get_kind())
+      {
+      case flwor_clause::for_clause:
+      {
+        for_clause* fc = static_cast<for_clause*>(clause);
+        pushdown_must_copy(fc->get_var(), fc->get_expr());
+        computeMustCopyProperty(fc->get_expr());
+        break;
+      }
+      case flwor_clause::let_clause:
+      {
+        let_clause* lc = static_cast<let_clause*>(clause);
+        pushdown_must_copy(lc->get_var(), lc->get_expr());
+        computeMustCopyProperty(lc->get_expr());
+        break;
+      }
+      case flwor_clause::window_clause:
+      {
+        window_clause* wc = static_cast<window_clause*>(clause);
+
+        pushdown_must_copy(wc->get_var(), wc->get_expr());
+
+        const flwor_wincond* startCond = wc->get_win_start();
+        const flwor_wincond* endCond = wc->get_win_start();
+
+        if (startCond)
+        {
+          set_must_copy(startCond->get_cond(), ANNOTATION_FALSE);
+
+          computeMustCopyProperty(startCond->get_cond());
+
+          pushdown_window_vars(startCond, wc->get_expr());
+        }
+
+        if (endCond)
+        {
+          set_must_copy(endCond->get_cond(), ANNOTATION_FALSE);
+
+          computeMustCopyProperty(endCond->get_cond());
+
+          pushdown_window_vars(endCond, wc->get_expr());
+        }
+
+        computeMustCopyProperty(wc->get_expr());
+        break;
+      }
+      case flwor_clause::where_clause:
+      {
+        where_clause* cc = static_cast<where_clause*>(clause);
+        set_must_copy(cc->get_expr(), ANNOTATION_FALSE);
+        computeMustCopyProperty(cc->get_expr());
+        break;
+      }
+      case flwor_clause::group_clause:
+      {
+        group_clause* gc = static_cast<group_clause*>(clause);
+
+        flwor_clause::rebind_list_t::iterator ite = gc->beginGroupVars();
+        flwor_clause::rebind_list_t::iterator end = gc->endGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
+        }
+
+        break;
+      }
+      case flwor_clause::order_clause:
+      {
+        orderby_clause* ob = static_cast<orderby_clause*>(clause);
+
+        std::vector<expr_t>::iterator ite = ob->begin();
+        std::vector<expr_t>::iterator end = ob->end();
+
+        for (; ite != end; ++ite)
+        {
+          set_must_copy((*ite), ANNOTATION_FALSE);
+          computeMustCopyProperty(*ite);
+        }
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        break;
+      }
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+
+    return;
+  }
+
+  case if_expr_kind:
+  {
+    if_expr* e = static_cast<if_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_cond_expr());
+    pushdown_must_copy(inExpr, e->get_then_expr());
+    pushdown_must_copy(inExpr, e->get_else_expr());
+    break;
+  }
+
+  case trycatch_expr_kind:
+  {
+    trycatch_expr* e = static_cast<trycatch_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_try_expr());
+
+    csize numCatches = e->clause_count();
+    for (csize i = 0; i < numCatches; ++i)
+    {
+      pushdown_must_copy(inExpr, e->get_catch_expr(i));
+    }
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr*>(inExpr);
+    function* func = e->get_func();
+
+    csize numArgs = e->num_args();
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      set_must_copy(e->get_arg(i), func->mustCopyInputNodes(e, i));
+    }
+
+    break;
+  }
+
+  case dynamic_function_invocation_expr_kind:
+  case function_item_expr_kind:
+  {
+    ZORBA_ASSERT(false); // TODO
+  }
+
+  case castable_expr_kind:
+  case instanceof_expr_kind:
+  case cast_expr_kind:
+  {
+    cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
+
+  case treat_expr_kind:
+  case promote_expr_kind:
+  {
+    cast_base_expr* e = static_cast<cast_base_expr*>(inExpr);
+
+    if (TypeOps::is_subtype(e->get_type_manager(),
+                            *e->get_target_type(),
+                            *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+    {
+      set_must_copy(e, ANNOTATION_FALSE);
+    }
+
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
+
+  case name_cast_expr_kind:
+  {
+    name_cast_expr* e = static_cast<name_cast_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    pushdown_must_copy(inExpr, e->get_input());
+    break;
+  }
+
+  case validate_expr_kind:
+  {
+    validate_expr* e = static_cast<validate_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_TRUE_FIXED);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
+  case extension_expr_kind:
+  {
+    extension_expr* e = static_cast<extension_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
+  case order_expr_kind:
+  {
+    order_expr* e = static_cast<order_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  {
+    update_expr_base* e = static_cast<update_expr_base*>(inExpr);
+
+    set_must_copy(e->getTargetExpr(), ANNOTATION_TRUE_FIXED);
+
+    if (e->get_expr_kind() == rename_expr_kind)
+    {
+      set_must_copy(e->getSourceExpr(), ANNOTATION_FALSE);
+    }
+    else if (e->get_expr_kind() == replace_expr_kind)
+    {
+      replace_expr* re = static_cast<replace_expr*>(inExpr);
+
+      if (re->getType() == store::UpdateConsts::VALUE_OF_NODE)
+      {
+        set_must_copy(e->getSourceExpr(), ANNOTATION_FALSE);
+      }
+      else
+      {
+        set_must_copy(e->getSourceExpr(), ANNOTATION_TRUE_FIXED);
+      }
+    }
+    else
+    {
+      set_must_copy(e->getSourceExpr(), ANNOTATION_TRUE_FIXED);
+    }
+
+    break;
+  }
+
+#if 0
+  case transform_expr_kind:
+
+  case block_expr_kind:
+  case var_decl_expr_kind:
+  case apply_expr_kind:
+  case exit_expr_kind:
+  case exit_catcher_expr_kind:
+  case flowctl_expr_kind:
+  case while_expr_kind:
+
+  case eval_expr_kind:
+  case debugger_expr_kind:
+
+#endif
+
+  case wrapper_expr_kind:
+  {
+    wrapper_expr* e = static_cast<wrapper_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
+  case function_trace_expr_kind:
+  {
+    function_trace_expr* e = static_cast<function_trace_expr*>(inExpr);
+    pushdown_must_copy(inExpr, e->get_expr());
+    break;
+  }
+
+#ifndef ZORBA_NO_FULL_TEXT
+	case ft_expr_kind:
+  {
+    ft_expr* e = static_cast<ft_expr*>(inExpr);
+    set_must_copy(e, ANNOTATION_FALSE);
+    set_must_copy(e->get_range(), ANNOTATION_TRUE_FIXED);
+    set_must_copy(e->get_ignore(), ANNOTATION_TRUE_FIXED);
+    break;
+  }
+#endif /* ZORBA_NO_FULL_TEXT */
+
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  ExprIterator iter(inExpr);
+  while (!iter.done())
+  {
+    computeMustCopyProperty(*iter);
+    iter.next();
+  }
+}
+#endif
 
 
 }

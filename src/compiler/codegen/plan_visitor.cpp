@@ -326,6 +326,7 @@ protected:
 
   std::stack<expr*>                          theConstructorsStack;
   std::stack<EnclosedExprContext>            theEnclosedContextStack;
+  std::stack<bool>                           theCopyNodesStack;
 
   ulong                                      theNextDynamicVarId;
 
@@ -874,7 +875,7 @@ bool begin_visit(flwor_expr& v)
 
   bool isGeneral = v.is_general();
 
-  ulong numClauses = v.num_clauses();
+  csize numClauses = v.num_clauses();
 
   if (v.is_sequential())
   {
@@ -882,9 +883,9 @@ bool begin_visit(flwor_expr& v)
     {
       if (v.has_sequential_clauses())
       {
-        ulong numForClauses = 0;
+        csize numForClauses = 0;
 
-        for (ulong i = 0; i < numClauses; ++i)
+        for (csize i = 0; i < numClauses; ++i)
         {
           const flwor_clause* c = v[i];
 
@@ -920,8 +921,11 @@ bool begin_visit(flwor_expr& v)
         }
       }
 
+      // Note: a materialize clause may exist already in case plan serialization
+      // is on (see comment in materialize_clause::clone)
       if (!isGeneral &&
           v.get_return_expr()->is_sequential() &&
+          v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
       {
         materialize_clause* mat = 
@@ -937,8 +941,8 @@ bool begin_visit(flwor_expr& v)
       std::vector<OrderModifier> modifiers;
       std::vector<expr_t> orderingExprs;
 
-      ulong numForClauses = 0;
-      ulong i = 0;
+      csize numForClauses = 0;
+      csize i = 0;
 
       while (i < numClauses)
       {
@@ -1037,7 +1041,7 @@ bool begin_visit(flwor_expr& v)
     }
   }
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = v[i];
 
@@ -2061,13 +2065,13 @@ void end_visit(eval_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numVars = v.var_count();
+  csize numVars = v.var_count();
 
   checked_vector<PlanIter_t> args(numVars+1);
   checked_vector<store::Item_t> varnames(numVars);
   checked_vector<xqtref_t> vartypes(numVars);
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
@@ -2087,6 +2091,7 @@ void end_visit(eval_expr& v)
                                 vartypes, 
                                 v.get_inner_scripting_kind(),
                                 localBindings,
+                                v.getNodeCopy(),
                                 false));
 }
 
@@ -2118,17 +2123,19 @@ void end_visit(debugger_expr& v)
   std::vector<xqtref_t> vartypes(numVars);
 
   //create the eval iterator children
-  for (csize i = 0; i < numVars; i++) {
+  for (csize i = 0; i < numVars; i++) 
+  {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
     argvEvalIter.push_back(pop_itstack());
   }
-  argvEvalIter.push_back(
-    new DebuggerSingletonIterator(sctx, qloc, theCCB->theDebuggerCommons));
+
+  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
+                                                       qloc,
+                                                       theCCB->theDebuggerCommons));
 
   // now reverse them (first the expression, then the variables)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
-
 
   // get the debugger iterator from the debugger stack
   std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
@@ -2144,9 +2151,11 @@ void end_visit(debugger_expr& v)
 
   // child 1
   store::NsBindings localBindings;
-  if (v.getNSCtx()) {
+  if (v.getNSCtx()) 
+  {
     v.getNSCtx()->getAllBindings(localBindings);
   }
+
   argv.push_back(new EvalIterator(sctx,
                                   qloc,
                                   argvEvalIter,
@@ -2154,6 +2163,7 @@ void end_visit(debugger_expr& v)
                                   vartypes,
                                   SEQUENTIAL_FUNC_EXPR,
                                   localBindings,
+                                  true,
                                   true));
 
   lDebugIterator->setChildren(&argv);
@@ -2808,6 +2818,9 @@ bool begin_visit(doc_expr& v)
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
 
+  if (v.copyInputNodes())
+    theCopyNodesStack.push(true);
+
   return true;
 }
 
@@ -2817,13 +2830,18 @@ void end_visit(doc_expr& v)
   CODEGEN_TRACE_OUT("");
 
   PlanIter_t lContent = pop_itstack();
-  PlanIter_t lContIter = new DocumentContentIterator(sctx, qloc, lContent);
-  PlanIter_t lDocIter = new DocumentIterator(sctx, qloc, lContIter);
+  PlanIter_t lDocIter = new DocumentIterator(sctx,
+                                             qloc,
+                                             lContent, 
+                                             !theCopyNodesStack.empty());
   push_itstack(lDocIter);
 
   theEnclosedContextStack.pop();
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
+
+  if (v.copyInputNodes())
+    theCopyNodesStack.pop();
 }
 
 
@@ -2833,6 +2851,9 @@ bool begin_visit(elem_expr& v)
 
   theConstructorsStack.push(&v);
   theEnclosedContextStack.push(ELEMENT_CONTENT);
+
+  if (v.copyInputNodes())
+    theCopyNodesStack.push(true);
 
   return true;
 }
@@ -2859,9 +2880,9 @@ void end_visit(elem_expr& v)
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 
-  // Handling of the special case where the QName expression of a direct element constructor
-  // has in itself a direct constructor. In that case the QName expression should have
-  // isRoot set to true.
+  // Handling of the special case where the QName expression of a direct element
+  // constructor has in itself a direct constructor. In that case the QName 
+  // expression should have isRoot set to true.
   elem_expr* top_elem_expr = NULL;
   if (!theConstructorsStack.empty())
     top_elem_expr = dynamic_cast<elem_expr*>(theConstructorsStack.top());
@@ -2879,8 +2900,12 @@ void end_visit(elem_expr& v)
                                         lAttrsIter,
                                         lContentIter,
                                         v.getNSCtx(),
-                                        isRoot);
+                                        isRoot,
+                                        !theCopyNodesStack.empty());
   push_itstack(iter);
+
+  if (v.copyInputNodes())
+    theCopyNodesStack.pop();
 }
 
 

@@ -273,9 +273,9 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypemgr :
-  ------------
-  If non NULL, then "this" is the root sctx of a module, and theTypemgr stores
+  theTypeMnager :
+  ---------------
+  If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
   declarations, in-scope attribute declarations and in-scope type declarations).
 
@@ -291,8 +291,8 @@ public:
   -----------------------------
   The namespace URI to be used for function qnames whose prefix is empty.
 
-  theCtxItemType :
-  ----------------
+  theContextItemType :
+  --------------------
 
   theVariablesMap :
   -----------------
@@ -427,59 +427,63 @@ public:
   static const zstring DOT_POS_VAR_NAME;
   static const zstring DOT_SIZE_VAR_NAME;
 
-  static const zstring W3C_NS_PREFIX;
-  static const zstring ZORBA_NS_PREFIX;
 
   //
   // W3C namespaces
   //
-  static const zstring W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
+  static const char* W3C_NS_PREFIX; // http://www.w3.org/
+
+  static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
+
+  static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
 
   //
-  // http://www.w3.org/2005/xpath-functions
+  // Zorba namespaces
   //
-  static const zstring W3C_FN_NS;
 
-  //
+  static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
+
   // Namespaces of external modules declaring zorba builtin functions
-  //
-  static const zstring ZORBA_MATH_FN_NS;
-  static const zstring ZORBA_BASE64_FN_NS;
-  static const zstring ZORBA_NODEREF_FN_NS;
-  static const zstring ZORBA_NODEPOS_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
-  static const zstring ZORBA_SCHEMA_FN_NS;
-  static const zstring ZORBA_XQDOC_FN_NS;
-  static const zstring ZORBA_RANDOM_FN_NS;
-  static const zstring ZORBA_INTROSP_SCTX_FN_NS;
-  static const zstring ZORBA_REFLECTION_FN_NS;
-  static const zstring ZORBA_STRING_FN_NS;
-  static const zstring ZORBA_FETCH_FN_NS;
-  static const zstring ZORBA_NODE_FN_NS;
-  static const zstring ZORBA_XML_FN_NS;
+  static const char* ZORBA_MATH_FN_NS;
+  static const char* ZORBA_BASE64_FN_NS;
+  static const char* ZORBA_JSON_FN_NS;
+  static const char* ZORBA_NODEREF_FN_NS;
+  static const char* ZORBA_NODEPOS_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+  static const char* ZORBA_SCHEMA_FN_NS;
+  static const char* ZORBA_XQDOC_FN_NS;
+  static const char* ZORBA_RANDOM_FN_NS;
+  static const char* ZORBA_INTROSP_SCTX_FN_NS;
+  static const char* ZORBA_REFLECTION_FN_NS;
+  static const char* ZORBA_STRING_FN_NS;
+  static const char* ZORBA_FETCH_FN_NS;
+  static const char* ZORBA_NODE_FN_NS;
+  static const char* ZORBA_XML_FN_NS;
 
-  //
   // Namespaces of virtual modules declaring zorba builtin functions
-  //
-  static const zstring ZORBA_UTIL_FN_NS;
-  static const zstring ZORBA_SCRIPTING_FN_NS;
+  static const char* ZORBA_UTIL_FN_NS;
+  static const char* ZORBA_SCRIPTING_FN_NS;
 
-  //
   // Namespaces of virtual modules declaring internal builtin functions of
   // XQUERY or zorba. Internal functions are not visible to xquery programs.
-  //
-  static const zstring XQUERY_OP_NS;
-  static const zstring ZORBA_OP_NS;
+  static const char* XQUERY_OP_NS;
+  static const char* ZORBA_OP_NS;
 
+  // options-related namepsaces
+  static const char* ZORBA_OPTIONS_NS;
+  static const char* ZORBA_OPTION_WARN_NS;
+  static const char* ZORBA_OPTION_FEATURE_NS;
+  static const char* ZORBA_OPTION_OPTIM_NS;
+  static const char* ZORBA_VERSIONING_NS;
 
 protected:
   static_context                        * theParent;
@@ -494,9 +498,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<internal::URIMapper>       theURIMappers;
+  ztd::auto_vector<internal::URIMapper>   theURIMappers;
 
-  ztd::auto_vector<internal::URLResolver>     theURLResolvers;
+  ztd::auto_vector<internal::URLResolver> theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 
@@ -504,7 +508,7 @@ protected:
 
   ExternalModuleMap                     * theExternalModulesMap;
 
-  rchandle<TypeManager>                   theTypemgr;
+  rchandle<TypeManager>                   theTypeManager;
 
   NamespaceBindings                     * theNamespaceBindings;
 
@@ -514,7 +518,7 @@ protected:
   zstring                                 theDefaultFunctionNamespace;
   bool                                    theHaveDefaultFunctionNamespace;
 
-  xqtref_t                                theCtxItemType;
+  xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
   
@@ -595,6 +599,8 @@ public:
   void serialize_tracestream(serialization::Archiver& ar);
 
   void serialize(serialization::Archiver& ar);
+
+  void prepare_for_serialize(CompilerCB *compiler_cb);
 
 public:
   static_context(::zorba::serialization::Archiver& ar);
@@ -739,11 +745,17 @@ public:
   //
   const zstring& default_elem_type_ns() const;
 
-  void set_default_elem_type_ns(const zstring& ns, const QueryLoc& loc);
+  void set_default_elem_type_ns(
+      const zstring& ns,
+      bool raiseError,
+      const QueryLoc& loc);
 
   const zstring& default_function_ns() const;
 
-  void set_default_function_ns(const zstring& ns, const QueryLoc& loc);
+  void set_default_function_ns(
+      const zstring& ns,
+      bool raiseError,
+      const QueryLoc& loc);
 
   void bind_ns(
         const zstring& prefix,
@@ -785,7 +797,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t);
 
   const XQType* get_context_item_type() const;
 
@@ -894,6 +906,11 @@ public:
 
 protected:
   void process_feature_option(
+    const zstring& value,
+    bool  enable,
+    const QueryLoc& loc);
+
+  void process_optim_option(
     const zstring& value,
     bool  enable,
     const QueryLoc& loc);

@@ -18,50 +18,64 @@ import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare variable $testfile external;  
-declare variable $apitest-path external;
-declare variable $query-result external;
 declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
 declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
 
-(: cut .iter ending :)
-let $cut-path := fn:substring($testfile, 1, fn:string-length($testfile) - 5)
-(: expected result file :)
-let $expected-file := fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/IterPlan/', $cut-path, '.iter')
-let $result-file := fn:concat($binary-dir, '/test/rbkt/CompilerResults/IterPlan/', $cut-path, '.iter')
-(: query file :)
-let $query-file := fn:concat($source-dir, '/test/rbkt/Queries/', $cut-path, '.xq')
-let $apitest-path-normalized := file:path-to-native($apitest-path)
-let $expected-file-normalized := file:path-to-native($expected-file)
-let $result-file-normalized := file:path-to-native($result-file)
-let $query-file-normalized := file:path-to-native($query-file)
-let $query-result-normalized := file:path-to-native($query-result)
+declare variable $apitest-path external;
 
-return
-  if (file:exists($query-file-normalized)) 
-  then
-    {
-      variable $query-options := (
-        '--iter-plan-test',
-        '--print-iterator-tree',
-        '--no-tree-ids',
-        $query-file-normalized
-      );
-      variable $query-stdout as xs:string := file:read-text($query-result-normalized);
-      variable $expected-text as xs:string := file:read-text($expected-file-normalized);
+declare variable $testname external; 
+ 
+declare variable $result-filepath external;
 
-      {
-        (
-          (: compare generated iterator tree with expected result :)
-          if ($query-stdout eq $expected-text) then
-            "Passed!"
-          else
-            fn:concat(
-              "Failed! Generated iterator tree is not equal to the expected Result!",
-              "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "",
-              "Expected Result: ", $expected-file, $expected-text)
-        )
-      }
-    }
-  else
-    fn:concat("Passed! But only because query file ", $query-file, " not found. Test was not executed!")
+variable $expected-filepath := 
+fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/IterPlan/', $testname, '.iter');
+
+variable $query-filepath := 
+fn:concat($source-dir, '/test/rbkt/Queries/', $testname, '.xq');
+
+variable $expected-filepath-normalized := file:path-to-native($expected-filepath);
+
+variable $result-filepath-normalized := file:path-to-native($result-filepath);
+
+variable $query-filepath-normalized := file:path-to-native($query-filepath);
+
+variable $apitest-path-normalized := file:path-to-native($apitest-path);
+
+
+if (file:exists($query-filepath-normalized))
+then
+{
+  variable $query-options := (
+    '--iter-plan-test',
+    '--print-iterator-tree',
+    '--no-tree-ids',
+    $query-filepath-normalized
+  );
+
+  variable $result-text as xs:string := file:read-text($result-filepath-normalized);
+
+  variable $expected-text as xs:string := file:read-text($expected-filepath-normalized);
+
+  {
+    (
+      (: compare generated iterator tree with expected result :)
+      if ($result-text eq $expected-text) then
+        "Passed!"
+      else
+        fn:concat(
+          "Failed! Generated iterator tree is not equal to the expected Result!",
+          "Command to generate iterator tree: ", 
+           $apitest-path,
+           " ",
+           fn:string-join($query-options," "),
+           "",
+           "Actual Result: ",
+           $result-filepath, 
+           $result-text)
+    )
+  }
+}
+else
+    fn:concat("Passed! But only because query file ", 
+              $query-filepath,
+              " not found. Test was not executed!")

@@ -11,15 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-                                  
 
 SET(UNIT_TEST_SRCS
+  string_instantiate.cpp
+  string.cpp
+  test_uri.cpp
+  unique_ptr.cpp
   unit_tests.cpp
   test_uri.cpp
+  json_parser.cpp
 )
 
-IF(ZORBA_WITH_DEBUGGER)
-  LIST(APPEND UNIT_TEST_SRCS
-#    test_debugger_protocol.cpp
-  )
-ENDIF(ZORBA_WITH_DEBUGGER)
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST (APPEND UNIT_TEST_SRCS
+    stemmer.cpp
+    thesaurus.cpp
+    tokenizer.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+IF (NOT ZORBA_NO_UNICODE)
+  LIST (APPEND UNIT_TEST_SRCS
+    test_icu_streambuf.cpp)
+ENDIF (NOT ZORBA_NO_UNICODE)
+
+# vim:set et sw=2 tw=2:

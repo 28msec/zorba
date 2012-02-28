@@ -23,9 +23,9 @@
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
+#include "store_defs.h"
+#include "atomic_items.h"
+#include "node_items.h"
 
 #include "runtime/function_item/function_item.h"
 
@@ -52,36 +52,48 @@ void Item::addReference() const
 
 #else
 
-  if (isNode())
+  switch (getKind())
+  {
+  case NODE:
   {
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
     ++(*theUnion.treeRCPtr);
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isAtomic() || isError())
+  case ATOMIC:
+  case ERROR_:
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isList())
+  case LIST:
   {
     SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isFunction())
+  case FUNCTION:
   {
     SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+    return;
   }
-  else
+  case PUL:
   {
     ++theRefCount;
+    return;
   }
-
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }  
+  }
 #endif
 }
 
@@ -106,7 +118,9 @@ void Item::removeReference()
 
 #else
 
-  if (isNode())
+  switch (getKind())
+  {
+  case NODE:
   {
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
 
@@ -119,8 +133,10 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isAtomic() || isError())
+  case ATOMIC:
+  case ERROR_:
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
 
@@ -132,8 +148,9 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isList())
+  case LIST:
   {
     SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->acquire());
 
@@ -145,8 +162,9 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+    return;
   }
-  else if (isFunction())
+  case FUNCTION:
   {
     SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->acquire());
 
@@ -158,14 +176,34 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+    return;
   }
-  else // PUL
+  case  PUL:
   {
     if (--theRefCount == 0)
       free();
+
+    return;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
   }
 
 #endif
+}
+
+
+Item::ItemKind Item::getKind() const
+{
+  //if (theUnion.treeRCPtr == 0)
+  //  return UNKNOWN;
+
+  if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
+    return NODE;
+
+  return static_cast<ItemKind>(theUnion.itemKind);
 }
 
 
@@ -178,37 +216,46 @@ bool Item::isNode() const
 
 bool Item::isAtomic() const
 {
-  return ((theUnion.itemKind & ATOMIC) == ATOMIC); 
+  return (theUnion.itemKind == ATOMIC); 
 }
 
 
 bool Item::isList() const
 {
-  return ((theUnion.itemKind & LIST) == LIST); 
+  return (theUnion.itemKind == LIST); 
 }
 
 
 bool Item::isPul() const
 {
-  return ((theUnion.itemKind & PUL) == PUL);
+  return (theUnion.itemKind == PUL);
 }
 
 
 bool Item::isError() const
 {
-  return ((theUnion.itemKind & ERROR_) == ERROR_);
+  return (theUnion.itemKind == ERROR_);
 }
 
 
 bool Item::isFunction() const
 {
-  return ((theUnion.itemKind & FUNCTION) == FUNCTION);
+  return (theUnion.itemKind == FUNCTION);
 }
 
 
 Item* Item::getBaseItem() const
 {
   return NULL;
+}
+
+
+store::SchemaTypeCode Item::getTypeCode() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
 }
 
 
@@ -260,15 +307,12 @@ long Item::compare(
 }
 
 
-Item_t Item::getEBV() const
+bool Item::getEBV() const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-      getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(OperationNotDef_23),
+               ZED(EffectiveBooleanValue),
+               getType()->getStringValue()));
 }
 
 
@@ -386,7 +430,7 @@ const zstring& Item::getString() const
 /**
  * Accessor for xs:base64Binary
  */
-xs_base64Binary Item::getBase64BinaryValue() const
+const char* Item::getBase64BinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -396,6 +440,24 @@ xs_base64Binary Item::getBase64BinaryValue() const
     )
   );
 }
+
+
+/**
+ * Checks whether a base64 item's content is already encoded
+ *
+ * @return true only if it is.
+ */
+bool Item::isEncoded() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), "Item::isEncoded()",
+      getType()->getStringValue()
+    )
+  );
+}
+
 
 /**
  * Accessor for xs:boolean

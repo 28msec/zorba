@@ -39,7 +39,6 @@ namespace zorba
 class fo_expr;
 class CompilerCB;
 class expr;
-class AnnotationHolder;
 
 
 /*******************************************************************************
@@ -66,12 +65,12 @@ public:
 
 	virtual ~function() {}
 
-  StaticContextConsts::xquery_version_t getXQueryVersion() const 
+  StaticContextConsts::xquery_version_t getXQueryVersion() const
   {
-    return theXQueryVersion; 
+    return theXQueryVersion;
   }
 
-  void setXQueryVersion(StaticContextConsts::xquery_version_t version) 
+  void setXQueryVersion(StaticContextConsts::xquery_version_t version)
   {
     theXQueryVersion = version;
   }
@@ -160,25 +159,27 @@ public:
 
   virtual short getScriptingKind() const { return SIMPLE_EXPR; }
 
-  virtual xqtref_t getReturnType(
-      const TypeManager* tm,
-      const std::vector<xqtref_t>& argTypes) const;
+  virtual xqtref_t getReturnType(const fo_expr* caller) const;
 
   virtual bool accessesDynCtx() const { return false; }
 
   virtual bool isMap(ulong input) const;
 
+  virtual bool propagatesInputNodes(expr* fo, csize input) const;
+
+  virtual bool mustCopyInputNodes(expr* fo, csize input) const;
+
+  virtual bool propagatesSortedNodes(csize input) const { return false; }
+
+  virtual bool propagatesDistinctNodes(csize input) const { return false; }
+
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
 
   virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
 
-  virtual bool propagatesSortedNodes(ulong input) const { return false; }
+  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-  virtual bool propagatesDistinctNodes(ulong input) const { return false; }
-
-  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
-
-  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   virtual bool isArithmeticFunction() const { return false; }
 
@@ -216,7 +217,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const = 0;
+        expr& ann) const = 0;
 };
 
 

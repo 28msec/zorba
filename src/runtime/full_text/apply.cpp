@@ -1219,7 +1219,8 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   internal::Thesaurus::ptr thesaurus(
     dynamic_cast<internal::Thesaurus*>( rsrc.release() )
   );
-  ZORBA_ASSERT( thesaurus );
+  if ( !thesaurus )
+    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
 
   internal::Thesaurus::iterator::ptr tresult(
     thesaurus->lookup(

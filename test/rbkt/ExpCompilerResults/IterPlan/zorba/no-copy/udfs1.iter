@@ -1,0 +1,58 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="d1">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,a)"/>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,b)"/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,c)"/>
+        </ElementIterator>
+      </ElementIterator>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="3" varname="d2">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,a)"/>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,b)"/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,c)"/>
+        </ElementIterator>
+      </ElementIterator>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
+  <FnConcatIterator>
+    <UDFunctionCallIterator>
+      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+        <CtxVarIterator varid="2" varname="d1" varkind="local"/>
+      </TreatIterator>
+    </UDFunctionCallIterator>
+    <UDFunctionCallIterator>
+      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+        <CtxVarIterator varid="3" varname="d2" varkind="local"/>
+      </TreatIterator>
+    </UDFunctionCallIterator>
+  </FnConcatIterator>
+</SequentialIterator>
+
+Iterator tree for local:foo:
+<TreatIterator quant="">
+  <flwor::FLWORIterator>
+    <ForVariable name="child">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
+        <LetVarIterator varname="n"/>
+      </ChildAxisIterator>
+    </ForVariable>
+    <ReturnClause>
+      <FunctionTraceIterator>
+        <TreatIterator quant="">
+          <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+            <ForVarIterator varname="child"/>
+          </ParentAxisIterator>
+        </TreatIterator>
+      </FunctionTraceIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</TreatIterator>
+

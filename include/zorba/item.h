@@ -19,6 +19,8 @@
 #include <iostream>
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/store_consts.h>
+#include <vector>
 
 namespace zorba {
 
@@ -30,6 +32,11 @@ namespace serialization
   class Archiver;
   void operator&(zorba::serialization::Archiver &ar, zorba::Item &obj);
 }
+
+/**
+ * Used for Item::getNamespaceBindings() and ItemFactory::createElementNode().
+ */
+typedef std::vector<std::pair<String, String> > NsBindings;
 
 /** \brief The Zorba Item interface.
  *
@@ -266,7 +273,7 @@ public:
   /** \brief Get an iterator for the children of this (node) Item.
    *
    * Note that this function is only available for node Items.
-   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * The file \link simple.cpp \endlink contains some basic examples that demonstrate
    * the use of this function.
    *
    * @return Iterator over the children of this node.
@@ -278,7 +285,7 @@ public:
   /** \brief Get an iterator for the attributes of this (node) Item.
    *
    * Note that this function is only available for node Items.
-   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * The file \link simple.cpp \endlink contains some basic examples that demonstrate
    * the use of this function.
    *
    * @return Iterator over the attributes of this node.
@@ -286,6 +293,25 @@ public:
    */
   Iterator_t
   getAttributes() const;
+
+  /** \brief Get an iterator for the namespace bindings of this (element) Item.
+    *
+    * Note that this function is only available for element Items.
+    * The file \link simple.cpp \endlink contains some basic examples that demonstrate
+    * the use of this function.
+    *
+    * @param aBindings An STL list to receive the namespace bindings of this node (each
+    * represented as a std::pair<zorba::String,zorba::String> where the
+    * first string is the namespace prefix and the second is the namespace URI).
+    * @param aScope An instance of NsScoping to declare which bindings to return:
+    * those local to the element; those local to all parent elements; or all bindings
+    * (the default).
+    * @throw ZorbaException if an error occured, e.g. the Item is not of type element.
+    */
+  void
+  getNamespaceBindings(NsBindings& aBindings,
+    store::StoreConsts::NsScoping aNsScoping = store::StoreConsts::ALL_NAMESPACES)
+    const;
 
   /** \brief Get parent of this (node) Item.
    *
@@ -300,7 +326,7 @@ public:
   /** \brief Get the name of this (node) Item.
    *
    * Note that this function is only available for node Items.
-   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * The file \link simple.cpp \endlink contains some basic examples that demonstrate
    * the use of this function.
    *
    * @return bool if the name of the node was retrieved successfully
@@ -336,6 +362,29 @@ public:
    */
   std::istream&
   getStream();
+
+  /**
+   * Returns true if the contents of a binary item is already encoded
+   * 
+   * @return true if the content is already encoded, false otherwise
+   */
+  bool
+  isEncoded() const;
+
+  /**
+   * Returns the value and size of the given base64Binary item
+   *
+   * The value is a string which is base64 encoded if isEncoded()
+   * returns true. Otherwise, it is the original unencoded binary
+   * data.
+   *
+   * If the given item is streamable (i.e. isStreamable() returns true),
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
+   */
+  const char*
+  getBase64BinaryValue(size_t& s) const;
 
   /** \brief Returns the name of the collection this node is stored in.
    *
