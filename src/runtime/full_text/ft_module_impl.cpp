@@ -226,6 +226,9 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
         err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
       );
 
+    cout << "uri=" << uri << endl;
+    cout << "comp_uri=" << comp_uris.front() << endl;
+
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
