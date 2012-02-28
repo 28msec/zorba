@@ -343,13 +343,14 @@ MaterializeClause::MaterializeClause(
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theLocation;
-  ar & theOrderSpecs;
-  ar & theStable;
 
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
   ar & theOutputLetVarsRefs;
+
+  ar & theOrderSpecs;
+  ar & theStable;
 }
 
 

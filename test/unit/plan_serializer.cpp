@@ -24,18 +24,24 @@
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
 
+#include "system/properties.h"
+
 using namespace zorba;
 
 bool
 save_and_load(Zorba* aZorba, const char* aQueryFile)
 {
-  try {
+  try 
+  {
      std::ifstream lIn(aQueryFile);
      std::ostringstream lOut;
 
      {
+       Zorba_CompilerHints_t lHints;
+       lHints.opt_level = ZORBA_OPT_LEVEL_O1;
+
        StaticContext_t lSctx = aZorba->createStaticContext();
-       XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
+       XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx, lHints);
        lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
      }
 
@@ -46,7 +52,9 @@ save_and_load(Zorba* aZorba, const char* aQueryFile)
        std::cout << lQuery << std::endl;
      }
      return true;
-  } catch (ZorbaException& e) {
+  }
+  catch (ZorbaException& e) 
+  {
     std::cerr << e << std::endl;
     return false;
   }
@@ -64,11 +72,21 @@ plan_serializer2(Zorba* aZorba)
   return save_and_load(aZorba, "mini_http.xq");
 }
 
+
+bool
+plan_serializer3(Zorba* aZorba)
+{
+  return save_and_load(aZorba, "mini_audit.xq");
+}
+
+
 int
 plan_serializer(int argc, char* argv[]) 
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
+
+  zorba::Properties::load(0, NULL);
 
   std::cout << "executing test 1" << std::endl;
   if (!plan_serializer1(lZorba))
@@ -78,6 +96,11 @@ plan_serializer(int argc, char* argv[])
   std::cout << "executing test 2" << std::endl;
   if (!plan_serializer2(lZorba))
     return 2;
+
+  std::cout << "executing test 3" << std::endl;
+  if (!plan_serializer3(lZorba))
+    return 3;
+
   std::cout << std::endl;
 
   lZorba->shutdown();
