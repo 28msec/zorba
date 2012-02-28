@@ -29,7 +29,7 @@ declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 declare namespace httpsch = "http://expath.org/ns/http-client";
 
-declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/html/index.html";
+declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/html/index";
 declare variable $uri-host as xs:string := "http://www.zorba-xquery.com";
 
 

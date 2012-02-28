@@ -25,7 +25,7 @@ The distinction between internal and external links is made by comparing the URI
 Change this variable to point to your website, or a subdirectory on your website.
 
 \code
-declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/";
+declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/html/index/";
 declare variable $uri-host as xs:string := "http://www.zorba-xquery.com";
 
 declare function local:is-internal($x as xs:string) as xs:boolean
