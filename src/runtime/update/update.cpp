@@ -794,7 +794,8 @@ void TransformIterator::accept(PlanIterVisitor &v) const
   v.beginVisit(*this);
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();
-  for ( ; lIter != lEnd; ++lIter ) {
+  for ( ; lIter != lEnd; ++lIter ) 
+  {
     lIter->theInput->accept ( v );
   } 
   theModifyIter->accept(v);

@@ -28,7 +28,11 @@ namespace zorba
   // external mappers/resolvers. This can serve as a plain EntityData or
   // a ThesaurusEntityData. However, when there's another EntityData subclass
   // in future, this won't work as EntityData becomes an ambiguous base class...
+#ifndef ZORBA_NO_FULL_TEXT
   class EntityDataWrapper : public ThesaurusEntityData
+#else
+  class EntityDataWrapper : public EntityData
+#endif /* ZORBA_NO_FULL_TEXT */
   {
   public:
     static EntityDataWrapper const* create(internal::EntityData const* aData) {
@@ -39,6 +43,7 @@ namespace zorba
         return new EntityDataWrapper(EntityData::MODULE);
       case internal::EntityData::SCHEMA:
         return new EntityDataWrapper(EntityData::SCHEMA);
+#ifndef ZORBA_NO_FULL_TEXT
       case internal::EntityData::THESAURUS:
       {
         EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
@@ -48,6 +53,7 @@ namespace zorba
       }
       case internal::EntityData::STOP_WORDS:
         return new EntityDataWrapper(EntityData::STOP_WORDS);
+#endif /* ZORBA_NO_FULL_TEXT */
       case internal::EntityData::COLLECTION:
         return new EntityDataWrapper(EntityData::COLLECTION);
       case internal::EntityData::DOCUMENT:
@@ -61,9 +67,11 @@ namespace zorba
       return theKind;
     }
 
+#ifndef ZORBA_NO_FULL_TEXT
     virtual zorba::locale::iso639_1::type getLanguage() const {
       return theThesaurusLang;
     }
+#endif /* ZORBA_NO_FULL_TEXT */
 
   private:
     EntityDataWrapper(EntityData::Kind aKind)
@@ -71,7 +79,9 @@ namespace zorba
     {}
 
     EntityData::Kind const theKind;
+#ifndef ZORBA_NO_FULL_TEXT
     zorba::locale::iso639_1::type theThesaurusLang;
+#endif /* ZORBA_NO_FULL_TEXT */
   };
 
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)
@@ -157,6 +167,7 @@ namespace zorba
                                            lUserStream->getStreamReleaser());
         lUserStream->setStreamReleaser(nullptr);
       }
+#ifndef ZORBA_NO_FULL_TEXT
       else {
         Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
         if (lUserThesaurus != NULL) {
@@ -170,6 +181,7 @@ namespace zorba
           assert(false);
         }
       }
+#endif /* ZORBA_NO_FULL_TEXT */
     }
     return lRetval;
   }

@@ -27,6 +27,7 @@
 #include "system/properties.h"
 
 #include "zorbaserialization/serialization_engine.h"
+#include "functions/udf.h"
 
 
 namespace zorba 
@@ -60,6 +61,7 @@ CompilerCB::config::config()
   :
   opt_level(O1),
   lib_module(false),
+  for_serialization_only(false),
   parse_cb(NULL)
 {
   translate_cb = optimize_cb = NULL;
@@ -97,6 +99,7 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
   ar & force_gflwor;
   SERIALIZE_ENUM(opt_level_t, opt_level);
   ar & lib_module;
+  ar & for_serialization_only;
   ar & print_item_flow;
 }
 
@@ -118,6 +121,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theTimeout(timeout),
   theTempIndexCounter(0)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -136,10 +140,12 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
+  theIsSequential(false),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
   theConfig(cb.theConfig)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -166,6 +172,20 @@ CompilerCB::~CompilerCB()
 {
 }
 
+//compile all the user_functions so the expr tree is stable at serialize
+void CompilerCB::prepare_for_serialize()
+{
+  rclist<user_function*>::iterator udf_it;
+  for(udf_it=theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
+  {
+    (*udf_it)->prepare_for_serialize(this);
+  }
+}
+
+rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
+{
+  return theLocalUdfs;
+}
 
 /*******************************************************************************
 

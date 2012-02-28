@@ -17,7 +17,7 @@
 
 #include <algorithm>
 
-#include "store/naive/simple_index_value.h"
+#include "simple_index_value.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"

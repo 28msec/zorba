@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
@@ -49,6 +49,13 @@ class BasicItemFactory : public store::ItemFactory
 protected:
   UriPool    * theUriPool;
   QNamePool  * theQNamePool;
+
+  // boolean items
+  // we don't need to create more than two, hence
+  // they are cached here. createBoolean always
+  // returns one of them
+  store::Item_t theTrueItem;
+  store::Item_t theFalseItem;
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -99,6 +106,19 @@ public:
       bool seekable = false);
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
+
+  bool createBase64Binary(
+      store::Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded);
+
+  bool createStreamableBase64Binary(
+      store::Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false);
 
   bool createBoolean(store::Item_t& result, xs_boolean value);
 
@@ -197,9 +217,13 @@ public:
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 
+  bool createYearMonthDuration(store::Item_t& result, const char* str, ulong strlen );
+
   bool createYearMonthDuration(store::Item_t& result, xs_yearMonthDuration* value );
 
   bool createDayTimeDuration(store::Item_t& result, xs_dayTimeDuration* value );
+
+  bool createDayTimeDuration(store::Item_t& result, const char* str, ulong strlen );
 
   bool createENTITIES(store::Item_t& result, zstring& value);
 

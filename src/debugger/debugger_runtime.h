@@ -48,11 +48,12 @@ class DebuggerRuntime : public Runnable {
 
     DebuggerRuntime(
       XQueryImpl* xqueryImpl,
-      std::ostream& oStream,
+      std::ostream& outStream,
       Zorba_SerializerOptions&  serializerOptions,
       DebuggerCommunicator* communicator,
-      itemHandler aHandler,
-      void* aCallBackData);
+      itemHandler handler,
+      void* callBackData,
+      bool* interruptBreak);
 
     virtual ~DebuggerRuntime();
 
@@ -67,12 +68,6 @@ class DebuggerRuntime : public Runnable {
   public:
 
     void
-    setQueryRunning();
-
-    void
-    setNotSendTerminateEvent();
-
-    void
     resetRuntime();
 
     ExecutionStatus
@@ -85,10 +80,13 @@ class DebuggerRuntime : public Runnable {
     // Breakpints
 
     unsigned int
-    addBreakpoint(const QueryLoc& location, bool enabled);
+    addBreakpoint(String& aFileName, unsigned int aLine, bool enabled);
 
     Breakable
     getBreakpoint(unsigned int id);
+
+    BreakableVector
+    getBreakpoints();
 
     void
     updateBreakpoint(
@@ -113,13 +111,17 @@ class DebuggerRuntime : public Runnable {
     // Other
 
     void
-    setTheLastContinuationTransactionID(int transactionID);
-
-    int
-    getTheLastContinuationTransactionID();
+    setLastContinuationCommand(int transactionID, std::string commandName);
 
     std::string
-    listSource();
+    listSource(
+      String& fleName,
+      unsigned int beginLine,
+      unsigned int endLine,
+      bool zorbaExtensions);
+
+    std::vector<std::pair<std::string, std::string> >
+    getVariables();
 
     std::vector<std::pair<std::string, std::string> >
     getVariables(bool locals);
@@ -130,15 +132,31 @@ class DebuggerRuntime : public Runnable {
     void runQuery();
 
     void
+    startRuntime();
+
+    void
     resumeRuntime();
-    
+
     void
     terminateRuntime();
     
     void
     detachRuntime();
 
-    void step(StepCommand stepType);
+    void
+    stepIn();
+
+    void
+    stepOver();
+
+    void
+    stepOut();
+
+    bool
+    getAndClearInterruptBreak();
+
+    DebuggerRuntime*
+    clone();
 
   private:
 
@@ -156,13 +174,12 @@ class DebuggerRuntime : public Runnable {
     ExecutionStatus                   theExecStatus;
     mutable Lock                      theLock;
     std::set<DebugIterator*>          theBreakpoints;
-    bool                              theNotSendTerminateEvent;
     bool                              thePlanIsOpen;
     serializer*                       theSerializer;
     itemHandler                       theItemHandler;
     void*                             theCallbackData;
-
-    int                               theLastContinuationTransactionID;
+    std::pair<int, std::string>       theLastContinuationCommand;
+    bool*                             theInterruptBreak;
   };
 }
 

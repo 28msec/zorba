@@ -45,17 +45,13 @@ public:
   {
   }
 
-  short getScriptingKind() const 
-  { 
-    return SIMPLE_EXPR;
-  }
+  short getScriptingKind() const { return SIMPLE_EXPR; }
 
-  bool accessesDynCtx() const 
-  {
-    return true;
-  }
+  bool accessesDynCtx() const { return true; }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  bool mustCopyInputNodes(expr* fo, csize input) const { return false; }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
   {
     return ANNOTATION_TRUE;
   }
@@ -141,6 +137,8 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  bool mustCopyInputNodes(expr* fo, csize input) const { return false; }
+
   CODEGEN_DECL();
 };
 
@@ -158,6 +156,8 @@ public:
   }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize input) const {  return false;  }
 
   CODEGEN_DECL();
 };

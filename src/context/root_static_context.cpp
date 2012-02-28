@@ -35,14 +35,11 @@ namespace zorba
 {
 
 
-root_static_context::root_static_context() : static_context()
-{
-  theTypemgr = new RootTypeManager();
-}
-
 #ifdef WIN32
-static void append_to_path(std::vector<zstring>& aPath, zstring& zorba_root,
-                           zstring& relpath)
+static void append_to_path(
+    std::vector<zstring>& aPath,
+    zstring& zorba_root,
+    zstring& relpath)
 {
   ascii::replace_all(relpath, '/', '\\');
   zstring full_path(zorba_root);
@@ -51,6 +48,16 @@ static void append_to_path(std::vector<zstring>& aPath, zstring& zorba_root,
   aPath.push_back(full_path);
 }
 #endif
+
+
+
+root_static_context::root_static_context() 
+  :
+  static_context()
+{
+  theTypeManager = &GENV_TYPESYSTEM;
+}
+
 
 void root_static_context::init() 
 {
@@ -65,13 +72,13 @@ void root_static_context::init()
   const char* const default_ns_initializers[] = 
     {
       //"err", XQUERY_ERR_NS,
-      "fn", static_context::W3C_FN_NS.c_str(),
+      "fn", static_context::W3C_FN_NS,
       "local", XQUERY_LOCAL_FN_NS,
       //"math", XQUERY_MATH_FN_NS,
       "xml", XML_NS,
       "xs", XML_SCHEMA_NS,
       "xsi", XSI_NS,
-      "zerr", ZORBA_ERR_NS,
+      //"zerr", ZORBA_ERR_NS,
       NULL, NULL
     };
 
@@ -82,9 +89,9 @@ void root_static_context::init()
     bind_ns(pfx, ns, loc);
   }
 
-  set_default_elem_type_ns(zstring(), loc);   
+  set_default_elem_type_ns(zstring(), true, loc);   
 
-  set_default_function_ns(W3C_FN_NS, loc);
+  set_default_function_ns(W3C_FN_NS, true, loc);
 
   set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 
@@ -125,22 +132,37 @@ void root_static_context::init()
   // compute the relative path to zorba_simplestore.dll (this dll)
   WCHAR  wdll_path[1024];
   DWORD dll_path_size;
-  dll_path_size = GetModuleFileNameW(NULL, wdll_path, sizeof(wdll_path)/sizeof(wdll_path[0]));
+  dll_path_size = GetModuleFileNameW(NULL,
+                                     wdll_path,
+                                     sizeof(wdll_path)/sizeof(wdll_path[0]));
   if(dll_path_size)
   {
     wdll_path[dll_path_size] = 0;
     char  dll_path[1024];
-    WideCharToMultiByte(CP_UTF8, 0, wdll_path, -1, dll_path, sizeof(dll_path), NULL, NULL);
+    WideCharToMultiByte(CP_UTF8,
+                        0,
+                        wdll_path,
+                        -1,
+                        dll_path,
+                        sizeof(dll_path),
+                        NULL,
+                        NULL);
+
     char *last_slash = strrchr(dll_path, '\\');
     if(last_slash)
     {
-      last_slash[1] = 0;
-      zstring zorba_root_dir(dll_path);
+      last_slash[0] = 0;
+      last_slash = strrchr (dll_path, '\\');
+      if (last_slash) 
+      {
+        last_slash[1] = 0;
+        zstring zorba_root_dir(dll_path);
 
-      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_CORE_URI_DIR));
-      append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_NONCORE_URI_DIR));
-      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_CORE_LIB_DIR));
-      append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_NONCORE_LIB_DIR));
+        append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_CORE_URI_DIR));
+        append_to_path(lRootURIPath, zorba_root_dir, zstring(ZORBA_NONCORE_URI_DIR));
+        append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_CORE_LIB_DIR));
+        append_to_path(lRootLibPath, zorba_root_dir, zstring(ZORBA_NONCORE_LIB_DIR));
+      }
     }
   }
 #endif

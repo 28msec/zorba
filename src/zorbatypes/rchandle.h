@@ -92,9 +92,9 @@ public:
 
   long getRefCount() const { return theRefCount; }
 
-  long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
+  //long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
  
-  SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
+  //SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
 
   void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
 
@@ -142,6 +142,13 @@ public:
 ********************************************************************************/
 template<class T> class rchandle
 {
+public:
+  typedef T value_type;
+  typedef value_type* pointer;
+  typedef value_type const* const_pointer;
+  typedef value_type& reference;
+  typedef value_type const& const_reference;
+
 protected:
   T  * p;
 

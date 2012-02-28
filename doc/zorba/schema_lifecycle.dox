@@ -1,6 +1,6 @@
 /** \page schema_lifecycle Schema Lifecycle
 
-\section intro Intro
+\section intro Introduction
 This page is a quick presentation on how to use Zorba with XMLSchema type information.
 
 \section immport How to import a schema

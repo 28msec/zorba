@@ -732,6 +732,7 @@ _tmain(int argc, _TCHAR* argv[])
   std::string reportFilepath;
   std::string XMLreportFilepath;
   std::string knownFailuresFilepath;
+	std::string testExtension = ".xq";
   bool haveKnownFailures = false;
   bool quiet = false;
   bool generateW3CData = false;
@@ -860,7 +861,10 @@ _tmain(int argc, _TCHAR* argv[])
   {
     ulong pos;
     if ((pos = refsDir.find("XQueryX")) != std::string::npos)
+		{
       refsDir = refsDir.erase(pos, 8);
+			testExtension = ".xqx";
+		}
     else if ((pos = refsDir.find("XQuery")) != std::string::npos)
       refsDir = refsDir.erase(pos, 7);
   }
@@ -924,7 +928,7 @@ _tmain(int argc, _TCHAR* argv[])
         continue;
       }
 
-      if (fs::extension(queryPath) != ".xq")
+      if (fs::extension(queryPath) != testExtension)
       {
         //std::cerr << "Found no-query file " << queryPath.string() << std::endl;
         continue;
@@ -1025,7 +1029,7 @@ _tmain(int argc, _TCHAR* argv[])
       getline(knownFailuresFile, testname);
       knownFailures.insert(testname);
     }
-    queries.theOutput << "Loaded " << knownFailures.size() 
+    queries.theOutput << "Loaded " << (knownFailures.size()  -  1)
                       << " known failures" << std::endl << std::endl;
   }
 

@@ -194,7 +194,7 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
+StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
 {
   try
   {
@@ -215,17 +215,48 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
   return "";
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::getNamespaceBindings( NsBindings& aBindings ) const
+{
+  try
+  {
+    store::NsBindings lBindings;
+    theCtx->get_namespace_bindings(lBindings);
+    aBindings.reserve(aBindings.size() + lBindings.size());
+
+    for (store::NsBindings::const_iterator lIter = lBindings.begin();
+         lIter != lBindings.end(); ++lIter)
+    {
+      aBindings.push_back(
+        std::pair<zorba::String, zorba::String>(
+          Unmarshaller::newString(lIter->first),
+          Unmarshaller::newString(lIter->second)
+        )
+      );
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+}
 
 /*******************************************************************************
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
+StaticContextImpl::setDefaultElementAndTypeNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
-    QueryLoc loc;
-    theCtx->set_default_elem_type_ns(lURI, loc);
+    theCtx->set_default_elem_type_ns(lURI, false, QueryLoc::null);
     return true;
   ZORBA_CATCH
   return false;
@@ -236,7 +267,7 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 
 ********************************************************************************/
 String
-StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
+StaticContextImpl::getDefaultElementAndTypeNamespace() const
 {
   try
   {
@@ -258,12 +289,12 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 
 ********************************************************************************/
 bool
-StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
+StaticContextImpl::setDefaultFunctionNamespace(const String& aURI)
 {
   ZORBA_TRY
     const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
-    theCtx->set_default_function_ns(lURI, loc);
+    theCtx->set_default_function_ns(lURI, false, loc);
     return true;
   ZORBA_CATCH
   return false;
@@ -818,6 +849,59 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
 
 
 void
+StaticContextImpl::getFunctions(std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+      aFunctions.push_back(lFunc);
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
+StaticContextImpl::getFunctions(
+    const String& aFnNameUri,
+    uint32_t arity,
+    std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      const zstring& lNamespace = (*lIter)->getName()->getNamespace();
+      if (lNamespace == aFnNameUri.c_str() && (*lIter)->getArity() == arity)
+      {
+        Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+        aFunctions.push_back(lFunc);
+      }
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
 StaticContextImpl::getFunctionAnnotations(
     const Item& aQName,
     int arity,
@@ -836,7 +920,7 @@ StaticContextImpl::getFunctionAnnotations(
   try
   {
     for (unsigned int i = 0; i < ann_list->size(); i++)
-      aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+      aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
   {
@@ -849,7 +933,8 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
   theCtx->set_context_item_type(xqType);

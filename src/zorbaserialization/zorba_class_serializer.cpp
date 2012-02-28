@@ -682,8 +682,31 @@ void operator&(Archiver &ar, store::Item* &obj)
          
       else if(name_of_type == "base64Binary")
       {
-        SERIALIZE_REF_FIELD(xs_base64Binary, value, getBase64BinaryValue());
-        FINALIZE_SERIALIZE(createBase64Binary, (result, value_in));
+        if (ar.is_serializing_out())
+        {
+          size_t s;
+          const char* c = obj->getBase64BinaryValue(s);
+          if (obj->isEncoded())
+          {
+            Base64 tmp;
+            Base64::parseString(c, s, tmp);
+            ar.dont_allow_delay();
+            ar & tmp;
+          }
+          else
+          {
+            Base64 tmp((const unsigned char*)c, s);
+            ar.dont_allow_delay();
+            ar & tmp;
+          }
+        }
+        else
+        {
+          ar.dont_allow_delay();
+          Base64 tmp;
+          ar & tmp;
+          FINALIZE_SERIALIZE(createBase64Binary, (result, tmp));
+        }
       }
       else if(name_of_type == "hexBinary")
       {
@@ -1089,6 +1112,7 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
         ar & local;
         ar.set_is_temp_field(false);
         obj = internal::SystemDiagnosticBase::find(local);
+        free(local);
         ZORBA_ASSERT(obj);
       }
       else

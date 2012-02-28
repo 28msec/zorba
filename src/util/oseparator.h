@@ -40,10 +40,22 @@ public:
   }
 
   /**
-   * Reset's the state.
+   * Gets the printing state of this %oseparator.
+   *
+   * @return Returns \c true only if this %oseparator is currently printing.
    */
-  void reset() {
-    print_ = false;
+  bool printing() const {
+    return print_;
+  }
+
+  /**
+   * Manually set the printing state.
+   *
+   * @state If \c true, the separator will always print; if \c false, the
+   * separator will not print only the next time it is emitted.
+   */
+  void printing( bool state ) {
+    print_ = state;
   }
 
   /**
@@ -88,7 +100,7 @@ public:
     if ( sep.print_ )
       o << sep.sep_;
     else
-      sep.print_ = true;
+      sep.printing( true );
     return o;
   }
 

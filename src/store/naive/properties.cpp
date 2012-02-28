@@ -20,7 +20,7 @@
 #include <sstream>
 #include <cstdlib>
 
-#include "store/naive/properties.h"
+#include "properties.h"
 
 
 #define CONFIG_FOLDER "zorba"

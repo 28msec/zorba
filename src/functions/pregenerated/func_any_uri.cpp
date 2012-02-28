@@ -36,7 +36,7 @@ PlanIter_t fn_resolve_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ResolveUriIterator(sctx, loc, argv);
 }

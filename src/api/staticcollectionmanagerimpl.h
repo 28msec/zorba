@@ -80,6 +80,7 @@ protected:
   ItemFactory            * theFactory;
   std::string              theColDDLNamespace;
   std::string              theColDMLNamespace;
+  std::string              theIdxDDLNamespace;
   
   StaticContext_t          theContext;
   CollectionManagerImpl*   theCollMgr;
@@ -124,6 +125,24 @@ public:
 
   virtual bool
   isDeclaredCollection(const Item& aQName) const;
+
+  virtual void
+  createIndex(const Item& aQName);
+
+  virtual void
+  deleteIndex(const Item& aQName);
+
+  virtual ItemSequence_t
+  availableIndexes() const;
+
+  virtual bool
+  isAvailableIndex(const Item& aQName) const;
+
+  virtual ItemSequence_t
+  declaredIndexes() const;
+
+  virtual bool
+  isDeclaredIndex(const Item& aQName) const;
 
 }; /* class StaticCollectionManagerImpl */
 
@@ -186,6 +205,24 @@ public:
 
   virtual bool
   isDeclaredCollection(const Item& aQName) const;
+
+  virtual void
+  createIndex(const Item& aQName);
+
+  virtual void
+  deleteIndex(const Item& aQName);
+
+  virtual ItemSequence_t
+  availableIndexes() const;
+
+  virtual bool
+  isAvailableIndex(const Item& aQName) const;
+
+  virtual ItemSequence_t
+  declaredIndexes() const;
+
+  virtual bool
+  isDeclaredIndex(const Item& aQName) const;
 
 }; /* class StaticCollectionManagerSetImpl */
 

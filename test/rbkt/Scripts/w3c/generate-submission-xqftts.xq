@@ -11,7 +11,7 @@ else
     <test-suite-result>
       <implementation
         name="Zorba" 
-        version='2.0.3'
+        version="2.1 'Basileia'"
         anonymous-result-column="false">
       
      <organization         
@@ -54,7 +54,6 @@ else
              <context-property name="{data($cp/@name)}" context-type="{data($cp/@context-type)}" value="{data($cp/@value)}" />
         }
         </context-properties>
-        <context-properties>{$XQFTTSZorba//*:context-property}</context-properties>
       )
     }
 
@@ -62,11 +61,11 @@ else
 
     <syntax>XQuery</syntax>
 
-    <test-run dateRun="2011-09-23">
+    <test-run dateRun="2011-12-14">
       <test-suite version="current"/>
       <transformation><p>Standard</p></transformation>
       <comparison><p>Standard</p></comparison>
-      <otherComments><p>XQFTTS taken from W3C CVS as of 2011-09-21.</p></otherComments>
+      <otherComments><p>XQFTTS taken from W3C CVS as of 2011-12-09.</p></otherComments>
     </test-run>
 
     {

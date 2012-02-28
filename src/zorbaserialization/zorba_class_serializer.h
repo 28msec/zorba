@@ -28,6 +28,7 @@
 #include "zorbaserialization/archiver.h"
 
 #include "store/api/shared_types.h"
+#include "diagnostics/assert.h"
 
 #include <stdio.h>
 #include <map>
@@ -233,7 +234,8 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
     bool is_ref;
     ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
     is_ref = ar.add_compound_field("rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+    assert(!is_ref);
+    ZORBA_ASSERT(!is_ref);
     {
       T *p = obj.getp();
       if(allow_delay != ALLOW_DELAY)
@@ -250,10 +252,6 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
       if(is_temp)
         ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
-    }
-    else
-    {
-      assert(false);
     }
   }
   else

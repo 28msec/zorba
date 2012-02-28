@@ -31,11 +31,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 /*******************************************************************************
 
 ********************************************************************************/
-namespace_context::namespace_context(const static_context *sctx, store::NsBindings& bindings)
+namespace_context::namespace_context(
+    const static_context* sctx,
+    store::NsBindings& bindings)
   :
   m_sctx(const_cast<static_context*>(sctx))
 {
-  for (unsigned long i = 0; i < bindings.size(); ++i)
+  for (csize i = 0; i < bindings.size(); ++i)
   {
     bind_ns(bindings[i].first, bindings[i].second);
   }    

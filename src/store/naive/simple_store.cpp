@@ -29,32 +29,33 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/pul.h"
+#include "store/api/xs_type_codes.h"
 
-#include "store/naive/properties.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_lazy_temp_seq.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/collection_set.h"
-#include "store/naive/simple_index.h"
-#include "store/naive/simple_index_value.h"
-#include "store/naive/simple_index_general.h"
-#include "store/naive/simple_ic.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/loader.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/node_items.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/simple_iterator_factory.h"
-#include "store/naive/query_context.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/node_factory.h"
-#include "store/naive/name_iterator.h"
-#include "store/naive/document_name_iterator.h"
-#include "store/naive/pul_primitive_factory.h"
+#include "properties.h"
+#include "string_pool.h"
+#include "simple_store.h"
+#include "simple_temp_seq.h"
+#include "simple_lazy_temp_seq.h"
+#include "simple_collection.h"
+#include "collection_set.h"
+#include "simple_index.h"
+#include "simple_index_value.h"
+#include "simple_index_general.h"
+#include "simple_ic.h"
+#include "qname_pool.h"
+#include "loader.h"
+#include "store_defs.h"
+#include "node_items.h"
+#include "dataguide.h"
+#include "node_iterators.h"
+#include "simple_item_factory.h"
+#include "simple_iterator_factory.h"
+#include "query_context.h"
+#include "item_iterator.h"
+#include "node_factory.h"
+#include "name_iterator.h"
+#include "document_name_iterator.h"
+#include "pul_primitive_factory.h"
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
@@ -144,7 +145,7 @@ void SimpleStore::init()
     // i.e. when the store is shutdown
     LIBXML_TEST_VERSION
 
-    store::Properties::load (0, NULL);
+    store::Properties::load(0, NULL);
 
     theUriCounter = 0;
     theCollectionCounter = 1;
@@ -188,75 +189,74 @@ void SimpleStore::initTypeNames()
   const char* ns = XS_URI;
   BasicItemFactory* f = theItemFactory;
 
-  theSchemaTypeNames.resize(XS_LAST);
+  theSchemaTypeNames.resize(store::XS_LAST);
 
-  f->createQName(theSchemaTypeNames[XS_UNTYPED],        ns, "xs", "untyped");
-  f->createQName(theSchemaTypeNames[XS_ANY],            ns, "xs", "anyType");
+  f->createQName(XS_UNTYPED_QNAME, ns, "xs", "untyped");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "xs", "anySimpleType");
+  f->createQName(XS_ANY_QNAME, ns, "xs", "anyType");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "xs", "anyAtomicType");
+  f->createQName(XS_ANY_SIMPLE_QNAME, ns, "xs", "anySimpleType");
 
-  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "xs", "untypedAtomic");
+  f->createQName(theSchemaTypeNames[store::XS_ANY_ATOMIC],     ns, "xs", "anyAtomicType");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "xs", "anyURI");
+  f->createQName(theSchemaTypeNames[store::XS_UNTYPED_ATOMIC], ns, "xs", "untypedAtomic");
 
-  f->createQName(theSchemaTypeNames[XS_QNAME],          ns, "xs", "QName");
+  f->createQName(theSchemaTypeNames[store::XS_ANY_URI],        ns, "xs", "anyURI");
 
-  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "xs", "NOTATION");
+  f->createQName(theSchemaTypeNames[store::XS_QNAME],          ns, "xs", "QName");
 
-  f->createQName(theSchemaTypeNames[XS_STRING],         ns, "xs", "string");
-  f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "xs", "normalizedString");
-  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "xs", "token");
-  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "xs", "NMTOKEN");
-  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "xs", "language");
-  f->createQName(theSchemaTypeNames[XS_NAME],           ns, "xs", "Name");
-  f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "xs", "NCName");
-  f->createQName(theSchemaTypeNames[XS_ID],             ns, "xs", "ID");
-  f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "xs", "IDREF");
-  f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "xs", "ENTITY");
+  f->createQName(theSchemaTypeNames[store::XS_NOTATION],       ns, "xs", "NOTATION");
 
-  f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "xs", "dateTime");
-  f->createQName(theSchemaTypeNames[XS_DATE],           ns, "xs", "date");
-  f->createQName(theSchemaTypeNames[XS_TIME],           ns, "xs", "time");
-  f->createQName(theSchemaTypeNames[XS_GYEAR_MONTH],    ns, "xs", "gYearMonth");
-  f->createQName(theSchemaTypeNames[XS_GYEAR],          ns, "xs", "gYear");
-  f->createQName(theSchemaTypeNames[XS_GMONTH_DAY],     ns, "xs", "gMonthDay");
-  f->createQName(theSchemaTypeNames[XS_GDAY],           ns, "xs", "gDay");
-  f->createQName(theSchemaTypeNames[XS_GMONTH],         ns, "xs", "gMonth");
+  f->createQName(theSchemaTypeNames[store::XS_STRING],         ns, "xs", "string");
+  f->createQName(theSchemaTypeNames[store::XS_NORMALIZED_STRING], ns, "xs", "normalizedString");
+  f->createQName(theSchemaTypeNames[store::XS_TOKEN],          ns, "xs", "token");
+  f->createQName(theSchemaTypeNames[store::XS_NMTOKEN],        ns, "xs", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[store::XS_LANGUAGE],       ns, "xs", "language");
+  f->createQName(theSchemaTypeNames[store::XS_NAME],           ns, "xs", "Name");
+  f->createQName(theSchemaTypeNames[store::XS_NCNAME],         ns, "xs", "NCName");
+  f->createQName(theSchemaTypeNames[store::XS_ID],             ns, "xs", "ID");
+  f->createQName(theSchemaTypeNames[store::XS_IDREF],          ns, "xs", "IDREF");
+  f->createQName(theSchemaTypeNames[store::XS_ENTITY],         ns, "xs", "ENTITY");
 
-  f->createQName(theSchemaTypeNames[XS_DURATION],       ns, "xs", "duration");
-  f->createQName(theSchemaTypeNames[XS_DT_DURATION],    ns, "xs", "dayTimeDuration");
-  f->createQName(theSchemaTypeNames[XS_YM_DURATION],    ns, "xs", "yearMonthDuration");
+  f->createQName(theSchemaTypeNames[store::XS_DATETIME],       ns, "xs", "dateTime");
+  f->createQName(theSchemaTypeNames[store::XS_DATE],           ns, "xs", "date");
+  f->createQName(theSchemaTypeNames[store::XS_TIME],           ns, "xs", "time");
+  f->createQName(theSchemaTypeNames[store::XS_GYEAR_MONTH],    ns, "xs", "gYearMonth");
+  f->createQName(theSchemaTypeNames[store::XS_GYEAR],          ns, "xs", "gYear");
+  f->createQName(theSchemaTypeNames[store::XS_GMONTH_DAY],     ns, "xs", "gMonthDay");
+  f->createQName(theSchemaTypeNames[store::XS_GDAY],           ns, "xs", "gDay");
+  f->createQName(theSchemaTypeNames[store::XS_GMONTH],         ns, "xs", "gMonth");
 
-  f->createQName(theSchemaTypeNames[XS_FLOAT],          ns, "xs", "float");
-  f->createQName(theSchemaTypeNames[XS_DOUBLE],         ns, "xs", "double");
-  f->createQName(theSchemaTypeNames[XS_DECIMAL],        ns, "xs", "decimal");
-  f->createQName(theSchemaTypeNames[XS_INTEGER],        ns, "xs", "integer");
-  f->createQName(theSchemaTypeNames[XS_NON_POSITIVE_INTEGER], ns, "xs", "nonPositiveInteger");
-  f->createQName(theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER], ns, "xs", "nonNegativeInteger");
-  f->createQName(theSchemaTypeNames[XS_NEGATIVE_INTEGER], ns, "xs", "negativeInteger");
-  f->createQName(theSchemaTypeNames[XS_POSITIVE_INTEGER], ns, "xs", "positiveInteger");
+  f->createQName(theSchemaTypeNames[store::XS_DURATION],       ns, "xs", "duration");
+  f->createQName(theSchemaTypeNames[store::XS_DT_DURATION],    ns, "xs", "dayTimeDuration");
+  f->createQName(theSchemaTypeNames[store::XS_YM_DURATION],    ns, "xs", "yearMonthDuration");
 
-  f->createQName(theSchemaTypeNames[XS_LONG],           ns, "xs", "long");
-  f->createQName(theSchemaTypeNames[XS_INT],            ns, "xs", "int");
-  f->createQName(theSchemaTypeNames[XS_SHORT],          ns, "xs", "short");
-  f->createQName(theSchemaTypeNames[XS_BYTE],           ns, "xs", "byte");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_LONG],  ns, "xs", "unsignedLong");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_INT],   ns, "xs", "unsignedInt");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_SHORT], ns, "xs", "unsignedShort");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_BYTE],  ns, "xs", "unsignedByte");
+  f->createQName(theSchemaTypeNames[store::XS_FLOAT],          ns, "xs", "float");
+  f->createQName(theSchemaTypeNames[store::XS_DOUBLE],         ns, "xs", "double");
+  f->createQName(theSchemaTypeNames[store::XS_DECIMAL],        ns, "xs", "decimal");
+  f->createQName(theSchemaTypeNames[store::XS_INTEGER],        ns, "xs", "integer");
+  f->createQName(theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER], ns, "xs", "nonPositiveInteger");
+  f->createQName(theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER], ns, "xs", "nonNegativeInteger");
+  f->createQName(theSchemaTypeNames[store::XS_NEGATIVE_INTEGER], ns, "xs", "negativeInteger");
+  f->createQName(theSchemaTypeNames[store::XS_POSITIVE_INTEGER], ns, "xs", "positiveInteger");
 
-  f->createQName(theSchemaTypeNames[XS_BASE64BINARY],   ns, "xs", "base64Binary");
-  f->createQName(theSchemaTypeNames[XS_HEXBINARY],      ns, "xs", "hexBinary");
-  f->createQName(theSchemaTypeNames[XS_BOOLEAN],        ns, "xs", "boolean");
+  f->createQName(theSchemaTypeNames[store::XS_LONG],           ns, "xs", "long");
+  f->createQName(theSchemaTypeNames[store::XS_INT],            ns, "xs", "int");
+  f->createQName(theSchemaTypeNames[store::XS_SHORT],          ns, "xs", "short");
+  f->createQName(theSchemaTypeNames[store::XS_BYTE],           ns, "xs", "byte");
+  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_LONG],  ns, "xs", "unsignedLong");
+  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_INT],   ns, "xs", "unsignedInt");
+  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_SHORT], ns, "xs", "unsignedShort");
+  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_BYTE],  ns, "xs", "unsignedByte");
 
-  f->createQName(theSchemaTypeNames[ZXSE_ERROR], ZXSE_URI, "zxse", "error");
-  f->createQName(theSchemaTypeNames[ZXSE_TUPLE], ZXSE_URI, "zxse", "tuple");
+  f->createQName(theSchemaTypeNames[store::XS_BASE64BINARY],   ns, "xs", "base64Binary");
+  f->createQName(theSchemaTypeNames[store::XS_HEXBINARY],      ns, "xs", "hexBinary");
+  f->createQName(theSchemaTypeNames[store::XS_BOOLEAN],        ns, "xs", "boolean");
 
-  for (ulong i = 0; i < XS_LAST; ++i)
+  for (ulong i = 0; i < store::XS_LAST; ++i)
   {
-    theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = static_cast<SchemaTypeCode>(i);
+    theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = 
+    static_cast<store::SchemaTypeCode>(i);
   }
 }
 
@@ -308,9 +308,13 @@ void SimpleStore::shutdown(bool soft)
 
     if (theQNamePool != NULL)
     {
-      ulong numTypes = (ulong)theSchemaTypeNames.size();
-      for (ulong i = 0; i < numTypes; i++)
+      csize numTypes = theSchemaTypeNames.size();
+      for (csize i = 0; i < numTypes; ++i)
         theSchemaTypeNames[i] = NULL;
+
+      XS_UNTYPED_QNAME = NULL;
+      XS_ANY_QNAME = NULL;
+      XS_ANY_SIMPLE_QNAME = NULL;
 
       delete theQNamePool;
       theQNamePool = NULL;
@@ -555,6 +559,9 @@ void SimpleStore::populateValueIndex(
     store::Iterator* aSourceIter,
     ulong aNumColumns)
 {
+  if (!aSourceIter)
+    return;
+
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 
@@ -1481,25 +1488,20 @@ bool SimpleStore::getPathInfo(
   Creates a new TempSeq. The instance can be used, e.g. for variable bindings
 
   @param iterator   The source for the XMDInstance
-  @param copyNodes  If true, all nodes are copied before they are saved in the
-                    temp sequence.
   @param lazy       Hint for the store. If possible a XMDInstance should be
                     evaluated lazily. For XQueryP it might be necassary to set
                     this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(
-    store::Iterator_t& iterator,
-    bool copyNodes,
-    bool lazy)
+TempSeq_t SimpleStore::createTempSeq(const store::Iterator_t& iterator, bool lazy)
 {
   if(lazy)
   {
     //tempSeq = new SimpleTempSeq(iterator, copyNodes);
-    return new SimpleLazyTempSeq(iterator, copyNodes);
+    return new SimpleLazyTempSeq(iterator);
   }
   else
   {
-    return new SimpleTempSeq(iterator, copyNodes);
+    return new SimpleTempSeq(iterator);
   }
 }
 
@@ -1509,7 +1511,6 @@ TempSeq_t SimpleStore::createTempSeq(
 ********************************************************************************/
 TempSeq_t SimpleStore::createTempSeq(bool lazy)
 {
-  TempSeq_t tempSeq;
   if (lazy)
   {
     return new SimpleLazyTempSeq();
@@ -1525,27 +1526,43 @@ TempSeq_t SimpleStore::createTempSeq(bool lazy)
   Creates a temp seq initialized by the given vector.
   @param item_v - The vector to use to initialize the seq.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
+TempSeq_t SimpleStore::createTempSeq(std::vector<store::Item_t>& items)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(item_v);
-  return tempSeq;
+  return new SimpleTempSeq(items);
 }
 
+
+/*******************************************************************************
+  Creates a temp seq initialized by the given item.
+********************************************************************************/
+TempSeq_t SimpleStore::createTempSeq(store::Item_t& item)
+{
+  return new SimpleTempSeq(item);
+}
+
+
 #ifndef ZORBA_NO_FULL_TEXT
-void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) {
+void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) 
+{
   theStemmerProvider = p;
 }
 
-void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) {
+
+void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) 
+{
   theTokenizerProvider = p;
 }
 
-internal::StemmerProvider const* SimpleStore::getStemmerProvider() const {
+
+internal::StemmerProvider const* SimpleStore::getStemmerProvider() const 
+{
   return theStemmerProvider ?
     theStemmerProvider : &internal::StemmerProvider::get_default();
 }
 
-TokenizerProvider const* SimpleStore::getTokenizerProvider() const {
+
+TokenizerProvider const* SimpleStore::getTokenizerProvider() const 
+{
   return theTokenizerProvider ?
     theTokenizerProvider : &default_tokenizer_provider();
 }

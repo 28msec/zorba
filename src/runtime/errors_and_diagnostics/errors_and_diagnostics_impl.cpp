@@ -79,6 +79,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
+
 /*******************************************************************************
   3.2.1 fn:trace
 ********************************************************************************/
@@ -88,12 +89,10 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TraceIteratorState *state;
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
-  if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
-    throw XQUERY_EXCEPTION(
-      err::FORG0006,
-      ERROR_PARAMS(
-        ZED( BadArgTypeForFn_2o34o ), ZED( EmptySequence ), "fn:trace"
-      ),
+  if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
+  {
+    throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), ZED(EmptySequence), "fn:trace"),
       ERROR_LOC( loc )
     );
   }
@@ -112,7 +111,7 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 } // namespace zorba

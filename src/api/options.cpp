@@ -19,12 +19,24 @@
 #include <zorba/options.h>
 
 Zorba_CompilerHints::Zorba_CompilerHints()
-: opt_level(ZORBA_OPT_LEVEL_O1),
-  lib_module(false)
-{}
+  :
+  opt_level(ZORBA_OPT_LEVEL_O1),
+  lib_module(false),
+  for_serialization_only(false)
+{
+}
+
+
+void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
+{
+  Zorba_CompilerHints_t lDefault;
+  *aHints = lDefault;
+}
+
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
-: ser_method(ZORBA_SERIALIZATION_METHOD_XML),
+  :
+  ser_method(ZORBA_SERIALIZATION_METHOD_XML),
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
@@ -34,9 +46,13 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   standalone(ZORBA_STANDALONE_OMIT),
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
   encoding(ZORBA_ENCODING_UTF8)
-{}
+{
+}
 
-void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const char* value)
+
+void Zorba_SerializerOptions::SetSerializerOption(
+    const char* parameter,
+    const char* value)
 {
   if (parameter == NULL || value == NULL)
     return;
@@ -47,6 +63,7 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
     else if (strcmp(value, "html") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
     else if (strcmp(value, "xhtml") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
     else if (strcmp(value, "text") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+    else if (strcmp(value, "binary") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
     else
     {
       ; // TODO signal errors for incorrect values?
@@ -112,6 +129,7 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
   }
 }
 
+
 Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
 {
   Zorba_SerializerOptions_t opt;
@@ -127,11 +145,6 @@ Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringPa
   return opt;
 }
 
-void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
-{
-  Zorba_CompilerHints_t lDefault;
-  *aHints = lDefault;
-}
 
 Zorba_SerializerOptions_t* Zorba_SerializerOptions_default()
 {
@@ -139,10 +152,12 @@ Zorba_SerializerOptions_t* Zorba_SerializerOptions_default()
   return lDefault;
 }
 
+
 void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions)
 {
   delete serializerOptions;
 }
+
 
 void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value)
 {

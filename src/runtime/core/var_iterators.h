@@ -223,13 +223,13 @@ public:
 class CtxVarState : public  PlanIteratorState 
 {
 public:
-  store::TempSeq_t  theTempSeq;
+  store::TempSeq_t         theTempSeq;
 
-  store::Iterator_t theSourceIter;
-  store::Item_t     theItem;
+  store::TempSeqIterator_t theSourceIter;
+  store::Item_t            theItem;
 
-  ulong             thePos;
-  ulong             theLastPos;
+  xs_integer               thePos;
+  xs_integer               theLastPos;
 
 public:
   CtxVarState();
@@ -247,9 +247,10 @@ protected:
   store::Item_t  theVarName;
   bool           theIsLocal;
 
-  xs_long        theTargetPos;
+  xs_integer     theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
+  bool           theInfLen;
 
 public:
   SERIALIZABLE_CLASS(CtxVarIterator);
@@ -276,13 +277,13 @@ public:
 
   bool isLocal() const { return theIsLocal; }
 
-  bool setTargetPos(xs_long v);
+  bool setTargetPos(xs_integer v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xs_long getTargetPos() const { return theTargetPos; }
+  xs_integer getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 
@@ -366,22 +367,34 @@ public:
 
   LET variables. A LetVarIterator represents a reference to a let variable V.
   
-  theSourceIter stores the current "value" of V: it is a PlanIteratorWraper
-  that may wrap the actual domain expression that defines the var, or an
-  iterator over a temp sequence, if the result of the domain expression is
-  materialized.
+  If the var is materialized, then its value is stored in a temp sequence, and a
+  (smart) pointer to that temp seq is stored in the state of the LetVarIterator.
+  Otherwise, it's value is a PlanIteratorWraper that may wrap the actual domain 
+  expression that defines the var.
+
+  theSourceIter:
+  --------------
+  Stores the current "value" of V, if the variable is not materialized.
+
+  theTempSeq:
+  -----------
+  The temp seq storing the value of tha variable.
+ 
+  theTempSeqIter:
+  ---------------
+  A pre-allocated iterator over the temp seq.
 
 ********************************************************************************/
 class LetVarState : public PlanIteratorState 
 {
 public:
-  store::TempSeq_t  theTempSeq;
+  store::Iterator_t        theSourceIter;
 
-  store::Iterator_t theSourceIter;
-  store::Item_t     theItem;
-
-  ulong             thePos;
-  ulong             theLastPos;
+  store::TempSeq_t         theTempSeq;
+  store::TempSeqIterator_t theTempSeqIter;
+  store::Item_t            theItem;
+  xs_integer               thePos;
+  xs_integer               theLastPos;
 
 public:
   LetVarState();
@@ -396,9 +409,10 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
   store::Item_t  theVarName;
-  xs_long        theTargetPos;
+  xs_integer     theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
+  bool           theInfLen;
 
 public:
   SERIALIZABLE_CLASS(LetVarIterator);
@@ -411,19 +425,19 @@ public:
 
 public:
   LetVarIterator(
-        static_context* sctx,
-        const QueryLoc& loc, 
-        store::Item* name);
+      static_context* sctx,
+      const QueryLoc& loc, 
+      store::Item* name);
 
   ~LetVarIterator() {}
 
-  bool setTargetPos(xs_long v);
+  bool setTargetPos(xs_integer v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xs_long getTargetPos() const { return theTargetPos; }
+  xs_integer getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 
@@ -431,9 +445,13 @@ public:
 
   store::Item* getVarName() const { return theVarName.getp(); }
 
-  void bind(store::TempSeq_t& value, PlanState& planState);
+  void bind(const store::TempSeq_t& value, PlanState& planState);
 
-  void bind(store::TempSeq_t& value, PlanState& planState, ulong startPos, ulong endPos);
+  void bind(
+      store::TempSeq_t& value,
+      PlanState& planState,
+      xs_integer startPos,
+      xs_integer endPos);
 
   void bind(store::Iterator_t& it, PlanState& planState);
 

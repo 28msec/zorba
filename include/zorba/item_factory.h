@@ -22,6 +22,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/item.h>
 #include <zorba/streams.h>
 
 namespace zorba {
@@ -53,7 +54,7 @@ namespace zorba {
       /** \brief Creates a streamable String Item
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
-       * @param stream An istream whence to read the string's content.
+       * @param stream An istream from where to read the string's content.
        * @param streamReleaser A function pointer which is invoked once
        *        the StreamableStringItem is destroyed. Normally this function
        *        will delete the std::istream object passed to it.
@@ -147,6 +148,25 @@ namespace zorba {
        */
       virtual Item 
       createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
+
+      /** \brief Creates a streamable Base64Binary Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param stream An istream from where to read the binary's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableBase64Binary is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param seekable is the given stream seekable
+       * @param encoded is the contents of the given stream already base64
+       *        encoded
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false) = 0;
 
       /** \brief Creates a Boolean Item
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
@@ -326,6 +346,34 @@ namespace zorba {
       virtual Item
       createDuration ( short aYear, short aMonths, short aDays,
                        short aHours, short aMinutes, double aSeconds ) = 0;
+
+      /** \brief Creates a dayTimeDuration Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aValue String lexical representation of the duration.
+       * @return the dayTimeDuration Item.
+       */
+      virtual Item
+      createDayTimeDuration( const String& aValue ) = 0;
+
+      /** \brief Creates a yearMonthDuration Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aValue String lexical representation of the duration.
+       * @return the yearMonthDuration Item.
+       */
+      virtual Item
+      createYearMonthDuration( const String& aValue ) = 0;
+
+      /** \brief Creates a documentNode Item
+       *         see [http://www.w3.org/TR/xpath-functions/#duration-subtypes]
+       *
+       * @param aBaseUri String representation of the Base URI.
+       * @param aDocUri String representation of the Document URI.
+       * @return the documentNode Item.
+       */
+      virtual Item
+      createDocumentNode( const String& aBaseUri, const String& aDocUri ) = 0;
 
       /** \brief creates a float item
        *         see [http://www.w3.org/tr/xmlschema-2/#float]
@@ -579,7 +627,7 @@ namespace zorba {
                         Item aTypeName,
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
-                        std::vector<std::pair<String, String> > aNsBindings) = 0;
+                        NsBindings aNsBindings) = 0;
 
       /**
       * Create a new attribute node N and place it among the
@@ -607,6 +655,36 @@ namespace zorba {
         Item aNodeName,
         Item aTypeName,
         std::vector<Item> aTypedValue) = 0;
+
+      /**
+       * Create a new comment node N and place it as the last child of a given
+       * parent node. If no parent is given, N becomes the root (and single node)
+       * of a new XML tree.
+       *
+       * @param parent  The parent P of the new node; may be NULL.
+       * @param content The content of the new node.
+       * @return        The new node N created by this method
+       */
+      virtual Item createCommentNode (
+            Item   aParent,
+            String &aContent) = 0;
+
+      /**
+      * Create a new Processing Instruction node N and place it among the
+      * children of a given parent node. If no parent is given, N becomes the
+      * root (and single node) of a new XML tree.
+      *
+      * @param aParent  The parent P of the new node; may be NULL.
+      * @param aTarget  The Target of the new node.
+      * @param aContent The Content of the new node.
+      * @param aBaseUri The Base URI of the new node, may be NULL.
+      * @return         The new node N created by this method
+      */
+      virtual Item createPiNode (
+        Item   aParent,
+        String &aTarget,
+        String &aContent,
+        String &aBaseUri)=0;
 
       /**
       * Create a new text node N and place it among the

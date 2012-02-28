@@ -32,14 +32,14 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/collection.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/node_items.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/ordpath.h"
+#include "qname_pool.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
+#include "store_defs.h"
+#include "item_iterator.h"
+#include "node_items.h"
+#include "atomic_items.h"
+#include "ordpath.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
@@ -58,16 +58,6 @@ using namespace zorba::locale;
 
 namespace zorba {
 namespace simplestore {
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t AtomicItem::getAtomizationValue() const
-{
-  store::Item* lItem = const_cast<AtomicItem *>(this);
-  return lItem;
-}
 
 
 /*******************************************************************************
@@ -96,7 +86,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   switch (item1->getTypeCode())
   {
-  case XS_UNTYPED_ATOMIC:
+  case store::XS_UNTYPED_ATOMIC:
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(item1);
     try
@@ -111,8 +101,8 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_DOUBLE:
-  case XS_FLOAT:
+  case store::XS_DOUBLE:
+  case store::XS_FLOAT:
   {
     double doubleValue = item1->getDoubleValue().getNumber();
     longValue = static_cast<xs_long>(doubleValue);
@@ -123,7 +113,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_DECIMAL:
+  case store::XS_DECIMAL:
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(item1);
     try
@@ -138,11 +128,11 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_INTEGER:
-  case XS_NON_POSITIVE_INTEGER:
-  case XS_NEGATIVE_INTEGER:
-  case XS_NON_NEGATIVE_INTEGER:
-  case XS_POSITIVE_INTEGER:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
@@ -157,7 +147,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     break;
   }
 
-  case XS_UNSIGNED_LONG:
+  case store::XS_UNSIGNED_LONG:
   {
     const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
     if ((item->theValue >> 63) == 0)
@@ -197,7 +187,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   switch (item1->getTypeCode())
   {
-  case XS_DECIMAL:
+  case store::XS_DECIMAL:
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(item1);
 
@@ -209,11 +199,11 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_INTEGER:
-  case XS_NON_POSITIVE_INTEGER:
-  case XS_NEGATIVE_INTEGER:
-  case XS_NON_NEGATIVE_INTEGER:
-  case XS_POSITIVE_INTEGER:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
@@ -225,7 +215,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_UNSIGNED_LONG:
+  case store::XS_UNSIGNED_LONG:
   {
     const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
 
@@ -237,16 +227,16 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_UNSIGNED_INT:
-  case XS_UNSIGNED_SHORT:
-  case XS_UNSIGNED_BYTE:
+  case store::XS_UNSIGNED_INT:
+  case store::XS_UNSIGNED_SHORT:
+  case store::XS_UNSIGNED_BYTE:
   {
     doubleValue = getUnsignedIntValue();
     lossy = false;
     break;
   }
 
-  case XS_LONG:
+  case store::XS_LONG:
   {
     const LongItem* item = static_cast<const LongItem*>(item1);
 
@@ -258,9 +248,9 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     break;
   }
 
-  case XS_INT:
-  case XS_SHORT:
-  case XS_BYTE:
+  case store::XS_INT:
+  case store::XS_SHORT:
+  case store::XS_BYTE:
   {
     doubleValue = item1->getIntValue();
     lossy = false;
@@ -291,7 +281,7 @@ void AtomicItem::coerceToLong(
     bool& negINF,
     bool& posINF) const
 {
-  if (getTypeCode() != XS_DOUBLE && getTypeCode() != XS_FLOAT)
+  if (getTypeCode() != store::XS_DOUBLE && getTypeCode() != store::XS_FLOAT)
   {
     RAISE_ERROR_NO_LOC(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
@@ -461,11 +451,13 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
-  try {
+  try 
+  {
     xs_double const doubleValue(theValue.c_str());
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& ) 
+  {
     result = NULL;
     return false;
   }
@@ -554,7 +546,7 @@ bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 
 store::Item* UntypedAtomicItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
 }
 
 
@@ -576,12 +568,20 @@ bool UntypedAtomicItem::equals(
 }
 
 
-store::Item_t UntypedAtomicItem::getEBV() const
+long UntypedAtomicItem::compare(
+    const Item* other,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  // Note: utf8::compare does byte comparison if the collation is null or
+  // requires byte comparison.
+  return utf8::compare(theValue, other->getString(), aCollation);
+}
+
+
+bool UntypedAtomicItem::getEBV() const
+{
+  return ! ( theValue == "" );
 }
 
 
@@ -628,11 +628,11 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 
 store::Item* QNameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_QNAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_QNAME];
 }
 
 
-store::Item_t QNameItem::getEBV() const
+bool QNameItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "QName"));
@@ -763,7 +763,7 @@ bool NotationItem::equals(const store::Item* item,
 
 store::Item* NotationItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NOTATION];
+  return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
 }
 
 
@@ -804,7 +804,7 @@ NotationItem::~NotationItem()
 ********************************************************************************/
 store::Item* AnyUriItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ANY_URI];
+  return GET_STORE().theSchemaTypeNames[store::XS_ANY_URI];
 }
 
 
@@ -814,12 +814,9 @@ uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t AnyUriItem::getEBV() const
+bool AnyUriItem::getEBV() const
 {
-  bool b = ! (theValue == "");
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! (theValue == "");
 }
 
 
@@ -1554,7 +1551,7 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 store::Item* StringItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_STRING];
+  return GET_STORE().theSchemaTypeNames[store::XS_STRING];
 }
 
 
@@ -1587,12 +1584,9 @@ long StringItem::compare(
 }
 
 
-store::Item_t StringItem::getEBV() const
+bool StringItem::getEBV() const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! ( theValue == "" );
 }
 
 
@@ -1662,7 +1656,7 @@ bool StreamableStringItem::equals(
 }
 
 
-store::Item_t StreamableStringItem::getEBV() const
+bool StreamableStringItem::getEBV() const
 {
   if (!theIsMaterialized) 
   {
@@ -1795,7 +1789,7 @@ void StreamableStringItem::materialize() const
 ********************************************************************************/
 store::Item* NormalizedStringItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING];
+  return GET_STORE().theSchemaTypeNames[store::XS_NORMALIZED_STRING];
 }
 
 
@@ -1813,7 +1807,7 @@ zstring NormalizedStringItem::show() const
 ********************************************************************************/
 store::Item* TokenItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_TOKEN];
+  return GET_STORE().theSchemaTypeNames[store::XS_TOKEN];
 }
 
 
@@ -1831,7 +1825,7 @@ zstring TokenItem::show() const
 ********************************************************************************/
 store::Item* LanguageItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_LANGUAGE];
+  return GET_STORE().theSchemaTypeNames[store::XS_LANGUAGE];
 }
 
 
@@ -1849,7 +1843,7 @@ zstring LanguageItem::show() const
 ********************************************************************************/
 store::Item* NMTOKENItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
+  return GET_STORE().theSchemaTypeNames[store::XS_NMTOKEN];
 }
 
 
@@ -1867,7 +1861,7 @@ zstring NMTOKENItem::show() const
 ********************************************************************************/
 store::Item* NameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_NAME];
 }
 
 
@@ -1885,7 +1879,7 @@ zstring NameItem::show() const
 ********************************************************************************/
 store::Item* NCNameItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NCNAME];
+  return GET_STORE().theSchemaTypeNames[store::XS_NCNAME];
 }
 
 
@@ -1903,7 +1897,7 @@ zstring NCNameItem::show() const
 ********************************************************************************/
 store::Item* IDItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ID];
+  return GET_STORE().theSchemaTypeNames[store::XS_ID];
 }
 
 
@@ -1921,7 +1915,7 @@ zstring IDItem::show() const
 ********************************************************************************/
 store::Item* IDREFItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_IDREF];
+  return GET_STORE().theSchemaTypeNames[store::XS_IDREF];
 }
 
 
@@ -1939,7 +1933,7 @@ zstring IDREFItem::show() const
 ********************************************************************************/
 store::Item* ENTITYItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_ENTITY];
+  return GET_STORE().theSchemaTypeNames[store::XS_ENTITY];
 }
 
 zstring ENTITYItem::show() const
@@ -1971,33 +1965,33 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-SchemaTypeCode DateTimeItem::getTypeCode() const
+store::SchemaTypeCode DateTimeItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
   case DateTime::GYEARMONTH_FACET:
-    return XS_GYEAR_MONTH;
+    return store::XS_GYEAR_MONTH;
 
   case DateTime::GYEAR_FACET:
-    return XS_GYEAR;
+    return store::XS_GYEAR;
 
   case DateTime::GMONTH_FACET:
-    return XS_GMONTH;
+    return store::XS_GMONTH;
 
   case DateTime::GMONTHDAY_FACET:
-    return XS_GMONTH_DAY;
+    return store::XS_GMONTH_DAY;
 
   case DateTime::GDAY_FACET:
-    return XS_GDAY;
+    return store::XS_GDAY;
 
   case DateTime::DATE_FACET:
-    return XS_DATE;
+    return store::XS_DATE;
 
   case DateTime::TIME_FACET:
-    return XS_TIME;
+    return store::XS_TIME;
 
   case DateTime::DATETIME_FACET:
-    return XS_DATETIME;
+    return store::XS_DATETIME;
 
   default:
     ZORBA_ASSERT(false);
@@ -2049,77 +2043,43 @@ uint32_t DateTimeItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t DateTimeItem::getEBV() const
+bool DateTimeItem::getEBV() const
 {
   switch (theValue.getFacet())
   {
     case DateTime::DATE_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Date"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Date"));
 
     case DateTime::TIME_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Time"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Time"));
 
     case DateTime::GYEARMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GYearMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYearMonth"));
 
     case DateTime::GYEAR_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GYear"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYear"));
 
     case DateTime::GMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonth"));
 
     case DateTime::GMONTHDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GMonthDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonthDay"));
 
     case DateTime::GDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GDay"));
 
     default:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "dateTime"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "dateTime"));
   }
-  return NULL;
+  return false;
 }
 
 
@@ -2168,19 +2128,19 @@ void DurationItem::appendStringValue(zstring& buf) const
 }
 
 
-SchemaTypeCode DurationItem::getTypeCode() const
+store::SchemaTypeCode DurationItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
   case Duration::DURATION_FACET:
-    return XS_DURATION;
+    return store::XS_DURATION;
 
   case Duration::DAYTIMEDURATION_FACET:
-    return XS_DT_DURATION;
+    return store::XS_DT_DURATION;
 
   case Duration::YEARMONTHDURATION_FACET:
   default:
-    return XS_YM_DURATION;
+    return store::XS_YM_DURATION;
   }
 }
 
@@ -2191,7 +2151,7 @@ store::Item* DurationItem::getType() const
 }
 
 
-store::Item_t DurationItem::getEBV() const
+bool DurationItem::getEBV() const
 {
   RAISE_ERROR_NO_LOC(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "duration"));
@@ -2210,24 +2170,20 @@ zstring DurationItem::show() const
 ********************************************************************************/
 store::Item* DoubleItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
+  return GET_STORE().theSchemaTypeNames[store::XS_DOUBLE];
 }
 
 
-store::Item_t DoubleItem::getEBV() const
+bool DoubleItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN())
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2282,24 +2238,20 @@ DoubleItem::hash(long timezone, const XQPCollator* aCollation) const
 ********************************************************************************/
 store::Item* FloatItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_FLOAT];
+  return GET_STORE().theSchemaTypeNames[store::XS_FLOAT];
 }
 
 
-store::Item_t FloatItem::getEBV() const
+bool FloatItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN()) 
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2354,17 +2306,15 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
 
 store::Item* DecimalItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DECIMAL];
+  return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
 }
 
 
-store::Item_t DecimalItem::getEBV() const
+bool DecimalItem::getEBV() const
 {
-  bool b = ( theValue != xs_decimal::zero() );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != xs_decimal::zero() );
 }
+
 
 zstring DecimalItem::getStringValue() const
 {
@@ -2442,26 +2392,21 @@ xs_long IntegerItemImpl::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
   }
 }
 
 
 store::Item* IntegerItemImpl::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
 }
 
 
-store::Item_t IntegerItemImpl::getEBV() const
+bool IntegerItemImpl::getEBV() const
 {
-  bool b = !!theValue.sign();
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return !!theValue.sign();
 }
 
 
@@ -2527,7 +2472,7 @@ bool NonPositiveIntegerItem::equals( const store::Item* other, long,
 
 store::Item* NonPositiveIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
 }
 
 xs_decimal NonPositiveIntegerItem::getDecimalValue() const
@@ -2577,12 +2522,9 @@ void NonPositiveIntegerItem::appendStringValue(zstring& buf) const
   buf += theValue.toString();
 }
 
-store::Item_t NonPositiveIntegerItem::getEBV() const
+bool NonPositiveIntegerItem::getEBV() const
 {
-  bool b = !!theValue.sign();
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return !!theValue.sign();
 }
 
 zstring NonPositiveIntegerItem::show() const
@@ -2599,7 +2541,7 @@ zstring NonPositiveIntegerItem::show() const
 ********************************************************************************/
 store::Item* NegativeIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NEGATIVE_INTEGER];
 }
 
 
@@ -2642,7 +2584,7 @@ bool NonNegativeIntegerItem::equals( const store::Item* other, long,
 
 store::Item* NonNegativeIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
 }
 
 
@@ -2693,12 +2635,9 @@ void NonNegativeIntegerItem::appendStringValue(zstring& buf) const
   buf += theValue.toString();
 }
 
-store::Item_t NonNegativeIntegerItem::getEBV() const
+bool NonNegativeIntegerItem::getEBV() const
 {
-  bool b = !!theValue.sign();
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return !!theValue.sign();
 }
 
 zstring NonNegativeIntegerItem::show() const
@@ -2715,7 +2654,7 @@ zstring NonNegativeIntegerItem::show() const
 ********************************************************************************/
 store::Item* PositiveIntegerItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
+  return GET_STORE().theSchemaTypeNames[store::XS_POSITIVE_INTEGER];
 }
 
 
@@ -2748,16 +2687,13 @@ xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
 
 store::Item* LongItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_LONG];
+  return GET_STORE().theSchemaTypeNames[store::XS_LONG];
 }
 
 
-store::Item_t LongItem::getEBV() const
+bool LongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2809,17 +2745,15 @@ xs_integer IntItem::getIntegerValue() const
 
 store::Item* IntItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_INT];
+  return GET_STORE().theSchemaTypeNames[store::XS_INT];
 }
 
 
-store::Item_t IntItem::getEBV() const
+bool IntItem::getEBV() const
 {
-  bool b = ( theValue != (int32_t)0 );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != (int32_t)0 );
 }
+
 
 zstring IntItem::getStringValue() const
 {
@@ -2869,16 +2803,13 @@ xs_integer ShortItem::getIntegerValue() const
 
 store::Item* ShortItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_SHORT];
+  return GET_STORE().theSchemaTypeNames[store::XS_SHORT];
 }
 
 
-store::Item_t ShortItem::getEBV() const
+bool ShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2930,16 +2861,13 @@ xs_integer ByteItem::getIntegerValue() const
 
 store::Item* ByteItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BYTE];
+  return GET_STORE().theSchemaTypeNames[store::XS_BYTE];
 }
 
 
-store::Item_t ByteItem::getEBV() const
+bool ByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2997,16 +2925,13 @@ xs_nonNegativeInteger UnsignedLongItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedLongItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_LONG];
 }
 
 
-store::Item_t UnsignedLongItem::getEBV() const
+bool UnsignedLongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3064,16 +2989,13 @@ xs_nonNegativeInteger UnsignedIntItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedIntItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_INT];
 }
 
 
-store::Item_t UnsignedIntItem::getEBV() const
+bool UnsignedIntItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3131,16 +3053,13 @@ xs_nonNegativeInteger UnsignedShortItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedShortItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_SHORT];
 }
 
 
-store::Item_t UnsignedShortItem::getEBV() const
+bool UnsignedShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3198,16 +3117,13 @@ xs_nonNegativeInteger UnsignedByteItem::getUnsignedIntegerValue() const
 
 store::Item* UnsignedByteItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNSIGNED_BYTE];
 }
 
 
-store::Item_t UnsignedByteItem::getEBV() const
+bool UnsignedByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3247,7 +3163,7 @@ zstring UnsignedByteItem::show() const
 ********************************************************************************/
 store::Item* BooleanItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
+  return GET_STORE().theSchemaTypeNames[store::XS_BOOLEAN];
 }
 
 
@@ -3257,9 +3173,9 @@ uint32_t BooleanItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t BooleanItem::getEBV() const
+bool BooleanItem::getEBV() const
 {
-  return this->getAtomizationValue();
+  return theValue;
 }
 
 
@@ -3302,27 +3218,79 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+bool
+Base64BinaryItem::equals(
+      const store::Item* other,
+      long timezone,
+      const XQPCollator* aCollation) const
+{
+  if (isEncoded() == other->isEncoded())
+  {
+    size_t this_size, other_size;
+    const char* this_data = getBase64BinaryValue(this_size);
+    const char* other_data = other->getBase64BinaryValue(other_size);
+    return this_size == other_size &&
+      memcmp(this_data, other_data, this_size) == 0;
+  }
+  else
+  {
+    return getStringValue().compare(other->getStringValue()) == 0;
+  }
+}
+
+
+uint32_t
+Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  // always need to hash on the string-value because otherwise
+  // a base64 item that is encoded would have a different hash-value
+  // as a base64 item that is decoded but represents the same binary content
+  return utf8::hash(getStringValue(), aCollation);
+}
+
+
+const char*
+Base64BinaryItem::getBase64BinaryValue(size_t& size) const
+{
+  size = theValue.size();
+  return &theValue[0];
+}
+
+
 store::Item* Base64BinaryItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
+  return GET_STORE().theSchemaTypeNames[store::XS_BASE64BINARY];
 }
 
 
 zstring Base64BinaryItem::getStringValue() const
 {
-  return theValue.str();
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void Base64BinaryItem::getStringValue2(zstring& val) const
 {
-  val = theValue.str();
+  val.clear();
+  appendStringValue(val);
 }
 
 
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str();
+  if (theIsEncoded)
+  {
+    buf.insert(buf.size(), &theValue[0], theValue.size());
+  }
+  else
+  {
+    std::vector<char> encoded;
+    encoded.reserve(theValue.size());
+    Base64::encode(theValue, encoded);
+    buf.insert(buf.size(), &encoded[0], encoded.size());
+  }
 }
 
 
@@ -3335,9 +3303,155 @@ zstring Base64BinaryItem::show() const
 }
 
 
-uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+/*******************************************************************************
+  class StreamableStringItem
+********************************************************************************/
+zstring StreamableBase64BinaryItem::getStringValue() const
 {
-  return theValue.hash();
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getStringValue();
+}
+
+
+void StreamableBase64BinaryItem::getStringValue2(zstring& val) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::getStringValue2(val);
+}
+
+
+void StreamableBase64BinaryItem::appendStringValue(zstring& buf) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::appendStringValue(buf);
+}
+
+
+zstring StreamableBase64BinaryItem::show() const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  zstring res("xs:base64Binary(");
+  appendStringValue(res);
+  res += ")";
+  return res;
+}
+
+
+uint32_t
+StreamableBase64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::hash(timezone, aCollation);
+}
+
+
+const char*
+StreamableBase64BinaryItem::getBase64BinaryValue(size_t& s) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getBase64BinaryValue(s);
+}
+
+
+bool StreamableBase64BinaryItem::isStreamable() const
+{
+  return true;
+}
+
+
+bool StreamableBase64BinaryItem::isSeekable() const
+{
+  return theIsSeekable;
+}
+
+
+StreamReleaser StreamableBase64BinaryItem::getStreamReleaser()
+{
+  return theStreamReleaser;
+}
+
+
+void StreamableBase64BinaryItem::setStreamReleaser(StreamReleaser aReleaser)
+{
+  theStreamReleaser = aReleaser;
+}
+
+
+std::istream& StreamableBase64BinaryItem::getStream()
+{
+  // a non-seekable stream can only be consumed once
+  // we raise an error if getStream is called twice
+  // if a query requires a stream to be consumed more than once,
+  // the query needs to make sure that the stream is explicitly
+  // materialized before
+  if (!theIsSeekable && theIsConsumed) 
+  {
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
+  }
+  else
+  {
+    // if the stream is seekable, we seek to the beginning.
+    // We are not using theIstream.seekg because the USER_ERROR that is thrown
+    // by Zorba is lost possibly in an internal try/catch of the seekg
+    std::streambuf * pbuf;
+    pbuf = theIstream.rdbuf();
+    pbuf->pubseekoff(0, std::ios::beg);
+  }
+  theIsConsumed = true;
+  return theIstream;
+}
+
+
+void StreamableBase64BinaryItem::materialize() const
+{
+  StreamableBase64BinaryItem* const s
+    = const_cast<StreamableBase64BinaryItem*>(this);
+  std::istream& lStream = s->getStream();
+
+  s->theIsMaterialized = true;
+  s->theIsConsumed = true;
+
+  if (isSeekable())
+  {
+    lStream.seekg(0, std::ios::end);
+    size_t len = lStream.tellg();
+    lStream.seekg(0, std::ios::beg);
+    s->theValue.reserve(len);
+    char buf[1024];
+    while (lStream.good())
+    {
+      lStream.read(buf, 1024);
+      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+    }
+  }
+  else
+  {
+    char buf[4048];
+    while (lStream.good())
+    {
+      lStream.read(buf, 4048);
+      s->theValue.reserve(s->theValue.size() + lStream.gcount());
+      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+    }
+  }
 }
 
 
@@ -3346,7 +3460,7 @@ uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) co
 ********************************************************************************/
 store::Item* HexBinaryItem::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
+  return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
 }
 
 

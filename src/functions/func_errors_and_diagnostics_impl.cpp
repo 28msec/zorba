@@ -19,6 +19,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
 #include "zorbamisc/ns_consts.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -33,7 +34,7 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_trace::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    csize input) const 
 {
   return fo->getIgnoresSortedNodes();
 }
@@ -41,7 +42,7 @@ BoolAnnotationValue fn_trace::ignoresSortedNodes(
 
 BoolAnnotationValue fn_trace::ignoresDuplicateNodes(
     expr* fo, 
-    ulong input) const 
+    csize input) const 
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -52,7 +53,7 @@ PlanIter_t fn_trace::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+    expr &ann) const
 {
   // tracing can be disabled using declare option op:disable-feature "trace";
   if ( sctx->is_feature_set( feature::trace ) )
@@ -68,11 +69,9 @@ PlanIter_t fn_trace::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_trace::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& argTypes) const
+xqtref_t fn_trace::getReturnType(const fo_expr* caller) const
 {
-  return argTypes[0];
+  return caller->get_arg(0)->get_return_type();
 }
 
 } // namespace zorba

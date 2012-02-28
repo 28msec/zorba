@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -47,6 +47,7 @@ public:
   protected:
     rchandle<SimpleCollection>              theCollection;
     checked_vector<store::Item_t>::iterator theIterator;
+    checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
 
   public:
@@ -96,9 +97,7 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
-  void getAnnotations(
-      std::vector<store::Annotation_t>& annotations
-  ) const;
+  void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
 
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }

@@ -19,7 +19,7 @@
 
 #include <cstring>                      /* for memset(3) */
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/item.h"
 

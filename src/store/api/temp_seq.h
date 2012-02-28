@@ -39,56 +39,13 @@ public:
   /**
    * Initializes a temp sequence with the given input iterator
    */
-  virtual void init(store::Iterator_t& iter, bool copy = false) = 0;
+  virtual void init(const store::Iterator_t& iter) = 0;
 
   /**
    * Appends the items from the iterator to the temp sequence
    */
-  virtual void append(Iterator_t iter, bool copy) = 0;
+  virtual void append(const Iterator_t& iter) = 0;
 	
-  /**
-   * Reads the whole Sequence from beginning to end; it is allowed to have several 
-   * concurrent iterators on the same TempSeq.
-   * 
-   * @return Iterator which iterates over the complete TempSeq
-   * 
-   */
-  virtual Iterator_t getIterator() = 0;
-	
-  /**
-   * Returns an iterator which reads just a part of the underlying TempSeq
-   * Starts counting with 1.
-   *
-   * @param startPos The first item which the iterator returns. Starts counting with 1.
-   * @param endPos The last item which the iterator returns 
-   * @return Iterator
-   */
-  virtual Iterator_t getIterator(
-        xs_integer startPos,
-        xs_integer endPos,
-        bool streaming = false) = 0;
-		
-  /**
-   * Gets an item at a certain position.
-   * 
-   * Starts counting with 1.
-   *
-   * @param position (first position in XQuery is 1 and not 0!)
-   * @return item
-   */
-  virtual void getItem(xs_integer position, Item_t& result) = 0;
-		
-		
-  /**
-   * Returns true if the item at the passed position is available.
-   * 
-   * Starts counting with 1.
-   *
-   * @param position 
-   * @return 
-   */
-  virtual bool containsItem(xs_integer position) = 0;
-		
   /**
    * purge() allows the store to do proper garbage collection. If e.g. a let 
    * has created iterators for all his bindings he has to produce, it can
@@ -107,11 +64,58 @@ public:
    * @param upTo boundary for garbage collector
    */
   virtual void purgeUpTo(xs_integer upTo) = 0;
-		
+
   /**
    * @return Does this TempSeq save an empty sequence? 
    */
   virtual bool empty() = 0;
+
+  /**
+   * Gets an item at a certain position.
+   * 
+   * Starts counting with 1.
+   *
+   * @param position (first position in XQuery is 1 and not 0!)
+   * @return item
+   */
+  virtual void getItem(xs_integer position, Item_t& result) = 0;
+		
+  /**
+   * Returns true if the item at the passed position is available.
+   * 
+   * Starts counting with 1.
+   *
+   * @param position 
+   * @return 
+   */
+  virtual bool containsItem(xs_integer position) = 0;
+
+  /**
+   *
+   */
+  virtual xs_integer getSize() const = 0;
+
+  /**
+   * Reads the whole Sequence from beginning to end; it is allowed to have several 
+   * concurrent iterators on the same TempSeq.
+   * 
+   * @return Iterator which iterates over the complete TempSeq
+   * 
+   */
+  virtual Iterator_t getIterator() const = 0;
+	
+  /**
+   * Returns an iterator which reads just a part of the underlying TempSeq
+   * Starts counting with 1.
+   *
+   * @param startPos The first item which the iterator returns. Starts counting with 1.
+   * @param endPos The last item which the iterator returns 
+   * @return Iterator
+   */
+  virtual Iterator_t getIterator(
+      xs_integer startPos,
+      xs_integer endPos,
+      bool streaming = false) const = 0;
 };
 
 } // namespace store
