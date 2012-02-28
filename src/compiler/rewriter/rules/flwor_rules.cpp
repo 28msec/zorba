@@ -172,10 +172,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  for(unsigned int i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
-
-    flwor_clause *clause = flwor.get_clause(i);
+    flwor_clause* clause = flwor.get_clause(i);
 
     if (clause->get_kind() == flwor_clause::where_clause &&
         !flwor.has_sequential_clauses())
@@ -205,7 +204,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         return ifExpr.getp();
       }
     }
-
   }
 
   bool modified = false;
@@ -965,46 +963,43 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
   // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
   // case of >= and <= the -1 and +1 are removed for the previous examples.
-  csize numClauses = flwor->num_clauses();
-  for (csize whereClausePos = 0; whereClausePos < numClauses; ++whereClausePos)
+  if (! flwor->has_sequential_clauses())
   {
-    flwor_clause* clause = flwor->get_clause(whereClausePos);
-
-    if (clause->get_kind() != flwor_clause::where_clause)
-      continue;
-
-    expr* whereExpr = clause->get_expr();
-
-    if (! flwor->has_sequential_clauses() &&
-        is_subseq_pred(rCtx, flwor, whereClausePos, whereExpr, posVar, posExpr) &&
-        expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+    csize numClauses = flwor->num_clauses();
+    for (csize whereClausePos = 0; whereClausePos < numClauses; ++whereClausePos)
     {
-      function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
-      expr* domainExpr = posVar->get_for_clause()->get_expr();
+      flwor_clause* clause = flwor->get_clause(whereClausePos);
 
-      std::vector<expr_t> args(2);
-      args[0] = domainExpr;
-      args[1] = posExpr;
+      if (clause->get_kind() != flwor_clause::where_clause)
+        continue;
 
-      rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
-                                             LOC(whereExpr),
-                                             seq_point,
-                                             args);
-      expr_tools::fix_annotations(&*result);
-      for_clause* clause = posVar->get_for_clause();
-      clause->set_expr(&*result);
-      clause->set_pos_var(NULL);
+      expr* whereExpr = clause->get_expr();
 
-      flwor->remove_clause(whereClausePos);
-      --whereClausePos;
-      --numClauses;
+      if (is_subseq_pred(rCtx, flwor, whereClausePos, whereExpr, posVar, posExpr) &&
+          expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+      {
+        function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
+        expr* domainExpr = posVar->get_for_clause()->get_expr();
 
-      modified = true;
+        fo_expr_t result = new fo_expr(whereExpr->get_sctx(),
+                                       LOC(whereExpr),
+                                       seq_point,
+                                       domainExpr,
+                                       posExpr);
+
+        expr_tools::fix_annotations(&*result);
+
+        for_clause* clause = posVar->get_for_clause();
+        clause->set_expr(&*result);
+        clause->set_pos_var(NULL);
+        
+        flwor->remove_clause(whereClausePos);
+        --whereClausePos;
+        --numClauses;
+        
+        modified = true;
+      }
     }
-
-    //This is necesary to prevent the whole thing being ran multiple times
-    //in the case of the general flwor.
-    whereExpr = NULL;
   }
 
   return (modified ? flwor : NULL);
@@ -1111,21 +1106,23 @@ static bool is_subseq_pred(
 
           for_clause* forClause = posVar->get_for_clause();
           //forClause is NULL if the clause is a windowing for clause
-          if(forClause == NULL || forClause->is_allowing_empty()) return false;
+          if (forClause == NULL || forClause->is_allowing_empty()) return false;
 
-          //We check that there isn't any clause that breaks the optimization
-          const flwor_clause *checkClause;
-          csize checkPosClause = whereClausePos;
+          // We check that there isn't any clause that breaks the optimization
+          const flwor_clause* checkClause;
+          csize checkClausePos = whereClausePos;
           do
           {
-            if(checkPosClause < 0) //Yes this is possible, it happens with test flwor/flwor20.xq
-              return false;
-            checkClause = flworExpr->get_clause(checkPosClause);
-            if(checkClause->get_kind() == flwor_clause::group_clause ||
+
+            checkClause = flworExpr->get_clause(checkClausePos);
+
+            if (checkClause->get_kind() == flwor_clause::group_clause ||
                 checkClause->get_kind() == flwor_clause::count_clause)
               return false;
-			--checkPosClause;
-          }while(checkClause != forClause);
+
+            --checkClausePos;
+          }
+          while (checkClause != forClause);
 
           var_expr* forVar = forClause->get_var();
 
@@ -1134,8 +1131,8 @@ static bool is_subseq_pred(
           std::vector<ulong> posExprVarIds;
           exprVarMap[posExpr].getSet(posExprVarIds);
 
-          ulong numPosExprVars = (ulong)posExprVarIds.size();
-          for (ulong i = 0; i < numPosExprVars; ++i)
+          csize numPosExprVars = posExprVarIds.size();
+          for (csize i = 0; i < numPosExprVars; ++i)
           {
             if (posExprVarIds[i] >= forVarId)
               return false;

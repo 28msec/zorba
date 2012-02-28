@@ -1011,8 +1011,8 @@ void flwor_expr::set_where(expr* e)
 ********************************************************************************/
 void flwor_expr::remove_where_clause()
 {
-  unsigned numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::where_clause)
     {
@@ -1029,8 +1029,8 @@ void flwor_expr::remove_where_clause()
 ********************************************************************************/
 expr* flwor_expr::get_where() const
 {
-  unsigned numClauses = num_clauses();
-  for (unsigned i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::where_clause)
       return reinterpret_cast<where_clause*>(theClauses[i].getp())->get_expr();
@@ -1045,8 +1045,8 @@ expr* flwor_expr::get_where() const
 ********************************************************************************/
 group_clause* flwor_expr::get_group_clause() const
 {
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::group_clause)
       return reinterpret_cast<group_clause*>(theClauses[i].getp());
@@ -1061,8 +1061,8 @@ group_clause* flwor_expr::get_group_clause() const
 ********************************************************************************/
 orderby_clause* flwor_expr::get_order_clause() const
 {
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::order_clause)
       return reinterpret_cast<orderby_clause*>(theClauses[i].getp());
@@ -1078,8 +1078,8 @@ orderby_clause* flwor_expr::get_order_clause() const
 ulong flwor_expr::num_forlet_clauses()
 {
   ulong num = 0;
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = theClauses[i];
 
