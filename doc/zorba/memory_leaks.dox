@@ -2,7 +2,7 @@
 
 \section memory_leaks_intro Introduction
 
-The Zorba XQuery processor manage automatically its own memory, but still, there are cases where you may receive the following message:
+The Zorba XQuery Processor manage automatically its own memory, but still, there are cases where you may receive the following message:
 
 \code
 Zorba did not close properly, objects may still in memory while shutdown the store. For help avoiding this message please refer to http://www.zorba-xquery.com/memory_leaks.
@@ -13,21 +13,18 @@ Zorba Internal Fatal Error in ....
 [n] referenced URIs remain in the string pool.
 \endcode
 
-
-This message means the store is being shutdown, but there are still URIs strings in the pool because 
-there are still references (smart pointers) to those strings.  
-The references may be somewhere in the zorba engine (which usually means there is a memory leak) or in the application. 
-For the application, the rule is that before shutting down the store, 
-all variables storing references to zorba objects must have gone out of scope, or explicitly set to NULL.
+This message means that not all the resources (e.g. XQuery objects) 
+were released before Zorba and its store were shutdown.
+While this might be a bug/memory leak in Zorba itself, it's also quite likely that the leak is in the application.
+For the application, the rule is that before shutting down the store 
+all resources must have been released.
 
 So, strictly speaking, your program is leaking resources.
 
-There are several cases using Zorba's APIs in C++ or other languages where you can produce this error besides everything looks correct in your code, here is an example:
-
+This problem might occur even though the application's code (C++ or other languages) looks good. Here is an example:
 
 \section memory_leaks_example_c Example in C++
-Here is a code example that shows how a StaticContext and a Query are pointing to the URI http://www.foo.com, 
-and they are still in memory when the store is being shutdown.
+In the following example, the StaticContext and XQuery objects are not destroyed before Zorba and the store are shutdown.
 
 \code
 int main(int argc, char* argv[])
@@ -48,7 +45,7 @@ int main(int argc, char* argv[])
 
 So, for this scenario, the ideal way to solve the problem is through scopes, 
 where you implement certain part of code in methods and release them when the objects loose their reference. 
-Other way to do it, is to explicitely set the object to null, the autopointer automatically will free the object.
+Alternatively, you can explicitly set the variable to null, in which case the object will automaticall be released.
 
 Solution example:
 \code
