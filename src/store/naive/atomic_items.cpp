@@ -625,8 +625,7 @@ void QNameItem::free()
   }
   
   assert(!isNormalized());
-  QNameItem* lNormalizationVictim;
-  invalidate(false, &lNormalizationVictim);
+  invalidate(false, NULL);
   delete this;
 }
 
@@ -751,10 +750,11 @@ void QNameItem::initializeAsQNameNotInPool(const zstring& aNamespace,
   assert(!isValid());
 
   store::Item_t lPoolQName =
-      GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
-  initializeAsUnnormalizedQName(
-      static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
-      aPrefix);
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
   isInPool = false;
 }
 
