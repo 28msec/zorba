@@ -205,10 +205,19 @@ void operator&(Archiver &ar, MAPM &obj)
   }
 }
 
-void operator&(serialization::Archiver &ar, Integer &obj)
+#ifdef ZORBA_WITH_BIG_INTEGER
+void operator&(serialization::Archiver &ar, IntegerImpl &obj)
+#else
+template<typename IntType>
+void operator&(serialization::Archiver &ar, IntegerImpl<IntType> &obj)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 {
   ar & obj.value_;
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template void operator&(serialization::Archiver&, IntegerImpl<long long>&);
+template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long>&);
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)
 {
@@ -590,7 +599,7 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "nonNegativeInteger")
       {
-        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_nonNegativeInteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createNonNegativeInteger, (result, value));
       }
       else if(name_of_type == "negativeInteger")
@@ -600,7 +609,7 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "positiveInteger")
       {
-        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_positiveInteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createPositiveInteger, (result, value));
       }
          
@@ -673,8 +682,31 @@ void operator&(Archiver &ar, store::Item* &obj)
          
       else if(name_of_type == "base64Binary")
       {
-        SERIALIZE_REF_FIELD(xs_base64Binary, value, getBase64BinaryValue());
-        FINALIZE_SERIALIZE(createBase64Binary, (result, value_in));
+        if (ar.is_serializing_out())
+        {
+          size_t s;
+          const char* c = obj->getBase64BinaryValue(s);
+          if (obj->isEncoded())
+          {
+            Base64 tmp;
+            Base64::parseString(c, s, tmp);
+            ar.dont_allow_delay();
+            ar & tmp;
+          }
+          else
+          {
+            Base64 tmp((const unsigned char*)c, s);
+            ar.dont_allow_delay();
+            ar & tmp;
+          }
+        }
+        else
+        {
+          ar.dont_allow_delay();
+          Base64 tmp;
+          ar & tmp;
+          FINALIZE_SERIALIZE(createBase64Binary, (result, tmp));
+        }
       }
       else if(name_of_type == "hexBinary")
       {

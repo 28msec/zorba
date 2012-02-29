@@ -803,7 +803,13 @@ void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
 
 flwor_clause_t materialize_clause::clone(expr::substitution_t& subst) const
 {
-  ZORBA_ASSERT(false);
+  // we will reach here under the following scenario:
+  // 1. We do plan seriazation
+  // 2. getPlan is called on udf A; this causes a mat clause to be created
+  //    during the codegen on A's body
+  // 3. getPlan is called on udf B, which invokes A, and A's body is
+  //    inlined (and as a result cloned) inside B's body.
+  return new materialize_clause(theContext, get_loc());
 }
 
 

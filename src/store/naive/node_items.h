@@ -23,16 +23,16 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/text_node_content.h"
-#include "store/naive/item_vector.h"
-#include "store/naive/ordpath.h"
-#include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+#include "store_defs.h"
+#include "shared_types.h"
+#include "text_node_content.h"
+#include "item_vector.h"
+#include "ordpath.h"
+#include "nsbindings.h" // TODO remove by introducing explicit destructors
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
-#include "store/naive/hashmap_nodep.h"
+#include "hashmap_nodep.h"
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -178,7 +178,7 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
   ulong                     theId;
-  ulong                     thePos;
+  xs_integer                thePos;
 
   SimpleCollection        * theCollection;
 
@@ -223,11 +223,11 @@ public:
 
   const SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, ulong pos);
+  void setCollection(SimpleCollection* coll, xs_integer pos);
 
-  void setPosition(ulong pos) { thePos = pos; }
+  void setPosition(xs_integer pos) { thePos = pos; }
 
-  ulong getPosition() const { return thePos; }
+  xs_integer getPosition() const { return thePos; }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -469,7 +469,7 @@ public:
     getBaseURIInternal(uri, local);
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
@@ -516,7 +516,7 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos)
+  void setCollection(SimpleCollection* coll, xs_integer pos)
   {
     assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
@@ -1582,8 +1582,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1629,8 +1629,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;

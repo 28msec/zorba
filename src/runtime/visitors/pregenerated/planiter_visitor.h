@@ -25,7 +25,7 @@
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "types/typeconstants.h"
+#include "store/api/xs_type_codes.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -250,6 +250,10 @@ namespace zorba{
     class OptionIterator;
 
     class FunctionAnnotationsIterator;
+
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
 
     class SqrtIterator;
 
@@ -928,6 +932,12 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

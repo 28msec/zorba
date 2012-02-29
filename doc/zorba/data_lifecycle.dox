@@ -123,7 +123,7 @@ Please refer to the section below on various Zorba stores.
 Also please note that a data container that is available in the store will be available to all XQuery programs that are being executed synchronously.
 Again, please read more about the Zorba Data Stores below about data consistency details.
 
-\section dl_examples Examples
+\section dlexamples Examples
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
 It is important to note that most of the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> for apply pending updates  in order to make them visible to subsequent expressions in the same program.
 
@@ -284,7 +284,7 @@ We strongly encourage users to use the XQuery modules for data manipulation inst
 The reason is simple: the XQuery processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.
 
 
-\section dl_zorba_store  Zorba Stores
+\section dlzorbastore  Zorba Stores
 
 Zorba defines a Store API that allows developers to seamlessly process XML data stored in different places.
 Essentially, the Store API is a C++ interface for

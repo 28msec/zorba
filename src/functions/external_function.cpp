@@ -183,7 +183,7 @@ PlanIter_t external_function::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   return new ExtFunctionCallIterator(sctx,
                                      loc,

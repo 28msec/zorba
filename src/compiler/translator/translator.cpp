@@ -1757,9 +1757,9 @@ void collect_flwor_vars (
 
   // Find the ordinal number of the "end-1" clause.
   int i;
-  for (i = (int)clauses.size () - 1; i >= 0; --i)
+  for (i = (int)clauses.size() - 1; i >= 0; --i)
   {
-    if (&*clauses [i] == end)
+    if (&*clauses[i] == end)
     {
       --i;
       break;
@@ -1772,17 +1772,26 @@ void collect_flwor_vars (
   {
     const FLWORClause& c = *clauses[i];
 
-    if (typeid (c) == typeid (ForClause))
+    if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
-      for (int j =  (int)lV.size() - 1; j >= 0; --j)
+      const VarInDeclList& varDecls = 
+      *(static_cast<const ForClause*>(&c)->get_vardecl_list());
+
+      for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
+        VarInDecl* varDecl = varDecls[j].getp();
+
+        vars.insert(lookup_var(varDecl->get_name(), loc, err::XPST0008));
+
+        if (varDecl->get_posvar() != NULL)
+          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
       }
     }
-    else if (typeid (c) == typeid (LetClause))
+    else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+      const VarGetsDeclList& lV = 
+      *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
@@ -3331,7 +3340,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
+      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
     }
 
     f->setAnnotations(theAnnotations);
@@ -3839,7 +3848,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  bool recognised = false;
+  //bool recognised = false;
 
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
@@ -3860,7 +3869,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
                     + ":" + lExpandedQName->getLocalName())));
     }
 
-    recognised = true;
+    //recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -9376,6 +9385,48 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr_t> concat_args;
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  concat_args.push_back(left);
+ 
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  bool rightLeafIsConcatExpr = false;
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+  
+  if(!rightLeafIsConcatExpr)
+  {
+    concat_args.push_back(right);
+  }
+
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  push_nodestack(concat);
+}
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -9709,8 +9760,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9719,7 +9770,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(2)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(2)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -10424,7 +10475,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     user_function* udf = new user_function(loc,
                                            fn->getSignature(),
                                            NULL, // no body for now
-                                           fn->getScriptingKind());
+                                           fn->getScriptingKind(),
+                                           theCCB);
 
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -10632,7 +10684,8 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -11934,11 +11987,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }

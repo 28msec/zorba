@@ -680,18 +680,49 @@ void MarkNodeCopyProps::applyInternal(
 
     if (f->isUdf())
     {
-      UdfCalls::iterator ite = rCtx.theProcessedUDFCalls.find(e);
+      user_function* udf = static_cast<user_function*>(f);
 
-      if (ite == rCtx.theProcessedUDFCalls.end())
+#if 0
+      UdfCalls::iterator ite = std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e);
+
+      if (ite == theUdfCallPath.end())
       {
-        rCtx.theProcessedUDFCalls.insert(e);
+        theUdfCallPath.push_back(e);
 
-        user_function* udf = static_cast<user_function*>(f);
+        UDFCallChain nextUdfCall(e, &udfCaller);
+
+        applyInternal(rCtx, udf->getBody(), nextUdfCall);
+
+        theUdfCallPath.pop_back();
+      }
+#else
+      UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
+
+      if (ite == theProcessedUDFCalls.end())
+      {
+        theProcessedUDFCalls.insert(e);
 
         UDFCallChain nextUdfCall(e, &udfCaller);
 
         applyInternal(rCtx, udf->getBody(), nextUdfCall);
       }
+      else
+      {
+        csize numArgs = e->num_args();
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          var_expr* argVar = udf->getArgVar(i);
+
+          if (theSourceFinder->theVarSourcesMap.find(argVar) !=
+              theSourceFinder->theVarSourcesMap.end())
+          {
+            std::vector<expr*> sources;
+            theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
+            markSources(sources);
+          }
+        }
+      }
+#endif
     } // f->isUdf()
     else
     {

@@ -18,14 +18,14 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_index.h"
+#include "simple_collection.h"
+#include "simple_index.h"
 #include "store/api/ic.h"
 #include "store/api/annotation.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/node_items.h"
+#include "loader.h"
+#include "simple_store.h"
+#include "store_defs.h"
+#include "node_items.h"
 #include "zorbatypes/numconversions.h"
 
 namespace zorba { namespace simplestore {
@@ -141,7 +141,7 @@ void SimpleCollection::addNode(
   method raises an error. The moethod returns the position occupied by the first
   new node after the insertion is done.
 ********************************************************************************/
-ulong SimpleCollection::addNodes(
+xs_integer SimpleCollection::addNodes(
     std::vector<store::Item_t>& nodes,
     const store::Item* targetNode,
     bool before)
@@ -523,6 +523,7 @@ void SimpleCollection::CollectionIter::open()
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
+  theEnd = theCollection->theXmlTrees.end();
 }
 
 
@@ -539,13 +540,13 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
     );
   }
 
-  if (theIterator == theCollection->theXmlTrees.end()) 
+  if (theIterator == theEnd) 
   {
     result = NULL;
     return false;
   }
 
-  result = (*theIterator).getp();
+  result = *theIterator;
   ++theIterator;
 
   return true;
@@ -558,6 +559,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
+  theEnd = theCollection->theXmlTrees.end();
 }
 
 

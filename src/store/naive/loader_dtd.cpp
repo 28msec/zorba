@@ -26,17 +26,17 @@
 
 #include <zorba/store_consts.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "string_pool.h"
+#include "qname_pool.h"
+#include "simple_store.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "dataguide.h"
+#include "nsbindings.h"
+#include "loader.h"
+#include "simple_item_factory.h"
+#include "node_factory.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
@@ -1137,15 +1137,15 @@ void DtdXmlLoader::startElement(
         case 0:                       // libxml2 bug
         case XML_ATTRIBUTE_CDATA:
           GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
-          typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+          typeName = GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
           break;
         case XML_ATTRIBUTE_ID:
           GET_STORE().getItemFactory()->createID(typedValue, value);
-          typeName = GET_STORE().theSchemaTypeNames[XS_ID];
+          typeName = GET_STORE().theSchemaTypeNames[store::XS_ID];
           break;
         case XML_ATTRIBUTE_IDREF:
           GET_STORE().getItemFactory()->createIDREF(typedValue, value);
-          typeName = GET_STORE().theSchemaTypeNames[XS_IDREF];
+          typeName = GET_STORE().theSchemaTypeNames[store::XS_IDREF];
           break;
         case XML_ATTRIBUTE_IDREFS:
           GET_STORE().getItemFactory()->createIDREFS(typedValue, value);
@@ -1154,7 +1154,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_ENTITY:
           GET_STORE().getItemFactory()->createENTITY(typedValue, value);
-          typeName = GET_STORE().theSchemaTypeNames[XS_ENTITY];
+          typeName = GET_STORE().theSchemaTypeNames[store::XS_ENTITY];
           break;
         case XML_ATTRIBUTE_ENTITIES:
           GET_STORE().getItemFactory()->createENTITIES(typedValue, value);
@@ -1163,7 +1163,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_NMTOKEN:
           GET_STORE().getItemFactory()->createNMTOKEN(typedValue, value);
-          typeName = GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
+          typeName = GET_STORE().theSchemaTypeNames[store::XS_NMTOKEN];
           break;
         case XML_ATTRIBUTE_NMTOKENS:
           GET_STORE().getItemFactory()->createNMTOKENS(typedValue, value);

@@ -19,11 +19,14 @@
 
 #include "common/shared_types.h"
 
-#include "types/typeconstants.h"
+//#include "types/typeconstants.h"
 
 #include "compiler/expression/expr_consts.h"
 
 #include "runtime/base/binarybase.h" 
+
+#include "store/api/xs_type_codes.h"
+
 
 namespace zorba {
 
@@ -37,8 +40,8 @@ public:
       const TypeManager* tm,
       const char* aOp, 
       const QueryLoc*, 
-      TypeConstants::atomic_type_code_t aType0,
-      TypeConstants::atomic_type_code_t aType1
+      store::SchemaTypeCode aType0,
+      store::SchemaTypeCode aType1
   );
 };
 
@@ -56,7 +59,7 @@ public:
     return ArithmeticConsts::ADDITION;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -69,7 +72,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -97,7 +100,7 @@ public:
   }
 
 public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -110,7 +113,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -138,7 +141,7 @@ public:
   }
 
 public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -151,7 +154,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -179,7 +182,7 @@ public:
   }
 
 public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -192,7 +195,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -219,7 +222,7 @@ public:
   }
 
 public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -232,7 +235,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -259,7 +262,7 @@ public:
   }
 
 public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  template<store::SchemaTypeCode ATC0, store::SchemaTypeCode ATC1>
   static bool compute(
         store::Item_t& result,
         dynamic_context* dctx,
@@ -272,7 +275,7 @@ public:
     return 0;
   }
 
-  template<TypeConstants::atomic_type_code_t ATC>
+  template<store::SchemaTypeCode ATC>
   static bool computeSingleType(
         store::Item_t& result,
         dynamic_context* dctx,
