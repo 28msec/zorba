@@ -133,7 +133,7 @@ XQJ standard provides specific \c close() \e methods for this specific purpose:
       XQExpression xqexpression = xqconnection.createExpression();
       XQSequence xqsequence = xqexpression.executeQuery("<foo:e/>");
       // code to show the output
-      xqconnection.close();  // Closing connection and freeing all related resource
+      xqconnection.close();  // Closing connection frees all related resources
 \code
 
 \endcode
