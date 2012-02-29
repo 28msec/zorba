@@ -9404,10 +9404,12 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
  
   //If the right leaf is the concat expr,
   //we add directly its leafs to the new concat expr.
-  fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
   bool rightLeafIsConcatExpr = false;
-  if(lFoExpr != NULL) {
-    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N)) {
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    {
       rightLeafIsConcatExpr = true;
       csize i = 0;
       for(i = 0; i < lFoExpr->num_args(); ++i)
@@ -9417,7 +9419,8 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
     }
   }
   
-  if(!rightLeafIsConcatExpr){
+  if(!rightLeafIsConcatExpr)
+  {
     concat_args.push_back(right);
   }
 
