@@ -23,7 +23,7 @@
 #include "store/api/item.h"
 #include "store/api/load_properties.h"
 
-#include "store/naive/ordpath.h"
+#include "ordpath.h"
 
 #include "zorbautils/stack.h"
 #include "runtime/parsing_and_serializing/fragment_istream.h"

@@ -597,31 +597,67 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-
-QNameItem::~QNameItem()
+QNameItem::QNameItem(
+    const char* aNamespace,
+    const char* aPrefix,
+    const char* aLocalName)
+  :
+  theIsInPool(false)
 {
-  if (isValid())
-  {
-    assert(theLocal.empty() || theNormQName == NULL);
-  }
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+QNameItem::QNameItem(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+  :
+  theIsInPool(false)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+void QNameItem::initializeAsQNameNotInPool(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+{
+  assert(!isValid());
+
+  store::Item_t lPoolQName =
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
+
+  theIsInPool = false;
 }
 
 
 void QNameItem::free()
 {
-  GET_STORE().getQNamePool().remove(this);
-}
+  QNamePool& thePool = GET_STORE().getQNamePool();
 
+  if (theIsInPool)
+  {
+    thePool.remove(this);
+    return;
+  }
+  
+  assert(!isNormalized());
 
-QNameItem* QNameItem::getNormalized() const
-{
-  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  invalidate(false, NULL);
+  delete this;
 }
 
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
+  const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
@@ -644,7 +680,8 @@ bool QNameItem::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+  return theNormalizedQName ==
+      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 
@@ -731,14 +768,14 @@ zstring QNameItem::show() const
   return res;
 }
 
-
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
-NotationItem::NotationItem(const zstring& nameSpace,
-                           const zstring& prefix,
-                           const zstring& localName)
+NotationItem::NotationItem(
+    const zstring& nameSpace,
+    const zstring& prefix,
+    const zstring& localName)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -752,12 +789,13 @@ NotationItem::NotationItem(store::Item* qname)
 }
 
 
-bool NotationItem::equals(const store::Item* item,
-                          long timezone,
-                          const XQPCollator* aCollation) const
+bool NotationItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == 
-          static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return theQName->equals(
+      static_cast<const NotationItem*>(item)->theQName);
 }
 
 
@@ -3059,6 +3097,45 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+bool
+Base64BinaryItem::equals(
+      const store::Item* other,
+      long timezone,
+      const XQPCollator* aCollation) const
+{
+  if (isEncoded() == other->isEncoded())
+  {
+    size_t this_size, other_size;
+    const char* this_data = getBase64BinaryValue(this_size);
+    const char* other_data = other->getBase64BinaryValue(other_size);
+    return this_size == other_size &&
+      memcmp(this_data, other_data, this_size) == 0;
+  }
+  else
+  {
+    return getStringValue().compare(other->getStringValue()) == 0;
+  }
+}
+
+
+uint32_t
+Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  // always need to hash on the string-value because otherwise
+  // a base64 item that is encoded would have a different hash-value
+  // as a base64 item that is decoded but represents the same binary content
+  return utf8::hash(getStringValue(), aCollation);
+}
+
+
+const char*
+Base64BinaryItem::getBase64BinaryValue(size_t& size) const
+{
+  size = theValue.size();
+  return &theValue[0];
+}
+
+
 store::Item* Base64BinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_BASE64BINARY];
@@ -3067,19 +3144,32 @@ store::Item* Base64BinaryItem::getType() const
 
 zstring Base64BinaryItem::getStringValue() const
 {
-  return theValue.str();
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void Base64BinaryItem::getStringValue2(zstring& val) const
 {
-  val = theValue.str();
+  val.clear();
+  appendStringValue(val);
 }
 
 
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str();
+  if (theIsEncoded)
+  {
+    buf.insert(buf.size(), &theValue[0], theValue.size());
+  }
+  else
+  {
+    std::vector<char> encoded;
+    encoded.reserve(theValue.size());
+    Base64::encode(theValue, encoded);
+    buf.insert(buf.size(), &encoded[0], encoded.size());
+  }
 }
 
 
@@ -3092,9 +3182,155 @@ zstring Base64BinaryItem::show() const
 }
 
 
-uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+/*******************************************************************************
+  class StreamableStringItem
+********************************************************************************/
+zstring StreamableBase64BinaryItem::getStringValue() const
 {
-  return theValue.hash();
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getStringValue();
+}
+
+
+void StreamableBase64BinaryItem::getStringValue2(zstring& val) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::getStringValue2(val);
+}
+
+
+void StreamableBase64BinaryItem::appendStringValue(zstring& buf) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::appendStringValue(buf);
+}
+
+
+zstring StreamableBase64BinaryItem::show() const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  zstring res("xs:base64Binary(");
+  appendStringValue(res);
+  res += ")";
+  return res;
+}
+
+
+uint32_t
+StreamableBase64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::hash(timezone, aCollation);
+}
+
+
+const char*
+StreamableBase64BinaryItem::getBase64BinaryValue(size_t& s) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getBase64BinaryValue(s);
+}
+
+
+bool StreamableBase64BinaryItem::isStreamable() const
+{
+  return true;
+}
+
+
+bool StreamableBase64BinaryItem::isSeekable() const
+{
+  return theIsSeekable;
+}
+
+
+StreamReleaser StreamableBase64BinaryItem::getStreamReleaser()
+{
+  return theStreamReleaser;
+}
+
+
+void StreamableBase64BinaryItem::setStreamReleaser(StreamReleaser aReleaser)
+{
+  theStreamReleaser = aReleaser;
+}
+
+
+std::istream& StreamableBase64BinaryItem::getStream()
+{
+  // a non-seekable stream can only be consumed once
+  // we raise an error if getStream is called twice
+  // if a query requires a stream to be consumed more than once,
+  // the query needs to make sure that the stream is explicitly
+  // materialized before
+  if (!theIsSeekable && theIsConsumed) 
+  {
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
+  }
+  else
+  {
+    // if the stream is seekable, we seek to the beginning.
+    // We are not using theIstream.seekg because the USER_ERROR that is thrown
+    // by Zorba is lost possibly in an internal try/catch of the seekg
+    std::streambuf * pbuf;
+    pbuf = theIstream.rdbuf();
+    pbuf->pubseekoff(0, std::ios::beg);
+  }
+  theIsConsumed = true;
+  return theIstream;
+}
+
+
+void StreamableBase64BinaryItem::materialize() const
+{
+  StreamableBase64BinaryItem* const s
+    = const_cast<StreamableBase64BinaryItem*>(this);
+  std::istream& lStream = s->getStream();
+
+  s->theIsMaterialized = true;
+  s->theIsConsumed = true;
+
+  if (isSeekable())
+  {
+    lStream.seekg(0, std::ios::end);
+    size_t len = lStream.tellg();
+    lStream.seekg(0, std::ios::beg);
+    s->theValue.reserve(len);
+    char buf[1024];
+    while (lStream.good())
+    {
+      lStream.read(buf, 1024);
+      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+    }
+  }
+  else
+  {
+    char buf[4048];
+    while (lStream.good())
+    {
+      lStream.read(buf, 4048);
+      s->theValue.reserve(s->theValue.size() + lStream.gcount());
+      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+    }
+  }
 }
 
 

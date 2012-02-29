@@ -63,6 +63,7 @@ void Zorba_SerializerOptions::SetSerializerOption(
     else if (strcmp(value, "html") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
     else if (strcmp(value, "xhtml") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
     else if (strcmp(value, "text") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+    else if (strcmp(value, "binary") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
     else
     {
       ; // TODO signal errors for incorrect values?

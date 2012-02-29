@@ -37,7 +37,7 @@
 #include "simple_temp_seq.h"
 #include "simple_lazy_temp_seq.h"
 #include "simple_collection.h"
-#include "collection_set.h"
+#include "simple_collection_set.h"
 #include "simple_index.h"
 #include "simple_index_value.h"
 #include "simple_index_general.h"
@@ -79,6 +79,10 @@ typedef rchandle<store::TempSeq> TempSeq_t;
   SimpleStore static data
 ********************************************************************************/
 const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
+const ulong SimpleStore::DEFAULT_DOCUMENT_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_URI_COLLECTION_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_INDICES_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
@@ -102,11 +106,11 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
   thePULFactory(NULL),
-  theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
-  theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
+  theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
+  theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
   theTraceLevel(0),
   theNodeToReferencesMap(128, true)
 #ifndef ZORBA_NO_FULL_TEXT
@@ -402,7 +406,7 @@ SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
 *******************************************************************************/
 CollectionSet* SimpleStore::createCollectionSet() const
 {
-  return new CollectionSet();
+  return new SimpleCollectionSet();
 }
 
 
