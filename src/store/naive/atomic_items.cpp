@@ -627,11 +627,12 @@ void QNameItem::initializeAsQNameNotInPool(
   assert(!isValid());
 
   store::Item_t lPoolQName =
-  GET_STORE().getQNamePool().insert(aNamespace, aPrefix, aLocalName);
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
 
-  initializeAsUnnormalizedQName(
-      static_cast<QNameItem*>(lPoolQName.getp())->getNormalized(),
-      aPrefix);
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
 
   theIsInPool = false;
 }
@@ -649,8 +650,7 @@ void QNameItem::free()
   
   assert(!isNormalized());
 
-  QNameItem* lNormalizationVictim;
-  invalidate(false, &lNormalizationVictim);
+  invalidate(false, NULL);
   delete this;
 }
 
@@ -767,7 +767,6 @@ zstring QNameItem::show() const
   res += ")";
   return res;
 }
-
 
 /*******************************************************************************
   class NotationItem

@@ -330,20 +330,19 @@ public:
 
 
 /*******************************************************************************
-  class QNameItem
-
   Instances of this class can be classified into two categories:
-  - QNames in the pool. They are owned by the pool. There can be only one
-    QName in the pool with a given namespace, prefix and local name.
+  - QNames in the pool. They are owned by the pool. There can be only one QName
+    in the pool with a given namespace, prefix and local name.
   - QNames that are not in the pool. The user owns them and is responsible
-    for their destruction. The ternary constructors construct such QNames.
-   
+    for their destruction (which can be realized with reference-counting
+    pointers). The ternary constructors construct such QNames.
+  
   Normalized QNames are QNames without a prefix and that are in the pool. There
-  is only one normalized QName with a given namespace and local name, so that 
+  is only one normalized QName with a given namespace and local name, so that
   direct pointer comparison can be used to compare them.
-   
-  Each QName points to the equivalent normalized QName (same namespace and prefix)
-  which provides an efficient way of comparing two QNames.
+  
+  Each QName points to the equivalent normalized QName (same namespace and 
+  prefix) which provides an efficient way of comparing two QNames.
 
   Pointer comparison on normalized QNames is equivalent to using the equals() 
   method. For example, a pointer to the normalized QName can be used as a key.
@@ -352,10 +351,11 @@ public:
   QName (always in the pool), as an unnormalized QName in the pool or as an
   unnormalized QName not in the pool. It can also be invalidated and initialized
   again.
-********************************************************************************/
+*******************************************************************************/
 class QNameItem : public AtomicItem
 {
-  // The QName pool is the only class authorized to edit namespace/prefix/local name.
+  // The QName pool is the only class authorized to edit namespace/prefix/local
+  // name.
   friend class QNamePool;
 
 private:
@@ -363,7 +363,8 @@ private:
   zstring          thePrefix;
   zstring          theLocal;
 
-  // Points to the corresponding normalized QName in the pool (pool owns this pointer).
+  // Points to the corresponding normalized QName in the pool (pool owns this
+  // pointer).
   const QNameItem* theNormalizedQName;
   
   bool             theIsInPool;
@@ -422,6 +423,9 @@ protected:
   {
   }
   
+  // These two constructors are for building QName items outside
+  // of the pool (they point back to the normalized QName in the pool).
+  // Zorba does not use them, but extensions to the simple store may.
   QNameItem(
       const char* aNamespace,
       const char* aPrefix,
