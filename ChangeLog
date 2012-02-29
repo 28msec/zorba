@@ -11,6 +11,7 @@ version 2.2
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
+  * Fixed bug 867509 (Can not handle largest xs:unsignedLong values)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
   * Optimization: change the implementation of the free-vars annotation and got rid
     of the annotations map in expressions.
