@@ -126,7 +126,9 @@ XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
   std::ostringstream lProlog;
   lProlog
     << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';"
-    << "import module namespace x = '" << static_context::ZORBA_XML_FN_NS << "';";
+    << "import module namespace x = '" << static_context::ZORBA_XML_FN_NS << "';"
+    << "import schema namespace opt = '" << static_context::ZORBA_XML_FN_OPTIONS_NS << "';";
+
   theContext->loadProlog(lProlog.str(), lHints);
 }
 
@@ -284,17 +286,30 @@ XmlDataManagerImpl::parseXML(
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createStreamableString(aStream,
-                                                                 &streamReleaser)));
+    lArgs.push_back(new SingletonItemSequence(
+        theFactory->createStreamableString(aStream, &streamReleaser)));
 
-    std::ostringstream lOptions;
-    lOptions << (aOptions.isDtdValidationEnabled()?"d":"D");
+    Item empty_item;
+    Item validated_options;
+    NsBindings nsPairs;
+    Item untyped_type = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+    Item options_node = theFactory->createElementNode(empty_item,
+        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
+        untyped_type, false, false, nsPairs);
 
-    lOptions << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+    if (aOptions.isDtdValidationEnabled())
+      theFactory->createElementNode(options_node,
+          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "DTD-validate"),
+          untyped_type, false, false, nsPairs);
 
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createString(lOptions.str())));
+    if (aOptions.isExternalEntityProcessingEnabled())
+      theFactory->createElementNode(options_node,
+          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "parse-external-parsed-entity"),
+          untyped_type, false, false, nsPairs);
+
+    theContext->validate(options_node, validated_options, validate_strict);
+
+    lArgs.push_back(new SingletonItemSequence(validated_options));
 
     return theContext->invoke(lQName, lArgs);
   }
@@ -319,19 +334,38 @@ XmlDataManagerImpl::parseXML(
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createStreamableString(aStream,
-                                                                 &streamReleaser)));
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createString(aBaseURI)));
+    lArgs.push_back(new SingletonItemSequence(
+                    theFactory->createStreamableString(aStream, &streamReleaser)));
 
-    std::ostringstream lOptions;
-    lOptions << (aOptions.isDtdValidationEnabled()?"d":"D");
+    Item empty_item;
+    Item validated_options;
+    NsBindings nsPairs;
+    Item untyped_type = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+    Item options_node = theFactory->createElementNode(empty_item,
+        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
+        untyped_type, false, false, nsPairs);
 
-    lOptions << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+    if (aOptions.isDtdValidationEnabled())
+      theFactory->createElementNode(options_node,
+          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "DTD-validate"),
+          untyped_type, false, false, nsPairs);
 
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createString(lOptions.str())));
+    if (aOptions.isExternalEntityProcessingEnabled())
+      theFactory->createElementNode(options_node,
+          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "parse-external-parsed-entity"),
+          untyped_type, false, false, nsPairs);
+
+    Item base_uri_node = theFactory->createElementNode(options_node,
+        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "base-uri"),
+        untyped_type, false, false, nsPairs);
+    theFactory->createAttributeNode(base_uri_node,
+        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "value"),
+        Item(),
+        theFactory->createString(aBaseURI));
+
+    theContext->validate(options_node, validated_options, validate_strict);
+
+    lArgs.push_back(new SingletonItemSequence(validated_options));
 
     return theContext->invoke(lQName, lArgs);
   }

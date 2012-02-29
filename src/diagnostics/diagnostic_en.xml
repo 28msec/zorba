@@ -3497,6 +3497,10 @@
     <entry key="ParseFragmentOptionCombinationNotAllowed">
       <value>only one of the &lt;schemaValidate/&gt;, &lt;DTDValidate/&gt; or &lt;parseExternalParsedEntity/&gt; options can be specified</value>
     </entry>
+    
+    <entry key="ParseFragmentInvalidOptions">
+      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
+    </entry>
 
   </subvalues>
 

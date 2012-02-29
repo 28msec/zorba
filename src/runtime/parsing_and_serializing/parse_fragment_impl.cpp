@@ -59,16 +59,29 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
     return;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  tempItem = NULL; // used as the effectiveValidationValue()'s typeName
-  Validator::effectiveValidationValue(
-      item,
-      item,
-      tempItem,
-      theSctx->get_typemanager(),
-      ParseConstants::val_strict,
-      theSctx,
-      loc);
-#endif      
+  if (item->isValidated())
+  {
+    if (item->getNodeName() == NULL
+        ||
+        item->getNodeName()->getNamespace() != static_context::ZORBA_XML_FN_OPTIONS_NS)
+    {
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                             ERROR_PARAMS(ZED(ParseFragmentInvalidOptions)), ERROR_LOC( loc ));
+    }
+  }
+  else
+  {
+    tempItem = NULL; // used as the effectiveValidationValue()'s typeName
+    Validator::effectiveValidationValue(
+        item,
+        item,
+        tempItem,
+        theSctx->get_typemanager(),
+        ParseConstants::val_strict,
+        theSctx,
+        loc);
+  }
+#endif
 
   store::Iterator_t children = item->getChildren();
   children->open();

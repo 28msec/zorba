@@ -582,6 +582,7 @@ extern entry const dict_en[] = {
   { "~OperationNotDef_23", "$2 not defined for type \"$3\"" },
   { "~OperationNotPossibleWithTypes_234", "\"$2\": operation not possible with parameters of type \"$3\" and \"$4\"" },
   { "~OuterForClause11", "\"outer-for\" clause only available in XQuery 1.1 or later" },
+  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schemaValidate/>, <DTDValidate/> or <parseExternalParsedEntity/> options can be specified" },
   { "~ParserInitFailed", "parser initialization failed" },
   { "~ParserNoCreateTree", "XML tree creation failed" },

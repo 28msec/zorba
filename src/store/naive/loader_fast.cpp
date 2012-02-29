@@ -300,7 +300,11 @@ store::Item_t FastXmlLoader::loadXml(
                                    docUri.c_str());
 
     // Apply loader options
-    applyLoadOptions(theLoadProperties, ctxt);
+    store::LoadProperties new_props = theLoadProperties;
+    new_props.setSubstituteEntities(true); // This is required for some Zorba tests,
+                                           // e.g. rbkt/Queries/zorba/entity/entity.xq
+                                           // It should probably be handled in a different way
+    applyLoadOptions(new_props, ctxt);
 
     if (ctxt == NULL)
     {
