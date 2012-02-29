@@ -84,34 +84,47 @@ QNamePool::~QNamePool()
 ********************************************************************************/
 void QNamePool::remove(QNameItem* qn)
 {
-  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
+  QNameItem* normVictim = NULL;
 
-  if (qn->getRefCount() > 0)
-    return;
+  SYNC_CODE(theHashSet.theMutex.lock(); \
+            bool haveLock = true;)
 
-  if (qn->isInCache())
-  {
-    qn->theNextFree = (uint16_t)theFirstFree;
-    theCache[theFirstFree].thePrevFree = qn->thePosition;
-    theFirstFree = qn->thePosition;
-    theNumFree++;
-  }
-  else
-  {
-    // If all the pointers to QNameItems were smart pointers, we could leave
-    // qn in the pool, and let the pool garbage-collect it later (if it still
-    // unused). If however QNameItems may be referenced by regular pointers as
-    // well, then qn must be removed from the pool and really deleted
-    QNameItem* normVictim = NULL;
-    theHashSet.eraseNoSync(qn);
-    qn->invalidate(true, &normVictim);
-    delete qn;
+  try {
+    if (qn->getRefCount() > 0)
+      return;
 
+    if (qn->isInCache())
+    {
+      qn->theNextFree = (uint16_t)theFirstFree;
+      theCache[theFirstFree].thePrevFree = qn->thePosition;
+      theFirstFree = qn->thePosition;
+      theNumFree++;
+    }
+    else
+    {
+      // If all the pointers to QNameItems were smart pointers, we could leave
+      // qn in the pool, and let the pool garbage-collect it later (if it still
+      // unused). If however QNameItems may be referenced by regular pointers
+      // as well, then qn must be removed from the pool and really deleted.
+      theHashSet.eraseNoSync(qn);
+      qn->invalidate(true, &normVictim);
+      delete qn;
+    }
+
+    // Releasing the lock here to avoid deadlock, because decrementing the 
+    // normVictim counter might reenter QNamePool::remove.
+    SYNC_CODE(theHashSet.theMutex.unlock(); \
+              haveLock = false;)
     if (normVictim)
     {
-      // Tail call. Should avoid deadlock because no new stack frame.
       normVictim->removeReference();
     }
+
+  } catch(...) {
+    SYNC_CODE(if (haveLock) \
+              theHashSet.theMutex.unlock();)
+              
+    ZORBA_FATAL(0, "Unexpected exception");
   }
 }
 
