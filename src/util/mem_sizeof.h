@@ -240,6 +240,9 @@ struct size_traits<std::string> {
   }
 };
 
+/**
+ * Specialization for <code>char const*</code>.
+ */
 template<>
 struct size_traits<char const*> {
   static size_t alloc_sizeof( char const *s ) {
@@ -250,11 +253,11 @@ struct size_traits<char const*> {
 /**
  * Specialization for std::map.
  */
-template<typename K,typename V>
-struct size_traits<std::map<K,V>,false> {
-  static size_t alloc_sizeof( std::map<K,V> const &m ) {
+template<typename K,typename V,typename Compare,typename Alloc>
+struct size_traits<std::map<K,V,Compare,Alloc>,false> {
+  static size_t alloc_sizeof( std::map<K,V,Compare,Alloc> const &m ) {
     size_t total_size = 0;
-    for ( typename std::map<K,V>::const_iterator
+    for ( typename std::map<K,V,Compare,Alloc>::const_iterator
           i = m.begin(); i != m.end(); ++i ) {
       total_size += mem_sizeof( i->first ) + mem_sizeof( i->second );
     }
@@ -281,40 +284,36 @@ protected:
 
 /**
  * Specialization for std::set.
- *
- * @tparam T The set's value_type.
  */
-template<typename T>
-struct size_traits<std::set<T>,false> : sequence_size_traits< std::set<T> > {
-  static size_t alloc_sizeof( std::set<T> const &s ) {
+template<typename T,typename Alloc>
+struct size_traits<std::set<T,Alloc>,false> :
+  sequence_size_traits< std::set<T,Alloc> >
+{
+  static size_t alloc_sizeof( std::set<T,Alloc> const &s ) {
     return sequence_sizeof( s );
   }
 };
 
 /**
  * Specialization for std::stack.
- *
- * @tparam T The stack's value_type.
  */
-template<typename T>
-struct size_traits<std::stack<T>,false> :
-  sequence_size_traits< std::stack<T> >
+template<typename T,typename Alloc>
+struct size_traits<std::stack<T,Alloc>,false> :
+  sequence_size_traits< std::stack<T,Alloc> >
 {
-  static size_t alloc_sizeof( std::stack<T> const &s ) {
+  static size_t alloc_sizeof( std::stack<T,Alloc> const &s ) {
     return sequence_sizeof( s );
   }
 };
 
 /**
  * Specialization for std::vector.
- *
- * @tparam T The vector's value_type.
  */
-template<typename T>
-struct size_traits<std::vector<T>,false> :
-  sequence_size_traits< std::vector<T> >
+template<typename T,typename Alloc>
+struct size_traits<std::vector<T,Alloc>,false> :
+  sequence_size_traits< std::vector<T,Alloc> >
 {
-  static size_t alloc_sizeof( std::vector<T> const &v ) {
+  static size_t alloc_sizeof( std::vector<T,Alloc> const &v ) {
     return sequence_sizeof( v );
   }
 };
