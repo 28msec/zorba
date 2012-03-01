@@ -211,7 +211,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theIsClosed = false;
 
     theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
-
   }
 
 #ifdef ZORBA_WITH_DEBUGGER

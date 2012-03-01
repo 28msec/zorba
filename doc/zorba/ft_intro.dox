@@ -1,7 +1,5 @@
 /** \page ft_intro Full Text
 
-\section ft_intro Introduction
-
 The Zorba XQuery engine implements the
 <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
 specification.

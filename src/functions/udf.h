@@ -132,13 +132,13 @@ private:
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
-  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
+  rchandle<rclist<user_function*> > theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize(CompilerCB *compilerCB);
+  void prepare_for_serialize(CompilerCB* compilerCB);
 
 public:
   user_function(

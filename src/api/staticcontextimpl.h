@@ -192,6 +192,15 @@ public:
   getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const;
 
   virtual void
+  getFunctions(std::vector<Function_t>& aFunctions) const;
+
+  virtual void
+  getFunctions(
+      const String& aFnNameUri,
+      uint32_t arity,
+      std::vector<Function_t>& aFunctions) const;
+
+  virtual void
   setContextItemStaticType(TypeIdentifier_t type);
 
   virtual TypeIdentifier_t
