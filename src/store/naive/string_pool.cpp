@@ -15,9 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/fatal.h"
 #include "util/string_util.h"
 #include "string_pool.h"
+#include "zorba/zorba_exception.h"
 
 namespace zorba { namespace simplestore {
 
@@ -26,28 +26,19 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-  bool stringsInPool = false;
   ulong count = 0;
   ulong n = (ulong)theHashTab.size();
-  for (ulong i = 0; i < n, !stringsInPool; i++)
+  for (ulong i = 0; i < n; i++)
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      stringsInPool = true;
-    }
-  }
-  if (stringsInPool) {
-    std::cerr << "Zorba did not close properly, objects may still in memory. For help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." << std::endl;
-    for (ulong i = 0; i < n; i++)
-    {
-      if (theHashTab[i].theItem.is_shared())
-      {
-      std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
+      //std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
       //delete theHashTab[i].theString.getp();
       count ++;
-      }
     }
-    ZORBA_FATAL(stringsInPool==false, count << " referenced URI(s) remain in the string pool.");
+  }
+  if (count>0) {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
   }
 }
 

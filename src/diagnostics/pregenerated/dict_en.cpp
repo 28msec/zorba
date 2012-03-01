@@ -376,6 +376,7 @@ extern entry const dict_en[] = {
   { "ZSTR0050", "\"$1\" not implemented for item type \"$2\"" },
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
+  { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n $1 referenced URI(s) remain in the string pool.\n For help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
