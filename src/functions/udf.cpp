@@ -51,7 +51,7 @@ user_function::user_function(
     const signature& sig,
     expr_t expr_body,
     short scriptingKind,
-    CompilerCB  *compilerCB)
+    CompilerCB* compilerCB)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -598,7 +598,7 @@ PlanIter_t user_function::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new UDFunctionCallIterator(sctx, loc, argv, this);
 }

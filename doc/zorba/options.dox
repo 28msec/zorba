@@ -416,7 +416,7 @@ by an enclosed expression appearing inside a node constructor must be copied,
 and it is the copied subtrees that are then connected to the newly constructed
 node. However, such copying is not always necessary. If no copying is done, then
 some nodes will be "shared" by multiple trees. XML trees that do not contain
-any shared nodes will be refered to as "stand-alone trees". 
+any shared nodes will be referred to as "stand-alone trees". 
 
 Whether node copying is really necessary or not depends on the kind of operations 
 that are going to be performed on the nodes and their associated trees after the 
@@ -447,8 +447,8 @@ is a list of integer literals. The meaning of the annotation is the following:
 If a number N appears in the value, then the function may return to its caller
 a node n that is bound to the N-th parameter, or a node in the subtree of n. This
 annotation helps the optimizer determine whether nodes consumed by an expression
-are comming from a node constructor, so that if the expression requires stand-alone
-trees, then the optimizer will make sure that the relavant node constructor does
+are coming from a node constructor, so that if the expression requires stand-alone
+trees, then the optimizer will make sure that the relevant node constructor does
 copy nodes.
 </li>
 </ul>

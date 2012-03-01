@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -109,7 +109,7 @@ public:
         xs_integer position = -1);
 
   // virtual to allow extension by subclasses
-  virtual ulong addNodes(
+  virtual xs_integer addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);

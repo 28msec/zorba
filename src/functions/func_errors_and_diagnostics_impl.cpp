@@ -53,7 +53,7 @@ PlanIter_t fn_trace::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+    expr &ann) const
 {
   // tracing can be disabled using declare option op:disable-feature "trace";
   if ( sctx->is_feature_set( feature::trace ) )

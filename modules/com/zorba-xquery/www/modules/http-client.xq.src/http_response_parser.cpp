@@ -34,7 +34,7 @@
 
 namespace zorba {
 
-static bool parse_content_type( std::string const &s, std::string *mime_type,
+static void parse_content_type( std::string const &s, std::string *mime_type,
                                 std::string *charset ) {
   std::string::size_type pos = s.find( ';' );
   *mime_type = s.substr( 0, pos );
