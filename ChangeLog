@@ -58,6 +58,7 @@ version 2.2
   * Fixed bug with unversioned modules with C++ external functions
   * Fixed bug #878508 (JSON Module not escaping escape characters)
   * Fixed bug #912579 (validate-in-place on non-root elements)
+  * Fixed bug #891209 (validation with xsi:type returns untyped)
 
 version 2.1
 
