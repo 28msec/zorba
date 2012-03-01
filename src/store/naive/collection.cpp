@@ -24,146 +24,85 @@
 #include "simple_index.h"
 
 namespace zorba {
+namespace simplestore {
 
-  namespace simplestore {
+void Collection::getIndexes(
+    const store::Item* name,
+    std::vector<store::Index*>& indexes)
+{
+  const IndexSet& availableIndexes = GET_STORE().getIndices();
 
-    void Collection::getIndexes(
-        const store::Item* name,
-        std::vector<store::Index*>& indexes)
+  IndexSet::iterator idxIte = availableIndexes.begin();
+  IndexSet::iterator idxEnd = availableIndexes.end();
+
+  for (; idxIte != idxEnd; ++idxIte)
+  {
+    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
+    const store::IndexSpecification& indexSpec = index->getSpecification();
+
+    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
+    uint64_t numIndexSources = (uint64_t)indexSources.size();
+
+    for (ulong i = 0; i < numIndexSources; ++i)
     {
-      const IndexSet& availableIndexes = GET_STORE().getIndices();
-    
-      IndexSet::iterator idxIte = availableIndexes.begin();
-      IndexSet::iterator idxEnd = availableIndexes.end();
-    
-      for (; idxIte != idxEnd; ++idxIte)
+      if (indexSources[i]->equals(name))
       {
-        IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
-        const store::IndexSpecification& indexSpec = index->getSpecification();
-    
-        const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-        ulong numIndexSources = indexSources.size();
-    
-        for (ulong i = 0; i < numIndexSources; ++i)
-        {
-          if (indexSources[i]->equals(name))
-          {
-            indexes.push_back(index);
-            break;
-          }
-        }
+        indexes.push_back(index);
+        break;
       }
     }
+  }
+}
 
-    /**
-     * Returns active integrity constraints referencing this collection.
-     */
-    void Collection::getActiveICs(
-        const store::Item* name,
-        std::vector<store::IC*>& ics)
+void Collection::getActiveICs(
+    const store::Item* name,
+    std::vector<store::IC*>& ics)
+{
+  store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
+
+  store::Item_t activeICName;
+  activeICNames->open();
+
+  while ( activeICNames->next(activeICName) )
+  {
+
+    store::IC* activeIC = GET_STORE().getIC(activeICName);
+
+    switch( activeIC->getICKind() )
     {
-      store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
-    
-      store::Item_t activeICName;
-      activeICNames->open();
-    
-      while ( activeICNames->next(activeICName) )
-      {
-    
-        store::IC* activeIC = GET_STORE().getIC(activeICName);
-    
-        switch( activeIC->getICKind() )
-        {
-        case store::IC::ic_collection:
-          if ( activeIC->getCollectionName()->equals(name) )
-            ics.push_back(activeIC);
-          break;
-    
-        case store::IC::ic_foreignkey:
-          if ( activeIC->getToCollectionName()->equals(name) )
-            ics.push_back(activeIC);
-    
-          if ( activeIC->getFromCollectionName()->equals(name) )
-            ics.push_back(activeIC);
-          break;
-    
-        default:
-          ZORBA_ASSERT(false);
-        }
-      }
-    
-      activeICNames->close();
+    case store::IC::ic_collection:
+      if ( activeIC->getCollectionName()->equals(name) )
+        ics.push_back(activeIC);
+      break;
+
+    case store::IC::ic_foreignkey:
+      if ( activeIC->getToCollectionName()->equals(name) )
+        ics.push_back(activeIC);
+
+      if ( activeIC->getFromCollectionName()->equals(name) )
+        ics.push_back(activeIC);
+      break;
+
+    default:
+      ZORBA_ASSERT(false);
     }
+  }
 
-    /*******************************************************************************
-    
-    *******************************************************************************/
-    void Collection::getActiveICs(std::vector<store::IC*>& ics)
-    {
-      store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
-    
-      store::Item_t activeICName;
-      activeICNames->open();
-    
-      while ( activeICNames->next(activeICName) )
-      {
-    
-        store::IC* activeIC = GET_STORE().getIC(activeICName);
-    
-        switch( activeIC->getICKind() )
-        {
-        case store::IC::ic_collection:
-          if ( activeIC->getCollectionName()->equals(getName()) )
-            ics.push_back(activeIC);
-          break;
-    
-        case store::IC::ic_foreignkey:
-          if ( activeIC->getToCollectionName()->equals(getName()) )
-            ics.push_back(activeIC);
-    
-          if ( activeIC->getFromCollectionName()->equals(getName()) )
-            ics.push_back(activeIC);
-          break;
-    
-        default:
-          ZORBA_ASSERT(false);
-        }
-      }
-    
-      activeICNames->close();
-    }
+  activeICNames->close();
+}
 
+/*******************************************************************************
 
-    /*******************************************************************************
-    
-    ********************************************************************************/
-    void Collection::getIndexes(std::vector<store::Index*>& indexes)
-    {
-      const IndexSet& availableIndexes = GET_STORE().getIndices();
-    
-      IndexSet::iterator idxIte = availableIndexes.begin();
-      IndexSet::iterator idxEnd = availableIndexes.end();
-    
-      for (; idxIte != idxEnd; ++idxIte)
-      {
-        IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
-        const store::IndexSpecification& indexSpec = index->getSpecification();
-    
-        const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-        uint64_t numIndexSources = (uint64_t)indexSources.size();
-    
-        for (std::size_t i = 0; i < numIndexSources; ++i)
-        {
-          if (indexSources[i]->equals(getName()))
-          {
-            indexes.push_back(index);
-            break;
-          }
-        }
-      }
-    }
+*******************************************************************************/
+void Collection::getActiveICs(std::vector<store::IC*>& ics)
+{
+  getActiveICs(getName(), ics);
+}
 
+void Collection::getIndexes(std::vector<store::Index*>& indexes)
+{
+  getIndexes(getName(), indexes);
+}
 
-  } /* namespace simplestore */
-
+} /* namespace simplestore */
 } /* namespace zorba */
