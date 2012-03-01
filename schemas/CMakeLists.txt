@@ -12,15 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(com)
-ADD_SUBDIRECTORY(org)
-
 # QQQ Note: this file was originally the 1998 version of xml.xsd. It should
 # probably be replaced with a later revision.
 DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2001/xml.xsd" FILE xml.xsd)
 
 DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2010/xslt-xquery-serialization"
   FILE xslt-xquery-serialization.xsd)
+
+# XDM and PUL
+DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/pul"
+  FILE pul.xsd)
+DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/complete-pul"
+  FILE complete-pul.xsd)
+DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/xdm"
+  FILE xdm.xsd)
+
+# XQueryX
+DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2005/XQueryX"
+FILE XQueryX.xsd)
 
 # The following are DTDs, not schemas, but (currently at least) we
 # only ever load them when an imported schema file references them
