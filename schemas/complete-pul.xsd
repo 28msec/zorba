@@ -36,12 +36,14 @@
         <xs:element name="complete-rename" type="cpul:complete-rename-type"/>
         <xs:element name="put" type="pul:put-type"/>
         <xs:element name="createCollection" type="pul:createCollection-type"/>
-        <xs:element name="insertNodesAfter" type="pul:insertNodesRelative-type"/>
-        <xs:element name="insertNodesBefore" type="pul:insertNodesRelative-type"/>
-        <xs:element name="insertNodesFirst" type="pul:insertNodesAbsolute-type"/>
-        <xs:element name="insertNodesLast" type="pul:insertNodesAbsolute-type"/>
-        <xs:element name="insertNodes" type="pul:insertNodes-type"/>
-        <xs:element name="deleteNodes" type="pul:deleteNodes-type"/>
+        <xs:element name="insertAfterIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertBeforeIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertAsFirstIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertAsLastIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertIntoCollection" type="pul:insertNodes-type"/>
+        <xs:element name="deleteNodesFromCollection" type="pul:deleteNodes-type"/>
+        <xs:element name="createDocument" type="pul:createDocument-type"/>
+        <xs:element name="complete-deleteDocument" type="cpul:complete-deleteDocument-type"/>
         <xs:element name="complete-deleteCollection" type="cpul:complete-deleteCollection-type"/>
         <xs:element name="activateIntegrityConstraint" type="pul:activateIntegrityConstraint-type"/>
         <xs:element name="deActivateIntegrityConstraint" type="pul:deActivateIntegrityConstraint-type"/>
@@ -120,4 +122,15 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  <xs:complexType name="complete-deleteDocument-type">
+    <xs:complexContent>
+      <xs:extension base="pul:deleteDocument-type">
+        <xs:sequence>
+          <xs:element name="deleted-node-reference" type="xs:anyURI"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
 </xs:schema>

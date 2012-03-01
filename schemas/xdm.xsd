@@ -245,10 +245,17 @@
       <xs:element ref="xdm:text" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
+
   <xs:complexType name="one-document-or-element-node-type">
     <xs:choice>
       <xs:element ref="xdm:document"/>
       <xs:element ref="xdm:element"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="one-document-node-type">
+    <xs:choice>
+      <xs:element ref="xdm:document"/>
     </xs:choice>
   </xs:complexType>
   

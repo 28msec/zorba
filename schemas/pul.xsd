@@ -41,8 +41,10 @@
         <xs:element name="insertAsFirstIntoCollection" type="pul:insertNodesAbsolute-type"/>
         <xs:element name="insertAsLastIntoCollection" type="pul:insertNodesAbsolute-type"/>
         <xs:element name="insertIntoCollection" type="pul:insertNodes-type"/>
-        <xs:element name="deleteNodes" type="pul:deleteNodes-type"/>
+        <xs:element name="deleteNodesFromCollection" type="pul:deleteNodes-type"/>
         <xs:element name="deleteCollection" type="pul:deleteCollection-type"/>
+        <xs:element name="createDocument" type="pul:createDocument-type"/>
+        <xs:element name="deleteDocument" type="pul:deleteDocument-type"/>
         <xs:element name="activateIntegrityConstraint" type="pul:activateIntegrityConstraint-type"/>
         <xs:element name="deActivateIntegrityConstraint" type="pul:deActivateIntegrityConstraint-type"/>
         <xs:element name="createIndex" type="pul:createIndex-type"/>
@@ -161,8 +163,25 @@
       <xs:element name="collection" type="xs:QName"/>
     </xs:sequence>
   </xs:complexType>
-  
-<!--
+
+  <!--
+  ******************************************************
+  Definition of proprietary document primitives
+  ******************************************************
+-->
+  <xs:complexType name="createDocument-type">
+    <xs:sequence>
+      <xs:element name="uri" type="xs:anyURI"/>
+      <xs:element name="node-reference" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteDocument-type">
+    <xs:sequence>
+      <xs:element name="uri" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--
   ****************************************************************
   Definition of proprietary integrity constraint update primitives
   ****************************************************************
