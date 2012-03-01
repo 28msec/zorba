@@ -1,4 +1,4 @@
-import schema namespace pul = "http://www.28msec.com/schemas/pul";
+import schema namespace pul = "http://www.zorba-xquery.com/schemas/pul";
 
 validate strict {
   <pul:pending-update-list/>

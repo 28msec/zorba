@@ -20,11 +20,11 @@ DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2010/xslt-xquery-serialization"
   FILE xslt-xquery-serialization.xsd)
 
 # XDM and PUL
-DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/pul"
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/pul"
   FILE pul.xsd)
-DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/complete-pul"
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/complete-pul"
   FILE complete-pul.xsd)
-DECLARE_ZORBA_SCHEMA(URI "http://www.28msec.com/schemas/xdm"
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/xdm"
   FILE xdm.xsd)
 
 # XQueryX

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ************************************************************************
-  28msec schema for representing a complete Pending Update List as XML
+  Zorba schema for representing a complete Pending Update List as XML
   A complete PUL contains the necessary information for reverting changes.
   ************************************************************************
 --><xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.28msec.com/schemas/complete-pul"
-    xmlns:pul="http://www.28msec.com/schemas/pul"
-    xmlns:cpul="http://www.28msec.com/schemas/complete-pul"
-    xmlns:xdm="http://www.28msec.com/schemas/xdm"
+    targetNamespace="http://www.zorba-xquery.com/schemas/complete-pul"
+    xmlns:pul="http://www.zorba-xquery.com/schemas/pul"
+    xmlns:cpul="http://www.zorba-xquery.com/schemas/complete-pul"
+    xmlns:xdm="http://www.zorba-xquery.com/schemas/xdm"
     elementFormDefault="qualified">
 
-  <xs:import namespace="http://www.28msec.com/schemas/xdm" schemaLocation="xdm.xsd"/>
-  <xs:import namespace="http://www.28msec.com/schemas/pul" schemaLocation="pul.xsd"/>
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/xdm" schemaLocation="xdm.xsd"/>
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/pul" schemaLocation="pul.xsd"/>
 
     <!--
     ****************

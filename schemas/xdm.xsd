@@ -6,8 +6,8 @@
 -->
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.28msec.com/schemas/xdm"
-    xmlns:xdm="http://www.28msec.com/schemas/xdm"
+    targetNamespace="http://www.zorba-xquery.com/schemas/xdm"
+    xmlns:xdm="http://www.zorba-xquery.com/schemas/xdm"
     elementFormDefault="qualified">
 
   <!--

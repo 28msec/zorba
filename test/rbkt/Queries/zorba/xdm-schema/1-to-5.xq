@@ -1,4 +1,4 @@
-import schema namespace xdm = "http://www.28msec.com/schemas/xdm";
+import schema namespace xdm = "http://www.zorba-xquery.com/schemas/xdm";
 
 validate strict {
   <xdm:sequence-of-items xmlns:xs="http://www.w3.org/2001/XMLSchema">

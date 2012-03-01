@@ -1,1 +1,1 @@
-<pul:pending-update-list xmlns:pul="http://www.28msec.com/schemas/pul"/>
+<pul:pending-update-list xmlns:pul="http://www.zorba-xquery.com/schemas/pul"/>
