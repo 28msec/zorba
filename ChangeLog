@@ -50,6 +50,7 @@ version 2.2
   * Fixed bug #917981 (disallow declaring same module twice).
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug #943788 (streamable string is not seekable)
   * Fixed bug 921624 (slow queries with bogus example.com schema URIs)
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
