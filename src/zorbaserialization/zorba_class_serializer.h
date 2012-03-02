@@ -38,13 +38,22 @@ namespace zorba{
   class function;
   class Diagnostic;
   class ZorbaException;
-  class Integer;
+#ifdef ZORBA_WITH_BIG_INTEGER
+  class IntegerImpl;
+#else
+  template<typename IntType> class IntegerImpl;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
   namespace serialization{
 //void operator&(Archiver &ar, XQType *&obj);
 void operator&(Archiver &ar, const XQType *&obj);
 void operator&(Archiver &ar, MAPM &obj);
-void operator&(Archiver &ar, Integer &obj);
+#ifdef ZORBA_WITH_BIG_INTEGER
+void operator&(Archiver &ar, IntegerImpl &obj);
+#else
+template<typename IntType>
+void operator&(Archiver &ar, IntegerImpl<IntType> &obj);
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);

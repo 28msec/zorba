@@ -9435,7 +9435,29 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   expr_t right = pop_nodestack();
   expr_t left  = pop_nodestack();
   concat_args.push_back(left);
-  concat_args.push_back(right);
+ 
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  bool rightLeafIsConcatExpr = false;
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+  
+  if(!rightLeafIsConcatExpr)
+  {
+    concat_args.push_back(right);
+  }
+
   rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
   push_nodestack(concat);
 }
@@ -9772,8 +9794,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9782,7 +9804,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(2)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(2)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);

@@ -11,6 +11,7 @@ version 2.2
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
+  * Fixed bug 867509 (Can not handle largest xs:unsignedLong values)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
   * Optimization: change the implementation of the free-vars annotation and got rid
     of the annotations map in expressions.
@@ -52,11 +53,13 @@ version 2.2
   * Fixed bug #917981 (disallow declaring same module twice).
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * Deprecated StaticContext:getNamespaceURIByPrefix()
+  * Fixed bug #943788 (streamable string is not seekable)
   * Fixed bug 921624 (slow queries with bogus example.com schema URIs)
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
   * Fixed bug with unversioned modules with C++ external functions
   * Fixed bug #878508 (JSON Module not escaping escape characters)
+  * Fixed bug #912579 (validate-in-place on non-root elements)
 
 version 2.1
 

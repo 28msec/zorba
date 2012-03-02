@@ -93,6 +93,12 @@ ZorbaValidateInPlaceIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   if (consumeNext(node, theChild.getp(), planState))
   {
+    // verify that if the element being revalidated is an element it is the root
+    if (node->getNodeKind()==store::StoreConsts::elementNode &&
+        node->getParent() &&
+        node->getParent()->getNodeKind()!=store::StoreConsts::documentNode)
+      throw XQUERY_EXCEPTION( zerr::ZAPI0090_CANNOT_VALIDATE_NON_ROOT, ERROR_LOC( loc ) );
+
     pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
     pul->addRevalidate(&loc,node);

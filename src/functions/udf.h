@@ -138,7 +138,7 @@ public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize(CompilerCB *compilerCB);
+  void prepare_for_serialize(CompilerCB* compilerCB);
 
 public:
   user_function(
@@ -146,7 +146,7 @@ public:
       const signature& sig,
       expr_t expr_body,
       short kind,
-      CompilerCB  *compilerCB);
+      CompilerCB* compilerCB);
 
   virtual ~user_function();
 
@@ -191,8 +191,6 @@ public:
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
-
-  BoolAnnotationValue mustCopyNodes(expr* fo, csize input) const;
 
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   

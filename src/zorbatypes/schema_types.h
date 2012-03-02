@@ -46,8 +46,12 @@ typedef DateTime  xs_gYear;
 typedef DateTime  xs_gYearMonth;
 typedef Base16    xs_hexBinary;
 typedef Integer   xs_integer;
+typedef Integer   xs_negativeInteger;     // this isn't quite right
+typedef UInteger  xs_nonNegativeInteger;  // i.e., "unsigned"
+typedef Integer   xs_nonPositiveInteger;  // this isn't quite right either
+typedef UInteger  xs_positiveInteger;
 typedef DateTime  xs_time;
-typedef Integer   xs_uinteger;
+typedef UInteger  xs_uinteger;            // old, deprecated name
 typedef Duration  xs_yearMonthDuration;
 
 ///////////////////////////////////////////////////////////////////////////////
