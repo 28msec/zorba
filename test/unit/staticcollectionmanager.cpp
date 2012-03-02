@@ -262,8 +262,10 @@ staticcollectionamanger4(zorba::Zorba* z)
   return i == 1;
 }
 
-(: test that declaredIndexes doesn't return temporary indexes and crashes
- : if one tries to create one :)
+/**
+ * test that declaredIndexes doesn't return temporary indexes and crashes
+ * if one tries to create one
+ */
 bool
 staticcollectionamanger5(zorba::Zorba* z)
 {
