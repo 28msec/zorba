@@ -35,7 +35,10 @@ xquery version "3.0";
  : <p/>
  : When using the WordNet implementation,
  : Zorba supports all of the relationships (and their abbreviations)
- : specified by ISO 2788 and ANSI/NISO Z39.19-2005
+ : specified by
+ : <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
+ : and
+ : <a href="http://www.niso.org/kst/reports/standards?step=2&gid=&project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
  : with the exceptions of "HN" (history note)
  : and "X SN" (see scope note for).
  : Additionally, Zorba also supports all WordNet relationships.
@@ -125,7 +128,7 @@ xquery version "3.0";
  :    </tr>
  :    <tr>
  :      <td>lang</td>
- :      <td><code>xs:language</code></td>
+ :      <td><code><a href="http://www.w3.org/TR/xmlschema-2/#language">xs:language</a></code></td>
  :      <td>The language of the token.</td>
  :    </tr>
  :    <tr>
@@ -184,7 +187,9 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Gets the current language: either the langauge specified by the
+ : Gets the current
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
+ : either the langauge specified by the
  : <code>declare ft-option using language</code> statement (if any)
  : or the one returned by <code>ft:host-lang()</code> (if none).
  :
@@ -194,8 +199,10 @@ declare function ft:current-lang()
   as xs:language external;
 
 (:~
- : Gets the host's current language.  The "host" is the computer on which Zorba
- : is running.  The host's current language is obtained as follows:
+ : Gets the host's current
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
+ : The "host" is the computer on which Zorba is running.
+ : The host's current language is obtained as follows:
  :  <ul>
  :    <li>
  :      For *nix systems:
@@ -224,7 +231,9 @@ declare function ft:host-lang()
   as xs:language external;
 
 (:~
- : Checks whether the given language is supported for stemming.
+ : Checks whether the given
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is supported for stemming.
  :
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
@@ -236,7 +245,9 @@ declare function ft:is-stem-lang-supported( $lang as xs:language )
  : Checks whether the given word is a stop-word.
  :
  : @param $word The word to check.
- : @param $lang The language of <code>$word</code>.
+ : @param $lang The
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$word</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
  : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for stop-words.
  :)
@@ -246,8 +257,9 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
 (:~
  : Checks whether the given word is a stop-word.
  :
- : @param $word The word to check.  The word's language is assumed to be the
- : one returned by <code>ft:current-lang()</code>.
+ : @param $word The word to check.
+ : The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
@@ -261,7 +273,9 @@ declare function ft:is-stop-word( $word as xs:string )
 };
 
 (:~
- : Checks whether the given language is supported for stop words.
+ : Checks whether the given
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is supported for stop words.
  :
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
@@ -270,8 +284,9 @@ declare function ft:is-stop-word-lang-supported( $lang as xs:language )
   as xs:boolean external;
 
 (:~
- : Checks whether the given language is supported for look-up using the default
- : thesaurus.
+ : Checks whether the given
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is supported for look-up using the default thesaurus.
  :
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
@@ -280,8 +295,9 @@ declare function ft:is-thesaurus-lang-supported( $lang as xs:language )
   as xs:boolean external;
 
 (:~
- : Checks whether the given language is supported for look-up using the
- : thesaurus specified by the given URI.
+ : Checks whether the given
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is supported for look-up using the thesaurus specified by the given URI.
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $lang The language to check.
@@ -297,7 +313,9 @@ declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
  : Stems the given word.
  :
  : @param $word The word to stem.
- : @param $lang The language of <code>$word</code>.
+ : @param $lang The
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$word</code>.
  : @return the stem of <code>$word</code>.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error zerr:ZXQP8404 if <code>$lang</code> is not supported for stemming
@@ -309,8 +327,9 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
 (:~
  : Stems the given word.
  :
- : @param $word The word to stem.  The word's language is assumed to be the
- : one returned by <code>ft:current-lang()</code>.
+ : @param $word The word to stem.
+ : The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return the stem of <code>$word</code>.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
@@ -335,8 +354,10 @@ declare function ft:strip-diacritics( $string as xs:string )
 (:~
  : Looks-up the given phrase in the default thesaurus.
  :
- : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be the one returned by <code>ft:current-lang()</code>.
+ : @param $phrase The phrase to look up.
+ : The phrase's
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
@@ -356,7 +377,9 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.
- : @param $lang The language of <code>$phrase</code>.
+ : @param $lang The
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$phrase</code>.
  : @return the original and related phrases.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
@@ -379,8 +402,10 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : Looks-up the given phrase in a thesaurus.
  :
  : @param $uri The URI specifying the thesaurus to use.
- : @param $phrase The phrase to look up.  The phrase's language is assumed to
- : be the one the one returned by <code>ft:current-lang()</code>.
+ : @param $phrase The phrase to look up.
+ : The phrase's
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported in
  : general.
@@ -407,7 +432,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.
- : @param $lang The language of <code>$phrase</code>.
+ : @param $lang The
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$phrase</code>.
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
  : @return the original and related phrases.
@@ -434,7 +461,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  :
  : @param $uri The URI specifying the thesaurus to use.
  : @param $phrase The phrase to look up.
- : @param $lang The language of <code>$phrase</code>.
+ : @param $lang The
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$phrase</code>.
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
  : @param $level-least The minimum number of levels within the thesaurus to be
@@ -468,7 +497,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : Tokenizes the given document.
  :
  : @param $doc The document to tokenize.
- : @param $lang The default language of <code>$doc</code>.
+ : @param $lang The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$doc</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
@@ -478,7 +509,9 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
 (:~
  : Tokenizes the given document.
  :
- : @param $doc The XML document to tokenize.  The document's default language
+ : @param $doc The XML document to tokenize.
+ : The document's default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
@@ -494,7 +527,9 @@ declare function ft:tokenize( $doc as node() )
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.
- : @param $lang The default language of <code>$string</code>.
+ : @param $lang The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
@@ -508,8 +543,10 @@ declare function ft:tokenize-string( $string as xs:string,
 (:~
  : Tokenizes the given string.
  :
- : @param $string The string to tokenize.  The string's default language is
- : assumed to be the one returned by <code>ft:current-lang()</code>.
+ : @param $string The string to tokenize.
+ : The string's default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
@@ -521,7 +558,8 @@ declare function ft:tokenize-string( $string as xs:string )
 };
 
 (:~
- : Gets properties of the tokenizer for the given language.
+ : Gets properties of the tokenizer for the given
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
  :
  : @param $lang The langauage of the tokenizer to get the properties of.
  : @return said properties.
@@ -531,8 +569,9 @@ declare function ft:tokenizer-properties( $lang as xs:language )
   as node() external;
 
 (:~
- : Gets properties of the tokenizer for the language returned by
- : <code>ft:current-lang()</code>.
+ : Gets properties of the tokenizer for the
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : returned by <code>ft:current-lang()</code>.
  :
  : @return said properties.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
