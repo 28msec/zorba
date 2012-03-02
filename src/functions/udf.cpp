@@ -321,6 +321,15 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
 /*******************************************************************************
 
 ********************************************************************************/
+void user_function::invalidatePlan() 
+{
+  thePlan = NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 {
   if (thePlan == NULL)

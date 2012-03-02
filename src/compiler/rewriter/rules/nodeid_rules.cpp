@@ -990,8 +990,8 @@ void MarkNodeCopyProps::markSources(
       {
         e->setCopyInputNodes();
 
-        if (udf && udf->getBody() != NULL)
-          udf->setBody(NULL);
+        if (udf)
+          udf->invalidatePlan();
       }
       break;
     }
@@ -1002,8 +1002,8 @@ void MarkNodeCopyProps::markSources(
       {
         e->setCopyInputNodes();
 
-        if (udf && udf->getBody() != NULL)
-          udf->setBody(NULL);
+        if (udf)
+          udf->invalidatePlan();
       }
       break;
     }
