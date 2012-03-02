@@ -194,6 +194,8 @@ public:
 
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
+  void invalidatePlan();
+
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
