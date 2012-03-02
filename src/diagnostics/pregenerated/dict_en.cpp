@@ -248,6 +248,7 @@ extern entry const dict_en[] = {
   { "ZAPI0042", "iterator is closed" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
+  { "ZAPI0090", "a non root element cannot be validated in place." },
   { "ZCSE0001", "\"$1\": nonexistent input field" },
   { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },
