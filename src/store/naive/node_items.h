@@ -1666,6 +1666,8 @@ public:
                             locale::iso639_1::type lang,
                             container_type &tokens );
 
+  ~XmlNodeTokenizerCallback();
+
   begin_type beginTokenization() const;
 
   void endTokenization( XmlNode const*, begin_type );

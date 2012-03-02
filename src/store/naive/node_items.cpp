@@ -43,6 +43,7 @@
 #include "dataguide.h"
 #include "node_factory.h"
 
+#include "util/stl_util.h"
 #include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -4635,6 +4636,13 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
   tokens_( tokens )
 {
   push_lang( lang );
+}
+
+
+XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
+{
+  while ( !tokenizer_stack_.empty() )
+    ztd::pop_stack( tokenizer_stack_ )->destroy();
 }
 
 
