@@ -5334,8 +5334,7 @@ void* begin_visit(const BlockBody& v)
 
   if (!theSctx->is_feature_set(feature::scripting))
   {
-    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
-    ERROR_PARAMS(ZED(ZXQP0050_Scripting)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
 
   bool topLevel = v.isTopLevel();
@@ -5468,8 +5467,7 @@ void* begin_visit(const AssignExpr& v)
 
   if (!theSctx->is_feature_set(feature::scripting))
   {
-    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
-    ERROR_PARAMS(ZED(ZXQP0050_Scripting)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
   return no_state;
 }
