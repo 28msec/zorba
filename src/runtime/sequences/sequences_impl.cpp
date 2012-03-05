@@ -1983,16 +1983,13 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
 /*******************************************************************************
   14.8.5 fn:unparsed-text
 ********************************************************************************/
-
 static void streamReleaser(std::istream* aStream)
 {
   delete aStream;
 }
-
 /**
   * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
   */
-
 
 static void readDocument(
   zstring const& aUri,
@@ -2014,7 +2011,7 @@ static void readDocument(
 
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-
+    
   if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
