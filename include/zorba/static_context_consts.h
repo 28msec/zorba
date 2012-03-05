@@ -58,7 +58,7 @@ typedef enum { xquery_version_1_0 = 100, xquery_version_3_0 = 300 } xquery_versi
 /** \brief Revalidation mode as defined in
  *         http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration
  */
-typedef enum { validate_skip, validate_lax, validate_strict } validation_mode_t;
+typedef enum { validate_skip, validate_lax, validate_lax_dtd, validate_strict } validation_mode_t;
 
 /** \brief Maintenance mode of an index as defined
  *         in the XQuery Data Definition Facility

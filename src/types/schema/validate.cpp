@@ -145,26 +145,22 @@ bool Validator::realValidationValue(
     //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: "<<
     // sourceNode->getNodeKind() << endl;
 
-    // if we got here it basicaly means that there was no import but
-    // validation is used so we need to set up schema in the typeManager anyway
-    // validation has to work for xsiType and built-in types
+    if ( validationMode == ParseConstants::val_dtd_lax)
+    {
+      // when dtd validation enabled avoid using schema object
+      result = sourceNode;
+      return true;
+    }
+    else
+    {
+      // if we got here it basicaly means that there was no import but
+      // validation is used so we need to set up schema in the typeManager anyway
+      // validation has to work for xsiType and built-in types
 
-    TypeManagerImpl *typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
-    typeManagerImpl->initializeSchema();
-    schema = typeManager->getSchema();
-
-
-
-//    if ( validationMode == ParseConstants::val_strict )
-//    {
-//      throw XQUERY_EXCEPTION( err::XQDY0084, ERROR_LOC( loc ) );
-//    }
-//    else
-//    {
-      // no schema available - items remain the same
-//      result = sourceNode;
-//      return true;
-//    }
+      TypeManagerImpl *typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
+      typeManagerImpl->initializeSchema();
+      schema = typeManager->getSchema();
+    }
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA

@@ -103,6 +103,7 @@ class ParseConstants
     {
       val_strict,
       val_lax,
+      val_dtd_lax,
       val_typename
     };
 

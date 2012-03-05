@@ -439,7 +439,7 @@ void set_var(
 
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       zorba::Item lValidatedDoc;
-      sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax);
+      sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax_dtd);
 
       lDocMgr->put(val, lValidatedDoc);
       lDoc = lDocMgr->document(val);
