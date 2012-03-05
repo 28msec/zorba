@@ -33,7 +33,7 @@ xs_int to_xs_int( xs_integer const &i ) {
   zstring const temp( i.toString() );
   return ztd::aton<xs_int>( temp.c_str() );
 #else
-  return static_cast<xs_int>(i.value_);
+  return static_cast<xs_int>( i.value_ );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
@@ -55,6 +55,13 @@ xs_long to_xs_long( xs_integer const &i ) {
   return static_cast<xs_long>( i.value_ );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
+
+#ifndef ZORBA_WITH_BIG_INTEGER
+xs_long to_xs_long( xs_nonNegativeInteger const &i ) {
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_long>( temp.c_str() );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i ) {
 #ifdef ZORBA_WITH_BIG_INTEGER

@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include "collection_set.h"
+#include "simple_collection_set.h"
 #include "store/api/iterator.h"
 #include "name_iterator.h"
 
@@ -24,8 +24,8 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionIterator::CollectionIterator(
-    CollectionSet::Set* aCollections,
+SimpleCollectionSetIterator::SimpleCollectionSetIterator(
+    SimpleCollectionSet::Set* aCollections,
     bool aDynamicCollection) 
   : 
   theCollections(aCollections),
@@ -35,14 +35,14 @@ CollectionIterator::CollectionIterator(
 }
 
 
-CollectionIterator::~CollectionIterator()
+SimpleCollectionSetIterator::~SimpleCollectionSetIterator()
 {
   close();
 }
 
 
 void
-CollectionIterator::open()
+SimpleCollectionSetIterator::open()
 {
   theIterator = theCollections->begin();
   theOpened = true;
@@ -50,7 +50,7 @@ CollectionIterator::open()
 
 
 bool
-CollectionIterator::next(store::Collection_t& aResult) 
+SimpleCollectionSetIterator::next(zorba::store::Collection_t& aResult) 
 {
   while (theIterator != theCollections->end()) 
   {
@@ -69,14 +69,14 @@ CollectionIterator::next(store::Collection_t& aResult)
 
 
 void
-CollectionIterator::reset()
+SimpleCollectionSetIterator::reset()
 {
   theIterator = theCollections->begin();
 }
 
 
 void
-CollectionIterator::close()
+SimpleCollectionSetIterator::close() throw()
 {
   if (!theOpened) {
     return;
@@ -88,23 +88,29 @@ CollectionIterator::close()
 /*******************************************************************************
 
 ********************************************************************************/
-const ulong CollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
+const ulong SimpleCollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 
-CollectionSet::CollectionSet()
+SimpleCollectionSet::SimpleCollectionSet()
   :
   theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true)
 {
 }
 
 
-void CollectionSet::clear() 
+SimpleCollectionSet::~SimpleCollectionSet()
+{
+}
+
+
+void SimpleCollectionSet::clear() 
 {
   theCollections.clear();
 }
 
 
-bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aCollection)
+bool SimpleCollectionSet::insert(const zorba::store::Item* aName,
+                                 zorba::store::Collection_t& aCollection)
 {
   store::Item* qname = const_cast<store::Item*>(aName);
 
@@ -112,12 +118,12 @@ bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aColle
 }
 
 
-bool CollectionSet::get(
-    const store::Item* aName,
-    store::Collection_t& aCollection,
+bool SimpleCollectionSet::get(
+    const zorba::store::Item* aName,
+    zorba::store::Collection_t& aCollection,
     bool aDynamicCollection) 
 {
-  if (theCollections.get(const_cast<store::Item*>(aName), aCollection)) 
+  if (theCollections.get(const_cast<zorba::store::Item*>(aName), aCollection)) 
   {
     return aCollection->isDynamic() == aDynamicCollection;
   }
@@ -128,35 +134,36 @@ bool CollectionSet::get(
 }
 
 
-bool CollectionSet::remove(const store::Item* aName, bool aDynamicCollection) 
+bool SimpleCollectionSet::remove(const zorba::store::Item* aName, bool aDynamicCollection) 
 {
-  store::Collection_t lColl;
+  zorba::store::Collection_t lColl;
   if (!get(aName, lColl, aDynamicCollection))
   {
     return false;
   }
   else
   {
-    return theCollections.erase(const_cast<store::Item*>(aName));
+    return theCollections.erase(const_cast<zorba::store::Item*>(aName));
   }
 }
 
 
-store::Iterator_t CollectionSet::names(bool aDynamicCollections) 
+zorba::store::Iterator_t SimpleCollectionSet::names(bool aDynamicCollections) 
 {
   return new NameIterator<Set>(theCollections, aDynamicCollections);
 }
 
 
-CollectionIterator_t CollectionSet::collections(bool aDynamicCollections) 
+CollectionSetIterator_t SimpleCollectionSet::collections(bool aDynamicCollections) 
 {
-  return new CollectionIterator(&theCollections, aDynamicCollections);
+  return new SimpleCollectionSetIterator(&theCollections,
+                                         aDynamicCollections);
 }
 
 // specialize the next function of the NameIterator for
-// the CollectionSet in order to be able to handle dynamic collections
+// the SimpleCollectionSet in order to be able to handle dynamic collections
 template<> bool
-NameIterator<CollectionSet::Set>::next(store::Item_t& aResult)
+NameIterator<SimpleCollectionSet::Set>::next(zorba::store::Item_t& aResult)
 {
   while (theIterator != theItems.end())
   {

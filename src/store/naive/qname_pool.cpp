@@ -66,17 +66,9 @@ QNamePool::~QNamePool()
   csize n = theHashSet.theHashTab.size();
   for (csize i = 0; i < n; ++i)
   {
-    if (!theHashSet.theHashTab[i].isFree())
-    {
-      QNameItem* qn = theHashSet.theHashTab[i].theItem;
-
-      // Make sure that the associated normalized QN will not be destroyed here
-      if (!qn->isNormalized())
-        qn->detachNormQName();
-
-      if (theHashSet.theHashTab[i].theItem->isOverflow())
-        delete theHashSet.theHashTab[i].theItem;
-    }
+    if (!theHashSet.theHashTab[i].isFree() &&
+        theHashSet.theHashTab[i].theItem->isOverflow())
+      delete theHashSet.theHashTab[i].theItem;
   }
 
   if (theCache != NULL)
@@ -92,26 +84,47 @@ QNamePool::~QNamePool()
 ********************************************************************************/
 void QNamePool::remove(QNameItem* qn)
 {
-  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
+  QNameItem* normVictim = NULL;
 
-  if (qn->getRefCount() > 0)
-    return;
+  SYNC_CODE(theHashSet.theMutex.lock(); \
+            bool haveLock = true;)
 
-  if (qn->isInCache())
-  {
-    qn->theNextFree = (uint16_t)theFirstFree;
-    theCache[theFirstFree].thePrevFree = qn->thePosition;
-    theFirstFree = qn->thePosition;
-    theNumFree++;
-  }
-  else
-  {
-    // If all the pointers to QNameItems were smart pointers, we could leave
-    // qn in the pool, and let the pool garbage-collect it later (if it still
-    // unused). If however QNameItems may be referenced by regular pointers as
-    // well, then qn must be removed from the pool and really deleted
-    theHashSet.eraseNoSync(qn);
-    delete qn;
+  try {
+    if (qn->getRefCount() > 0)
+      return;
+
+    if (qn->isInCache())
+    {
+      qn->theNextFree = (uint16_t)theFirstFree;
+      theCache[theFirstFree].thePrevFree = qn->thePosition;
+      theFirstFree = qn->thePosition;
+      theNumFree++;
+    }
+    else
+    {
+      // If all the pointers to QNameItems were smart pointers, we could leave
+      // qn in the pool, and let the pool garbage-collect it later (if it still
+      // unused). If however QNameItems may be referenced by regular pointers
+      // as well, then qn must be removed from the pool and really deleted.
+      theHashSet.eraseNoSync(qn);
+      qn->invalidate(true, &normVictim);
+      delete qn;
+    }
+
+    // Releasing the lock here to avoid deadlock, because decrementing the 
+    // normVictim counter might reenter QNamePool::remove.
+    SYNC_CODE(theHashSet.theMutex.unlock(); \
+              haveLock = false;)
+    if (normVictim)
+    {
+      normVictim->removeReference();
+    }
+
+  } catch(...) {
+    SYNC_CODE(if (haveLock) \
+              theHashSet.theMutex.unlock();)
+              
+    ZORBA_FATAL(0, "Unexpected exception");
   }
 }
 
@@ -156,17 +169,17 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
-                                  (ulong)pooledNs.size(), (ulong)strlen(pre), (ulong)strlen(ln),
+                                  (ulong)pooledNs.size(),
+                                  (ulong)strlen(pre),
+                                  (ulong)strlen(ln),
                                   hval);
     if (entry == 0)
     {
       if (normalized)
       {
+        // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
-
-        qn->theNamespace = pooledNs;
-        qn->thePrefix.clear();
-        qn->setLocalName(zstring(ln));
+        qn->initializeAsNormalizedQName(pooledNs, zstring(ln));
       }
       else
       {
@@ -176,17 +189,12 @@ retry:
           haveLock = false;)
 
           normItem = insert(ns, NULL, ln, false);
-
-          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
-
+          normQName = static_cast<QNameItem*>(normItem.getp());
           goto retry;
         }
-
+        // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
-
-        qn->theNamespace = normQName->theNamespace;
-        qn->thePrefix = pre;
-        qn->setNormQName(normQName);
+        qn->initializeAsUnnormalizedQName(normQName, pre);
       }
 
       bool found;
@@ -252,17 +260,17 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
-                                  (ulong)ns.size(), (ulong)pre.size(), (ulong)ln.size(),
+                                  (ulong)ns.size(),
+                                  (ulong)pre.size(), 
+                                  (ulong)ln.size(),
                                   hval);
     if (entry == 0)
     {
       if (normalized)
       {
+        // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
-
-        qn->theNamespace = pooledNs;
-        qn->thePrefix.clear();
-        qn->setLocalName(ln);
+        qn->initializeAsNormalizedQName(pooledNs, ln);
       }
       else
       {
@@ -271,18 +279,15 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
+          // This call will need the lock.
           normItem = insert(pooledNs, zstring(), ln, false);
-
-          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
+          normQName = static_cast<QNameItem*>(normItem.getp());
 
           goto retry;
         }
-
+        // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
-      
-        qn->theNamespace = normQName->theNamespace;
-        qn->thePrefix = pre;
-        qn->setNormQName(normQName);
+        qn->initializeAsUnnormalizedQName(normQName, pre);
       }
 
       bool found;
@@ -301,7 +306,7 @@ retry:
   }
   catch (...)
   {
-  SYNC_CODE(  if (haveLock) \
+    SYNC_CODE(if (haveLock) \
       theHashSet.theMutex.unlock();)
 
     ZORBA_FATAL(0, "Unexpected exception");
@@ -324,8 +329,7 @@ retry:
 ********************************************************************************/
 QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 {
-  normVictim = NULL;
-
+  assert (normVictim == NULL);
   if (theFirstFree != 0)
   {
     QNameItem* qn = &theCache[theFirstFree];
@@ -335,28 +339,9 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
     if (qn->isValid())
     {
-      ulong hval = hashfun::h32(qn->getPrefix().c_str(),
-                                hashfun::h32(qn->getLocalName().c_str(),
-                                             hashfun::h32(qn->getNamespace().c_str())));
+      ulong hval = CompareFunction::hash(qn);
       theHashSet.eraseNoSync(qn, hval);
-
-      if (!qn->isNormalized())
-      {
-        // Let NQ be the associated normalized qname. Here, wave the pointer
-        // to NQ and then set that pointer to null, without decrementing NQ's
-        // ref count of the. This way (a) we can decerement NQ's ref counter
-        // *after* releasing theHashSet.theMutex (otherwise, we would run into
-        // a self-deadlock if NQ must be be freed because it is not referenced
-        // from anywhere else), and (b) removeReference is not called
-        // when we overwite the pointer with the new local name.
-        normVictim = qn->detachNormQName();
-      }
-      else
-      {
-        // Unset qn->theLocal so that the assertion in setNormQName() (which is
-        // invoked later by the caller of this method) will not trigger.
-        qn->unsetLocalName();
-      }
+      qn->invalidate(true, &normVictim);
     }
 
     qn->theNextFree = qn->thePrevFree = 0;
