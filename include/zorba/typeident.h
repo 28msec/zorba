@@ -152,6 +152,12 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
   private:
     TypeIdentifier();
 
+    std::ostream&
+    emitItemType(std::ostream&) const;
+
+    std::ostream&
+    emitName(std::ostream&) const;
+
     IdentTypes::kind_t m_kind;
     IdentTypes::quantifier_t m_quantifier;
     String m_uri;

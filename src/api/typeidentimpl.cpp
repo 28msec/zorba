@@ -20,6 +20,8 @@
 
 #include <zorba/typeident.h>
 
+#include "diagnostics/assert.h"
+
 namespace zorba {
 
 TypeIdentifier::TypeIdentifier()
@@ -101,6 +103,9 @@ TypeIdentifier_t TypeIdentifier::createElementType(
     TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
+  // not sure why those were 2 different flags, we maintain 2 flags for
+  // compatibility, but they always need to be the same
+  ZORBA_ASSERT(uriWildcard == localNameWildcard);
   TypeIdentifier_t ti(new TypeIdentifier());
   ti->m_kind = IdentTypes::ELEMENT_TYPE;
   ti->m_quantifier = quantifier;
@@ -122,6 +127,9 @@ TypeIdentifier_t TypeIdentifier::createAttributeType(
     TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
+    // not sure why those were 2 different flags, we maintain 2 flags for
+    // compatibility, but they always need to be the same
+    ZORBA_ASSERT(uriWildcard == localNameWildcard);
     TypeIdentifier_t ti(new TypeIdentifier());
     ti->m_kind = IdentTypes::ATTRIBUTE_TYPE;
     ti->m_quantifier = quantifier;
@@ -202,6 +210,7 @@ TypeIdentifier_t TypeIdentifier::createEmptyType()
 {
   TypeIdentifier_t ti(new TypeIdentifier());
   ti->m_kind = IdentTypes::EMPTY_TYPE;
+  ti->m_quantifier = IdentTypes::QUANT_ONE;
 
   return ti;
 }
@@ -241,13 +250,58 @@ TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
 
 
 std::ostream& TypeIdentifier::emit(std::ostream& os) const {
-  os << '{' << m_kind << m_quantifier
-     << ", {" << (m_uriWildcard ? "*" : m_uri) << "}" 
-     << (m_localNameWildcard ? "*" : m_localName);
-  if ( ! m_contentType.isNull() ) {
-    os << ", " << m_contentType;
+  emitItemType(os);
+  return os << m_quantifier;
+}
+
+
+std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const {
+  if (m_kind == IdentTypes::NAMED_TYPE) {
+    return emitName(os);
   }
-  return os << '}';
+  os << m_kind;
+  switch (m_kind) {
+    case IdentTypes::DOCUMENT_TYPE:
+      return os << "(" << m_contentType << ")";
+
+    case IdentTypes::ELEMENT_TYPE:
+    case IdentTypes::ATTRIBUTE_TYPE:
+      os << "(";
+      if (m_uriWildcard) {
+        os << "*";
+      } else {
+        emitName(os);
+      }
+      if (! m_contentType.isNull()) {
+        os << "," << m_contentType;
+      }
+      return os << ")";
+
+    case IdentTypes::SCHEMA_ELEMENT_TYPE:
+    case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+      os << "(";
+      emitName(os);
+      return os << ")";
+
+    case IdentTypes::ANY_NODE_TYPE:
+    case IdentTypes::COMMENT_TYPE:
+    case IdentTypes::EMPTY_TYPE:
+    case IdentTypes::ITEM_TYPE:
+    case IdentTypes::PI_TYPE:
+    case IdentTypes::TEXT_TYPE:
+      return os << "()";
+
+    case IdentTypes::INVALID_TYPE:
+      return os;
+
+    case IdentTypes::NAMED_TYPE:
+    default:
+      ZORBA_ASSERT(false);
+  }
+}
+
+std::ostream& TypeIdentifier::emitName(std::ostream& os) const {
+    return os << "{" << m_uri << "}" << m_localName;
 }
 
 }

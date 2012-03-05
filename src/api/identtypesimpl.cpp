@@ -19,19 +19,19 @@
 namespace zorba {
   
 char const *const IdentTypes::kind_string_of[] = {
-  "NAMED_TYPE",
-  "ELEMENT_TYPE",
-  "ATTRIBUTE_TYPE",
-  "DOCUMENT_TYPE",
-  "PI_TYPE",
-  "TEXT_TYPE",
-  "COMMENT_TYPE",
-  "ANY_NODE_TYPE",
-  "ITEM_TYPE",
-  "EMPTY_TYPE",
-  "SCHEMA_ELEMENT_TYPE",
-  "SCHEMA_ATTRIBUTE_TYPE",
-  "INVALID_TYPE",
+  "NAMED",
+  "element",
+  "attribute",
+  "document-node",
+  "processing-instruction",
+  "text",
+  "comment",
+  "node",
+  "item",
+  "empty-sequence",
+  "schema-element",
+  "schema-attribute",
+  "INVALID",
   0
 };
 

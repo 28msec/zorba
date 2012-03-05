@@ -268,6 +268,12 @@ check_types(StaticCollectionManager* aColMgr,
             IdentTypes::quantifier_t someQuantifiers[])
 {
   Item lCollName = aFac->createQName("http://www.mod6.com/", aCollName);
+  if (! aColMgr->isDeclaredCollection(lCollName)) {
+    std::cout << "no collection "
+              << lCollName.getStringValue().c_str()
+              << std::endl;
+    return false;
+  }
   aColMgr->createCollection(lCollName);
   Collection_t lCollection = aColMgr->getCollection(lCollName);
   zorba::TypeIdentifier_t lType = lCollection->getType();
@@ -385,13 +391,13 @@ staticcollectionamanger5(zorba::Zorba* z)
     return false;
   }
   
-  IdentTypes::kind_t       lC10Kinds[]  = { IdentTypes::TEXT_TYPE };
+  IdentTypes::kind_t       lC10Kinds[]  = { IdentTypes::COMMENT_TYPE };
   IdentTypes::quantifier_t lC10Quants[] = { IdentTypes::QUANT_ONE }; 
   if (!check_types(lColMgr, lFac, "coll10", 1, lC10Kinds, lC10Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC11Kinds[]  = { IdentTypes::TEXT_TYPE };
+  IdentTypes::kind_t       lC11Kinds[]  = { IdentTypes::PI_TYPE };
   IdentTypes::quantifier_t lC11Quants[] = { IdentTypes::QUANT_QUESTION };
   if (!check_types(lColMgr, lFac, "coll11", 1, lC11Kinds, lC11Quants)) {
     return false;
@@ -403,6 +409,12 @@ staticcollectionamanger5(zorba::Zorba* z)
     return false;
   }
   
+  IdentTypes::kind_t       lC13Kinds[]  = { IdentTypes::ANY_NODE_TYPE };
+  IdentTypes::quantifier_t lC13Quants[] = { IdentTypes::QUANT_STAR };
+  if (!check_types(lColMgr, lFac, "coll13", 1, lC13Kinds, lC13Quants)) {
+    return false;
+  }
+
   return true;
 }
 

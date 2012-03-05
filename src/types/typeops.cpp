@@ -1238,7 +1238,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
         if (nodeName)
         {
           uri   = nodeName->getNamespace().c_str();
-          local = nodeName->getNamespace().c_str();
+          local = nodeName->getLocalName().c_str();
         }
         return TypeIdentifier::createElementType(uri,
                                                  nodeName == NULL,
@@ -1262,7 +1262,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
         if (nodeName)
         {
           uri   = nodeName->getNamespace().c_str();
-          local = nodeName->getNamespace().c_str();
+          local = nodeName->getLocalName().c_str();
         }
         return TypeIdentifier::createAttributeType(uri,
                                                    nodeName == NULL,

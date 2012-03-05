@@ -32,7 +32,7 @@ declare collection mod6:coll07 as attribute(s:zip-code)*;
 declare collection mod6:coll08 as attribute(*, s:ZipType)*;
 declare collection mod6:coll09 as schema-attribute(s:zip-code)*;
 
-declare collection mod6:coll10 as text();
-declare collection mod6:coll11 as text()?;
+declare collection mod6:coll10 as comment();
+declare collection mod6:coll11 as processing-instruction()?;
 declare collection mod6:coll12 as text()+;
-
+declare collection mod6:coll13 as node()*;
