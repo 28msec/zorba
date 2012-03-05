@@ -511,7 +511,6 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
 
-
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
@@ -554,3 +553,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
+
