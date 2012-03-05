@@ -1983,13 +1983,16 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
 /*******************************************************************************
   14.8.5 fn:unparsed-text
 ********************************************************************************/
+
 static void streamReleaser(std::istream* aStream)
 {
   delete aStream;
 }
+
 /**
   * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
   */
+
 
 static void readDocument(
   zstring const& aUri,
@@ -2011,32 +2014,31 @@ static void readDocument(
 
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-    
+
   if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
 
-  std::istream *lStream = lStreamResource->getStream();
   std::unique_ptr<std::istream> lInStream;
+
+  
+  lInStream.reset(lStreamResource->getStream());
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
-    if (!transcode::is_supported(aEncoding.c_str()))
-      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
     try
     {
-      lInStream.reset( new transcode::stream<std::istream>(aEncoding.c_str(), lStream->rdbuf()) );
+      if (!transcode::is_supported(aEncoding.c_str()))
+        throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+      
+      lInStream.reset(new transcode::stream<std::istream>(aEncoding.c_str(), lInStream.release()->rdbuf()));
     }
     catch (std::invalid_argument const& e)
     {
       throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
     }
-  }
-  else
-  {
-    lInStream.reset( new std::istream(lStream->rdbuf()) );
   }
 
   //creates stream item
