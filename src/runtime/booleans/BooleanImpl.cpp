@@ -845,7 +845,7 @@ bool CompareIterator::equal(
   {
     // There are 2 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
-    // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
+    // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
@@ -935,7 +935,7 @@ long CompareIterator::compare(
     {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
-      // type-inheritance subtree rooted at xs:Integer.
+      // type-inheritance subtree rooted at xs:integer.
       if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
           TypeOps::is_subtype(type1, store::XS_INTEGER))
       {

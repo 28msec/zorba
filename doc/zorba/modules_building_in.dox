@@ -17,7 +17,7 @@ the module (including its external function shared library, if any)
 directly into the Zorba installation. Simply invoking the "install"
 target of the project will do this. Note that on many systems, if
 Zorba is installed into a system-wide location, you may require root
-or adminstrator priviledges to install your module in this location.
+or administrator privileges to install your module in this location.
 
 \section mod_baking_in Building Zorba With Additional Modules
 

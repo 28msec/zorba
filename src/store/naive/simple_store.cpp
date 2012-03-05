@@ -31,31 +31,31 @@
 #include "store/api/pul.h"
 #include "store/api/xs_type_codes.h"
 
-#include "store/naive/properties.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_lazy_temp_seq.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/collection_set.h"
-#include "store/naive/simple_index.h"
-#include "store/naive/simple_index_value.h"
-#include "store/naive/simple_index_general.h"
-#include "store/naive/simple_ic.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/loader.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/node_items.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/simple_iterator_factory.h"
-#include "store/naive/query_context.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/node_factory.h"
-#include "store/naive/name_iterator.h"
-#include "store/naive/document_name_iterator.h"
-#include "store/naive/pul_primitive_factory.h"
+#include "properties.h"
+#include "string_pool.h"
+#include "simple_store.h"
+#include "simple_temp_seq.h"
+#include "simple_lazy_temp_seq.h"
+#include "simple_collection.h"
+#include "simple_collection_set.h"
+#include "simple_index.h"
+#include "simple_index_value.h"
+#include "simple_index_general.h"
+#include "simple_ic.h"
+#include "qname_pool.h"
+#include "loader.h"
+#include "store_defs.h"
+#include "node_items.h"
+#include "dataguide.h"
+#include "node_iterators.h"
+#include "simple_item_factory.h"
+#include "simple_iterator_factory.h"
+#include "query_context.h"
+#include "item_iterator.h"
+#include "node_factory.h"
+#include "name_iterator.h"
+#include "document_name_iterator.h"
+#include "pul_primitive_factory.h"
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
@@ -79,6 +79,10 @@ typedef rchandle<store::TempSeq> TempSeq_t;
   SimpleStore static data
 ********************************************************************************/
 const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
+const ulong SimpleStore::DEFAULT_DOCUMENT_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_URI_COLLECTION_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_INDICES_SET_SIZE = 32;
+const ulong SimpleStore::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
@@ -102,11 +106,11 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
   thePULFactory(NULL),
-  theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
-  theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
+  theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
+  theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
   theTraceLevel(0),
   theNodeToReferencesMap(128, true)
 #ifndef ZORBA_NO_FULL_TEXT
@@ -402,7 +406,7 @@ SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
 *******************************************************************************/
 CollectionSet* SimpleStore::createCollectionSet() const
 {
-  return new CollectionSet();
+  return new SimpleCollectionSet();
 }
 
 

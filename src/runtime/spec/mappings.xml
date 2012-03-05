@@ -106,6 +106,10 @@
                      define="ZORBA_STRING_FN_NS" 
                      prefix="fn-zorba-string"/>
 
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/json"
+                     define="ZORBA_JSON_FN_NS" 
+                     prefix="fn-zorba-json"/>
+
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
                      define="ZORBA_FETCH_FN_NS" 
                      prefix="fn-zorba-fetch"/>

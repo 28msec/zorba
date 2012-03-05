@@ -446,6 +446,7 @@ public:
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
+  static const char* ZORBA_JSON_FN_NS;
   static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -598,6 +599,8 @@ public:
   void serialize_tracestream(serialization::Archiver& ar);
 
   void serialize(serialization::Archiver& ar);
+
+  void prepare_for_serialize(CompilerCB *compiler_cb);
 
 public:
   static_context(::zorba::serialization::Archiver& ar);

@@ -208,6 +208,8 @@ public:
 
   virtual void init(const TempSeq_t& seq) = 0;
   
+  virtual void init(const TempSeq_t& seq, xs_integer startPos, xs_integer endPos) = 0;
+
   virtual void open() = 0;
   
   virtual Item* next() = 0;

@@ -39,6 +39,10 @@ namespace zorba {
     void initializeTestList() {
       libunittests["string"] = test_string;
       libunittests["uri"] = runUriTest;
+#ifndef ZORBA_NO_UNICODE
+      libunittests["icu_streambuf"] = test_icu_streambuf;
+#endif /* ZORBA_NO_UNICODE */
+      libunittests["json_parser"] = json_parser;
       libunittests["unique_ptr"] = test_unique_ptr;
 #ifndef ZORBA_NO_FULL_TEXT
       libunittests["stemmer"] = test_stemmer;

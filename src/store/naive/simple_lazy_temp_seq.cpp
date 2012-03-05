@@ -21,7 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/simple_lazy_temp_seq.h"
+#include "simple_lazy_temp_seq.h"
 
 
 namespace zorba
@@ -229,6 +229,16 @@ void SimpleLazyTempSeq::matNextItem()
     theMatFinished = true;
     theIterator->close();
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xs_integer SimpleLazyTempSeq::getSize() const
+{
+  ZORBA_ASSERT(false);
+  return 0;
 }
 
 

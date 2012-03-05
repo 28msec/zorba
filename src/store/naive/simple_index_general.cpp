@@ -15,10 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/simple_index_general.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_item_factory.h"
+#include "simple_index_general.h"
+#include "simple_store.h"
+#include "atomic_items.h"
+#include "simple_item_factory.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"

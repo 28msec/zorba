@@ -18,14 +18,14 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_index.h"
+#include "simple_collection.h"
+#include "simple_index.h"
 #include "store/api/ic.h"
 #include "store/api/annotation.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/node_items.h"
+#include "loader.h"
+#include "simple_store.h"
+#include "store_defs.h"
+#include "node_items.h"
 #include "zorbatypes/numconversions.h"
 
 namespace zorba { namespace simplestore {
@@ -141,7 +141,7 @@ void SimpleCollection::addNode(
   method raises an error. The moethod returns the position occupied by the first
   new node after the insertion is done.
 ********************************************************************************/
-ulong SimpleCollection::addNodes(
+xs_integer SimpleCollection::addNodes(
     std::vector<store::Item_t>& nodes,
     const store::Item* targetNode,
     bool before)
@@ -421,76 +421,6 @@ void SimpleCollection::adjustTreePositions()
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
   }
 }
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
-{
-  const IndexSet& availableIndexes = GET_STORE().getIndices();
-
-  IndexSet::iterator idxIte = availableIndexes.begin();
-  IndexSet::iterator idxEnd = availableIndexes.end();
-
-  for (; idxIte != idxEnd; ++idxIte)
-  {
-    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
-    const store::IndexSpecification& indexSpec = index->getSpecification();
-
-    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    uint64_t numIndexSources = (uint64_t)indexSources.size();
-
-    for (std::size_t i = 0; i < numIndexSources; ++i)
-    {
-      if (indexSources[i]->equals(getName()))
-      {
-        indexes.push_back(index);
-        break;
-      }
-    }
-  }
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
-{
-  store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
-
-  store::Item_t activeICName;
-  activeICNames->open();
-
-  while ( activeICNames->next(activeICName) )
-  {
-
-    store::IC* activeIC = GET_STORE().getIC(activeICName);
-
-    switch( activeIC->getICKind() )
-    {
-    case store::IC::ic_collection:
-      if ( activeIC->getCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    case store::IC::ic_foreignkey:
-      if ( activeIC->getToCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-
-      if ( activeIC->getFromCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-  }
-
-  activeICNames->close();
-}
-
 
 /*******************************************************************************
 

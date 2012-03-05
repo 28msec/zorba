@@ -58,6 +58,15 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
+expr_t ftcontains_expr::clone( substitution_t &s ) const {
+  return new ftcontains_expr(
+    theSctx, get_loc(),
+    range_->clone( s ),
+    ftselection_->clone( s ).release(),
+    ftignore_.isNull() ? 0 : ftignore_->clone( s )
+  );
+}
+
 void ftcontains_expr::compute_scripting_kind() {
   checkSimpleExpr(range_);
 

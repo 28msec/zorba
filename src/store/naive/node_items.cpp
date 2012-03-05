@@ -30,19 +30,20 @@
 #include "zorbamisc/ns_consts.h"
 
 #include "store/api/copymode.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/node_factory.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "simple_store.h"
+#include "collection.h"
+#include "simple_item_factory.h"
+#include "qname_pool.h"
+#include "store_defs.h"
+#include "nsbindings.h"
+#include "item_iterator.h"
+#include "dataguide.h"
+#include "node_factory.h"
 
+#include "util/stl_util.h"
 #include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -104,7 +105,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection, ulong pos)
+void XmlTree::setCollection(Collection* collection, xs_integer pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -1722,7 +1723,7 @@ zstring DocumentNode::show() const
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
   strStream << " baseUri = \"" << theBaseUri << "\"";
-  strStream << " docUri = \"" << theDocUri;
+  strStream << " docUri = \"" << theDocUri << "\"";
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
@@ -4635,6 +4636,13 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
   tokens_( tokens )
 {
   push_lang( lang );
+}
+
+
+XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
+{
+  while ( !tokenizer_stack_.empty() )
+    ztd::pop_stack( tokenizer_stack_ )->destroy();
 }
 
 
