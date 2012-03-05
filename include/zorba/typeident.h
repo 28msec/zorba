@@ -114,7 +114,6 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     createSchemaElementType(
         const String& uri,
         const String& localName,
-        TypeIdentifier_t contentType,
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
   
@@ -123,7 +122,6 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     createSchemaAttributeType(
         const String& uri,
         const String& localName,
-        TypeIdentifier_t contentType,
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
   

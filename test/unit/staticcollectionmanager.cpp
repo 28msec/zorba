@@ -332,12 +332,10 @@ staticcollectionamanger5(zorba::Zorba* z)
   }
   
   IdentTypes::kind_t       lC03Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
-                                            IdentTypes::SCHEMA_ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
+                                            IdentTypes::SCHEMA_ELEMENT_TYPE };
   IdentTypes::quantifier_t lC03Quants[] = { IdentTypes::QUANT_STAR,
-                                            IdentTypes::QUANT_ONE, 
                                             IdentTypes::QUANT_ONE };
-  if (!check_types(lColMgr, lFac, "coll03", 3, lC03Kinds, lC03Quants)) {
+  if (!check_types(lColMgr, lFac, "coll03", 2, lC03Kinds, lC03Quants)) {
     return false;
   }
   
@@ -358,11 +356,9 @@ staticcollectionamanger5(zorba::Zorba* z)
     return false;
   }
   
-  IdentTypes::kind_t       lC06Kinds[]  = { IdentTypes::SCHEMA_ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC06Quants[] = { IdentTypes::QUANT_STAR, 
-                                            IdentTypes::QUANT_ONE };
-  if (!check_types(lColMgr, lFac, "coll06", 2, lC06Kinds, lC06Quants)) {
+  IdentTypes::kind_t       lC06Kinds[]  = { IdentTypes::SCHEMA_ELEMENT_TYPE };
+  IdentTypes::quantifier_t lC06Quants[] = { IdentTypes::QUANT_STAR };
+  if (!check_types(lColMgr, lFac, "coll06", 1, lC06Kinds, lC06Quants)) {
     return false;
   }
   
@@ -383,11 +379,9 @@ staticcollectionamanger5(zorba::Zorba* z)
     return false;
   }
   
-  IdentTypes::kind_t       lC09Kinds[]  = { IdentTypes::SCHEMA_ATTRIBUTE_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC09Quants[] = { IdentTypes::QUANT_STAR, 
-                                            IdentTypes::QUANT_ONE };
-  if (!check_types(lColMgr, lFac, "coll09", 2, lC09Kinds, lC09Quants)) {
+  IdentTypes::kind_t       lC09Kinds[]  = { IdentTypes::SCHEMA_ATTRIBUTE_TYPE };
+  IdentTypes::quantifier_t lC09Quants[] = { IdentTypes::QUANT_STAR };
+  if (!check_types(lColMgr, lFac, "coll09", 1, lC09Kinds, lC09Quants)) {
     return false;
   }
   

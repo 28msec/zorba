@@ -1229,10 +1229,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
         ZORBA_ASSERT(nodeName);
         String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
         String local( Unmarshaller::newString( nodeName->getLocalName() ) );
-        return TypeIdentifier::createSchemaElementType(uri,
-                                                       local,
-                                                       content_type,
-                                                       q);
+        return TypeIdentifier::createSchemaElementType(uri, local, q);
       }
       else
       {
@@ -1256,10 +1253,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
         ZORBA_ASSERT(nodeName);
         String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
         String local( Unmarshaller::newString( nodeName->getLocalName() ) );
-        return TypeIdentifier::createSchemaAttributeType(uri,
-                                                       local,
-                                                       content_type,
-                                                       q);
+        return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }
       else
       {

@@ -209,7 +209,6 @@ TypeIdentifier_t TypeIdentifier::createEmptyType()
 TypeIdentifier_t TypeIdentifier::createSchemaElementType(
     const String& uri,
     const String& localName,
-    TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -219,7 +218,6 @@ TypeIdentifier_t TypeIdentifier::createSchemaElementType(
   ti->m_uriWildcard = false;
   ti->m_localName = localName;
   ti->m_localNameWildcard = false;
-  ti->m_contentType = contentType;
   
   return ti;
 }
@@ -228,7 +226,6 @@ TypeIdentifier_t TypeIdentifier::createSchemaElementType(
 TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
     const String& uri,
     const String& localName,
-    TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -238,7 +235,6 @@ TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
   ti->m_uriWildcard = false;
   ti->m_localName = localName;
   ti->m_localNameWildcard = false;
-  ti->m_contentType = contentType;
   
   return ti;
 }
