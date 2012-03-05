@@ -35,8 +35,7 @@ public:
     EMPTY_TYPE,    // empty-sequence()
     SCHEMA_ELEMENT_TYPE,
     SCHEMA_ATTRIBUTE_TYPE,
-    NAMESPACE_TYPE,
-    INVALID_TYPE,
+    INVALID_TYPE
   } kind_t;
   
   static char const *const kind_string_of[];
@@ -45,7 +44,7 @@ public:
     QUANT_ONE,
     QUANT_QUESTION,
     QUANT_PLUS,
-    QUANT_STAR,
+    QUANT_STAR
   } quantifier_t;
   
   static char const *const quantifier_string_of[];

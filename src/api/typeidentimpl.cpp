@@ -244,16 +244,6 @@ TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
 }
 
 
-TypeIdentifier_t TypeIdentifier::createNamespaceType(IdentTypes::quantifier_t quantifier)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::NAMESPACE_TYPE;
-  ti->m_quantifier = quantifier;
-  
-  return ti;
-}
-
-
 std::ostream& TypeIdentifier::emit(std::ostream& os) const {
   os << '{' << m_kind << m_quantifier
      << ", {" << (m_uriWildcard ? "*" : m_uri) << "}" 

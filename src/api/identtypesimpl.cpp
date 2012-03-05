@@ -31,7 +31,6 @@ char const *const IdentTypes::kind_string_of[] = {
   "EMPTY_TYPE",
   "SCHEMA_ELEMENT_TYPE",
   "SCHEMA_ATTRIBUTE_TYPE",
-  "NAMESPACE_TYPE",
   "INVALID_TYPE",
   0
 };

@@ -127,12 +127,6 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
         IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
         );
   
-    static
-    TypeIdentifier_t
-    createNamespaceType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
-  
     IdentTypes::kind_t
     getKind() const;
 
