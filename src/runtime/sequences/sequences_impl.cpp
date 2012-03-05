@@ -2028,17 +2028,12 @@ static void readDocument(
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
-    try
+    if (!transcode::is_supported(aEncoding.c_str()))
     {
-      if (!transcode::is_supported(aEncoding.c_str()))
-        throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
-      
-      lInStream.reset(new transcode::stream<std::istream>(aEncoding.c_str(), lInStream.release()->rdbuf()));
-    }
-    catch (std::invalid_argument const& e)
-    {
+      lInStream.release();
       throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
     }
+    lInStream.reset(new transcode::stream<std::istream>(aEncoding.c_str(), lInStream.release()->rdbuf()));
   }
 
   //creates stream item
