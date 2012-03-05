@@ -552,6 +552,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 
-IF(ZORBA_TEST_PLAN_SERIALIZATION)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval11 944002)
-ENDIF(ZORBA_TEST_PLAN_SERIALIZATION)
