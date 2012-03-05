@@ -99,14 +99,14 @@ public:
       const store::Item* name,
       std::vector<store::Index*>& indexes);
 
-  virtual void getIndexes(std::vector<store::Index*>& indexes);
+  void getIndexes(std::vector<store::Index*>& indexes);
 
   /**** Returns active integrity constraints referencing this collection ******/
   static void getActiveICs(
       const store::Item* name,
       std::vector<store::IC*>& ics);
 
-  virtual void getActiveICs(std::vector<store::IC*>& ics);
+  void getActiveICs(std::vector<store::IC*>& ics);
 
 }; /* class Collection */
 
