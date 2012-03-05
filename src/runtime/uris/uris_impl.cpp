@@ -54,12 +54,12 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lString->getStringValue2(lDecodedString);
   lEncoding->getStringValue2(lCharset);
 
-  uri::decode(lDecodedString);
-
   if (lDecodePlus->getBooleanValue())
   {
     std::replace( lDecodedString.begin(), lDecodedString.end(), '+', ' ' );
   }
+
+  uri::decode(lDecodedString);
 
   if (transcode::is_necessary(lCharset.c_str()))
   {
@@ -74,7 +74,10 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     try
     {
-      transcode::stream<istringstream> lTranscoder( "ISO-8859-1", lDecodedString.c_str() );
+      transcode::stream<istringstream> lTranscoder(
+          lCharset.c_str(),
+          lDecodedString.c_str()
+        );
 
       lDecodedString.clear();
       char buf[1024];

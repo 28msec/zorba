@@ -36,6 +36,10 @@ declare option ver:module-version "1.0";
  : All percent encoded octets will be translated into their
  : decoded UTF-8 representation.
  :
+ : Please note that the percent encoding guarantees that a string
+ : consists of ASCII characters only. Passing a string that contains
+ : non-ASCII characeters results in undefined behavior.
+ :
  : @param $s the string to decode
  :
  : @return the percent decoded string
@@ -54,6 +58,10 @@ declare function uri:decode($u as xs:string) as xs:string
  : If $decode-plus is specified all occurrences of the char '+'
  : will be replaced with a space ' ' before the percent decoding
  : happens.
+ :
+ : Please note that the percent encoding guarantees that a string
+ : consists of ASCII characters only. Passing a string that contains
+ : non-ASCII characeters results in undefined behavior.
  :
  : @param $s the string to decode
  : @param $decode-plus whether '+' chars will be replaced with spaces
@@ -79,6 +87,10 @@ declare function uri:decode(
  :
  : The $charset parameter specifies the source charset after precent
  : decoding. It is used to convert the decoded string into UTF-8.
+ :
+ : Please note that the percent encoding guarantees that a string
+ : consists of ASCII characters only. Passing a string that contains
+ : non-ASCII characeters results in undefined behavior.
  :
  : @param $s the string to decode
  : @param $decode-plus whether '+' chars will be replaced with spaces
