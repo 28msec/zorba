@@ -38,7 +38,7 @@ declare option ver:module-version "1.0";
  :
  : Please note that the percent encoding guarantees that a string
  : consists of ASCII characters only. Passing a string that contains
- : non-ASCII characeters results in undefined behavior.
+ : non-ASCII characters results in undefined behavior.
  :
  : @param $s the string to decode
  :
@@ -61,7 +61,7 @@ declare function uri:decode($u as xs:string) as xs:string
  :
  : Please note that the percent encoding guarantees that a string
  : consists of ASCII characters only. Passing a string that contains
- : non-ASCII characeters results in undefined behavior.
+ : non-ASCII characters results in undefined behavior.
  :
  : @param $s the string to decode
  : @param $decode-plus whether '+' chars will be replaced with spaces
@@ -90,7 +90,7 @@ declare function uri:decode(
  :
  : Please note that the percent encoding guarantees that a string
  : consists of ASCII characters only. Passing a string that contains
- : non-ASCII characeters results in undefined behavior.
+ : non-ASCII characters results in undefined behavior.
  :
  : @param $s the string to decode
  : @param $decode-plus whether '+' chars will be replaced with spaces
