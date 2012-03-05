@@ -605,6 +605,9 @@ expr_t MarkNodeCopyProps::apply(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void MarkNodeCopyProps::applyInternal(
     RewriterContext& rCtx,
     expr* node,
@@ -966,15 +969,13 @@ void MarkNodeCopyProps::applyInternal(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void MarkNodeCopyProps::markSources(
     const std::vector<expr*>& sources,
     UDFCallChain& udfCaller)
 {
-  user_function* udf = NULL;
-
-  if (udfCaller.theFo)
-    udf = static_cast<user_function*>(udfCaller.theFo->get_func());
-
   std::vector<expr*>::const_iterator ite = sources.begin();
   std::vector<expr*>::const_iterator end = sources.end();
   for (; ite != end; ++ite)
@@ -989,9 +990,6 @@ void MarkNodeCopyProps::markSources(
       if (!e->copyInputNodes())
       {
         e->setCopyInputNodes();
-
-        if (udf)
-          udf->invalidatePlan();
       }
       break;
     }
@@ -1001,9 +999,6 @@ void MarkNodeCopyProps::markSources(
       if (!e->copyInputNodes())
       {
         e->setCopyInputNodes();
-
-        if (udf)
-          udf->invalidatePlan();
       }
       break;
     }

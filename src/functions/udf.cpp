@@ -324,6 +324,7 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
 void user_function::invalidatePlan() 
 {
   thePlan = NULL;
+  theArgVarsRefs.clear();
 }
 
 
