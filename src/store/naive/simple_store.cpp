@@ -15,56 +15,18 @@
  */
 #include "stdafx.h"
 
-#include <iostream>
-#include <climits>
-#include <memory>
-
-#include <libxml/parser.h>
-
-#include "zorbautils/hashfun.h"
-#include "zorbautils/fatal.h"
-#include "zorbatypes/rchandle.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include "diagnostics/assert.h"
-#include "diagnostics/util_macros.h"
-
-#include "store/api/pul.h"
-#include "store/api/xs_type_codes.h"
-
-#include "properties.h"
-#include "string_pool.h"
 #include "simple_store.h"
-#include "simple_temp_seq.h"
-#include "simple_lazy_temp_seq.h"
+#include "store_defs.h"
+
 #include "simple_collection.h"
 #include "simple_collection_set.h"
-#include "simple_index.h"
-#include "simple_index_value.h"
-#include "simple_index_general.h"
-#include "simple_ic.h"
-#include "qname_pool.h"
-#include "loader.h"
-#include "store_defs.h"
-#include "node_items.h"
-#include "dataguide.h"
-#include "node_iterators.h"
 #include "simple_item_factory.h"
-#include "simple_iterator_factory.h"
-#include "query_context.h"
-#include "item_iterator.h"
 #include "node_factory.h"
-#include "name_iterator.h"
-#include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
 
-#include "util/cxx_util.h"
-#include "util/uuid/uuid.h"
-#include "zorbautils/string_util.h"
-
-#ifndef ZORBA_NO_FULL_TEXT
-#include "runtime/full_text/default_tokenizer.h"
-#include "runtime/full_text/stemmer.h"
-#endif /* ZORBA_NO_FULL_TEXT */
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/diagnostic.h"
+#include <zorba/diagnostic_list.h>
 
 namespace zorba
 {
