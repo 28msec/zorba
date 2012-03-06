@@ -25,19 +25,22 @@
 namespace zorba {
 
 TypeIdentifier::TypeIdentifier()
-    : m_kind(IdentTypes::INVALID_TYPE),
-    m_quantifier(IdentTypes::QUANT_ONE),
-    m_uri(""),
-    m_uriWildcard(false),
-    m_localName(""),
-    m_localNameWildcard(false),
-    m_contentType()
+  :
+  m_kind(IdentTypes::INVALID_TYPE),
+  m_quantifier(IdentTypes::QUANT_ONE),
+  m_uri(""),
+  m_uriWildcard(false),
+  m_localName(""),
+  m_localNameWildcard(false),
+  m_contentType()
 {
 }
+
 
 TypeIdentifier::~TypeIdentifier()
 {
 }
+
 
 IdentTypes::kind_t TypeIdentifier::getKind() const
 {
@@ -249,30 +252,45 @@ TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
 }
 
 
-std::ostream& TypeIdentifier::emit(std::ostream& os) const {
+std::ostream& TypeIdentifier::emit(std::ostream& os) const 
+{
   emitItemType(os);
   return os << m_quantifier;
 }
 
 
-std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const {
-  if (m_kind == IdentTypes::NAMED_TYPE) {
+std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const 
+{
+  if (m_kind == IdentTypes::NAMED_TYPE) 
+  {
     return emitName(os);
   }
+
   os << m_kind;
-  switch (m_kind) {
+
+  switch (m_kind) 
+  {
     case IdentTypes::DOCUMENT_TYPE:
-      return os << "(" << m_contentType << ")";
+      os << "(";
+      if (m_contentType != NULL)
+      {
+        os << m_contentType;
+      }
+      return os << ")";
 
     case IdentTypes::ELEMENT_TYPE:
     case IdentTypes::ATTRIBUTE_TYPE:
       os << "(";
-      if (m_uriWildcard) {
+      if (m_uriWildcard) 
+      {
         os << "*";
-      } else {
+      }
+      else
+      {
         emitName(os);
       }
-      if (! m_contentType.isNull()) {
+      if (! m_contentType.isNull()) 
+      {
         os << "," << m_contentType;
       }
       return os << ")";
@@ -300,19 +318,24 @@ std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const {
   }
 }
 
-std::ostream& TypeIdentifier::emitName(std::ostream& os) const {
+
+std::ostream& TypeIdentifier::emitName(std::ostream& os) const 
+{
     return os << "{" << m_uri << "}" << m_localName;
 }
 
 }
 
-namespace std {
+namespace std 
+{
 
-ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti) {
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti) 
+{
   return ti.emit(o);
 }
 
-ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti) {
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti) 
+{
   return ti->emit(o);
 }
 

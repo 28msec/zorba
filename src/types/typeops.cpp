@@ -1177,7 +1177,7 @@ static inline IdentTypes::quantifier_t get_typeident_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-type_ident_ref_t TypeOps::get_type_identifier(
+TypeIdentifier_t TypeOps::get_type_identifier(
     const TypeManager* tm,
     const XQType& type,
     bool nested)
@@ -1191,6 +1191,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
+
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString(qname->getNamespace()),
       Unmarshaller::newString(qname->getLocalName()),
@@ -1201,11 +1202,12 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
 
-    type_ident_ref_t content_type = (nt.get_content_type() != NULL ?
-                                     get_type_identifier(tm, *nt.get_content_type(), true) :
-                                     type_ident_ref_t());
-
     const store::Item* nodeName = nt.get_node_name();
+
+    TypeIdentifier_t content_type;
+ 
+    if (nt.get_content_type() != NULL && !nt.is_schema_test())
+      content_type = get_type_identifier(tm, *nt.get_content_type(), true);
 
     switch(nt.get_node_kind()) 
     {
@@ -1225,11 +1227,13 @@ type_ident_ref_t TypeOps::get_type_identifier(
       return TypeIdentifier::createDocumentType(content_type, q);
 
     case store::StoreConsts::elementNode:
+    {
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
         String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
         String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+
         return TypeIdentifier::createSchemaElementType(uri, local, q);
       }
       else
@@ -1241,19 +1245,23 @@ type_ident_ref_t TypeOps::get_type_identifier(
           uri   = nodeName->getNamespace().c_str();
           local = nodeName->getLocalName().c_str();
         }
+
         return TypeIdentifier::createElementType(uri,
                                                  nodeName == NULL,
                                                  local,
                                                  nodeName == NULL,
                                                  content_type,
                                                  q); 
-      }  
+      }
+    }  
     case store::StoreConsts::attributeNode:
+    {
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
         String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
         String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+
         return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }
       else
@@ -1265,6 +1273,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
           uri   = nodeName->getNamespace().c_str();
           local = nodeName->getLocalName().c_str();
         }
+
         return TypeIdentifier::createAttributeType(uri,
                                                    nodeName == NULL,
                                                    local,
@@ -1272,12 +1281,14 @@ type_ident_ref_t TypeOps::get_type_identifier(
                                                    content_type,
                                                    q);
       }
+    }
     default:
       // cannot happen
       ZORBA_ASSERT(false);
-      return type_ident_ref_t();
+      return NULL;
     }
   }
+
   case XQType::ANY_TYPE_KIND:
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getNamespace() ),
@@ -1308,7 +1319,9 @@ type_ident_ref_t TypeOps::get_type_identifier(
   case XQType::USER_DEFINED_KIND:
   {
     ZORBA_ASSERT(nested || is_atomic(tm, type));
+
     store::Item* lQname = type.get_qname().getp();
+
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString( lQname->getNamespace() ), 
       Unmarshaller::newString( lQname->getLocalName() ),
@@ -1320,7 +1333,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
   }
 
   ZORBA_ASSERT(false);
-  return type_ident_ref_t();
+  return NULL;
 }
 
 
