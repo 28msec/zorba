@@ -256,7 +256,8 @@ public:
    */
   static type_ident_ref_t get_type_identifier(
         const TypeManager* tm,
-        const XQType& type);
+        const XQType& type,
+        bool nested = false);
 
   /*
    * Writes a textual representation of the given type to the output stream.

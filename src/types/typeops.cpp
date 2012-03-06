@@ -1179,7 +1179,8 @@ static inline IdentTypes::quantifier_t get_typeident_quant(
 ********************************************************************************/
 type_ident_ref_t TypeOps::get_type_identifier(
     const TypeManager* tm,
-    const XQType& type)
+    const XQType& type,
+    bool nested)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -1201,7 +1202,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
 
     type_ident_ref_t content_type = (nt.get_content_type() != NULL ?
-                                     get_type_identifier(tm, *nt.get_content_type()) :
+                                     get_type_identifier(tm, *nt.get_content_type(), true) :
                                      type_ident_ref_t());
 
     const store::Item* nodeName = nt.get_node_name();
@@ -1306,6 +1307,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
   case XQType::USER_DEFINED_KIND:
   {
+    ZORBA_ASSERT(nested || is_atomic(tm, type));
     store::Item* lQname = type.get_qname().getp();
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString( lQname->getNamespace() ), 
