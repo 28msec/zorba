@@ -609,7 +609,6 @@ namespace zorba {
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
                         NsBindings aNsBindings) = 0;
-
       /**
       * Create a new attribute node N and place it among the
       * attributes of a given parent node. If no parent is given, N becomes the
@@ -679,7 +678,39 @@ namespace zorba {
       virtual Item createTextNode(
         Item   parent,
         String content) = 0;
-}; // class ItemFactory
+
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              Item aTypedValue) = 0;
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              std::vector<Item>& aTypedValue) = 0;
+
+  }; // class ItemFactory
 
 } // namespace zorba
 #endif
