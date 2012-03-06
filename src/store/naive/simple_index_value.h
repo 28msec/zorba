@@ -73,7 +73,7 @@ public:
 *******************************************************************************/
 class ValueIndex : public IndexImpl
 {
-  friend class SimpleStore;
+  friend class Store;
 
 protected:
   ValueIndexCompareFunction   theCompFunction;
@@ -100,7 +100,7 @@ public:
 *******************************************************************************/
 class ValueHashIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueHashIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
@@ -187,7 +187,7 @@ public:
 ********************************************************************************/
 class ValueTreeIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueTreeIndexIterator;
 
   typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;

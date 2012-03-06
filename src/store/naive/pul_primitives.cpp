@@ -793,7 +793,7 @@ void UpdReplaceCommentValue::undo()
 ********************************************************************************/
 void UpdPut::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring targetUri;
   theTargetUri->getStringValue2(targetUri);
@@ -847,7 +847,7 @@ void UpdPut::apply()
 
 void UpdPut::undo()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->deleteDocument(theTargetUri->getStringValue());
 
@@ -1304,7 +1304,7 @@ UpdCreateIndex::UpdCreateIndex(
 
 void UpdCreateIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   try
   {
@@ -1330,7 +1330,7 @@ void UpdCreateIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteIndex(theQName);
   }
@@ -1350,7 +1350,7 @@ UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::
 
 void UpdDeleteIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
@@ -1370,7 +1370,7 @@ void UpdDeleteIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->addIndex(theIndex);
   }
@@ -1400,7 +1400,7 @@ UpdRefreshIndex::~UpdRefreshIndex()
 
 void UpdRefreshIndex::apply()
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
@@ -1420,7 +1420,7 @@ void UpdRefreshIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->deleteIndex(theQName);
     store->addIndex(theIndex);
   }
@@ -1450,7 +1450,7 @@ UpdActivateIC::~UpdActivateIC()
 
 void UpdActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateIC(theQName, theCollectionName,theIsApplied);
 }
 
@@ -1459,7 +1459,7 @@ void UpdActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1492,7 +1492,7 @@ UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
 
 void UpdActivateForeignKeyIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName,theIsApplied);
 }
 
@@ -1501,7 +1501,7 @@ void UpdActivateForeignKeyIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1530,7 +1530,7 @@ UpdDeActivateIC::~UpdDeActivateIC()
 
 void UpdDeActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store::IC_t ic = store->deactivateIC(theQName,theIsApplied);
   if (theIsApplied)
   {
@@ -1554,7 +1554,7 @@ void UpdDeActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     switch (theICKind) {
       case store::IC::ic_collection:
@@ -1592,7 +1592,7 @@ UpdCreateDocument::UpdCreateDocument(
 
 void UpdCreateDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->addNode(theUri->getStringValue(), theDoc);
 
@@ -1604,7 +1604,7 @@ void UpdCreateDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteDocument(theUri->getStringValue());
     theIsApplied = false;
@@ -1628,7 +1628,7 @@ UpdDeleteDocument::UpdDeleteDocument(
 
 void UpdDeleteDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring lUri = theUri->getStringValue();
 
@@ -1646,7 +1646,7 @@ void UpdDeleteDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->addNode(theUri->getStringValue(), theDoc);
     theIsApplied = false;
   }

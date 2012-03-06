@@ -534,7 +534,7 @@ void FastXmlLoader::startElement(
     int numDefaulted,
     const xmlChar ** attributes)
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
   NodeFactory& nfactory = store.getNodeFactory();
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);

@@ -982,7 +982,7 @@ void DtdXmlLoader::startElement(
   for (xmlNs  *ns = node->nsDef; ns != NULL; ns = ns->next)
     numNamespaces++;
 
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
   NodeFactory& nfactory = store.getNodeFactory();
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
@@ -1149,7 +1149,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_IDREFS:
           GET_STORE().getItemFactory()->createIDREFS(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREFS");
+          GET_STORE().getItemFactory()->createQName(typeName, Store::XS_URI, "xs", "IDREFS");
           attrNode->setHaveListValue();
           break;
         case XML_ATTRIBUTE_ENTITY:
@@ -1158,7 +1158,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_ENTITIES:
           GET_STORE().getItemFactory()->createENTITIES(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENTITIES");
+          GET_STORE().getItemFactory()->createQName(typeName, Store::XS_URI, "xs", "ENTITIES");
           attrNode->setHaveListValue();
           break;
         case XML_ATTRIBUTE_NMTOKEN:
@@ -1167,16 +1167,16 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_NMTOKENS:
           GET_STORE().getItemFactory()->createNMTOKENS(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NMTOKENS");
+          GET_STORE().getItemFactory()->createQName(typeName, Store::XS_URI, "xs", "NMTOKENS");
           attrNode->setHaveListValue();
           break;
         case XML_ATTRIBUTE_NOTATION:
           GET_STORE().getItemFactory()->createNOTATION(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NOTATION");
+          GET_STORE().getItemFactory()->createQName(typeName, Store::XS_URI, "xs", "NOTATION");
           break;
         case XML_ATTRIBUTE_ENUMERATION:
           GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "anySimpleType");
+          GET_STORE().getItemFactory()->createQName(typeName, Store::XS_URI, "xs", "anySimpleType");
           break;
         default:
           std::cout << "AssertError: unknown libxml2 attribute type: " <<

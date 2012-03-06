@@ -3028,7 +3028,7 @@ void ElementNode::addBaseUriProperty(
 {
   ZORBA_FATAL(!absUri.empty(), "");
 
-  const SimpleStore& store = GET_STORE();
+  const Store& store = GET_STORE();
 
   store::Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
   store::Item_t typeName = store.theSchemaTypeNames[store::XS_ANY_URI];
@@ -3353,7 +3353,7 @@ XmlNode* AttributeNode::copyInternal(
   assert(parent != NULL || rootParent == NULL);
   ZORBA_FATAL(!isHidden(), "");
 
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
 
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;

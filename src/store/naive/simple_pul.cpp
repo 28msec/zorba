@@ -1504,7 +1504,7 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
 ********************************************************************************/
 void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if (store->getIndices().empty())
     return;

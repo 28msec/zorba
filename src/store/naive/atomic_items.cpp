@@ -46,7 +46,7 @@
 #include "util/utf8_util.h"
 
 #define CREATE_XS_TYPE(aType) \
-  GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
+  GET_STORE().getItemFactory()->createQName(Store::XS_URI, "xs", aType);
 
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
@@ -735,7 +735,7 @@ bool QNameItem::isIdQName() const
   if (ZSTREQ(getLocalName(), "id"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(theNamespace, Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -748,7 +748,7 @@ bool QNameItem::isBaseUri() const
   if (ZSTREQ(getLocalName(), "base"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(getNamespace(), Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
