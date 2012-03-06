@@ -1742,10 +1742,19 @@ bool static_context::validate(
     store::Item_t typeName;
     QueryLoc loc;
 
-    ParseConstants::validation_mode_t mode =
-        (validationMode == StaticContextConsts::strict_validation ?
-            ParseConstants::val_strict :
-            ParseConstants::val_lax );
+    ParseConstants::validation_mode_t mode;
+    switch( validationMode )
+    {
+    case StaticContextConsts::strict_validation:
+      mode = ParseConstants::val_strict;
+      break;
+    case StaticContextConsts::lax_dtd_validation:
+      mode = ParseConstants::val_dtd_lax;
+      break;
+    case StaticContextConsts::lax_validation:
+    default:
+      mode = ParseConstants::val_lax;
+    }
 
     return Validator::effectiveValidationValue(validatedResult,
                                                rootElement,

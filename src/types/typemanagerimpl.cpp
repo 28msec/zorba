@@ -336,11 +336,11 @@ xqtref_t TypeManagerImpl::create_named_type(
       {
         if (error != zerr::ZXQP0000_NO_ERROR)
         {
-					throw XQUERY_EXCEPTION_VAR(
-						error,
-						ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-						ERROR_LOC( loc )
-					);
+            throw XQUERY_EXCEPTION_VAR(
+                error,
+                ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+                ERROR_LOC( loc )
+            );
         }
         else
         {
