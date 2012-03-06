@@ -1045,6 +1045,38 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::EMPTY_TYPE:
     return create_empty_type();
 
+  case IdentTypes::SCHEMA_ELEMENT_TYPE:
+  {
+    store::Item_t ename;
+    GENV_ITEMFACTORY->createQName(ename,
+                                  ident.getUri().c_str(),
+                                  NULL,
+                                  ident.getLocalName().c_str());
+
+    return create_node_type(store::StoreConsts::elementNode,
+                            ename.getp(),
+                            0,
+                            q,
+                            false,
+                            true);
+  }
+
+  case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+  {
+    store::Item_t aname;
+    GENV_ITEMFACTORY->createQName(aname,
+                                  ident.getUri().c_str(),
+                                  NULL,
+                                  ident.getLocalName().c_str());
+
+    return create_node_type(store::StoreConsts::attributeNode,
+                            aname.getp(),
+                            0,
+                            q,
+                            false,
+                            true);
+  }
+
   default:
     break;
   }
