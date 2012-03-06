@@ -1053,12 +1053,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   NULL,
                                   ident.getLocalName().c_str());
 
-    return create_node_type(store::StoreConsts::elementNode,
-                            ename.getp(),
-                            0,
-                            q,
-                            false,
-                            true);
+    return create_schema_element_type(ename.getp(),
+                                      q,
+                                      QueryLoc::null);
   }
 
   case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
@@ -1069,12 +1066,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   NULL,
                                   ident.getLocalName().c_str());
 
-    return create_node_type(store::StoreConsts::attributeNode,
-                            aname.getp(),
-                            0,
-                            q,
-                            false,
-                            true);
+    return create_schema_attribute_type(aname,
+                                        q,
+                                        QueryLoc::null);
   }
 
   default:
