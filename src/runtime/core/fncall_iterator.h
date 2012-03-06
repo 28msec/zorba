@@ -86,7 +86,7 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
-  PlanIterator                   * thePlan;
+  PlanIter_t                       thePlan;
   PlanState                      * thePlanState;
   uint32_t                         thePlanStateSize;
   dynamic_context                * theLocalDCtx;

@@ -80,6 +80,8 @@ protected:
 
 protected:
   ValueIndex(const store::Item_t& qname, const store::IndexSpecification& spec);
+  
+  ValueIndex();
 
   virtual ~ValueIndex();
 
@@ -134,6 +136,8 @@ protected:
   ValueHashIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec);
+      
+  ValueHashIndex();
 
   ~ValueHashIndex();
 
@@ -217,6 +221,8 @@ protected:
   ValueTreeIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
+        
+  ValueTreeIndex();
 
   ~ValueTreeIndex();
 

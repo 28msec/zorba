@@ -918,6 +918,9 @@ namespace zorba {
     void beginVisit( const StringSplitIterator& );
     void endVisit  ( const StringSplitIterator& );
 
+    void beginVisit( const DecodeURIIterator& );
+    void endVisit  ( const DecodeURIIterator& );
+
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );
 

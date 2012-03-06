@@ -35,7 +35,7 @@
 #include "node_items.h"
 #include "node_iterators.h"
 #include "simple_store.h"
-#include "simple_collection.h"
+#include "collection.h"
 #include "simple_item_factory.h"
 #include "qname_pool.h"
 #include "store_defs.h"
@@ -44,6 +44,7 @@
 #include "dataguide.h"
 #include "node_factory.h"
 
+#include "util/stl_util.h"
 #include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -105,7 +106,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection, xs_integer pos)
+void XmlTree::setCollection(Collection* collection, xs_integer pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 

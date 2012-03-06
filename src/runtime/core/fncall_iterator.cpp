@@ -358,6 +358,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<PlanIter_t>::const_iterator argsIte = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator argsEnd = theChildren.end();
   std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
 

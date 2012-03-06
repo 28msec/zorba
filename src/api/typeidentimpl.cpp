@@ -20,22 +20,27 @@
 
 #include <zorba/typeident.h>
 
+#include "diagnostics/assert.h"
+
 namespace zorba {
 
 TypeIdentifier::TypeIdentifier()
-    : m_kind(IdentTypes::INVALID_TYPE),
-    m_quantifier(IdentTypes::QUANT_ONE),
-    m_uri(""),
-    m_uriWildcard(false),
-    m_localName(""),
-    m_localNameWildcard(false),
-    m_contentType()
+  :
+  m_kind(IdentTypes::INVALID_TYPE),
+  m_quantifier(IdentTypes::QUANT_ONE),
+  m_uri(""),
+  m_uriWildcard(false),
+  m_localName(""),
+  m_localNameWildcard(false),
+  m_contentType()
 {
 }
+
 
 TypeIdentifier::~TypeIdentifier()
 {
 }
+
 
 IdentTypes::kind_t TypeIdentifier::getKind() const
 {
@@ -101,6 +106,9 @@ TypeIdentifier_t TypeIdentifier::createElementType(
     TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
+  // not sure why those were 2 different flags, we maintain 2 flags for
+  // compatibility, but they always need to be the same
+  ZORBA_ASSERT(uriWildcard == localNameWildcard);
   TypeIdentifier_t ti(new TypeIdentifier());
   ti->m_kind = IdentTypes::ELEMENT_TYPE;
   ti->m_quantifier = quantifier;
@@ -122,6 +130,9 @@ TypeIdentifier_t TypeIdentifier::createAttributeType(
     TypeIdentifier_t contentType,
     IdentTypes::quantifier_t quantifier)
 {
+    // not sure why those were 2 different flags, we maintain 2 flags for
+    // compatibility, but they always need to be the same
+    ZORBA_ASSERT(uriWildcard == localNameWildcard);
     TypeIdentifier_t ti(new TypeIdentifier());
     ti->m_kind = IdentTypes::ATTRIBUTE_TYPE;
     ti->m_quantifier = quantifier;
@@ -202,11 +213,134 @@ TypeIdentifier_t TypeIdentifier::createEmptyType()
 {
   TypeIdentifier_t ti(new TypeIdentifier());
   ti->m_kind = IdentTypes::EMPTY_TYPE;
+  ti->m_quantifier = IdentTypes::QUANT_ONE;
 
   return ti;
 }
 
+TypeIdentifier_t TypeIdentifier::createSchemaElementType(
+    const String& uri,
+    const String& localName,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::SCHEMA_ELEMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
+  
+  return ti;
 }
+
+
+TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
+    const String& uri,
+    const String& localName,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::SCHEMA_ATTRIBUTE_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
+  
+  return ti;
+}
+
+
+std::ostream& TypeIdentifier::emit(std::ostream& os) const 
+{
+  emitItemType(os);
+  return os << m_quantifier;
+}
+
+
+std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const 
+{
+  if (m_kind == IdentTypes::NAMED_TYPE) 
+  {
+    return emitName(os);
+  }
+
+  os << m_kind;
+
+  switch (m_kind) 
+  {
+    case IdentTypes::DOCUMENT_TYPE:
+      os << "(";
+      if (m_contentType != NULL)
+      {
+        os << m_contentType;
+      }
+      return os << ")";
+
+    case IdentTypes::ELEMENT_TYPE:
+    case IdentTypes::ATTRIBUTE_TYPE:
+      os << "(";
+      if (m_uriWildcard) 
+      {
+        os << "*";
+      }
+      else
+      {
+        emitName(os);
+      }
+      if (! m_contentType.isNull()) 
+      {
+        os << "," << m_contentType;
+      }
+      return os << ")";
+
+    case IdentTypes::SCHEMA_ELEMENT_TYPE:
+    case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+      os << "(";
+      emitName(os);
+      return os << ")";
+
+    case IdentTypes::ANY_NODE_TYPE:
+    case IdentTypes::COMMENT_TYPE:
+    case IdentTypes::EMPTY_TYPE:
+    case IdentTypes::ITEM_TYPE:
+    case IdentTypes::PI_TYPE:
+    case IdentTypes::TEXT_TYPE:
+      return os << "()";
+
+    case IdentTypes::INVALID_TYPE:
+      return os;
+
+    case IdentTypes::NAMED_TYPE:
+    default:
+      ZORBA_ASSERT(false);
+  }
+}
+
+
+std::ostream& TypeIdentifier::emitName(std::ostream& os) const 
+{
+    return os << "{" << m_uri << "}" << m_localName;
+}
+
+}
+
+namespace std 
+{
+
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti) 
+{
+  return ti.emit(o);
+}
+
+ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti) 
+{
+  return ti->emit(o);
+}
+
+}
+
 
 #endif
 /* vim:set et sw=2 ts=2: */
