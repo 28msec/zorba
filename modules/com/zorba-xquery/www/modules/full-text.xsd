@@ -65,7 +65,7 @@
       <xs:attribute name="sentence" type="xs:nonNegativeInteger" use="required"/>
       <xs:attribute name="paragraph" type="xs:nonNegativeInteger" use="required"/>
       <xs:attribute name="value" type="xs:string" use="required"/>
-      <xs:attribute name="node-ref" type="xs:string"/>
+      <xs:attribute name="node-ref" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
 

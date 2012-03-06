@@ -226,8 +226,10 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
         err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
       );
 
+#if 0
     cout << "uri=" << uri << endl;
     cout << "comp_uri=" << comp_uris.front() << endl;
+#endif
 
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
@@ -479,6 +481,19 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       GENV_ITEMFACTORY->createAttributeNode(
         attr_node, result, attr_name, type_name, item
       );
+
+      if ( store::Item const *const token_item = token->item() ) {
+        store::Item *const temp = const_cast<store::Item*>( token_item );
+        if ( GENV_STORE.getNodeReference( item, temp ) ) {
+          item->getStringValue2( value_string );
+          GENV_ITEMFACTORY->createQName( attr_name, "", "", "node-ref" );
+          GENV_ITEMFACTORY->createString( item, value_string );
+          type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+          GENV_ITEMFACTORY->createAttributeNode(
+            attr_node, result, attr_name, type_name, item
+          );
+        }
+      }
 
 #ifndef ZORBA_NO_XMLSCHEMA
       sctx = getStaticContext();
