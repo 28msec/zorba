@@ -431,7 +431,6 @@ char const *const string_of[] = {
   "ga", // Irish
   "gd", // Scots Gaelic
   "gl", // Galician
-  "gl", // Galician
   "gn", // Guarani
   "gu", // Gujarati
   "gv", // Manx
@@ -461,7 +460,6 @@ char const *const string_of[] = {
   "ki", // Gikuyu
   "kj", // Kuanyama
   "kk", // Kazakh
-  "kl", // Greenlandic
   "kl", // Greenlandic
   "km", // Cambodian
   "kn", // Kannada

@@ -74,7 +74,7 @@ void SnowballStemmer::properties( Properties *p ) const {
   p->uri = "http://www.zorba-xquery.com/full-text/stemmer/snowball";
 }
 
-void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
+void SnowballStemmer::stem( zstring const &word, iso639_1::type,
                             zstring *result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.
