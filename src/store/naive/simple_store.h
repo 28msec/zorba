@@ -31,16 +31,6 @@ public:
       const store::Item_t& aNodeType,
       bool aDynamicCollection = false);
 
-  // needs to be virtual to allow implementation of additional stores
-  virtual store::Index_t refreshIndex(
-      const store::Item_t& qname,
-      const store::IndexSpecification& spec,
-      store::Iterator* sourceIter);
-
-  void addIndex(store::Index_t& index);
-
-  void deleteIndex(const store::Item* qname);
-
 protected:
   virtual NodeFactory* createNodeFactory() const;
 
