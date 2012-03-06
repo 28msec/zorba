@@ -1,0 +1,238 @@
+/**
+\page link_crawler2  Web Crawler example in XQuery
+\code
+(:
+ : Copyright 2006-2011 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+:)
+
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
+import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
+import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+import module namespace file = "http://expath.org/ns/file";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace xhtml="http://www.w3.org/1999/xhtml";
+declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace err="http://www.w3.org/2005/xqt-errors";
+declare namespace httpsch = "http://expath.org/ns/http-client";
+
+declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/html/index";
+declare variable $uri-host as xs:string := "http://www.zorba-xquery.com";
+
+
+
+declare variable $local:processed-internal-links := xs:QName("processed-internal-links");
+declare variable $local:processed-external-links := xs:QName("processed-external-links");
+
+
+declare %ann:sequential function local:create-containers()
+{
+  map:create($local:processed-internal-links, xs:QName("xs:string"));
+  map:create($local:processed-external-links, xs:QName("xs:string"));
+};
+
+declare %ann:sequential function local:delete-containers(){
+  for $x in map:available-maps()
+  return map:delete($x);
+};
+
+declare function local:is-internal($x as xs:string) as xs:boolean
+{
+ starts-with($x, $uri-host)
+};
+
+declare function local:my-substring-before($s1 as xs:string, $s2 as xs:string) as xs:string
+{
+let $sb := fn:substring-before($s1, $s2)
+return  if($sb = "") then  $s1 else $sb
+};
+
+declare %ann:sequential function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string?
+{
+   variable $absuri;
+   try{
+    $absuri := local:my-substring-before(resolve-uri(fn:normalize-space($href), $start-uri), "#");
+   }
+   catch *
+   { 
+     map:insert($local:processed-external-links, (<FROM>{$start-uri}</FROM>, 
+                                                  <MESSAGE>malformed</MESSAGE>,
+                                                  <RESULT>broken</RESULT>), $href);
+   }
+   $absuri
+};
+
+
+declare  function local:get-media-type ($http-call as node()) as xs:string
+{
+   local:my-substring-before($http-call/httpsch:header[@name = 'Content-Type'][1]/string(@value), ";")
+};
+
+declare function local:alive($http-call as item()*) as xs:boolean
+{
+ if((count($http-call) ge 1) and 
+    ($http-call[1]/@status eq 200)) 
+   then true() else fn:trace(false(), "alive")
+};
+
+
+declare %ann:sequential function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
+{  distinct-values( for $y in  ($content//*:a/string(@href),
+                              $content//*:link/string(@href),
+                              $content//*:script/string(@src),
+                              $content//*:img/string(@src),
+                              $content//*:area/string(@href)
+                              )
+return  local:get-real-link($y, $uri))
+};
+
+
+declare %ann:sequential function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
+
+      distinct-values( 
+         let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?href)|((script|img).+?src))=([""'])(.*?)\7")
+         for $other-uri2 in  $search//group[@nr=8]/string()
+         return local:get-real-link($other-uri2, $uri)
+     )
+};
+
+
+declare %ann:sequential function local:map-insert-result($map-name as xs:QName, $url as xs:string, $http-result as item()*) 
+{
+  if(count($http-result) ge 1) 
+    then 
+      map:insert($map-name, (<STATUS>{fn:string($http-result[1]/@status)}</STATUS>,
+                             <MESSAGE>{fn:string($http-result[1]/@message)}</MESSAGE>,
+                             <RESULT>{if(local:alive($http-result)) then "Ok" else "broken"}</RESULT>), $url)
+    else map:insert($map-name, <RESULT>broken</RESULT>, $url)
+};
+
+declare %ann:sequential function local:process-link($x as xs:string, $baseUri as xs:string, $n as xs:integer) as item()*{
+ if(local:is-internal($x))
+       then local:process-internal-link($x, $baseUri, $n);
+       else local:process-external-link($x, $baseUri);
+
+};
+
+declare  %ann:sequential function local:process-external-link($x as xs:string, $baseUri as xs:string){
+  if(not(empty(map:get($local:processed-external-links, $x))))
+         then   exit returning false();
+         else {}
+  fn:trace($x, "HEAD external link");
+  map:insert($local:processed-external-links, <FROM>{$baseUri}</FROM>, $x);
+  variable $http-call:=();
+  try{
+        $http-call:=http:send-request(<httpsch:request method="HEAD" href="{$x}"/>, (), ());
+        if((count($http-call) ge 1) and 
+            fn:not($http-call[1]/@status eq 200)) then
+            $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+        else
+          ();
+  }
+  catch * { }
+  local:map-insert-result($local:processed-external-links, $x, $http-call); 
+};
+
+declare function local:tidy-options()
+{<options xmlns="http://www.zorba-xquery.com/modules/converters/html-options" >
+                                         <tidyParam name="output-xml" value="yes" />
+                                         <tidyParam name="doctype" value="omit" />
+                                         <tidyParam name="quote-nbsp" value="no" />
+                                         <tidyParam name="char-encoding" value="utf8" />
+                                         <tidyParam name="newline" value="LF" />
+                                         <tidyParam name="tidy-mark" value="no" />
+                                         <tidyParam name="new-inline-tags" value="nav header section article footer xqdoc:custom d c options json-param" />
+                                       </options>
+};
+
+
+declare  %ann:sequential function local:process-internal-link($x as xs:string, $baseUri as xs:string, $n as xs:integer){
+      (: if($n=3) then exit returning (); else {} :)
+      if(not(empty(map:get($local:processed-internal-links, $x))))
+            then exit returning false();
+              else {}
+      fn:trace($x, "GET internal link");
+      map:insert($local:processed-internal-links, <FROM>{$baseUri}</FROM>, $x);
+       variable $http-call:=();
+       try{
+          $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
+       }
+       catch * { }
+       if( not(local:alive($http-call)))
+                then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
+               else {}
+       
+       if(not (local:get-media-type($http-call[1]) = "text/html"))
+                then { local:map-insert-result($local:processed-internal-links, $x, $http-call); exit returning ();}
+                else {}
+       variable $string-content := string($http-call[2]);
+       variable $content:=();
+
+       try{
+             $content:=html:parse($string-content,local:tidy-options() );
+             local:map-insert-result($local:processed-internal-links, $x, $http-call); 
+        }
+        catch *
+             {   
+                 map:insert($local:processed-internal-links, (<MESSAGE>{concat("cannot tidy: ", $err:description)}</MESSAGE>,
+                                                              <RESULT>broken</RESULT>), $x); 
+                 try{
+                       $content:=parse-xml:parse-xml-fragment ($string-content, "");
+                 }
+                 catch *
+                     { map:insert($local:processed-internal-links, <MESSAGE>{concat("cannot parse: ", $err:description)}</MESSAGE>, $x);}
+            }
+       variable $links :=();
+       if(empty($content))
+           then $links:=local:get-out-links-unparsed($string-content, fn:trace($x, "parse with regex, because tidy failed"));
+           else $links:=local:get-out-links-parsed($content, $x);
+       for $l in $links
+       return  local:process-link($l, $x, $n+1);
+};
+
+
+
+
+declare function local:print-results() as element()*
+{
+    for $x in map:keys($local:processed-internal-links)/map:attribute/@value/string()
+    return <INTERNAL><LINK>{$x}</LINK>{map:get($local:processed-internal-links,$x)}</INTERNAL>, 
+     for $x in map:keys($local:processed-external-links)/map:attribute/@value/string()
+     return <EXTERNAL><LINK>{$x}</LINK>{map:get($local:processed-external-links,$x)}</EXTERNAL>
+};
+
+(:==========================================
+===========================================:)
+
+variable $uri:= $top-uri;
+
+variable $result;
+
+local:create-containers();
+local:process-link($uri, "", 1);
+$result:=local:print-results() ;
+
+local:delete-containers();
+
+file:write(fn:resolve-uri("link_crawler_result.xml"),
+            <result>{$result}</result>,
+            <output:serialization-parameters>
+                <output:indent value="yes"/>
+            </output:serialization-parameters>)
+
+
+\endcode
+*/

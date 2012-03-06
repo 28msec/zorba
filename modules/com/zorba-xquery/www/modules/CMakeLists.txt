@@ -71,6 +71,10 @@ DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/converters/base64")
+DECLARE_ZORBA_MODULE(FILE converters/json.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/converters/json")
+DECLARE_ZORBA_SCHEMA(FILE converters/json-options.xsd
+  URI "http://www.zorba-xquery.com/modules/converters/json-options")
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/error.xq VERSION 2.0

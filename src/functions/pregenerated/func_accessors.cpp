@@ -36,7 +36,7 @@ PlanIter_t fn_node_name_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeNameIterator(sctx, loc, argv);
 }
@@ -45,7 +45,7 @@ PlanIter_t fn_node_name::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeNameIterator(sctx, loc, argv);
 }
@@ -55,7 +55,7 @@ PlanIter_t fn_nilled::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NilledIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_data::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDataIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_base_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new BaseUriIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_document_uri_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DocumentUriIterator(sctx, loc, argv);
 }
@@ -95,7 +95,7 @@ PlanIter_t fn_document_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DocumentUriIterator(sctx, loc, argv);
 }
@@ -105,7 +105,7 @@ PlanIter_t fn_root::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RootIterator(sctx, loc, argv);
 }

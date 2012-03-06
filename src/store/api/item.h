@@ -275,7 +275,14 @@ public:
 
   /** Accessor for xs:base64Binary
    */
-  virtual xs_base64Binary getBase64BinaryValue() const;
+  virtual const char* getBase64BinaryValue(size_t& size) const;
+
+  /**
+   * Checks whether a base64 item's content is already encoded
+   *
+   * @return true only if it is.
+   */
+  virtual bool isEncoded() const;
 
   /** Accessor for xs:boolean
    */
@@ -305,7 +312,7 @@ public:
 
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
    */
-  virtual xs_uinteger
+  virtual xs_nonNegativeInteger
   getUnsignedIntegerValue() const;
 
   /** Accessor for xs:long

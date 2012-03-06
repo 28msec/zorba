@@ -199,6 +199,16 @@ ValueIndex::ValueIndex(
 /******************************************************************************
 
 ********************************************************************************/
+ValueIndex::ValueIndex()
+  :
+theCompFunction(0, 0, std::vector<std::string>())
+{
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 ValueIndex::~ValueIndex()
 {
 }
@@ -282,6 +292,17 @@ ValueHashIndex::ValueHashIndex(
   :
   ValueIndex(qname, spec),
   theMap(theCompFunction, 1024, spec.theIsThreadSafe)
+{
+}
+  
+
+/******************************************************************************
+
+********************************************************************************/
+ValueHashIndex::ValueHashIndex()
+  :
+  ValueIndex(),
+  theMap(theCompFunction, 0, false)
 {
 }
   
@@ -551,6 +572,17 @@ ValueTreeIndex::ValueTreeIndex(
     const store::IndexSpecification& spec)
   :
   ValueIndex(qname, spec),
+  theMap(theCompFunction)
+{
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+ValueTreeIndex::ValueTreeIndex()
+  :
+  ValueIndex(),
   theMap(theCompFunction)
 {
 }

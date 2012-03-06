@@ -52,8 +52,8 @@ class GenericCast
  
 private:
   static const int          theMapping[store::XS_LAST];
-  static const CastFunc     theCastMatrix[23][23];
-  static const DownCastFunc theDownCastMatrix[23];
+  static const CastFunc     theCastMatrix[24][24];
+  static const DownCastFunc theDownCastMatrix[24];
 
   GenericCast() {}
     

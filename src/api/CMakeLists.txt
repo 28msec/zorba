@@ -55,6 +55,7 @@ SET(API_SRCS
     zorba_functions.cpp
     annotationimpl.cpp
     auditimpl.cpp
+    transcode_streambuf.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

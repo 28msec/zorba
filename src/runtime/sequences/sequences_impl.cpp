@@ -1530,8 +1530,9 @@ bool FnSumDoubleIterator::nextImpl(
     STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.5 fn:sum - Float

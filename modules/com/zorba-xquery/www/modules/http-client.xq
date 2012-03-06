@@ -354,7 +354,7 @@ declare %ann:nondeterministic function http:get($href as xs:string) as item()+
  :)
 declare %ann:nondeterministic function http:get-node($href as xs:string) as item()+
 {
-  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/xml"/>}, (), ())
+  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/xml; charset=utf-8"/>}, (), ())
 };
 
 (:~
@@ -374,7 +374,7 @@ declare %ann:nondeterministic function http:get-node($href as xs:string) as item
  :)
 declare %ann:nondeterministic function http:get-text($href as xs:string) as item()+
 {
-  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/plain"/>}, (), ())
+  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/plain; charset=utf-8"/>}, (), ())
 };
 
 (:~
