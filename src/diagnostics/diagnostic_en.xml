@@ -3495,7 +3495,7 @@
     </entry>
 
     <entry key="ParseFragmentOptionCombinationNotAllowed">
-      <value>only one of the &lt;schemaValidate/&gt;, &lt;DTDValidate/&gt; or &lt;parseExternalParsedEntity/&gt; options can be specified</value>
+      <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
     </entry>
     
     <entry key="ParseFragmentInvalidOptions">
