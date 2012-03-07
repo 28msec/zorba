@@ -1435,14 +1435,6 @@ public:
   virtual xs_integer getIntegerValue() const = 0;
   virtual xs_long getLongValue() const = 0;
 
-  virtual bool getEBV() const = 0;
-  virtual store::Item* getType() const = 0;
-
-  virtual zstring getStringValue() const = 0;
-  virtual void getStringValue2(zstring&) const = 0;
-  virtual void appendStringValue(zstring& buf) const = 0;
-
-  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const = 0;
   bool isNaN() const { return false; }
 };
 
@@ -1465,18 +1457,23 @@ protected:
 
 public:
   xs_decimal getDecimalValue() const;
+
   xs_integer getIntegerValue() const { return theValue; }
 
   xs_long getLongValue() const; 
+
   xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   zstring getStringValue() const;
+
   void getStringValue2(zstring&) const;
+
   void appendStringValue(zstring&) const;
 
-  virtual store::SchemaTypeCode getTypeCode() const { return store::XS_INTEGER; }
+  store::SchemaTypeCode getTypeCode() const { return store::XS_INTEGER; }
 
-  virtual store::Item* getType() const;
+  store::Item* getType() const;
+
   uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
 
   long compare(
@@ -1491,9 +1488,7 @@ public:
 
   bool getEBV() const;
 
-  bool isNaN() const { return false; }
-
-  virtual zstring show() const;
+  zstring show() const;
 };
 
 
@@ -1512,24 +1507,26 @@ protected:
   NonPositiveIntegerItem() {}
 
 public:
-  // inherited
   xs_decimal getDecimalValue() const;
+
   xs_integer getIntegerValue() const;
+
   xs_long getLongValue() const;
-  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   zstring getStringValue() const;
+
   void getStringValue2(zstring& val) const;
+
   void appendStringValue(zstring&) const;
 
-  bool getEBV() const;
+  virtual store::SchemaTypeCode getTypeCode() const 
+  {
+    return store::XS_NON_POSITIVE_INTEGER;
+  }
 
-  store::SchemaTypeCode getTypeCode() const { return store::XS_NON_POSITIVE_INTEGER; }
+  virtual store::Item* getType() const;
 
-  store::Item* getType() const;
   uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
-
-  zstring show() const;
 
   long compare(
         const Item* other,
@@ -1540,6 +1537,10 @@ public:
         const store::Item* other,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
+
+  bool getEBV() const;
+
+  virtual zstring show() const;
 };
 
 
@@ -1579,26 +1580,28 @@ protected:
   NonNegativeIntegerItem() {}
 
 public:
-  // inherited
   xs_decimal getDecimalValue() const;
+
   xs_integer getIntegerValue() const;
+
   xs_long getLongValue() const;
+
   xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
-  bool getEBV() const;
+  zstring getStringValue() const;
 
-  store::SchemaTypeCode getTypeCode() const { return store::XS_NON_NEGATIVE_INTEGER; }
+  void getStringValue2(zstring& val) const;
 
+  void appendStringValue(zstring&) const;
 
-  store::Item* getType() const;
+  virtual store::SchemaTypeCode getTypeCode() const 
+  {
+    return store::XS_NON_NEGATIVE_INTEGER;
+  }
+
+  virtual store::Item* getType() const;
 
   uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
-
-  zstring show() const;
-
-  zstring getStringValue() const;
-  void getStringValue2(zstring& val) const;
-  void appendStringValue(zstring&) const;
 
   long compare(
         const Item* other,
@@ -1609,6 +1612,10 @@ public:
         const store::Item* other,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
+
+  bool getEBV() const;
+
+  virtual zstring show() const;
 };
 
 
@@ -1620,13 +1627,13 @@ class PositiveIntegerItem : public  NonNegativeIntegerItem
   friend class BasicItemFactory;
 
 protected:
-  PositiveIntegerItem(const xs_positiveInteger& aValue) : NonNegativeIntegerItem(aValue) { }
+  PositiveIntegerItem(const xs_positiveInteger& aValue) 
+    :
+    NonNegativeIntegerItem(aValue) { }
 
   PositiveIntegerItem() {}
 
 public:
-  xs_uinteger getUnsignedIntegerValue() const { return theValue; }
-
   store::SchemaTypeCode getTypeCode() const { return store::XS_POSITIVE_INTEGER; }
 
   store::Item* getType() const;
