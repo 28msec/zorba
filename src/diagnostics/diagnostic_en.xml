@@ -39,7 +39,44 @@
        It is a static error if an expression is not a valid instance of the
        grammar.
       </comment>
+
       <value>invalid expression${: 1}</value>
+
+      <entry key="XQueryVersionAtLeast30_2">
+        <value>"$2": XQuery version must be at least 3.0</value>
+      </entry>
+
+      <entry key="OuterForClause11">
+        <value>"outer-for" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="WindowClause11">
+        <value>"window" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="CountClause11">
+        <value>"count" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="SwitchExpr11">
+        <value>"switch" expressions only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="TryCatchExpr11">
+        <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="Anotations">
+        <value>function and variable annotations only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="Scripting">
+        <value>scripting feature not available</value>
+      </entry>
+
+      <entry key="PiTarget">
+        <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPTY0004">
@@ -1674,7 +1711,9 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
+
       <value>"$1": feature not available</value>
+
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
@@ -1831,6 +1870,10 @@
 
     <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
       <value>can not retrieve node-reference for a node that is not in a collection.</value>
+    </diagnostic>
+     
+    <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
+      <value>a non root element cannot be validated in place.</value>
     </diagnostic>
 
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
@@ -2622,10 +2665,6 @@
       <value>collection iterator not open</value>
     </entry>
 
-    <entry key="CountClause11">
-      <value>"count" clause only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="DefaultCollation">
       <value>default collation</value>
     </entry>
@@ -2894,6 +2933,10 @@
       <value>sequence of more than one item can not be operand for function "$2()"</value>
     </entry>
 
+    <entry key="NoSeqForConcat">
+      <value>multi-item sequence can not be operand for concatenation</value>
+    </entry>
+
     <entry key="NoSeqInValueComp">
       <value>sequnce of more than one item can not be in value comparisons</value>
     </entry>
@@ -3038,10 +3081,6 @@
       <value>"$2": operation not possible with parameters of type "$3" and "$4"</value>
     </entry>
 
-    <entry key="OuterForClause11">
-      <value>"outer-for" clause only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="ParserInitFailed">
       <value>parser initialization failed</value>
     </entry>
@@ -3126,16 +3165,8 @@
       <value>sum not possible with parameters of type "$2" and "$3"</value>
     </entry>
 
-    <entry key="SwitchExpr11">
-      <value>"switch" expressions only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="TrailingChar_3">
       <value>trailing '$3'</value>
-    </entry>
-
-    <entry key="TryCatchExpr11">
-      <value>"try/catch" expressions only available in XQuery 1.1 or later</value>
     </entry>
 
     <entry key="TwoDecimalFormatsSameName_2">
@@ -3258,16 +3289,8 @@
       <value>undeclared variable</value>
     </entry>
 
-    <entry key="WindowClause11">
-      <value>"window" clause only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="XMLSchema">
       <value>XML schema</value>
-    </entry>
-
-    <entry key="XQueryVersionAtLeast10_2">
-      <value>"$2": XQuery version must be at least 1.0</value>
     </entry>
 
     <entry key="XUST0002_Transform">

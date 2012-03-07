@@ -21,7 +21,7 @@
 
 #include "store_defs.h"
 #include "simple_store.h"
-#include "simple_collection.h"
+#include "collection.h"
 #include "simple_index_value.h"
 #include "simple_pul.h"
 #include "pul_primitives.h"
@@ -236,7 +236,7 @@ CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dyn
   }
   else
   {
-    SimpleCollection* collection = static_cast<SimpleCollection*>
+    Collection* collection = static_cast<Collection*>
     (GET_STORE().getCollection(collName,dynamicCollection).getp());
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
@@ -1205,6 +1205,7 @@ void PULImpl::mergeUpdates(store::Item* other)
     }
 
     thePutList.push_back(otherUpd);
+    otherUpd->thePul = this;
     otherp->thePutList[i] = NULL;
   }
 
@@ -1770,7 +1771,7 @@ void PULImpl::undoUpdates()
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionPul::CollectionPul(PULImpl* pul, SimpleCollection* collection) 
+CollectionPul::CollectionPul(PULImpl* pul, Collection* collection) 
   :
   theCollection(collection),
   thePul(pul),

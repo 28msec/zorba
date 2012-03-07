@@ -4461,6 +4461,13 @@ void TypeName::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+void StringConcatExpr::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT (left);
+  ACCEPT (right);
+  END_VISITOR();
+}
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */

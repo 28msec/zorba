@@ -953,7 +953,7 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
   (a)  op is eq or =, and
   (b1) posExpr is an integer literal with value >= 1, or
   (b2) the flwor expr has no sequential clauses and posExpr is an expression 
-       whose type is xs:Integer? and which does not reference the for var 
+       whose type is xs:integer? and which does not reference the for var 
        associated with posVar nor any other vars that are defined after that 
        for var.
 

@@ -110,14 +110,22 @@ unsigned long long atoull( char const *s ) {
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
   s = ascii::trim_start_whitespace( s );
-  if ( *s == '-' )
-    throw std::invalid_argument(
-      "\"-\": invalid character for unsigned integer"
-    );
+  bool const minus = *s == '-';
+
   char *end;
   errno = 0;
   unsigned long long const result = std::strtoull( s, &end, 10 );
   check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
+
+  if ( minus && result ) {
+    //
+    // Throw an exception only if there was a '-' and the result is non-zero.
+    // Hence, this allows "-0" and treats it as "0".
+    //
+    throw std::invalid_argument(
+      "\"-\": invalid character for unsigned integer"
+    );
+  }
   return result;
 }
 

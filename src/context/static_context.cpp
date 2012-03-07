@@ -366,6 +366,10 @@ static_context::ZORBA_STRING_FN_NS =
 "http://www.zorba-xquery.com/modules/string";
 
 const char*
+static_context::ZORBA_URI_FN_NS = 
+"http://www.zorba-xquery.com/modules/uri";
+
+const char*
 static_context::ZORBA_FETCH_FN_NS = 
 "http://www.zorba-xquery.com/modules/fetch";
 
@@ -441,6 +445,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
@@ -488,7 +493,9 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS);
   }
 
@@ -1735,10 +1742,19 @@ bool static_context::validate(
     store::Item_t typeName;
     QueryLoc loc;
 
-    ParseConstants::validation_mode_t mode =
-        (validationMode == StaticContextConsts::strict_validation ?
-            ParseConstants::val_strict :
-            ParseConstants::val_lax );
+    ParseConstants::validation_mode_t mode;
+    switch( validationMode )
+    {
+    case StaticContextConsts::strict_validation:
+      mode = ParseConstants::val_strict;
+      break;
+    case StaticContextConsts::lax_dtd_validation:
+      mode = ParseConstants::val_dtd_lax;
+      break;
+    case StaticContextConsts::lax_validation:
+    default:
+      mode = ParseConstants::val_lax;
+    }
 
     return Validator::effectiveValidationValue(validatedResult,
                                                rootElement,
