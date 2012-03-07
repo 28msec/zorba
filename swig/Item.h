@@ -25,6 +25,8 @@ class Item
   friend class SingletonIterator;
   friend class DynamicContext;
   friend class ItemFactory;
+  friend class Collection;
+  friend class CollectionManager;
 private:
   zorba::Item theItem;
 

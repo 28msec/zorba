@@ -15,21 +15,32 @@
  */
 
 %{  // start Implementation
-
-  DocumentManager XmlDataManager::getDocumentManager()
+  void DocumentManager::put(const std::string& aName, Item aDoc)
   {
-    return DocumentManager(theManager->getDocumentManager()); 
+    theManager->put(aName, aDoc.theItem);
   }
 
-  Iterator XmlDataManager::parseXML(const std::string& aDoc)
+  void DocumentManager::remove(const std::string& aName)
   {
-    std::stringstream lDoc;
-    lDoc << aDoc;
-    zorba::Item lItem = theManager->parseXML(lDoc);
-    return Iterator(lItem);
+    theManager->remove(aName);
+  }
+
+  Item DocumentManager::document(const std::string& aName)
+  {
+    return theManager->document(aName);
+  }
+
+  bool DocumentManager::isAvailableDocument(const std::string& aName)
+  {
+    return theManager->isAvailableDocument(aName);
+  }
+
+  ItemSequence DocumentManager::availableDocuments()
+  {
+    return ItemSequence( theManager->availableDocuments() );
   }
 
 
 %}  // end   Implementation
 
-%include "XmlDataManager.h"
+%include "DocumentManager.h"

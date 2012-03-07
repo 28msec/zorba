@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef API_ITEM_SEQUENCE_H
+#define API_ITEM_SEQUENCE_H
 
-%{  // start Implementation
+class ItemSequence
+{
+  friend class Collection;
+private:
+  zorba::ItemSequence_t theItemSequence;
 
-  DocumentManager XmlDataManager::getDocumentManager()
-  {
-    return DocumentManager(theManager->getDocumentManager()); 
-  }
+public:
+  ItemSequence(const ItemSequence& aItemSequence) : theItemSequence(aItemSequence.theItemSequence) {}
+  ItemSequence(zorba::ItemSequence_t aItemSequence) : theItemSequence(aItemSequence) {}
+  Iterator getIterator();
 
-  Iterator XmlDataManager::parseXML(const std::string& aDoc)
-  {
-    std::stringstream lDoc;
-    lDoc << aDoc;
-    zorba::Item lItem = theManager->parseXML(lDoc);
-    return Iterator(lItem);
-  }
+};
 
-
-%}  // end   Implementation
-
-%include "XmlDataManager.h"
+#endif

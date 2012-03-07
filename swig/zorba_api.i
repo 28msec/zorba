@@ -83,7 +83,11 @@ namespace std {
   #include "StaticContext.h"
   #include "XQuery.h"
   #include "ItemFactory.h"
+  #include "ItemSequence.h"
+  #include "Collection.h"
+  #include "CollectionManager.h"
   #include "XmlDataManager.h"
+  #include "DocumentManager.h"
 %}
 
 #ifndef SWIGRUBY
@@ -106,5 +110,9 @@ namespace std {
 //%include "DiagnosticHandler.i"
 %include "Zorba.i"
 %include "ItemFactory.i"
+%include "ItemSequence.i"
+%include "Collection.i"
+%include "CollectionManager.i"
 %include "XmlDataManager.i"
+%include "DocumentManager.i"
 

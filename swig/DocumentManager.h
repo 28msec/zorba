@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef API_DOCUMENT_MANAGER_H
+#define API_DOCUMENT_MANAGER_H
 
-%{  // start Implementation
+class DocumentManager
+{
+private:
+  zorba::DocumentManager* theManager;
 
-  DocumentManager XmlDataManager::getDocumentManager()
-  {
-    return DocumentManager(theManager->getDocumentManager()); 
-  }
+public:
+  DocumentManager() : theManager(0) {}
+  DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
+  DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
 
-  Iterator XmlDataManager::parseXML(const std::string& aDoc)
-  {
-    std::stringstream lDoc;
-    lDoc << aDoc;
-    zorba::Item lItem = theManager->parseXML(lDoc);
-    return Iterator(lItem);
-  }
+  void put(const std::string& aName, Item aDoc);
+  void remove(const std::string& aName);
+  Item document(const std::string& aName);
+  bool isAvailableDocument(const std::string& aName);
+  ItemSequence availableDocuments();
+};
 
-
-%}  // end   Implementation
-
-%include "XmlDataManager.h"
+#endif

@@ -80,7 +80,7 @@
 // #include "compiler/expression/ft_expr.h"
 // #include "compiler/expression/ftnode.h"
 // #include "compiler/parser/query_loc.h"
-// #include "util/cxx_util.h"
+#include "util/cxx_util.h"
 // #include "util/indent.h"
 // #include "util/stl_util.h"
 // #include "diagnostics/xquery_diagnostics.h"
@@ -182,7 +182,7 @@
 // #include "context/stemmer_wrappers.h"
 // #include "context/uri_resolver.h"
 // #include "context/uri_resolver_wrapper.h"
-// //#include "diagnostics/assert.h"
+#include "diagnostics/assert.h"
 // #include "diagnostics/diagnostic.h"
 // #include "diagnostics/dict.h"
 // #include "diagnostics/dict_impl.h"
@@ -370,5 +370,7 @@
  #include "zorba/diagnostic_handler.h"
  #include "zorba/xquery_warning.h"
  #include "runtime/full_text/ftcontains_visitor.h"
+ #include "store/naive/naive_ft_token_iterator.h"
+
 #endif
 /* vim:set et sw=2 ts=2: */

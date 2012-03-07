@@ -20,8 +20,6 @@
 #include <zorba/static_context_consts.h>
 
 
-StaticContext::StaticContext() {}
-
 StaticContext::StaticContext(const StaticContext& aStaticContext) : 
     theStaticContext(aStaticContext.theStaticContext) {}
     

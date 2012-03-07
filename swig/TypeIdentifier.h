@@ -49,7 +49,6 @@ private:
   static zorba::IdentTypes::quantifier_t convertQuantifier(IdentTypes::Quantifier quantifier);
 
 public: 
-  TypeIdentifier() {}
   TypeIdentifier (const TypeIdentifier& aTypeIdentifier) : theTypeIdentifier(aTypeIdentifier.theTypeIdentifier) {}
   TypeIdentifier (const zorba::TypeIdentifier_t& aZTypeIdentifier) : theTypeIdentifier(aZTypeIdentifier) {}
 

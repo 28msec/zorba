@@ -20,8 +20,12 @@ class Iterator
 {
 protected:
   friend class DynamicContext;
+  friend class DocumentManager;
+  friend class CollectionManager;
+  friend class Collection;
   friend class StaticContext;
   friend class XQuery;
+  friend class ItemSequence;
   zorba::Iterator_t theIterator;
   zorba::Item theItem;
   bool theConsumed;

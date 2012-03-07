@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,6 @@
  */
 #ifndef API_XML_DATA_MANAGER_H
 #define API_XML_DATA_MANAGER_H
-
-class DocumentManager
-{
-private:
-  zorba::DocumentManager* theManager;
-
-public:
-  DocumentManager() : theManager(0) {}
-  DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
-  DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
-
-  void put(const std::string& aName, Item aDoc);
-  void remove(const std::string& aName);
-  Item document(const std::string& aName);
-  bool isAvailableDocument(const std::string& aName);
-};
 
 class XmlDataManager
 {

@@ -16,20 +16,11 @@
 
 %{  // start Implementation
 
-  DocumentManager XmlDataManager::getDocumentManager()
+  Iterator ItemSequence::getIterator()
   {
-    return DocumentManager(theManager->getDocumentManager()); 
+    return Iterator( theItemSequence->getIterator() );
   }
-
-  Iterator XmlDataManager::parseXML(const std::string& aDoc)
-  {
-    std::stringstream lDoc;
-    lDoc << aDoc;
-    zorba::Item lItem = theManager->parseXML(lDoc);
-    return Iterator(lItem);
-  }
-
 
 %}  // end   Implementation
 
-%include "XmlDataManager.h"
+%include "ItemSequence.h"

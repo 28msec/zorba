@@ -73,7 +73,6 @@ private:
   zorba::StaticContext_t theStaticContext;
 public:
 
-  StaticContext();
   StaticContext(const StaticContext& aStaticContext);
   StaticContext(zorba::StaticContext_t aStaticContext);
   
