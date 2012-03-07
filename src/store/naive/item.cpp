@@ -574,7 +574,7 @@ xs_byte Item::getByteValue() const
  * Accessor for xs:unsignedLong,  xs:unsignedInt,  xs:unsignedShort,
  *  xs:unsignedByte, xs:nonNegativeInteager, xs:positiveInteger
  */
-xs_uinteger Item::getUnsignedIntegerValue() const
+xs_nonNegativeInteger Item::getUnsignedIntegerValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,

@@ -17,7 +17,6 @@
 
 #include "pul_primitive_factory.h"
 #include "pul_primitives.h"
-#include "simple_collection.h"
 
 namespace zorba { namespace simplestore {
 

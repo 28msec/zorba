@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.zorba-xquery.org/schema" xmlns="http://www.zorba-xquery.org/schema"
+	elementFormDefault="qualified">
+	
+	<xs:element name="root" type="rootType"/>
+	
+	<xs:complexType name="rootType">		
+		<xs:sequence>
+			<xs:element name="root" type="rootType" minOccurs="0"/>
+			<xs:element name="a" type="xs:string"/>
+			<xs:element name="b" type="xs:string"/>
+			<xs:element name="c" type="xs:string"/>			            
+		</xs:sequence>
+		<xs:attribute name="attr" type="xs:string"/>
+	</xs:complexType>
+		
+</xs:schema>

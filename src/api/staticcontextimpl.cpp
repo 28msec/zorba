@@ -1247,6 +1247,9 @@ StaticContextImpl::validate(
       case validate_lax:
         valMode = StaticContextConsts::lax_validation;
         break;
+      case validate_lax_dtd:
+        valMode = StaticContextConsts::lax_dtd_validation;
+        break;
       case validate_skip:
         valMode = StaticContextConsts::skip_validation;
         break;
