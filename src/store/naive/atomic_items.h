@@ -1462,6 +1462,7 @@ public:
 
   xs_long getLongValue() const; 
 
+  xs_unsignedInt getUnsignedIntValue() const;
   xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   zstring getStringValue() const;
