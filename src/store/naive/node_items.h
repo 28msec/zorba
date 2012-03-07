@@ -89,7 +89,7 @@ class UpdRenamePi;
 class UpdReplaceCommentValue;
 class NodeTypeInfo;
 
-class SimpleCollection;
+class Collection;
 
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
@@ -138,7 +138,7 @@ class XmlNodeTokenizerCallback;
 
   theId          : An internally generated id for the tree. The id uniquely
                    identifies the tree within its containing collection (see
-                   SimpleCollection::createTreeId() method). Trees that do not
+                   Collection::createTreeId() method). Trees that do not
                    belong to any collection, are considered to belong to a
                    "virtual" collection (with collection id equal to 0), and
                    their id is created by the SimpleStore::createId() method.
@@ -180,7 +180,7 @@ protected:
   ulong                     theId;
   xs_integer                thePos;
 
-  SimpleCollection        * theCollection;
+  Collection        * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -221,9 +221,9 @@ public:
 
   ulong getCollectionId() const;
 
-  const SimpleCollection* getCollection() const { return theCollection; }
+  const Collection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, xs_integer pos);
+  void setCollection(Collection* coll, xs_integer pos);
 
   void setPosition(xs_integer pos) { thePos = pos; }
 
@@ -516,7 +516,7 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, xs_integer pos)
+  void setCollection(Collection* coll, xs_integer pos)
   {
     assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
@@ -1665,6 +1665,8 @@ public:
                             Tokenizer::Numbers &numbers,
                             locale::iso639_1::type lang,
                             container_type &tokens );
+
+  ~XmlNodeTokenizerCallback();
 
   begin_type beginTokenization() const;
 
