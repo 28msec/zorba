@@ -2437,6 +2437,12 @@ xs_long IntegerItemImpl::getLongValue() const
 }
 
 
+xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
+{
+  return to_xs_unsignedInt(theValue);
+}
+
+
 store::Item* IntegerItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
