@@ -1787,6 +1787,7 @@ std::istream& StreamableStringItem::getStream()
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
+    theIstream.clear();
   }
   theIsConsumed = true;
   return theIstream;
