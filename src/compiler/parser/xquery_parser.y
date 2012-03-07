@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect 3 shift/reduce conflicts
-// %expect 3
+%expect 3
 
 
 %code requires {
@@ -232,6 +232,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <strpair> DecimalFormatParam
 %type <vstrpair> DecimalFormatParamList
 %type <name_test_list> NameTestList
+
+%type <fnsig> FunctionSig
+%type <varnametype> VarNameAndType
+%type <strlist> STRING_LITERAL_list;
 
 
 /* simple tokens */
@@ -538,11 +542,17 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON */
 /* ---- */
-%token STRUCTURED_ITEM                  "'structured-item'"
+%token L_SIMPLE_OBJ_UNION               "'{|'"
+%token R_SIMPLE_OBJ_UNION               "'|}'"
+%token L_ACCUMULATOR_OBJ_UNION          "'{['"
+%token R_ACCUMULATOR_OBJ_UNION          "']}'"
+%token JSON                             "'json'"
+%token APPEND                           "'append'"
+%token POSITION                         "'position'"
+%token OBJECT                           "'object'"
 %token ARRAY                            "'array'"
 %token JSON_ITEM                        "'json-item'"
-%token OBJECT                           "'object'"
-%token PAIR                             "'pair'"
+%token STRUCTURED_ITEM                  "'structured-item'"
 
 /* Byte Order Marks                  */
 /* --------------------------------- */
@@ -856,23 +866,21 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-%type <expr> JSONConstructor
-
-%type <expr> JSONDirectArrayConstructor
-
-%type <expr> JSONPairConstructor
+%type <expr> JSONObjectConstructor
+%type <node> JSONPairList
+%type <expr> JSONArrayConstructor
+%type <expr> JSONSimpleObjectUnion
+%type <expr> JSONAccumulatorObjectUnion
+%type <expr> JSONDeleteExpr
+%type <expr> JSONInsertExpr
+%type <expr> JSONRenameExpr
+%type <expr> JSONReplaceExpr
+%type <expr> JSONAppendExpr
 
 %type <node> JSONTest
 %type <node> JSONItemTest
 %type <node> JSONObjectTest
 %type <node> JSONArrayTest
-%type <node> JSONPairTest
-
-%type <fnsig> FunctionSig
-%type <varnametype> VarNameAndType
-%type <strlist> STRING_LITERAL_list;
-
-
 
 /*
  *  To enable memory deallocation during error recovery, use %destructor.
@@ -907,7 +915,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // parsenodes: JSON
-%destructor { release_hack( $$ ); } JSONConstructor JSONDirectArrayConstructor JSONPairConstructor 
+%destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -962,14 +970,6 @@ template<typename T> inline void release_hack( T *ref ) {
 // TODO: COMMA_DOLLAR is not defined anymore
 %left COMMA_DOLLAR
 %nonassoc UNARY_PREC
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflict for
- * [119] SequenceType ::= ItemType | ItemType OccurrenceIndicator
- *_____________________________________________________________________*/
-
-%nonassoc OCCURS_HOOK OCCURS_PLUS OCCURS_STAR
 
 /*_____________________________________________________________________
  *
@@ -2489,6 +2489,13 @@ ExprSimple :
     |   RenameExpr
     |   ReplaceExpr
     |   TransformExpr
+
+    /* JSON update extension */
+    |   JSONDeleteExpr
+    |   JSONInsertExpr
+    |   JSONRenameExpr
+    |   JSONReplaceExpr
+    |   JSONAppendExpr
 ;
 
 
@@ -3504,26 +3511,16 @@ opt_FTIgnoreOption :
     ;
 
 RangeExpr :
-        JSONPairConstructor %prec RANGE_REDUCE
+        AdditiveExpr %prec RANGE_REDUCE
         {
             $$ = $1;
         }
-    |   JSONPairConstructor TO JSONPairConstructor
+    |   AdditiveExpr TO AdditiveExpr
         {
             $$ = new RangeExpr( LOC(@$), $1, $3 );
         }
     ;
 
-JSONPairConstructor :
-        AdditiveExpr %prec RANGE_REDUCE
-        {
-            $$ = $1;
-        }
-    |   AdditiveExpr COLON AdditiveExpr
-        {
-            $$ = new JSON_PairConstructor(LOC(@$), $1, $3);
-        }
-    ;
 
 // [50]
 AdditiveExpr :
@@ -4218,7 +4215,20 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-    |   JSONConstructor
+        /* JSON grammar rules */
+    |   JSONObjectConstructor
+        {
+          $$ = $1;
+        }
+    |   JSONArrayConstructor
+        {
+          $$ = $1;
+        }
+    |   JSONSimpleObjectUnion
+        {
+          $$ = $1;
+        }
+    |   JSONAccumulatorObjectUnion
         {
           $$ = $1;
         }
@@ -5576,11 +5586,11 @@ FTSelection :
     ;
 
 opt_FTPosFilter_list :
-        /* empty */
+        /* empty */      %prec AT
         {
             $$ = NULL;
         }
-    |   FTPosFilter_list
+    |   FTPosFilter_list %prec AT
         {
             $$ = $1;
         }
@@ -6300,80 +6310,148 @@ FTIgnoreOption :
         }
     ;
 
-/********** JSON *************************************************************/
-
-JSONConstructor :
-    JSONDirectArrayConstructor
-    {
-      $$ = $1;
-    }
-;
+/*_______________________________________________________________________
+ *                                                                       *
+ *  JSON                                                                 *
+ *                                                                       *
+ *_______________________________________________________________________*/
 
 
-JSONDirectArrayConstructor :
-    LBRACK RBRACK
-    {
-      $$ = new JSON_ArrayConstructor(LOC(@$), NULL);
-    }
-  | LBRACK Expr RBRACK
-    {
-      $$ = new JSON_ArrayConstructor(LOC(@$), $2);
-    }
-;
+JSONObjectConstructor :
+        LBRACE JSONPairList RBRACE
+        {
+          $$ = new JSON_ObjectConstructor( LOC(@$), dynamic_cast<exprnode*>($2) );
+        }
+    ;
 
+JSONPairList :
+        ExprSingle COLON ExprSingle
+        {
+          $$ = new JSON_PairConstructor( LOC(@$), $1, $3 );
+        }
+    |   JSONPairList COMMA ExprSingle COLON ExprSingle
+        {
+          JSON_PairList* jpl;
+          if (dynamic_cast<JSON_PairConstructor*>($1) != NULL)
+            jpl = new JSON_PairList( LOC(@$) );
+          else
+            jpl = dynamic_cast<JSON_PairList*>($1);
+          jpl->push_back(new JSON_PairConstructor( LOC(@$), $3, $5) );
+          $$ = jpl;
+        }
+    ;
+
+JSONArrayConstructor :
+        LBRACK RBRACK
+        {
+          $$ = new JSON_ArrayConstructor( LOC(@$), NULL );
+        }
+    |   LBRACK Expr RBRACK
+        {
+          $$ = new JSON_ArrayConstructor( LOC(@$), $2 );
+        }
+    ;
+
+JSONSimpleObjectUnion :
+        L_SIMPLE_OBJ_UNION R_SIMPLE_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+        }
+    |   L_SIMPLE_OBJ_UNION Expr R_SIMPLE_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+        }
+    ;
+
+JSONAccumulatorObjectUnion :
+        L_ACCUMULATOR_OBJ_UNION R_ACCUMULATOR_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+        }
+    |   L_ACCUMULATOR_OBJ_UNION Expr R_ACCUMULATOR_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+        }
+    ;
+
+JSONInsertExpr :
+        INSERT JSON ExprSingle INTO ExprSingle %prec AT
+        {
+          // TODO: fill in
+        }
+    |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          // TODO: fill in
+        }
+    ;
+
+JSONDeleteExpr :
+        _DELETE JSON PrimaryExpr LPAR ExprSingle RPAR
+        {
+          // TODO: fill in
+        }
+    ;
+
+JSONRenameExpr :
+        RENAME JSON PrimaryExpr LPAR ExprSingle RPAR AS ExprSingle
+        {
+          // TODO: fill in
+        }
+    ;
+
+JSONReplaceExpr :
+        REPLACE JSON VALUE OF PrimaryExpr LPAR ExprSingle RPAR WITH ExprSingle
+        {
+          // TODO: fill in
+        }
+    ;
+
+JSONAppendExpr :
+        APPEND JSON ExprSingle TO ExprSingle
+        {
+          // TODO: fill in
+        }
+    ;
 
 JSONTest :
-    JSONItemTest
-    {
-      $$ = $1;
-    }
-  |
-    JSONObjectTest
-    {
-      $$ = $1;
-    }
-  |
-    JSONArrayTest
-    {
-      $$ = $1;
-    }
-  |
-    JSONPairTest
-    {
-      $$ = $1;
-    }
+        JSONItemTest
+        {
+          $$ = $1;
+        }
+    |   JSONObjectTest
+        {
+          $$ = $1;
+        }
+    |   JSONArrayTest
+        {
+          $$ = $1;
+        }
 ;
 
-
 JSONItemTest :
-    JSON_ITEM LPAR RPAR
-    {
-      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
-    }
+        JSON_ITEM LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+        }
 ;
 
 JSONObjectTest :
-    OBJECT LPAR RPAR
-    {
-      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
-    }
+        OBJECT LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+        }
 ;
 
 JSONArrayTest :
-    ARRAY LPAR RPAR
-    {
-      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
-    }
+        ARRAY LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+        }
 ;
-
-
-JSONPairTest :
-    PAIR LPAR RPAR
-    {
-      $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonPair);
-    }
-;
-
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -6617,10 +6695,11 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
-    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
-    |   PAIR                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pair"))); }
+    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
+    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
+    |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
     |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
     |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 

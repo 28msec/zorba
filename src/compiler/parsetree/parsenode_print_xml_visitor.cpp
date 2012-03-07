@@ -1062,6 +1062,7 @@ void* begin_visit(JSON_PairConstructor const& n)
 
 END_TAG(JSON_PairConstructor)
 
+BEGIN_END_TAG(JSON_PairList)
 
 void* begin_visit(const JSON_Test& n)
 {

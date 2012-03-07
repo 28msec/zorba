@@ -1920,6 +1920,7 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (JSON_ObjectConstructor);
   DEFAULT_VISIT (JSON_DirectObjectContent);
   DEFAULT_VISIT (JSON_PairConstructor);
+  DEFAULT_VISIT (JSON_PairList);
   void* begin_visit(const JSON_Test& n)
   {
     os << store::StoreConsts::toString(n.get_kind()) << "()";

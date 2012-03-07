@@ -9,88 +9,88 @@ Iterator tree for main query:
 <FunctionTraceIterator>
   <flwor::FLWORIterator>
     <ForVariable name="wordlist">
-      <ElementIterator>
+      <ElementIterator copyInputNodes="false">
         <SingletonIterator value="xs:QName(,,keywords)"/>
         <FnConcatIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(red)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(green)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(red)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(blue)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(violet)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(red)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(blue)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(blue)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(red)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(orange)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(green)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(yellow)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(indigo)"/>
             </TextIterator>
           </ElementIterator>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,term)"/>
             <TextIterator>
               <SingletonIterator value="xs:string(red)"/>

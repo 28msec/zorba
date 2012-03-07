@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/jsoniq/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/jsoniq/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/home/jsoniq/zorba/debug/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/home/jsoniq/zorba/debug/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/jsoniq/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/xquery_bzr/jsoniq/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/home/jsoniq/zorba/debug/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -465,25 +465,28 @@ namespace zorba {
      FOREACH = 560,
      FOREIGN = 561,
      KEYS = 562,
-     STRUCTURED_ITEM = 563,
-     ARRAY = 564,
-     JSON_ITEM = 565,
-     OBJECT = 566,
-     PAIR = 567,
-     BYTE_ORDER_MARK_UTF8 = 568,
-     RANGE_REDUCE = 569,
-     SEQUENCE_TYPE_REDUCE = 570,
-     ADDITIVE_REDUCE = 571,
-     UNION_REDUCE = 572,
-     INTERSECT_EXCEPT_REDUCE = 573,
-     QVARINDECLLIST_REDUCE = 574,
-     COMMA_DOLLAR = 575,
-     UNARY_PREC = 576,
-     OCCURS_STAR = 577,
-     OCCURS_PLUS = 578,
-     OCCURS_HOOK = 579,
-     STEP_REDUCE = 580,
-     MULTIPLICATIVE_REDUCE = 581
+     L_SIMPLE_OBJ_UNION = 563,
+     R_SIMPLE_OBJ_UNION = 564,
+     L_ACCUMULATOR_OBJ_UNION = 565,
+     R_ACCUMULATOR_OBJ_UNION = 566,
+     JSON = 567,
+     APPEND = 568,
+     POSITION = 569,
+     OBJECT = 570,
+     ARRAY = 571,
+     JSON_ITEM = 572,
+     STRUCTURED_ITEM = 573,
+     BYTE_ORDER_MARK_UTF8 = 574,
+     RANGE_REDUCE = 575,
+     SEQUENCE_TYPE_REDUCE = 576,
+     ADDITIVE_REDUCE = 577,
+     UNION_REDUCE = 578,
+     INTERSECT_EXCEPT_REDUCE = 579,
+     QVARINDECLLIST_REDUCE = 580,
+     COMMA_DOLLAR = 581,
+     UNARY_PREC = 582,
+     STEP_REDUCE = 583,
+     MULTIPLICATIVE_REDUCE = 584
    };
 
     };
@@ -663,7 +666,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 667 "/home/jsoniq/zorba/debug/src/compiler/parser/xquery_parser.hpp"
+#line 670 "/home/colea/xquery_bzr/jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

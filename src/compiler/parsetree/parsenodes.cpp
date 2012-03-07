@@ -5659,7 +5659,7 @@ JSON_ArrayConstructor::JSON_ArrayConstructor(
 }
 
 
-JSON_ArrayConstructor::~JSON_ArrayConstructor() 
+JSON_ArrayConstructor::~JSON_ArrayConstructor()
 {
   delete expr_;
 }
@@ -5683,7 +5683,7 @@ JSON_ObjectConstructor::JSON_ObjectConstructor(
 }
 
 
-JSON_ObjectConstructor::~JSON_ObjectConstructor() 
+JSON_ObjectConstructor::~JSON_ObjectConstructor()
 {
   delete expr_;
 }
@@ -5702,7 +5702,7 @@ void JSON_DirectObjectContent::accept(parsenode_visitor& v) const
   BEGIN_VISITOR();
 
   vector<rchandle<exprnode> >::const_iterator it = thePairs.begin();
-  for (; it != thePairs.end(); ++it) 
+  for (; it != thePairs.end(); ++it)
   {
     const exprnode* e_p = &**it;
     ACCEPT_CHK(e_p);
@@ -5728,6 +5728,19 @@ JSON_PairConstructor::~JSON_PairConstructor()
 {
   delete expr1_;
   delete expr2_;
+}
+
+
+void JSON_PairList::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  vector<rchandle<JSON_PairConstructor> >::const_iterator it = thePairs.begin();
+  for (; it != thePairs.end(); ++it)
+  {
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
+  END_VISITOR();
 }
 
 

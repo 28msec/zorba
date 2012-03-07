@@ -58,20 +58,21 @@ typedef zorba::xquery_parser::token_type token_type;
    |______________________________________________________________________*/
 
 #define PUSH_STATE(state) \
-    do { \
-        yy_push_state(state); \
-    } while(0)
+  do { \
+    yy_push_state(state); \
+  } while(0)
 
 #define POP_STATE() \
-    do { \
-        yy_pop_state(); \
-    } while(0)
+  do { \
+    if (yy_get_start_stack_ptr() > 0) \
+      yy_pop_state(); \
+  } while(0)
 
 #define PUSH_AND_BEGIN( pushed, new ) \
-    do { \
-        BEGIN new; \
-        PUSH_STATE(pushed); \
-    } while(0)
+  do { \
+    BEGIN new; \
+    PUSH_STATE(pushed); \
+  } while(0)
 
 
   /*______________________________________________________________________
@@ -360,6 +361,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  Exclusive start states
    |______________________________________________________________________*/
 
+%x INITIAL_ACCUMULATOR
 %x MODE_APOS_ATTRIBUTE_CONTENT
 %x MODE_QUOTE_ATTRIBUTE_CONTENT
 %x MODE_ELEM_COMP_CONSTR
@@ -394,6 +396,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  expression or subexpression.
    |______________________________________________________________________*/
 
+<INITIAL,INITIAL_ACCUMULATOR>{
+
 "(" { return token::LPAR; }
 ";" { return token::SEMI; }
 "," { return token::COMMA; }
@@ -407,7 +411,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 ".." { return token::DOT_DOT; }
 "." { return token::DOT; }
 "?" { return token::HOOK; }
-"]" { return token::RBRACK; }
 "$" { return token::DOLLAR; }
 "#" { return token::HASH; }
 ":" { return token::COLON; }
@@ -427,6 +430,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   theDriver->theDocComment.str("");
   return token::MODULE;
 }
+
     /* Tokens with state transitions */
 "element" {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
 "attribute" { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
@@ -557,12 +561,35 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  JSONIQ tokens
    |______________________________________________________________________*/
 
-"object" { return token::OBJECT; }
-"array" { return token::ARRAY; }
-"pair" { return token::PAIR; }
+  /* "[" and "]" are not JSONiq tokens, but they have been moved here because
+     of the "{[ ]}" grammar construct */
+"[" { PUSH_STATE(INITIAL); return token::LBRACK; }
+"]" { POP_STATE(); return token::RBRACK; }
+
+"{[" { PUSH_STATE(INITIAL_ACCUMULATOR); return token::L_ACCUMULATOR_OBJ_UNION; }
+"]}"  {
+        // This if() disambiguates between the "{[ ]}" grammar construct and the
+        // plain "[ ]" predicate
+        if (YY_START == INITIAL_ACCUMULATOR)
+        {
+          POP_STATE();
+          return token::R_ACCUMULATOR_OBJ_UNION;
+        }
+        else
+        {
+          POP_STATE();
+          yyless(1);
+          return token::RBRACK;
+        }
+      }
+
+"{|" { return token::L_SIMPLE_OBJ_UNION; }
+"|}" { return token::R_SIMPLE_OBJ_UNION; }
+"json" { return token::JSON; }
+"append" { return token::APPEND; }
+"position" { return token::POSITION; }
 "json-item" { return token::JSON_ITEM; }
 "structured-item" { return token::STRUCTURED_ITEM; }
-
 
 
     /*______________________________________________________________________
@@ -633,7 +660,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "idiv" { return token::IDIV; }
 "intersect" { return token::INTERSECT; }
 "is" { return token::IS; }
-"[" { return token::LBRACK; }
 "<=" { return token::LE; }
 "<<" { return token::PRECEDES; }
 "mod" { return token::MOD; }
@@ -795,6 +821,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   /* -------------------- */
 "(#" { BEGIN MODE_PRAGMA; return token::PRAGMA_BEGIN;}
 
+
   /* push initial state */
   /* ------------------ */
 "{" { PUSH_STATE(INITIAL); return token::LBRACE; }
@@ -802,57 +829,15 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
   /* pop previous state */
   /* ------------------ */
-"}" {
-  if (yy_get_start_stack_ptr() > 0)   // The lexer will catch the unexpected right brace and generate a syntax error
-    POP_STATE();
-  return token::RBRACE;
-}
+"}" { POP_STATE(); return token::RBRACE; }
 
 
 {WSstar} {
   /* eat up whitespace */
 }
 
-  /* END <MODE INITIAL> */
+} /* END <MODE INITIAL,INITIAL_ACCUMULATOR> */
 
-
-  /*______________________________________________________________________
-   |
-   | OCCURRENCE_INDICATOR State
-   |
-   | This special state is needed to distinguish occurrence indicators
-   | that appear in the SequenceType production. For instance, compare
-   | "foo instance of baz*" to "baz*foo". In the first case, the "*" is
-   | interpreted as an occurrence indicator, and in the second case, it
-   | must be interpreted as a multiplication operator. But, when in the
-   | OCCURRENCEINDICATOR state, if anything else other than "?", "*",
-   | "+", those symbols must be interpreted in the OPERATOR state. For
-   | instance, this would occur with the expression "foo instance of baz
-   | and $x", with the operator "and".
-   |______________________________________________________________________*/
-
-  /* <MODE_OCCURRENCE_INDICATOR>{ */
-
-  /* transition to OPERATOR */
-  /* ---------------------- */
-
-  /* "?" {
-  // TODO:
-  return token::OCCURS_HOOK;
-}
-
-"*" {
-  // TODO:
-  return token::OCCURS_STAR;
-}
-
-"+" {
-  // TODO:
-  return token::OCCURS_PLUS;
-} */
-
-
-  /* } */ /* MODE_OCCURRENCE_INDICATOR> */
 
    /*______________________________________________________________________
     |
@@ -1133,6 +1118,7 @@ std::string start_state(int state)
   switch (state)
   {
     case INITIAL: return "INITIAL";
+    case INITIAL_ACCUMULATOR: return "INITIAL_ACCUMULATOR";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";
     case MODE_ATTR_COMP_CONSTR: return "MODE_ATTR_COMP_CONSTR";

@@ -1382,7 +1382,8 @@ void normalize_fo(fo_expr* foExpr)
       else
       {
 #ifdef ZORBA_WITH_JSON
-        argExpr = wrap_in_unbox(argExpr, paramType);
+        // TODO: JSONiq: this needs to be reviewed
+        // argExpr = wrap_in_unbox(argExpr, paramType);
 #endif
 
         argExpr = wrap_in_type_match(argExpr, paramType, loc);
@@ -1475,10 +1476,12 @@ fo_expr* wrap_in_enclosed_expr(expr_t contentExpr, const QueryLoc& loc)
 
   if (!type->is_none() && !type->is_empty())
   {
+    /* TODO: JSONiq: this needs to be reviewed
     contentExpr = new fo_expr(theRootSctx,
                               contentExpr->get_loc(),
                               GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
                               contentExpr);
+    */
   }
 #endif
 
@@ -1816,7 +1819,7 @@ void collect_flwor_vars (
 
     if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& varDecls = 
+      const VarInDeclList& varDecls =
       *(static_cast<const ForClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
@@ -1831,7 +1834,7 @@ void collect_flwor_vars (
     }
     else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = 
+      const VarGetsDeclList& lV =
       *(static_cast<const LetClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
@@ -2313,7 +2316,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   // If an appliaction set a type for the context item via the c++ api, then
   // create a full declaration for it in order to enforce that type.
-  if (!theHaveContextItemDecl && 
+  if (!theHaveContextItemDecl &&
       theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
   {
     var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
@@ -3645,7 +3648,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   {
     //lc->setLazyEval(!f->isSequential());
 
-    const user_function* udf = 
+    const user_function* udf =
     static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
 
     arg_var->set_param_pos(flwor->num_clauses());
@@ -8363,7 +8366,7 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  // terrible hack to allow for a standalone true, false or null to be 
+  // terrible hack to allow for a standalone true, false or null to be
   // interpreted as a boolean. User must use ./true, ./false or ./null for
   // navigating XML elements named that way.
 #ifdef ZORBA_WITH_JSON
@@ -8391,12 +8394,12 @@ void* begin_visit(const PathExpr& v)
         AbbrevForwardStep* lAbbrFwdStep
           = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step().getp());
 
-        if (lAbbrFwdStep) 
+        if (lAbbrFwdStep)
         {
           const NameTest* lNodetest
             = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
 
-          if (lNodetest) 
+          if (lNodetest)
           {
             const rchandle<QName> lQName = lNodetest->getQName();
 
@@ -8425,7 +8428,7 @@ void* begin_visit(const PathExpr& v)
           }
         }
       }
-    }  
+    }
   }
 #endif
 
@@ -10540,7 +10543,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
       accessorExpr = new fo_expr(theRootSctx,
                                  loc,
-                                 func, 
+                                 func,
                                  flworVarExpr,
                                  arguments[0]);
     }
@@ -10549,7 +10552,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
       accessorExpr = new fo_expr(theRootSctx,
                                  loc,
-                                 func, 
+                                 func,
                                  flworVarExpr);
     }
     normalize_fo(accessorExpr.getp());
@@ -10856,7 +10859,7 @@ void end_visit(const InlineFunction& v, void* aState)
 /*******************************************************************************
   JSONConstructor ::= DirectObjectConstructor |
                       DirectArrayConstructor |
-                      ComputedObjectConstructor | 
+                      ComputedObjectConstructor |
                       ComputedArrayConstructor |
                       ComputedPairConstructor
 ********************************************************************************/
@@ -10867,7 +10870,7 @@ void end_visit(const InlineFunction& v, void* aState)
 
   DirectPairConstructor ::= ExprSingle ":" ExprSingle
 
-  The DirectPairConstructor production can appear only on the RHS of a 
+  The DirectPairConstructor production can appear only on the RHS of a
   DirectObjectConstructor
 
   The 1st ExprSingle must return exactly one string.
@@ -10918,6 +10921,19 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
 #endif
 }
 
+/*******************************************************************************
+  JSON_PairList ::= JSON_PairConstructor | JSON_PairList COMMA JSON_PairConstructor
+********************************************************************************/
+void* begin_visit(const JSON_PairList& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const JSON_PairList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
 
 /*******************************************************************************
   DirectObjectConstructor ::= "{" DirectObjectContent "}"
@@ -10988,7 +11004,7 @@ void end_visit(const JSON_DirectObjectContent& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   csize numPairs = v.size();
   std::vector<expr_t> pairs(numPairs);
-  
+
   for (csize i = numPairs; i > 0; --i)
   {
     pairs[i-1] = pop_nodestack();

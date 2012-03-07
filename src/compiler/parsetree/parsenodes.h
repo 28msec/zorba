@@ -3556,7 +3556,7 @@ public:
   rchandle<exprnode> get_step_expr() const { return step_expr_h; }
 
   rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
-  
+
   bool is_implicit() const { return is_implicit_b; }
 
   virtual void accept(parsenode_visitor&) const;
@@ -6521,6 +6521,26 @@ public:
   const exprnode* get_expr2() const { return expr2_; }
 
   void accept( parsenode_visitor& ) const;
+};
+
+
+class JSON_PairList : public parsenode
+{
+protected:
+  std::vector<rchandle<JSON_PairConstructor> > thePairs;
+
+public:
+  JSON_PairList(const QueryLoc&) : parsenode(loc) { };
+
+  void push_back(rchandle<JSON_PairConstructor> pair) { thePairs.push_back(pair); }
+
+  rchandle<JSON_PairConstructor> operator[](int i) { return thePairs[i]; }
+
+  const JSON_PairConstructor *operator[] (int i) const { return thePairs[i]; }
+
+  ulong size () const { return (ulong)thePairs.size (); }
+
+  void accept(parsenode_visitor&) const;
 };
 
 
