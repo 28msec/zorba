@@ -496,20 +496,20 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
 (:~
  : Tokenizes the given document.
  :
- : @param $doc The document to tokenize.
+ : @param $node The node to tokenize.
  : @param $lang The default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
- : of <code>$doc</code>.
+ : of <code>$node</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  :)
-declare function ft:tokenize( $doc as node(), $lang as xs:language )
+declare function ft:tokenize( $node as node(), $lang as xs:language )
   as node()* external;
 
 (:~
  : Tokenizes the given document.
  :
- : @param $doc The XML document to tokenize.
+ : @param $node The node to tokenize.
  : The document's default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
@@ -517,10 +517,10 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
  :)
-declare function ft:tokenize( $doc as node() )
+declare function ft:tokenize( $node as node() )
   as node()*
 {
-  ft:tokenize( $doc, ft:current-lang() )
+  ft:tokenize( $node, ft:current-lang() )
 };
 
 (:~
