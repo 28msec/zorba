@@ -2,7 +2,7 @@
 
 \section memory_leaks_intro Introduction
 
-The Zorba XQuery Processor manage automatically its own memory, but still, there are cases where you may receive the following message:
+The Zorba XQuery Processor manages automatically its own memory, but still, there are cases where you may receive the following message:
 
 \code
 Zorba did not close properly, objects may still in memory while shutdown the store. 
