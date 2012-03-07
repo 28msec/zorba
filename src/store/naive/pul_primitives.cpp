@@ -24,7 +24,7 @@
 #include "pul_primitives.h"
 #include "node_items.h"
 #include "atomic_items.h"
-#include "simple_collection.h"
+#include "collection.h"
 #include "simple_item_factory.h"
 #include "node_factory.h"
 #include "simple_index.h"
@@ -948,7 +948,7 @@ void UpdDeleteCollection::apply()
   theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
   if (theCollection == NULL)
     return;//If two delete collection are issued in the same snapshot is a noop
-  SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
+  Collection* collection = static_cast<Collection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
   collection->getIndexes(indexes);
@@ -1012,7 +1012,7 @@ void UpdDeleteCollection::undo()
 ********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1029,7 +1029,7 @@ void UpdInsertIntoCollection::apply()
 
 void UpdInsertIntoCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1061,7 +1061,7 @@ void UpdInsertIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertFirstIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1080,7 +1080,7 @@ void UpdInsertFirstIntoCollection::apply()
 
 void UpdInsertFirstIntoCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1098,7 +1098,7 @@ void UpdInsertFirstIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertLastIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1114,7 +1114,7 @@ void UpdInsertLastIntoCollection::apply()
 
 void UpdInsertLastIntoCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1146,7 +1146,7 @@ void UpdInsertLastIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertBeforeIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1162,7 +1162,7 @@ void UpdInsertBeforeIntoCollection::apply()
 
 void UpdInsertBeforeIntoCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
@@ -1176,7 +1176,7 @@ void UpdInsertBeforeIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAfterIntoCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1193,7 +1193,7 @@ void UpdInsertAfterIntoCollection::apply()
 
 void UpdInsertAfterIntoCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
@@ -1207,7 +1207,7 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdDeleteNodesFromCollection::apply()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
@@ -1262,7 +1262,7 @@ void UpdDeleteNodesFromCollection::apply()
 
 void UpdDeleteNodesFromCollection::undo()
 {
-  SimpleCollection* lColl = static_cast<SimpleCollection*>
+  Collection* lColl = static_cast<Collection*>
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 

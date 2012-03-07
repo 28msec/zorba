@@ -116,7 +116,8 @@ and development headers.
   To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel),
   you can pass an additional parameter to CMake, e.g.,
   <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
-- Zorba has other options as well.
+- Zorba has other build options as well
+  (see \ref build_options).
   You can tweak the performance and library footprint
   by enabling or disabling various features from Zorba.
 
