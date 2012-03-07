@@ -91,7 +91,7 @@ bool CountIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) cons
   {
     {
       store::Item_t lCountItem;
-      GENV_ITEMFACTORY->createInteger(lCountItem, Integer(lState->incCount()));
+      GENV_ITEMFACTORY->createInteger(lCountItem, xs_integer(lState->incCount()));
       bindVariables(lCountItem, theCountVars, aPlanState);
     }
     STACK_PUSH(true, lState);
