@@ -623,8 +623,6 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
-  TokenizerProvider const *tokenizer_provider;
   zstring value_string;
 
   TokenizeStringIteratorState *state;
@@ -639,15 +637,17 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
       lang = get_lang_from( item, loc );
     }
 
-    {
-    tokenizer_provider = GENV_STORE.getTokenizerProvider();
+    { // local scope
+    TokenizerProvider const *const tokenizer_provider =
+      GENV_STORE.getTokenizerProvider();
+    Tokenizer::Numbers no;
     Tokenizer::ptr tokenizer = tokenizer_provider->getTokenizer( lang, no );
     TokenizeStringIteratorCallback callback;
     tokenizer->tokenize_string(
       value_string.data(), value_string.size(), lang, false, callback
     );
     state->string_tokens_.take( callback.tokens_ );
-    }
+    } // local scope
 
     while ( state->string_tokens_.hasNext() ) {
       FTToken const *token;

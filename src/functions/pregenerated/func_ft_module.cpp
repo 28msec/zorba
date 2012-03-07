@@ -123,6 +123,15 @@ PlanIter_t zorba_full_text_thesaurus_lookup::codegen(
 
 
 
+PlanIter_t zorba_full_text_tokenize_string::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizeStringIterator(sctx, loc, argv);
+}
 
 void populate_context_ft_module(static_context* sctx)
 {
