@@ -465,6 +465,7 @@ public:
   static const char* ZORBA_INTROSP_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
+  static const char* ZORBA_URI_FN_NS;
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;

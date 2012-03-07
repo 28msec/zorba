@@ -77,4 +77,14 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
-
+test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
+test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
+test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/statictyping-24
+test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
+test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
+test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
+test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22
+test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1
+test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2
+test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1
+test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2

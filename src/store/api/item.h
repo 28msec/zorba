@@ -311,7 +311,7 @@ public:
 
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
    */
-  virtual xs_uinteger
+  virtual xs_nonNegativeInteger
   getUnsignedIntegerValue() const;
 
   /** Accessor for xs:long
