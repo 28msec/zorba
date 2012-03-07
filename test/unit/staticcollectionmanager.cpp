@@ -206,23 +206,25 @@ staticcollectionamanger3(zorba::Zorba* z)
   Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
   
   lColMgr->createCollection(lCollName2);
-  Collection_t lColl = lColMgr->getCollection(lCollName2);
-
-  std::vector<Annotation_t> lAnnotations;
-  lColl->getAnnotations(lAnnotations);
-  size_t num_annotations = 0;
-  for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
-       lIter != lAnnotations.end(); ++lIter)
   {
-    std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
-    ++num_annotations;
-  }
+    Collection_t lColl = lColMgr->getCollection(lCollName2);
 
-  if (num_annotations != 3)
-  {
-    return false;
-  }
+    std::vector<Annotation_t> lAnnotations;
+    lColl->getAnnotations(lAnnotations);
+    size_t num_annotations = 0;
+    for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
+         lIter != lAnnotations.end(); ++lIter)
+    {
+      std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
+      ++num_annotations;
+    }
 
+    if (num_annotations != 3)
+    {
+      return false;
+    }
+  }
+  lColMgr->deleteCollection(lCollName2);
 
   return true;
 }
