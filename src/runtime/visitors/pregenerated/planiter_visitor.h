@@ -251,6 +251,10 @@ namespace zorba{
 
     class FunctionAnnotationsIterator;
 
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -583,6 +587,8 @@ namespace zorba{
     class StringIsStreamableIterator;
 
     class StringSplitIterator;
+
+    class DecodeURIIterator;
 
     class XQDocIterator;
 
@@ -928,6 +934,12 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
@@ -1427,6 +1439,9 @@ public:
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
+
+    virtual void beginVisit ( const DecodeURIIterator& ) = 0;
+    virtual void endVisit   ( const DecodeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

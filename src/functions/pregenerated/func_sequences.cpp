@@ -39,7 +39,7 @@ PlanIter_t op_concatenate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnConcatIterator(sctx, loc, argv);
 }
@@ -49,7 +49,7 @@ PlanIter_t fn_index_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIndexOfIterator(sctx, loc, argv);
 }
@@ -59,7 +59,7 @@ PlanIter_t fn_empty::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnEmptyIterator(sctx, loc, argv);
 }
@@ -69,7 +69,7 @@ PlanIter_t fn_exists::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnExistsIterator(sctx, loc, argv);
 }
@@ -79,7 +79,7 @@ PlanIter_t fn_distinct_values::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDistinctValuesIterator(sctx, loc, argv);
 }
@@ -89,7 +89,7 @@ PlanIter_t fn_insert_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnInsertBeforeIterator(sctx, loc, argv);
 }
@@ -99,7 +99,7 @@ PlanIter_t fn_remove::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnRemoveIterator(sctx, loc, argv);
 }
@@ -109,7 +109,7 @@ PlanIter_t fn_reverse::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnReverseIterator(sctx, loc, argv);
 }
@@ -123,7 +123,7 @@ PlanIter_t fn_one_or_more::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnOneOrMoreIterator(sctx, loc, argv);
 }
@@ -133,7 +133,7 @@ PlanIter_t fn_deep_equal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDeepEqualIterator(sctx, loc, argv);
 }
@@ -144,7 +144,7 @@ PlanIter_t fn_avg::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnAvgIterator(sctx, loc, argv);
 }
@@ -154,7 +154,7 @@ PlanIter_t fn_sum::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumIterator(sctx, loc, argv);
 }
@@ -164,7 +164,7 @@ PlanIter_t op_sum_double::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumDoubleIterator(sctx, loc, argv);
 }
@@ -174,7 +174,7 @@ PlanIter_t op_sum_float::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumFloatIterator(sctx, loc, argv);
 }
@@ -184,7 +184,7 @@ PlanIter_t op_sum_decimal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumDecimalIterator(sctx, loc, argv);
 }
@@ -194,7 +194,7 @@ PlanIter_t op_sum_integer::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumIntegerIterator(sctx, loc, argv);
 }
@@ -204,7 +204,7 @@ PlanIter_t op_to::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new OpToIterator(sctx, loc, argv);
 }
@@ -214,7 +214,7 @@ PlanIter_t fn_id::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIdIterator(sctx, loc, argv);
 }
@@ -224,7 +224,7 @@ PlanIter_t fn_element_with_id::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnElementWithIdIterator(sctx, loc, argv);
 }
@@ -234,7 +234,7 @@ PlanIter_t fn_idref::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIdRefIterator(sctx, loc, argv);
 }
@@ -244,7 +244,7 @@ PlanIter_t fn_doc::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDocIterator(sctx, loc, argv);
 }
@@ -254,7 +254,7 @@ PlanIter_t fn_doc_available::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDocAvailableIterator(sctx, loc, argv);
 }

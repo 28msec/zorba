@@ -36,7 +36,7 @@ PlanIter_t fn_current_dateTime::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentDateTimeIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_current_date::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentDateIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_current_time::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentTimeIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_implicit_timezone::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ImplicitTimezoneIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_default_collation::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DefaultCollationIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_position::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
@@ -106,7 +106,7 @@ PlanIter_t fn_static_base_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }

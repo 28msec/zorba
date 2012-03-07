@@ -15,13 +15,6 @@
  */
 /* vim:set et sw=2 ts=2: */
 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .txt FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include <string>
 #include <sstream>
 #include <zorba/config.h>

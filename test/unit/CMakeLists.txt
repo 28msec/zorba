@@ -15,6 +15,7 @@
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mini_http.xq ${CMAKE_CURRENT_BINARY_DIR}/mini_http.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mini_audit.xq ${CMAKE_CURRENT_BINARY_DIR}/mini_audit.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
 #belongs to test cxx_api_changes.cpp
@@ -70,6 +71,10 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module1.xq ${CMAKE_CURRENT_BINARY_DIR
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module2.xq ${CMAKE_CURRENT_BINARY_DIR}/module2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module3.xq ${CMAKE_CURRENT_BINARY_DIR}/module3.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module4.xq ${CMAKE_CURRENT_BINARY_DIR}/module4.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module5.xq ${CMAKE_CURRENT_BINARY_DIR}/module5.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module6.xq ${CMAKE_CURRENT_BINARY_DIR}/module6.xq)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/schema1.xsd ${CMAKE_CURRENT_BINARY_DIR}/schema1.xsd)
 
 SET(UNIT_TESTS_SRCS
   path_resolver.cpp
@@ -135,6 +140,7 @@ ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
+ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
 ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
 IF (NOT ZORBA_NO_FULL_TEXT)
   ZORBA_ADD_TEST("test/libunit/stemmer" LibUnitTest stemmer)

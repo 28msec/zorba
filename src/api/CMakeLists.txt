@@ -27,6 +27,7 @@ SET(API_SRCS
     zorba_string.cpp
     itemfactoryimpl.cpp
     item.cpp
+    identtypesimpl.cpp
     typeidentimpl.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
@@ -55,6 +56,7 @@ SET(API_SRCS
     zorba_functions.cpp
     annotationimpl.cpp
     auditimpl.cpp
+    transcode_streambuf.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
