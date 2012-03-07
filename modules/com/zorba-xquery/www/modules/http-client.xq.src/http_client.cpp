@@ -53,7 +53,10 @@ namespace zorba {
 #	endif
 			aPath = lPath.substr(0, lPath.rfind('\\'));
 			aPath += "\\cacert.pem";
-			curl_easy_setopt(lCurl, CURLOPT_CAINFO, aPath.c_str());
+      if(GetFileAttributesA(aPath.c_str()) != INVALID_FILE_ATTRIBUTES)
+			  curl_easy_setopt(lCurl, CURLOPT_CAINFO, aPath.c_str());
+      else
+        curl_easy_setopt(lCurl, CURLOPT_SSL_VERIFYPEER, 0L);
 		}
 #endif //WIN32
 
@@ -207,7 +210,7 @@ namespace zorba {
         lOverrideContentType.c_str(), lStatusOnly));
       int lRetCode = lRespParser->parse();
 
-      if (lRetCode) {
+       if (lRetCode) {
         thrower.raiseException("http://expath.org/ns/error", "HC001", "An HTTP error occurred");
       }
 

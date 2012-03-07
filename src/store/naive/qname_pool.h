@@ -107,17 +107,17 @@ public:
   ~QNamePool();
 
   store::Item_t insert(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        bool        sync = true);
-
+      const char* ns,
+      const char* pre,
+      const char* ln,
+      bool sync = true);
+  
   store::Item_t insert(
-        const zstring& ns,
-        const zstring& pre,
-        const zstring& ln,
-        bool sync = true);
-
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& ln,
+      bool sync = true);
+  
   void remove(QNameItem* qn);
 
 protected:
@@ -126,13 +126,13 @@ protected:
   void cachePin(QNameItem* qn);
 
   QNHashEntry* hashFind(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        ulong       nslen,
-        ulong       prelen,
-        ulong       lnlen,
-        ulong       hval);
+      const char* ns,
+      const char* pre,
+      const char* ln,
+      ulong       nslen,
+      ulong       prelen,
+      ulong       lnlen,
+      ulong       hval);
 };
 
 

@@ -597,31 +597,67 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-
-QNameItem::~QNameItem()
+QNameItem::QNameItem(
+    const char* aNamespace,
+    const char* aPrefix,
+    const char* aLocalName)
+  :
+  theIsInPool(false)
 {
-  if (isValid())
-  {
-    assert(theLocal.empty() || theNormQName == NULL);
-  }
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+QNameItem::QNameItem(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+  :
+  theIsInPool(false)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+void QNameItem::initializeAsQNameNotInPool(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+{
+  assert(!isValid());
+
+  store::Item_t lPoolQName =
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
+
+  theIsInPool = false;
 }
 
 
 void QNameItem::free()
 {
-  GET_STORE().getQNamePool().remove(this);
-}
+  QNamePool& thePool = GET_STORE().getQNamePool();
 
+  if (theIsInPool)
+  {
+    thePool.remove(this);
+    return;
+  }
+  
+  assert(!isNormalized());
 
-QNameItem* QNameItem::getNormalized() const
-{
-  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  invalidate(false, NULL);
+  delete this;
 }
 
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
+  const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
@@ -644,7 +680,8 @@ bool QNameItem::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+  return theNormalizedQName ==
+      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 
@@ -731,14 +768,14 @@ zstring QNameItem::show() const
   return res;
 }
 
-
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
-NotationItem::NotationItem(const zstring& nameSpace,
-                           const zstring& prefix,
-                           const zstring& localName)
+NotationItem::NotationItem(
+    const zstring& nameSpace,
+    const zstring& prefix,
+    const zstring& localName)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -752,12 +789,13 @@ NotationItem::NotationItem(store::Item* qname)
 }
 
 
-bool NotationItem::equals(const store::Item* item,
-                          long timezone,
-                          const XQPCollator* aCollation) const
+bool NotationItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == 
-          static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return theQName->equals(
+      static_cast<const NotationItem*>(item)->theQName);
 }
 
 
