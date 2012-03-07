@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 
 So, for this scenario, the ideal way to solve the problem is through scopes, 
 where you implement certain part of code in methods and release them when the objects loose their reference. 
-Alternatively, you can explicitly set the variable to null, in which case the object will automaticall be released.
+Alternatively, you can explicitly set the variable to null, in which case the object will automatically be released.
 
 Solution example:
 \code
