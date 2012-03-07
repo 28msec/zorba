@@ -319,6 +319,9 @@ namespace zorba {
     void beginVisit( const TokenizerPropertiesIterator& );
     void endVisit  ( const TokenizerPropertiesIterator& );
 
+    void beginVisit( const TokenizeStringIterator& );
+    void endVisit  ( const TokenizeStringIterator& );
+
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 

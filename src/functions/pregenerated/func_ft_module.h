@@ -205,6 +205,21 @@ public:
 };
 
 
+//zorba-full-text:tokenize-string
+class zorba_full_text_tokenize_string : public function
+{
+public:
+  zorba_full_text_tokenize_string(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

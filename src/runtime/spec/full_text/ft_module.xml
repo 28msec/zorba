@@ -6,6 +6,7 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
+  <zorba:include form="Quoted">runtime/full_text/ft_token_seq_iterator.h</zorba:include>
   <zorba:include form="Quoted">runtime/full_text/thesaurus.h</zorba:include>
 </zorba:header>
 
@@ -192,6 +193,30 @@
     </zorba:methods>
 
   </zorba:function>
+
+</zorba:iterator>
+
+<zorba:iterator name="TokenizeStringIterator"
+                generateResetImpl="true">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="tokenize-string" prefix="zorba-full-text">
+      <zorba:param>xs:string</zorba:param>    <!-- string -->
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="tokenize-string" prefix="zorba-full-text">
+      <zorba:param>xs:string</zorba:param>    <!-- string -->
+      <zorba:param>xs:language</zorba:param>  <!-- lang -->
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+  <zorba:state generateInit="use-default">
+    <zorba:member type="FTTokenSeqIterator" name="string_tokens_"/>
+  </zorba:state>
 
 </zorba:iterator>
 

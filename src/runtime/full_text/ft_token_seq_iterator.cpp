@@ -25,8 +25,7 @@ using namespace std;
 namespace zorba {
 
 FTTokenSeqIterator::FTTokenSeqIterator( FTTokens &tokens ) {
-  tokens_.swap( tokens );
-  pos_ = 0;
+  take( tokens );
 }
 
 FTTokenSeqIterator::~FTTokenSeqIterator() {
@@ -58,6 +57,11 @@ void FTTokenSeqIterator::pos( Mark_t const &mark ) {
 }
 
 void FTTokenSeqIterator::reset() {
+  pos_ = 0;
+}
+
+void FTTokenSeqIterator::take( FTTokens &tokens ) {
+  tokens.swap( tokens_ );
   pos_ = 0;
 }
 

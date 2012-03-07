@@ -18,37 +18,38 @@
 
 #include <zorba/diagnostic_list.h>
 
+#include "api/unmarshaller.h"
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
-
-#include "zorbatypes/URI.h"
-
-#include "system/globalenv.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#include "store/api/pul.h"
-#include "store/api/store.h"
+#include "store/api/index.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "store/api/iterator_factory.h" // for creating the probe iterator
 #include "store/api/iterator.h"
-#include "store/api/index.h"
+#include "store/api/iterator_factory.h" // for creating the probe iterator
+#include "store/api/pul.h"
+#include "store/api/store.h"
 
 #include "runtime/core/apply_updates.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
+#include "system/globalenv.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include "zorbatypes/URI.h"
 #include "zorbautils/locale.h"
 
 #include "runtime/full_text/ft_module.h"
 #include "ft_stop_words_set.h"
-#include "thesaurus.h"
+#include "ft_token_seq_iterator.h"
 #include "ft_util.h"
+#include "thesaurus.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -98,6 +99,8 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
   iso639_1::type const lang = get_host_lang();
@@ -111,6 +114,8 @@ bool HostLangIterator::nextImpl( store::Item_t &result,
 
   STACK_END( state );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
@@ -138,6 +143,8 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
 
   STACK_END( state );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
@@ -172,6 +179,8 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
                                                 PlanState &plan_state ) const {
   bool is_supported;
@@ -195,6 +204,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
 
   STACK_END( state );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
                                                  PlanState &plan_state ) const {
@@ -252,6 +263,8 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 bool StemIterator::nextImpl( store::Item_t &result,
                              PlanState &plan_state ) const {
   store::Item_t item;
@@ -290,6 +303,8 @@ bool StemIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   store::Item_t item;
@@ -306,6 +321,8 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
   STACK_END( state );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
@@ -401,6 +418,8 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   );
   ZORBA_ASSERT( state->tresult_.get() );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
@@ -501,7 +520,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
 #endif /* ZORBA_NO_XMLSCHEMA */
 
       STACK_PUSH( true, state );
-    }
+    } // while
   }
 
   STACK_END( state );
@@ -516,6 +535,8 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
     );
   state->doc_tokens_->reset();
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
@@ -572,6 +593,83 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   STACK_PUSH( true, state );
   STACK_END( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+struct TokenizeStringIteratorCallback : public Tokenizer::Callback {
+  void token( char const*, size_type, iso639_1::type, size_type, size_type, size_type, Item const* );
+  
+  FTTokenSeqIterator::FTTokens tokens_;
+};
+
+void TokenizeStringIteratorCallback::token( char const *utf8_s,
+                                            size_type utf8_len,
+                                            iso639_1::type lang,
+                                            size_type token_no,
+                                            size_type sent_no,
+                                            size_type para_no,
+                                            Item const *item ) {
+  store::Item const *const store_item =
+    item ? Unmarshaller::getInternalItem( *item ) : nullptr;
+
+  FTToken const token(
+    utf8_s, utf8_len, token_no, sent_no, para_no, store_item, lang
+  );
+  tokens_.push_back( token );
+}
+
+bool TokenizeStringIterator::nextImpl( store::Item_t &result,
+                                       PlanState &plan_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  Tokenizer::Numbers no;
+  TokenizerProvider const *tokenizer_provider;
+  zstring value_string;
+
+  TokenizeStringIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeStringIteratorState, state, plan_state );
+
+  lang = get_lang_from( getStaticContext() );
+
+  if ( consumeNext( item, theChildren[0], plan_state ) ) {
+    item->getStringValue2( value_string );
+    if ( theChildren.size() > 1 ) {
+      consumeNext( item, theChildren[1], plan_state );
+      lang = get_lang_from( item, loc );
+    }
+
+    {
+    tokenizer_provider = GENV_STORE.getTokenizerProvider();
+    Tokenizer::ptr tokenizer = tokenizer_provider->getTokenizer( lang, no );
+    TokenizeStringIteratorCallback callback;
+    tokenizer->tokenize_string(
+      value_string.data(), value_string.size(), lang, false, callback
+    );
+    state->string_tokens_.take( callback.tokens_ );
+    }
+
+    while ( state->string_tokens_.hasNext() ) {
+      FTToken const *token;
+      token = state->string_tokens_.next();
+      ZORBA_ASSERT( token );
+      value_string = token->value();
+      GENV_ITEMFACTORY->createString( result, value_string );
+      STACK_PUSH( true, state );
+    }
+  }
+
+  STACK_END( state );
+}
+
+void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeStringIterator,TokenizeStringIteratorState>::
+    resetImpl( plan_state );
+  TokenizeStringIteratorState *const state =
+    StateTraitsImpl<TokenizeStringIteratorState>::getState(
+      plan_state, this->theStateOffset
+    );
+  state->string_tokens_.reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

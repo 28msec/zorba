@@ -535,10 +535,7 @@ declare function ft:tokenize( $doc as node() )
  :)
 declare function ft:tokenize-string( $string as xs:string,
                                      $lang as xs:language )
-  as xs:string*
-{
-  () (: TODO :)
-};
+  as xs:string* external;
 
 (:~
  : Tokenizes the given string.

@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "runtime/full_text/ft_token_seq_iterator.h"
 #include "runtime/full_text/thesaurus.h"
 
 
@@ -440,6 +441,54 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class TokenizeStringIteratorState : public PlanIteratorState
+{
+public:
+  FTTokenSeqIterator string_tokens_; //
+
+  TokenizeStringIteratorState();
+
+  ~TokenizeStringIteratorState();
+
+  void reset(PlanState&);
+};
+
+class TokenizeStringIterator : public NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(TokenizeStringIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeStringIterator,
+    NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>*)this);
+  }
+
+  TokenizeStringIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~TokenizeStringIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
 };
 
 
