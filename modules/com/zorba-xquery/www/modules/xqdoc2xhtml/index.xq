@@ -1414,7 +1414,7 @@ declare %private function xqdoc2html:split-function-signature($signature as xs:s
             substring-before($rest, ") external")
           (: no external function :)
           else
-            $rest
+            substring-before($rest, ")")
         (: the return type is specified :)
         else
           $tmp
