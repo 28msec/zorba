@@ -465,6 +465,29 @@ static void collect_flw_vars(
         if (condvars.next != NULL) vars.insert(condvars.next);
       }
     }
+	else if (c.get_kind() == flwor_clause::group_clause)
+	{
+		const group_clause* gc = static_cast<const group_clause *>(&c);
+
+		flwor_clause::rebind_list_t::const_iterator iter = gc->beginGroupVars();
+		
+		while(iter != gc->endNonGroupVars())
+		{
+			if(iter == gc->endGroupVars())
+				iter = gc->beginNonGroupVars();
+
+			vars.insert((*iter).second);
+
+			iter++;
+		}
+	}
+	else if(c.get_kind() == flwor_clause::count_clause)
+	{
+		const count_clause* cc = static_cast<const count_clause *>(&c);
+
+		vars.insert(cc->get_var());
+	}
+
   }
 }
 

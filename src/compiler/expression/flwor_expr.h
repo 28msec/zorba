@@ -481,12 +481,20 @@ public:
 
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
 
+  rebind_list_t::const_iterator beginGroupVars() const { return theGroupVars.begin(); }
+
   rebind_list_t::iterator endGroupVars() { return theGroupVars.end(); }
+
+  rebind_list_t::const_iterator endGroupVars() const { return theGroupVars.end(); }
 
   rebind_list_t::iterator beginNonGroupVars() { return theNonGroupVars.begin(); }
 
+  rebind_list_t::const_iterator beginNonGroupVars() const { return theNonGroupVars.begin(); }
+
   rebind_list_t::iterator endNonGroupVars() { return theNonGroupVars.end(); }
 
+  rebind_list_t::const_iterator endNonGroupVars() const { return theNonGroupVars.end(); }
+  
   expr* get_input_for_group_var(const var_expr* var);
 
   expr* get_input_for_nongroup_var(const var_expr* var);
