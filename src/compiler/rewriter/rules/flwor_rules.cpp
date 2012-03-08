@@ -155,11 +155,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   const forletwin_clause& flwc = *reinterpret_cast<const forletwin_clause *>(flwor[0]);
 
   csize numClauses = flwor.num_clauses();
-  csize numForLetClauses = 0;
+  csize numForLetWinClauses = 0;
 
   // "for $x in E return $x"  --> "E"
   // "let $x := E return $x"  --> "E"
+  // Single windowing clauses are left alone
   if (numClauses == 1 &&
+	  flwor.get_clause(0)->get_kind() != flwor_clause::window_clause &&
       myVars.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
@@ -224,9 +226,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       gc = static_cast<group_clause *>(&c);
     }
+	else if (c.get_kind() == flwor_clause::window_clause)
+	{
+		numForLetWinClauses++;
+	}
     else if (c.get_kind() == flwor_clause::for_clause)
     {
-      numForLetClauses++;
+      numForLetWinClauses++;
       for_clause* fc = static_cast<for_clause *>(&c);
 
       expr* domainExpr = fc->get_expr();
@@ -290,7 +296,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetClauses;
+        --numForLetWinClauses;
         --i;
 
         flwor.compute_return_type(true, NULL);
@@ -299,7 +305,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     else if (c.get_kind() == flwor_clause::let_clause)
     {
       let_clause* lc = static_cast<let_clause *>(&c);
-      numForLetClauses++;
+      numForLetWinClauses++;
 
       expr* domainExpr = lc->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
@@ -339,7 +345,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetClauses;
+        --numForLetWinClauses;
         --i;
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
@@ -357,7 +363,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   // FLWOR with no remaining clauses
-  if (numForLetClauses == 0)
+  if (numForLetWinClauses == 0)
   {
     if (gc != NULL)
     {
