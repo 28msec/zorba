@@ -6,16 +6,22 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 variable $contents;
 
 ddl:create(xs:QName("ns:collection"));
+ddl:create(xs:QName("ns:collection2"));
 
 dml:insert-nodes(
   xs:QName("ns:collection"),
   for $i in 1 to 10 return <a>{$i}</a>
 );
 
-$contents := dml:collection(xs:QName("ns:collection"));
+dml:insert-nodes(
+  xs:QName("ns:collection2"),
+  for $i in 1 to 10 return <b>{$i}</b>
+);
 
-dml:truncate(xs:QName("ns:collection"));
+$contents := (dml:collection(xs:QName("ns:collection")), dml:collection(xs:QName("ns:collection2")));
 
-$contents := ($contents, dml:collection(xs:QName("ns:collection")));
+(dml:truncate(xs:QName("ns:collection")), dml:truncate(xs:QName("ns:collection2")));
+
+$contents := ($contents, dml:collection(xs:QName("ns:collection")), dml:collection(xs:QName("ns:collection")));
 
 $contents
