@@ -16,10 +16,11 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
+
+#include "collection.h"
 
 #include "store/api/iterator.h"
-#include "store/api/collection.h"
 
 #include "zorbautils/latch.h"
 #include "zorbautils/checked_vector.h"
@@ -37,7 +38,7 @@ namespace zorba { namespace simplestore {
                    The current value of the counter is then assigned as the id
                    the new tree.
 ********************************************************************************/
-class SimpleCollection : public store::Collection
+class SimpleCollection : public Collection
 {
   friend class CollectionIter;
 
@@ -87,6 +88,9 @@ public:
       bool isJSONIQ = false);
 
   virtual ~SimpleCollection();
+  
+  /********************** All these methods implement the **********************
+  ***************** zorba::simplestore::Collection interface ******************/
 
   const store::Item* getName() const { return theName.getp(); }
 
@@ -114,7 +118,7 @@ public:
 
   virtual ulong createTreeId() { return theTreeCounter++; }
 
-  virtual ulong addNodes(
+  virtual xs_integer addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* targetNode,
         bool before);
@@ -126,10 +130,6 @@ public:
   virtual xs_integer removeNodes(xs_integer position, xs_integer num);
 
   virtual void adjustTreePositions();
-
-  virtual void getIndexes(std::vector<store::Index*>& indexes);
-
-  virtual void getActiveICs(std::vector<store::IC*>& ics);
 };
 
 } // namespace store

@@ -65,6 +65,7 @@
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
 #include "runtime/strings/strings.h"
+#include "runtime/uris/uris.h"
 #include "runtime/xqdoc/xqdoc.h"
 
 namespace zorba{
@@ -4258,6 +4259,20 @@ void PrinterVisitor::endVisit ( const StringSplitIterator& ) {
   thePrinter.endEndVisit();
 }
 // </StringSplitIterator>
+
+
+// <DecodeURIIterator>
+void PrinterVisitor::beginVisit ( const DecodeURIIterator& a) {
+  thePrinter.startBeginVisit("DecodeURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DecodeURIIterator>
 
 
 // <XQDocIterator>

@@ -39,7 +39,7 @@ PlanIter_t fn_jsoniq_names::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONNamesIterator(sctx, loc, argv[0]);
 }
@@ -51,7 +51,7 @@ PlanIter_t fn_jsoniq_member::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONMemberAccessorIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -69,7 +69,7 @@ PlanIter_t op_zorba_json_item_accessor::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONItemAccessorIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -81,7 +81,7 @@ PlanIter_t op_zorba_json_empty_item_accessor::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONEmptyItemAccessorIterator(sctx, loc, argv[0]);
 }
@@ -93,7 +93,7 @@ PlanIter_t fn_jsoniq_values::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONValuesIterator(sctx, loc, argv[0]);
 }
@@ -105,7 +105,7 @@ PlanIter_t fn_jsoniq_size::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONSizeIterator(sctx, loc, argv[0]);
 }
@@ -117,7 +117,7 @@ PlanIter_t fn_jsoniq_null::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONNullIterator(sctx, loc);
 }
@@ -129,7 +129,7 @@ PlanIter_t fn_jsoniq_insert_as_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONInsertAsFirstIterator(sctx, loc, argv);
 }
@@ -141,7 +141,7 @@ PlanIter_t fn_jsoniq_insert_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONInsertAfterIterator(sctx, loc, argv);
 }
@@ -153,7 +153,7 @@ PlanIter_t fn_jsoniq_insert_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONInsertBeforeIterator(sctx, loc, argv);
 }
@@ -165,7 +165,7 @@ PlanIter_t fn_jsoniq_insert_as_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONInsertAsLastIterator(sctx, loc, argv);
 }
@@ -177,7 +177,7 @@ PlanIter_t fn_jsoniq_delete_pair::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONDeleteIterator(sctx, loc, argv);
 }
@@ -189,7 +189,7 @@ PlanIter_t fn_jsoniq_rename::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONRenameIterator(sctx, loc, argv);
 }
@@ -201,7 +201,7 @@ PlanIter_t fn_jsoniq_replace_value_in_object::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONReplaceValueIterator(sctx, loc, argv);
 }
@@ -213,7 +213,7 @@ PlanIter_t op_zorba_json_unbox::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONUnboxingIterator(sctx, loc, argv[0]);
 }

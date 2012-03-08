@@ -1632,6 +1632,16 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (StringLiteral);
 
+
+    void* begin_visit(const StringConcatExpr& n)
+    {
+      n.get_left_expr()->accept(*this);
+      os << " || ";
+      n.get_right_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT(StringConcatExpr);   
+
     void* begin_visit(const TreatExpr& n)
     {
       n.get_castable_expr()->accept(*this);

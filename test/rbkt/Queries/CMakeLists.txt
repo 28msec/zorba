@@ -38,15 +38,6 @@ LIST(REMOVE_ITEM TESTFILES
 
   # crashes on Windows: 866978, 866742 (fix 866978 before 866742)
   zorba/HigherOrder/hof-101.xq
-
-  # fails because of the image external module's broken documentation
-  # If you try to submit something else to the external module, it will
-  # fail because of this test.
-  # If you try and mark it as expected failure here, the "expected failure"
-  # will fail because the image module will not be tested and therefore the
-  # module documentation test will succeed.
-  # Created bug 871335 for this.
-  zorba/xqdoc/moduleDocumentation.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -242,15 +233,7 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
 
-  IF(NOT ZORBA_WITH_BIG_INTEGER)
-    # These tests fail due to integer overflow.
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-  ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
-
-  IF(ZORBA_TEST_XQUERYX)
+  IF (ZORBA_TEST_XQUERYX)
 
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   
@@ -270,11 +253,21 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes013 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
-  ENDIF(ZORBA_TEST_XQUERYX)
-  
+  ENDIF (ZORBA_TEST_XQUERYX)
+
   #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
   #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
   #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
+
+  IF (NOT ZORBA_WITH_BIG_INTEGER)
+    # These test will never pass without big integers beause the integers used
+    # in the queries exceed a 63-bit signed integer.
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
@@ -516,7 +509,6 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
 
-
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
@@ -538,6 +530,14 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
+# external variable default expected failures
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 900688) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 900688) # forward references not implemented -> cycles cannot be detected
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 900688) # forward references not implemented
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
+EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
+
 # Failing windowing tests.
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)
 
@@ -551,3 +551,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
+

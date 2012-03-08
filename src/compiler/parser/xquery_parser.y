@@ -310,6 +310,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AT                               "'at'"
 %token ATTRIBUTE                        "'attribute'"
 %token AT_SIGN                          "'@'"
+%token CONCAT                           "'||'"
 %token CASE                             "'case'"
 %token CASTABLE                         "'castable'"
 %token CAST                             "'cast'"
@@ -720,6 +721,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> StatementsAndExpr
 %type <expr> StatementsAndOptionalExpr
 %type <expr> StatementsAndOptionalExprTop
+%type <expr> StringConcatExpr
 %type <expr> SwitchStatement
 %type <expr> TypeswitchStatement
 %type <expr> TryStatement
@@ -918,7 +920,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -3484,11 +3486,11 @@ ComparisonExpr :
 
 // [51]
 FTContainsExpr :
-        RangeExpr
+        StringConcatExpr
         {
             $$ = $1;
         }
-    |   RangeExpr CONTAINS TEXT FTSelection opt_FTIgnoreOption
+    |   StringConcatExpr CONTAINS TEXT FTSelection opt_FTIgnoreOption
         {
             $$ = new FTContainsExpr(
                 LOC(@$),
@@ -3496,6 +3498,17 @@ FTContainsExpr :
                 dynamic_cast<FTSelection*>($4),
                 dynamic_cast<FTIgnoreOption*>($5)
             );
+        }
+    ;
+
+StringConcatExpr :
+        RangeExpr
+        {
+          $$ = $1;
+        }
+    |   RangeExpr CONCAT StringConcatExpr
+        {
+          $$ = new StringConcatExpr(LOC(@$), $1, $3);
         }
     ;
 

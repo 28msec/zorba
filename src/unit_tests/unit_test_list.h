@@ -17,6 +17,8 @@
 #ifndef ZORBA_UNIT_TEST_LIST_H
 #define ZORBA_UNIT_TEST_LIST_H
 
+#include <iostream>
+
 #include <zorba/config.h>
 
 namespace zorba {
@@ -34,6 +36,9 @@ namespace zorba {
     /**
      * ADD NEW UNIT TESTS HERE
      */
+#ifndef ZORBA_NO_UNICODE
+    int test_icu_streambuf( int, char*[] );
+#endif /* ZORBA_NO_UNICODE */
     int json_parser( int, char*[] );
 
     void initializeTestList();

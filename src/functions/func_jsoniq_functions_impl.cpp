@@ -35,7 +35,7 @@ PlanIter_t fn_jsoniq_flatten::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONFlattenIterator(sctx, loc, argv[0], false);
 }
@@ -46,7 +46,7 @@ PlanIter_t op_zorba_flatten_internal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONFlattenIterator(sctx, loc, argv[0], true);
 }
@@ -57,7 +57,7 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   SingletonIterator* lArg = dynamic_cast<SingletonIterator*>(argv[0].getp());
   if (lArg && lArg->getValue()->isAtomic())

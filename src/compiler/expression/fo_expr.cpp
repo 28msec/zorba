@@ -27,6 +27,8 @@
 #include "functions/udf.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba
 {
@@ -153,7 +155,9 @@ void fo_expr::compute_scripting_kind()
   const function* func = get_func();
   csize numArgs = num_args();
 
-  if (func->getKind() == FunctionConsts::OP_CONCATENATE_N)
+  switch (func->getKind())
+  {
+  case FunctionConsts::OP_CONCATENATE_N:
   {
     bool vacuous = true;
 
@@ -175,16 +179,14 @@ void fo_expr::compute_scripting_kind()
       {
         if (is_updating() && !(argKind & UPDATING_EXPR) && argKind != VACUOUS_EXPR)
         {
-          throw XQUERY_EXCEPTION(err::XUST0001,
-                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                                 ERROR_LOC(theArgs[i]->get_loc()));
+          RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+          ERROR_PARAMS(ZED(XUST0001_CONCAT)));
         }
         
         if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
         {
-          throw XQUERY_EXCEPTION(err::XUST0001,
-                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                                 ERROR_LOC(theArgs[i]->get_loc()));
+          RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+          ERROR_PARAMS(ZED(XUST0001_CONCAT)));
         }
       }
 
@@ -201,8 +203,16 @@ void fo_expr::compute_scripting_kind()
       theScriptingKind &= ~SIMPLE_EXPR;
 
     checkScriptingKind();
+
+    break;
   }
-  else
+  case FunctionConsts::OP_HOIST_1:
+  case FunctionConsts::OP_UNHOIST_1:
+  {
+    theScriptingKind = theArgs[0]->get_scripting_detail();
+    break;
+  }
+  default:
   {
     theScriptingKind = func->getScriptingKind();
 
@@ -217,9 +227,8 @@ void fo_expr::compute_scripting_kind()
 
       if (arg->is_updating())
       {
-        throw XQUERY_EXCEPTION(err::XUST0001,
-                               ERROR_PARAMS(ZED(XUST0001_Generic)),
-                               ERROR_LOC(theArgs[i]->get_loc()));
+        RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_Generic)));
       }
 
       short argKind = arg->get_scripting_detail();
@@ -242,6 +251,7 @@ void fo_expr::compute_scripting_kind()
       theScriptingKind &= ~SIMPLE_EXPR;
 
     checkScriptingKind();
+  }
   }
 }
 

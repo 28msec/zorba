@@ -31,7 +31,7 @@ PlanIter_t static_collections_dml_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -62,7 +62,7 @@ PlanIter_t static_collections_dml_index_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -93,7 +93,7 @@ PlanIter_t static_collections_ddl_create::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -124,7 +124,7 @@ PlanIter_t static_collections_ddl_delete::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -155,7 +155,7 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -186,7 +186,7 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -217,7 +217,7 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -248,7 +248,7 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -279,7 +279,7 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -310,7 +310,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -349,7 +349,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -388,7 +388,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -427,7 +427,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -467,7 +467,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -507,7 +507,7 @@ PlanIter_t static_collections_dml_delete_nodes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -538,7 +538,7 @@ PlanIter_t static_collections_dml_delete_node_first::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -569,7 +569,7 @@ PlanIter_t static_collections_dml_delete_node_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -599,23 +599,6 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresSortedNodes(
     expr* fo,
     csize input) const 
 {
-  bool dynamic = false;
-  bool jsoniq = false;
-
-  const zstring& ns = getName()->getNamespace();
-
-  if (ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
-
   return ANNOTATION_TRUE;
 }
 
@@ -636,7 +619,7 @@ PlanIter_t static_collections_ddl_is_available_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -667,7 +650,7 @@ PlanIter_t static_collections_ddl_available_collections::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;

@@ -909,11 +909,10 @@ Iterator tree for scene:calculate-basis:
               <EnclosedIterator attr_cont="false">
                 <IfThenElseIterator>
                   <FnExactlyOneIterator>
-                    <FnSubsequenceIterator>
-                      <LetVarIterator varname="position"/>
-                      <SingletonIterator value="xs:double(3)"/>
-                      <SingletonIterator value="xs:double(2)"/>
-                    </FnSubsequenceIterator>
+                    <LetVarIterator varname="position">
+                      <SingletonIterator value="xs:integer(3)"/>
+                      <SingletonIterator value="xs:integer(2)"/>
+                    </LetVarIterator>
                   </FnExactlyOneIterator>
                   <FnConcatIterator>
                     <AttributeIterator qname="xs:QName(,,x)">
@@ -943,11 +942,10 @@ Iterator tree for scene:calculate-basis:
               <EnclosedIterator attr_cont="false">
                 <IfThenElseIterator>
                   <FnExactlyOneIterator>
-                    <FnSubsequenceIterator>
-                      <LetVarIterator varname="forward"/>
-                      <SingletonIterator value="xs:double(3)"/>
-                      <SingletonIterator value="xs:double(2)"/>
-                    </FnSubsequenceIterator>
+                    <LetVarIterator varname="forward">
+                      <SingletonIterator value="xs:integer(3)"/>
+                      <SingletonIterator value="xs:integer(2)"/>
+                    </LetVarIterator>
                   </FnExactlyOneIterator>
                   <FnConcatIterator>
                     <AttributeIterator qname="xs:QName(,,x)">
@@ -1015,11 +1013,10 @@ Iterator tree for scene:calculate-basis:
                   <EnclosedIterator attr_cont="false">
                     <IfThenElseIterator>
                       <FnExactlyOneIterator>
-                        <FnSubsequenceIterator>
-                          <LetVarIterator varname="v"/>
-                          <SingletonIterator value="xs:double(3)"/>
-                          <SingletonIterator value="xs:double(2)"/>
-                        </FnSubsequenceIterator>
+                        <LetVarIterator varname="v">
+                          <SingletonIterator value="xs:integer(3)"/>
+                          <SingletonIterator value="xs:integer(2)"/>
+                        </LetVarIterator>
                       </FnExactlyOneIterator>
                       <FnConcatIterator>
                         <AttributeIterator qname="xs:QName(,,x)">
@@ -1051,11 +1048,10 @@ Iterator tree for scene:calculate-basis:
               <EnclosedIterator attr_cont="false">
                 <IfThenElseIterator>
                   <FnExactlyOneIterator>
-                    <FnSubsequenceIterator>
-                      <LetVarIterator varname="right"/>
-                      <SingletonIterator value="xs:double(3)"/>
-                      <SingletonIterator value="xs:double(2)"/>
-                    </FnSubsequenceIterator>
+                    <LetVarIterator varname="right">
+                      <SingletonIterator value="xs:integer(3)"/>
+                      <SingletonIterator value="xs:integer(2)"/>
+                    </LetVarIterator>
                   </FnExactlyOneIterator>
                   <FnConcatIterator>
                     <AttributeIterator qname="xs:QName(,,x)">
@@ -2306,13 +2302,12 @@ Iterator tree for vector:sum-internal:
         <ForVarIterator varname="remaining"/>
         <ForVarIterator varname="stride"/>
       </TypedValueCompareIterator_INTEGER>
-      <SubsequenceIntIterator>
-        <LetVarIterator varname="v"/>
+      <LetVarIterator varname="v">
         <SpecificNumArithIterator_AddOperation_INTEGER>
           <ForVarIterator varname="offset"/>
           <SingletonIterator value="xs:integer(1)"/>
         </SpecificNumArithIterator_AddOperation_INTEGER>
-      </SubsequenceIntIterator>
+      </LetVarIterator>
       <flwor::FLWORIterator>
         <ForVariable name="x">
           <UDFunctionCallIterator>

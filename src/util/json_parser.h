@@ -125,8 +125,8 @@ public:
   }
 
   /**
-   * Gets the value of this %token, if any.  Only %token types string and
-   * number have a value.
+   * Gets the value of this %token, if any.  Only %token types string, number,
+   * false, null, and true have a value.
    *
    * @return Returns said value or the empty string.
    */
@@ -150,6 +150,14 @@ private:
 
   friend class lexer;
 };
+
+/**
+ * Map a token's type to a JSON type.
+ *
+ * @param tt The token::type to map.
+ * @return Returns the corresponding JSON type or \c none if \a tt doesn't map.
+ */
+type map_type( token::type tt );
 
 /**
  * Emits the given token type to an ostream.
@@ -467,7 +475,7 @@ private:
   bool get_char( char* = nullptr );
   bool peek_char( char* );
   unicode::code_point parse_codepoint();
-  token::type parse_literal( char );
+  token::type parse_literal( char, token::value_type* );
   void parse_number( char, token::value_type* );
   void parse_string( token::value_type* );
 
@@ -499,11 +507,20 @@ public:
   /**
    * Gets the next token, if any.
    *
-   * @param result A pointer to the token to get into.
+   * @param result A pointer to the token to receive the token.
    * @return Returns \c true only if there was a next token.
    * @throws exception upon error.
    */
   bool next( token *result );
+
+  /**
+   * Peeks at the next token, if any.
+   *
+   * @param result A pointer to the token to receive the token, if any.
+   * @return Returns the type of the peeked token.
+   * @throws exception upon error.
+   */
+  token::type peek( token *result = nullptr );
 
   /**
    * Sets the file location.

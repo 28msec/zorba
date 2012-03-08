@@ -21,7 +21,7 @@
 
 #include "store_defs.h"
 #include "simple_store.h"
-#include "simple_collection.h"
+#include "collection.h"
 #include "simple_index_value.h"
 #include "simple_pul.h"
 #include "pul_primitives.h"
@@ -248,7 +248,7 @@ CollectionPul* PULImpl::getCollectionPulByName(
   }
   else
   {
-    SimpleCollection* collection = static_cast<SimpleCollection*>
+    Collection* collection = static_cast<Collection*>
       (GET_STORE().getCollection(collName, isDynamic, isJSONIQ).getp());
 
     theLastPul = new CollectionPul(this, collection);
@@ -970,6 +970,7 @@ void PULImpl::addCreateIndex(
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().
   createUpdCreateIndex(this, loc,  qname, spec, sourceIter);
+
   theCreateIndexList.push_back(upd);
 }
 
@@ -1022,6 +1023,7 @@ void PULImpl::addActivateForeignKeyIC(
       qname,
       aFromCollectionName,
       aToCollectionName);
+
   theICActivationList.push_back(upd);
 }
 
@@ -1030,6 +1032,7 @@ void PULImpl::addDeActivateIC(
       const store::Item_t& qname)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeActivateIC(this, loc, qname);
+
   theICActivationList.push_back(upd);
 }
 
@@ -1070,6 +1073,7 @@ void PULImpl::addCreateHashMap(
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateHashMap(
       this, loc, aQName, aKeyTypes, aCollations, aTimezone);
+
   theCreateHashMapList.push_back(upd);
 }
 
@@ -1079,6 +1083,7 @@ void PULImpl::addDestroyHashMap(
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDestroyHashMap(
       this, loc, aQName);
+
   theDestroyHashMapList.push_back(upd);
 }
 
@@ -1090,6 +1095,7 @@ void PULImpl::addInsertIntoHashMap(
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdInsertIntoHashMap(
       this, loc, aQName, aKey, aValue);
+
   theInsertIntoHashMapList.push_back(upd);
 }
 
@@ -1100,6 +1106,7 @@ void PULImpl::addRemoveFromHashMap(
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdRemoveFromHashMap(
       this, loc, aQName, aKey);
+
   theRemoveFromHashMapList.push_back(upd);
 }
 
@@ -1406,6 +1413,7 @@ void PULImpl::mergeUpdates(store::Item* other)
     }
 
     thePutList.push_back(otherUpd);
+    otherUpd->thePul = this;
     otherp->thePutList[i] = NULL;
   }
 
@@ -2039,7 +2047,7 @@ void PULImpl::undoUpdates()
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionPul::CollectionPul(PULImpl* pul, SimpleCollection* collection) 
+CollectionPul::CollectionPul(PULImpl* pul, Collection* collection) 
   :
   theCollection(collection),
   thePul(pul),

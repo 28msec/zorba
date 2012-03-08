@@ -150,8 +150,6 @@ expr::~expr()
 ********************************************************************************/
 void expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
-  serialize_baseclass(ar, (AnnotationHolder*)this);
   ar & theSctx;
   ar & theLoc;
   ar & theType;
@@ -296,9 +294,18 @@ std::string expr::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+void expr::setFreeVars(FreeVars& s)
+{
+  theFreeVars.swap(s);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void expr::clear_annotations()
 {
-  m_annotations.clear();
+  theFreeVars.clear();
 
   if (getProducesSortedNodes() != ANNOTATION_TRUE_FIXED)
     setProducesSortedNodes(ANNOTATION_UNKNOWN);

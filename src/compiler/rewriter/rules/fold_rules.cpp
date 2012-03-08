@@ -53,7 +53,7 @@ using namespace std;
 
 namespace zorba {
 
-static void remove_wincond_vars(const flwor_wincond*, expr_tools::VarSetAnnVal*);
+static void remove_wincond_vars(const flwor_wincond*, expr::FreeVars&);
 
 static bool standalone_expr(expr_t);
 
@@ -424,13 +424,14 @@ RULE_REWRITE_PRE(MarkFreeVars)
 
 RULE_REWRITE_POST(MarkFreeVars)
 {
-  expr_tools::VarSetAnnVal* freevars = new expr_tools::VarSetAnnVal;
-  AnnotationValue_t new_ann = AnnotationValue_t(freevars);
+  expr::FreeVars& freevars = node->getFreeVars();
 
-  if (node->get_expr_kind () == var_expr_kind)
+  freevars.clear();
+
+  if (node->get_expr_kind() == var_expr_kind)
   {
-    var_expr_t v = dynamic_cast<var_expr *> (node);
-    freevars->add(v);
+    var_expr_t v = dynamic_cast<var_expr *>(node);
+    freevars.insert(v);
   }
   else
   {
@@ -441,10 +442,10 @@ RULE_REWRITE_POST(MarkFreeVars)
     {
       expr* e = *iter;
 
-      const expr_tools::var_ptr_set& kfv = expr_tools::get_varset_annotation(e);
+      const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
                 kfv.end(),
-                inserter(freevars->theVarset, freevars->theVarset.begin()));
+                inserter(freevars, freevars.begin()));
 
       iter.next();
     }
@@ -465,21 +466,21 @@ RULE_REWRITE_POST(MarkFreeVars)
         {
           const for_clause* fc = static_cast<const for_clause *>(c);
 
-          freevars->theVarset.erase(fc->get_var());
+          freevars.erase(fc->get_var());
           if (fc->get_pos_var() != NULL)
-            freevars->theVarset.erase(fc->get_pos_var());
+            freevars.erase(fc->get_pos_var());
         }
         else if (c->get_kind() == flwor_clause::let_clause)
         {
           const let_clause* lc = static_cast<const let_clause *>(c);
 
-          freevars->theVarset.erase(lc->get_var());
+          freevars.erase(lc->get_var());
         }
         else if (c->get_kind() == flwor_clause::window_clause)
         {
           const window_clause* wc = static_cast<const window_clause *>(c);
 
-          freevars->theVarset.erase(wc->get_var());
+          freevars.erase(wc->get_var());
 
           flwor_wincond* startCond = wc->get_win_start();
           flwor_wincond* stopCond = wc->get_win_stop();
@@ -495,32 +496,30 @@ RULE_REWRITE_POST(MarkFreeVars)
           const group_clause* gc = static_cast<const group_clause *>(c);
 
           const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-          unsigned numGroupVars = (unsigned)gvars.size();
+          csize numGroupVars = gvars.size();
 
-          for (unsigned i = 0; i < numGroupVars; ++i)
+          for (csize i = 0; i < numGroupVars; ++i)
           {
-            freevars->theVarset.erase(gvars[i].second.getp());
+            freevars.erase(gvars[i].second.getp());
           }
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-          unsigned numNonGroupVars = (unsigned)ngvars.size();
+          csize numNonGroupVars = ngvars.size();
 
-          for (unsigned i = 0; i < numNonGroupVars; ++i)
+          for (csize i = 0; i < numNonGroupVars; ++i)
           {
-            freevars->theVarset.erase(ngvars[i].second.getp());
+            freevars.erase(ngvars[i].second.getp());
           }
         }
         else if (c->get_kind() == flwor_clause::count_clause)
         {
           const count_clause* cc = static_cast<const count_clause *>(c);
 
-          freevars->theVarset.erase(cc->get_var());
+          freevars.erase(cc->get_var());
         }
       }
     }
   }
-
-  node->put_annotation(Annotations::FREE_VARS, new_ann);
 
   return NULL;
 }
@@ -528,20 +527,20 @@ RULE_REWRITE_POST(MarkFreeVars)
 
 static void remove_wincond_vars(
     const flwor_wincond* cond,
-    expr_tools::VarSetAnnVal* freevars)
+    expr::FreeVars& freevars)
 {
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
-  freevars->theVarset.erase(inVars.posvar.getp());
-  freevars->theVarset.erase(inVars.curr.getp());
-  freevars->theVarset.erase(inVars.prev.getp());
-  freevars->theVarset.erase(inVars.next.getp());
+  freevars.erase(inVars.posvar.getp());
+  freevars.erase(inVars.curr.getp());
+  freevars.erase(inVars.prev.getp());
+  freevars.erase(inVars.next.getp());
 
-  freevars->theVarset.erase(outVars.posvar.getp());
-  freevars->theVarset.erase(outVars.curr.getp());
-  freevars->theVarset.erase(outVars.prev.getp());
-  freevars->theVarset.erase(outVars.next.getp());
+  freevars.erase(outVars.posvar.getp());
+  freevars.erase(outVars.curr.getp());
+  freevars.erase(outVars.prev.getp());
+  freevars.erase(outVars.next.getp());
 }
 
 
@@ -558,18 +557,18 @@ RULE_REWRITE_PRE(FoldConst)
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
-      expr_tools::get_varset_annotation(node).empty() &&
+      node->getFreeVars().empty() &&
       ! node->isUnfoldable() &&
       rtype->max_card() <= 1)
   {
     vector<store::Item_t> result;
-    expr_t folded = execute (rCtx.getCompilerCB(), node, result);
+    expr_t folded = execute(rCtx.getCompilerCB(), node, result);
     if (folded == NULL)
     {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
-                ((expr *) (new const_expr (node->get_sctx(), LOC (node), result [0]))) :
-                ((expr *) (fo_expr::create_seq (node->get_sctx(), LOC (node)))));
+                ((expr*) (new const_expr(node->get_sctx(), LOC(node), result[0]))) :
+                ((expr*) (fo_expr::create_seq(node->get_sctx(), LOC(node)))));
     }
     return folded;
   }
@@ -752,7 +751,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       {
         return new const_expr(fo->get_sctx(),
                               fo->get_loc(),
-                              Integer(type_cnt));
+                              xs_integer(type_cnt));
       }
       else if (fkind == FunctionConsts::FN_EMPTY_1)
       {
@@ -949,23 +948,16 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     }
     else
     {
-      store::Item_t pVal;
-      store::Item_t iVal = val;
-      GenericCast::promote(pVal, iVal, &*rtm.DOUBLE_TYPE_ONE, tm, val_expr->get_loc());
-      expr_t dpos = new const_expr(val_expr->get_sctx(), LOC(val_expr), pVal);
-
       std::vector<expr_t> args(3);
       args[0] = count_expr->get_arg(0);
-      args[1] = dpos;
-      args[2] = new const_expr(val_expr->get_sctx(),
-                               LOC(val_expr),
-                               xs_double(2.0));
+      args[1] = val_expr;
+      args[2] = new const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
 
-      expr_t subseq_expr = 
-      expr_tools::fix_annotations(new fo_expr(count_expr->get_sctx(),
-                                              LOC(count_expr),
-                                              GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3),
-                                              args));
+      expr_t subseq_expr = expr_tools::fix_annotations(
+      new fo_expr(count_expr->get_sctx(),
+                  LOC(count_expr),
+                  GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                  args));
 
       return expr_tools::fix_annotations(
              new fo_expr(fo.get_sctx(),

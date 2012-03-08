@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_schema_validate_in_place::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaValidateInPlaceIterator(sctx, loc, argv[0]);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_util_schema_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaSchemaTypeIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_zorba_schema_schema_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaSchemaTypeIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_zorba_schema_is_validated::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaIsValidatedIterator(sctx, loc, argv);
 }

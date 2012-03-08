@@ -36,7 +36,7 @@ PlanIter_t op_is_same_node::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsSameNodeIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t op_node_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeBeforeIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t op_node_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeAfterIterator(sctx, loc, argv);
 }

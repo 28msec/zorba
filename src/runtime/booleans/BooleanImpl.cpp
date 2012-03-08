@@ -90,81 +90,62 @@ bool FnBooleanIterator::effectiveBooleanValue(
     bool negate)
 {
   store::Item_t item;
+  bool result;
+  bool is_sequence;
 
   TypeManager* tm = iter->getStaticContext()->get_typemanager();
 
   if (!consumeNext(item, iter, planState))
   {
     // empty sequence => false
-    return negate ^ false;
+    result = negate ^ false;
   }
-
-  bool lPairFound = false;
-  bool is_sequence;
-
-  while (true)
+  else if (item->isNode())
   {
-    if (item->isNode()
-  #ifdef ZORBA_WITH_JSON
-        || item->isJSONObject() || item->isJSONArray()
-  #endif
-        )
+    // node => true
+    result = negate ^ true;
+  }
+  else
+  {
+    store::SchemaTypeCode type = item->getTypeCode();
+
+    store::Item_t item2;
+    is_sequence = consumeNext(item2, iter, planState);
+
+    if (!is_sequence 
+        &&
+        (type == store::XS_BOOLEAN ||
+         TypeOps::is_subtype(type, store::XS_STRING) ||
+         TypeOps::is_subtype(type, store::XS_ANY_URI) ||
+         type == store::XS_UNTYPED_ATOMIC ||
+         TypeOps::is_numeric(type)))
     {
-      // node or json => true
-      return negate ^ true;
+      // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
+      // => effective boolean value is defined in the items
+      bool temp = item->getEBV();
+      result = negate ? (negate ^ temp) : temp;
     }
     else
     {
-      if (!lPairFound)
-      {
-        store::Item_t item2;
-        is_sequence = consumeNext(item2, iter, planState);
-
-#ifdef ZORBA_WITH_JSON
-        if (item->isJSONPair() && !is_sequence)
-        {
-          item = item->getValue();
-          lPairFound = true;
-          continue;
-        }
-#endif
-      }
-  
-      if (!is_sequence)
-      {
-        store::SchemaTypeCode type = item->getTypeCode();
-        if (type == store::XS_BOOLEAN ||
-           TypeOps::is_subtype(type, store::XS_STRING) ||
-           TypeOps::is_subtype(type, store::XS_ANY_URI) ||
-           type == store::XS_UNTYPED_ATOMIC ||
-#ifdef ZORBA_WITH_JSON
-           type == store::JDM_NULL ||
-#endif
-           TypeOps::is_numeric(type))
-        {
-          // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
-          // => effective boolean value is defined in the items
-          bool temp = item->getEBV();
-          return negate ? (negate ^ temp) : temp;
-        }
-        else
-        {
-          RAISE_ERROR(err::FORG0006, loc,
-          ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
-        }
-      }
-      else
+      if (is_sequence)
       {
         xqtref_t type = tm->create_value_type(item);
-  
+
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
                      "", "fn:boolean",
                      ZED(EBVNotDefSeq_5),
                      *type));
       }
+      else
+      {
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
+      }
     }
   }
+
+  return result;
 }
 
 
@@ -864,7 +845,7 @@ bool CompareIterator::equal(
   {
     // There are 2 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
-    // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
+    // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
@@ -954,7 +935,7 @@ long CompareIterator::compare(
     {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
-      // type-inheritance subtree rooted at xs:Integer.
+      // type-inheritance subtree rooted at xs:integer.
       if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
           TypeOps::is_subtype(type1, store::XS_INTEGER))
       {

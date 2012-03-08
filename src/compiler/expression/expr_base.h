@@ -24,7 +24,6 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
-#include "compiler/semantic_annotations/annotation_holder.h"
 
 #include "functions/function_consts.h"
 
@@ -122,7 +121,7 @@ enum expr_kind_t
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public AnnotationHolder
+class expr : public SimpleRCObject
 {
   friend class expr_iterator_data;
   friend class ExprIterator;
@@ -138,6 +137,8 @@ public:
   typedef std::map<const expr *, expr_t> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
+
+  typedef std::set<const var_expr *> FreeVars;
 
   typedef enum
   {
@@ -184,6 +185,8 @@ protected:
 
   ulong              theFlags1;
 
+  FreeVars           theFreeVars;
+
 public:
   static bool is_sequential(short theScriptingKind);
 
@@ -193,7 +196,7 @@ public:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, AnnotationHolder)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -315,6 +318,13 @@ public:
   void setWillBeSerialized(BoolAnnotationValue v);
 
   bool willBeSerialized() const;
+
+  // Annotation : free vars
+  const FreeVars& getFreeVars() const { return theFreeVars; }
+
+  FreeVars& getFreeVars() { return theFreeVars; }
+
+  void setFreeVars(FreeVars& s);
 
   bool is_constant() const;
 

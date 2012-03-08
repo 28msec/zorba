@@ -81,7 +81,7 @@ PlanIter_t op_enclosed_expr::codegen(
     static_context* sctx,
     const QueryLoc& loc, 
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
 #ifdef ZORBA_WITH_JSON
   fo_expr* enclosedExpr = static_cast<fo_expr*>(&ann);

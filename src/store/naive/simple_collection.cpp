@@ -29,6 +29,7 @@
 #ifdef ZORBA_WITH_JSON
 #  include "json_items.h"
 #endif
+
 #include "zorbatypes/numconversions.h"
 
 namespace zorba { namespace simplestore {
@@ -182,7 +183,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
   method raises an error. The moethod returns the position occupied by the first
   new node after the insertion is done.
 ********************************************************************************/
-ulong SimpleCollection::addNodes(
+xs_integer SimpleCollection::addNodes(
     std::vector<store::Item_t>& items,
     const store::Item* targetNode,
     bool before)
@@ -532,10 +533,8 @@ store::Item_t SimpleCollection::nodeAt(xs_integer position)
 bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) const
 {
   const XmlNode* node = NULL;
-#ifdef ZORBA_WITH_JSON
-  const json::SimpleJSONArray* array = NULL;
-  const json::SimpleJSONObject* object = NULL;
 
+#ifdef ZORBA_WITH_JSON
   if (theIsJSONIQ)
   {
     if (item->isNode())
@@ -550,11 +549,9 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
     }
     else if (item->isJSONObject())
     {
-      object = static_cast<const json::SimpleJSONObject*>(item);
     }
     else if (item->isJSONArray())
     {
-      array = static_cast<const json::SimpleJSONArray*>(item);
     }
     else
     {
@@ -643,74 +640,6 @@ void SimpleCollection::adjustTreePositions()
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
 #endif
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
-{
-  const IndexSet& availableIndexes = GET_STORE().getIndices();
-
-  IndexSet::iterator idxIte = availableIndexes.begin();
-  IndexSet::iterator idxEnd = availableIndexes.end();
-
-  for (; idxIte != idxEnd; ++idxIte)
-  {
-    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
-    const store::IndexSpecification& indexSpec = index->getSpecification();
-
-    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    csize numIndexSources = indexSources.size();
-
-    for (csize i = 0; i < numIndexSources; ++i)
-    {
-      if (indexSources[i]->equals(getName()))
-      {
-        indexes.push_back(index);
-        break;
-      }
-    }
-  }
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
-{
-  store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
-
-  store::Item_t activeICName;
-  activeICNames->open();
-
-  while ( activeICNames->next(activeICName) )
-  {
-
-    store::IC* activeIC = GET_STORE().getIC(activeICName);
-
-    switch( activeIC->getICKind() )
-    {
-    case store::IC::ic_collection:
-      if ( activeIC->getCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    case store::IC::ic_foreignkey:
-      if ( activeIC->getToCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-
-      if ( activeIC->getFromCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-  }
-
-  activeICNames->close();
 }
 
 

@@ -638,7 +638,7 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, csize pos)
 store::Item*
 JSONObjectPair::getType() const
 {
-  return GET_STORE().JDM_PAIR_QNAME;
+  return NULL;
 }
 
 

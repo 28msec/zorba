@@ -639,6 +639,8 @@ namespace zorba{
 
     class StringSplitIterator;
 
+    class DecodeURIIterator;
+
     class XQDocIterator;
 
     class XQDocContentIterator;
@@ -1556,6 +1558,9 @@ public:
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
+
+    virtual void beginVisit ( const DecodeURIIterator& ) = 0;
+    virtual void endVisit   ( const DecodeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

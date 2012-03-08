@@ -489,7 +489,8 @@ static bool non_hoistable(const expr* e)
       is_enclosed_expr(e) ||
       e->containsRecursiveCall() ||
       e->is_nondeterministic() ||
-      e->is_sequential())
+      e->is_sequential() ||
+      e->is_updating())
   {
     return true;
   }

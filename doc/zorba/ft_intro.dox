@@ -1,13 +1,13 @@
 /** \page ft_intro Full Text
 
-\section ft_intro Introduction
-
 The Zorba XQuery engine implements the
 <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
 specification.
-Among other features,
-Zorba implements the ability to use a thesaurus for text-matching.
-See the \ref ft_thesaurus documentation.
+Additional documentation:
+
+  - \ref ft_stemmer
+  - \ref ft_thesaurus
+  - \ref ft_tokenizer
 
 \section ft_unimplemented Unimplemented Features
 

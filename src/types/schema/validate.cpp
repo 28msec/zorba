@@ -54,7 +54,7 @@
 #include "diagnostics/assert.h"
 #include "zorba/store_consts.h"
 
-using namespace std;
+//using namespace std;
 
 namespace zorba
 {
@@ -145,15 +145,21 @@ bool Validator::realValidationValue(
     //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: "<<
     // sourceNode->getNodeKind() << endl;
 
-    if ( validationMode == ParseConstants::val_strict )
+    if ( validationMode == ParseConstants::val_dtd_lax)
     {
-      throw XQUERY_EXCEPTION( err::XQDY0084, ERROR_LOC( loc ) );
+      // when dtd validation enabled avoid using schema object
+      result = sourceNode;
+      return true;
     }
     else
     {
-      // no schema available - items remain the same
-      result = sourceNode;
-      return true;    
+      // if we got here it basicaly means that there was no import but
+      // validation is used so we need to set up schema in the typeManager anyway
+      // validation has to work for xsiType and built-in types
+
+      TypeManagerImpl *typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
+      typeManagerImpl->initializeSchema();
+      schema = typeManager->getSchema();
     }
   }
 
@@ -384,8 +390,8 @@ void Validator::validateAttributes(
     ZORBA_ASSERT(attribute->isNode());
     ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
 
-    //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->
-    //  c_str() << "\n"; cout.flush();
+    //cout << " v    - attr: " << attribute->getNodeName()->getLocalName() << ":" <<
+    //        attribute->getStringValue() << "\n"; cout.flush();
 
     store::Item_t attName = attribute->getNodeName();
     schemaValidator.attr(attName, attribute->getStringValue());
@@ -474,9 +480,9 @@ void Validator::processChildren(
   {
     if ( child->isNode() )
     {
-      //cout << "  > child: " << child->getNodeKind() << " " <<
-      // (child->getType() != NULL ? child->getType()->getLocalName()
-      // : "type_NULL" ) << "\n"; cout.flush();
+      //cout << "  > child: " << (long)child->getNodeKind() << " " <<
+      //  //(child->getType() != NULL ? child->getType()->getLocalName() : "type_NULL" ) <<
+      //  "\n"; cout.flush();
 
       switch ( child->getNodeKind() )
       {
@@ -517,7 +523,7 @@ void Validator::processChildren(
           cout << "     - text: '" << childStringValue << "' T: " <<
             typeQName->getLocalName() << "\n"; cout.flush();
           cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
-            xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n";
+            (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
           cout.flush();
         }
         else
@@ -652,9 +658,9 @@ void Validator::processTextValue(
                                                  TypeConstants::QUANT_ONE,
                                                  loc);
 
-  //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
-  //     << ":" << typeQName->getLocalName()->str() << "@"
-  //     << typeQName->getNamespace()->str() ; cout.flush();
+  //cout << "     - processTextValue: " << typeQName->getPrefix()
+  //     << ":" << typeQName->getLocalName() << "@"
+  //     << typeQName->getNamespace() ; cout.flush();
   //cout << " type: " << (type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();
 
   // TODO: we probably need the ns bindings from the static context

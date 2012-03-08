@@ -22,7 +22,6 @@
 #include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/rules/rule_base.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 
 
 namespace zorba 
@@ -133,10 +132,10 @@ class MarkNodeCopyProps : public RewriteRule
   //typedef std::vector<fo_expr*> UdfCalls;
 
 protected:
-  SourceFinder          * theSourceFinder;
+  SourceFinder   * theSourceFinder;
 
-  UdfCalls              theProcessedUDFCalls;
-  //UdfCalls                theUdfCallPath;
+  UdfCalls         theProcessedUDFCalls;
+  //UdfCalls       theUdfCallPath;
 
 public:
   MarkNodeCopyProps() 

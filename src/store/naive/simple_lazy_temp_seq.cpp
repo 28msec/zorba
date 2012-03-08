@@ -233,6 +233,16 @@ void SimpleLazyTempSeq::matNextItem()
 
 
 /*******************************************************************************
+
+********************************************************************************/
+xs_integer SimpleLazyTempSeq::getSize() const
+{
+  ZORBA_ASSERT(false);
+  return 0;
+}
+
+
+/*******************************************************************************
   Reads the whole Sequence from beginning to end; it is allowed to have several
   concurrent iterators on the same TempSeq.
 

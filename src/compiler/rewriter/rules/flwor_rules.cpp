@@ -40,7 +40,7 @@
 namespace zorba
 {
 
-static void collect_flw_vars(const flwor_expr&, expr_tools::VarSetAnnVal&);
+static void collect_flw_vars(const flwor_expr&, expr::FreeVars&);
 
 static bool is_trivial_expr(const expr*);
 
@@ -147,18 +147,18 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   flwor_expr* flworp = static_cast<flwor_expr *>(node);
   flwor_expr& flwor = *flworp;
 
-  expr_tools::VarSetAnnVal myVars;
+  expr::FreeVars myVars;
   collect_flw_vars(flwor, myVars);
 
   const forletwin_clause& flwc = *reinterpret_cast<const forletwin_clause *>(flwor[0]);
 
-  unsigned numClauses = flwor.num_clauses();
-  unsigned numForLetClauses = 0;
+  csize numClauses = flwor.num_clauses();
+  csize numForLetClauses = 0;
 
   // "for $x in E return $x"  --> "E"
   // "let $x := E return $x"  --> "E"
   if (numClauses == 1 &&
-      myVars.theVarset.size() == 1 &&
+      myVars.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
     const wrapper_expr* w = static_cast<const wrapper_expr*>(flwor.get_return_expr());
@@ -172,12 +172,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   expr* whereExpr;
   if ((whereExpr = flwor.get_where()) != NULL && !flwor.has_sequential_clauses())
   {
-    const expr_tools::var_ptr_set& whereVars = 
-    expr_tools::get_varset_annotation(whereExpr);
+    const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
-    expr_tools::var_ptr_set diff;
-    std::set_intersection(myVars.theVarset.begin(),
-                          myVars.theVarset.end(),
+    expr::FreeVars diff;
+    std::set_intersection(myVars.begin(),
+                          myVars.end(),
                           whereVars.begin(),
                           whereVars.end(),
                           std::inserter(diff, diff.begin()));
@@ -406,9 +405,9 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
 ********************************************************************************/
 static void collect_flw_vars(
     const flwor_expr& flwor, 
-    expr_tools::VarSetAnnVal& vars)
+    expr::FreeVars& vars)
 {
-  for (uint32_t i = 0; i < flwor.num_clauses(); ++i)
+  for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
 
@@ -416,34 +415,34 @@ static void collect_flw_vars(
     {
       const for_clause* fc = static_cast<const for_clause *>(&c);
 
-      vars.add(fc->get_var());
+      vars.insert(fc->get_var());
 
       if (fc->get_pos_var() != NULL)
-        vars.add(fc->get_pos_var());
+        vars.insert(fc->get_pos_var());
     }
 
     else if (c.get_kind() == flwor_clause::let_clause)
     {
       const let_clause* lc = static_cast<const let_clause *>(&c);
 
-      vars.add(lc->get_var());
+      vars.insert(lc->get_var());
     }
 
     else if (c.get_kind() == flwor_clause::window_clause)
     {
       const window_clause* wc = static_cast<const window_clause *>(&c);
 
-      vars.add(wc->get_var());
+      vars.insert(wc->get_var());
 
       if (wc->get_win_start() != NULL)
       {
         const flwor_wincond* cond = wc->get_win_start();
         const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-        if (condvars.posvar != NULL) vars.add(condvars.posvar);
-        if (condvars.curr != NULL) vars.add(condvars.curr);
-        if (condvars.prev != NULL) vars.add(condvars.prev);
-        if (condvars.next != NULL) vars.add(condvars.next);
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
       }
 
       if (wc->get_win_stop() != NULL)
@@ -451,10 +450,10 @@ static void collect_flw_vars(
         const flwor_wincond* cond = wc->get_win_stop();
         const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-        if (condvars.posvar != NULL) vars.add(condvars.posvar);
-        if (condvars.curr != NULL) vars.add(condvars.curr);
-        if (condvars.prev != NULL) vars.add(condvars.prev);
-        if (condvars.next != NULL) vars.add(condvars.next);
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
       }
     }
   }
@@ -949,7 +948,7 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
   (a)  op is eq or =, and
   (b1) posExpr is an integer literal with value >= 1, or
   (b2) the flwor expr has no sequential clauses and posExpr is an expression 
-       whose type is xs:Integer? and which does not reference the for var 
+       whose type is xs:integer? and which does not reference the for var 
        associated with posVar nor any other vars that are defined after that 
        for var.
 

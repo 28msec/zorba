@@ -17,6 +17,7 @@
 #define ZORBA_TYPEIDENT_TYPES_API_H
 
 #include <zorba/config.h>
+#include <iostream>
 
 namespace zorba 
 {
@@ -43,17 +44,30 @@ public:
 #endif
     ITEM_TYPE,     // item()
     EMPTY_TYPE,    // empty-sequence()
-    INVALID_TYPE,
+    SCHEMA_ELEMENT_TYPE,
+    SCHEMA_ATTRIBUTE_TYPE,
+    INVALID_TYPE
   } kind_t;
+  
+  static char const *const kind_string_of[];
 
   typedef enum 
   {
     QUANT_ONE,
     QUANT_QUESTION,
     QUANT_PLUS,
-    QUANT_STAR,
+    QUANT_STAR
   } quantifier_t;
+  
+  static char const *const quantifier_string_of[];
 };
+}
+
+namespace std {
+
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::IdentTypes::kind_t ik);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::IdentTypes::quantifier_t iq);
+
 }
 
 #endif

@@ -624,6 +624,9 @@ expr_t MarkNodeCopyProps::apply(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void MarkNodeCopyProps::applyInternal(
     RewriterContext& rCtx,
     expr* node,
@@ -924,6 +927,22 @@ void MarkNodeCopyProps::applyInternal(
 
   case eval_expr_kind:
   {
+    eval_expr* e = static_cast<eval_expr*>(node);
+
+    // Conservatively assume that, when executed, the eval query will apply
+    // a "node-id-sensitive" operation on each of the in-scope variables, so
+    // these variables must be bound to statndalone trees.
+    csize numEvalVars = e->var_count();
+
+    for (csize i = 0; i < numEvalVars; ++i)
+    {
+      expr* arg = e->get_arg_expr(i);
+
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(arg, &udfCaller, sources);
+      markSources(sources);
+    }
+
     std::vector<var_expr_t> globalVars;
     node->get_sctx()->getVariables(globalVars, false, true);
   
@@ -1012,6 +1031,9 @@ void MarkNodeCopyProps::applyInternal(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
 {
   std::vector<expr*>::const_iterator ite = sources.begin();

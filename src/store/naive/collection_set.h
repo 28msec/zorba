@@ -17,7 +17,7 @@
 #define ZORBA_SIMPLE_STORE_COLLECTION_SET_H
 
 #include "store/api/shared_types.h"
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 #include "zorbautils/hashmap_itemp.h"
 #include "store/api/collection.h"
 
@@ -25,53 +25,36 @@ namespace zorba {
   
 namespace simplestore {
 
-class CollectionIterator;
-    
 /*******************************************************************************
   Collections container to ease the implementation of stores which contain 
-  a different kind of memory management. For the simplestore, the Collections
-  is only a wrapper class around an ItemPointerHashMap.
+  a different kind of memory management.
 ********************************************************************************/
 class CollectionSet
 {
 public:
-  typedef ItemPointerHashMap<store::Collection_t> Set;
-
-  static const ulong DEFAULT_COLLECTION_MAP_SIZE;
+  virtual ~CollectionSet() {}
     
-protected:
-  Set  theCollections;
-  
-public:
-  CollectionSet();
-    
-  // needs to be virtual to allow implementation of additional stores
   virtual void
-  clear();
+  clear() = 0;
     
-  // needs to be virtual to allow implementation of additional stores
   virtual bool
-  insert(const store::Item* name, store::Collection_t& collection);
+  insert(const store::Item* name, store::Collection_t& collection) = 0;
     
-  // needs to be virtual to allow implementation of additional stores
   virtual bool
   get(
       const store::Item* name,
       store::Collection_t& collection,
       bool isDynamic,
-      bool isJSONIQ);
+      bool isJSONIQ) = 0;
     
-  // needs to be virtual to allow implementation of additional stores
   virtual bool
-  remove(const store::Item* name, bool isDynamic, bool isJSONIQ);
+  remove(const store::Item* name, bool isDynamic, bool isJSONIQ) = 0;
   
-  // needs to be virtual to allow implementation of additional stores
   virtual store::Iterator_t
-  names(bool dynamic, bool jsoniq);
+  names(bool dynamic, bool jsoniq) = 0;
     
-  // needs to be virtual to allow implementation of additional stores
-  virtual CollectionIterator_t
-  collections(bool dynamic);
+  virtual CollectionSetIterator_t
+  collections(bool dynamic) = 0;
 };
     
 
@@ -79,32 +62,22 @@ public:
   Collection iterator
   Returned by the CollectionSet::collections function
 ********************************************************************************/
-class CollectionIterator : public SimpleRCObject
+class CollectionSetIterator : public SimpleRCObject
 {
-protected:
-  CollectionSet::Set*          theCollections;
-  CollectionSet::Set::iterator theIterator;
-  bool                         theOpened;
-  bool                         theDynamicCollections;
-  
 public:
-  CollectionIterator(
-      CollectionSet::Set* aCollections,
-      bool dynamic);
-    
-  virtual ~CollectionIterator();
+  virtual ~CollectionSetIterator() {}
     
   virtual void
-  open();
+  open() = 0;
     
   virtual bool
-  next(store::Collection_t&);
+  next(store::Collection_t&) = 0;
     
   virtual void
-  reset();
+  reset() = 0;
     
   virtual void
-  close();
+  close() throw() = 0;
 };
 
 

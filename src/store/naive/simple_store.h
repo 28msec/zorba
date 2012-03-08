@@ -16,12 +16,12 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/shared_types.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/hashmap_nodep.h"
+#include "shared_types.h"
+#include "store_defs.h"
+#include "hashmap_nodep.h"
 
 #if (defined (WIN32) || defined (WINCE))
-#include "store/naive/node_items.h"
+#include "node_items.h"
 #include "store/api/collection.h"
 #include "store/api/index.h"
 #include "store/api/ic.h"
@@ -144,6 +144,10 @@ public:
 
 protected:
   static const ulong NAMESPACE_POOL_SIZE;
+  static const ulong DEFAULT_DOCUMENT_SET_SIZE;
+  static const ulong DEFAULT_URI_COLLECTION_SET_SIZE;
+  static const ulong DEFAULT_INDICES_SET_SIZE;
+  static const ulong DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE;
 
 public:
   zstring                       theEmptyNs;
@@ -154,9 +158,9 @@ public:
   store::Item_t                 XS_UNTYPED_QNAME;
   store::Item_t                 XS_ANY_QNAME;
   store::Item_t                 XS_ANY_SIMPLE_QNAME;
+
   store::Item_t                 JDM_OBJECT_QNAME;
   store::Item_t                 JDM_ARRAY_QNAME;
-  store::Item_t                 JDM_PAIR_QNAME;
   store::Item_t                 JDM_NULL_QNAME;
 
 protected:
@@ -180,7 +184,7 @@ protected:
   PULPrimitiveFactory         * thePULFactory;
 
   DocumentSet                   theDocuments;
-  CollectionSet*                theCollections;
+  CollectionSet               * theCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
   IndexSet                      theHashMaps;

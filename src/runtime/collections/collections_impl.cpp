@@ -1541,7 +1541,6 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
-  const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    name;
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes = 1;
@@ -1554,7 +1553,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   if (!consumeNext(name, theChildren[0].getp(), planState))
     ZORBA_ASSERT(false);
 
-  collectionDecl = getCollection(name, collection);
+  (void)getCollection(name, collection);
 
   if (theChildren.size() > 1)
   {
