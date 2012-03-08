@@ -2439,6 +2439,18 @@ xs_long IntegerItemImpl::getLongValue() const
 }
 
 
+xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
+{
+  try {
+    return to_xs_unsignedInt(theValue);
+  }
+  catch ( std::range_error const& ) {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+  }
+}
+
+
 store::Item* IntegerItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
