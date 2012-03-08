@@ -141,12 +141,13 @@ void apply_updates(
   SchemaValidatorImpl validator(loc, sctx);
   ICCheckerImpl icChecker(sctx, gdctx);
   std::vector<store::Index*> indexes;
+  std::vector<store::Index*> truncate_indexes;
   store::ItemHandle<store::PUL> indexPul;
 
   // Get all the indexes that are associated with any of the collections that
   // are going to be updated by this pul. Check which of those indices can be
   // maintained incrementally, and pass this info back to the pul.
-  pul->getIndicesToRefresh(indexes);
+  pul->getIndicesToRefresh(indexes, truncate_indexes);
 
   ulong numIndices = (ulong)indexes.size();
 
@@ -176,6 +177,17 @@ void apply_updates(
     }
 
     zorbaIndexes[i] = indexDecl;
+  }
+
+  numIndices = (ulong)truncate_indexes.size();
+  for (ulong i = 0; i < numIndices; ++i)
+  {
+    IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
+
+    if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
+    {
+      pul->addIndexTruncator(indexDecl->getSourceName(0), indexes[i]);
+    }
   }
 
   try 
