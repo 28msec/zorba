@@ -132,11 +132,18 @@ static zstring computeLibraryName(
 ExternalModule*
 DynamicLoader::loadModule(const zstring& aFile) const
 {
+  #ifdef WIN32
+  HMODULE handle;
+  std::map<const zstring, HMODULE >::const_iterator lIter;
+  #else
   void* handle;
+  std::map<const zstring, void*>::const_iterator lIter;
+  #endif
+
   // function pointer to create a module
   ExternalModule* (*createModule)() = NULL;
 
-  std::map<const zstring, void*>::const_iterator lIter = theLibraries.find(aFile);
+  lIter = theLibraries.find(aFile);
   if (lIter != theLibraries.end())
   {
     handle = lIter->second;

@@ -166,7 +166,7 @@
 // #include "compiler/api/compiler_api.h"
 // #include "compiler/api/compiler_api_impl.h"
 // #include "system/globalenv.h"
-// #include "system/properties.h"
+#include "system/properties.h"
 // #include "system/zorba_properties.h"
 // #include "context/decimal_format.h"
 // #include "context/default_uri_mappers.h"
@@ -370,5 +370,7 @@
  #include "zorba/diagnostic_handler.h"
  #include "zorba/xquery_warning.h"
  #include "runtime/full_text/ftcontains_visitor.h"
+ #include "store/naive/node_items.h"
+
 #endif
 /* vim:set et sw=2 ts=2: */
