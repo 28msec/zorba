@@ -21,6 +21,7 @@
 #include "simple_collection.h"
 #include "simple_collection_set.h"
 #include "simple_item_factory.h"
+#include "simple_iterator_factory.h"
 #include "node_factory.h"
 #include "pul_primitive_factory.h"
 
@@ -49,17 +50,26 @@ SimpleStore::SimpleStore()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
+  shutdown(false);
 }
 
 /*******************************************************************************
 
 *******************************************************************************/
 PULPrimitiveFactory*
-SimpleStore::createPULPrimitiveFactory() const
+SimpleStore::createPULFactory() const
 {
   return new PULPrimitiveFactory();
 }
 
+/*******************************************************************************
+
+*******************************************************************************/
+void
+SimpleStore::destroyPULFactory(PULPrimitiveFactory* f) const
+{
+  delete f;
+}
 
 /*******************************************************************************
 
@@ -69,6 +79,13 @@ CollectionSet* SimpleStore::createCollectionSet() const
   return new SimpleCollectionSet();
 }
 
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyCollectionSet(CollectionSet* c) const
+{
+  delete c;
+}
 
 /*******************************************************************************
 
@@ -78,6 +95,13 @@ NodeFactory* SimpleStore::createNodeFactory() const
   return new NodeFactory();
 }
 
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyNodeFactory(NodeFactory* f) const
+{
+  delete f;
+}
 
 /*******************************************************************************
 
@@ -87,6 +111,29 @@ BasicItemFactory* SimpleStore::createItemFactory() const
   return new BasicItemFactory(theNamespacePool, theQNamePool);
 }
 
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyItemFactory(BasicItemFactory* f) const
+{
+  delete f;
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+store::IteratorFactory* SimpleStore::createIteratorFactory() const
+{
+  return new SimpleIteratorFactory();
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyIteratorFactory(store::IteratorFactory* f) const
+{
+  delete f;
+}
 
 /*******************************************************************************
   create a tree id for a new tree that does not belong to any collection.

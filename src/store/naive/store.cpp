@@ -126,7 +126,6 @@ Store::Store()
 ********************************************************************************/
 Store::~Store()
 {
-  shutdown(false);
 }
 
 
@@ -164,11 +163,11 @@ void Store::init()
 
     initTypeNames();
 
-    theIteratorFactory = new SimpleIteratorFactory();
+    theIteratorFactory = createIteratorFactory();
 
     theNodeFactory = createNodeFactory();
 
-    thePULFactory = createPULPrimitiveFactory();
+    thePULFactory = createPULFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -289,7 +288,7 @@ void Store::shutdown(bool soft)
 
     if (thePULFactory != NULL)
     {
-      destroyPULPrimitiveFactory(thePULFactory);
+      destroyPULFactory(thePULFactory);
       thePULFactory = NULL;
     }
 
@@ -303,6 +302,12 @@ void Store::shutdown(bool soft)
     {
       destroyItemFactory(theItemFactory);
       theItemFactory = NULL;
+    }
+
+    if (theIteratorFactory != NULL)
+    {
+      destroyIteratorFactory(theIteratorFactory);
+      theIteratorFactory = NULL;
     }
 
     if (theQNamePool != NULL)
@@ -374,40 +379,6 @@ void Store::shutdown(bool soft)
 
     StoreManagerImpl::theStore = NULL;
   }
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-void
-Store::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
-{
-  delete f;
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void Store::destroyCollectionSet(CollectionSet* c) const
-{
-  delete c;
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void Store::destroyNodeFactory(NodeFactory* f) const
-{
-  delete f;
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void Store::destroyItemFactory(BasicItemFactory* f) const
-{
-  delete f;
 }
 
 

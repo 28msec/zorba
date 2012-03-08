@@ -34,11 +34,23 @@ public:
 protected:
   virtual NodeFactory* createNodeFactory() const;
 
+  virtual void destroyNodeFactory(NodeFactory*) const;
+
   virtual BasicItemFactory* createItemFactory() const;
 
-  virtual PULPrimitiveFactory* createPULPrimitiveFactory() const;
+  virtual void destroyItemFactory(BasicItemFactory*) const;
+
+  virtual store::IteratorFactory* createIteratorFactory() const;
+
+  virtual void destroyIteratorFactory(store::IteratorFactory*) const;
+
+  virtual PULPrimitiveFactory* createPULFactory() const;
+
+  virtual void destroyPULFactory(PULPrimitiveFactory*) const;
 
   virtual CollectionSet* createCollectionSet() const;
+
+  virtual void destroyCollectionSet(CollectionSet*) const;
 
 protected:
   friend class zorba::StoreManager;

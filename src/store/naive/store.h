@@ -234,19 +234,23 @@ protected:
 
   virtual NodeFactory* createNodeFactory() const = 0;
 
-  virtual void destroyNodeFactory(NodeFactory*) const;
+  virtual void destroyNodeFactory(NodeFactory*) const = 0;
 
   virtual BasicItemFactory* createItemFactory() const = 0;
 
-  virtual void destroyItemFactory(BasicItemFactory*) const;
+  virtual void destroyItemFactory(BasicItemFactory*) const = 0;
 
-  virtual PULPrimitiveFactory* createPULPrimitiveFactory() const = 0;
+  virtual store::IteratorFactory* createIteratorFactory() const = 0;
 
-  virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
+  virtual void destroyIteratorFactory(store::IteratorFactory*) const = 0;
+
+  virtual PULPrimitiveFactory* createPULFactory() const = 0;
+
+  virtual void destroyPULFactory(PULPrimitiveFactory*) const = 0;
 
   virtual CollectionSet* createCollectionSet() const = 0;
 
-  virtual void destroyCollectionSet(CollectionSet*) const;
+  virtual void destroyCollectionSet(CollectionSet*) const = 0;
 
 /*---------------------------- Collections -----------------------------------*/
 public:
