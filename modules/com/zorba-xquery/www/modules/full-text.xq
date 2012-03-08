@@ -253,6 +253,7 @@ declare function ft:is-stem-lang-supported( $lang as xs:language )
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
  : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for stop-words.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-3.xq
  :)
 declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
@@ -268,7 +269,8 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : general.
  : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
  : stop-words specifically.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-2.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-4.xq
  :)
 declare function ft:is-stop-word( $word as xs:string )
   as xs:boolean external;
