@@ -110,7 +110,7 @@ enum expr_kind_t
   function_trace_expr_kind,
 
 #ifdef ZORBA_WITH_JSON
-  json_pair_expr_kind,
+  json_direct_object_expr_kind,
   json_object_expr_kind,
   json_array_expr_kind,
 #endif

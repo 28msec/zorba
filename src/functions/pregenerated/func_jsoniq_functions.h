@@ -58,46 +58,6 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:name
-class fn_jsoniq_name : public function
-{
-public:
-  fn_jsoniq_name(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:value
-class fn_jsoniq_value : public function
-{
-public:
-  fn_jsoniq_value(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
 //fn-jsoniq:names
 class fn_jsoniq_names : public function
 {
@@ -110,46 +70,6 @@ public:
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:pairs
-class fn_jsoniq_pairs : public function
-{
-public:
-  fn_jsoniq_pairs(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:pair
-class fn_jsoniq_pair : public function
-{
-public:
-  fn_jsoniq_pair(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
@@ -310,28 +230,6 @@ public:
   {
 
   }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:insert-into
-class fn_jsoniq_insert_into : public function
-{
-public:
-  fn_jsoniq_insert_into(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };

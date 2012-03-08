@@ -382,19 +382,6 @@ void ExprIterator::next()
   }
 
 #ifdef ZORBA_WITH_JSON
-  case json_pair_expr_kind:
-  {
-    json_pair_expr* e = static_cast<json_pair_expr*>(theExpr);
-
-    EXPR_ITER_BEGIN();
-
-    EXPR_ITER_NEXT(e->theNameExpr);
-    EXPR_ITER_NEXT(e->theValueExpr);
-
-    EXPR_ITER_END();
-    break;
-  }
-
   case json_object_expr_kind:
   {
     json_object_expr* e = static_cast<json_object_expr*>(theExpr);

@@ -417,10 +417,6 @@ expr_t MarkConsumerNodeProps::apply(
   }
   
 #ifdef ZORBA_WITH_JSON
-  case json_pair_expr_kind :
-  {
-    break;
-  }
   case json_object_expr_kind :
   {
     json_object_expr* e = static_cast<json_object_expr *>(node);
@@ -672,6 +668,7 @@ void MarkNodeCopyProps::applyInternal(
 
     break;
   }
+#if 0
   case json_pair_expr_kind:
   {
     // For now, assume that nodes to appear as pair values must be copied first.
@@ -689,6 +686,7 @@ void MarkNodeCopyProps::applyInternal(
 
     break;
   }
+#endif
 #endif
 
   case relpath_expr_kind:
@@ -1153,7 +1151,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 #ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_array_expr_kind:
-  case json_pair_expr_kind:
+    //case json_pair_expr_kind:
   {
     break;
   }

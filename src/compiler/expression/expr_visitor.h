@@ -70,7 +70,6 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
 
 #ifdef ZORBA_WITH_JSON
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_pair_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_object_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_array_expr );
 #endif

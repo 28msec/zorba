@@ -101,6 +101,7 @@ JSONParseIterator::nextImpl(
 }
 
 
+#if 0
 /*******************************************************************************
   json:name($p as pair()) as xs:string
 ********************************************************************************/
@@ -145,6 +146,7 @@ JSONValueIterator::nextImpl(
 
   STACK_END (state);
 }
+#endif
 
 
 /*******************************************************************************
@@ -176,6 +178,7 @@ JSONNamesIterator::nextImpl(
 }
 
 
+#if 0
 /*******************************************************************************
   json:pairs($o as object()) as pair()*
 ********************************************************************************/
@@ -227,6 +230,7 @@ JSONPairAccessorIterator::nextImpl(
 
   STACK_END (state);
 }
+#endif
 
 
 /*******************************************************************************
@@ -532,11 +536,6 @@ JSONValuesIterator::nextImpl(
     }
     state->theValues = NULL;
   }
-  else if (lInput->getJSONItemKind() == store::StoreConsts::jsonPair)
-  {
-    RAISE_ERROR(jerr::JSDY0020, loc,
-    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:values"));
-  }
 
   STACK_END (state);
 }
@@ -589,6 +588,7 @@ JSONNullIterator::nextImpl(
 }
 
 
+#if 0
 /*******************************************************************************
 ********************************************************************************/
 bool
@@ -631,6 +631,7 @@ JSONInsertIntoIterator::nextImpl(
 
   STACK_END (state);
 }
+#endif
 
 
 /*******************************************************************************

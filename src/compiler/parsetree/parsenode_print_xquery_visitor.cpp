@@ -1918,7 +1918,6 @@ DEFAULT_END_VISIT (ReverseAxis);
   /* JSON-related */
   DEFAULT_VISIT (JSON_ArrayConstructor);
   DEFAULT_VISIT (JSON_ObjectConstructor);
-  DEFAULT_VISIT (JSON_DirectObjectContent);
   DEFAULT_VISIT (JSON_PairConstructor);
   DEFAULT_VISIT (JSON_PairList);
   void* begin_visit(const JSON_Test& n)

@@ -819,15 +819,6 @@ ostream& pi_expr::put(ostream& os) const
 
 
 #ifdef ZORBA_WITH_JSON
-ostream& json_pair_expr::put(ostream& os) const
-{
-  BEGIN_PUT(json_pair_expr);
-  PUT_SUB("NAME", theNameExpr);
-  PUT_SUB("VALUE", theValueExpr);
-  END_PUT();
-}
-
-
 ostream& json_object_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_object_expr);

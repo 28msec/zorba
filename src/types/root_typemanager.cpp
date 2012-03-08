@@ -196,7 +196,7 @@ const int RootTypeManager::QUANT_MAX_CNT[4] = { 1, 1, 2, 2 };
  
 
 #ifdef ZORBA_WITH_JSON
-const XQType* RootTypeManager::JSON_TYPES_MAP[4][4];
+const XQType* RootTypeManager::JSON_TYPES_MAP[3][4];
 #endif
 
 
@@ -457,7 +457,6 @@ RootTypeManager::RootTypeManager()
   JSON_TYPE_DEFN(JSON_ITEM, store::StoreConsts::jsonItem);
   JSON_TYPE_DEFN(JSON_OBJECT, store::StoreConsts::jsonObject);
   JSON_TYPE_DEFN(JSON_ARRAY, store::StoreConsts::jsonArray);
-  JSON_TYPE_DEFN(JSON_PAIR, store::StoreConsts::jsonPair);
 
 #undef JSON_TYPE_DEFN
 #endif // ZORBA_WITH_JSON
@@ -566,7 +565,6 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(JSON_ITEM)
   DELETE_TYPE(JSON_OBJECT)
   DELETE_TYPE(JSON_ARRAY)
-  DELETE_TYPE(JSON_PAIR)
 #endif
 
   DELETE_TYPE(ITEM)

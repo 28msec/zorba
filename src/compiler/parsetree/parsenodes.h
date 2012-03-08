@@ -6488,24 +6488,6 @@ public:
 };
 
 
-class JSON_DirectObjectContent : public exprnode
-{
-protected:
-  std::vector<rchandle<exprnode> > thePairs;
-
-public:
-  JSON_DirectObjectContent(const QueryLoc& loc) : exprnode(loc) { }
-
-  void push_back(rchandle<exprnode> pair) { thePairs.push_back(pair); }
-
-  rchandle<exprnode> operator[](csize i) const { return thePairs[i]; }
-
-  csize size() const { return thePairs.size(); }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
 class JSON_PairConstructor : public JSON_Constructor
 {
 private:

@@ -34,30 +34,6 @@ namespace zorba{
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_name::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONNameIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_value::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONValueIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_names::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -66,30 +42,6 @@ PlanIter_t fn_jsoniq_names::codegen(
   AnnotationHolder& ann) const
 {
   return new JSONNamesIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_pairs::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONPairsIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_pair::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONPairAccessorIterator(sctx, loc, argv[0], argv[1]);
 }
 
 #endif
@@ -168,18 +120,6 @@ PlanIter_t fn_jsoniq_null::codegen(
   AnnotationHolder& ann) const
 {
   return new JSONNullIterator(sctx, loc);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_insert_into::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new JSONInsertIntoIterator(sctx, loc, argv);
 }
 
 #endif
@@ -303,76 +243,11 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_name,
-        (createQName("http://www.jsoniq.org/functions","","name"), 
-        GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_JSONIQ_NAME_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_value,
-        (createQName("http://www.jsoniq.org/functions","","value"), 
-        GENV_TYPESYSTEM.JSON_PAIR_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE),
-        FunctionConsts::FN_JSONIQ_VALUE_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
     DECL_WITH_KIND(sctx, fn_jsoniq_names,
         (createQName("http://www.jsoniq.org/functions","","names"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_NAMES_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_pairs,
-        (createQName("http://www.jsoniq.org/functions","","pairs"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR),
-        FunctionConsts::FN_JSONIQ_PAIRS_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_pair,
-        (createQName("http://www.jsoniq.org/functions","","pair"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_PAIR_TYPE_QUESTION),
-        FunctionConsts::FN_JSONIQ_PAIR_2);
 
   }
 
@@ -502,23 +377,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
         (createQName("http://www.jsoniq.org/functions","","null"), 
         GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE),
         FunctionConsts::FN_JSONIQ_NULL_0);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_insert_into,
-        (createQName("http://www.jsoniq.org/functions","","insert-into"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_INSERT_INTO_2);
 
   }
 

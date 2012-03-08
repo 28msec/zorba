@@ -287,8 +287,6 @@ std::string XQType::toSchemaString() const
       result = "object()";
     else if (kind == store::StoreConsts::jsonArray)
       result = "array()";
-    else if (kind == store::StoreConsts::jsonPair)
-      result = "pair()";
 
     break;
   }

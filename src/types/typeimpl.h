@@ -97,22 +97,13 @@ namespace zorba
 
   JSONTest ::= JSONItemTest |
                JSONObjectTest |
-               JSONArrayTest |
-               JSONPairTest |
-               JSONOjectPairTest |
-               JSONArrayPairTest
+               JSONArrayTest
 
   JSONItemTest ::= "json-item" "(" ")"
 
   JSONObjectTest ::= "object" "(" ")"
 
-  JSONArrayTest ::= "array" "(" ")"
-
-  JSONPairTest ::= "pair" "(" ")"
-
-  JSONOjectPairTest ::= "object-pair" "(" ")"
-
-  JSONArrayPairTest ::= "array-pair" "(" ")"
+  JSONArrayTest ::= "array" "(" ItemType? ")"
 
 
   ******************

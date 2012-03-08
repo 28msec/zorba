@@ -1405,8 +1405,7 @@ expr_t wrap_in_unbox(expr* e, xqtref_t& type)
 
   const QueryLoc& loc = e->get_loc();
   if (TypeOps::is_subtype(tm, *type, *theRTM.ANY_NODE_TYPE_STAR, loc) ||
-      (TypeOps::is_subtype(tm, *type, *theRTM.JSON_ITEM_TYPE_STAR, loc) &&
-       !TypeOps::is_subtype(tm, *type, *theRTM.JSON_PAIR_TYPE_STAR, loc)))
+      TypeOps::is_subtype(tm, *type, *theRTM.JSON_ITEM_TYPE_STAR, loc))
   {
     return new fo_expr(theRootSctx,
                        loc,
@@ -3894,8 +3893,6 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  bool recognised = false;
-
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
@@ -3914,8 +3911,6 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
                     + ":" + lExpandedQName->getLocalName())));
     }
-
-    recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -5403,10 +5398,6 @@ void* begin_visit(const BlockBody& v)
 
   ulong numExprs = v.size();
   bool declaresVars = false;
-#ifdef ZORBA_WITH_JSON
-  bool mightProduceObject = true;
-  bool introducedObjectConstr = false;
-#endif
 
   for (ulong i = 0; i < numExprs; ++i)
   {
@@ -5440,28 +5431,6 @@ void* begin_visit(const BlockBody& v)
         }
       }
 
-#ifdef ZORBA_WITH_JSON
-      if (i == numExprs - 1)
-      {
-        xqtref_t lResType = childExpr->get_return_type();
-        TypeManager* tm = childExpr->get_type_manager();
-        if (TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR, loc))
-        {
-          childExpr = new json_object_expr(theRootSctx, loc, childExpr);
-          introducedObjectConstr = true;
-        }
-
-        if (TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, loc) ||
-            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, loc) ||
-            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR, loc) ||
-            TypeOps::is_subtype(tm, *lResType, *GENV_TYPESYSTEM.JSON_ARRAY_TYPE_STAR, loc))
-        {
-          mightProduceObject = false;
-        }
-
-      }
-#endif
-
       stmts.push_back(childExpr);
     }
   }
@@ -5475,11 +5444,7 @@ void* begin_visit(const BlockBody& v)
   // hack?
   // this has been removed to allow for blocks containing only an expression
   // to be treated as JSON object constructors
-  if (stmts.size() == 1 && !declaresVars
-#ifdef ZORBA_WITH_JSON
-      && (introducedObjectConstr || !mightProduceObject)
-#endif
-      )
+  if (stmts.size() == 1 && !declaresVars)
   {
     push_nodestack(stmts[0]);
 
@@ -10534,7 +10499,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       }
       else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
       {
-        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
+        //func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
       }
       else
       {
@@ -10883,7 +10848,6 @@ void* begin_visit(const JSON_PairConstructor& v)
 #ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
 #else
-  push_nodestack(new json_pair_expr(theRootSctx, loc));
 #endif
 
   return no_state;
@@ -10904,20 +10868,17 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
                               NULL);
 
-  if (valueExpr->get_expr_kind() == json_pair_expr_kind)
-    valueExpr = static_cast<json_pair_expr*>(valueExpr.getp())->get_value_expr();
-
   valueExpr = new promote_expr(theRootSctx,
                                valueExpr->get_loc(),
                                valueExpr,
                                GENV_TYPESYSTEM.ITEM_TYPE_ONE,
                                NULL);
 
-  json_pair_expr* jp = dynamic_cast<json_pair_expr*>(theNodeStack.top().getp());
-  ZORBA_ASSERT(jp);
-  jp->set_name_expr(nameExpr);
-  jp->set_value_expr(valueExpr);
-  jp->compute_scripting_kind();
+  //json_pair_expr* jp = dynamic_cast<json_pair_expr*>(theNodeStack.top().getp());
+  //ZORBA_ASSERT(jp);
+  //jp->set_name_expr(nameExpr);
+  //jp->set_value_expr(valueExpr);
+  //jp->compute_scripting_kind();
 #endif
 }
 
@@ -10934,6 +10895,7 @@ void end_visit(const JSON_PairList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
+
 
 /*******************************************************************************
   DirectObjectConstructor ::= "{" DirectObjectContent "}"
@@ -10967,16 +10929,13 @@ void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    //if (v.isComputed())
-    {
-      contentExpr = new treat_expr(theRootSctx,
-                                   contentExpr->get_loc(),
-                                   contentExpr,
-                                   GENV_TYPESYSTEM.JSON_PAIR_TYPE_STAR,
-                                   err::XPTY0004,
-                                   true,
-                                   NULL);
-    }
+    contentExpr = new treat_expr(theRootSctx,
+                                 contentExpr->get_loc(),
+                                 contentExpr,
+                                 GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
+                                 err::XPTY0004,
+                                 true,
+                                 NULL);
   }
 
   json_object_expr* jo = new json_object_expr(theRootSctx, loc, contentExpr);
@@ -10985,7 +10944,7 @@ void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
 #endif
 }
 
-
+#if 0
 void* begin_visit(const JSON_DirectObjectContent& v)
 {
   TRACE_VISIT();
@@ -11018,7 +10977,7 @@ void end_visit(const JSON_DirectObjectContent& v, void* /*visit_state*/)
   push_nodestack(concatExpr);
 #endif
 }
-
+#endif
 
 /*******************************************************************************
   ArrayConstructor ::= "[" Expr? "]"
@@ -11029,6 +10988,7 @@ void end_visit(const JSON_DirectObjectContent& v, void* /*visit_state*/)
 void* begin_visit(const JSON_ArrayConstructor& v)
 {
   TRACE_VISIT();
+
 #ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
 #endif
@@ -11039,27 +10999,13 @@ void* begin_visit(const JSON_ArrayConstructor& v)
 void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+
 #ifdef ZORBA_WITH_JSON
   expr_t contentExpr;
 
   if (v.get_expr() != NULL)
   {
     contentExpr = pop_nodestack();
-
-    if (contentExpr->get_function_kind() == FunctionConsts::OP_CONCATENATE_N)
-    {
-      fo_expr* concatExpr = static_cast<fo_expr*>(contentExpr.getp());
-
-      csize numArgs = concatExpr->num_args();
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        if (concatExpr->get_arg(i)->get_expr_kind() == json_pair_expr_kind)
-        {
-          json_pair_expr* jp = static_cast<json_pair_expr*>(concatExpr->get_arg(i));
-          concatExpr->set_arg(i, jp->get_value_expr());
-        }
-      }
-    }
   }
 
   push_nodestack(new json_array_expr(theRootSctx, loc, contentExpr));
@@ -12169,10 +12115,6 @@ void* begin_visit(const JSON_Test& v)
 
   switch (v.get_kind())
   {
-  case store::StoreConsts::jsonPair:
-    theTypeStack.push(rtm.JSON_PAIR_TYPE_ONE);
-    break;
-
   case store::StoreConsts::jsonObject:
     theTypeStack.push(rtm.JSON_OBJECT_TYPE_ONE);
     break;

@@ -259,19 +259,7 @@ namespace zorba{
     class JSONParseIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONNameIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONValueIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
     class JSONNamesIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONPairsIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONPairAccessorIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONMemberAccessorIterator;
@@ -293,9 +281,6 @@ namespace zorba{
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONNullIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
-    class JSONInsertIntoIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONInsertAsFirstIterator;
@@ -1010,24 +995,8 @@ public:
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONNameIterator& ) = 0;
-    virtual void endVisit   ( const JSONNameIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONValueIterator& ) = 0;
-    virtual void endVisit   ( const JSONValueIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONNamesIterator& ) = 0;
     virtual void endVisit   ( const JSONNamesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONPairsIterator& ) = 0;
-    virtual void endVisit   ( const JSONPairsIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONPairAccessorIterator& ) = 0;
-    virtual void endVisit   ( const JSONPairAccessorIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONMemberAccessorIterator& ) = 0;
@@ -1056,10 +1025,6 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONNullIterator& ) = 0;
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONInsertIntoIterator& ) = 0;
-    virtual void endVisit   ( const JSONInsertIntoIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONInsertAsFirstIterator& ) = 0;

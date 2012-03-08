@@ -161,14 +161,13 @@ public:
   JSON_DECL(JSON_ITEM);
   JSON_DECL(JSON_OBJECT);
   JSON_DECL(JSON_ARRAY);
-  JSON_DECL(JSON_PAIR);
 
 #undef JSON_DECL
 
   /**
    * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
    */
-  static const XQType* JSON_TYPES_MAP[4][4];
+  static const XQType* JSON_TYPES_MAP[3][4];
 
 #endif // ZORBA_WITH_JSON
 

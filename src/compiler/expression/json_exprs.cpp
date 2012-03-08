@@ -22,77 +22,14 @@
 namespace zorba 
 {
 
-SERIALIZABLE_CLASS_VERSIONS(json_pair_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(json_pair_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(json_object_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(json_object_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(json_array_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(json_array_expr)
 
-DEF_EXPR_ACCEPT(json_pair_expr)
 DEF_EXPR_ACCEPT(json_object_expr)
 DEF_EXPR_ACCEPT(json_array_expr)
-
-
-/*******************************************************************************
- JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
-********************************************************************************/
-json_pair_expr::json_pair_expr(
-    static_context* sctx,
-    const QueryLoc& loc)
-  :
-  expr(sctx, loc, json_pair_expr_kind)
-{
-}
-
-json_pair_expr::json_pair_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const expr_t& name,
-    const expr_t& value)
-  :
-  expr(sctx, loc, json_pair_expr_kind),
-  theNameExpr(name),
-  theValueExpr(value)
-{
-  compute_scripting_kind();
-}
-
-
-void json_pair_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theNameExpr;
-  ar & theValueExpr;
-}
-
-
-void json_pair_expr::compute_scripting_kind() 
-{
-  checkNonUpdating(theNameExpr);
-  checkNonUpdating(theValueExpr);
-
-  short nameExprKind = theNameExpr->get_scripting_detail();
-  short valueExprKind =  theValueExpr->get_scripting_detail();
-
-  theScriptingKind = (nameExprKind | valueExprKind);
-
-  theScriptingKind &= ~VACUOUS_EXPR;
-
-  if (is_sequential())
-    theScriptingKind &= ~SIMPLE_EXPR;
-}
-
-
-expr_t json_pair_expr::clone(substitution_t& subst) const
-{
-  return new json_pair_expr(theSctx,
-                            get_loc(),
-                            theNameExpr->clone(subst),
-                            theValueExpr->clone(subst));
-}
 
 
 /*******************************************************************************

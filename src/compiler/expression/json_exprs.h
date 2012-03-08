@@ -30,41 +30,29 @@
 namespace zorba 
 {
 
-
+#if 0
 /*******************************************************************************
-  JSONPairConstructor ::= AdditiveExpr (":" AdditiveExpr)?
+ JSONObjectConstructor ::= "{" Expr? "}"
 ********************************************************************************/
-class json_pair_expr : public expr 
+class json_direct_object_expr : public expr 
 {
   friend class ExprIterator;
 
 protected:
-  expr_t       theNameExpr;
-  expr_t       theValueExpr;
+  expr_t  theContentExpr;
 
 public:
-  SERIALIZABLE_CLASS(json_pair_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(json_pair_expr, expr)
+  SERIALIZABLE_CLASS(json_object_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(json_object_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  json_pair_expr(
-      static_context* sctx,
-      const QueryLoc& loc);
-
-  json_pair_expr(
+  json_object_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& name,
-      const expr_t& value);
+      const expr_t& content);
 
-  void set_name_expr(const expr_t& name) { theNameExpr = name; }
-
-  void set_value_expr(const expr_t& value) { theValueExpr = value; }
-
-  expr* get_name_expr() const { return theNameExpr.getp(); }
-
-  expr* get_value_expr() const { return theValueExpr.getp(); }
+  expr* get_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -74,7 +62,7 @@ public:
 
 	std::ostream& put(std::ostream&) const;
 };
-
+#endif
 
 /*******************************************************************************
  JSONObjectConstructor ::= "{" Expr? "}"

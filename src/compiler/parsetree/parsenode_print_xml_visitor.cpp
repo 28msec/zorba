@@ -1049,9 +1049,6 @@ void* begin_visit( JSON_ObjectConstructor const& n)
 END_TAG( JSON_ObjectConstructor )
 
 
-BEGIN_END_TAG(JSON_DirectObjectContent)
-
-
 void* begin_visit(JSON_PairConstructor const& n)
 {
   INDENT;
