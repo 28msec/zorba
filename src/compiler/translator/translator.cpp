@@ -12747,7 +12747,6 @@ void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
     throw XQUERY_EXCEPTION(
       err::FTST0019, ERROR_PARAMS( "language" ), ERROR_LOC( loc )
     );
-  std::cout << __FILE__ ", line " << __LINE__ << ": lang=" << v.get_language() << std::endl;
   mo->set_language_option( new ftlanguage_option( loc, v.get_language() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }

@@ -478,7 +478,6 @@ ftlanguage_option::ftlanguage_option(
     throw XQUERY_EXCEPTION(
       err::FTST0009, ERROR_PARAMS( lang ), ERROR_LOC( loc )
     );
-  cout << __FILE__ << ", line " << __LINE__ << ": lang=" << iso639_1::string_of[ lang_ ] << endl;
 }
 
 ftlanguage_option::ftlanguage_option(

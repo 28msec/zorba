@@ -271,10 +271,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
  :)
 declare function ft:is-stop-word( $word as xs:string )
-  as xs:boolean
-{
-  ft:is-stop-word( $word, ft:current-lang() )
-};
+  as xs:boolean external;
 
 (:~
  : Checks whether the given
@@ -349,10 +346,7 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-4.xq
  :)
 declare function ft:stem( $word as xs:string )
-  as xs:string
-{
-  ft:stem( $word, ft:current-lang() )
-};
+  as xs:string external;
 
 (:~
  : Strips all diacritical marks from all characters.
@@ -435,10 +429,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : thesaurus look-up specifically.
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
-  as xs:string+
-{
-  ft:thesaurus-lookup( $uri, $phrase, ft:current-lang() )
-};
+  as xs:string+ external;
 
 (:~
  : Looks-up the given phrase in a thesaurus.
@@ -531,10 +522,7 @@ declare function ft:tokenize( $node as node(), $lang as xs:language )
  : general.
  :)
 declare function ft:tokenize( $node as node() )
-  as node()*
-{
-  ft:tokenize( $node, ft:current-lang() )
-};
+  as node()* external;
 
 (:~
  : Tokenizes the given string.
@@ -562,10 +550,7 @@ declare function ft:tokenize-string( $string as xs:string,
  : general.
  :)
 declare function ft:tokenize-string( $string as xs:string )
-  as xs:string*
-{
-  ft:tokenize-string( $string, ft:current-lang() )
-};
+  as xs:string* external;
 
 (:~
  : Gets properties of the tokenizer for the given
@@ -588,9 +573,6 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  : general.
  :)
 declare function ft:tokenizer-properties()
-  as node()
-{
-  ft:tokenizer-properties( ft:current-lang() )
-};
+  as node() external;
 
 (: vim:set et sw=2 ts=2: :)

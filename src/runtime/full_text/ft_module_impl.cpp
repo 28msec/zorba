@@ -59,13 +59,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
-  if ( ftmatch_options const *options = sctx->get_match_options() ) {
-    cout << __FILE__ << ", line " << __LINE__ << ": options\n";
-  } else {
-    cout << __FILE__ << ", line " << __LINE__ << ": NO MATCH OPTIONS!\n";
-  }
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
-  cout << __FILE__ << ", line " << __LINE__ << ": lang=" << iso639_1::string_of[ lang ] << endl;
   return lang ? lang : get_host_lang();
 }
 
@@ -447,7 +441,8 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  lang = get_lang_from( getStaticContext() );
+  sctx = getStaticContext();
+  lang = get_lang_from( sctx );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
@@ -525,7 +520,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       }
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      sctx = getStaticContext();
       sctx->validate( result, result, StaticContextConsts::strict_validation );
 #endif /* ZORBA_NO_XMLSCHEMA */
 
@@ -555,9 +549,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-#ifndef ZORBA_NO_XMLSCHEMA
   static_context const *sctx;
-#endif /* ZORBA_NO_XMLSCHEMA */
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -566,12 +558,13 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-#ifndef ZORBA_NO_XMLSCHEMA
   sctx = getStaticContext();
-#endif /* ZORBA_NO_XMLSCHEMA */
+  lang = get_lang_from( getStaticContext() );
 
-  consumeNext( item, theChildren[0], plan_state );
-  lang = get_lang_from( item, loc );
+  if ( theChildren.size() > 0 ) {
+    consumeNext( item, theChildren[0], plan_state );
+    lang = get_lang_from( item, loc );
+  }
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   tokenizer = tokenizer_provider->getTokenizer( lang, no );
@@ -607,19 +600,17 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct TokenizeStringIteratorCallback : public Tokenizer::Callback {
-  void token( char const*, size_type, iso639_1::type, size_type, size_type, size_type, Item const* );
-  
+struct TokenizeStringIteratorCallback : Tokenizer::Callback {
+  void token( char const*, size_type, iso639_1::type, size_type, size_type,
+              size_type, Item const* );
+
   FTTokenSeqIterator::FTTokens tokens_;
 };
 
-void TokenizeStringIteratorCallback::token( char const *utf8_s,
-                                            size_type utf8_len,
-                                            iso639_1::type lang,
-                                            size_type token_no,
-                                            size_type sent_no,
-                                            size_type para_no,
-                                            Item const *item ) {
+void TokenizeStringIteratorCallback::
+token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
+       size_type token_no, size_type sent_no, size_type para_no,
+       Item const *item ) {
   store::Item const *const store_item =
     item ? Unmarshaller::getInternalItem( *item ) : nullptr;
 
