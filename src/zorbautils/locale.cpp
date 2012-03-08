@@ -594,6 +594,13 @@ char const *const string_of[] = {
   "ave",  // Avestan
   "aym",  // Aymara
   "aze",  // Azerbaijani
+  "bam",  // Bambara
+  "bak",  // Bashkir
+  "baq",  // Basque
+  "bel",  // Belarusian
+  "ben",  // Bengali
+  "bih",  // Bihari
+  "bis",  // Bislama
   "dan",  // Danish
   "deu",  // German (T)
   "dut",  // Dutch (B)
@@ -642,6 +649,13 @@ iso639_1::type find_lang( char const *lang ) {
     an, // arg
     ay, // aym
     az, // aze
+    bm, // bam
+    ba, // bak
+    eu, // baq
+    be, // bel
+    bn, // ben
+    bh, // bih
+    bi, // bis
     hy, // arm
     as, // asm
     av, // ava

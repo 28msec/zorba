@@ -343,6 +343,13 @@ namespace zorba {
         ave,  // Avestan
         aym,  // Aymara
         aze,  // Azerbaijani
+        bam,  // Bambara
+        bak,  // Bashkir
+        baq,  // Basque
+        bel,  // Belarusian
+        ben,  // Bengali
+        bih,  // Bihari
+        bis,  // Bislama
         dan,  // Danish
         deu,  // German (T)
         dut,  // Dutch (B)
