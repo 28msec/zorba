@@ -129,8 +129,11 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   zstring mapped_url;
   parse_mapping( url, &t_impl, &mapped_url );
 
+#if 0
   cout << "url=" << url << endl;
   cout << "mapped_url=" << mapped_url << endl;
+  cout << "t_impl=" << t_impl << endl;
+#endif
 
   zstring t_path;
   switch ( uri::get_scheme( mapped_url ) ) {
