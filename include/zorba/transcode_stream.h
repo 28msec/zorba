@@ -61,7 +61,7 @@ namespace transcode {
  *  }
  * \endcode
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
- * \c transcode_stream instead.
+ * \c transcode::stream instead.
  *
  * While %transcode::streambuf does support seeking, the positions are relative
  * to the original byte stream.
