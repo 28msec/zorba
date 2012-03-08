@@ -421,7 +421,6 @@ declare updating function cdml:delete-nodes-last(
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  :)
-
 declare updating function cdml:truncate($name as xs:QName) external;
 
 (:~

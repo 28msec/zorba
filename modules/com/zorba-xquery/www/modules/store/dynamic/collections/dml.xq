@@ -288,6 +288,19 @@ declare updating function dml:delete-nodes-last(
   $number as xs:integer) external;
 
 (:~
+ : The truncate function is an updating function that deletes the
+ : entire contents of collection.
+ :
+ : @param $name The name of the collection whose content to delete
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the nodes.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :)
+declare updating function dml:truncate($name as xs:QName) external;
+
+(:~
  : The index-of function return the index of the given node in the collection.
  :
  : @param $node The node to retrieve the index from.
