@@ -38,7 +38,7 @@ xquery version "3.0";
  : specified by
  : <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
  : and
- : <a href="http://www.niso.org/kst/reports/standards?step=2&gid=&project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
+ : ANSI/NISO Z39.19-2005
  : with the exceptions of "HN" (history note)
  : and "X SN" (see scope note for).
  : Additionally, Zorba also supports all WordNet relationships.
@@ -225,6 +225,7 @@ declare function ft:current-lang()
  :      by the <code>GetLocaleInfoA()</code> function is used.
  :    </li>
  :  </ul>
+ :
  : @return said language.
  :)
 declare function ft:host-lang()
@@ -237,6 +238,7 @@ declare function ft:host-lang()
  :
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stem-lang-es-supported-true.xq
  :)
 declare function ft:is-stem-lang-supported( $lang as xs:language )
   as xs:boolean external;
@@ -250,6 +252,7 @@ declare function ft:is-stem-lang-supported( $lang as xs:language )
  : of <code>$word</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
  : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for stop-words.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
  :)
 declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
   as xs:boolean external;
@@ -265,6 +268,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : general.
  : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
  : stop-words specifically.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
  :)
 declare function ft:is-stop-word( $word as xs:string )
   as xs:boolean
@@ -279,6 +283,9 @@ declare function ft:is-stop-word( $word as xs:string )
  :
  : @param $lang The language to check.
  : @return <code>true</code> only if the language is supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-en-supported-true.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-supported-false-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-supported-false-2.xq
  :)
 declare function ft:is-stop-word-lang-supported( $lang as xs:language )
   as xs:boolean external;
@@ -304,6 +311,7 @@ declare function ft:is-thesaurus-lang-supported( $lang as xs:language )
  : @return <code>true</code> only if the language is supported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-thesaurus-lang-supported-true-1.xq
  :)
 declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
                                                  $lang as xs:language )
@@ -320,6 +328,8 @@ declare function ft:is-thesaurus-lang-supported( $uri as xs:string,
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
  : @error zerr:ZXQP8404 if <code>$lang</code> is not supported for stemming
  : specifically.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-2.xq
  :)
 declare function ft:stem( $word as xs:string, $lang as xs:language )
   as xs:string external;
@@ -335,6 +345,8 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
  : general.
  : @error zerr:ZXQP8404 if <code>ft:current-lang()</code> is not supported for
  : stemming specifically.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-3.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-4.xq
  :)
 declare function ft:stem( $word as xs:string )
   as xs:string
@@ -347,6 +359,7 @@ declare function ft:stem( $word as xs:string )
  :
  : @param $string The string to strip diacritical marks from.
  : @return <code>$string</code> with diacritical marks stripped.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-strip-diacritics-1.xq
  :)
 declare function ft:strip-diacritics( $string as xs:string )
   as xs:string external;

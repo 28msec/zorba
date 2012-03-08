@@ -59,7 +59,13 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
+  if ( ftmatch_options const *options = sctx->get_match_options() ) {
+    cout << __FILE__ << ", line " << __LINE__ << ": options\n";
+  } else {
+    cout << __FILE__ << ", line " << __LINE__ << ": NO MATCH OPTIONS!\n";
+  }
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
+  cout << __FILE__ << ", line " << __LINE__ << ": lang=" << iso639_1::string_of[ lang ] << endl;
   return lang ? lang : get_host_lang();
 }
 
@@ -246,6 +252,10 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
     );
+#if 0
+    if ( !error_msg.empty() )
+      cerr << "error_msg=" << error_msg << endl;
+#endif
     internal::Thesaurus::ptr thesaurus(
       dynamic_cast<internal::Thesaurus*>( rsrc.release() )
     );
