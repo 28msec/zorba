@@ -43,7 +43,7 @@ private:
   ExternalModule* loadModule(const zstring& aFile) const;
 
 #ifdef WIN32
-  typedef std::set<HMODULE> LibrarySet_t;
+  typedef std::map<const zstring, HMODULE> LibraryMap_t;
 #else
   typedef std::map<const zstring, void*> LibraryMap_t;
 #endif
