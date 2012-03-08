@@ -167,7 +167,7 @@ void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
  * streambuf is destroyed and the stream's original streambuf is restored.
  *
  * @param ios The stream to detach the transcode::streambuf from.  If the
- * stream doesn't havr a transcode::streambuf attached to it, this function
+ * stream doesn't have a transcode::streambuf attached to it, this function
  * does nothing.
  */
 template<typename charT,typename Traits> inline
