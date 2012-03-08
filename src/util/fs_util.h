@@ -18,7 +18,12 @@
 #define ZORBA_FS_UTIL_H
 
 #include <vector>
-#include <dirent.h>
+
+#ifdef WIN32
+# include "win32/dirent.h"
+#else
+# include <dirent.h>                 /* for implementing lsdir */
+#endif /* WIN32 */
 
 #include <zorba/config.h>
 
