@@ -91,7 +91,7 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
-  if(theLocalUdfs != NULL)
+  if (theLocalUdfs != NULL)
     theLocalUdfs->remove(this);
 }
 
@@ -101,9 +101,11 @@ void user_function::prepare_for_serialize(CompilerCB *compilerCB)
   uint32_t planStateSize;
   getPlan(compilerCB, planStateSize);
   std::vector<user_function*>::iterator udf_it;
-  for(udf_it=theMutuallyRecursiveUDFs.begin(); udf_it!=theMutuallyRecursiveUDFs.end();udf_it++)
+  for(udf_it = theMutuallyRecursiveUDFs.begin();
+      udf_it != theMutuallyRecursiveUDFs.end();
+      ++udf_it)
   {
-    if((*udf_it)->thePlan == NULL)
+    if ((*udf_it)->thePlan == NULL)
       (*udf_it)->prepare_for_serialize(compilerCB);
   }
 }
@@ -113,45 +115,19 @@ void user_function::prepare_for_serialize(CompilerCB *compilerCB)
 ********************************************************************************/
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
-  //bool  save_plan = true;
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     try
     {
-#if 0
-      // We shouldn't try to optimize the body during the process of serializing
-      // the query plan, because udfs are serialized in some "random" order, and
-      // as a result, they will be optimized in this random order, instead of a
-      // bottom up order. This can have undesired effect, like const-folding
-      // exprs that contain calls to functions that are non-deterministic, or
-      // access the dynamic context.
-      //
-      // As a result, we don't call getPlan() unless the optimizer is off or
-      // the udf has been optimized already. If getPlan is not called, only
-      // the body expr of the udf will be serialized. 
-      //
-      // Note: The compiler attempts to collect and optimize all udfs that
-      // may actually be invoked during the execution of a query. However,
-      // some such udfs may go undetected; for example, udfs that appear
-      // inside eval statements. Only such undetected udfs are affected by
-      // this if condition.
-      if (ar.compiler_cb->theConfig.opt_level == CompilerCB::config::O0 ||
-          theIsOptimized)
-      {
-        getPlan(ar.compiler_cb);
-      }
-#else
       //uint32_t planStateSize;
       //getPlan(ar.compiler_cb, planStateSize);
       assert(thePlan != NULL);
       ZORBA_ASSERT(thePlan != NULL);
-#endif
     }
     catch(...)
     {
       // cannot compile user defined function, maybe it is not even used,
       // so don't fire an error yet
-      //save_plan = false;
     }
   }
   else
@@ -169,15 +145,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsLeaf;
   ar & theMutuallyRecursiveUDFs;
   ar & theIsOptimized;
-  //ar.set_is_temp_field(true);
-  //ar & save_plan;
-  //ar.set_is_temp_field(false);
-  //if(save_plan)
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
 
-  //+ar & theCache;
   ar & theCacheResults;
   ar & theCacheComputed;
 }
@@ -341,27 +312,19 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
+const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
 {
-  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
-  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
-
-  if (argMustCopy == ANNOTATION_TRUE)
-  {
-    // The decision depends on the caller
-    return callerMustCopy;
-  }
-
-  return argMustCopy;
+  return theArgVarsRefs;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
+void user_function::invalidatePlan() 
 {
-  return theArgVarsRefs;
+  thePlan = NULL;
+  theArgVarsRefs.clear();
 }
 
 

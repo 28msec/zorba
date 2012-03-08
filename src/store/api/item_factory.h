@@ -261,13 +261,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual bool createNonNegativeInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createNonNegativeInteger(Item_t& result, const xs_nonNegativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual bool createPositiveInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createPositiveInteger(Item_t& result, const xs_positiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]

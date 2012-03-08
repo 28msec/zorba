@@ -29,6 +29,16 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define TEMPLATE_DECL(T) /* nothing */
+# define INTEGER_IMPL(T)  IntegerImpl
+#else
+# define TEMPLATE_DECL(T) template<typename T>
+# define INTEGER_IMPL(T)  IntegerImpl<T>
+#endif /* ZORBA_WITH_BIG_INTEGER */
+#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
+#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace zorba {
@@ -144,10 +154,19 @@ FloatImpl<FloatType>::FloatImpl( Decimal const &d ) {
 }
 
 template<typename FloatType>
-FloatImpl<FloatType>::FloatImpl( Integer const &i ) {
+TEMPLATE_DECL(IntType)
+FloatImpl<FloatType>::FloatImpl( INTEGER_IMPL(IntType) const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
 }
+
+#ifndef ZORBA_WITH_BIG_INTEGER
+template FloatImpl<float>::FloatImpl( INTEGER_IMPL_LL const& );
+template FloatImpl<float>::FloatImpl( INTEGER_IMPL_ULL const& );
+
+template FloatImpl<double>::FloatImpl( INTEGER_IMPL_LL const& );
+template FloatImpl<double>::FloatImpl( INTEGER_IMPL_ULL const& );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 ////////// math functions /////////////////////////////////////////////////////
 

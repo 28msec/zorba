@@ -43,7 +43,7 @@ class UpdatePrimitive;
 class IndexKey;
 class PULImpl;
 class QNameItem;
-class SimpleCollection;
+class Collection;
 class InternalNode;
 class TextNode;
 
@@ -153,7 +153,7 @@ class CollectionPul
 
 protected:
   // Bookeeping
-  SimpleCollection                 * theCollection;
+  Collection                 * theCollection;
 
   PULImpl                          * thePul;
 
@@ -205,7 +205,7 @@ protected:
   std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
 
 public:
-  CollectionPul(PULImpl* pul, SimpleCollection* collection);
+  CollectionPul(PULImpl* pul, Collection* collection);
 
   ~CollectionPul();
 
