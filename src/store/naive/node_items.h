@@ -1265,6 +1265,8 @@ protected:
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
 #endif
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1425,6 +1427,8 @@ protected:
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
 #endif /* ZORBA_NO_FULL_TEXT */
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1490,6 +1494,8 @@ public:
   void replaceName(UpdRenamePi& upd);
 
   void restoreName(UpdRenamePi& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1545,6 +1551,8 @@ public:
   void replaceValue(UpdReplaceCommentValue& upd);
 
   void restoreValue(UpdReplaceCommentValue& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
