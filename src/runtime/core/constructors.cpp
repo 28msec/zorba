@@ -324,6 +324,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item_t child;
   store::CopyMode copymode;
   zstring baseuri;
+  zstring pre;
+  zstring ns;
 
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
@@ -338,10 +340,13 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     RAISE_ERROR(err::XQDY0074, loc,  ERROR_PARAMS("", ZED(NoEmptyLocalname)));
   }
 
-  if (nodeName->getPrefix() == "xmlns" ||
-      nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
-      (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
-      (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
+  pre = nodeName->getPrefix();
+  ns = nodeName->getNamespace();
+
+  if (pre == "xmlns" ||
+      ns == "http://www.w3.org/2000/xmlns/" ||
+      (pre == "xml" && ns != "http://www.w3.org/XML/1998/namespace") ||
+      (pre != "xml" && ns == "http://www.w3.org/XML/1998/namespace"))
   {
     RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(nodeName->getStringValue()));
   }
@@ -421,6 +426,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (!child->isNode())
         {
           assert(child->isAtomic());
+
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
         }
@@ -1071,7 +1077,6 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (theAttrContent || theTextContent)
   {
-#if 1
     if (consumeNext(result, theChild, planState))
     {
       haveContent = true;
@@ -1100,8 +1105,16 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           }
         }
       }
+#ifdef ZORBA_WITH_JSON
+      else if (result->isJSONItem())
+      {
+        RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+      }
+#endif
       else
       {
+        assert(result->isAtomic());
+
         result->getStringValue2(strval);
       }
 
@@ -1133,8 +1146,16 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             }
           }
         }
+#ifdef ZORBA_WITH_JSON
+        else if (result->isJSONItem())
+        {
+          RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+        }
+#endif
         else
         {
+          assert(result->isAtomic());
+
           result->appendStringValue(strval);
         }
       }
@@ -1149,53 +1170,6 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       factory->createString(result, strval);
       STACK_PUSH(true, state);
     }
-#else
-    while ( true )
-    {
-      if (!consumeNext(result, theChild, planState))
-        break;
-
-      if (result->isNode())
-      {
-        store::Item_t typedValue;
-        store::Iterator_t typedIter;
-        result->getTypedValue(typedValue, typedIter);
-
-        if (typedIter == NULL)
-        {
-          typedValue->appendStringValue(strval);
-          strval += " ";
-        }
-        else
-        {
-          while (typedIter->next(typedValue))
-          {
-            typedValue->appendStringValue(strval);
-            strval += " ";
-          }
-        }
-      }
-      else
-      {
-        result->appendStringValue(strval);
-        strval += " ";
-      }
-    }
-
-    if (strval.empty() && theTextContent)
-    {
-      STACK_PUSH(false, state);
-    }
-    else
-    {
-      // Erase the last space added in the above loop
-      if (!strval.empty())
-        strval.resize(strval.size() - 1);
-
-      factory->createString(result, strval);
-      STACK_PUSH(true, state);
-    }
-#endif
   }
   else
   {
@@ -1230,6 +1204,12 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             STACK_PUSH(true, state);
           }
         }
+#ifdef ZORBA_WITH_JSON
+        else if (result->isJSONItem())
+        {
+          RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+        }
+#endif
         else
         {
           assert(result->isAtomic());

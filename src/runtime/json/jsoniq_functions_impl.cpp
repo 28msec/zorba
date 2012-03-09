@@ -284,66 +284,36 @@ JSONFlattenIterator::nextImpl(
   JSONFlattenIteratorState* state;
   DEFAULT_STACK_INIT(JSONFlattenIteratorState, state, planState);
 
-  while (consumeNext(item, theChild.getp(), planState))
+  consumeNext(item, theChild.getp(), planState);
+
+  assert(item->isJSONArray());
+
+  state->theStack.push(item->getMembers());
+  state->theStack.top()->open();
+
+  while (!state->theStack.empty())
   {
-    // if thePropagateNonArrayItems == false, then item is always a json array
-    if (!thePropagateNonArrayItems || 
-        item->isJSONArray() ||
-        (item->isJSONPair() && item->getValue()->isJSONArray()))
+    while (state->theStack.top()->next(result))
     {
-      if (thePropagateNonArrayItems && item->isJSONPair())
-        item = item->getValue();
-
-      state->theStack.push(item->getMembers());
-      state->theStack.top()->open();
-
-      while (!state->theStack.empty())
+      if (result->isJSONArray())
       {
-        while (state->theStack.top()->next(result))
-        {
-          if (result->isJSONArray())
-          {
-            state->theStack.push(result->getMembers());
-            state->theStack.top()->open();
-            lFoundArray = true;
-            break;
-          }
-
-          STACK_PUSH(true, state);
-        }
-
-        if (lFoundArray)
-        {
-          lFoundArray = false;
-          continue;
-        }
-
-        state->theStack.top()->close();
-        state->theStack.pop();
+        state->theStack.push(result->getMembers());
+        state->theStack.top()->open();
+        lFoundArray = true;
+        break;
       }
-    }
-    else if (item->isJSONPair())
-    {
-      item = item->getValue();
-
-      if (item->isJSONObject())
-        RAISE_ERROR_NO_PARAMS(jerr::JSDY0002, loc);
-
-      result.transfer(item);
+      
       STACK_PUSH(true, state);
     }
-    else if (item->isJSONObject())
+    
+    if (lFoundArray)
     {
-      RAISE_ERROR_NO_PARAMS(jerr::JSDY0002, loc);
+      lFoundArray = false;
+      continue;
     }
-    else
-    {
-      result.transfer(item);
-      STACK_PUSH(true, state);
-    }
-
-    if (!thePropagateNonArrayItems)
-      break;
+    
+    state->theStack.top()->close();
+    state->theStack.pop();
   }
 
   STACK_END(state);

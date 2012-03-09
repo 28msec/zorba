@@ -30,27 +30,6 @@ namespace zorba
 
 #ifdef ZORBA_WITH_JSON
 
-PlanIter_t fn_jsoniq_flatten::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONFlattenIterator(sctx, loc, argv[0], false);
-}
-
-
-PlanIter_t op_zorba_flatten_internal::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONFlattenIterator(sctx, loc, argv[0], true);
-}
-
 
 PlanIter_t fn_jsoniq_parse_json::codegen(
   CompilerCB*,

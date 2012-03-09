@@ -83,32 +83,6 @@ PlanIter_t op_enclosed_expr::codegen(
     std::vector<PlanIter_t>& argv,
     expr& ann) const
 {
-#ifdef ZORBA_WITH_JSON
-  fo_expr* enclosedExpr = static_cast<fo_expr*>(&ann);
-
-  expr* inputExpr = enclosedExpr->get_arg(0);
-
-  if (inputExpr->get_function_kind() == FunctionConsts::OP_ZORBA_FLATTEN_INTERNAL_1)
-  {
-    TypeManager* tm = inputExpr->get_type_manager();
-
-    expr* contentExpr = static_cast<fo_expr*>(inputExpr)->get_arg(0);
-    xqtref_t type = contentExpr->get_return_type();
-
-    type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
-
-    if (type->is_none() || type->is_empty())
-    {
-      assert(dynamic_cast<JSONFlattenIterator*>(argv[0].getp()) != NULL);
-      
-      PlanIter_t inputIter = 
-      static_cast<JSONFlattenIterator*>(argv[0].getp())->getChild();
-
-      return new EnclosedIterator(sctx, loc, inputIter);
-    }
-  }
-#endif
-
   return new EnclosedIterator(sctx, loc, argv[0]);
 }
 

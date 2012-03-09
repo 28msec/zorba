@@ -533,7 +533,6 @@ public:
                          checked if the next item is a whitespace boundary.
 
   op_concatenate       : Cached ptr to the function obj for the concat func
-  op_enclosed_expr     : Cached ptr to the function obj for the enclosed_expr op
 
   theMaxLibModuleVersion  : This specifies the maximum module version for an
                          imported library. In case a version 1.0 module tries
@@ -630,7 +629,6 @@ protected:
   std::bitset<FunctionConsts::FN_MAX_FUNC> xquery_fns_def_dot;
 
   function                           * op_concatenate;
-  function                           * op_enclosed;
 
   rchandle<QName>                      theDotVarName;
   rchandle<QName>                      theDotPosVarName;
@@ -696,9 +694,6 @@ TranslatorImpl(
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
-
-  op_enclosed = GET_BUILTIN_FUNCTION(OP_ENCLOSED_1);
-  assert(op_enclosed != NULL);
 
   if (rootTranslator == NULL)
   {
@@ -1466,25 +1461,10 @@ expr_t wrap_in_type_match(
 ********************************************************************************/
 fo_expr* wrap_in_enclosed_expr(expr_t contentExpr, const QueryLoc& loc)
 {
-#ifdef ZORBA_WITH_JSON
-  TypeManager* tm = contentExpr->get_type_manager();
-
-  xqtref_t type = contentExpr->get_return_type();
-
-  type = TypeOps::intersect_type(*type, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR, tm);
-
-  if (!type->is_none() && !type->is_empty())
-  {
-    /* TODO: JSONiq: this needs to be reviewed
-    contentExpr = new fo_expr(theRootSctx,
-                              contentExpr->get_loc(),
-                              GET_BUILTIN_FUNCTION(OP_ZORBA_FLATTEN_INTERNAL_1),
-                              contentExpr);
-    */
-  }
-#endif
-
-  return new fo_expr(theRootSctx, loc, op_enclosed, contentExpr);
+  return new fo_expr(theRootSctx,
+                     loc,
+                     GET_BUILTIN_FUNCTION(OP_ENCLOSED_1),
+                     contentExpr);
 }
 
 
@@ -11927,8 +11907,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     content = pop_nodestack();
 
-    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(content, loc);
-    content = enclosedExpr;
+    content = wrap_in_enclosed_expr(content, loc);
   }
 
   if (v.get_target_expr() != NULL)
@@ -11937,8 +11916,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
     expr_t castExpr = create_cast_expr(loc, target.getp(), theRTM.NCNAME_TYPE_ONE, true);
 
-    fo_expr_t enclosedExpr = wrap_in_enclosed_expr(castExpr.getp(), loc);
-    target = enclosedExpr;
+    target = wrap_in_enclosed_expr(castExpr.getp(), loc);
   }
 
   expr_t e = (v.get_target_expr () != NULL ?
@@ -12753,8 +12731,7 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
   expr_t lTarget = pop_nodestack();
   expr_t lSource = pop_nodestack();
 
-  fo_expr_t lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lSource);
-  lSource = lEnclosed;
+  lSource = wrap_in_enclosed_expr(lSource, loc);
 
   expr_t lInsert = new insert_expr(theRootSctx, loc, v.getType(), lSource, lTarget);
   push_nodestack(lInsert);
@@ -12802,8 +12779,7 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
 
   if (v.getType() == store::UpdateConsts::NODE)
   {
-    fo_expr_t lEnclosed = new fo_expr(theRootSctx, loc, op_enclosed, lReplacement);
-    lReplacement = lEnclosed;
+    lReplacement = wrap_in_enclosed_expr(lReplacement, loc);
   }
 
   expr_t lReplace = new replace_expr(theRootSctx, loc,

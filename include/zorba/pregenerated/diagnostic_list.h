@@ -801,7 +801,7 @@ namespace jerr {
 #if defined(ZORBA_WITH_JSON)
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0001;
 
-extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0002;
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0006;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0003;
 

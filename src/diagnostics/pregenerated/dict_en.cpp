@@ -96,10 +96,10 @@ extern entry const dict_en[] = {
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0001", "\"$1\" item cannot appear as input to JSON object constructor" },
+  { "JNTY0006", "JSON item cannot appear as input to XML node constructor" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0002", "JSON object cannot appear as input to an XML constructor" },
+  { "JSDY0001", "\"$1\" item cannot appear as input to JSON object constructor" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0003", "\"$1\": pair with the same name already exists in object" },

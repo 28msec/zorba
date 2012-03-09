@@ -2487,8 +2487,8 @@
       <value>"$1" item cannot appear as input to JSON object constructor</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0002" if="defined(ZORBA_WITH_JSON)">
-      <value>JSON object cannot appear as input to an XML constructor</value>
+    <diagnostic code="JNTY0006" if="defined(ZORBA_WITH_JSON)">
+      <value>JSON item cannot appear as input to XML node constructor</value>
     </diagnostic>
 
     <diagnostic code="JSDY0003" if="defined(ZORBA_WITH_JSON)">
