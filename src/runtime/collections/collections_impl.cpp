@@ -30,6 +30,7 @@
 #include "context/uri_resolver.h"
 #include "context/static_context_consts.h"
 
+#include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
@@ -2331,19 +2332,20 @@ bool IsDeclaredIndexIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t      lName;
+  zorba::IndexDecl*  lDecl;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_index(lName.getp()) == 0)
+  if ((lDecl = theSctx->lookup_index(lName.getp())) && !lDecl->isTemp())
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
 
   STACK_END(lState);
@@ -2386,6 +2388,10 @@ bool DeclaredIndexesIterator::nextImpl(
   for ((lState->nameItState = theSctx->index_names())->open();
        lState->nameItState->next(lName); )
   {
+    if (theSctx->lookup_index(lName.getp())->isTemp()) 
+    {
+      continue;
+    }
     aResult = lName;
     STACK_PUSH(true, lState);
   }
