@@ -2012,32 +2012,28 @@ static void readDocument(
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
     
-  if (lStreamResource == NULL)
+ if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
 
-  std::unique_ptr<std::istream> lInStream;
-
-  
-  lInStream.reset(lStreamResource->getStream());
+  std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamResource->getStreamReleaser());
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
     if (!transcode::is_supported(aEncoding.c_str()))
     {
-      lInStream.release();
       throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
     }
-    lInStream.reset(new transcode::stream<std::istream>(aEncoding.c_str(), lInStream.release()->rdbuf()));
+    transcode::attach(*lStream.get(), aEncoding.c_str());
   }
 
   //creates stream item
   GENV_ITEMFACTORY->createStreamableString(
     oResult,
-    *lInStream.release(),
-    &streamReleaser
+    *lStream.release(),
+    lStream.get_deleter()
     );
   lStreamResource->setStreamReleaser(nullptr);
   
