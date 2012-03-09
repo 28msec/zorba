@@ -1296,7 +1296,7 @@ void UpdTruncateCollection::undo()
 
   throw ZORBA_EXCEPTION(
     zerr::ZDDY0019_UNDO_NOT_POSSIBLE,
-    ERROR_PARAMS( theName->getStringValue(), "truncate" )
+    ERROR_PARAMS( theName->getStringValue(), "truncation" )
   );
 
 }
