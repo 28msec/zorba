@@ -551,6 +551,34 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaTruncateCollectionIterator>
+const char* ZorbaTruncateCollectionIterator::class_name_str = "ZorbaTruncateCollectionIterator";
+ZorbaTruncateCollectionIterator::class_factory<ZorbaTruncateCollectionIterator>
+ZorbaTruncateCollectionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaTruncateCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaTruncateCollectionIterator::class_versions_count =
+sizeof(ZorbaTruncateCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
+
+// </ZorbaTruncateCollectionIterator>
+
+
 // <ZorbaCollectionNameIterator>
 const char* ZorbaCollectionNameIterator::class_name_str = "ZorbaCollectionNameIterator";
 ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>

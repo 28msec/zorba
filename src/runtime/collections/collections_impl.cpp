@@ -1797,6 +1797,93 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+bool ZorbaTruncateCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(collectionName, theChildren[0].getp(), planState);
+
+  (void)getCollection(
+      theSctx, collectionName, loc, theDynamicCollection, collection);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addTruncateCollection(&loc, collectionName, theDynamicCollection);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaTruncateCollectionIterator::getCollection(
+    const static_context* aSctx,
+    const store::Item_t& aName,
+    const QueryLoc& aLoc,
+    bool aDynamicCollection,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
+  if (collectionDecl == 0  && !aDynamicCollection)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
+  }
+
+  if (!aDynamicCollection)
+  {
+    // checking collection update mode
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        throw XQUERY_EXCEPTION(
+          zerr::ZDDY0004_COLLECTION_CONST_UPDATE,
+          ERROR_PARAMS( aName->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+
+      case StaticContextConsts::decl_append_only:
+        throw XQUERY_EXCEPTION(
+          zerr::ZDDY0005_COLLECTION_APPEND_BAD_INSERT,
+          ERROR_PARAMS( aName->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+      default: break;
+    }
+  }
+
+  coll = GENV_STORE.getCollection(aName, aDynamicCollection);
+
+  if (coll == NULL)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
+  }
+
+  return collectionDecl;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 bool ZorbaCollectionNameIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
