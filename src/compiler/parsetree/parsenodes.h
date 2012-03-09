@@ -6470,14 +6470,8 @@ private:
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-class JSON_Constructor : public exprnode
-{
-protected:
-  JSON_Constructor(const QueryLoc& loc) : exprnode(loc) { }
-};
 
-
-class JSON_ArrayConstructor : public JSON_Constructor
+class JSON_ArrayConstructor : public exprnode
 {
 private:
   const exprnode* expr_;
@@ -6493,23 +6487,63 @@ public:
 };
 
 
-class JSON_ObjectConstructor : public JSON_Constructor
+class JSON_ObjectConstructor : public exprnode
 {
 private:
   const exprnode* expr_;
+  bool            theAccumulate;
 
 public:
-  JSON_ObjectConstructor(const QueryLoc& loc, const exprnode* input);
+  JSON_ObjectConstructor(
+      const QueryLoc& loc,
+      const exprnode* input,
+      bool accumulate);
 
   ~JSON_ObjectConstructor();
 
   const exprnode* get_expr() const { return expr_; }
 
+  bool get_accumulate() const { return theAccumulate; }
+
   void accept(parsenode_visitor&) const;
 };
 
 
-class JSON_PairConstructor : public JSON_Constructor
+class JSON_DirectObjectConstructor : public exprnode
+{
+private:
+  const JSON_PairList* thePairs;
+
+public:
+  JSON_DirectObjectConstructor(const QueryLoc& loc, const JSON_PairList* pairs);
+
+  ~JSON_DirectObjectConstructor();
+
+  csize numPairs() const;
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSON_PairList : public parsenode
+{
+protected:
+  std::vector<rchandle<JSON_PairConstructor> > thePairs;
+
+public:
+  JSON_PairList(const QueryLoc& loc) : parsenode(loc) { };
+
+  void push_back(JSON_PairConstructor* pair) { thePairs.push_back(pair); }
+
+  const JSON_PairConstructor* operator[] (csize i) const { return thePairs[i]; }
+
+  csize size() const { return thePairs.size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSON_PairConstructor : public parsenode
 {
 private:
   const exprnode * expr1_;
@@ -6524,26 +6558,6 @@ public:
   const exprnode* get_expr2() const { return expr2_; }
 
   void accept( parsenode_visitor& ) const;
-};
-
-
-class JSON_PairList : public parsenode
-{
-protected:
-  std::vector<rchandle<JSON_PairConstructor> > thePairs;
-
-public:
-  JSON_PairList(const QueryLoc&) : parsenode(loc) { };
-
-  void push_back(rchandle<JSON_PairConstructor> pair) { thePairs.push_back(pair); }
-
-  rchandle<JSON_PairConstructor> operator[](int i) { return thePairs[i]; }
-
-  const JSON_PairConstructor *operator[] (int i) const { return thePairs[i]; }
-
-  ulong size () const { return (ulong)thePairs.size (); }
-
-  void accept(parsenode_visitor&) const;
 };
 
 

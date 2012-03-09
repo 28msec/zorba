@@ -382,6 +382,18 @@ void ExprIterator::next()
   }
 
 #ifdef ZORBA_WITH_JSON
+  case json_array_expr_kind:
+  {
+    json_array_expr* e = static_cast<json_array_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theContentExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
   case json_object_expr_kind:
   {
     json_object_expr* e = static_cast<json_object_expr*>(theExpr);
@@ -394,17 +406,30 @@ void ExprIterator::next()
     break;
   }
 
-  case json_array_expr_kind:
+  case json_direct_object_expr_kind:
   {
-    json_array_expr* e = static_cast<json_array_expr*>(theExpr);
+    json_direct_object_expr* e = static_cast<json_direct_object_expr*>(theExpr);
 
     EXPR_ITER_BEGIN();
 
-    EXPR_ITER_NEXT(e->theContentExpr);
+    theArgsIter = e->theNames.begin();
+    theArgsEnd = e->theNames.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    theArgsIter = e->theValues.begin();
+    theArgsEnd = e->theValues.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
 
     EXPR_ITER_END();
     break;
   }
+
 #endif
 
   case if_expr_kind:

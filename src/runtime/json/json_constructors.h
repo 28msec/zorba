@@ -31,6 +31,39 @@ namespace zorba {
 /*********************************************************************************
 
 *********************************************************************************/
+class JSONArrayIterator : public NaryBaseIterator<JSONArrayIterator,
+                                                  PlanIteratorState>
+{
+protected:
+  std::vector<bool> theCopyInputs;
+
+public:
+  SERIALIZABLE_CLASS(JSONArrayIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  JSONArrayIterator,
+  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  JSONArrayIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& content,
+      bool copyInput);
+
+  bool isConstructor() const { return true; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/*********************************************************************************
+
+*********************************************************************************/
 class JSONPairIterator : public BinaryBaseIterator<JSONPairIterator,
                                                    PlanIteratorState>
 {
@@ -85,39 +118,6 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool copyInput);
-
-  bool isConstructor() const { return true; }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-};
-
-
-/*********************************************************************************
-
-*********************************************************************************/
-class JSONArrayIterator : public NaryBaseIterator<JSONArrayIterator,
-                                                  PlanIteratorState>
-{
-protected:
-  std::vector<bool> theCopyInputs;
-
-public:
-  SERIALIZABLE_CLASS(JSONArrayIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  JSONArrayIterator,
-  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  JSONArrayIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& content,
       bool copyInput);
 
   bool isConstructor() const { return true; }

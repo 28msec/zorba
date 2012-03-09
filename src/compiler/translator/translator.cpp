@@ -10838,25 +10838,152 @@ void end_visit(const InlineFunction& v, void* aState)
 
 
 /*******************************************************************************
-  JSONConstructor ::= DirectObjectConstructor |
-                      DirectArrayConstructor |
-                      ComputedObjectConstructor |
-                      ComputedArrayConstructor |
-                      ComputedPairConstructor
+  JSONConstructor ::= ArrayConstructor |
+                      SimpleObjectUnion |
+                      AccumulatorObjectUnion |
+                      DirectObjectConstructor
 ********************************************************************************/
 
 
 /*******************************************************************************
-  ComputedPairConstructor ::= "pair" "{" ExprSingle ":" ExprSingle "}"
+  ArrayConstructor ::= "[" Expr? "]"
 
-  DirectPairConstructor ::= ExprSingle ":" ExprSingle
+  The Expr may return a sequence of zero or more items. If any of these items
+  is a structured item, it is copied first, and the copy is inserted into the
+  new array.
+********************************************************************************/
+void* begin_visit(const JSON_ArrayConstructor& v)
+{
+  TRACE_VISIT();
 
-  The DirectPairConstructor production can appear only on the RHS of a
-  DirectObjectConstructor
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+
+  return no_state;
+}
+
+void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  expr_t contentExpr;
+
+  if (v.get_expr() != NULL)
+  {
+    contentExpr = pop_nodestack();
+  }
+
+  push_nodestack(new json_array_expr(theRootSctx, loc, contentExpr));
+#endif
+}
+
+
+/*******************************************************************************
+  SimpleObjectUnion ::= "{|" Expr? "|}"
+
+  AccumulatorObjectUnion ::= "{[" Expr? "]}"
+
+  The Expr must return a sequence of zero or more objects
+********************************************************************************/
+void* begin_visit(const JSON_ObjectConstructor& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  expr_t contentExpr;
+
+  if (v.get_expr() != NULL)
+  {
+    contentExpr = pop_nodestack();
+
+    contentExpr = new treat_expr(theRootSctx,
+                                 contentExpr->get_loc(),
+                                 contentExpr,
+                                 GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
+                                 err::XPTY0004,
+                                 true,
+                                 NULL);
+  }
+
+  expr* jo = new json_object_expr(theRootSctx, loc, contentExpr, v.get_accumulate());
+
+  push_nodestack(jo);
+#endif
+}
+
+
+/*******************************************************************************
+  DirectObjectConstructor ::= "{" PairConstructor ("," PairConstructor )* "}"
+
+  PairConstructor ::= ExprSingle ":" ExprSingle
 
   The 1st ExprSingle must return exactly one string.
-  The 2nd ExprSingle must contain exactly one item of any kind. If that item
-  is another pair, it is unboxed.
+  The 2nd ExprSingle must contain exactly one item of any kind.
+********************************************************************************/
+void* begin_visit(const JSON_DirectObjectConstructor& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+void end_visit(const JSON_DirectObjectConstructor& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  csize numPairs = v.numPairs();
+  std::vector<expr_t> names(numPairs);
+  std::vector<expr_t> values(numPairs);
+
+  for (csize i = numPairs; i > 0; --i)
+  {
+    names[i-1] = pop_nodestack();
+    values[i-1] = pop_nodestack();
+  }
+
+  expr* jo = new json_direct_object_expr(theRootSctx, loc, names, values);
+
+  push_nodestack(jo);
+#endif
+}
+
+
+/*******************************************************************************
+  PairList ::= PairConstructor | PairList COMMA PairConstructor
+********************************************************************************/
+void* begin_visit(const JSON_PairList& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const JSON_PairList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  PairConstructor ::= ExprSingle ":" ExprSingle
+
+  The PairConstructor production can appear only on the RHS of a DirectObjectConstructor
+
+  The 1st ExprSingle must return exactly one string.
+  The 2nd ExprSingle must contain exactly one item of any kind.
 ********************************************************************************/
 void* begin_visit(const JSON_PairConstructor& v)
 {
@@ -10890,143 +11017,13 @@ void end_visit(const JSON_PairConstructor& v, void* /*visit_state*/)
                                GENV_TYPESYSTEM.ITEM_TYPE_ONE,
                                NULL);
 
-  //json_pair_expr* jp = dynamic_cast<json_pair_expr*>(theNodeStack.top().getp());
-  //ZORBA_ASSERT(jp);
-  //jp->set_name_expr(nameExpr);
-  //jp->set_value_expr(valueExpr);
-  //jp->compute_scripting_kind();
+  push_nodestack(valueExpr);
+  push_nodestack(nameExpr);
 #endif
 }
 
-/*******************************************************************************
-  JSON_PairList ::= JSON_PairConstructor | JSON_PairList COMMA JSON_PairConstructor
-********************************************************************************/
-void* begin_visit(const JSON_PairList& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const JSON_PairList& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-}
 
 
-/*******************************************************************************
-  DirectObjectConstructor ::= "{" DirectObjectContent "}"
-
-  DirectObjectContent ::= DirectPairConstructor+
-
-  DirectPairConstructor ::= ExprSingle ":" ExprSingle
-
-
-  ComputedObjectConstructor ::= "{" Expr? "}"
-
-  The Expr must return a sequence of zero or more pairs
-********************************************************************************/
-void* begin_visit(const JSON_ObjectConstructor& v)
-{
-  TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
-  return no_state;
-}
-
-void end_visit(const JSON_ObjectConstructor& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-#ifdef ZORBA_WITH_JSON
-  expr_t contentExpr;
-
-  if (v.get_expr() != NULL)
-  {
-    contentExpr = pop_nodestack();
-
-    contentExpr = new treat_expr(theRootSctx,
-                                 contentExpr->get_loc(),
-                                 contentExpr,
-                                 GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
-                                 err::XPTY0004,
-                                 true,
-                                 NULL);
-  }
-
-  json_object_expr* jo = new json_object_expr(theRootSctx, loc, contentExpr);
-
-  push_nodestack(jo);
-#endif
-}
-
-#if 0
-void* begin_visit(const JSON_DirectObjectContent& v)
-{
-  TRACE_VISIT();
-
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
-
-  return no_state;
-}
-
-void end_visit(const JSON_DirectObjectContent& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-#ifdef ZORBA_WITH_JSON
-  csize numPairs = v.size();
-  std::vector<expr_t> pairs(numPairs);
-
-  for (csize i = numPairs; i > 0; --i)
-  {
-    pairs[i-1] = pop_nodestack();
-  }
-
-  expr_t concatExpr = new fo_expr(theRootSctx,
-                                  loc,
-                                  op_concatenate,
-                                  pairs);
-
-  push_nodestack(concatExpr);
-#endif
-}
-#endif
-
-/*******************************************************************************
-  ArrayConstructor ::= "[" Expr? "]"
-
-  The Expr may return a sequence of zero or more items. If any of those items
-  is a pair, it is unboxed.
-********************************************************************************/
-void* begin_visit(const JSON_ArrayConstructor& v)
-{
-  TRACE_VISIT();
-
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
-
-  return no_state;
-}
-
-void end_visit(const JSON_ArrayConstructor& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-#ifdef ZORBA_WITH_JSON
-  expr_t contentExpr;
-
-  if (v.get_expr() != NULL)
-  {
-    contentExpr = pop_nodestack();
-  }
-
-  push_nodestack(new json_array_expr(theRootSctx, loc, contentExpr));
-#endif
-}
 
 
 /*******************************************************************************

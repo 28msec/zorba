@@ -559,6 +559,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
 #ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
+  case json_direct_object_expr_kind:
   {
     newType = rtm.JSON_OBJECT_TYPE_ONE;
     break;

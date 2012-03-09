@@ -45,6 +45,80 @@ END_SERIALIZABLE_CLASS_VERSIONS(JSONPairIterator)
 /*********************************************************************************
 
 *********************************************************************************/
+JSONArrayIterator::JSONArrayIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& content,
+    bool copyInput)
+  :
+  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>(sctx, loc, content)
+{
+  csize numChildren = theChildren.size();
+
+  theCopyInputs.resize(numChildren);
+
+  for (csize i = 0; i < numChildren; ++i)
+  {
+    if (theChildren[i]->isConstructor())
+    {
+      theCopyInputs[i] = false;
+    }
+    else
+    {
+      theCopyInputs[i] = copyInput;
+    }
+  }
+}
+
+
+void JSONArrayIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (NaryBaseIterator<JSONArrayIterator, PlanIteratorState>*)this);
+
+  //ar & theCopyInputs; // TODO
+}
+
+
+bool JSONArrayIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::CopyMode copymode;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  try
+  {
+    GENV_ITEMFACTORY->createJSONArray(result);
+
+    for (csize i = 0; i < theChildren.size(); ++i)
+    {
+      copymode.set(theCopyInputs[i], true, true, true);
+
+      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i], planState);
+
+      GENV_STORE.populateJSONArray(result, iter, copymode);
+    }
+  }
+  catch (XQueryException& e)
+  {
+    result = NULL;
+    set_source(e, loc, false);
+    throw;
+  }
+
+  STACK_PUSH(true, state);
+  STACK_END(state);
+}
+
+
+NARY_ACCEPT(JSONArrayIterator);
+
+
+
+/*********************************************************************************
+
+*********************************************************************************/
 JSONPairIterator::JSONPairIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -193,82 +267,6 @@ bool JSONObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
 
 NARY_ACCEPT(JSONObjectIterator);
-
-
-/*********************************************************************************
-
-*********************************************************************************/
-JSONArrayIterator::JSONArrayIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& content,
-    bool copyInput)
-  :
-  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>(sctx, loc, content)
-{
-  csize numChildren = theChildren.size();
-
-  theCopyInputs.resize(numChildren);
-
-  for (csize i = 0; i < numChildren; ++i)
-  {
-    if (theChildren[i]->isConstructor())
-    {
-      // Note: translator makes sure that a content expr is not a pair constructor
-      assert(dynamic_cast<JSONPairIterator*>(theChildren[i].getp()) == NULL);
-
-      theCopyInputs[i] = false;
-    }
-    else
-    {
-      theCopyInputs[i] = copyInput;
-    }
-  }
-}
-
-
-void JSONArrayIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, 
-  (NaryBaseIterator<JSONArrayIterator, PlanIteratorState>*)this);
-
-  //ar & theCopyInputs; // TODO
-}
-
-
-bool JSONArrayIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::CopyMode copymode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  try
-  {
-    GENV_ITEMFACTORY->createJSONArray(result);
-
-    for (csize i = 0; i < theChildren.size(); ++i)
-    {
-      copymode.set(theCopyInputs[i], true, true, true);
-
-      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i], planState);
-
-      GENV_STORE.populateJSONArray(result, iter, copymode);
-    }
-  }
-  catch (XQueryException& e)
-  {
-    result = NULL;
-    set_source(e, loc, false);
-    throw;
-  }
-
-  STACK_PUSH(true, state);
-  STACK_END(state);
-}
-
-
-NARY_ACCEPT(JSONArrayIterator);
 
 
 }

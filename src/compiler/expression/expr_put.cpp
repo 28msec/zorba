@@ -529,7 +529,8 @@ ostream& fo_expr::put(ostream& os) const
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-ostream& ftcontains_expr::put( ostream &os ) const {
+ostream& ftcontains_expr::put( ostream &os ) const 
+{
   BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
   ftselection_->put( os );
@@ -844,6 +845,15 @@ ostream& pi_expr::put(ostream& os) const
 
 
 #ifdef ZORBA_WITH_JSON
+ostream& json_array_expr::put(ostream& os) const
+{
+  BEGIN_PUT(json_array_expr);
+  if (theContentExpr)
+    theContentExpr->put(os);
+  END_PUT();
+}
+
+
 ostream& json_object_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_object_expr);
@@ -853,11 +863,20 @@ ostream& json_object_expr::put(ostream& os) const
 }
 
 
-ostream& json_array_expr::put(ostream& os) const
+ostream& json_direct_object_expr::put(ostream& os) const
 {
-  BEGIN_PUT(json_array_expr);
-  if (theContentExpr)
-    theContentExpr->put(os);
+  BEGIN_PUT(json_direct_object_expr);
+
+  std::vector<expr_t>::const_iterator ite1 = theNames.begin();
+  std::vector<expr_t>::const_iterator end1 = theNames.end();
+  std::vector<expr_t>::const_iterator ite2 = theValues.begin();
+  std::vector<expr_t>::const_iterator end2 = theValues.end();
+  for (; ite1 != end1; ++ite1, ++ite2)
+  {
+    (*ite1)->put(os);
+    (*ite2)->put(os);
+  }
+
   END_PUT();
 }
 #endif

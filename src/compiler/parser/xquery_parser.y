@@ -868,11 +868,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* JSON-related */
 /* ------------ */
-%type <expr> JSONObjectConstructor
-%type <node> JSONPairList
 %type <expr> JSONArrayConstructor
 %type <expr> JSONSimpleObjectUnion
 %type <expr> JSONAccumulatorObjectUnion
+%type <expr> JSONObjectConstructor
+%type <node> JSONPairList
 %type <expr> JSONDeleteExpr
 %type <expr> JSONInsertExpr
 %type <expr> JSONRenameExpr
@@ -6330,30 +6330,6 @@ FTIgnoreOption :
  *_______________________________________________________________________*/
 
 
-JSONObjectConstructor :
-        LBRACE JSONPairList RBRACE
-        {
-          $$ = new JSON_ObjectConstructor( LOC(@$), dynamic_cast<exprnode*>($2) );
-        }
-    ;
-
-JSONPairList :
-        ExprSingle COLON ExprSingle
-        {
-          $$ = new JSON_PairConstructor( LOC(@$), $1, $3 );
-        }
-    |   JSONPairList COMMA ExprSingle COLON ExprSingle
-        {
-          JSON_PairList* jpl;
-          if (dynamic_cast<JSON_PairConstructor*>($1) != NULL)
-            jpl = new JSON_PairList( LOC(@$) );
-          else
-            jpl = dynamic_cast<JSON_PairList*>($1);
-          jpl->push_back(new JSON_PairConstructor( LOC(@$), $3, $5) );
-          $$ = jpl;
-        }
-    ;
-
 JSONArrayConstructor :
         LBRACK RBRACK
         {
@@ -6369,12 +6345,12 @@ JSONSimpleObjectUnion :
         L_SIMPLE_OBJ_UNION R_SIMPLE_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+          $$ = new JSON_ObjectConstructor(LOC(@$), NULL, false);
         }
     |   L_SIMPLE_OBJ_UNION Expr R_SIMPLE_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+          $$ = new JSON_ObjectConstructor(LOC(@$), $2, false);
         }
     ;
 
@@ -6382,12 +6358,37 @@ JSONAccumulatorObjectUnion :
         L_ACCUMULATOR_OBJ_UNION R_ACCUMULATOR_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+          $$ = new JSON_ObjectConstructor(LOC(@$), NULL, true);
         }
     |   L_ACCUMULATOR_OBJ_UNION Expr R_ACCUMULATOR_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor( LOC(@$), NULL );
+          $$ = new JSON_ObjectConstructor(LOC(@$), $2, true);
+        }
+    ;
+
+
+JSONObjectConstructor :
+        LBRACE JSONPairList RBRACE
+        {
+          $$ = new JSON_DirectObjectConstructor(LOC(@$),
+                                                dynamic_cast<JSON_PairList*>($2));
+        }
+    ;
+
+JSONPairList :
+        ExprSingle COLON ExprSingle
+        {
+          JSON_PairList* jpl = new JSON_PairList(LOC(@$));
+          jpl->push_back(new JSON_PairConstructor(LOC(@$), $1, $3));
+          $$ = jpl;
+        }
+    |   JSONPairList COMMA ExprSingle COLON ExprSingle
+        {
+          JSON_PairList* jpl = dynamic_cast<JSON_PairList*>($1);
+          assert(jpl);
+          jpl->push_back(new JSON_PairConstructor(LOC(@$), $3, $5));
+          $$ = jpl;
         }
     ;
 

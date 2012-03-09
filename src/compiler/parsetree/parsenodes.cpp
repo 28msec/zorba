@@ -5660,7 +5660,7 @@ JSON_ArrayConstructor::JSON_ArrayConstructor(
     const QueryLoc& loc,
     const exprnode* expr)
   :
-  JSON_Constructor(loc),
+  exprnode(loc),
   expr_(expr)
 {
 }
@@ -5682,10 +5682,12 @@ void JSON_ArrayConstructor::accept(parsenode_visitor& v) const
 
 JSON_ObjectConstructor::JSON_ObjectConstructor(
     const QueryLoc& loc,
-    const exprnode* expr)
+    const exprnode* expr,
+    bool accumulate)
   :
-  JSON_Constructor(loc),
-  expr_(expr)
+  exprnode(loc),
+  expr_(expr),
+  theAccumulate(accumulate)
 {
 }
 
@@ -5704,14 +5706,60 @@ void JSON_ObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+JSON_DirectObjectConstructor::JSON_DirectObjectConstructor(
+    const QueryLoc& loc,
+    const JSON_PairList* pairs)
+  :
+  exprnode(loc),
+  thePairs(pairs)
+{
+}
+
+
+JSON_DirectObjectConstructor::~JSON_DirectObjectConstructor()
+{
+  delete thePairs;
+}
+
+
+csize JSON_DirectObjectConstructor::numPairs() const 
+{
+  return thePairs->size();
+}
+
+
+void JSON_DirectObjectConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePairs);
+  END_VISITOR();
+}
+
+
+void JSON_PairList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  vector<rchandle<JSON_PairConstructor> >::const_iterator it = thePairs.begin();
+
+  for (; it != thePairs.end(); ++it)
+  {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK(e_p);
+  }
+
+  END_VISITOR();
+}
+
+
 JSON_PairConstructor::JSON_PairConstructor(
     const QueryLoc& loc,
     const exprnode* expr1,
     const exprnode* expr2)
   :
-  JSON_Constructor( loc ),
-  expr1_( expr1 ),
-  expr2_( expr2 )
+  parsenode(loc),
+  expr1_(expr1),
+  expr2_(expr2)
 {
 }
 
@@ -5723,23 +5771,7 @@ JSON_PairConstructor::~JSON_PairConstructor()
 }
 
 
-void JSON_PairList::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-
-  vector<rchandle<JSON_PairConstructor> >::const_iterator it = thePairs.begin();
-
-  for (; it != thePairs.end(); ++it)
-  {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
-
-  END_VISITOR();
-}
-
-
-void JSON_PairConstructor::accept( parsenode_visitor &v ) const
+void JSON_PairConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   ACCEPT( expr2_ );
@@ -5754,6 +5786,7 @@ JSON_Test::JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind k)
   jt_(k)
 {
 }
+
 
 void JSON_Test::accept(parsenode_visitor& v) const
 {

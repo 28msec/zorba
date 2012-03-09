@@ -3059,6 +3059,41 @@ void end_visit(pi_expr& v)
   JSON Constructors
 
 ********************************************************************************/
+bool begin_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  std::vector<PlanIter_t> inputs;
+
+  expr* inputExpr = v.get_expr();
+
+  if (inputExpr != NULL)
+  {
+    PlanIter_t inputIter = pop_itstack();
+
+    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
+    {
+      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
+    }
+    else
+    {
+      inputs.push_back(inputIter);
+    }
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONArrayIterator(sctx, qloc, inputs, copyInput));
+}
+
+
 bool begin_visit(json_object_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -3093,40 +3128,6 @@ void end_visit(json_object_expr& v)
   push_itstack(new JSONObjectIterator(sctx, qloc, inputs, copyInput));
 }
 
-
-bool begin_visit(json_array_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-
-void end_visit(json_array_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-
-  std::vector<PlanIter_t> inputs;
-
-  expr* inputExpr = v.get_expr();
-
-  if (inputExpr != NULL)
-  {
-    PlanIter_t inputIter = pop_itstack();
-
-    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
-    {
-      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
-    }
-    else
-    {
-      inputs.push_back(inputIter);
-    }
-  }
-
-  bool copyInput = true;
-
-  push_itstack(new JSONArrayIterator(sctx, qloc, inputs, copyInput));
-}
 
 #endif // ZORBA_WITH_JSON
 
