@@ -306,6 +306,16 @@ Base64::Base64(const Base16& aBase16)
 }
 
 
+Base64::Base64(const unsigned char *bin_data, size_t len)
+{
+  std::vector<char> tmp;
+  tmp.reserve(len);
+  tmp.insert(tmp.begin(), (const char*)bin_data, ((const char*)bin_data) + len);
+  theData.reserve(len);
+  encode(tmp, theData);
+}
+
+
 void Base64::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theData;

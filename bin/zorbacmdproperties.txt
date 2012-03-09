@@ -35,3 +35,5 @@
 ("trailing-nl", "Output a trailing newline after the result of the query.")
 ("stop-words", po::value<std::vector<std::string> >(), "Mapping specifying a stop-words URI to another.")
 ("thesaurus", po::value<std::vector<std::string> >(), "Mapping specifying a thesaurus URI to another.")
+("compile-plan,c", "Output the query plan as binary.")
+("execute-plan", "Take a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.")

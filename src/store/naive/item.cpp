@@ -430,7 +430,7 @@ const zstring& Item::getString() const
 /**
  * Accessor for xs:base64Binary
  */
-xs_base64Binary Item::getBase64BinaryValue() const
+const char* Item::getBase64BinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -440,6 +440,24 @@ xs_base64Binary Item::getBase64BinaryValue() const
     )
   );
 }
+
+
+/**
+ * Checks whether a base64 item's content is already encoded
+ *
+ * @return true only if it is.
+ */
+bool Item::isEncoded() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), "Item::isEncoded()",
+      getType()->getStringValue()
+    )
+  );
+}
+
 
 /**
  * Accessor for xs:boolean
@@ -552,7 +570,7 @@ xs_byte Item::getByteValue() const
  * Accessor for xs:unsignedLong,  xs:unsignedInt,  xs:unsignedShort,
  *  xs:unsignedByte, xs:nonNegativeInteager, xs:positiveInteger
  */
-xs_uinteger Item::getUnsignedIntegerValue() const
+xs_nonNegativeInteger Item::getUnsignedIntegerValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,

@@ -867,7 +867,7 @@ void SchemaValidatorFilter::attributeEvent(
     }
     --theAttrCount;  // remove att from the list but still needs to be reported
 
-    //cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
+    //std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
     //    StrX(typeName) << "\n";
     theEventBuffer->attributeEvent(emptyToNull(prefix), emptyToNull(uri),
         localname, value, emptyToNull(typeURI), typeName);
@@ -1062,7 +1062,9 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
     {
       const ElemStack::StackElem* topElem = fElemStack.topElement();
       DatatypeValidator *currentDV = 0;
-      if(topElem->fThisElement->isDeclared())
+      if(topElem->fThisElement->isDeclared() ||
+         theXsiType  // this is when there is no schema import but xsiType is used
+        )
       {
         ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->
             getCurrentTypeInfo();
