@@ -38,7 +38,7 @@ xquery version "3.0";
  : specified by
  : <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
  : and
- : ANSI/NISO Z39.19-2005
+ : <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
  : with the exceptions of "HN" (history note)
  : and "X SN" (see scope note for).
  : Additionally, Zorba also supports all WordNet relationships.
