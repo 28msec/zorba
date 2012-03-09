@@ -157,11 +157,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   csize numClauses = flwor.num_clauses();
   csize numForLetWinClauses = 0;
 
-  // "for $x in E return $x"  --> "E"
+  // "for $x in E return $x"  --> "E" //can't have allowing empty
   // "let $x := E return $x"  --> "E"
   // Single windowing clauses are left alone
   if (numClauses == 1 &&
 	  flwor.get_clause(0)->get_kind() != flwor_clause::window_clause &&
+	  ! (flwor.get_clause(0)->get_kind() == flwor_clause::for_clause &&
+	    static_cast<for_clause*>(flwor.get_clause(0))->is_allowing_empty()
+	  ) &&
       myVars.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
@@ -255,18 +258,28 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         continue;
 
       // FOR clause with 0 cardinality
-      if (domainCount == 0)
+	  if (domainCount == 0 && ! fc->is_allowing_empty())
         return fo_expr::create_seq(sctx, LOC(node));
 
       // FOR clause with cardinality 0 or 1
 
       if (pvar != NULL)
       {
-        MODIFY(subst_vars(rCtx,
-                          node,
-                          pvar,
-                          new const_expr(sctx, loc, xs_integer::one())));
-      }
+		if(fc->is_allowing_empty() && domainCount == 0)
+		{
+		  MODIFY(subst_vars(rCtx,
+                  node,
+                  pvar,
+                  new const_expr(sctx, loc, xs_integer::zero())));
+		}
+		else
+		{
+		  MODIFY(subst_vars(rCtx,
+                  node,
+                  pvar,
+                  new const_expr(sctx, loc, xs_integer::one())));
+        }
+	  }
 
       int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
 
