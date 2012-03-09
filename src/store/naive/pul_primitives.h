@@ -1218,8 +1218,6 @@ class UpdTruncateCollection: public  UpdCollection
   friend class PULPrimitiveFactory;
 
 protected:
-  std::vector<store::Item_t> theTrees; // needed for undo only
-
   UpdTruncateCollection(
         CollectionPul* pul,
         const QueryLoc* aLoc,
