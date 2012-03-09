@@ -1257,10 +1257,15 @@ declare %private function xqdoc2html:imports(
     In order to import and use the schemas, please add:
     <pre class="brush: xquery;">
     {
+    let $namespaces := $xqdoc/xqdoc:module//xqdoc:custom[@tag = "namespaces"]
+    return
     string-join(
     for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
-       concat('import schema "', string($import/xqdoc:uri/text()),'";'),"
+       concat('import schema namespace ',
+              $namespaces//xqdoc:namespace[@uri = $import/xqdoc:uri/text()][1]/@prefix,
+              ' =  "',
+              string($import/xqdoc:uri/text()),'";'),"
 ")
     }
     </pre></p>)
