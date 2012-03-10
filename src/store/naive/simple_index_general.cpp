@@ -755,6 +755,26 @@ bool GeneralHashIndex::remove(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralHashIndex::clear()
+{
+  for (ulong i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    theMaps[i]->clear();
+  }
+
+  if (isTyped())
+  {
+    theSingleMap->clear();
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  GeneralHashIndex::KeyIterator                                              //
@@ -906,6 +926,26 @@ bool GeneralTreeIndex::remove(
     bool all)
 {
   return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralTreeIndex::clear()
+{
+  for (ulong i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    theMaps[i]->clear();
+  }
+
+  if (isTyped())
+  {
+    theSingleMap->clear();
+  }
 }
 
 

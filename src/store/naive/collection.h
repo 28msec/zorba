@@ -73,6 +73,8 @@ public:
       zorba::xs_integer position,
       zorba::xs_integer num) = 0;
 
+  virtual void removeAll() = 0;
+
   virtual void adjustTreePositions() = 0;
 
   /***************************** ID Management ********************************/

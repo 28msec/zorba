@@ -38,15 +38,6 @@ LIST(REMOVE_ITEM TESTFILES
 
   # crashes on Windows: 866978, 866742 (fix 866978 before 866742)
   zorba/HigherOrder/hof-101.xq
-
-  # fails because of the image external module's broken documentation
-  # If you try to submit something else to the external module, it will
-  # fail because of this test.
-  # If you try and mark it as expected failure here, the "expected failure"
-  # will fail because the image module will not be tested and therefore the
-  # module documentation test will succeed.
-  # Created bug 871335 for this.
-  zorba/xqdoc/moduleDocumentation.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -553,4 +544,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
+
 

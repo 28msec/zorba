@@ -10,9 +10,11 @@ version 2.2
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Added truncate function to the collection modules for efficient deletion of all nodes in a collection.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 867509 (Can not handle largest xs:unsignedLong values)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
+  * New URI module providing percent-decoding functions.
   * Optimization: change the implementation of the free-vars annotation and got rid
     of the annotations map in expressions.
   * Fixed bug 909126 (bug in cloning of var_expr)
@@ -25,6 +27,7 @@ version 2.2
     case of early-out)
   * More efficient implementation for base64Binary items
   * Added index management function to the C++ api's StaticCollectionManager.
+  * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
   * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be
     set multiple times via the c++ api).
@@ -59,6 +62,7 @@ version 2.2
   * Fixed bug with unversioned modules with C++ external functions
   * Fixed bug #878508 (JSON Module not escaping escape characters)
   * Fixed bug #912579 (validate-in-place on non-root elements)
+  * Fixed bug #891209 (validation with xsi:type returns untyped)
 
 version 2.1
 
