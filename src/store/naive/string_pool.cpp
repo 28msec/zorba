@@ -18,6 +18,7 @@
 #include "util/string_util.h"
 #include "string_pool.h"
 #include "zorba/zorba_exception.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba { namespace simplestore {
 
