@@ -16,10 +16,19 @@ xquery version "3.0";
  : limitations under the License.
  :)
 
+(:===========================================================================:)
+
 (:~
  : This module provides an XQuery API to full-text functions.
+ : <h2>Notes on stemming</h2>
+ : The <code>stem()</code> functions return the stem of a word.
+ : The stem of a word itself, however, is not guaranteed to be a word.
+ : It is best to consider stems as opaque byte sequences.
+ : All that is guaranteed about a stem is that,
+ : for a given word,
+ : the stem of that word will always be the same byte sequence.
  : <h2>Notes on the thesaurus</h2>
- : The <code>ft:thesaurus-lookup</code> function has "levels"
+ : The <code>thesaurus-lookup()</code> functions have "levels"
  : and "relationship" parameters.
  : The values for these are implementation-defined.
  : Zorba's default implementation uses the
@@ -116,8 +125,7 @@ xquery version "3.0";
  : </table>
  : Relationships are case-insensitive.
  : <h2>Notes on tokens</h2>
- : The <code>ft:tokenize()</code>
- : and <code>ft:tokenize-string()</code> functions
+ : The <code>tokenize()</code> functions
  : return a sequence of &lt;token&gt; elements
  : containing attributes for each token:
  :  <table>
@@ -153,7 +161,7 @@ xquery version "3.0";
  :    </tr>
  :  </table>
  : <h2>Notes on tokenizer properties</h2>
- : The <code>ft:tokenizer-properties()</code> functions
+ : The <code>tokenizer-properties()</code> functions
  : return a single <code>&lt;tokenizer-properties&gt;</code> element
  : containing attributes that describe the tokenizer's properties:
  :  <table>
@@ -175,6 +183,9 @@ xquery version "3.0";
  :    </tr>
  :  </table>
  :)
+
+(:===========================================================================:)
+
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
 import schema namespace ft-schema =
@@ -185,6 +196,40 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
+
+(:===========================================================================:)
+
+(:~
+ : Predeclared constant for the German
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-de as xs:language := xs:language("de");
+
+(:~
+ : Predeclared constant for the English
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-en as xs:language := xs:language("en");
+
+(:~
+ : Predeclared constant for the Spanish
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-es as xs:language := xs:language("es");
+
+(:~
+ : Predeclared constant for the French
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-fr as xs:language := xs:language("fr");
+
+(:~
+ : Predeclared constant for the Italian
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-it as xs:language := xs:language("it");
+
+(:===========================================================================:)
 
 (:~
  : Gets the current
@@ -587,5 +632,7 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  :)
 declare function ft:tokenizer-properties()
   as node() external;
+
+(:===========================================================================:)
 
 (: vim:set et sw=2 ts=2: :)

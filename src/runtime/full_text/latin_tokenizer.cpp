@@ -232,6 +232,10 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
   return false;
 }
 
+char const* LatinTokenizer::uri() const {
+  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/latin";
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 Tokenizer::ptr

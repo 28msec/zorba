@@ -179,6 +179,11 @@ public:
                                 locale::iso639_1::type lang, bool wildcards,
                                 Callback &callback, Item const *item = 0 ) = 0;
 
+  /**
+   * Gets this %Tokenizer's identifying URI.
+   */
+  virtual char const* uri() const = 0;
+
   /////////////////////////////////////////////////////////////////////////////
 
 protected:

@@ -416,6 +416,13 @@ next:
 #endif /* DEBUG_TOKENIZER */
 }
 
+char const* ICU_Tokenizer::uri() const {
+  //
+  // FYI: the ICU home page is: http://site.icu-project.org/
+  //
+  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/icu";
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 Tokenizer::ptr

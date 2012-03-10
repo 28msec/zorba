@@ -68,6 +68,7 @@ public:
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, iso639_1::type, bool,
                         Callback&, Item const* );
+  char const* uri() const;
 
 protected:
   // inherited
@@ -293,6 +294,10 @@ void TestTokenizer::tokenize_string( char const *s, size_type s_len,
   } // for
 
   send_token( token, lang, callback, item );
+}
+
+char const* TestTokenizer::uri() const {
+  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/unit-test";
 }
 
 static char const *const tokens[] = {
