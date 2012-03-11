@@ -202,6 +202,11 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
         if (lChildElem->isNode() && lChildElem->getNodeKind() == store::StoreConsts::elementNode)
         {
 #endif
+          if (lChildElem->getNodeKind() != store::StoreConsts::elementNode)
+          {
+            continue;
+          }
+
           store::Item_t lChildName = lChildElem->getNodeName();
           if (lChildName->getLocalName() == "use-character-maps")
           {

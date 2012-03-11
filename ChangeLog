@@ -23,6 +23,7 @@ version 2.2
   * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
     Compare, instance-of, cast, castable, treat, promote).
   * Fixed bug #911585 (management of variables during eval)
+  * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
   * More efficient implementation for base64Binary items
