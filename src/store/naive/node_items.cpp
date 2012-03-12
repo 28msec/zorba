@@ -1081,10 +1081,10 @@ OrdPathNode::getDescendantNodeByOrdPath(
 #endif
 
   const XmlNode* parent = static_cast<const XmlNode*>(this);
+  zorba::csize i;
+
   while (1)
   {
-    ulong i;
-
     if (parent->getNodeKind() != store::StoreConsts::documentNode &&
         parent->getNodeKind() != store::StoreConsts::elementNode)
     {
@@ -1097,7 +1097,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
       const ElementNode* elemParent = reinterpret_cast<const ElementNode*>(parent);
 
       ulong numAttrs = elemParent->numAttrs();
-      for (i = 0; i < numAttrs; i++)
+      for (i = 0; i < numAttrs; ++i)
       {
         AttributeNode* child = elemParent->getAttr(i);
 
@@ -1108,12 +1108,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
           aResult = child;
           return true;
         }
-        else if (pos == OrdPath::DESCENDANT)
-        {
-          parent = child;
-          break;
-        }
-        else if (pos != OrdPath::FOLLOWING)
+        else if (pos != OrdPath::FOLLOWING) // Includes DESCENDANT case
         {
           aResult = NULL;
           return false;
@@ -1124,7 +1119,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
     const InternalNode* this2 = reinterpret_cast<const InternalNode*>(parent);
 
     ulong numChildren = this2->numChildren();
-    for (i = 0; i < numChildren; i++)
+    for (i = 0; i < numChildren; ++i)
     {
 #ifdef TEXT_ORDPATH
       OrdPathNode* child = static_cast<OrdPathNode*>(this2->getChild(i));
