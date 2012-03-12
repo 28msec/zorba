@@ -129,9 +129,6 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 ********************************************************************************/
 class Store : public zorba::store::Store
 {
-  typedef std::map<const zstring, const store::Item*> RefNodeMap;
-  typedef NodePointerHashMap<zstring> NodeRefMap;
-
 public:
   static const char* XS_URI;
   static const char* XML_URI;
@@ -176,9 +173,6 @@ protected:
   SYNC_CODE(Lock                theGlobalLock;)
 
   long                          theTraceLevel;
-
-  RefNodeMap                    theReferencesToNodeMap;
-  NodeRefMap                    theNodeToReferencesMap;
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
@@ -399,17 +393,17 @@ public:
 
 /*---------------------- Node Reference Management ---------------------------*/
 public:
-  /* store API */ bool getNodeReference(
+  /* store API */ virtual bool getNodeReference(
       store::Item_t& result,
-      store::Item* node);
+      store::Item* node) = 0;
 
-  /* store API */ bool hasReference(const store::Item* node);
+  /* store API */ virtual bool hasReference(const store::Item* node) = 0;
 
   /* store API */ virtual bool getNodeByReference(
       store::Item_t& result,
-      const zstring& reference);
+      const zstring& reference) = 0;
 
-  bool unregisterNode(XmlNode* node);
+  virtual bool unregisterNode(XmlNode* node) = 0;
 
 /*----------------------- Temp Sequence Management ---------------------------*/
 public:

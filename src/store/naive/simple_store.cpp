@@ -24,10 +24,14 @@
 #include "simple_iterator_factory.h"
 #include "node_factory.h"
 #include "pul_primitive_factory.h"
+#include "node_items.h"
 
 #include "diagnostics/zorba_exception.h"
 #include "diagnostics/diagnostic.h"
 #include <zorba/diagnostic_list.h>
+
+#include "util/uuid/uuid.h"
+#include "zorbautils/string_util.h"
 
 namespace zorba
 {
@@ -43,7 +47,8 @@ typedef rchandle<store::TempSeq> TempSeq_t;
 SimpleStore::SimpleStore()
   :
   theCollectionCounter(1),
-  theTreeCounter(1)
+  theTreeCounter(1),
+  theNodeToReferencesMap(128, true)
 {
 }
 
@@ -66,6 +71,38 @@ void SimpleStore::init()
   theTreeCounter = 1;
 
   Store::init();
+}
+
+void SimpleStore::shutdown(bool soft)
+{
+  Store::shutdown(soft);
+  if (theNumUsers == 0 || soft == false) {
+    if (theNodeToReferencesMap.size() > 0)
+    {
+      NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
+      NodeRefMap::iterator end = theNodeToReferencesMap.end();
+      for (; iter != end; ++iter)
+      {
+        std::cerr << "Reference: " << (*iter).second
+                  << "is still in the nodes to references map" << std::endl;
+      }
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() + 
+                     " node references still in the nodes to references map");
+    }
+
+    if (theReferencesToNodeMap.size() > 0)
+    {
+      RefNodeMap::iterator iter = theReferencesToNodeMap.begin();
+      RefNodeMap::iterator end = theReferencesToNodeMap.end();
+      for (; iter != end; ++iter)
+      {
+        std::cerr << "Reference: " << (*iter).first 
+                  << "is still in the references to nodes map" << std::endl;
+      }
+      ZORBA_FATAL(0, theReferencesToNodeMap.size() +
+                     " node references still in the references to nodes map");
+    }
+  }
 }
 
 /*******************************************************************************
@@ -200,6 +237,106 @@ store::Collection_t SimpleStore::createCollection(
   }
 
   return collection;
+}
+
+/*******************************************************************************
+ Computes the reference of the given node.
+ 
+ @param node XDM node
+ @return the identifier as an item of type xs:anyURI
+********************************************************************************/
+bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
+{
+  XmlNode* xmlNode = static_cast<XmlNode*>(node);
+
+  if (xmlNode->haveReference())
+  {
+    NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
+
+    ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
+
+    zstring id = (*resIt).second;
+    return theItemFactory->createAnyURI(result, id);
+  }
+
+  uuid_t uuid;
+  uuid_create(&uuid);
+  zstring uuidStr = uuidToURI(uuid);
+
+  xmlNode->setHaveReference();
+
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  theReferencesToNodeMap[uuidStr] = node;
+
+  return theItemFactory->createAnyURI(result, uuidStr);
+}
+
+/*******************************************************************************
+  Returns whether a reference has already been generated for the given node.
+ 
+  @param item XDM node
+  @return whether a reference has already been generated for the given node.
+********************************************************************************/
+bool SimpleStore::hasReference(const store::Item* node)
+{
+  return static_cast<const XmlNode*>(node)->haveReference();
+}
+
+/*******************************************************************************
+  Returns the node which is identified by the given reference.
+ 
+  @param reference an xs:anyURI item
+  @result the node identified by the reference, or NULL if no node with the given
+          reference exists
+  @return false if no node with the given reference exists; true otherwise.
+********************************************************************************/
+bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
+{
+  if (reference.length() != 45 ||
+      !utf8::match_whole(reference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(reference));
+  }
+
+  RefNodeMap::iterator resIt;
+
+  if ((resIt = theReferencesToNodeMap.find(reference)) != theReferencesToNodeMap.end())
+  {
+    result = resIt->second;
+    return true;
+  }
+
+  result = NULL;
+  return false;
+}
+
+/*******************************************************************************
+  Removes a node from the reference-to-nodes and nodes-to-references maps.
+ 
+  @param node XDM node
+  @return whether the node was registered or not.
+********************************************************************************/
+bool SimpleStore::unregisterNode(XmlNode* node)
+{
+  if (!node->haveReference())
+    return false;
+
+  NodeRefMap::iterator resIt;
+
+  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
+  {
+    zstring value = (*resIt).second;
+    theNodeToReferencesMap.erase(resIt);
+    node->resetHaveReference();
+
+    theReferencesToNodeMap.erase(value);
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 

@@ -30,6 +30,12 @@ private:
   ulong                         theTreeCounter;
   SYNC_CODE(Mutex               theTreeCounterMutex;)
 
+  typedef std::map<const zstring, const store::Item*> RefNodeMap;
+  typedef NodePointerHashMap<zstring> NodeRefMap;
+
+  RefNodeMap                    theReferencesToNodeMap;
+  NodeRefMap                    theNodeToReferencesMap;
+
 public:
   virtual ulong createTreeId();
   
@@ -62,6 +68,18 @@ protected:
 
   virtual void destroyCollectionSet(CollectionSet*) const;
 
+  /* store API */ bool getNodeReference(
+      store::Item_t& result,
+      store::Item* node);
+
+  /* store API */ bool hasReference(const store::Item* node);
+
+  /* store API */ virtual bool getNodeByReference(
+      store::Item_t& result,
+      const zstring& reference);
+      
+  virtual bool unregisterNode(XmlNode* node);
+
 protected:
   friend class zorba::StoreManager;
   SimpleStore();
@@ -69,6 +87,8 @@ protected:
   virtual ~SimpleStore();
   
   virtual void init();
+  
+  virtual void shutdown(bool soft);
 };
 
 } // namespace store

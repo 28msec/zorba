@@ -108,8 +108,7 @@ Store::Store()
   theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
   theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
   theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
-  theTraceLevel(0),
-  theNodeToReferencesMap(128, true)
+  theTraceLevel(0)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )
   , theTokenizerProvider( nullptr )
@@ -336,32 +335,6 @@ void Store::shutdown(bool soft)
     {
       delete theNodeFactory;
       theNodeFactory = NULL;
-    }
-
-    if (theNodeToReferencesMap.size() > 0)
-    {
-      NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
-      NodeRefMap::iterator end = theNodeToReferencesMap.end();
-      for (; iter != end; ++iter)
-      {
-        std::cerr << "Reference: " << (*iter).second
-                  << "is still in the nodes to references map" << std::endl;
-      }
-      ZORBA_FATAL(0, theNodeToReferencesMap.size() + 
-                     " node references still in the nodes to references map");
-    }
-
-    if (theReferencesToNodeMap.size() > 0)
-    {
-      RefNodeMap::iterator iter = theReferencesToNodeMap.begin();
-      RefNodeMap::iterator end = theReferencesToNodeMap.end();
-      for (; iter != end; ++iter)
-      {
-        std::cerr << "Reference: " << (*iter).first 
-                  << "is still in the references to nodes map" << std::endl;
-      }
-      ZORBA_FATAL(0, theReferencesToNodeMap.size() +
-                     " node references still in the references to nodes map");
     }
 
     // do cleanup of the libxml2 library
@@ -1207,110 +1180,6 @@ bool Store::getStructuralInformation(
                                                   n->getOrdPath());
   }
 #endif
-}
-
-
-/*******************************************************************************
- Computes the reference of the given node.
- 
- @param node XDM node
- @return the identifier as an item of type xs:anyURI
-********************************************************************************/
-bool Store::getNodeReference(store::Item_t& result, store::Item* node)
-{
-  XmlNode* xmlNode = static_cast<XmlNode*>(node);
-
-  if (xmlNode->haveReference())
-  {
-    NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
-
-    ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
-
-    zstring id = (*resIt).second;
-    return theItemFactory->createAnyURI(result, id);
-  }
-
-  uuid_t uuid;
-  uuid_create(&uuid);
-  zstring uuidStr = uuidToURI(uuid);
-
-  xmlNode->setHaveReference();
-
-  theNodeToReferencesMap.insert(xmlNode, uuidStr);
-  theReferencesToNodeMap[uuidStr] = node;
-
-  return theItemFactory->createAnyURI(result, uuidStr);
-}
-
-
-/*******************************************************************************
-  Returns the node which is identified by the given reference.
- 
-  @param reference an xs:anyURI item
-  @result the node identified by the reference, or NULL if no node with the given
-          reference exists
-  @return false if no node with the given reference exists; true otherwise.
-********************************************************************************/
-bool Store::getNodeByReference(store::Item_t& result, const zstring& reference)
-{
-  if (reference.length() != 45 ||
-      !utf8::match_whole(reference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(reference));
-  }
-
-  RefNodeMap::iterator resIt;
-
-  if ((resIt = theReferencesToNodeMap.find(reference)) != theReferencesToNodeMap.end())
-  {
-    result = resIt->second;
-    return true;
-  }
-
-  result = NULL;
-  return false;
-}
-
-
-/*******************************************************************************
-  Returns whether a reference has already been generated for the given node.
- 
-  @param item XDM node
-  @return whether a reference has already been generated for the given node.
-********************************************************************************/
-bool Store::hasReference(const store::Item* node)
-{
-  return static_cast<const XmlNode*>(node)->haveReference();
-}
-
-
-/*******************************************************************************
-  Removes a node from the reference-to-nodes and nodes-to-references maps.
- 
-  @param node XDM node
-  @return whether the node was registered or not.
-********************************************************************************/
-bool Store::unregisterNode(XmlNode* node)
-{
-  if (!node->haveReference())
-    return false;
-
-  NodeRefMap::iterator resIt;
-
-  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
-  {
-    zstring value = (*resIt).second;
-    theNodeToReferencesMap.erase(resIt);
-    node->resetHaveReference();
-
-    theReferencesToNodeMap.erase(value);
-
-    return true;
-  }
-  else
-  {
-    return false;
-  }
 }
 
 
