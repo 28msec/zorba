@@ -13,6 +13,7 @@ version 2.2
   * Added truncate function to the collection modules for efficient deletion of all nodes in a collection.
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 867509 (Can not handle largest xs:unsignedLong values)
+  * Fixed bug 952829 (Nondeterministic annotation doesn't seem to be checked)
   * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
   * New URI module providing percent-decoding functions.
   * Optimization: change the implementation of the free-vars annotation and got rid
