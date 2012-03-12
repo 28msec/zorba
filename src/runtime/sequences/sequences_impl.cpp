@@ -1250,97 +1250,68 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
     {
       lHitNumeric = true;
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-					ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
+
       if ( lHitDayTime )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
     {
       lHitYearMonth = true;
+
       if (lHitNumeric)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if (lHitDayTime)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
     {
       lHitDayTime = true;
+
       if ( lHitNumeric )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
     }
     else
     {
-			throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS(
-					ZED( BadArgTypeForFn_2o34o ),
-					*lRunningType,
-					"fn:avg",
-					ZED( ExpectedNumericOrDurationType )
-				),
-				ERROR_LOC( loc )
-			);
+			RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                   *lRunningType,
+                   "fn:avg",
+                   ZED(ExpectedNumericOrDurationType)));
     }
 
     if ( lCount++ == 0 )
@@ -1406,11 +1377,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!TypeOps::is_numeric(tm, *lResultType) &&
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
-      throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), *lResultType, "fn:sum" ),
-				ERROR_LOC(loc)
-			);
+    {
+      RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *lResultType, "fn:sum"));
+    }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {

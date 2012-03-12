@@ -8,9 +8,9 @@ let $j := ({ "product" : "broiler", "store number" : 1, "quantity" : 20  },
 { "product" : "socks", "store number" : 2, "quantity" : 10 },
 { "product" : "shirt", "store number" : 3, "quantity" : 10 })
 return
-{
+{|
   for $sales in $j
   let $pname := $sales("product")
   group by $pname
-  return $pname : sum(for $s in $sales return $s("quantity"))
-}
+  return { $pname : sum(for $s in $sales return $s("quantity")) }
+|}
