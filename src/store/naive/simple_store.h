@@ -17,15 +17,25 @@
 #define ZORBA_SIMPLE_STORE
 
 #include "store.h"
+
 namespace zorba {
 namespace simplestore {
 
 class SimpleStore : public Store
 {
-public:
-  ulong createTreeId();
+private:
+  ulong                         theCollectionCounter;
+  SYNC_CODE(Mutex               theCollectionCounterMutex;)
 
-  store::Collection_t createCollection(
+  ulong                         theTreeCounter;
+  SYNC_CODE(Mutex               theTreeCounterMutex;)
+
+public:
+  virtual ulong createTreeId();
+  
+  virtual ulong createCollectionId();
+
+  virtual store::Collection_t createCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
@@ -57,6 +67,8 @@ protected:
   SimpleStore();
 
   virtual ~SimpleStore();
+  
+  virtual void init();
 };
 
 } // namespace store

@@ -159,15 +159,6 @@ public:
 protected:
   ulong                         theNumUsers;
 
-  ulong                         theUriCounter;
-  SYNC_CODE(Mutex               theUriCounterMutex;)
-
-  ulong                         theCollectionCounter;
-  SYNC_CODE(Mutex               theCollectionCounterMutex;)
-
-  ulong                         theTreeCounter;
-  SYNC_CODE(Mutex               theTreeCounterMutex;)
-
   StringPool                  * theNamespacePool;
   QNamePool                   * theQNamePool;
 
@@ -261,7 +252,7 @@ public:
   /* store API */ store::Iterator_t listCollectionNames(
       bool aDynamicCollections = false);
 
-  ulong createCollectionId();
+  virtual ulong createCollectionId() = 0;
 
   virtual ulong createTreeId() = 0;
 

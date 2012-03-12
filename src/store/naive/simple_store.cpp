@@ -41,6 +41,9 @@ typedef rchandle<store::TempSeq> TempSeq_t;
 
 ********************************************************************************/
 SimpleStore::SimpleStore()
+  :
+  theCollectionCounter(1),
+  theTreeCounter(1)
 {
 }
 
@@ -51,6 +54,18 @@ SimpleStore::SimpleStore()
 SimpleStore::~SimpleStore()
 {
   shutdown(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::init()
+{
+  theCollectionCounter = 1;
+  theTreeCounter = 1;
+
+  Store::init();
 }
 
 /*******************************************************************************
@@ -142,6 +157,15 @@ ulong SimpleStore::createTreeId()
 {
   SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
   return theTreeCounter++;
+}
+
+/*******************************************************************************
+  Create an id for a new collection
+********************************************************************************/
+ulong SimpleStore::createCollectionId()
+{
+  SYNC_CODE(AutoMutex lock(&theCollectionCounterMutex);)
+  return theCollectionCounter++;
 }
 
 /*******************************************************************************

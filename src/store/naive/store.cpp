@@ -97,9 +97,6 @@ const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 Store::Store()
   :
   theNumUsers(0),
-  theUriCounter(0),
-  theCollectionCounter(1),
-  theTreeCounter(1),
   theNamespacePool(NULL),
   theQNamePool(NULL),
   theItemFactory(NULL),
@@ -145,10 +142,6 @@ void Store::init()
     LIBXML_TEST_VERSION
 
     store::Properties::load(0, NULL);
-
-    theUriCounter = 0;
-    theCollectionCounter = 1;
-    theTreeCounter = 1;
 
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
 
@@ -388,16 +381,6 @@ void Store::shutdown(bool soft)
 store::ItemFactory* Store::getItemFactory() const
 {
   return theItemFactory;
-}
-
-
-/*******************************************************************************
-  Create an id for a new collection
-********************************************************************************/
-ulong Store::createCollectionId()
-{
-  SYNC_CODE(AutoMutex lock(&theCollectionCounterMutex);)
-  return theCollectionCounter++;
 }
 
 
