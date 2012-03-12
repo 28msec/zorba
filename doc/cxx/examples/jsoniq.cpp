@@ -218,10 +218,14 @@ serialize(Zorba* aZorba, Item aItem, std::string aExpected)
 {
   Zorba_SerializerOptions lSerialOpt;
   lSerialOpt.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+
   XQuery_t lQuery = aZorba->compileQuery("declare variable $i external; $i");
+
   lQuery->getDynamicContext()->setVariable("i", aItem);
+
   std::stringstream lStream;
   lQuery->execute(lStream, &lSerialOpt);
+
   std::string lResult = lStream.str();
   std::cout << lResult << std::endl;
   if (lResult.compare(aExpected) != 0) {
@@ -278,14 +282,17 @@ example_8(Zorba* aZorba)
 }
 
 /**
- * Test creating a JSON pair.
+ * Test creating a JSON object.
  */
 bool example_9(Zorba* aZorba)
 {
   Item lValue = aZorba->getItemFactory()->createJSONNumber("1234");
-  Item lPair = aZorba->getItemFactory()->createJSONPair("name", lValue);
-  // Standalone Pairs get boxed into a JSON Object
-  return serialize(aZorba, lPair, "{ \"name\" : 1234 }");
+  Item lName = aZorba->getItemFactory()->createString("name");
+  std::vector<std::pair<Item, Item> > pairs;
+  pairs.push_back(std::pair<Item, Item>(lName, lValue));
+  Item lObj = aZorba->getItemFactory()->createJSONObject(pairs);
+
+  return serialize(aZorba, lObj, "{ \"name\" : 1234 }");
 }
 
 /**
@@ -302,18 +309,6 @@ bool example_10(Zorba* aZorba)
   return serialize(aZorba, lArray, "[ 1, 2, 3, 4 ]");
 }
 
-/**
- * Test creating a JSON object.
- */
-bool example_11(Zorba* aZorba)
-{
-  Item lValue = aZorba->getItemFactory()->createInt(1234);
-  std::vector<Item> lPairs;
-  lPairs.push_back(aZorba->getItemFactory()->createJSONPair("foo", lValue));
-
-  Item lObject = aZorba->getItemFactory()->createJSONObject(lPairs);
-  return serialize(aZorba, lObject, "{ \"foo\" : 1234 }");
-}
 
 } /* namespace jsoniq-test */
 
@@ -373,11 +368,6 @@ jsoniq(int argc, char* argv[])
 
     std::cout << "executing jsoniq example 10" << std::endl;
     res = jsoniq_test::example_10(lZorba);
-    if (!res) return 1;
-    std::cout << std::endl;
-
-    std::cout << "executing jsoniq example 11" << std::endl;
-    res = jsoniq_test::example_11(lZorba);
     if (!res) return 1;
     std::cout << std::endl;
   }

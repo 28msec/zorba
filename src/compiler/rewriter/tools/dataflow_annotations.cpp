@@ -217,7 +217,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
 #ifdef ZORBA_WITH_JSON
-    //case json_pair_expr_kind:
+  case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
   {
@@ -1059,12 +1059,9 @@ void SourceFinder::findNodeSourcesRec(
   }
 
 #ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
   case json_object_expr_kind:
-  {
-    return;
-  }
   case json_array_expr_kind:
-  //case json_pair_expr_kind:
   {
     // TODO? We need to drill inside a json pair or array constructor only 
     // if we are coming from an unbox or flatten call ????

@@ -317,15 +317,6 @@ public:
 
   virtual Iterator_t listMapNames() = 0;
 
-#ifdef ZORBA_WITH_JSON
-  /* ----------------------- JSON Array  Management --------------------------*/
-
-  virtual void populateJSONArray(
-      Item* array,
-      Iterator* iter,
-      const store::CopyMode& copymode) = 0;
-#endif
-
 #ifndef ZORBA_NO_FULL_TEXT
   /* ------------------------ Full-Text -------------------------------------*/
 

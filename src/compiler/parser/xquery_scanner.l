@@ -591,6 +591,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "position" { return token::POSITION; }
 "json-item" { return token::JSON_ITEM; }
 "structured-item" { return token::STRUCTURED_ITEM; }
+"array" {  return token::ARRAY; }
+"object" {  return token::OBJECT; }
 
 
     /*______________________________________________________________________

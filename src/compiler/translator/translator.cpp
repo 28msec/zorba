@@ -10508,14 +10508,13 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     if (numArgs == 1)
     {
-
       if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
       {
         func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
       }
       else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
       {
-        //func = GET_BUILTIN_FUNCTION(FN_JSONIQ_PAIR_2);
+        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_VALUE_2);
       }
       else
       {

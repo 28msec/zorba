@@ -71,6 +71,7 @@ public:
 
 #ifdef ZORBA_WITH_JSON
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_object_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_direct_object_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_array_expr );
 #endif
 

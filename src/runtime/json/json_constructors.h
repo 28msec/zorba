@@ -24,6 +24,7 @@
 #include "runtime/base/narybase.h"
 #include "runtime/base/binarybase.h"
 
+#include "store/api/copymode.h"
 
 namespace zorba {
 
@@ -31,8 +32,22 @@ namespace zorba {
 /*********************************************************************************
 
 *********************************************************************************/
+class JSONArrayIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::CopyMode>   theCopyModes;
+  std::vector<store::Iterator_t> theSourcesWrappers;
+
+public:
+  void open(
+      PlanState& planState,
+      const std::vector<PlanIter_t>& sources,
+      const std::vector<bool>& copyInputs);
+};
+
+
 class JSONArrayIterator : public NaryBaseIterator<JSONArrayIterator,
-                                                  PlanIteratorState>
+                                                  JSONArrayIteratorState>
 {
 protected:
   std::vector<bool> theCopyInputs;
@@ -42,7 +57,7 @@ public:
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   JSONArrayIterator,
-  NaryBaseIterator<JSONArrayIterator, PlanIteratorState>);
+  NaryBaseIterator<JSONArrayIterator, JSONArrayIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -57,6 +72,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  void openImpl(PlanState& planState, uint32_t& offset);
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -64,52 +81,33 @@ public:
 /*********************************************************************************
 
 *********************************************************************************/
-class JSONPairIterator : public BinaryBaseIterator<JSONPairIterator,
-                                                   PlanIteratorState>
+class JSONObjectIteratorState : public PlanIteratorState
 {
-protected:
-  bool theCopyInput;
+public:
+  std::vector<store::CopyMode>   theCopyModes;
+  std::vector<store::Iterator_t> theSourcesWrappers;
 
 public:
-  SERIALIZABLE_CLASS(JSONPairIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  JSONPairIterator,
-  BinaryBaseIterator<JSONPairIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  JSONPairIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      PlanIter_t& name,
-      PlanIter_t& value,
-      bool copyInput);
-
-  bool isConstructor() const { return true; }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void open(
+      PlanState& planState,
+      const std::vector<PlanIter_t>& sources,
+      const std::vector<bool>& copyInputs);
 };
 
 
-/*********************************************************************************
-
-*********************************************************************************/
 class JSONObjectIterator : public NaryBaseIterator<JSONObjectIterator,
-                                                   PlanIteratorState>
+                                                   JSONObjectIteratorState>
 {
 protected:
   std::vector<bool> theCopyInputs;
+  bool              theIsAccumulating;
 
 public:
   SERIALIZABLE_CLASS(JSONObjectIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   JSONObjectIterator,
-  NaryBaseIterator<JSONObjectIterator, PlanIteratorState>);
+  NaryBaseIterator<JSONObjectIterator, JSONObjectIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -118,6 +116,43 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
+      bool copyInput,
+      bool accumulating);
+
+  bool isConstructor() const { return true; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/*********************************************************************************
+
+*********************************************************************************/
+class JSONDirectObjectIterator : public NaryBaseIterator<JSONDirectObjectIterator,
+                                                         PlanIteratorState>
+{
+protected:
+  std::vector<bool> theCopyInputs;
+
+public:
+  SERIALIZABLE_CLASS(JSONDirectObjectIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  JSONDirectObjectIterator,
+  NaryBaseIterator<JSONDirectObjectIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  JSONDirectObjectIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& names,
+      std::vector<PlanIter_t>& values,
       bool copyInput);
 
   bool isConstructor() const { return true; }

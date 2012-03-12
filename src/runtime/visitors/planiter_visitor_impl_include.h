@@ -35,7 +35,7 @@ class AndIterator;
 #ifdef ZORBA_WITH_JSON
 class JSONObjectIterator;
 class JSONArrayIterator;
-class JSONPairIterator;
+class JSONDirectObjectIterator;
 #endif
 
   class PiIterator;

@@ -101,54 +101,6 @@ JSONParseIterator::nextImpl(
 }
 
 
-#if 0
-/*******************************************************************************
-  json:name($p as pair()) as xs:string
-********************************************************************************/
-bool
-JSONNameIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lInput;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lInput, theChild.getp(), planState);
-
-  result = lInput->getName();
-
-  STACK_PUSH(true, state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  json:value($p as pair()) as item()
-********************************************************************************/
-bool
-JSONValueIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lInput;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lInput, theChild.getp(), planState);
-
-  result = lInput->getValue();
-
-  STACK_PUSH(true, state);
-
-  STACK_END (state);
-}
-#endif
-
-
 /*******************************************************************************
   json:names($o as object()) as xs:string*
 ********************************************************************************/
@@ -178,40 +130,11 @@ JSONNamesIterator::nextImpl(
 }
 
 
-#if 0
 /*******************************************************************************
-  json:pairs($o as object()) as pair()*
+  json:value($o as object(), $name as xs:string) as item()?
 ********************************************************************************/
 bool
-JSONPairsIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lInput;
-
-  JSONPairsIteratorState* state;
-  DEFAULT_STACK_INIT(JSONPairsIteratorState, state, planState);
-
-  consumeNext(lInput, theChild.getp(), planState);
-
-  state->thePairs = lInput->getPairs();
-  state->thePairs->open();
-
-  while (state->thePairs->next(result))
-  {
-    STACK_PUSH (true, state);
-  }
-  state->thePairs = NULL;
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  json:pair($o as object(), $name as xs:string) as pair()?
-********************************************************************************/
-bool
-JSONPairAccessorIterator::nextImpl(
+JSONValueAccessorIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -224,13 +147,49 @@ JSONPairAccessorIterator::nextImpl(
   consumeNext(lInput, theChild0.getp(), planState);
   consumeNext(lName, theChild1.getp(), planState);
 
-  result = lInput->getPair(lName);
+  if (lInput->getPair(lName))
+  {
+    result = lInput->getPair(lName)->getValue();
+  }
+  else
+  {
+    result = NULL;
+  }
 
   STACK_PUSH(result != 0, state);
 
   STACK_END (state);
 }
-#endif
+
+
+/*******************************************************************************
+  j:size($i as json-item()) as xs:integer*
+********************************************************************************/
+bool
+JSONSizeIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t lJSONItem;
+  xs_integer lSize;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lJSONItem, theChild.getp(), planState);
+
+  if (lJSONItem->isJSONPair())
+  {
+    RAISE_ERROR(jerr::JSDY0020, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:size"));
+  }
+
+  lSize = lJSONItem->getSize();
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
+
+  STACK_END(state);
+}
 
 
 /*******************************************************************************
@@ -508,36 +467,6 @@ JSONValuesIterator::nextImpl(
   }
 
   STACK_END (state);
-}
-
-
-/*******************************************************************************
-  j:size($i as json-item()) as xs:integer*
-********************************************************************************/
-bool
-JSONSizeIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lJSONItem;
-  xs_integer lSize;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lJSONItem, theChild.getp(), planState);
-
-  if (lJSONItem->isJSONPair())
-  {
-    RAISE_ERROR(jerr::JSDY0020, loc,
-    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "pair", "json:size"));
-  }
-
-  lSize = lJSONItem->getSize();
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
-
-  STACK_END(state);
 }
 
 

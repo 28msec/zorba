@@ -396,15 +396,6 @@ public:
 
   store::TempSeq_t createTempSeq(store::Item_t& item);
 
-#ifdef ZORBA_WITH_JSON
-  /* ----------------------- JSON Array  Management --------------------------*/
-
-  void populateJSONArray(
-      store::Item* array,
-      store::Iterator* iter,
-      const store::CopyMode& copymode);
-#endif
-
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const* getStemmerProvider() const;
 

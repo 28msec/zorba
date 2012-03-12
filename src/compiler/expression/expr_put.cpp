@@ -249,7 +249,7 @@ ostream& let_clause::put(ostream& os) const
 
   os << expr_addr(theVarExpr.getp());
 
-  os << endl << indent << " [\n" << inc_indent;
+  os << endl << indent << "[\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -870,7 +870,6 @@ ostream& json_direct_object_expr::put(ostream& os) const
   std::vector<expr_t>::const_iterator ite1 = theNames.begin();
   std::vector<expr_t>::const_iterator end1 = theNames.end();
   std::vector<expr_t>::const_iterator ite2 = theValues.begin();
-  std::vector<expr_t>::const_iterator end2 = theValues.end();
   for (; ite1 != end1; ++ite1, ++ite2)
   {
     (*ite1)->put(os);

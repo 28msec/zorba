@@ -21,6 +21,66 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
+
+(:~
+ : This function has the same semantics as fn:parse-xml(), except that
+ : it parses the string as JSON (not XML), and returns an Object or
+ : Array rather than an XML document.
+ :
+ : @param $j A string containing a valid JSON text.
+ : @return a JSON Object or Array item.
+ :)
+declare function jn:parse-json($j as xs:string) as json-item()? external;
+
+
+(:~
+ : Returns the names used in the Pairs of the object. This function is
+ : equivalent to
+ :
+ :    for $p in jn:pairs($arg) return jn:name($p)
+ :
+ : The names will be returned in an implementation-defined order
+ :
+ : @param $o A JSON Object.
+ : @return The names of pairs in the object.
+ :)
+declare function jn:names($o as object()) as xs:string* external;
+
+
+(:~
+ : Returns the value of a JSON Pair with a given name within a given JSON object.
+ : If no such pair exists in the object, returns the empty sequence.
+ :
+ : @param $o A JSON Object.
+ : @param $name The name of the pair whose value is to be retrieved
+ : @return the value of specified pair within the given object, or the empty sequence.
+ :)
+declare function jn:value($o as object(), $name as xs:string) as item()? external;
+
+
+(:~
+ : Returns the size of a JSON Object or JSON Array. The size of an Object
+ : is the number of Pairs contained within it; the size of an Array is
+ : the number of members contained within it.
+ :
+ : @param $j A JSON Object or JSON Array.
+ : @return The number of items in $j.
+ : @error jn:JUDY0060 if $j is a JSON Pair.
+ :)
+declare function jn:size($j as json-item()) as xs:integer external;
+
+
+(:~
+ : Returns the member of an Array at the specified position (starting from 1).
+ : If the position is out of bounds of the array, returns the empty sequence.
+ :
+ : @param $a A JSON Array.
+ : @param $p The position in the array.
+ : @return The member at the specified position, or empty sequence.
+ :)
+declare function jn:member($o as array(), $p as xs:integer) as item()? external;
+
+
 (:~
  : Recursively "flatten" a JSON Array, by replacing any arrays with their
  : members. Equivalent to
@@ -38,76 +98,6 @@ declare option ver:module-version "1.0";
  :)
 declare function jn:flatten($a as array()) as item()* external;
 
-(:~
- : This function has the same semantics as fn:parse-xml(), except that
- : it parses the string as JSON (not XML), and returns an Object or
- : Array rather than an XML document.
- :
- : @param $j A string containing a valid JSON text.
- : @return a JSON Object or Array item.
- :)
-declare function jn:parse-json($j as xs:string) as json-item()? external;
-
-(:~
- : Returns the names used in the Pairs of the object. This function is
- : equivalent to
- :
- :    for $p in jn:pairs($arg) return jn:name($p)
- :
- : The names will be returned in an implementation-defined order
- :
- : @param $o A JSON Object.
- : @return The names of pairs in the object.
- :)
-declare function jn:names($o as object()) as xs:string* external;
-
-(:~
- : Returns the name of the Pair.
- :
- : @param $p A JSON Pair.
- : @return The name of the Pair.
- :)
-declare function jn:name($p as pair()) as xs:string external;
-
-(:~
- : Returns the Pairs of the Object. The pairs will be returned in an
- : implementation-defined order.
- :
- : @param $o A JSON Object.
- : @return A sequence of JSON Pair items.
- :)
-declare function jn:pairs($o as object()) as pair()* external;
-
-(:~
- : Returns the Pair of an Object with the specified name. If no such
- : Pair exists in the Object, returns the empty sequence.
- :
- : @param $o A JSON Object.
- : @param $n A name.
- : @return The Pair with the given name, or empty sequence.
- :)
-declare function jn:pair($o as object(), $n as xs:string) as pair()? external;
-
-(:~
- : Returns the member of an Array at the specified position (starting from 1).
- : If the position is out of bounds of the array, returns the empty sequence.
- :
- : @param $a A JSON Array.
- : @param $p The position in the array.
- : @return The member at the specified position, or empty sequence.
- :)
-declare function jn:member($o as array(), $p as xs:integer) as item()? external;
-
-(:~
- : Returns the size of a JSON Object or JSON Array. The size of an Object
- : is the number of Pairs contained within it; the size of an Array is
- : the number of members contained within it.
- :
- : @param $j A JSON Object or JSON Array.
- : @return The number of items in $j.
- : @error jn:JUDY0060 if $j is a JSON Pair.
- :)
-declare function jn:size($j as json-item()) as xs:integer external;
 
 (:~
  : Returns all Pairs in an Object, or all members of an Array. When
@@ -120,13 +110,6 @@ declare function jn:size($j as json-item()) as xs:integer external;
  :)
 declare function jn:values($j as json-item()) as item()* external;
 
-(:~
- : Returns the value of a JSON Pair.
- :
- : @param $p A JSON Pair.
- : @return the value of $p.
- :)
-declare function jn:value($p as pair()) as item() external;
 
 (:~
  : Returns the jdm:null value null.
@@ -145,10 +128,10 @@ declare function jn:null() as jdm:null external;
  : @return An empty XDM instance and a pending update list which, once
  :   applied, inserts the pairs into the object.
  : @error jn:JUDY0060 if pair with the given name already exists.
- :)
 declare updating function jn:insert-into(
   $o as object(),
   $p as pair()*) external;
+:)
 
 (:~
  : Insert one or more items into a JSON Array. The items will be inserted

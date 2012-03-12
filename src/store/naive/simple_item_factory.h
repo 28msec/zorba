@@ -401,14 +401,25 @@ public:
       store::Item_t& result,
       zstring& string);
 
-  bool createJSONObject(store::Item_t& result);
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes);
 
-  bool createJSONArray(store::Item_t& result);
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& items);
 
-  bool createJSONObjectPair(
-        store::Item_t& result,
-        store::Item_t& name,
-        store::Item_t& value);
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes,
+      bool accumulate);
+
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& names,
+      const std::vector<store::Item_t>& values);
 #endif
 
 private:

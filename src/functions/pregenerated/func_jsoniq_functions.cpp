@@ -46,6 +46,30 @@ PlanIter_t fn_jsoniq_names::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_value::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONValueAccessorIterator(sctx, loc, argv[0], argv[1]);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_size::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONSizeIterator(sctx, loc, argv[0]);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_member::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -102,18 +126,6 @@ PlanIter_t fn_jsoniq_values::codegen(
   expr& ann) const
 {
   return new JSONValuesIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_size::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONSizeIterator(sctx, loc, argv[0]);
 }
 
 #endif
@@ -265,6 +277,39 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
+    DECL_WITH_KIND(sctx, fn_jsoniq_value,
+        (createQName("http://www.jsoniq.org/functions","","value"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
+        FunctionConsts::FN_JSONIQ_VALUE_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_size,
+        (createQName("http://www.jsoniq.org/functions","","size"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
+        FunctionConsts::FN_JSONIQ_SIZE_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
     DECL_WITH_KIND(sctx, fn_jsoniq_member,
         (createQName("http://www.jsoniq.org/functions","","member"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
@@ -336,22 +381,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_VALUES_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_size,
-        (createQName("http://www.jsoniq.org/functions","","size"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::FN_JSONIQ_SIZE_1);
 
   }
 

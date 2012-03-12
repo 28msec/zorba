@@ -236,7 +236,7 @@ void endVisitWindowVariable();
 #ifdef ZORBA_WITH_JSON
   DECLARE_VISITOR(JSONArrayIterator)
   DECLARE_VISITOR(JSONObjectIterator)
-  DECLARE_VISITOR(JSONPairIterator)
+  DECLARE_VISITOR(JSONDirectObjectIterator)
 #endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)

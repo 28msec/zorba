@@ -419,14 +419,17 @@ expr_t MarkConsumerNodeProps::apply(
 #ifdef ZORBA_WITH_JSON
   case json_object_expr_kind :
   {
-    json_object_expr* e = static_cast<json_object_expr *>(node);
-    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_TRUE);
+    break;
+  }
+  case json_direct_object_expr_kind :
+  {
     break;
   }
   case json_array_expr_kind :
   {
     json_array_expr* e = static_cast<json_array_expr *>(node);
-    e->get_expr()->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
+    set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
     break;
   }
 #endif
@@ -650,13 +653,34 @@ void MarkNodeCopyProps::applyInternal(
   }
 
 #ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  {
+    // For now, assume that nodes to appear as pair values must be copied first.
+    // TODO improve this
+    json_direct_object_expr* e = static_cast<json_direct_object_expr *>(node);
+
+    static_context* sctx = e->get_sctx();
+
+    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    {
+      csize numPairs = e->num_pairs();
+      for (csize i = 0; i < numPairs; ++i)
+      {
+        std::vector<expr*> sources;
+        theSourceFinder->findNodeSources(e->get_value_expr(i), &udfCaller, sources);
+        markSources(sources);
+      }
+    }
+
+    break;
+  }
   case json_object_expr_kind:
   {
     break;
   }
   case json_array_expr_kind:
   {
-    // For now, assume that nodes to appear as pair values must be copied first.
+    // For now, assume that nodes to appear as members must be copied first.
     // TODO improve this
     json_array_expr* e = static_cast<json_array_expr *>(node);
 

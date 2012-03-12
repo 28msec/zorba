@@ -1305,7 +1305,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 #ifdef ZORBA_WITH_JSON
   PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
   PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
-  PRINTER_VISITOR_DEFINITION(JSONPairIterator)
+  PRINTER_VISITOR_DEFINITION(JSONDirectObjectIterator)
 #endif
 
   PRINTER_VISITOR_DEFINITION (EmptyIterator)

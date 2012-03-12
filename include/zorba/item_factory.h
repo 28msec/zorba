@@ -718,10 +718,10 @@ namespace zorba {
       /**
        * Create a JSON Object containing the specified JSON Pairs.
        *
-       * @param aPairs A std::vector<Item> containing JSON Pair items.
+       * @param aNames A vector containing the name and value of each pair.
        */
-      virtual Item createJSONObject(std::vector<Item>& aPairs) = 0;
-
+      virtual Item createJSONObject(std::vector<std::pair<Item, Item> >& aNames) = 0;
+      
       /**
        * Create a JSON Array containing the specified items.
        *
@@ -730,16 +730,6 @@ namespace zorba {
        * JSON nulls, valid JSON numeric types, or xs:strings).
        */
       virtual Item createJSONArray(std::vector<Item>& aItems) = 0;
-
-      /**
-       * Create a JSON Pair, suitable for putting into a JSON Object.
-       *
-       * @param aName The name for the pair.
-       * @param aValue The value for the pair. This must be of a type
-       * which may be the value of a JSON pair (namely JSON Arrays, JSON Objects,
-       * JSON nulls, valid JSON numeric types, or xs:strings).
-       */
-      virtual Item createJSONPair(String aName, Item aValue) = 0;
 
 #endif /* ZORBA_WITH_JSON */
 

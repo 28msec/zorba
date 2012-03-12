@@ -844,51 +844,59 @@ zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
   return &*lItem;
 }
 
-zorba::Item ItemFactoryImpl::createJSONObject(std::vector<Item> &aPairs)
+
+zorba::Item ItemFactoryImpl::createJSONObject(
+    std::vector<std::pair<Item, Item> >& aPairs)
 {
-  store::Item_t lItem;
-  theItemFactory->createJSONObject(lItem);
-  // "Copy" the items into the parent
-  store::CopyMode noCopy;
-  noCopy.theDoCopy = false;
-  std::vector<Item>::iterator i = aPairs.begin();
-  std::vector<Item>::iterator end = aPairs.end();
-  for (; i != end; i++) {
-    Unmarshaller::getInternalItem(*i)->copy(lItem, noCopy);
+  csize numPairs = aPairs.size();
+
+  // Convert vector of pairs to a vector of names and a vector of values
+  std::vector<store::Item_t> names;
+  std::vector<store::Item_t> values;
+  names.reserve(numPairs);
+  names.reserve(numPairs);
+
+  std::vector<std::pair<Item, Item> >::iterator i = aPairs.begin();
+  std::vector<std::pair<Item, Item> >::iterator end = aPairs.end();
+  for (; i != end; i++) 
+  {
+    names.push_back(Unmarshaller::getInternalItem((*i).first));
+    values.push_back(Unmarshaller::getInternalItem((*i).second));
   }
+
+  store::Item_t lItem;
+  theItemFactory->createJSONObject(lItem, names, values);
+
   return &*lItem;
 }
 
-zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item> &aItems)
+
+zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
 {
-  store::Item_t lItem;
-  theItemFactory->createJSONArray(lItem);
+  csize numItems = aItems.size();
+
+  std::vector<store::CopyMode> copyModes(numItems);
+  for (csize i = 0; i < numItems; ++i)
+  {
+    copyModes[i].theDoCopy = false;
+  }
+
   // Convert vector of Items to vector of store::Item_ts
-  store::CopyMode noCopy;
-  noCopy.theDoCopy = false;
-  std::vector<store::Item_t> lItems;
-  std::vector<Item>::iterator i = aItems.begin();
+  std::vector<store::Item_t> items;
+  items.reserve(numItems);
+  std::vector<Item>::iterator ite = aItems.begin();
   std::vector<Item>::iterator end = aItems.end();
-  for (; i != end; i++) {
-    lItems.push_back(Unmarshaller::getInternalItem(*i));
+  for (; ite != end; ++ite) 
+  {
+    items.push_back(Unmarshaller::getInternalItem(*ite));
   }
-  store::Iterator_t lIterator = new ItemIterator(lItems);
-  lIterator->open();
-  GENV_STORE.populateJSONArray(lItem, lIterator, noCopy);
-  lIterator->close();
-  return &*lItem;
-}
 
-zorba::Item ItemFactoryImpl::createJSONPair(String aName, Item aValue)
-{
-  store::Item_t lNameItem;
-  theItemFactory->createString(lNameItem, Unmarshaller::getInternalString(aName));
-
-  store::Item_t lValueItem = Unmarshaller::getInternalItem(aValue);
   store::Item_t lItem;
-  theItemFactory->createJSONObjectPair(lItem, lNameItem, lValueItem);
+  theItemFactory->createJSONArray(lItem, items);
+
   return &*lItem;
 }
+
 
 
 

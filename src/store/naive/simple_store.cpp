@@ -1565,37 +1565,6 @@ TempSeq_t SimpleStore::createTempSeq(store::Item_t& item)
 }
 
 
-
-#ifdef ZORBA_WITH_JSON
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleStore::populateJSONArray(
-    store::Item* array,
-    store::Iterator* iter,
-    const store::CopyMode& copymode)
-{
-  store::Item_t item;
-
-  assert(array->isJSONArray());
-
-  json::JSONArray* array2 = static_cast<json::JSONArray*>(array);
-
-  while (iter->next(item))
-  {
-    if (item->isJSONPair())
-      item = item->getValue();
-
-    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
-      item = item->copy(NULL, copymode);
-
-    array2->push_back(item);
-  }
-}
-
-#endif
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) 
 {

@@ -1121,14 +1121,18 @@ void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
   emit_json_item(pair->getValue(), depth);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_value
-    (zstring type, zstring value, int depth)
+void serializer::json_emitter::emit_jsoniq_value(
+    zstring type,
+    zstring value,
+    int depth)
 {
   // Create items for constant strings, if not already done
-  if (!theJsoniqValueName) {
+  if (!theJsoniqValueName) 
+  {
     zstring jsoniqvaluestring("JSONiq value");
     zstring typestring("type");
     zstring valuestring("value");
@@ -1137,40 +1141,44 @@ void serializer::json_emitter::emit_jsoniq_value
     GENV_ITEMFACTORY->createString(theValueName, valuestring);
   }
 
-  // Create the inner JSON object
-  store::Item_t inner;
-  GENV_ITEMFACTORY->createJSONObject(inner);
-  // Inner object contains two pairs
-  store::Item_t typeitem, valueitem;
-  store::Item_t typepair, valuepair;
-  GENV_ITEMFACTORY->createString(typeitem, type);
-  GENV_ITEMFACTORY->createString(valueitem, value);
-  GENV_ITEMFACTORY->createJSONObjectPair(typepair, theTypeName, typeitem);
-  GENV_ITEMFACTORY->createJSONObjectPair(valuepair, theValueName, valueitem);
+  // Create the inner JSON object, which contains two pairs
+  std::vector<store::Item_t> names(2);
+  std::vector<store::Item_t> values(2);
 
-  // "Copy" pairs into object
-  store::CopyMode noCopy;
-  noCopy.theDoCopy = false;
-  typepair->copy(inner.getp(), noCopy);
-  valuepair->copy(inner.getp(), noCopy);
+  names[0] = theTypeName;
+  names[1] = theValueName;
+
+  GENV_ITEMFACTORY->createString(values[0], type);
+  GENV_ITEMFACTORY->createString(values[1], value);
+
+  store::Item_t inner;
+  GENV_ITEMFACTORY->createJSONObject(inner, names, values);
 
   // Create the outer JSON object with one pair
+  names.resize(1);
+  values.resize(1);
+  names[0] = theJsoniqValueName;
+  values[0] = inner;
+
   store::Item_t outer;
-  GENV_ITEMFACTORY->createJSONObject(outer);
-  store::Item_t outerpair;
-  GENV_ITEMFACTORY->createJSONObjectPair(outerpair, theJsoniqValueName, inner);
-  outerpair->copy(outer, noCopy);
+  GENV_ITEMFACTORY->createJSONObject(outer, names, values);
 
   emit_json_object(outer, depth);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void serializer::json_emitter::emit_json_string(zstring string)
 {
   tr << '"';
   zstring::const_iterator i = string.begin();
   zstring::const_iterator end = string.end();
-  for (; i < end; i++) {
-    if (*i < 0x20) {
+  for (; i < end; i++) 
+  {
+    if (*i < 0x20) 
+    {
       // Escape control sequences
       std::stringstream hex;
       hex << "\\u" << std::setw(4) << std::setfill('0')
@@ -1178,7 +1186,8 @@ void serializer::json_emitter::emit_json_string(zstring string)
       tr << hex.str();
       continue;
     }
-    if (*i == '\\' || *i == '"') {
+    if (*i == '\\' || *i == '"') 
+    {
       // Output escape char for \ or "
       tr << '\\';
       // Fall through to output original character

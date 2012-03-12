@@ -72,7 +72,7 @@ namespace zorba
   class wrapper_expr;
 
 #ifdef ZORBA_WITH_JSON
-  class json_pair_expr;
+  class json_direct_object_expr;
   class json_object_expr;
   class json_array_expr;
 #endif

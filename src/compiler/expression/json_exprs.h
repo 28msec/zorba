@@ -92,6 +92,8 @@ public:
 
   expr* get_expr() const { return theContentExpr.getp(); }
 
+  bool is_accumulating() const { return theAccumulate; }
+
   void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
@@ -131,6 +133,10 @@ public:
       std::vector<expr_t>& values);
 
   csize num_pairs() const { return theNames.size(); }
+
+  expr* get_value_expr(csize i) const { return theValues[i].getp(); }
+
+  expr* get_name_expr(csize i) const { return theNames[i].getp(); }
 
   void compute_scripting_kind();
 

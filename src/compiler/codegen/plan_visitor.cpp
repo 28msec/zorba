@@ -3125,8 +3125,46 @@ void end_visit(json_object_expr& v)
 
   bool copyInput = true;
 
-  push_itstack(new JSONObjectIterator(sctx, qloc, inputs, copyInput));
+  push_itstack(new JSONObjectIterator(sctx, 
+                                      qloc, 
+                                      inputs, 
+                                      copyInput, 
+                                      v.is_accumulating()));
 }
+
+
+
+bool begin_visit(json_direct_object_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_direct_object_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  csize numPairs = v.num_pairs();
+
+  std::vector<PlanIter_t> names(numPairs);
+  std::vector<PlanIter_t> values(numPairs);
+
+  for (csize i = numPairs; i > 0; --i)
+  {
+    values[i-1] = pop_itstack();
+  }
+
+  for (csize i = numPairs; i > 0; --i)
+  {
+    names[i-1] = pop_itstack();
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONDirectObjectIterator(sctx, qloc, names, values, copyInput));
+}
+
 
 
 #endif // ZORBA_WITH_JSON

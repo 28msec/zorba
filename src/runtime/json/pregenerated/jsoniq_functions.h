@@ -129,6 +129,78 @@ public:
  * 
  * Author: 
  */
+class JSONValueAccessorIterator : public BinaryBaseIterator<JSONValueAccessorIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONValueAccessorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONValueAccessorIterator,
+    BinaryBaseIterator<JSONValueAccessorIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<JSONValueAccessorIterator, PlanIteratorState>*)this);
+  }
+
+  JSONValueAccessorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<JSONValueAccessorIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~JSONValueAccessorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONSizeIterator : public UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONSizeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONSizeIterator,
+    UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>*)this);
+  }
+
+  JSONSizeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONSizeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
 class JSONMemberAccessorIterator : public BinaryBaseIterator<JSONMemberAccessorIterator, PlanIteratorState>
 { 
 public:
@@ -337,42 +409,6 @@ public:
   {}
 
   virtual ~JSONValuesIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- * Author: 
- */
-class JSONSizeIterator : public UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONSizeIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONSizeIterator,
-    UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>*)this);
-  }
-
-  JSONSizeIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<JSONSizeIterator, PlanIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~JSONSizeIterator();
 
   void accept(PlanIterVisitor& v) const;
 
