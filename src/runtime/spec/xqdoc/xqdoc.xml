@@ -18,7 +18,7 @@
 
   <zorba:description author="Zorba Team">zorba:XQDoc</zorba:description>
 
-  <zorba:function>
+  <zorba:function isDeterministic="false">
     <zorba:signature localname="xqdoc" prefix="fn-zorba-xqdoc">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>element()</zorba:output>
