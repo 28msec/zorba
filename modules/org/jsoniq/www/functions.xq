@@ -48,6 +48,15 @@ declare function jn:names($o as object()) as xs:string* external;
 
 
 (:~
+ : Returns the values of the pairs within a given JSON object.
+ :
+ : @param $o A JSON Object.
+ : @return the value of each pair within the given object.
+ :)
+declare function jn:values($o as object()) as item()* external;
+
+
+(:~
  : Returns the value of a JSON Pair with a given name within a given JSON object.
  : If no such pair exists in the object, returns the empty sequence.
  :

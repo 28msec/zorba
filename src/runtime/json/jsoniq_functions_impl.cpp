@@ -97,6 +97,36 @@ JSONParseIterator::nextImpl(
 
   STACK_PUSH(true, state);
 
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  json:names($o as object()) as xs:string*
+********************************************************************************/
+bool
+JSONObjectNamesIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t input;
+  store::Item_t pair;
+
+  JSONObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
+
+  consumeNext(input, theChild.getp(), planState);
+
+  state->thePairs = input->getPairs();
+  state->thePairs->open();
+
+  while (state->thePairs->next(pair))
+  {
+    result = pair->getName();
+    STACK_PUSH (true, state);
+  }
+  state->thePairs = NULL;
+
   STACK_END (state);
 }
 
@@ -105,23 +135,24 @@ JSONParseIterator::nextImpl(
   json:names($o as object()) as xs:string*
 ********************************************************************************/
 bool
-JSONNamesIterator::nextImpl(
+JSONObjectValuesIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
+  store::Item_t input;
+  store::Item_t pair;
 
-  JSONNamesIteratorState* state;
-  DEFAULT_STACK_INIT(JSONNamesIteratorState, state, planState);
+  JSONObjectValuesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectValuesIteratorState, state, planState);
 
-  consumeNext(lInput, theChild.getp(), planState);
+  consumeNext(input, theChild.getp(), planState);
 
-  state->thePairs = lInput->getPairs();
+  state->thePairs = input->getPairs();
   state->thePairs->open();
 
-  while (state->thePairs->next(lInput))
+  while (state->thePairs->next(pair))
   {
-    result = lInput->getName();
+    result = pair->getValue();
     STACK_PUSH (true, state);
   }
   state->thePairs = NULL;
@@ -134,7 +165,7 @@ JSONNamesIterator::nextImpl(
   json:value($o as object(), $name as xs:string) as item()?
 ********************************************************************************/
 bool
-JSONValueAccessorIterator::nextImpl(
+JSONObjectValueIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -166,7 +197,7 @@ JSONValueAccessorIterator::nextImpl(
   j:size($i as array()) as xs:integer*
 ********************************************************************************/
 bool
-JSONSizeIterator::nextImpl(
+JSONArraySizeIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -190,7 +221,7 @@ JSONSizeIterator::nextImpl(
   json:member($a as array(), $pos as xs:integer) as item()?
 ********************************************************************************/
 bool
-JSONMemberAccessorIterator::nextImpl(
+JSONArrayMemberIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -215,14 +246,14 @@ JSONMemberAccessorIterator::nextImpl(
   json:members($a as array()) as item()*
 ********************************************************************************/
 bool
-JSONMembersAccessorIterator::nextImpl(
+JSONArrayMembersIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t array;
 
-  JSONMembersAccessorIteratorState* state;
-  DEFAULT_STACK_INIT(JSONMembersAccessorIteratorState, state, planState);
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
 
   consumeNext(array, theChild.getp(), planState);
 
@@ -243,7 +274,7 @@ JSONMembersAccessorIterator::nextImpl(
 
   op-zorba:flatten-internal($a as item()*) as item()*
 ********************************************************************************/
-void JSONFlattenIteratorState::reset(PlanState& planState)
+void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   while (!theStack.empty())
@@ -254,15 +285,15 @@ void JSONFlattenIteratorState::reset(PlanState& planState)
 
 
 bool
-JSONFlattenIterator::nextImpl(
+JSONArrayFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t item;
   bool lFoundArray = false;
 
-  JSONFlattenIteratorState* state;
-  DEFAULT_STACK_INIT(JSONFlattenIteratorState, state, planState);
+  JSONArrayFlattenIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayFlattenIteratorState, state, planState);
 
   consumeNext(item, theChild.getp(), planState);
 

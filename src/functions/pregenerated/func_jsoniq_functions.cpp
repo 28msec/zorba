@@ -41,7 +41,19 @@ PlanIter_t fn_jsoniq_names::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONNamesIterator(sctx, loc, argv[0]);
+  return new JSONObjectNamesIterator(sctx, loc, argv[0]);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_values::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONObjectValuesIterator(sctx, loc, argv[0]);
 }
 
 #endif
@@ -53,7 +65,7 @@ PlanIter_t fn_jsoniq_value::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONValueAccessorIterator(sctx, loc, argv[0], argv[1]);
+  return new JSONObjectValueIterator(sctx, loc, argv[0], argv[1]);
 }
 
 #endif
@@ -65,7 +77,7 @@ PlanIter_t fn_jsoniq_size::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONSizeIterator(sctx, loc, argv[0]);
+  return new JSONArraySizeIterator(sctx, loc, argv[0]);
 }
 
 #endif
@@ -77,7 +89,7 @@ PlanIter_t fn_jsoniq_member::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONMemberAccessorIterator(sctx, loc, argv[0], argv[1]);
+  return new JSONArrayMemberIterator(sctx, loc, argv[0], argv[1]);
 }
 
 #endif
@@ -89,7 +101,7 @@ PlanIter_t fn_jsoniq_members::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONMembersAccessorIterator(sctx, loc, argv[0]);
+  return new JSONArrayMembersIterator(sctx, loc, argv[0]);
 }
 
 #endif
@@ -101,7 +113,7 @@ PlanIter_t fn_jsoniq_flatten::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONFlattenIterator(sctx, loc, argv[0]);
+  return new JSONArrayFlattenIterator(sctx, loc, argv[0]);
 }
 
 #endif
@@ -254,6 +266,22 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_NAMES_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_values,
+        (createQName("http://www.jsoniq.org/functions","","values"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_VALUES_1);
 
   }
 
