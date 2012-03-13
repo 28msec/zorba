@@ -310,7 +310,6 @@ bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planSt
     }
 
     GENV_ITEMFACTORY->createJSONObject(result, names, values);
-
   }
   catch (XQueryException& e)
   {

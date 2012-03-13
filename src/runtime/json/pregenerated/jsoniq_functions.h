@@ -214,6 +214,42 @@ public:
  * 
  * Author: 
  */
+class JSONObjectProjectIterator : public BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONObjectProjectIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectProjectIterator,
+    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>*)this);
+  }
+
+  JSONObjectProjectIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~JSONObjectProjectIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
 class JSONArraySizeIterator : public UnaryBaseIterator<JSONArraySizeIterator, PlanIteratorState>
 { 
 public:

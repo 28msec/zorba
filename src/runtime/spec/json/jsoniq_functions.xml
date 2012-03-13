@@ -123,6 +123,31 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+<zorba:iterator name="JSONObjectProjectIterator" arity="binary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="project" prefix="fn-jsoniq">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONArraySizeIterator" arity="unary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 

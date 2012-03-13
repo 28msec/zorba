@@ -194,6 +194,71 @@ JSONObjectValueIterator::nextImpl(
 
 
 /*******************************************************************************
+  json:project($o as object(), $names as xs:string*) as object()
+********************************************************************************/
+bool
+JSONObjectProjectIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t obj;
+  store::Item_t pair;
+  store::Iterator_t pairsIte;
+  store::Item_t value;
+  store::Item_t name;
+  std::vector<store::Item_t> names;
+  csize numNames = 0;
+  store::CopyMode copymode;
+  std::vector<store::Item_t> newNames;
+  std::vector<store::Item_t> newValues;
+  csize i;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(obj, theChild0.getp(), planState);
+
+  while (consumeNext(name, theChild1.getp(), planState))
+  {
+    ++numNames;
+    names.resize(numNames);
+    names[numNames - 1].transfer(name);
+  }
+
+  pairsIte = obj->getPairs();
+  pairsIte->open();
+
+  while (pairsIte->next(pair))
+  {
+    for (i = 0; i < numNames; ++i)
+    {
+      if (names[i]->getStringValue() == pair->getName()->getStringValue())
+        break;
+    }
+
+    if (i < numNames)
+    {
+      value = pair->getValue();
+
+      if (value->isNode() || value->isJSONItem())
+        value = value->copy(NULL, copymode);
+
+      newValues.push_back(value);
+      newNames.push_back(pair->getName());
+    }
+  }
+
+  pairsIte->close();
+
+  GENV_ITEMFACTORY->createJSONObject(result, newNames, newValues);
+
+  STACK_PUSH(true, state);
+  STACK_END(state);
+}
+
+
+
+/*******************************************************************************
   j:size($i as array()) as xs:integer*
 ********************************************************************************/
 bool

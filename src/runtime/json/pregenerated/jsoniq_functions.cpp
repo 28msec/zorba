@@ -162,6 +162,32 @@ JSONObjectValueIterator::~JSONObjectValueIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONObjectProjectIterator>
+const char* JSONObjectProjectIterator::class_name_str = "JSONObjectProjectIterator";
+JSONObjectProjectIterator::class_factory<JSONObjectProjectIterator>
+JSONObjectProjectIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONObjectProjectIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONObjectProjectIterator::class_versions_count =
+sizeof(JSONObjectProjectIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONObjectProjectIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONObjectProjectIterator::~JSONObjectProjectIterator() {}
+
+// </JSONObjectProjectIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONArraySizeIterator>
 const char* JSONArraySizeIterator::class_name_str = "JSONArraySizeIterator";
 JSONArraySizeIterator::class_factory<JSONArraySizeIterator>
