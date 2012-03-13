@@ -723,7 +723,7 @@ void XmlNode::destroy(bool removeType)
   }
   catch (...)
   {
-    ZORBA_FATAL(false, "Unexpectd exception");
+    ZORBA_FATAL(false, "Unexpected exception");
   }
 }
 

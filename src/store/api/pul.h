@@ -203,6 +203,11 @@ public:
         bool isLast,
         bool dyn_collection = false) = 0;
 
+  virtual void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        bool dyn_collection = false) = 0;
+
   // functions to add primitives for indexes
 
   virtual void addCreateIndex(
@@ -281,12 +286,17 @@ public:
 
   // utils
   virtual void getIndicesToRefresh(
-        std::vector<Index*>& indices) = 0;
+        std::vector<Index*>& indices,
+        std::vector<Index*>& truncate_indices) = 0;
 
   virtual void addIndexEntryCreator(
         const Item* collectionName, 
         Index* idx,
         IndexEntryCreator* creator) = 0;
+
+  virtual void addIndexTruncator(
+      const store::Item* collectionName,
+      Index* idx) = 0;
 
   virtual void setValidator(
         SchemaValidator* validator) = 0;

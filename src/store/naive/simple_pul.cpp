@@ -944,6 +944,17 @@ void PULImpl::addDeleteFromCollection(
 }
 
 
+void PULImpl::addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool dyn_collection)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+
+  pul->theTruncateCollectionList.push_back(
+  GET_PUL_FACTORY().createUpdTruncateCollection(pul, aQueryLoc, name, dyn_collection));
+}
+
 /*******************************************************************************
   Index primitives
 ********************************************************************************/
@@ -1154,6 +1165,11 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeUpdateList(thisPul,
                       thisPul->theDeleteFromCollectionList,
                       otherPul->theDeleteFromCollectionList,
+                      UP_LIST_NONE);
+
+      mergeUpdateList(thisPul,
+                      thisPul->theTruncateCollectionList,
+                      otherPul->theTruncateCollectionList,
                       UP_LIST_NONE);
 
       mergeUpdateList(thisPul,
@@ -1502,7 +1518,9 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   This method is invoked by the ApplyIterator before any of the pul primitives
   is applied.
 ********************************************************************************/
-void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
+void PULImpl::getIndicesToRefresh(
+    std::vector<store::Index*>& indices,
+    std::vector<store::Index*>& truncate_indices)
 {
   SimpleStore* store = &GET_STORE();
 
@@ -1513,6 +1531,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
   // modified/inserted/deleted collection docs, because they will be need later
   // to maintain indices.
   std::set<store::Collection*> collections;
+  std::set<store::Collection*> truncated_collections;
 
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::iterator collEnd = theCollectionPuls.end();
@@ -1528,6 +1547,12 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
     collections.insert(collection);
 
     CollectionPul* pul = collIte->second;
+
+    if (pul->theTruncateCollectionList.size() > 0)
+    {
+      truncated_collections.insert(collection);
+      continue;
+    }
 
     NodeToUpdatesMap::iterator ite = pul->theNodeToUpdatesMap.begin();
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
@@ -1595,6 +1620,21 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       if (colIte != colEnd)
         break;
     }
+
+    for (csize i = 0; i < numIndexSources; ++i)
+    {
+      std::set<store::Collection*>::const_iterator colIte = truncated_collections.begin();
+      std::set<store::Collection*>::const_iterator colEnd = truncated_collections.end();
+
+      for (; colIte != colEnd; ++colIte)
+      {
+        if (indexSources[i]->equals((*colIte)->getName()))
+        {
+          truncate_indices.push_back(index);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -1611,6 +1651,18 @@ void PULImpl::addIndexEntryCreator(
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addIndexTruncator(
+    const store::Item* collectionName,
+    store::Index* idx)
+{
+  CollectionPul* pul = getCollectionPulByName(collectionName,false);
+  pul->theTruncatedIndices.push_back(static_cast<IndexImpl*>(idx));
 }
 
 
@@ -1796,6 +1848,7 @@ CollectionPul::~CollectionPul()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
+  cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -1822,6 +1875,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
+  switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
 }
 
@@ -1946,7 +2000,14 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  csize numIncrementalIndices = theIncrementalIndices.size();
+  csize numIncrementalIndices = theTruncatedIndices.size();
+  for (csize idx = 0; idx < numIncrementalIndices; ++idx)
+  {
+    ValueIndex* index = static_cast<ValueIndex*>(theTruncatedIndices[idx]);
+    index->clear();
+  }
+
+  numIncrementalIndices = theIncrementalIndices.size();
 
   for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
@@ -2134,6 +2195,7 @@ void CollectionPul::applyUpdates()
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
+    applyList(theTruncateCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
@@ -2266,6 +2328,7 @@ void CollectionPul::undoUpdates()
 
   try
   {
+    undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);

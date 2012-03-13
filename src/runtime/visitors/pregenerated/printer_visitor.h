@@ -140,6 +140,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaTruncateCollectionIterator& );
+    void endVisit  ( const ZorbaTruncateCollectionIterator& );
+
     void beginVisit( const ZorbaCollectionNameIterator& );
     void endVisit  ( const ZorbaCollectionNameIterator& );
 

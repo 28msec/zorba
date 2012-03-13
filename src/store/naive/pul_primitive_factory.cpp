@@ -376,6 +376,18 @@ PULPrimitiveFactory::createUpdPut(
       return new UpdDeleteNodesFromCollection(pul, aLoc, name, nodes, isLast, dyn_collection);
     }
 
+
+    /***************************************************************************
+    ***************************************************************************/
+    UpdTruncateCollection*
+    PULPrimitiveFactory::createUpdTruncateCollection(
+          CollectionPul* pul,
+          const QueryLoc* aLoc,
+          store::Item_t& name,
+          bool dyn_collection)
+    {
+      return new UpdTruncateCollection(pul, aLoc, name, dyn_collection);
+    }
     
     /***************************************************************************
     ***************************************************************************/

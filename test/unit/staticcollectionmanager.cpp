@@ -206,23 +206,25 @@ staticcollectionamanger3(zorba::Zorba* z)
   Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
   
   lColMgr->createCollection(lCollName2);
-  Collection_t lColl = lColMgr->getCollection(lCollName2);
-
-  std::vector<Annotation_t> lAnnotations;
-  lColl->getAnnotations(lAnnotations);
-  size_t num_annotations = 0;
-  for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
-       lIter != lAnnotations.end(); ++lIter)
   {
-    std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
-    ++num_annotations;
-  }
+    Collection_t lColl = lColMgr->getCollection(lCollName2);
 
-  if (num_annotations != 3)
-  {
-    return false;
-  }
+    std::vector<Annotation_t> lAnnotations;
+    lColl->getAnnotations(lAnnotations);
+    size_t num_annotations = 0;
+    for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
+         lIter != lAnnotations.end(); ++lIter)
+    {
+      std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
+      ++num_annotations;
+    }
 
+    if (num_annotations != 3)
+    {
+      return false;
+    }
+  }
+  lColMgr->deleteCollection(lCollName2);
 
   return true;
 }
@@ -418,6 +420,46 @@ staticcollectionamanger5(zorba::Zorba* z)
   return true;
 }
 
+/**
+ * test that declaredIndexes doesn't return temporary indexes and crashes
+ * if one tries to create one
+ */
+bool
+staticcollectionmanager6(zorba::Zorba* z)
+{
+  std::ifstream lIn("module1.xq");
+
+  zorba::XQuery_t lQuery = z->createQuery();
+  Zorba_CompilerHints lHints;
+  lQuery->compile(lIn, lHints);
+
+  StaticCollectionManager* lColMgr = lQuery->getStaticCollectionManager();
+
+  ItemFactory* lFac = z->getItemFactory();
+  Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
+  Item lIdxName   = lFac->createQName("http://www.mod2.com/", "index");
+  Item lCollName3 = lFac->createQName("http://www.mod3.com/", "coll");
+
+  ItemSequence_t lSeq = lColMgr->declaredCollections();
+  Iterator_t lIter = lSeq->getIterator();
+  lIter->open();
+  Item lTmp;
+  while (lIter->next(lTmp)) {
+    std::cout << "name " << lTmp.getStringValue() << std::endl;
+    lColMgr->createCollection(lTmp);
+  }
+  
+  lSeq = lColMgr->declaredIndexes();
+  lIter = lSeq->getIterator();
+  lIter->open();
+  while (lIter->next(lTmp)) {
+    std::cout << "name " << lTmp.getStringValue() << std::endl;
+    lColMgr->createIndex(lTmp);
+  }
+
+  return true;
+}
+
 int
 staticcollectionmanager(int argc, char* argv[])
 {
@@ -449,6 +491,11 @@ staticcollectionmanager(int argc, char* argv[])
   std::cout << "executing example 5" << std::endl;
   if (!staticcollectionamanger5(z))
     return 5;
+  std::cout << std::endl;
+
+  std::cout << "executing example 6" << std::endl;
+  if (!staticcollectionmanager6(z))
+    return 6;
   std::cout << std::endl;
 
   return 0;
