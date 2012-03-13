@@ -669,6 +669,10 @@ static bool safe_to_fold_single_use(
         break;
       }
     }
+	else if (kind == flwor_clause::window_clause)
+	{
+		// TODO?
+	}
     else if (kind == flwor_clause::order_clause)
     {
       // TODO
