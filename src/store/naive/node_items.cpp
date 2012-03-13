@@ -1081,7 +1081,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
 #endif
 
   const XmlNode* parent = static_cast<const XmlNode*>(this);
-  zorba::csize i;
+  csize i;
 
   while (1)
   {
@@ -1096,7 +1096,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
     {
       const ElementNode* elemParent = reinterpret_cast<const ElementNode*>(parent);
 
-      ulong numAttrs = elemParent->numAttrs();
+      csize numAttrs = elemParent->numAttrs();
       for (i = 0; i < numAttrs; ++i)
       {
         AttributeNode* child = elemParent->getAttr(i);
@@ -1118,7 +1118,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
 
     const InternalNode* this2 = reinterpret_cast<const InternalNode*>(parent);
 
-    ulong numChildren = this2->numChildren();
+    csize numChildren = this2->numChildren();
     for (i = 0; i < numChildren; ++i)
     {
 #ifdef TEXT_ORDPATH
