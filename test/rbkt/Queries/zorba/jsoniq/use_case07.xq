@@ -1,6 +1,7 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
-let $j := {
+let $j := 
+{
   "col labels" : ["singular", "plural"],
   "row labels" : ["1p", "2p", "3p"],
   "data" :
@@ -15,17 +16,17 @@ return
     <tr> (: Column headings :)
     {
        <th> </th>,
-       for $th in j:values($j("col labels"))
+       for $th in j:members($j("col labels"))
        return <th>{ $th }</th>
     }
     </tr>
     {  (: Data for each row :)
-       for $r at $i in j:values($j("data"))
+       for $r at $i in j:members($j("data"))
        return
           <tr>
            {
-             <td>{ j:values($j("row labels"))[$i] }</td>,
-             for $c in j:values($r)
+             <td>{ j:members($j("row labels"))[$i] }</td>,
+             for $c in j:members($r)
              return <td>{ $c }</td>
            }
           </tr>

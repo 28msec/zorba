@@ -1,6 +1,6 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
-let $sats :=
+let $satsDoc :=
   {
     "creator" : "Satellites plugin version 0.6.4",
     "satellites" : {
@@ -18,15 +18,21 @@ let $sats :=
       }
     }
   }
-return {
+return 
+{
   "visible" : [
-     for $sat in j:pairs($sats("satellites"))
-     where $sat("visible")
-     return j:name($sat)
-  ],
+     let $sats := $satsDoc("satellites")
+     for $satName in $sats()
+     let $satData := $sats($satName)
+     where $satData("visible")
+     return $satName
+  ]
+  ,
   "invisible" : [
-     for $sat in j:pairs($sats("satellites"))
-     where not($sat("visible"))
-     return j:name($sat)
+     let $sats := $satsDoc("satellites")
+     for $satName in $sats()
+     let $satData := $sats($satName)
+     where fn:not($satData("visible"))
+     return $satName
   ]
 }

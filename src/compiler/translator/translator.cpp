@@ -1376,11 +1376,6 @@ void normalize_fo(fo_expr* foExpr)
       }
       else
       {
-#ifdef ZORBA_WITH_JSON
-        // TODO: JSONiq: this needs to be reviewed
-        // argExpr = wrap_in_unbox(argExpr, paramType);
-#endif
-
         argExpr = wrap_in_type_match(argExpr, paramType, loc);
       }
     }
@@ -1388,31 +1383,6 @@ void normalize_fo(fo_expr* foExpr)
     foExpr->set_arg(i, argExpr);
   }
 }
-
-
-#ifdef ZORBA_WITH_JSON
-/*******************************************************************************
-  Wrap the given expr in an op:unbox() function
-********************************************************************************/
-expr_t wrap_in_unbox(expr* e, xqtref_t& type)
-{
-  TypeManager* tm = e->get_type_manager();
-
-  const QueryLoc& loc = e->get_loc();
-  if (TypeOps::is_subtype(tm, *type, *theRTM.ANY_NODE_TYPE_STAR, loc) ||
-      TypeOps::is_subtype(tm, *type, *theRTM.JSON_ITEM_TYPE_STAR, loc))
-  {
-    return new fo_expr(theRootSctx,
-                       loc,
-                       GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_UNBOX_1),
-                       e);
-  }
-  else
-  {
-    return e;
-  }
-}
-#endif
 
 
 /*******************************************************************************
@@ -10529,14 +10499,29 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
     else
     {
-      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_EMPTY_ITEM_ACCESSOR_1);
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_SIZE_1);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_NAMES_1);
+      }
+      else
+      {
+        func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_EMPTY_ACCESSOR_1);
+      }
+
       accessorExpr = new fo_expr(theRootSctx,
                                  loc,
                                  func,
                                  flworVarExpr);
     }
+
     normalize_fo(accessorExpr.getp());
+
     flworExpr->set_return_expr(accessorExpr.getp());
+
     pop_scope();
 
     push_nodestack(flworExpr);

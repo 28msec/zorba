@@ -82,6 +82,15 @@ declare function jn:member($o as array(), $p as xs:integer) as item()? external;
 
 
 (:~
+ : Returns the members of an Array.
+ :
+ : @param $a A JSON Array.
+ : @return The members of the specified array.
+ :)
+declare function jn:members($o as array()) as item()* external;
+
+
+(:~
  : Recursively "flatten" a JSON Array, by replacing any arrays with their
  : members. Equivalent to
  :
@@ -97,18 +106,6 @@ declare function jn:member($o as array(), $p as xs:integer) as item()? external;
  : @return The flattened version of $a.
  :)
 declare function jn:flatten($a as array()) as item()* external;
-
-
-(:~
- : Returns all Pairs in an Object, or all members of an Array. When
- : passed an Object, the Pairs will be returned in an implementation-
- : defined order.
- :
- : @param $j A JSON Object or JSON Array.
- : @return All Pairs/members of $j.
- : @error jn:JUDY0060 if $j is a JSON Pair.
- :)
-declare function jn:values($j as json-item()) as item()* external;
 
 
 (:~

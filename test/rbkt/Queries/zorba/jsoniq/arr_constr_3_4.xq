@@ -2,7 +2,7 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
 count(
-for $arr in j:values
+for $arr in j:members
   (
   [
     [1, "two", 3],

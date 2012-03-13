@@ -116,23 +116,6 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       else
         return NULL;
     }
-
-#ifdef ZORBA_WITH_JSON
-    if (fo->get_func()->getKind() == FunctionConsts::OP_ZORBA_JSON_UNBOX_1)
-    {
-      expr_t arg = fo->get_arg(0);
-      xqtref_t arg_type = arg->get_return_type();
-      if (TypeOps::is_subtype(tm, *arg_type, *rtm.ANY_ATOMIC_TYPE_STAR, arg->get_loc()) ||
-          TypeOps::is_subtype(tm, *arg_type, *rtm.ANY_NODE_TYPE_STAR, arg->get_loc()) ||
-          TypeOps::is_subtype(tm, *arg_type, *rtm.JSON_OBJECT_TYPE_STAR, arg->get_loc()) ||
-          TypeOps::is_subtype(tm, *arg_type, *rtm.JSON_ARRAY_TYPE_STAR, arg->get_loc()))
-        return arg;
-      else
-        return NULL;
-    }
-#endif
-
-
   }
 
   cast_base_expr* pe;

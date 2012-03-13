@@ -52,25 +52,6 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
 }
 
 
-xqtref_t op_zorba_json_unbox::getReturnType(const fo_expr* caller) const
-{
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = caller->get_type_manager();
-  xqtref_t lArgType = caller->get_arg(0)->get_return_type();
-
-  if (!TypeOps::is_subtype(tm, *lArgType, *rtm.JSON_ITEM_TYPE_STAR))
-  {
-    return lArgType;
-  }
-
-  if (TypeOps::is_subtype(tm, *lArgType, *rtm.JSON_OBJECT_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *lArgType, *rtm.JSON_ARRAY_TYPE_STAR))
-  {
-    return lArgType;
-  }
-  return rtm.ITEM_TYPE_STAR;
-}
-
 #endif // ZORBA_WITH_JSON
 
 } /* namespace zorba */
