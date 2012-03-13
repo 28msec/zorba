@@ -19,6 +19,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "store/api/copymode.h"
 
@@ -2172,7 +2173,11 @@ bool BasicItemFactory::createJSONObject(
         if (copymode.theDoCopy)
           pairItem = pairItem->copy(NULL, copymode);
       
-        obj->add(pairItem);
+        if (!obj->add(pairItem, accumulate))
+        {
+          RAISE_ERROR_NO_LOC(jerr::JNDY0003,
+          ERROR_PARAMS(pairItem->getName()->getStringValue()));
+        }
       }
       sourcePairs->close();
     }
@@ -2234,7 +2239,10 @@ bool BasicItemFactory::createJSONObject(
   {
     store::Item_t pair = new json::SimpleJSONObjectPair(names[i], values[i]);
 
-    obj->add(pair);
+    if (!obj->add(pair, false))
+    {
+      RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]));
+    }
   }
 
   return true;

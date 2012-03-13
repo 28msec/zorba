@@ -1900,7 +1900,7 @@ void UpdJSONInsert::apply()
   {
     ZORBA_ASSERT((*lIter)->isJSONPair());
     JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
-    lObj->add(lPair);
+    lObj->add(lPair, false);
   }
   theIsApplied = true;
 }

@@ -265,7 +265,7 @@ JSONLoader::addValue(
     // of the object's name value pair
     JSONObjectPair_t lOPair = new SimpleJSONObjectPair();
     lOPair->setName(aValue);
-    lObject->add(lOPair);
+    lObject->add(lOPair, false);
     aStack.push_back(lOPair);
 
     return;

@@ -67,13 +67,6 @@ JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Object                                                                     //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
 /******************************************************************************
 
 *******************************************************************************/
@@ -83,6 +76,14 @@ JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   iter = NULL;
   val = this;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Object                                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 /******************************************************************************
 
@@ -119,17 +120,102 @@ SimpleJSONObject::~SimpleJSONObject()
   thePairs.clear();
 }
 
+
 /******************************************************************************
 
 *******************************************************************************/
+store::Item* SimpleJSONObject::copy(
+    store::Item* parent,
+    const store::CopyMode& copymode) const
+{
+  SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
+  if (copymode.theDoCopy)
+  {
+    lNewObject = new SimpleJSONObject();
+
+    for (PairsConstIter lIter = thePairs.begin();
+         lIter != thePairs.end();
+         ++lIter)
+    {
+      SimpleJSONObjectPair* lNewPair = 
+      static_cast<SimpleJSONObjectPair*>((*lIter)->copy(NULL, copymode));
+
+      lNewObject->add(lNewPair, false);
+    }
+  }
+
+  if (parent)
+  {
+    if (parent->isJSONArray())
+    {
+      JSONArray* a = static_cast<JSONArray*>(parent);
+      a->push_back(lNewObject);
+    }
+    else if (parent->isJSONPair())
+    {
+      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
+      p->setValue(lNewObject);
+    }
+  }
+
+  return lNewObject;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void
-SimpleJSONObject::add(const JSONObjectPair_t& p)
+SimpleJSONObject::setCollection(SimpleCollection* collection, csize pos)
+{
+  ZORBA_ASSERT(collection == NULL || theCollection == NULL);
+
+  theCollection = collection;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool
+SimpleJSONObject::add(const JSONObjectPair_t& p, bool accumulate)
 {
   store::Item* lName = p->getName();
 
-  thePairs.push_back(p.getp());
-  thePairs.back()->addReference(); // manual counting for performance reasons
-  thePairMap.insert(std::make_pair(lName, thePairs.size() - 1));
+  std::pair<PairMapIter, bool> res =
+  thePairMap.insert(std::make_pair(lName, thePairs.size()));
+
+  bool inserted = res.second;
+
+  if (inserted)
+  {
+    thePairs.push_back(p.getp());
+    thePairs.back()->addReference(); // manual counting for performance reasons
+  }
+  else if (accumulate)
+  {
+    JSONObjectPair* pair = thePairs[(res.first)->second];
+    store::Item* value = pair->getValue();
+
+    if (value->isJSONArray())
+    {
+      static_cast<SimpleJSONArray*>(value)->push_back(p->getValue());
+    }
+    else
+    {
+      SimpleJSONArray_t array = new SimpleJSONArray();
+      array->push_back(value);
+      array->push_back(p->getValue());
+
+      JSONObjectPair_t newPair = new SimpleJSONObjectPair(pair->getName(), array);
+
+      thePairs[(res.first)->second] = newPair.release();
+
+      pair->removeReference();
+    }
+  }
+
+  return (inserted || accumulate);
 }
 
 
@@ -162,47 +248,6 @@ SimpleJSONObject::remove(const store::Item_t& aName)
   }
 
   return lRes;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item* SimpleJSONObject::copy(
-    store::Item* parent,
-    const store::CopyMode& copymode) const
-{
-  SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
-  if (copymode.theDoCopy)
-  {
-    lNewObject = new SimpleJSONObject();
-
-    for (PairsConstIter lIter = thePairs.begin();
-         lIter != thePairs.end();
-         ++lIter)
-    {
-      SimpleJSONObjectPair* lNewPair = static_cast<SimpleJSONObjectPair*>(
-          (*lIter)->copy(NULL, copymode)
-        );
-      lNewObject->add(lNewPair);
-    }
-  }
-
-  if (parent)
-  {
-    if (parent->isJSONArray())
-    {
-      JSONArray* a = static_cast<JSONArray*>(parent);
-      a->push_back(lNewObject);
-    }
-    else if (parent->isJSONPair())
-    {
-      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
-      p->setValue(lNewObject);
-    }
-  }
-
-  return lNewObject;
 }
 
 
@@ -243,6 +288,36 @@ void
 SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("object"));
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item*
+SimpleJSONObject::getPair(const store::Item_t& name) const
+{
+  PairMapConstIter lIter = thePairMap.find(name.getp());
+  if (lIter == thePairMap.end())
+  {
+    return 0;
+  }
+  else
+  {
+    size_t lPos = lIter->second;
+    JSONObjectPair_t lPair = thePairs[lPos];
+    return lPair.getp();
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Iterator_t
+SimpleJSONObject::getPairs() const
+{
+  return new PairIterator(const_cast<SimpleJSONObject*>(this));
 }
 
 
@@ -303,47 +378,6 @@ SimpleJSONObject::PairIterator::close()
   theIter = theObject->thePairs.end();
 }
 
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Iterator_t
-SimpleJSONObject::getPairs() const
-{
-  return new PairIterator(const_cast<SimpleJSONObject*>(this));
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item*
-SimpleJSONObject::getPair(const store::Item_t& name) const
-{
-  PairMapConstIter lIter = thePairMap.find(name.getp());
-  if (lIter == thePairMap.end())
-  {
-    return 0;
-  }
-  else
-  {
-    size_t lPos = lIter->second;
-    JSONObjectPair_t lPair = thePairs[lPos];
-    return lPair.getp();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-SimpleJSONObject::setCollection(SimpleCollection* collection, csize pos)
-{
-  ZORBA_ASSERT(collection == NULL || theCollection == NULL);
-
-  theCollection = collection;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -672,7 +706,7 @@ store::Item* SimpleJSONObjectPair::copy(
 
     JSONObject* p = static_cast<JSONObject*>(parent);
     
-    p->add(lNewPair);
+    p->add(lNewPair, false);
   }
   return lNewPair;
 }

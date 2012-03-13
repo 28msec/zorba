@@ -122,7 +122,7 @@ public:
 
   bool isJSONObject() const { return true; }
 
-  virtual void add(const JSONObjectPair_t& aPair) = 0;
+  virtual bool add(const JSONObjectPair_t& aPair, bool accumulate) = 0;
 
   virtual JSONObjectPair_t remove(const store::Item_t& aName) = 0;
 
@@ -196,7 +196,7 @@ public:
 
   virtual ~SimpleJSONObject();
 
-  void add(const JSONObjectPair_t& aPair);
+  bool add(const JSONObjectPair_t& aPair, bool accumulate);
 
   virtual JSONObjectPair_t remove(const store::Item_t& aName);
 
@@ -331,8 +331,10 @@ protected:
 
 public:
   SimpleJSONArray()
-    : theCollection(0)
-  {}
+    :
+    theCollection(0)
+  {
+  }
 
   virtual ~SimpleJSONArray();
 
