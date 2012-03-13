@@ -26,6 +26,38 @@ xquery version "3.0";
  : validation of the input documents. 
  : </p>
  :
+ : <p>The following example parses a sequence of XML elements and returns
+ : them in a streaming fashion - each at a time:</p>
+ :
+ : <code>
+ : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ : parse-xml:parse(
+ :   "&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>", 
+ :   &lt;opt:options>
+ :     &lt;opt:parse-external-parsed-entity/>
+ :   &lt;/opt:options>
+ : )
+ : </code>
+ :
+ : <p>Another useful option allows to skip an arbitrary number of levels
+ : before returning a sequence of nodes as shown in the following example:</p>
+ :
+ : <code>
+ : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ : parse-xml:parse(
+ :   "&lt;root>
+ :     &lt;from1>Jani1&lt;/from1>
+ :     &lt;from2>Jani2&lt;/from2>
+ :     &lt;from3>Jani3&lt;/from3>
+ :   &lt;/root>", 
+ :   &lt;opt:options>
+ :     &lt;opt:parse-external-parsed-entity opt:skip-root-nodes="1"/>
+ :   &lt;/opt:options>
+ : )
+ : </code>
+ :
  : @see <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed 
  : Parsed Entities</a>
  : @see <a href="http://www.w3.org/TR/xpath-functions-30/#func-parse-xml">
@@ -179,7 +211,6 @@ declare option ver:module-version "2.0";
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-07.xq
  :
  :)
- 
 declare function parse-xml:parse(
   $xml-string as xs:string?,
   $options as element()?) as node()* external;
