@@ -206,6 +206,19 @@ declare option ver:module-version "2.0";
  :                     and the input document has not passed it or if the parsing options are not
  :                     conformant to the xml-options.xsd schema.
  :
+ :
+ : An example that sets the base-uri of the parsed external entities:
+ : <code>
+ :   import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ :   import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ :   parse-xml:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
+ :     &lt;opt:options>
+ :       &lt;opt:base-uri opt:value="urn:test"/>
+ :       &lt;opt:parse-external-parsed-entity/>
+ :     &lt;/opt:options>
+ :   )
+ : </code>
+ :
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-03.xq
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-01.xq
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-07.xq
