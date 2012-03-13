@@ -68,7 +68,6 @@ public:
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, iso639_1::type, bool,
                         Callback&, Item const* );
-  char const* uri() const;
 
 protected:
   // inherited
@@ -179,8 +178,9 @@ inline char TestTokenizer::peek( char const *s, char const *end ) {
 }
 
 void TestTokenizer::properties( Properties *p ) const {
-  ::memset( p, 0, sizeof( Properties ) );
   p->elements_separate_tokens = true;
+  p->languages.clear();
+  p->languages.push_back( iso639_1::en );
   p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/unit-test";
 }
 
@@ -294,10 +294,6 @@ void TestTokenizer::tokenize_string( char const *s, size_type s_len,
   } // for
 
   send_token( token, lang, callback, item );
-}
-
-char const* TestTokenizer::uri() const {
-  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/unit-test";
 }
 
 static char const *const tokens[] = {

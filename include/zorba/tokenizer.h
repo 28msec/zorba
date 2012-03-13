@@ -18,6 +18,8 @@
 #ifndef ZORBA_TOKENIZER_API_H
 #define ZORBA_TOKENIZER_API_H
 
+#include <vector>
+
 #include <zorba/config.h>
 #include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
@@ -107,10 +109,17 @@ public:
    * Various properties of this %Tokenizer.
    */
   struct Properties {
+    typedef std::vector<locale::iso639_1::type> languages_type;
+
     /**
      * If \c true, XML elements separate tokens.
      */
     bool elements_separate_tokens;
+
+    /**
+     * The set of languages supported.
+     */
+    languages_type languages;
 
     /**
      * The URI that uniquely identifies this %Tokenizer.
@@ -178,11 +187,6 @@ public:
   virtual void tokenize_string( char const *utf8_s, size_type utf8_len,
                                 locale::iso639_1::type lang, bool wildcards,
                                 Callback &callback, Item const *item = 0 ) = 0;
-
-  /**
-   * Gets this %Tokenizer's identifying URI.
-   */
-  virtual char const* uri() const = 0;
 
   /////////////////////////////////////////////////////////////////////////////
 

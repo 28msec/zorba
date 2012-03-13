@@ -41,7 +41,6 @@ public:
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
                         Item const* );
-  void char const* uri() const;
 
 private:
   typedef zstring string_type;

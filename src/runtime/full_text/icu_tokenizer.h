@@ -51,7 +51,6 @@ public:
   void properties( Properties* ) const;
   void tokenize_string( char const*, size_type, locale::iso639_1::type, bool,
                         Callback&, Item const* );
-  char const* uri() const;
 
 private:
   typedef std::unique_ptr<RuleBasedBreakIterator> rbbi_ptr;

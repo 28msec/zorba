@@ -544,7 +544,7 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
-  store::Item_t attr_name, attr_node, item;
+  store::Item_t element, item, junk, name;
   zstring base_uri;
   iso639_1::type lang;
   Tokenizer::Numbers no;
@@ -554,6 +554,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   store::Item_t type_name;
   Tokenizer::Properties props;
   TokenizerProvider const *tokenizer_provider;
+  zstring value_string;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -571,24 +572,53 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   tokenizer->properties( &props );
 
   GENV_ITEMFACTORY->createQName(
-    item, static_context::ZORBA_FULL_TEXT_FN_NS, "", "tokenizer-properties"
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "tokenizer-properties"
   );
-
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   GENV_ITEMFACTORY->createElementNode(
-    result, nullptr, item, type_name, false, false, ns_bindings, base_uri
+    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
   );
 
-  GENV_ITEMFACTORY->createQName(
-    attr_name, "", "", "elements-separate-tokens"
-  );
-
-  GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
-
+  // uri="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "uri" );
+  GENV_ITEMFACTORY->createAnyURI( item, props.uri );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode(
-    attr_node, result, attr_name, type_name, item
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // <elements-separate-tokens>...</elements-separate-tokens>
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "elements-separate-tokens"
   );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    element, result, name, type_name, false, false, ns_bindings, base_uri
+  );
+  value_string = props.elements_separate_tokens ? "true" : "false";
+  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+
+  // <supported-languages>...</supported-languages>
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "supported-languages"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    element, result, name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  // <lang>...</lang>
+  FOR_EACH( Tokenizer::Properties::languages_type, i, props.languages ) {
+    store::Item_t lang_element;
+    type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+    GENV_ITEMFACTORY->createQName(
+      name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "lang"
+    );
+    GENV_ITEMFACTORY->createElementNode(
+      lang_element, element, name, type_name, false, false, ns_bindings,
+      base_uri
+    );
+    value_string = iso639_1::string_of[ *i ];
+    GENV_ITEMFACTORY->createTextNode( junk, lang_element.getp(), value_string );
+  }
 
 #ifndef ZORBA_NO_XMLSCHEMA
   sctx->validate( result, result, StaticContextConsts::strict_validation );

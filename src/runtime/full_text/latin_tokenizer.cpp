@@ -82,7 +82,11 @@ inline char LatinTokenizer::peek( char const *s, char const *end ) {
 }
 
 void LatinTokenizer::properties( Properties *p ) const {
-  ::memset( p, 0, sizeof( Properties ) );
+  p->elements_separate_tokens = true;
+
+  p->languages.clear();
+  p->languages.push_back( iso639_1::en );
+
   p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/latin";
 }
 
@@ -230,10 +234,6 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
     return true;
   }
   return false;
-}
-
-char const* LatinTokenizer::uri() const {
-  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/latin";
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -165,8 +165,15 @@ void ICU_Tokenizer::destroy() const {
 }
 
 void ICU_Tokenizer::properties( Properties *p ) const {
-  ::memset( p, 0, sizeof( Properties ) );
   p->elements_separate_tokens = true;
+
+  p->languages.clear();
+  for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
+    if ( char const *const icu_locale = ubrk_getAvailable( i ) )
+      if ( iso639_1::type const lang = find_lang( icu_locale ) )
+        p->languages.push_back( lang );
+  }
+
   p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/icu";
 }
 
@@ -414,13 +421,6 @@ next:
 #if DEBUG_TOKENIZER
   cout << "--------------------\n";
 #endif /* DEBUG_TOKENIZER */
-}
-
-char const* ICU_Tokenizer::uri() const {
-  //
-  // FYI: the ICU home page is: http://site.icu-project.org/
-  //
-  return "http://www.zorba-xquery.com/zorba/full-text/tokenizer/icu";
 }
 
 ///////////////////////////////////////////////////////////////////////////////

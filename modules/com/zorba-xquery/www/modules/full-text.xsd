@@ -35,13 +35,19 @@
 
   <xs:element name="tokenizer-properties">
     <xs:complexType>
-      <xs:attributeGroup ref="tokenizer-attributes"/>
+      <xs:all>
+        <xs:element name="elements-separate-tokens" type="xs:boolean"/>
+        <xs:element name="supported-languages">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="lang" type="xs:language" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+      <xs:attribute name="uri" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
-
-  <xs:attributeGroup name="tokenizer-attributes">
-    <xs:attribute name="elements-separate-tokens" type="xs:boolean"/>
-  </xs:attributeGroup>
 
   <xs:simpleType name="sensitivity">
     <xs:restriction base="xs:string">

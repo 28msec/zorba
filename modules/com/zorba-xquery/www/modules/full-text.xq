@@ -181,6 +181,12 @@ xquery version "3.0";
  :        would be 2 tokens instead of 1.
  :      </td>
  :    </tr>
+ :    <tr>
+ :      <td><code>uri</code></td>
+ :      <td>
+ :        The tokenizer's identifying URI.
+ :      </td>
+ :    </tr>
  :  </table>
  :)
 
