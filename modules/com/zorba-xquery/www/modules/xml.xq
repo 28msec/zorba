@@ -29,21 +29,21 @@ xquery version "3.0";
  : <p>The following example parses a sequence of XML elements and returns
  : them in a streaming fashion - each at a time:</p>
  :
- : <code>
+ : <pre class="brush: xquery;">
  : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
  : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
- : parse-xml:parse(
- :   "&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>", 
+ : parse-xml:parse( 
+ :   "&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
  :   &lt;opt:options>
  :     &lt;opt:parse-external-parsed-entity/>
- :   &lt;/opt:options>
+ :   &lt;/opt:options> 
  : )
- : </code>
+ : </pre>
  :
  : <p>Another useful option allows to skip an arbitrary number of levels
  : before returning a sequence of nodes as shown in the following example:</p>
  :
- : <code>
+ : <pre class="brush: xquery;">
  : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
  : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
  : parse-xml:parse(
@@ -56,7 +56,7 @@ xquery version "3.0";
  :     &lt;opt:parse-external-parsed-entity opt:skip-root-nodes="1"/>
  :   &lt;/opt:options>
  : )
- : </code>
+ : </pre>
  :
  : @see <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed 
  : Parsed Entities</a>
@@ -183,6 +183,19 @@ declare option ver:module-version "2.0";
  :      
  : </ul>
  :
+ : <p>
+ : An example that sets the base-uri of the parsed external entities:
+ : </p>
+ : <pre class="brush: xquery;">
+ :   import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ :   import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ :   parse-xml:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
+ :     &lt;opt:options>
+ :       &lt;opt:base-uri opt:value="urn:test"/>
+ :       &lt;opt:parse-external-parsed-entity/>
+ :     &lt;/opt:options>
+ :   )
+ : </pre>
  :
  : @param $xml-string The string that holds the XML to be parsed. If empty,
  :                    the function will return an empty sequence
@@ -203,17 +216,6 @@ declare option ver:module-version "2.0";
  :                     conformant to the xml-options.xsd schema.
  :
  :
- : An example that sets the base-uri of the parsed external entities:
- : <code>
- :   import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
- :   import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
- :   parse-xml:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
- :     &lt;opt:options>
- :       &lt;opt:base-uri opt:value="urn:test"/>
- :       &lt;opt:parse-external-parsed-entity/>
- :     &lt;/opt:options>
- :   )
- : </code>
  :
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-03.xq
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-01.xq
@@ -226,10 +228,10 @@ declare function parse-xml:parse(
   
 
 (:~
- :
+ : <br/><p>
  : Note: this function is included for backwards compatibility purposes. It 
  : is recommended that you use the parse-xml:parse() function instead.
- :
+ : </p><br/>
  :
  : A function to parse XML files and fragments (i.e. 
  : <a href="http://www.w3.org/TR/xml/#wf-entities">external general parsed 
@@ -346,10 +348,10 @@ declare function parse-xml:parse-xml-fragment(
 
 
 (:~
- :
+ : <br/><p>
  : Note: this function is included for backwards compatibility purposes. It 
  : is recommended that you use the parse-xml:parse() function instead.
- :
+ : </p><br/>
  :
  : A function to parse XML files and fragments. The behavior is the
  : same as the parse-xml-fragment with two arguments.
