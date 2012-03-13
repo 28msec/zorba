@@ -30,9 +30,6 @@
         <element name="no-error" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
-        <element name="strip-boundary-space" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>        
         <element name="schema-validate" minOccurs="0" maxOccurs="1">
           <complexType>
             <attribute name="mode" default="strict">

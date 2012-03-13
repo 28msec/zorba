@@ -106,10 +106,6 @@ declare option ver:module-version "2.0";
  : </li>
  :
  : <li>
- : &lt;strip-boundary-space/&gt; - if present, it will enable the removal of blank nodes from the input.
- : </li>
- :
- : <li>
  : &lt;schema-validate/&gt; - if present, it will request that the input string be Schema 
  : validated. The element accepts an attribute named "mode" which can have two 
  : values: "strict and "lax". Enabling the option will produce a result that is 
