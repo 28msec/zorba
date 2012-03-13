@@ -336,6 +336,17 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 
 
 /*******************************************************************************
+ * Remove all the nodes from the collection
+********************************************************************************/
+void SimpleCollection::removeAll()
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  theXmlTrees.clear();
+}
+
+
+/*******************************************************************************
   Return the node at the given position within the collection, or NULL if the
   given position is >= than the number of nodes in the collection.
 ********************************************************************************/
