@@ -12,7 +12,7 @@ let $j :=
   ]
 return
   <table>{
-    for tumbling window $w in j:values($j)
+    for tumbling window $w in j:members($j)
       start at $x when fn:true()
       end at $y when $y - $x = 2
     return

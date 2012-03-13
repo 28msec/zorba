@@ -2483,35 +2483,30 @@
 
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
-    <diagnostic code="JSDY0001" if="defined(ZORBA_WITH_JSON)">
-      <value>"$1" item cannot appear as input to JSON object constructor</value>
+    <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a string value</comment>
+      <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0006" if="defined(ZORBA_WITH_JSON)">
-      <value>JSON item cannot appear as input to XML node constructor</value>
+    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a typed value</comment>
+      <value>$1 items do not have typed value</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0003" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+      <value>JSON item cannot appear in content sequuence of node constructor or updating expression</value>
+    </diagnostic>
+
+    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by object constructor</comment>
       <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
-      <comment>
-        This error maybe raised by the json:size or json:values functions
-        if the input to the function is a pair.
-        The error message BadArgTypeForFn_2o34o is used with this error.
-      </comment>
-    </diagnostic>
+
 
     <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
       <comment>parser errors raised by the JSONIQLoader</comment>
       <value>$1</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0041" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by block expression</comment>
-      <value>illegal non-pair content in object constructor</value>
     </diagnostic>
 
     <diagnostic code="JUDY0060" if="defined(ZORBA_WITH_JSON)">
@@ -2534,16 +2529,6 @@
       <entry key="ArrayOutOfBounds">
         <value>"$2": array out of bounds (size $3)</value>
       </entry>
-    </diagnostic>
-
-    <diagnostic code="JSTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>objects or arrays don't have a typed value</comment>
-      <value>"$1": does not have a typed value</value>
-    </diagnostic>
-
-    <diagnostic code="JSTY0002" if="defined(ZORBA_WITH_JSON)">
-      <comment>objects or arrays don't have a string value</comment>
-      <value>"$1": does not have a string value</value>
     </diagnostic>
 
     <diagnostic code="JUDY0062" if="defined(ZORBA_WITH_JSON)">

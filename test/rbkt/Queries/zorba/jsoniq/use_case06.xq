@@ -8,7 +8,7 @@ declare variable $input :=
   };
 
 declare variable $stroke := attribute stroke { $input("color") };
-declare variable $points := attribute points { $input("points") };
+declare variable $points := attribute points { j:flatten($input("points")) };
 
 if ($input("closed")) then
   <svg><polygon>{ $stroke, $points }</polygon></svg>

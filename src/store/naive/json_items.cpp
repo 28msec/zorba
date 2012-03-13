@@ -212,7 +212,7 @@ store::Item* SimpleJSONObject::copy(
 zstring
 SimpleJSONObject::getStringValue() const
 {
-  throw ZORBA_EXCEPTION( jerr::JSTY0002, ERROR_PARAMS( "object()" ) );
+  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("object"));
 }
 
 
@@ -242,7 +242,7 @@ SimpleJSONObject::appendStringValue(zstring& buf) const
 void
 SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  throw ZORBA_EXCEPTION( jerr::JSTY0001, ERROR_PARAMS( "object()" ) );
+  throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("object"));
 }
 
 
@@ -579,7 +579,7 @@ store::Item* SimpleJSONArray::copy(
 zstring
 SimpleJSONArray::getStringValue() const
 {
-  throw ZORBA_EXCEPTION( jerr::JSTY0002, ERROR_PARAMS( "array()" ) );
+  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("array"));
 }
 
 
@@ -609,7 +609,7 @@ SimpleJSONArray::appendStringValue(zstring& buf) const
 void
 SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  throw ZORBA_EXCEPTION( jerr::JSTY0001, ERROR_PARAMS( "array()" ) );
+  throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("array"));
 }
 
 

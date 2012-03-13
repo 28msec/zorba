@@ -1108,7 +1108,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 #ifdef ZORBA_WITH_JSON
       else if (result->isJSONItem())
       {
-        RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+        RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
       }
 #endif
       else
@@ -1149,7 +1149,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 #ifdef ZORBA_WITH_JSON
         else if (result->isJSONItem())
         {
-          RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+          RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
 #endif
         else
@@ -1207,7 +1207,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 #ifdef ZORBA_WITH_JSON
         else if (result->isJSONItem())
         {
-          RAISE_ERROR_NO_PARAMS(jerr::JNTY0006, loc);
+          RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
 #endif
         else

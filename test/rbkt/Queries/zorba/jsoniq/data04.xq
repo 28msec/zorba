@@ -1,1 +1,1 @@
-fn:data("foo" : { "bar" : 1 })
+fn:data({ "bar" : 1 })

@@ -96,28 +96,19 @@ extern entry const dict_en[] = {
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0006", "JSON item cannot appear as input to XML node constructor" },
+  { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0001", "\"$1\" item cannot appear as input to JSON object constructor" },
+  { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0003", "\"$1\": pair with the same name already exists in object" },
+  { "JNTY0004", "$1 items do not have typed value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0020", "" },
+  { "JNTY0011", "JSON item cannot appear in content sequuence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0041", "illegal non-pair content in object constructor" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSTY0001", "\"$1\": does not have a typed value" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSTY0002", "\"$1\": does not have a string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JUDY0060", "\"$1\": pair already exists" },

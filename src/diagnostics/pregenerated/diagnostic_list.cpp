@@ -1174,34 +1174,25 @@ ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 namespace jerr {
 
 #if defined(ZORBA_WITH_JSON)
-JSONiqErrorCode JSDY0001( "JSDY0001" );
+JSONiqErrorCode JNTY0003( "JNTY0003" );
 
 
-JSONiqErrorCode JNTY0006( "JNTY0006" );
+JSONiqErrorCode JNTY0004( "JNTY0004" );
 
 
-JSONiqErrorCode JSDY0003( "JSDY0003" );
+JSONiqErrorCode JNTY0011( "JNTY0011" );
 
 
-JSONiqErrorCode JSDY0020( "JSDY0020" );
+JSONiqErrorCode JNDY0003( "JNDY0003" );
 
 
 JSONiqErrorCode JSDY0040( "JSDY0040" );
-
-
-JSONiqErrorCode JSDY0041( "JSDY0041" );
 
 
 JSONiqErrorCode JUDY0060( "JUDY0060" );
 
 
 JSONiqErrorCode JUDY0061( "JUDY0061" );
-
-
-JSONiqErrorCode JSTY0001( "JSTY0001" );
-
-
-JSONiqErrorCode JSTY0002( "JSTY0002" );
 
 
 JSONiqErrorCode JUDY0062( "JUDY0062" );

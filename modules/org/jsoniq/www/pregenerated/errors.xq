@@ -38,30 +38,28 @@ module namespace jerr = 'http://www.jsoniq.org/errors';
 declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
 
 (:~
+ :objects or arrays don't have a string value
 :)
-declare variable $jerr:JSDY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0001");
+declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");
+
+(:~
+ :objects or arrays don't have a typed value
+:)
+declare variable $jerr:JNTY0004 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0004");
 
 (:~
 :)
-declare variable $jerr:JNTY0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0006");
+declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011");
 
 (:~
  :error raised by object constructor
 :)
-declare variable $jerr:JSDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0003");
-
-
-declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020");
+declare variable $jerr:JNDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0003");
 
 (:~
  :parser errors raised by the JSONIQLoader
 :)
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
-
-(:~
- :error raised by block expression
-:)
-declare variable $jerr:JSDY0041 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0041");
 
 (:~
  :error raised by insert-into
@@ -72,16 +70,6 @@ declare variable $jerr:JUDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0060
  :error raised by upd:delete, upd:insert-before/after
 :)
 declare variable $jerr:JUDY0061 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0061");
-
-(:~
- :objects or arrays don't have a typed value
-:)
-declare variable $jerr:JSTY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JSTY0001");
-
-(:~
- :objects or arrays don't have a string value
-:)
-declare variable $jerr:JSTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JSTY0002");
 
 (:~
  :error raised by upd:delete if the argument is not an object or array

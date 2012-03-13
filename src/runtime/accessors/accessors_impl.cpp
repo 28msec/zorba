@@ -152,11 +152,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
-    if (result->isNode()
-#ifdef ZORBA_WITH_JSON
-        || result->isJSONPair()
-#endif
-        )
+    if (result->isNode())
     {
       itemNode.transfer(result);
 
@@ -198,8 +194,8 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 #ifdef ZORBA_WITH_JSON
     else if (result->isJSONItem())
     {
-			RAISE_ERROR(jerr::JSTY0001, loc,
-      ERROR_PARAMS(result->isJSONObject()?"object()":"array()"));
+			RAISE_ERROR(jerr::JNTY0004, loc,
+      ERROR_PARAMS(result->isJSONObject() ? "object" : "array"));
     }
 #endif
     else //(result->isFunction())

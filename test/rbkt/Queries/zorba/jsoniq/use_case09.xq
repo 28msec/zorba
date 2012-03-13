@@ -13,14 +13,14 @@ let $holdings :=
   ]
 return
   [
-    for $u in j:values($users)
+    for $u in j:members($users)
     order by $u("userid")
     return {
       "userid" : $u("userid"),
       "first" :  $u("firstname"),
       "last" :   $u("lastname"),
       "holdings" : [
-           for $h in j:values($holdings)
+           for $h in j:members($holdings)
            where $h("userid") = $u("userid")
            order by $h("ticker")
            return {
