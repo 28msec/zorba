@@ -507,8 +507,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
       if ( store::Item const *const token_item = token->item() ) {
-        store::Item *const temp = const_cast<store::Item*>( token_item );
-        if ( GENV_STORE.getNodeReference( item, temp ) ) {
+        if ( GENV_STORE.getNodeReference( item, token_item ) ) {
           item->getStringValue2( value_string );
           GENV_ITEMFACTORY->createQName( attr_name, "", "", "node-ref" );
           GENV_ITEMFACTORY->createString( item, value_string );
