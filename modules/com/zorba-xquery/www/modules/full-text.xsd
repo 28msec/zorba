@@ -21,6 +21,8 @@
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 
+  <!--======================================================================-->
+
   <xs:element name="compare-options">
     <xs:complexType>
       <xs:attributeGroup ref="compare-attributes"/>
@@ -32,22 +34,6 @@
     <xs:attribute name="diacritics" type="sensitivity" default="insensitive"/>
     <xs:attribute name="stem" type="yes-no-both" default="no"/>
   </xs:attributeGroup>
-
-  <xs:element name="tokenizer-properties">
-    <xs:complexType>
-      <xs:all>
-        <xs:element name="elements-separate-tokens" type="xs:boolean"/>
-        <xs:element name="supported-languages">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="lang" type="xs:language" maxOccurs="unbounded"/>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:all>
-      <xs:attribute name="uri" type="xs:anyURI"/>
-    </xs:complexType>
-  </xs:element>
 
   <xs:simpleType name="sensitivity">
     <xs:restriction base="xs:string">
@@ -65,15 +51,63 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!--======================================================================-->
+
   <xs:element name="token">
     <xs:complexType>
+
+      <!-- The language of the token. -->
       <xs:attribute name="lang" type="xs:language"/>
+
+      <!-- The sentence number. -->
       <xs:attribute name="sentence" type="xs:nonNegativeInteger" use="required"/>
+
+      <!-- The paragraph number. -->
       <xs:attribute name="paragraph" type="xs:nonNegativeInteger" use="required"/>
+
+      <!-- The token string value. -->
       <xs:attribute name="value" type="xs:string" use="required"/>
+
+      <!-- A reference to the originating node. -->
       <xs:attribute name="node-ref" type="xs:anyURI"/>
+
     </xs:complexType>
   </xs:element>
+
+  <!--======================================================================-->
+
+  <xs:element name="tokenizer-properties">
+    <xs:complexType>
+      <xs:all>
+
+        <!--
+         ! If true, XML elements separate tokens, for example
+         ! <b>B</b>old would be 2 tokens instead of 1.
+        -->
+        <xs:element name="elements-separate-tokens" type="xs:boolean"/>
+
+        <!--
+         ! The list of languages that the tokenizer can tokenize.
+        -->
+        <xs:element name="supported-languages">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="lang" type="xs:language" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:all>
+
+      <!--
+       !  The tokenizer's identifying URI.
+      -->
+      <xs:attribute name="uri" type="xs:anyURI"/>
+
+    </xs:complexType>
+  </xs:element>
+
+  <!--======================================================================-->
 
 </xs:schema>
 <!-- vim:set et sw=2 ts=2: -->
