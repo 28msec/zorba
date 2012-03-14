@@ -87,6 +87,9 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
       
     ENDIF ( LINUX )
   ENDIF ( APPLE )
+
+  ADD_SUBDIRECTORY (tests)
+
 ELSE (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   MESSAGE(STATUS "SWIG Ruby: binding not generated because library and include files are not installed.")
 ENDIF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)

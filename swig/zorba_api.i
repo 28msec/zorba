@@ -86,8 +86,8 @@ namespace std {
   #include "ItemSequence.h"
   #include "Collection.h"
   #include "CollectionManager.h"
-  #include "XmlDataManager.h"
   #include "DocumentManager.h"
+  #include "XmlDataManager.h"
 %}
 
 #ifndef SWIGRUBY
@@ -113,6 +113,6 @@ namespace std {
 %include "ItemSequence.i"
 %include "Collection.i"
 %include "CollectionManager.i"
-%include "XmlDataManager.i"
 %include "DocumentManager.i"
+%include "XmlDataManager.i"
 
