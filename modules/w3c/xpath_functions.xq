@@ -1022,6 +1022,11 @@ declare function fn:unparsed-text($href as xs:string?, $encoding as xs:string) a
 declare function fn:unparsed-text-available($href as xs:string?) as xs:boolean external;
 
 (:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-lines">fn:unparsed-text-lines</a>
+ :)
+declare function fn:unparsed-text-lines(	$href	 as xs:string?, $encoding	 as xs:string) as xs:string* external;
+
+(:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available">fn:unparsed-text-available</a>
  :)
 declare function fn:unparsed-text-available(	$href	 as xs:string?, $encoding	 as xs:string) as xs:boolean external;

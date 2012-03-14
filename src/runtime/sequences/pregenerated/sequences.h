@@ -1562,6 +1562,56 @@ public:
 };
 
 
+/**
+ * 
+ *      Reads an external resource and returns its contents as a sequence of strings,
+ *      separated at newline boundaries.
+ *    
+ * Author: Zorba Team
+ */
+class FnUnparsedTextLinesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //the current iterator
+
+  FnUnparsedTextLinesIteratorState();
+
+  ~FnUnparsedTextLinesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnUnparsedTextLinesIterator : public NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextLinesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextLinesIterator,
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>*)this);
+  }
+
+  FnUnparsedTextLinesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextLinesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

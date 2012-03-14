@@ -1,1 +1,1 @@
-fn:unparsed-text("pi.xml", "ISO-8859-1")
+fn:unparsed-text("pi.xml")

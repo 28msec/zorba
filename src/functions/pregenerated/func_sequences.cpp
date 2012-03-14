@@ -299,6 +299,16 @@ PlanIter_t fn_unparsed_text_available::codegen(
   return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_unparsed_text_lines::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextLinesIterator(sctx, loc, argv);
+}
+
 void populate_context_sequences(static_context* sctx)
 {
   {
@@ -876,6 +886,31 @@ void populate_context_sequences(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
         FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_lines,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_UNPARSED_TEXT_LINES_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_unparsed_text_lines,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_UNPARSED_TEXT_LINES_2);
 
   }
 

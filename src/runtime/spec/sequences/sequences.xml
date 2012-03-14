@@ -1273,4 +1273,43 @@
   
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+14.8.6 fn:unparsed-text-lines
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnUnparsedTextLinesIterator">
+    <zorba:description author="Zorba Team">
+      Reads an external resource and returns its contents as a sequence of strings,
+      separated at newline boundaries.
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="unparsed-text-lines" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="unparsed-text-lines" prefix="fn">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+    </zorba:state>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+
+  </zorba:iterator>
+
 </zorba:iterators>

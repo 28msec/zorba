@@ -514,6 +514,8 @@ namespace zorba{
 
     class FnUnparsedTextAvailableIterator;
 
+    class FnUnparsedTextLinesIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
@@ -1338,6 +1340,9 @@ public:
 
     virtual void beginVisit ( const FnUnparsedTextAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnUnparsedTextAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextLinesIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextLinesIterator& ) = 0;
 
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;

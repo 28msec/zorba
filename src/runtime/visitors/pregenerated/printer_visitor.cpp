@@ -3487,6 +3487,20 @@ void PrinterVisitor::endVisit ( const FnUnparsedTextAvailableIterator& ) {
 // </FnUnparsedTextAvailableIterator>
 
 
+// <FnUnparsedTextLinesIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextLinesIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextLinesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextLinesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextLinesIterator>
+
+
 // <PutDocumentIterator>
 void PrinterVisitor::beginVisit ( const PutDocumentIterator& a) {
   thePrinter.startBeginVisit("PutDocumentIterator", ++theId);
