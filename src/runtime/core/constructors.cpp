@@ -594,6 +594,8 @@ void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theIsId;
   ar & theIsRoot;
+  ar & theRaiseXQDY0074;
+  ar & theRaiseXQDY0044;
 }
 
 
