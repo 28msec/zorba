@@ -27,6 +27,7 @@
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
 #include <zorba/vector_item_sequence.h>
+#include <zorba/xquery_functions.h>
 
 namespace zorba { namespace http_client {
   /*class AttributesSequence : public ItemSequence {
@@ -87,7 +88,7 @@ namespace zorba { namespace http_client {
     String lAuthMethod;
     bool lSendAuthorization = false;
     String lOverrideContentType;
-    bool lFollowRedirect = true;
+    bool lFollowRedirect = false;
     bool lUserDefinedFollowRedirect = false;
     int lTimeout = -1;
 
@@ -125,15 +126,26 @@ namespace zorba { namespace http_client {
       }
     }
 
-    if (lUserDefinedFollowRedirect && lFollowRedirect &&
-        (lMethod != "GET" && lMethod != "HEAD" && lMethod != "OPTIONS"))
+    lMethod = fn::upper_case(lMethod);
+
+    // follow-redirect: take care of the default (if the user didn't provide one)
+    if (lMethod == "GET" || lMethod == "HEAD" || lMethod == "OPTIONS")
     {
-      std::ostringstream lMsg;
-      lMsg << lMethod << ": cannot follow redirect";
-      theThrower->raiseException(
-        "http://expath.org/ns/error", "HCV02", lMsg.str()
-       );
+      if (!lUserDefinedFollowRedirect)
+        lFollowRedirect = "true";
     }
+    else
+    {
+      if (lFollowRedirect)
+      {
+        std::ostringstream lMsg;
+        lMsg << lMethod << ": cannot follow redirect";
+        theThrower->raiseException(
+          "http://expath.org/ns/error", "HCV02", lMsg.str()
+         );
+      }
+    }
+
 
     theHandler->beginRequest(lMethod, lHref, lStatusOnly, lUsername,
       lPassword, lAuthMethod, lSendAuthorization, lOverrideContentType,
