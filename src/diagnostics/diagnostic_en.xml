@@ -2037,6 +2037,10 @@
       <value>all nodes must be in same collection</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
+      <value>"$1": collection $2 cannot be undone</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
@@ -2344,6 +2348,10 @@
 
     <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
       <value>out of range: $1</value>
+    </diagnostic>
+
+    <diagnostic code="ZSTR0065" name="STRINGS_IN_POOL">
+      <value>Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.</value>
     </diagnostic>
 
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
