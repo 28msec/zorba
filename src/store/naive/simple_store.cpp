@@ -1361,9 +1361,9 @@ bool SimpleStore::getStructuralInformation(
  @param node XDM node
  @return the identifier as an item of type xs:anyURI
 ********************************************************************************/
-bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
+bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* node)
 {
-  XmlNode* xmlNode = static_cast<XmlNode*>(node);
+  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
 
   if (xmlNode->haveReference())
   {
@@ -1379,7 +1379,7 @@ bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
   uuid_create(&uuid);
   zstring uuidStr = uuidToURI(uuid);
 
-  xmlNode->setHaveReference();
+  const_cast<XmlNode*>(xmlNode)->setHaveReference();
 
   theNodeToReferencesMap.insert(xmlNode, uuidStr);
   theReferencesToNodeMap[uuidStr] = node;

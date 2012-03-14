@@ -27,7 +27,7 @@ ADD_SUBDIRECTORY(w3c)
 # ready for other modules' FIND_PACKAGE() calls. We also add all
 # module build dirs to CMAKE_PREFIX_PATH for the same reason.
 SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt]")
-FILE (GLOB modules_dir_items RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/*")
+FILE (GLOB modules_dir_items RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/[a-zA-Z0-9]*")
 
 # Filter out non-directories
 SET (module_dirs)
