@@ -543,10 +543,42 @@ AttributeIterator::AttributeIterator(
   BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, qnameIte, valueIte),
   theQName(qname),
   theIsId(false),
-  theIsRoot(isRoot)
+  theIsRoot(isRoot),
+  theRaiseXQDY0074(false),
+  theRaiseXQDY0044(false)
 {
   if (theQName)
   {
+    if (theQName->getLocalName().empty())
+    {
+      theRaiseXQDY0074 = true;
+    }
+
+    if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
+        (theQName->getNamespace().empty() &&
+         ZSTREQ(theQName->getLocalName(), "xmlns")))
+    {
+      theRaiseXQDY0044 = true;
+    }
+
+    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
+         !theQName->getPrefix().empty() &&
+         !ZSTREQ(theQName->getPrefix(), "xml")) ||
+        (ZSTREQ(theQName->getPrefix(), "xml") &&
+         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
+    {
+      theRaiseXQDY0044 = true;
+    }
+
+    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
+         !theQName->getPrefix().empty() &&
+         !ZSTREQ(theQName->getPrefix(), "xmlns")) ||
+        (ZSTREQ(theQName->getPrefix(), "xmlns") &&
+         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
+    {
+      theRaiseXQDY0044 = true;
+    }
+
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
         ZSTREQ(theQName->getLocalName(), "id"))
       theIsId = true;
@@ -581,41 +613,19 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (theQName != NULL)
   {
-    if (theQName->getLocalName().empty())
+    // need to raise those errors here and not in the constructor
+    // because they are dynamic errors and might be caught by try-catch
+    // (bug 955135)
+    if (theRaiseXQDY0074)
     {
       RAISE_ERROR(err::XQDY0074, loc,
       ERROR_PARAMS("", ZED(NoEmptyLocalname)));
     }
 
-    if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
-        (theQName->getNamespace().empty() &&
-         ZSTREQ(theQName->getLocalName(), "xmlns")))
+    if (theRaiseXQDY0044)
     {
       RAISE_ERROR(err::XQDY0044, loc,
       ERROR_PARAMS(theQName->getStringValue()));
-    }
-
-    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
-         !theQName->getPrefix().empty() &&
-         !ZSTREQ(theQName->getPrefix(), "xml")) ||
-        (ZSTREQ(theQName->getPrefix(), "xml") &&
-         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
-    {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
-    }
-
-    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
-         !theQName->getPrefix().empty() &&
-         !ZSTREQ(theQName->getPrefix(), "xmlns")) ||
-        (ZSTREQ(theQName->getPrefix(), "xmlns") &&
-         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
-    {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( theQName->getStringValue() ),
-        ERROR_LOC( loc )
-      );
     }
   }
 
