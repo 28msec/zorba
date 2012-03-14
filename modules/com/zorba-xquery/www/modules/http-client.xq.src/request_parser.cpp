@@ -15,6 +15,7 @@
  */
 #include "request_parser.h"
 #include "request_handler.h"
+#include "error_thrower.h"
 
 #include <cassert>
 #include <iostream>
@@ -87,6 +88,7 @@ namespace zorba { namespace http_client {
     bool lSendAuthorization = false;
     String lOverrideContentType;
     bool lFollowRedirect = true;
+    bool lUserDefinedFollowRedirect = false;
     int lTimeout = -1;
 
     Iterator_t lIter = aItem.getAttributes();
@@ -117,10 +119,22 @@ namespace zorba { namespace http_client {
       } else if (lLocalName == "follow-redirect") {
         String lString = lItem.getStringValue();
         lFollowRedirect = lString == "true";
+        lUserDefinedFollowRedirect = true;
       } else if (lLocalName == "timeout") {
         lTimeout = lItem.getIntValue();
       }
     }
+
+    if (lUserDefinedFollowRedirect && lFollowRedirect &&
+        (lMethod != "GET" && lMethod != "HEAD" && lMethod != "OPTIONS"))
+    {
+      std::ostringstream lMsg;
+      lMsg << lMethod << ": cannot follow redirect";
+      theThrower->raiseException(
+        "http://expath.org/ns/error", "HCV02", lMsg.str()
+       );
+    }
+
     theHandler->beginRequest(lMethod, lHref, lStatusOnly, lUsername,
       lPassword, lAuthMethod, lSendAuthorization, lOverrideContentType,
       lFollowRedirect, lTimeout);
