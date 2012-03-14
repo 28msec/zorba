@@ -39,6 +39,7 @@ Optimization:
     of the annotations map in expressions.
 
 Bug Fixes/Other Changes:
+  * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug 923015 (clone() not implemented for full-text expressions)
   * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
   * Fixed bug 867509 (Can not handle largest xs:unsignedLong values)

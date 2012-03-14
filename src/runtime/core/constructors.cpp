@@ -545,6 +545,40 @@ AttributeIterator::AttributeIterator(
   theIsId(false),
   theIsRoot(isRoot)
 {
+  if (theQName)
+  {
+    if (ZSTREQ(theQName->getPrefix(), "xml") &&
+        ZSTREQ(theQName->getLocalName(), "id"))
+      theIsId = true;
+  }
+}
+
+
+void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<AttributeIterator, PlanIteratorState>*)this);
+
+  ar & theQName;
+  ar & theIsId;
+  ar & theIsRoot;
+}
+
+
+bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t qname;
+  store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  store::Item_t valueItem;
+  zstring lexicalValue;
+  store::Item_t typedValue;
+  store::Item* parent;
+  bool isId = theIsId;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
   if (theQName != NULL)
   {
     if (theQName->getLocalName().empty())
@@ -583,38 +617,7 @@ AttributeIterator::AttributeIterator(
         ERROR_LOC( loc )
       );
     }
-
-    if (ZSTREQ(theQName->getPrefix(), "xml") &&
-        ZSTREQ(theQName->getLocalName(), "id"))
-      theIsId = true;
   }
-}
-
-
-void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (BinaryBaseIterator<AttributeIterator, PlanIteratorState>*)this);
-
-  ar & theQName;
-  ar & theIsId;
-  ar & theIsRoot;
-}
-
-
-bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t qname;
-  store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  store::Item_t valueItem;
-  zstring lexicalValue;
-  store::Item_t typedValue;
-  store::Item* parent;
-  bool isId = theIsId;
-  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChild0 != NULL)
   {
