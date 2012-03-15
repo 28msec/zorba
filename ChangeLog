@@ -49,6 +49,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #911585 (management of variables during eval)
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
+  * Fixed bug #947627 (setting the static type of the context item is ignored)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
   * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be
