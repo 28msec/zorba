@@ -23,47 +23,65 @@
 
 #ifndef ZORBA_STORE_STOREPROPERTIES
 #define ZORBA_STORE_STOREPROPERTIES
-namespace zorba { namespace store { 
-class StoreProperties : public ::zorba::PropertiesBase {
+namespace zorba 
+{ 
+namespace store 
+{
+
+ 
+class StoreProperties : public ::zorba::PropertiesBase 
+{
 protected:
-  const char **get_all_options () const {
+  const char** get_all_options() const 
+  {
     static const char *result [] = { "--build-dataguide", "--store-trace-level", NULL };
     return result;
   }
+
   bool theBuildDataguide;
   long theStoreTraceLevel;
 
-  void initialize () {
+  void initialize () 
+  {
     theBuildDataguide = false;
     theStoreTraceLevel = 0;
   }
 public:
-  const bool &buildDataguide () const { return theBuildDataguide; }
-  const long &storeTraceLevel () const { return theStoreTraceLevel; }
+  const bool& buildDataguide() const { return theBuildDataguide; }
+  const long& storeTraceLevel() const { return theStoreTraceLevel; }
 
-  std::string load_argv (int argc, const char **argv) {
+  std::string load_argv(int argc, const char **argv) 
+  {
     if (argv == NULL) return "";
 
     std::string result;
-    for (++argv; *argv != NULL; ++argv) {
+    for (++argv; *argv != NULL; ++argv) 
+    {
       if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
         return "!HELP";
       else if (strcmp (*argv, "--version") == 0)
         return "!VER";
-      else if (strcmp (*argv, "--build-dataguide") == 0) {
+      else if (strcmp (*argv, "--build-dataguide") == 0) 
+      {
         theBuildDataguide = true;
       }
-      else if (strcmp (*argv, "--store-trace-level") == 0) {
+      else if (strcmp (*argv, "--store-trace-level") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --store-trace-level option"; break; }        init_val (*argv, theStoreTraceLevel, d);
       }
-      else if (strcmp (*argv, "--") == 0) {
+      else if (strcmp (*argv, "--") == 0) 
+      {
         copy_args (++argv);
         break;
-      } else if ((*argv) [0] == '-') {
+      }
+      else if ((*argv) [0] == '-') 
+      {
         result = "unknown command line option "; result += *argv; break; 
-      } else {
+      }
+      else
+      {
         copy_args (argv);
         break;
       }
@@ -72,20 +90,21 @@ public:
     return result;
   }
 
-  const char *get_help_msg () const {
+  const char* get_help_msg () const 
+  {
     return
 "--build-dataguide\nbuild-dataguide (true/false)\n\n"
 "--store-trace-level\nstore trace level (<= 0 : no tracing)\n\n"
 ;
   }
 
-  static const StoreProperties *instance () {
+  static const StoreProperties* instance() 
+  {
     static StoreProperties result;
     return &result;
   }
 
-  StoreProperties () { initialize (); }
-  
+  StoreProperties() { initialize(); }
 };
 
 } }   // namespaces
