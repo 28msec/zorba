@@ -15,21 +15,9 @@
  */
 %begin %{
 #include <iostream>
-#if defined( _MSC_VER ) 
-#if (_MSC_VER >= 1600)
-  #define PHP_COMPILER_ID "VC10"
-#elif (_MSC_VER >= 1500)
-  #define PHP_COMPILER_ID "VC9"
-#elif (_MSC_VER >= 1400)
-  #define PHP_COMPILER_ID "VC8"
-#elif (_MSC_VER >= 1300)
-  #define PHP_COMPILER_ID "VC7"
-#elif (_MSC_VER >= 1200)
-  #define PHP_COMPILER_ID "VC6"
-#endif
-#endif
 
 #if defined(_MSC_VER)
+#define PHP_COMPILER_ID "VC9"
 #define strtoll _strtoi64
 #define strtoull _strtoui64
 #endif
