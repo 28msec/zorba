@@ -438,10 +438,11 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   store::Item_t type_name;
   zstring value_string;
 
+  sctx = getStaticContext();
+
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
   lang = get_lang_from( sctx );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
