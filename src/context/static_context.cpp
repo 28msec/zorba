@@ -366,11 +366,11 @@ static_context::ZORBA_STRING_FN_NS =
 "http://www.zorba-xquery.com/modules/string";
 
 const char*
-static_context::ZORBA_URI_FN_NS = 
+static_context::ZORBA_URI_FN_NS =
 "http://www.zorba-xquery.com/modules/uri";
 
 const char*
-static_context::ZORBA_FETCH_FN_NS = 
+static_context::ZORBA_FETCH_FN_NS =
 "http://www.zorba-xquery.com/modules/fetch";
 
 const char*
@@ -501,7 +501,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
-            ns == ZORBA_RANDOM_FN_NS);
+            ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_XML_FN_NS);
   }
 
   return false;
