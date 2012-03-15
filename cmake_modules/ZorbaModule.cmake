@@ -410,6 +410,7 @@ MACRO (DECLARE_ZORBA_URI_FILE)
 
 ENDMACRO (DECLARE_ZORBA_URI_FILE)
 
+
 # Inform Zorba of a .jar file that should be made available on the CLASSPATH
 # of the JVM, should the JVM be started. QQQ more doc needed
 #
@@ -418,7 +419,6 @@ ENDMACRO (DECLARE_ZORBA_URI_FILE)
 #              to CLASSPATH as-is
 #       TEST_ONLY - (optional) Jar file is for testcases only and should not
 #              be installed
-
 MACRO (DECLARE_ZORBA_JAR)
   PARSE_ARGUMENTS (JAR "FILE" "" "TEST_ONLY;EXTERNAL" ${ARGN})
   IF (NOT JAR_FILE)
@@ -451,43 +451,6 @@ MACRO (DECLARE_ZORBA_JAR)
 
   ENDFOREACH (_jar_file)
 ENDMACRO (DECLARE_ZORBA_JAR)
-
-# Inform Zorba of a .jar file that should be made available on the CLASSPATH
-# of the JVM, should the JVM be started. QQQ more doc needed
-#
-# Args: FILE - path to file (must be absolute)
-#       EXTERNAL - (optional) FILE specifies a path that should be added
-#              to CLASSPATH as-is
-#       TEST_ONLY - (optional) Jar file is for testcases only and should not
-#              be installed
-
-#MACRO (DECLARE_ZORBA_JAR)
-#  PARSE_ARGUMENTS (JAR "" "FILE" "TEST_ONLY;EXTERNAL" ${ARGN})
-#  IF (NOT JAR_FILE)
-#    MESSAGE (FATAL_ERROR "'JAR' argument is required for DECLARE_ZORBA_JAR")
-#  ENDIF (NOT JAR_FILE)
-#  IF (NOT IS_ABSOLUTE "${JAR_FILE}")
-#    SET (JAR_FILE "${CMAKE_CURRENT_BINARY_DIR}/${JAR_FILE}")
-#  ENDIF (NOT IS_ABSOLUTE "${JAR_FILE}")
-#
-#  SET (_LIST_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-classpath.txt")
-#  IF (JAR_EXTERNAL)
-#    # Remember whether we've seen external jars for this project yet
-#    GET_PROPERTY (_known_project GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars")
-#    IF (NOT _known_project)
-#      FILE (REMOVE "${_LIST_FILE}")
-#      SET_PROPERTY (GLOBAL PROPERTY "${PROJECT_NAME}-ext-jars" 1)
-#      ADD_COPY_RULE ("LIB" "${_LIST_FILE}" "jars/${PROJECT_NAME}-classpath.txt"
-#  "" "" 1 0)
-#    ENDIF (NOT _known_project)
-#    FILE (APPEND "${_LIST_FILE}" "${JAR_FILE}\n")
-#  ELSE (JAR_EXTERNAL)
-#    GET_FILENAME_COMPONENT (_output_filename "${JAR_FILE}" NAME)
-#    ADD_COPY_RULE ("LIB" "${JAR_FILE}" "jars/${_output_filename}" "" ""
-#      1 "${JAR_TEST_ONLY}")
-#  ENDIF (JAR_EXTERNAL)
-#ENDMACRO (DECLARE_ZORBA_JAR)
-
 
 
 # Utility macro for setting up a build rule to copy a file to a

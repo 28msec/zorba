@@ -132,41 +132,14 @@ static zstring computeLibraryName(
 ExternalModule*
 DynamicLoader::loadModule(const zstring& aFile) const
 {
-  #ifdef WIN32
-  HMODULE handle;
-  std::map<const zstring, HMODULE >::const_iterator lIter;
-  #else
-  void* handle;
-  std::map<const zstring, void*>::const_iterator lIter;
-  #endif
-
-  // function pointer to create a module
-  ExternalModule* (*createModule)() = NULL;
+  handle_t handle;
+  std::map<const zstring, handle_t>::const_iterator lIter;
 
   lIter = theLibraries.find(aFile);
   if (lIter != theLibraries.end())
   {
     handle = lIter->second;
-
-#ifdef WIN32
-    createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
-    if (createModule == NULL)
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
-        ERROR_PARAMS( aFile, os_error::get_err_string() )
-      );
-#else
-    createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
-    if (createModule == NULL)
-    {
-      dlclose(handle);
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
-        ERROR_PARAMS( aFile, dlerror() )
-      );
-    }
-#endif
-    return createModule();
+    return createModule(handle, aFile);
   }
 
 #ifdef WIN32
@@ -187,34 +160,44 @@ DynamicLoader::loadModule(const zstring& aFile) const
       zerr::ZOSE0005_DLL_LOAD_FAILED,
       ERROR_PARAMS( aFile, os_error::get_err_string() )
     );
-
-  createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
-  if (createModule == NULL)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
-      ERROR_PARAMS( aFile, os_error::get_err_string() )
-    );
-
 #else
   handle = dlopen(aFile.c_str(), RTLD_NOW);
   if (!handle)
     throw ZORBA_EXCEPTION(
       zerr::ZOSE0005_DLL_LOAD_FAILED, ERROR_PARAMS( aFile, zstring(dlerror()) )
     );
-
-  createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
-  if (createModule == NULL)
-  {
-    dlclose(handle);
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
-      ERROR_PARAMS( aFile, dlerror() )
-    );
-  }
 #endif
 
   theLibraries[aFile] = handle;
-  return createModule();
+  return createModule(handle, aFile);
+}
+
+
+ExternalModule*
+DynamicLoader::createModule(handle_t handle, const zstring& aFile) const
+{
+  // function pointer to create a module
+  ExternalModule* (*createModuleFunction)() = NULL;
+
+#ifdef WIN32
+  createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
+  if (createModuleFunction == NULL)
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
+      ERROR_PARAMS( aFile, os_error::get_err_string() )
+    );
+#else
+  createModuleFunction = (ExternalModule* (*)()) dlsym(handle, "createModule");
+  if (createModuleFunction == NULL)
+  {
+    dlclose(handle);
+    throw ZORBA_EXCEPTION(
+          zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
+          ERROR_PARAMS( aFile, dlerror() )
+          );
+  }
+#endif
+  return createModuleFunction();
 }
 
 

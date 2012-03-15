@@ -40,13 +40,18 @@ private:
 
   ~DynamicLoader();
 
-  ExternalModule* loadModule(const zstring& aFile) const;
 
 #ifdef WIN32
-  typedef std::map<const zstring, HMODULE> LibraryMap_t;
+  typedef HMODULE handle_t;
 #else
-  typedef std::map<const zstring, void*> LibraryMap_t;
+  typedef void *  handle_t;
 #endif
+
+  ExternalModule* loadModule(const zstring& aFile) const;
+  ExternalModule* createModule(handle_t handle, const zstring& aFile) const;
+
+
+  typedef std::map<const zstring, handle_t> LibraryMap_t;
 
   mutable LibraryMap_t theLibraries;
 };
