@@ -588,6 +588,34 @@ LeastCommonAncestor::~LeastCommonAncestor() {}
 // </LeastCommonAncestor>
 
 
+// <NodeCopyIterator>
+const char* NodeCopyIterator::class_name_str = "NodeCopyIterator";
+NodeCopyIterator::class_factory<NodeCopyIterator>
+NodeCopyIterator::g_class_factory;
+
+const serialization::ClassVersion 
+NodeCopyIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int NodeCopyIterator::class_versions_count =
+sizeof(NodeCopyIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void NodeCopyIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+NodeCopyIterator::~NodeCopyIterator() {}
+
+// </NodeCopyIterator>
+
+
 
 }
 

@@ -19,6 +19,7 @@ New Features:
   * http:send-request is able to handle arbitrary encodings
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * New version of the JSON converter module in the core of Zorba (no external dependencies anymore)
+  * Added a node copy function to the node module
   * Added truncate function to the collection modules for efficient deletion of all nodes in a collection.
 
 

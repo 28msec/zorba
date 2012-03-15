@@ -231,6 +231,16 @@ PlanIter_t fn_zorba_node_least_common_ancestor::codegen(
   return new LeastCommonAncestor(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_node_copy::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new NodeCopyIterator(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
   {
@@ -535,6 +545,18 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_NODE_LEAST_COMMON_ANCESTOR_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_node_copy,
+        (createQName("http://www.zorba-xquery.com/modules/node","","copy"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_NODE_COPY_1);
 
   }
 

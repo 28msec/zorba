@@ -372,6 +372,23 @@ public:
 };
 
 
+//fn-zorba-node:copy
+class fn_zorba_node_copy : public function
+{
+public:
+  fn_zorba_node_copy(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

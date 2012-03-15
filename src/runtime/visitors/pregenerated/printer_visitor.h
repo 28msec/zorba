@@ -595,6 +595,9 @@ namespace zorba {
     void beginVisit( const LeastCommonAncestor& );
     void endVisit  ( const LeastCommonAncestor& );
 
+    void beginVisit( const NodeCopyIterator& );
+    void endVisit  ( const NodeCopyIterator& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 

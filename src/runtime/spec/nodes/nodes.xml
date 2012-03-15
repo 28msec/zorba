@@ -515,4 +515,26 @@
 
 </zorba:iterator>
 
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="NodeCopyIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="copy" prefix="fn-zorba-node">
+      <zorba:param>node()*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:mustCopyInputNodes value="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

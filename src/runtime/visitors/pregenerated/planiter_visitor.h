@@ -395,6 +395,8 @@ namespace zorba{
 
     class LeastCommonAncestor;
 
+    class NodeCopyIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -1152,6 +1154,9 @@ public:
 
     virtual void beginVisit ( const LeastCommonAncestor& ) = 0;
     virtual void endVisit   ( const LeastCommonAncestor& ) = 0;
+
+    virtual void beginVisit ( const NodeCopyIterator& ) = 0;
+    virtual void endVisit   ( const NodeCopyIterator& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;
