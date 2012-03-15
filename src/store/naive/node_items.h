@@ -563,7 +563,7 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
-  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+  bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -663,6 +663,15 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  // Looks for a descendant node with the ordpath aOrdPath and puts it into the
+  // aResult variable. aAttribute specifies whether to look for an attribute or
+  // not.
+  bool
+  getDescendantNodeByOrdPath(
+      const OrdPath& aOrdPath,
+      store::Item_t& aResult,
+      bool aAttribute = false) const;
 
   virtual bool
   isAncestor(const store::Item_t&) const;

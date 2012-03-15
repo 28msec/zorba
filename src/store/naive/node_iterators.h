@@ -69,7 +69,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
@@ -183,7 +183,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
@@ -211,7 +211,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
