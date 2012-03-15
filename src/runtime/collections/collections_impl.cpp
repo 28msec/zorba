@@ -1628,6 +1628,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
+  const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes = 1;
@@ -1640,7 +1641,11 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   if (!consumeNext(collectionName, theChildren[0].getp(), planState))
     ZORBA_ASSERT(false);
 
-  getCollection(theSctx, collectionName, loc, theDynamicCollection, collection);
+  collectionDecl = getCollection(
+      theSctx, collectionName, loc, theDynamicCollection, collection);
+
+  /* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
@@ -1747,6 +1752,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
+  const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes = 1;
@@ -1758,7 +1764,11 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   consumeNext(collectionName, theChildren[0].getp(), planState);
 
-  getCollection(theSctx, collectionName, loc, theDynamicCollection, collection);
+  collectionDecl = getCollection(
+      theSctx, collectionName, loc, theDynamicCollection, collection);
+
+	/* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
