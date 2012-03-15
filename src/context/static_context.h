@@ -520,6 +520,7 @@ protected:
   bool                                    theHaveDefaultFunctionNamespace;
 
   xqtref_t                                theContextItemType;
+  bool                                    theContextItemTypeSet;
 
   VariableMap                           * theVariablesMap;
   
@@ -797,6 +798,8 @@ public:
     bool localsOnly = false,
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
+
+  bool is_context_item_type_set() const;
 
   void set_context_item_type(const xqtref_t& t);
 

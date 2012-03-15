@@ -554,6 +554,7 @@ static_context::static_context()
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemTypeSet(false),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -602,6 +603,7 @@ static_context::static_context(static_context* parent)
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemTypeSet(false),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -655,6 +657,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemTypeSet(false),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -961,6 +964,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theHaveDefaultFunctionNamespace;
 
   ar & theContextItemType;
+  ar & theContextItemTypeSet;
 
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;     
@@ -2218,12 +2222,31 @@ void static_context::getVariables(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+bool static_context::is_context_item_type_set() const
+{
+  const static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (sctx->theContextItemTypeSet)
+      return true;
+
+    sctx = sctx->theParent;
+  }
+
+  return false;
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/
 void static_context::set_context_item_type(const xqtref_t& t)
 {
   theContextItemType = t;
+  theContextItemTypeSet = true;
 }
 
 

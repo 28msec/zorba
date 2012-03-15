@@ -3917,6 +3917,10 @@ void* begin_visit(const CtxItemDecl& v)
     RAISE_ERROR(err::XPST0003, loc,
     ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
 
+  if (theSctx->is_context_item_type_set())
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
+  }
   theHaveContextItemDecl = true;
 
   return no_state;

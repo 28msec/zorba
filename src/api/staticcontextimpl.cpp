@@ -932,6 +932,10 @@ StaticContextImpl::getFunctionAnnotations(
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
+  if (theCtx->is_context_item_type_set())
+  {
+    throw ZORBA_EXCEPTION(err::XQST0099);
+  }
   xqtref_t xqType = NULL;
   if (type != NULL) 
   {
