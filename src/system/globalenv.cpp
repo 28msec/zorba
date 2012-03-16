@@ -153,8 +153,6 @@ void GlobalEnvironment::destroy()
 
   BuiltinFunctionLibrary::destroy();
 
-  AnnotationInternal::destroyBuiltIn();
-
   delete m_globalEnv;
 	m_globalEnv = NULL;
 
