@@ -36,6 +36,7 @@ class AndIterator;
 class JSONObjectIterator;
 class JSONArrayIterator;
 class JSONDirectObjectIterator;
+class JSONObjectInsertIterator;
 #endif
 
   class PiIterator;

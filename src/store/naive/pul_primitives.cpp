@@ -1877,54 +1877,69 @@ void UpdRemoveFromHashMap::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdJSONInsert::UpdJSONInsert(
-      CollectionPul* pul,
-      const QueryLoc* loc,
-      store::Item_t& target,
-      std::vector<store::Item_t>& pairs)
-  : UpdatePrimitive(pul, loc, target)
+UpdJSONObjectInsert::UpdJSONObjectInsert(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    std::vector<store::Item*>& names,
+    std::vector<store::Item*>& values)
+  :
+  UpdatePrimitive(pul, loc, target),
+  theNumApplied(0)
 {
-  theNewPairs.resize(pairs.size());
-  std::copy(pairs.begin(), pairs.end(), theNewPairs.begin());
+  assert(names.size() == values.size());
+
+  theNewNames.swap(names);
+  theNewValues.swap(values);
 }
 
-void UpdJSONInsert::apply()
+
+UpdJSONObjectInsert::~UpdJSONObjectInsert()
+{
+  csize numPairs = theNewNames.size();
+  for (csize i = 0; i < numPairs; ++i)
+  {
+    theNewNames[i]->removeReference();
+    theNewValues[i]->removeReference();
+  }
+}
+
+
+void UpdJSONObjectInsert::apply()
 {
   ZORBA_ASSERT(theTarget->isJSONObject());
 
-  JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  for (std::vector<store::Item_t>::const_iterator lIter = theNewPairs.begin();
-       lIter != theNewPairs.end();
-       ++lIter)
+  csize numPairs = theNewNames.size();
+  for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    ZORBA_ASSERT((*lIter)->isJSONPair());
-    JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
-    lObj->add(lPair, false);
+    JSONObjectPair_t pair =  new SimpleJSONObjectPair(theNewNames[i], theNewValues[i]);
+    if (!obj->add(pair, false))
+    {
+      RAISE_ERROR(jerr::JNUP0006, theLoc, 
+      ERROR_PARAMS(pair->getName()->getStringValue()));
+    }
   }
+
   theIsApplied = true;
 }
 
-void UpdJSONInsert::undo()
+
+void UpdJSONObjectInsert::undo()
 {
   if (!theIsApplied)
   {
     return;
   }
 
-  JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  for (std::vector<store::Item_t>::const_iterator lIter = theNewPairs.begin();
-       lIter != theNewPairs.end();
-       ++lIter)
+  for (csize i = theNumApplied; i > 0; --i)
   {
-    ZORBA_ASSERT((*lIter)->isJSONPair());
-    JSONObjectPair_t lPair = static_cast<JSONObjectPair*>(lIter->getp());
-    if (!lObj->getPair(lPair->getName()))
-    {
-      lObj->remove(lPair->getName());
-    }
+    obj->remove(theNewNames[i-1]);
   }
+
   theIsApplied = false;
 }
 

@@ -1564,17 +1564,16 @@ class UpdInsertIntoHashMap : public UpdHashMap
   friend class PULPrimitiveFactory;
 
 protected:
+  const std::vector<store::Item_t> theKey;
+  const store::Iterator_t          theValue;
 
+protected:
   UpdInsertIntoHashMap(
         PULImpl* pul,
         const QueryLoc*,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue);
-
-  const std::vector<store::Item_t> theKey;
-  const store::Iterator_t          theValue;
-
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1586,6 +1585,7 @@ public:
   void undo();
 };
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1594,14 +1594,14 @@ class UpdRemoveFromHashMap : public UpdHashMap
   friend class PULPrimitiveFactory;
 
 protected:
+  const std::vector<store::Item_t> theKey;
 
+protected:
   UpdRemoveFromHashMap(
         PULImpl* pul,
         const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
-
-  const std::vector<store::Item_t> theKey;
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1618,21 +1618,27 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdJSONInsert: public UpdatePrimitive
+class UpdJSONObjectInsert: public UpdatePrimitive
 {
   friend class PULImpl;
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
 
 protected:
-  store::UpdateConsts::UpdPrimKind theKind;
-  std::vector<store::Item_t>       theNewPairs;
+  std::vector<store::Item*>  theNewNames;
+  std::vector<store::Item*>  theNewValues;
 
-  UpdJSONInsert(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        std::vector<store::Item_t>& pairs);
+  csize                      theNumApplied;
+
+protected:
+  UpdJSONObjectInsert(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      std::vector<store::Item*>& names,
+      std::vector<store::Item*>& values);
+
+  ~UpdJSONObjectInsert();
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const

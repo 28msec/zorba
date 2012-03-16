@@ -506,6 +506,7 @@ class JSONXQType : public XQType
 {
 private:
   store::StoreConsts::JSONItemKind  theJSONKind;
+  xqtref_t                          theContentType;
 
 public:
   SERIALIZABLE_CLASS(JSONXQType)
@@ -516,10 +517,13 @@ public:
   JSONXQType(
       const TypeManager* manager,
       store::StoreConsts::JSONItemKind kind,
+      const xqtref_t& contentType,
       TypeConstants::quantifier_t quantifier,
       bool builtin = false);
 
   store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
+
+  const XQType* get_content_type() const { return theContentType.getp(); }
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -535,7 +539,7 @@ class NodeXQType : public XQType
 private:
   store::StoreConsts::NodeKind  m_node_kind;
   store::Item_t                 m_node_name;
-  xqtref_t                      m_content_type;
+  xqtref_t                      theContentType;
   bool                          m_nillable;
   bool                          m_schema_test;
 
@@ -549,7 +553,7 @@ public:
         const TypeManager* manager,
         store::StoreConsts::NodeKind nodeKind,
         const store::Item_t& nodeName,
-        xqtref_t contentType,
+        const xqtref_t& contentType,
         TypeConstants::quantifier_t quantifier,
         bool nillable,
         bool schematest,
@@ -565,7 +569,7 @@ public:
 
   bool is_schema_test() const { return m_schema_test; }
 
-  xqtref_t get_content_type() const { return m_content_type; }
+  const XQType* get_content_type() const { return theContentType.getp(); }
 
   bool get_nillable() const { return m_nillable; }
 
@@ -716,7 +720,7 @@ public:
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
-        xqtref_t baseType,
+        const xqtref_t& baseType,
         TypeConstants::quantifier_t quantifier,
         type_category_t typeCategory,
         content_kind_t contentKind);
@@ -725,7 +729,7 @@ public:
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
-        xqtref_t baseType,
+        const xqtref_t& baseType,
         TypeConstants::quantifier_t quantifier,
         const XQType* listItemType);
 
@@ -733,9 +737,9 @@ public:
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
-        xqtref_t baseType,
+        const xqtref_t& baseType,
         TypeConstants::quantifier_t quantifier,
-        std::vector<xqtref_t> unionItemTypes);
+        std::vector<xqtref_t>& unionItemTypes);
 
   virtual ~UserDefinedXQType() {}
 
@@ -759,7 +763,7 @@ public:
 
   const XQType* getListItemType() const { return m_listItemType.getp(); }
 
-  std::vector<xqtref_t> getUnionItemTypes()  const { return m_unionItemTypes; }
+  const std::vector<xqtref_t>& getUnionItemTypes() const { return m_unionItemTypes; }
 
   bool isSuperTypeOf(const TypeManager* tm, const XQType& subType) const;
 

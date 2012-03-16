@@ -141,8 +141,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(JSONDirectObjectIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  JSONDirectObjectIterator,
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDirectObjectIterator,
   NaryBaseIterator<JSONDirectObjectIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);

@@ -64,7 +64,12 @@ declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040
 (:~
  :error raised by insert-into
 :)
-declare variable $jerr:JUDY0060 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0060");
+declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005");
+
+(:~
+ :error raised by insert-into
+:)
+declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006");
 
 (:~
  :error raised by upd:delete, upd:insert-before/after

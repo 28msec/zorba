@@ -282,11 +282,26 @@ std::string XQType::toSchemaString() const
     store::StoreConsts::JSONItemKind kind = type->get_json_kind();
 
     if (kind == store::StoreConsts::jsonItem)
+    {
       result = "json-item()";
+    }
     else if (kind == store::StoreConsts::jsonObject)
+    {
       result = "object()";
+    }
     else if (kind == store::StoreConsts::jsonArray)
-      result = "array()";
+    {
+      if (type->get_content_type() == NULL)
+      {
+        result = "array()";
+      }
+      else
+      {
+        result = "array(";
+        result += type->get_content_type()->toSchemaString();
+        result += ")";
+      }
+    }
 
     break;
   }
@@ -458,11 +473,13 @@ void StructuredItemXQType::serialize(::zorba::serialization::Archiver& ar)
 JSONXQType::JSONXQType(
     const TypeManager* manager,
     store::StoreConsts::JSONItemKind kind,
+    const xqtref_t& contentType,
     TypeConstants::quantifier_t quantifier,
     bool builtin)
   :
   XQType(manager, JSON_TYPE_KIND, quantifier, builtin),
-  theJSONKind(kind)
+  theJSONKind(kind),
+  theContentType(contentType)
 {
 }
 
@@ -474,6 +491,7 @@ void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
   SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, theJSONKind);
+  ar & theContentType;
 }
 
 
@@ -484,6 +502,12 @@ std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 {
   os << "[JSONXQType " << store::StoreConsts::toString(theJSONKind)
      << TypeOps::decode_quantifier(get_quantifier());
+
+  if (theContentType != NULL)
+  {
+    os << " content=";
+    os << theContentType->toString();
+  }
 
   return os << "]";
 }
@@ -505,7 +529,7 @@ NodeXQType::NodeXQType(
     const TypeManager* manager,
     store::StoreConsts::NodeKind nodeKind,
     const store::Item_t& nodeName,
-    xqtref_t contentType,
+    const xqtref_t& contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
     bool schematest,
@@ -514,7 +538,7 @@ NodeXQType::NodeXQType(
   XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
   m_node_kind(nodeKind),
   m_node_name(nodeName),
-  m_content_type(contentType),
+  theContentType(contentType),
   m_nillable(nillable),
   m_schema_test(schematest)
 {
@@ -550,7 +574,7 @@ NodeXQType::NodeXQType(
   XQType(source.theManager, NODE_TYPE_KIND, quantifier, false),
   m_node_kind(source.m_node_kind),
   m_node_name(source.m_node_name),
-  m_content_type(source.m_content_type),
+  theContentType(source.theContentType),
   m_nillable(source.m_nillable),
   m_schema_test(source.m_schema_test)
 {
@@ -565,7 +589,7 @@ void NodeXQType::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (XQType*)this);
   SERIALIZE_ENUM(store::StoreConsts::NodeKind, m_node_kind);
   ar & m_node_name;
-  ar & m_content_type;
+  ar & theContentType;
   ar & m_nillable;
   ar & m_schema_test;
 }
@@ -576,7 +600,7 @@ void NodeXQType::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 bool NodeXQType::is_untyped() const
 {
-  return m_content_type == GENV_TYPESYSTEM.UNTYPED_TYPE;
+  return theContentType == GENV_TYPESYSTEM.UNTYPED_TYPE;
 }
 
 
@@ -625,11 +649,11 @@ bool NodeXQType::is_subtype(
 {
   if (supertype.m_node_kind == store::StoreConsts::anyNode)
   {
-    if (supertype.m_content_type != NULL &&
-        supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND)
+    if (supertype.theContentType != NULL &&
+        supertype.theContentType->type_kind() == XQType::UNTYPED_KIND)
     {
-      return (m_content_type != NULL &&
-              m_content_type->type_kind() == XQType::UNTYPED_KIND);
+      return (theContentType != NULL &&
+              theContentType->type_kind() == XQType::UNTYPED_KIND);
     }
 
     return true;
@@ -676,20 +700,20 @@ bool NodeXQType::is_subtype(
     }
   }
 
-  if (m_content_type == supertype.m_content_type)
+  if (theContentType == supertype.theContentType)
     return true;
 
-  if (m_content_type != NULL && supertype.m_content_type != NULL)
+  if (theContentType != NULL && supertype.theContentType != NULL)
   {
-    return TypeOps::is_subtype(tm, *m_content_type, *supertype.m_content_type);
+    return TypeOps::is_subtype(tm, *theContentType, *supertype.theContentType);
   }
-  else if (supertype.m_content_type == NULL)
+  else if (supertype.theContentType == NULL)
   {
     return true;
   }
   else
   {
-    return supertype.m_content_type->type_kind() == XQType::ANY_TYPE_KIND;
+    return supertype.theContentType->type_kind() == XQType::ANY_TYPE_KIND;
   }
 
   return false;
@@ -751,8 +775,8 @@ bool NodeXQType::is_supertype(
       m_node_kind != store::StoreConsts::attributeNode)
     return true;
 
-  if (m_content_type == NULL ||
-      m_content_type->type_kind() == XQType::ANY_TYPE_KIND)
+  if (theContentType == NULL ||
+      theContentType->type_kind() == XQType::ANY_TYPE_KIND)
     return true;
 
   xqtref_t subContentType = tm->create_named_type(subitem->getType(),
@@ -760,7 +784,7 @@ bool NodeXQType::is_supertype(
                                                   loc,
                                                   err::XPTY0004);
 
-  return TypeOps::is_subtype(tm, *subContentType, *m_content_type);
+  return TypeOps::is_subtype(tm, *subContentType, *theContentType);
 }
 
 
@@ -784,7 +808,7 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   if (content_type != NULL)
   {
     os << " content=";
-    os << content_type->toString ();
+    os << content_type->toString();
   }
 
   return os << "]";
@@ -897,7 +921,7 @@ FunctionXQType::serialize_ostream(std::ostream& os) const
   }
 
   os << "return=[";
-  os << m_return_type->toString ();
+  os << m_return_type->toString();
   os  << "]";
 
   return os << "]";
@@ -917,7 +941,7 @@ FunctionXQType::serialize_ostream(std::ostream& os) const
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
-    xqtref_t baseType,
+    const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
     type_category_t typeCategory,
     content_kind_t contentKind)
@@ -945,7 +969,7 @@ UserDefinedXQType::UserDefinedXQType(
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
-    xqtref_t baseType,
+    const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
     const XQType* listItemType)
   :
@@ -967,9 +991,9 @@ UserDefinedXQType::UserDefinedXQType(
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
-    xqtref_t baseType,
+    const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
-    std::vector<xqtref_t> unionItemTypes)
+    std::vector<xqtref_t>& unionItemTypes)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),

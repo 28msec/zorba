@@ -6333,11 +6333,11 @@ FTIgnoreOption :
 JSONArrayConstructor :
         LBRACK RBRACK
         {
-          $$ = new JSON_ArrayConstructor( LOC(@$), NULL );
+          $$ = new JSONArrayConstructor( LOC(@$), NULL );
         }
     |   LBRACK Expr RBRACK
         {
-          $$ = new JSON_ArrayConstructor( LOC(@$), $2 );
+          $$ = new JSONArrayConstructor( LOC(@$), $2 );
         }
     ;
 
@@ -6345,12 +6345,12 @@ JSONSimpleObjectUnion :
         L_SIMPLE_OBJ_UNION R_SIMPLE_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor(LOC(@$), NULL, false);
+          $$ = new JSONObjectConstructor(LOC(@$), NULL, false);
         }
     |   L_SIMPLE_OBJ_UNION Expr R_SIMPLE_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor(LOC(@$), $2, false);
+          $$ = new JSONObjectConstructor(LOC(@$), $2, false);
         }
     ;
 
@@ -6358,12 +6358,12 @@ JSONAccumulatorObjectUnion :
         L_ACCUMULATOR_OBJ_UNION R_ACCUMULATOR_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor(LOC(@$), NULL, true);
+          $$ = new JSONObjectConstructor(LOC(@$), NULL, true);
         }
     |   L_ACCUMULATOR_OBJ_UNION Expr R_ACCUMULATOR_OBJ_UNION
         {
           // TODO: fill in with the correct constructor
-          $$ = new JSON_ObjectConstructor(LOC(@$), $2, true);
+          $$ = new JSONObjectConstructor(LOC(@$), $2, true);
         }
     ;
 
@@ -6371,35 +6371,37 @@ JSONAccumulatorObjectUnion :
 JSONObjectConstructor :
         LBRACE JSONPairList RBRACE
         {
-          $$ = new JSON_DirectObjectConstructor(LOC(@$),
-                                                dynamic_cast<JSON_PairList*>($2));
+          $$ = new JSONDirectObjectConstructor(LOC(@$),
+                                               dynamic_cast<JSONPairList*>($2));
         }
     ;
 
 JSONPairList :
         ExprSingle COLON ExprSingle
         {
-          JSON_PairList* jpl = new JSON_PairList(LOC(@$));
-          jpl->push_back(new JSON_PairConstructor(LOC(@$), $1, $3));
+          JSONPairList* jpl = new JSONPairList(LOC(@$));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), $1, $3));
           $$ = jpl;
         }
     |   JSONPairList COMMA ExprSingle COLON ExprSingle
         {
-          JSON_PairList* jpl = dynamic_cast<JSON_PairList*>($1);
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
           assert(jpl);
-          jpl->push_back(new JSON_PairConstructor(LOC(@$), $3, $5));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
           $$ = jpl;
         }
     ;
 
 JSONInsertExpr :
-        INSERT JSON ExprSingle INTO ExprSingle %prec AT
+        INSERT JSON JSONPairList INTO ExprSingle
         {
-          // TODO: fill in
+          $$ = new JSONObjectInsertExpr(LOC(@$),
+                                        static_cast<JSONPairList*>($3),
+                                        $5);
         }
     |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
-          // TODO: fill in
+          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
     ;
 
@@ -6449,21 +6451,27 @@ JSONTest :
 JSONItemTest :
         JSON_ITEM LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem, NULL);
         }
 ;
 
 JSONObjectTest :
         OBJECT LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject, NULL);
         }
 ;
 
 JSONArrayTest :
         ARRAY LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray, NULL);
+        }
+    |   ARRAY LPAR ItemType RPAR
+        {
+          $$ = new JSON_Test(LOC(@$),
+                             store::StoreConsts::jsonArray, 
+                             static_cast<ItemType*>($3));
         }
 ;
 
@@ -6714,6 +6722,7 @@ FUNCTION_NAME :
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
     |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
     |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
     |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 

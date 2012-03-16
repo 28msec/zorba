@@ -71,7 +71,8 @@
 #include "functions/func_function_item_iter.h"
 
 #ifdef ZORBA_WITH_JSON
-# include "functions/func_jsoniq_functions.h"
+#include "functions/func_jsoniq_functions.h"
+#include "functions/func_jsoniq_functions_impl.h"
 #endif
 
 
@@ -149,6 +150,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
 
 #ifdef ZORBA_WITH_JSON
   populate_context_jsoniq_functions(sctx);
+  populate_context_jsoniq_functions_impl(sctx);
 #endif
 
   ar.set_loading_hardcoded_objects(false);

@@ -428,27 +428,31 @@ RootTypeManager::RootTypeManager()
   STRUCTURED_ITEM_TYPE_PLUS = 
   new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
-#define JSON_TYPE_DEFN(basename, kind)                                      \
-  basename##_TYPE_ONE = new JSONXQType(this,                                \
-                                  kind,                                     \
-                                  TypeConstants::QUANT_ONE,                 \
-                                  true);                                    \
-                                                                            \
-  basename##_TYPE_QUESTION = new JSONXQType(this,                           \
-                                       kind,                                \
-                                       TypeConstants::QUANT_QUESTION,       \
-                                       true);                               \
-                                                                            \
-  basename##_TYPE_STAR = new JSONXQType(this,                               \
-                                   kind,                                    \
-                                   TypeConstants::QUANT_STAR,               \
-                                   true);                                   \
-                                                                            \
-  basename##_TYPE_PLUS = new JSONXQType(this,                               \
-                                   kind,                                    \
-                                   TypeConstants::QUANT_PLUS,               \
-                                   true);                                   \
-                                                                            \
+#define JSON_TYPE_DEFN(basename, kind)                                  \
+  basename##_TYPE_ONE = new JSONXQType(this,                            \
+                                       kind,                            \
+                                       NULL,                            \
+                                       TypeConstants::QUANT_ONE,        \
+                                       true);                           \
+                                                                        \
+  basename##_TYPE_QUESTION = new JSONXQType(this,                       \
+                                            kind,                       \
+                                            NULL,                       \
+                                            TypeConstants::QUANT_QUESTION, \
+                                            true);                      \
+                                                                        \
+  basename##_TYPE_STAR = new JSONXQType(this,                           \
+                                        kind,                           \
+                                        NULL,                           \
+                                        TypeConstants::QUANT_STAR,      \
+                                        true);                          \
+                                                                        \
+  basename##_TYPE_PLUS = new JSONXQType(this,                           \
+                                        kind,                           \
+                                        NULL,                           \
+                                        TypeConstants::QUANT_PLUS,      \
+                                        true);                          \
+                                                                        \
   JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
   JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
   JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \

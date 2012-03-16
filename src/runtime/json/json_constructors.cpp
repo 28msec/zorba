@@ -25,6 +25,8 @@
 
 #include "system/globalenv.h"
 
+#include "context/static_context.h"
+
 #include "diagnostics/util_macros.h"
 
 #ifdef ZORBA_WITH_JSON
@@ -294,15 +296,18 @@ bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planSt
     store::Item_t name;
     store::Item_t value;
 
+    store::CopyMode copymode;
+    copymode.set(true,
+                 (theSctx->construction_mode() == StaticContextConsts::cons_preserve),
+                 (theSctx->preserve_mode() == StaticContextConsts::preserve_ns),
+                 true);
+
     for (csize i = 0; i < numPairs; ++i)
     {
       consumeNext(name, theChildren[i], planState);
       consumeNext(value, theChildren[numPairs + i], planState);
 
-      store::CopyMode copymode;
-      copymode.set(theCopyInputs[i], true, true, true);
-
-      if (copymode.theDoCopy && (value->isNode() || value->isJSONItem()))
+      if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
         value = value->copy(NULL, copymode);
 
       names[i].transfer(name);

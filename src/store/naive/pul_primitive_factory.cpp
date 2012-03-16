@@ -525,35 +525,38 @@ PULPrimitiveFactory::createUpdRefreshIndex(
     return new UpdInsertIntoHashMap(pul, aLoc, aQName, aKey, aValue);
   }
 
-  /***************************************************************************
-   ***************************************************************************/
-  UpdRemoveFromHashMap*
-  PULPrimitiveFactory::createUpdRemoveFromHashMap(
-        PULImpl* pul,
-        const QueryLoc* aLoc,
-        const store::Item_t& aQName,
-        const std::vector<store::Item_t>& aKey)
-  {
-    return new UpdRemoveFromHashMap(pul, aLoc, aQName, aKey);
-  }
 
+/******************************************************************************
+*******************************************************************************/
+UpdRemoveFromHashMap*
+PULPrimitiveFactory::createUpdRemoveFromHashMap(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKey)
+{
+  return new UpdRemoveFromHashMap(pul, aLoc, aQName, aKey);
+}
+    
 #ifdef ZORBA_WITH_JSON
-  /***************************************************************************
-   ***************************************************************************/
-  UpdJSONInsert*
-  PULPrimitiveFactory::createUpdJSONInsert(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aObject,
-        std::vector<store::Item_t>& aPairs)
-  {
-    return new UpdJSONInsert(pul, aLoc, aObject, aPairs);
-  }
+/******************************************************************************
+*******************************************************************************/
+UpdJSONObjectInsert*
+PULPrimitiveFactory::createUpdJSONObjectInsert(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& object,
+    std::vector<store::Item*>& names,
+    std::vector<store::Item*>& values)
+{
+  return new UpdJSONObjectInsert(pul, loc, object, names, values);
+}
+
 
   /***************************************************************************
    ***************************************************************************/
   UpdJSONInsertPositional*
-  PULPrimitiveFactory::createUpdJSONInsertPositional(
+  PULPrimitiveFactory::createUpdJSONArrayInsert(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::UpdateConsts::UpdPrimKind kind,

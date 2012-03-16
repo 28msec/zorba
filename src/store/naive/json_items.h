@@ -190,15 +190,13 @@ protected:
   };
 
 public:
-  SimpleJSONObject()
-    : theCollection(0)
-  {}
+  SimpleJSONObject() : theCollection(0) {}
 
   virtual ~SimpleJSONObject();
 
   bool add(const JSONObjectPair_t& aPair, bool accumulate);
 
-  virtual JSONObjectPair_t remove(const store::Item_t& aName);
+  JSONObjectPair_t remove(const store::Item_t& aName);
 
   xs_integer getSize() const { return thePairs.size(); }
 
@@ -214,8 +212,7 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 

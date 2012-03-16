@@ -395,9 +395,15 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_json_type(
     store::StoreConsts::JSONItemKind kind,
+    const xqtref_t& contentType,
     TypeConstants::quantifier_t quantifier) const
 {
-  return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
+  if (contentType == NULL)
+    return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
+
+  assert(kind == store::StoreConsts::jsonArray);
+
+  return new JSONXQType(this, kind, contentType, quantifier, false);
 }
 #endif
 
@@ -408,16 +414,18 @@ xqtref_t TypeManagerImpl::create_json_type(
 xqtref_t TypeManagerImpl::create_node_type(
     store::StoreConsts::NodeKind nodeKind,
     const store::Item_t& nodeName,
-    xqtref_t contentType,
-    TypeConstants::quantifier_t quantifier,
+    const xqtref_t& contType,
+    TypeConstants::quantifier_t quant,
     bool nillable,
     bool schematest) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  bool untyped = (contentType == RTM.UNTYPED_TYPE ||
+  bool untyped = (contType == RTM.UNTYPED_TYPE ||
                   (nodeKind == store::StoreConsts::attributeNode &&
-                   contentType == RTM.UNTYPED_ATOMIC_TYPE_ONE));
+                   contType == RTM.UNTYPED_ATOMIC_TYPE_ONE));
+
+  xqtref_t contentType = contType;
 
   if (contentType == NULL)
     contentType = RTM.ANY_TYPE;
@@ -425,23 +433,17 @@ xqtref_t TypeManagerImpl::create_node_type(
   switch (nodeKind)
   {
   case store::StoreConsts::anyNode:
-    return create_builtin_node_type(nodeKind, quantifier, untyped);
+    return create_builtin_node_type(nodeKind, quant, untyped);
 
   case store::StoreConsts::documentNode:
   {
     if (contentType == RTM.UNTYPED_TYPE || contentType == RTM.ANY_TYPE)
     {
-      return create_builtin_node_type(nodeKind, quantifier, untyped);
+      return create_builtin_node_type(nodeKind, quant, untyped);
     }
     else
     {
-      return new NodeXQType(this,
-                            nodeKind,
-                            NULL,
-                            contentType,
-                            quantifier,
-                            false,
-                            false);
+      return new NodeXQType(this, nodeKind, NULL, contentType, quant, false, false);
     }
   }
 
@@ -455,13 +457,13 @@ xqtref_t TypeManagerImpl::create_node_type(
                             nodeKind,
                             nodeName,
                             contentType,
-                            quantifier,
+                            quant,
                             nillable,
                             schematest);
     }
     else
     {
-      return create_builtin_node_type(nodeKind, quantifier, untyped);
+      return create_builtin_node_type(nodeKind, quant, untyped);
     }
   }
   case store::StoreConsts::attributeNode:
@@ -474,25 +476,25 @@ xqtref_t TypeManagerImpl::create_node_type(
                             nodeKind,
                             nodeName,
                             contentType,
-                            quantifier,
+                            quant,
                             false,
                             schematest);
     }
     else
     {
-      return create_builtin_node_type(nodeKind, quantifier, untyped);
+      return create_builtin_node_type(nodeKind, quant, untyped);
     }
   }
 
   case store::StoreConsts::textNode:
   case store::StoreConsts::commentNode:
-    return create_builtin_node_type(nodeKind, quantifier, true);
+    return create_builtin_node_type(nodeKind, quant, true);
 
   case store::StoreConsts::piNode:
   {
     if (nodeName == NULL)
     {
-      return create_builtin_node_type(nodeKind, quantifier, true);
+      return create_builtin_node_type(nodeKind, quant, true);
     }
     else
     {
@@ -500,7 +502,7 @@ xqtref_t TypeManagerImpl::create_node_type(
                             nodeKind,
                             nodeName,
                             RTM.STRING_TYPE_ONE,
-                            quantifier,
+                            quant,
                             nillable,
                             false);
     }
@@ -724,7 +726,7 @@ xqtref_t TypeManagerImpl::create_value_type(
 #ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
-    return create_json_type(item->getJSONItemKind(), quant);
+    return create_json_type(item->getJSONItemKind(), NULL, quant);
   }
 #endif
 
@@ -897,7 +899,7 @@ xqtref_t TypeManagerImpl::create_type(
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
-    return create_json_type(jt.get_json_kind(), quantifier);
+    return create_json_type(jt.get_json_kind(), jt.get_content_type(), quantifier);
   }
 #endif
 
@@ -1071,16 +1073,16 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
 #ifdef ZORBA_WITH_JSON
   case IdentTypes::JSON_ITEM_TYPE:
-    return create_json_type(store::StoreConsts::jsonItem, q);
+    return create_json_type(store::StoreConsts::jsonItem, NULL, q);
 
   case IdentTypes::JSON_OBJECT_TYPE:
-    return create_json_type(store::StoreConsts::jsonObject, q);
+    return create_json_type(store::StoreConsts::jsonObject, NULL, q);
 
   case IdentTypes::JSON_ARRAY_TYPE:
-    return create_json_type(store::StoreConsts::jsonArray, q);
+    return create_json_type(store::StoreConsts::jsonArray, NULL, q);
 
   case IdentTypes::JSON_PAIR_TYPE:
-    return create_json_type(store::StoreConsts::jsonPair, q);
+    return create_json_type(store::StoreConsts::jsonPair, NULL, q);
 
 #endif // #ifdef ZORBA_WITH_JSON
 

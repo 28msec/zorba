@@ -695,25 +695,6 @@ void MarkNodeCopyProps::applyInternal(
 
     break;
   }
-#if 0
-  case json_pair_expr_kind:
-  {
-    // For now, assume that nodes to appear as pair values must be copied first.
-    // TODO improve this
-    json_pair_expr* e = static_cast<json_pair_expr *>(node);
-
-    static_context* sctx = e->get_sctx();
-
-    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
-    {
-      std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->get_value_expr(), &udfCaller, sources);
-      markSources(sources);
-    }
-
-    break;
-  }
-#endif
 #endif
 
   case relpath_expr_kind:

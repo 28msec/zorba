@@ -1028,15 +1028,19 @@ BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
 
-BEGIN_END_TAG(JSON_ArrayConstructor)
+BEGIN_END_TAG(JSONArrayConstructor)
 
-BEGIN_END_TAG(JSON_ObjectConstructor)
+BEGIN_END_TAG(JSONObjectConstructor)
 
-BEGIN_END_TAG(JSON_DirectObjectConstructor)
+BEGIN_END_TAG(JSONDirectObjectConstructor)
 
-BEGIN_END_TAG(JSON_PairList)
+BEGIN_END_TAG(JSONPairList)
 
-BEGIN_END_TAG(JSON_PairConstructor)
+BEGIN_END_TAG(JSONPairConstructor)
+
+BEGIN_END_TAG(JSONObjectInsertExpr)
+
+BEGIN_END_TAG(JSONArrayInsertExpr)
 
 void* begin_visit(const JSON_Test& n)
 {
@@ -1049,6 +1053,7 @@ void* begin_visit(const JSON_Test& n)
 END_TAG(JSON_Test)
 
 };
+
 
 
 void print_parsetree_xml(ostream& os, const parsenode* p)

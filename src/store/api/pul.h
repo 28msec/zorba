@@ -283,15 +283,16 @@ public:
 #ifdef ZORBA_WITH_JSON
   // functions to add primitives for jsoniq items
 
+  virtual void addJSONObjectInsert(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item*>& names,
+        std::vector<store::Item*>& values) = 0;
+
   virtual void addJSONDelete(
       const QueryLoc* aQueryLoc,
       Item_t& target,
       Item_t& selector) = 0;
-
-  virtual void addJSONInsertInto(
-        const QueryLoc* aQueryLoc,
-        Item_t& target,
-        std::vector<Item_t>& children) = 0;
 
   virtual void addJSONInsertFirst(
         const QueryLoc* aQueryLoc,

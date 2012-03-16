@@ -2494,7 +2494,7 @@
     </diagnostic>
 
     <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
-      <value>JSON item cannot appear in content sequuence of node constructor or updating expression</value>
+      <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
 
     <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
@@ -2502,17 +2502,21 @@
       <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
 
-
-
     <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
       <comment>parser errors raised by the JSONIQLoader</comment>
       <value>$1</value>
     </diagnostic>
 
-    <diagnostic code="JUDY0060" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by insert-into</comment>
-      <value>"$1": pair already exists</value>
+      <value>"$1": duplicate pair name in PUL</value>
     </diagnostic>
+
+    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by insert-into</comment>
+      <value>"$1": a pair with this name already exists in object</value>
+    </diagnostic>
+
 
     <diagnostic code="JUDY0061" if="defined(ZORBA_WITH_JSON)">
       <comment>error raised by upd:delete, upd:insert-before/after</comment>

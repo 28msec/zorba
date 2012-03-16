@@ -237,6 +237,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(JSONArrayIterator)
   DECLARE_VISITOR(JSONObjectIterator)
   DECLARE_VISITOR(JSONDirectObjectIterator)
+  DECLARE_VISITOR(JSONObjectInsertIterator)
 #endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)

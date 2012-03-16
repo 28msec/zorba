@@ -16,10 +16,13 @@
 #include "stdafx.h"
 
 #include "functions/func_jsoniq_functions.h"
-#include "runtime/json/jsoniq_functions.h"
-#include "runtime/core/item_iterator.h"
-#include "compiler/parser/query_loc.h"
+#include "functions/func_jsoniq_functions_impl.h"
 
+#include "runtime/json/jsoniq_functions.h"
+#include "runtime/json/jsoniq_functions_impl.h"
+#include "runtime/core/item_iterator.h"
+
+#include "compiler/parser/query_loc.h"
 #include "compiler/expression/expr_consts.h"
 #include "compiler/expression/fo_expr.h"
 
@@ -31,6 +34,39 @@ namespace zorba
 #ifdef ZORBA_WITH_JSON
 
 
+/*******************************************************************************
+
+********************************************************************************/
+bool op_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  if (producer == 0 || (producer % 2))
+    return false;
+
+  static_context* sctx = fo->get_sctx();
+
+  if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+PlanIter_t op_object_insert::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& args,
+    expr& ann) const
+{
+  return new JSONObjectInsertIterator(sctx, loc, args, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t fn_jsoniq_parse_json::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -49,6 +85,18 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
     QueryLoc lArgLoc = QueryLoc::null;
     return new JSONParseIterator(sctx, loc, argv, lArgLoc);
   }
+}
+
+
+void populate_context_jsoniq_functions_impl(static_context* sctx)
+{
+  DECL(sctx, op_object_insert,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops",
+                     "",
+                     "object-insert"), 
+         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE,
+         true,
+         GENV_TYPESYSTEM.EMPTY_TYPE));
 }
 
 

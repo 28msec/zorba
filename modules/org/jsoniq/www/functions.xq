@@ -129,28 +129,6 @@ declare function jn:flatten($a as array()) as item()* external;
 
 
 (:~
- : Returns the jdm:null value null.
- :
- : @return the said value
- :)
-declare function jn:null() as jdm:null external;
-
-(:~
- : Insert one or more pairs into an object. Recall that a JSON Object
- : may not contain two pairs with the same name. This function will not
- : replace a pair in an object.
- :
- : @param $o A JSON Object.
- : @param $p A sequence of Pairs to insert.
- : @return An empty XDM instance and a pending update list which, once
- :   applied, inserts the pairs into the object.
- : @error jn:JUDY0060 if pair with the given name already exists.
-declare updating function jn:insert-into(
-  $o as object(),
-  $p as pair()*) external;
-:)
-
-(:~
  : Insert one or more items into a JSON Array. The items will be inserted
  : at the beginning of the array.
  :

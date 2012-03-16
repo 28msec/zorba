@@ -248,10 +248,10 @@ class CopyVarList;
 class Wildcard;
 class DecimalFormatNode;
 
-class JSON_ArrayConstructor;
-class JSON_ObjectConstructor;
-class JSON_PairConstructor;
-class JSON_PairList;
+class JSONArrayConstructor;
+class JSONObjectConstructor;
+class JSONPairConstructor;
+class JSONPairList;
 class JSON_Test;
 
 
@@ -6471,35 +6471,35 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class JSON_ArrayConstructor : public exprnode
+class JSONArrayConstructor : public exprnode
 {
 private:
   const exprnode* expr_;
 
 public:
-  JSON_ArrayConstructor(const QueryLoc&, const exprnode*);
+  JSONArrayConstructor(const QueryLoc&, const exprnode*);
 
-  ~JSON_ArrayConstructor();
+  ~JSONArrayConstructor();
 
   const exprnode* get_expr() const { return expr_; }
 
-  void accept( parsenode_visitor& ) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
-class JSON_ObjectConstructor : public exprnode
+class JSONObjectConstructor : public exprnode
 {
 private:
   const exprnode* expr_;
   bool            theAccumulate;
 
 public:
-  JSON_ObjectConstructor(
+  JSONObjectConstructor(
       const QueryLoc& loc,
       const exprnode* input,
       bool accumulate);
 
-  ~JSON_ObjectConstructor();
+  ~JSONObjectConstructor();
 
   const exprnode* get_expr() const { return expr_; }
 
@@ -6509,15 +6509,15 @@ public:
 };
 
 
-class JSON_DirectObjectConstructor : public exprnode
+class JSONDirectObjectConstructor : public exprnode
 {
 private:
-  const JSON_PairList* thePairs;
+  const JSONPairList  * thePairs;
 
 public:
-  JSON_DirectObjectConstructor(const QueryLoc& loc, const JSON_PairList* pairs);
+  JSONDirectObjectConstructor(const QueryLoc& loc, const JSONPairList* pairs);
 
-  ~JSON_DirectObjectConstructor();
+  ~JSONDirectObjectConstructor();
 
   csize numPairs() const;
 
@@ -6525,17 +6525,17 @@ public:
 };
 
 
-class JSON_PairList : public parsenode
+class JSONPairList : public parsenode
 {
 protected:
-  std::vector<rchandle<JSON_PairConstructor> > thePairs;
+  std::vector<rchandle<JSONPairConstructor> > thePairs;
 
 public:
-  JSON_PairList(const QueryLoc& loc) : parsenode(loc) { };
+  JSONPairList(const QueryLoc& loc) : parsenode(loc) { };
 
-  void push_back(JSON_PairConstructor* pair) { thePairs.push_back(pair); }
+  void push_back(JSONPairConstructor* pair) { thePairs.push_back(pair); }
 
-  const JSON_PairConstructor* operator[] (csize i) const { return thePairs[i]; }
+  const JSONPairConstructor* operator[] (csize i) const { return thePairs[i]; }
 
   csize size() const { return thePairs.size(); }
 
@@ -6543,16 +6543,16 @@ public:
 };
 
 
-class JSON_PairConstructor : public parsenode
+class JSONPairConstructor : public parsenode
 {
 private:
   const exprnode * expr1_;
   const exprnode * expr2_;
 
 public:
-  JSON_PairConstructor(const QueryLoc&, const exprnode*, const exprnode*);
+  JSONPairConstructor(const QueryLoc&, const exprnode*, const exprnode*);
 
-  ~JSON_PairConstructor();
+  ~JSONPairConstructor();
 
   const exprnode* get_expr1() const { return expr1_; }
   const exprnode* get_expr2() const { return expr2_; }
@@ -6561,18 +6561,78 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class JSON_Test : public parsenode
 {
 private:
   store::StoreConsts::JSONItemKind jt_;
+  rchandle<ItemType>               theContentType;
 
 public:
-  JSON_Test(const QueryLoc& loc, store::StoreConsts::JSONItemKind jt);
+  JSON_Test(
+      const QueryLoc& loc, 
+      store::StoreConsts::JSONItemKind jt,
+      ItemType* ct);
 
   store::StoreConsts::JSONItemKind get_kind() const { return jt_; }
 
+  ItemType* get_content_type() const { return theContentType.getp(); }
+
   void accept(parsenode_visitor&) const;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONObjectInsertExpr : public exprnode
+{
+protected:
+  const JSONPairList * thePairs;
+  const exprnode     * theTargetExpr;
+
+public:
+  JSONObjectInsertExpr(
+    const QueryLoc& loc,
+    const JSONPairList* pairs,
+    const exprnode* targetExpr);
+
+  ~JSONObjectInsertExpr();
+
+  csize numPairs() const { return thePairs->size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONArrayInsertExpr : public exprnode
+{
+protected:
+  const exprnode* theSourceExpr;
+  const exprnode* theTargetExpr;
+  const exprnode* thePositionExpr;
+
+public:
+  JSONArrayInsertExpr(
+    const QueryLoc& loc,
+    exprnode* sourceExpr,
+    exprnode* targetExpr,
+    exprnode* posExpr);
+
+  ~JSONArrayInsertExpr();
+
+  const exprnode* getSourceExpr() const { return theSourceExpr; }
+
+  const exprnode* getTargetExpr() const { return theTargetExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

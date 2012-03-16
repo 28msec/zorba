@@ -63,7 +63,7 @@ namespace zorba { namespace simplestore {
   class UpdInsertIntoHashMap;
   class UpdRemoveFromHashMap;
 #ifdef ZORBA_WITH_JSON
-  class UpdJSONInsert;
+  class UpdJSONObjectInsert;
   class UpdJSONInsertPositional;
   class UpdJSONDelete;
   class UpdJSONReplaceValue;
@@ -72,104 +72,82 @@ namespace zorba { namespace simplestore {
 
 class PULPrimitiveFactory 
 {
- public:
+public:
   virtual ~PULPrimitiveFactory() {}
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDelete*
   createUpdDelete(
       CollectionPul* pul,
       const QueryLoc*,
       store::Item_t& target);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertChildren*
   createUpdInsertChildren(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::UpdateConsts::UpdPrimKind kind,
-        store::Item_t& target,
-        store::Item_t& sibling,
-        std::vector<store::Item_t>& children);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::UpdateConsts::UpdPrimKind kind,
+      store::Item_t& target,
+      store::Item_t& sibling,
+      std::vector<store::Item_t>& children);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertAttributes*
   createUpdInsertAttributes(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        std::vector<store::Item_t>&  attrs);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      std::vector<store::Item_t>&  attrs);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplaceAttribute*
   createUpdReplaceAttribute(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& attr,
-        std::vector<store::Item_t>& newAttrs);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& attr,
+      std::vector<store::Item_t>& newAttrs);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplaceChild*
   createUpdReplaceChild(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& child,
-        std::vector<store::Item_t>& newChildren);
-    
-  /***************************************************************************
-   ***************************************************************************/
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& child,
+      std::vector<store::Item_t>& newChildren);
+  
   virtual UpdReplaceElemContent*
   createUpdReplaceElemContent(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& newChild);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& newChild);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdRenameElem*
   createUpdRenameElem(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& newName); 
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& newName); 
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplaceAttrValue*
   createUpdReplaceAttrValue(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        zstring& newValue);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      zstring& newValue);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdRenameAttr*
   createUpdRenameAttr(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& newName);
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& newName);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplaceTextValue*
   createUpdReplaceTextValue(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        zstring& newValue); 
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      zstring& newValue); 
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplacePiValue*
   createUpdReplacePiValue(
         CollectionPul* pul,
@@ -177,8 +155,6 @@ class PULPrimitiveFactory
         store::Item_t& target,
         zstring& newValue);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdRenamePi*
   createUpdRenamePi(
         CollectionPul* pul,
@@ -186,8 +162,6 @@ class PULPrimitiveFactory
         store::Item_t& target,
         zstring& newName); 
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdReplaceCommentValue*
   createUpdReplaceCommentValue(
         CollectionPul* pul,
@@ -195,8 +169,6 @@ class PULPrimitiveFactory
         store::Item_t& target,
         zstring& newValue);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdSetElementType*
   createUpdSetElementType(
         PULImpl*       pul,
@@ -210,8 +182,6 @@ class PULPrimitiveFactory
         bool           haveListValue,
         bool           isInSubstitutionGroup);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdSetAttributeType*
   createUpdSetAttributeType(
         PULImpl*       pul,
@@ -221,21 +191,17 @@ class PULPrimitiveFactory
         store::Item_t& typedValue,
         bool           haveListValue);
   
-  /***************************************************************************
-     ***************************************************************************/
   virtual UpdRevalidate*
   createUpdRevalidate(
         PULImpl*       pul,
         const QueryLoc*,
         store::Item_t& target);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdPut*
   createUpdPut(PULImpl* pul, const QueryLoc*, store::Item_t& target, store::Item_t& uri);
   
-  /***************************************************************************
-   ***************************************************************************/
+  /***************************************************************************/
+
   virtual UpdCreateCollection*
   createUpdCreateCollection(
         CollectionPul* pul,
@@ -246,8 +212,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDeleteCollection*
   createUpdDeleteCollection(
         CollectionPul* pul,
@@ -256,9 +220,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
     
-    
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertIntoCollection*
   createUpdInsertIntoCollection(
         CollectionPul* pul,
@@ -268,9 +229,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
   
-    
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertFirstIntoCollection*
   createUpdInsertFirstIntoCollection(
       CollectionPul* pul,
@@ -280,8 +238,6 @@ class PULPrimitiveFactory
       bool isDynamic,
       bool isJSONIQ);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertLastIntoCollection*
   createUpdInsertLastIntoCollection(
         CollectionPul* pul,
@@ -291,8 +247,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertBeforeIntoCollection*
   createUpdInsertBeforeIntoCollection(
         CollectionPul* pul,
@@ -303,8 +257,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertAfterIntoCollection*
   createUpdInsertAfterIntoCollection(
         CollectionPul* pul,
@@ -315,8 +267,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDeleteNodesFromCollection*
   createUpdDeleteNodesFromCollection(
         CollectionPul* pul,
@@ -327,8 +277,6 @@ class PULPrimitiveFactory
         bool isDynamic,
         bool isJSONIQ);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdCreateIndex*
   createUpdCreateIndex(
         PULImpl* pul,
@@ -337,13 +285,9 @@ class PULPrimitiveFactory
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDeleteIndex*
   createUpdDeleteIndex(PULImpl* pul, const QueryLoc*, const store::Item_t& qname);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdRefreshIndex*
   createUpdRefreshIndex(
         PULImpl* pul,
@@ -351,8 +295,6 @@ class PULPrimitiveFactory
         const store::Item_t& qname,
         store::Iterator* sourceIter);
     
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdActivateIC*
   createUpdActivateIC(
         PULImpl* pul,
@@ -360,8 +302,6 @@ class PULPrimitiveFactory
         const store::Item_t& aQName,
         const store::Item_t& aCollectionName);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdActivateForeignKeyIC*
   createUpdActivateForeignKeyIC(
         PULImpl* pul,
@@ -370,16 +310,12 @@ class PULPrimitiveFactory
         const store::Item_t& aFromCollectionName,
         const store::Item_t& aToCollectionName);
   
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDeActivateIC*
   createUpdDeActivateIC(
         PULImpl* pul,
         const QueryLoc* aLoc,
         const store::Item_t& qname);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdCreateDocument*
   createUpdCreateDocument(
         PULImpl* pul,
@@ -387,16 +323,12 @@ class PULPrimitiveFactory
         const store::Item_t& uri,
         store::Item_t& aDocument);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDeleteDocument*
   createUpdDeleteDocument(
         PULImpl* pul,
         const QueryLoc* aLoc,
         const store::Item_t& uri);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdCreateHashMap*
   createUpdCreateHashMap(
         PULImpl* pul,
@@ -406,16 +338,12 @@ class PULPrimitiveFactory
         const std::vector<zstring>& aCollations,
         long aTimezone);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdDestroyHashMap*
   createUpdDestroyHashMap(
         PULImpl* pul,
         const QueryLoc* aLoc,
         const store::Item_t& aQName);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdInsertIntoHashMap*
   createUpdInsertIntoHashMap(
         PULImpl* pul,
@@ -424,8 +352,6 @@ class PULPrimitiveFactory
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdRemoveFromHashMap*
   createUpdRemoveFromHashMap(
         PULImpl* pul,
@@ -433,20 +359,20 @@ class PULPrimitiveFactory
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
 
-#ifdef ZORBA_WITH_JSON
-  /***************************************************************************
-   ***************************************************************************/
-  virtual UpdJSONInsert*
-  createUpdJSONInsert(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        std::vector<store::Item_t>& aPairs);
+  /***************************************************************************/
 
-  /***************************************************************************
-   ***************************************************************************/
+#ifdef ZORBA_WITH_JSON
+
+  virtual UpdJSONObjectInsert*
+  createUpdJSONObjectInsert(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      std::vector<store::Item*>& names,
+      std::vector<store::Item*>& values);
+
   virtual UpdJSONInsertPositional*
-  createUpdJSONInsertPositional(
+  createUpdJSONArrayInsert(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::UpdateConsts::UpdPrimKind kind,
@@ -454,8 +380,6 @@ class PULPrimitiveFactory
         store::Item_t& aPos,
         std::vector<store::Item_t>& aMembers);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdJSONDelete*
   createUpdJSONDelete(
         CollectionPul* pul,
@@ -463,8 +387,6 @@ class PULPrimitiveFactory
         store::Item_t& aTarget,
         store::Item_t& aSelector);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdJSONReplaceValue*
   createUpdJSONReplaceValue(
         CollectionPul* pul,
@@ -473,8 +395,6 @@ class PULPrimitiveFactory
         store::Item_t& aSelector,
         store::Item_t& aNewValue);
 
-  /***************************************************************************
-   ***************************************************************************/
   virtual UpdJSONRename*
   createUpdJSONRename(
         CollectionPul* pul,

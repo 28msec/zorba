@@ -90,6 +90,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   expr_kind_t kind = get_expr_kind();
 
+  xqtref_t contentType;
   xqtref_t newType;
 
   switch (kind)
@@ -462,10 +463,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case doc_expr_kind:
   {
-    xqtref_t contentType =
-      (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       rtm.ANY_TYPE : 
-       rtm.UNTYPED_TYPE);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE : 
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::documentNode,
                                    NULL,
@@ -478,10 +478,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case elem_expr_kind:
   {
-    xqtref_t contentType =
-      (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       rtm.ANY_TYPE :
-       rtm.UNTYPED_TYPE);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE :
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
@@ -539,7 +538,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     if (newType == NULL)
       newType = tm->create_node_type(nodeKind,
                                      NULL,
-                                     NULL,
+                                     contentType,
                                      q,
                                      false,
                                      false);
@@ -550,7 +549,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     newType = tm->create_node_type(store::StoreConsts::piNode,
                                    NULL,
-                                   NULL,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -797,7 +796,7 @@ static xqtref_t axis_step_type(
     {
       const NodeXQType* rootElemType = reinterpret_cast<const NodeXQType*>(
                                        inContentType.getp());
-      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE)
+      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE.getp())
         inUntyped = true;
     }
   }

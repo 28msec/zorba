@@ -204,9 +204,9 @@ protected:
 
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
-  std::vector<UpdatePrimitive*>      theJSONInsertIntoList;
+  std::vector<UpdatePrimitive*>      theJSONObjectInsertList;
+  std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
   std::vector<UpdatePrimitive*>      theJSONDeleteList;
-  std::vector<UpdatePrimitive*>      theJSONPositionalInsertList;
   std::vector<UpdatePrimitive*>      theJSONReplaceValueList;
   std::vector<UpdatePrimitive*>      theJSONRenameList;
 #endif
@@ -560,10 +560,11 @@ public:
       store::Item_t& target,
       store::Item_t& node);
 
-  virtual void addJSONInsertInto(
+  virtual void addJSONObjectInsert(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
-        std::vector<store::Item_t>& children);
+        std::vector<store::Item*>& names,
+        std::vector<store::Item*>& values);
 
   virtual void addJSONInsertFirst(
         const QueryLoc* aQueryLoc,

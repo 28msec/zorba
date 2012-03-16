@@ -127,13 +127,14 @@ public:
 
   xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
+        const xqtref_t& contentType,
         TypeConstants::quantifier_t quantifier) const;
 #endif
 
   xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
         const store::Item_t& nodeName,
-        xqtref_t contentType,
+        const xqtref_t& contentType,
         TypeConstants::quantifier_t quant,
         bool nillable,
         bool schematest) const;

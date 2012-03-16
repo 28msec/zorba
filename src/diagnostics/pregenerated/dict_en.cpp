@@ -105,13 +105,16 @@ extern entry const dict_en[] = {
   { "JNTY0004", "$1 items do not have typed value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0011", "JSON item cannot appear in content sequuence of node constructor or updating expression" },
+  { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0005", "\"$1\": duplicate pair name in PUL" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0006", "\"$1\": a pair with this name already exists in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JUDY0060", "\"$1\": pair already exists" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JUDY0061", "$1" },

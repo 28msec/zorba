@@ -1926,15 +1926,19 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsValue);
 
   /* JSON-related */
-  DEFAULT_VISIT (JSON_ArrayConstructor);
+  DEFAULT_VISIT (JSONArrayConstructor);
 
-  DEFAULT_VISIT (JSON_ObjectConstructor);
+  DEFAULT_VISIT (JSONObjectConstructor);
 
-  DEFAULT_VISIT (JSON_DirectObjectConstructor);
+  DEFAULT_VISIT (JSONDirectObjectConstructor);
 
-  DEFAULT_VISIT (JSON_PairList);
+  DEFAULT_VISIT (JSONPairList);
 
-  DEFAULT_VISIT (JSON_PairConstructor);
+  DEFAULT_VISIT (JSONPairConstructor);
+
+  DEFAULT_VISIT (JSONObjectInsertExpr);
+
+  DEFAULT_VISIT (JSONArrayInsertExpr);
 
   void* begin_visit(const JSON_Test& n)
   {
