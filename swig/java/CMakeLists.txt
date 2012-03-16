@@ -89,8 +89,6 @@ IF (JAVA_INCLUDE_PATH)
 		ENDIF(NOT WIN32)
   ENDIF ( APPLE )
 
-EXECUTE_PROCESS( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
-# todo cezar compile and jar it up
 
 ELSE (JAVA_INCLUDE_PATH)
   MESSAGE ( STATUS "SWIG Java: not generating JAVA API because jni headers not found.")
