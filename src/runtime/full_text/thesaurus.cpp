@@ -122,8 +122,11 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
 
   // TODO: This really should ask the thesaurus implementation, "Can you look-up
   // TODO: words in the given language?"
+#if 0
+  // Having this code in is actually worse than not having it.
   if ( lang != iso639_1::en )
     return nullptr;
+#endif
 
   thesaurus_impl::type t_impl;
   zstring mapped_url;

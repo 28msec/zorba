@@ -60,6 +60,12 @@ protected:
   // allow for lazy creation
   mutable StaticCollectionManagerImpl* theCollectionMgr;
 
+#define ZORBA_FT_THESAURUS_PATH /**/
+#ifdef ZORBA_FT_THESAURUS_PATH
+  OneToOneURIMapper                   theThesaurusMapper;
+  void addThesaurusMapping();
+#endif /* ZORBA_FT_THESAURUS_PATH */
+
 private:
   StaticContextImpl(const StaticContextImpl&);
 

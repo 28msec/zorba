@@ -61,9 +61,22 @@
 
 #include "runtime/util/flowctl_exception.h"
 
+#ifdef ZORBA_FT_THESAURUS_PATH
+#include <cstdlib>                      /* for getenv(3) */
+#endif /* ZORBA_FT_THESAURUS_PATH */
+
 
 namespace zorba {
 
+#ifdef ZORBA_FT_THESAURUS_PATH
+void StaticContextImpl::addThesaurusMapping() {
+  if ( char const *const th_path = std::getenv( "ZORBA_FT_THESAURUS_PATH" ) ) {
+    theThesaurusMapper.addMapping( "##default", th_path );
+    theThesaurusMapper.addMapping( "http://wordnet.princeton.edu", th_path );
+    registerURIMapper( &theThesaurusMapper );
+  }
+}
+#endif /* ZORBA_FT_THESAURUS_PATH */
 
 /*******************************************************************************
   Create a StaticContextImpl obj as well as an internal static_context obj S.
@@ -76,6 +89,9 @@ StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
+#ifdef ZORBA_FT_THESAURUS_PATH
+  , theThesaurusMapper( EntityData::THESAURUS )
+#endif /* ZORBA_FT_THESAURUS_PATH */
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
 
@@ -84,6 +100,9 @@ StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
     theDiagnosticHandler = new DiagnosticHandler();
     theUserDiagnosticHandler = false;
   }
+#ifdef ZORBA_FT_THESAURUS_PATH
+  addThesaurusMapping();
+#endif /* ZORBA_FT_THESAURUS_PATH */
 }
 
 
@@ -100,12 +119,18 @@ StaticContextImpl::StaticContextImpl(
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
+#ifdef ZORBA_FT_THESAURUS_PATH
+  , theThesaurusMapper( EntityData::THESAURUS )
+#endif /* ZORBA_FT_THESAURUS_PATH */
 {
   if ( ! theDiagnosticHandler )
   {
     theDiagnosticHandler = new DiagnosticHandler();
     theUserDiagnosticHandler = false;
   }
+#ifdef ZORBA_FT_THESAURUS_PATH
+  addThesaurusMapping();
+#endif /* ZORBA_FT_THESAURUS_PATH */
 }
 
 
@@ -121,6 +146,9 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
+#ifdef ZORBA_FT_THESAURUS_PATH
+  , theThesaurusMapper( EntityData::THESAURUS )
+#endif /* ZORBA_FT_THESAURUS_PATH */
 {
   // hierarchy of contexts
   theCtx = aStaticContext.theCtx->create_child_context();
@@ -133,6 +161,9 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   {
     theDiagnosticHandler = new DiagnosticHandler();
   }
+#ifdef ZORBA_FT_THESAURUS_PATH
+  addThesaurusMapping();
+#endif /* ZORBA_FT_THESAURUS_PATH */
 }
 
 
