@@ -136,6 +136,8 @@ std::string IndexConditionImpl::getKindString(store::IndexCondition::Kind k)
     return "BOX_VALUE";
   case BOX_GENERAL:
     return "BOX_GENERAL";
+  default:
+    return "";
   }
 }
 
