@@ -70,7 +70,11 @@ namespace zorba {
 
 #ifdef ZORBA_FT_THESAURUS_PATH
 void StaticContextImpl::addThesaurusMapping() {
-  if ( char const *const th_path = std::getenv( "ZORBA_FT_THESAURUS_PATH" ) ) {
+  if ( char const *th_path = std::getenv( "ZORBA_FT_THESAURUS_PATH" ) ) {
+
+    // This is an even uglier hack on top of an already ugly hack.
+    th_path = "/home/pilot/WordNet-3.0/dict/wordnet-en.zth";
+
     theThesaurusMapper.addMapping( "##default", th_path );
     theThesaurusMapper.addMapping( "http://wordnet.princeton.edu", th_path );
     registerURIMapper( &theThesaurusMapper );
