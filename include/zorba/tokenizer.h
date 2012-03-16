@@ -112,9 +112,22 @@ public:
     typedef std::vector<locale::iso639_1::type> languages_type;
 
     /**
-     * If \c true, XML elements separate tokens.
+     * If \c true, XML comments separate tokens.  For example,
+     * \c net&lt;!----&gt;work would be 2 tokens instead of 1.
+     */
+    bool comments_separate_tokens;
+
+    /**
+     * If \c true, XML elements separate tokens.  For example,
+     * \c &lt;b&gt;B&lt;/b&gt;old would be 2 tokens instead of 1.
      */
     bool elements_separate_tokens;
+
+    /**
+     * If \c true, XML processing instructions separate tokens.  For example,
+     * <code>net<?PI pi?>work</code> would be 2 tokens instead of 1.
+     */
+    bool processing_instructions_separate_tokens;
 
     /**
      * The set of languages supported.
@@ -237,8 +250,9 @@ protected:
    *                      comment, and processing-instruction nodes encountered;
    *                      if \c false, skip them.
    */
-  void tokenize_node_impl( Item const &node, locale::iso639_1::type lang,
-                           Callback &callback, bool tokenize_acp );
+  virtual void tokenize_node_impl( Item const &node,
+                                   locale::iso639_1::type lang,
+                                   Callback &callback, bool tokenize_acp );
 
 private:
   Numbers *numbers_;

@@ -42,6 +42,7 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include "util/utf8_util.h"
 #include "zorbatypes/URI.h"
 #include "zorbautils/locale.h"
 
@@ -284,6 +285,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
+  utf8::to_lower( word );
 
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
@@ -585,6 +587,17 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
 
+  // <comments-separate-tokens>...</comments-separate-tokens>
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "comments-separate-tokens"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    element, result, name, type_name, false, false, ns_bindings, base_uri
+  );
+  value_string = props.comments_separate_tokens ? "true" : "false";
+  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+
   // <elements-separate-tokens>...</elements-separate-tokens>
   GENV_ITEMFACTORY->createQName(
     name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "elements-separate-tokens"
@@ -594,6 +607,18 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
     element, result, name, type_name, false, false, ns_bindings, base_uri
   );
   value_string = props.elements_separate_tokens ? "true" : "false";
+  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+
+  // <processing-instructions-separate-tokens>...</processing-instructions-separate-tokens>
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "processing-instructions-separate-tokens"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    element, result, name, type_name, false, false, ns_bindings, base_uri
+  );
+  value_string = props.processing_instructions_separate_tokens ?
+    "true" : "false";
   GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
 
   // <supported-languages>...</supported-languages>

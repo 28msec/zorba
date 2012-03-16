@@ -178,7 +178,9 @@ inline char TestTokenizer::peek( char const *s, char const *end ) {
 }
 
 void TestTokenizer::properties( Properties *p ) const {
+  p->comments_separate_tokens = true;
   p->elements_separate_tokens = true;
+  p->processing_instructions_separate_tokens = true;
   p->languages.clear();
   p->languages.push_back( iso639_1::en );
   p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/unit-test";

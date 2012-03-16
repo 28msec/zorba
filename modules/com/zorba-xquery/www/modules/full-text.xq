@@ -20,10 +20,25 @@ xquery version "3.0";
 
 (:~
  : This module provides an XQuery API to full-text functions.
+ : <h2>Notes on languages</h2>
+ : To refer to paricular human languages,
+ : Zorba uses both the
+ : <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+ : and
+ : <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+ : languages codes.
+ : Note that Zorba supports only a subset of the
+ : <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">complete list of language codes</a>
+ : and not every function supports the same subset.
+ : <p/>
+ : Most functions in this module take a language as a parameter
+ : using the
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>
+ : XML schema data type.
  : <h2>Notes on stemming</h2>
  : The <code>stem()</code> functions return the stem of a word.
  : The stem of a word itself, however, is not guaranteed to be a word.
- : It is best to consider stems as opaque byte sequences.
+ : It is best to consider a stem as an opaque byte sequence.
  : All that is guaranteed about a stem is that,
  : for a given word,
  : the stem of that word will always be the same byte sequence.
@@ -142,6 +157,12 @@ declare option ver:module-version "2.0";
 (:===========================================================================:)
 
 (:~
+ : Predeclared constant for the Danish
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-da as xs:language := xs:language("da");
+
+(:~
  : Predeclared constant for the German
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
@@ -160,10 +181,22 @@ declare variable $ft:lang-en as xs:language := xs:language("en");
 declare variable $ft:lang-es as xs:language := xs:language("es");
 
 (:~
+ : Predeclared constant for the Finnish
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-fi as xs:language := xs:language("fi");
+
+(:~
  : Predeclared constant for the French
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
 declare variable $ft:lang-fr as xs:language := xs:language("fr");
+
+(:~
+ : Predeclared constant for the Hungarian
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-hu as xs:language := xs:language("hu");
 
 (:~
  : Predeclared constant for the Italian
@@ -171,13 +204,57 @@ declare variable $ft:lang-fr as xs:language := xs:language("fr");
  :)
 declare variable $ft:lang-it as xs:language := xs:language("it");
 
+(:~
+ : Predeclared constant for the Dutch
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-nl as xs:language := xs:language("nl");
+
+(:~
+ : Predeclared constant for the Norwegian
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-no as xs:language := xs:language("no");
+
+(:~
+ : Predeclared constant for the Portuguese
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-pt as xs:language := xs:language("pt");
+
+(:~
+ : Predeclared constant for the Romanian
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-ro as xs:language := xs:language("ro");
+
+(:~
+ : Predeclared constant for the Russian
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-ru as xs:language := xs:language("ru");
+
+(:~
+ : Predeclared constant for the Swedish
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-sv as xs:language := xs:language("sv");
+
+(:~
+ : Predeclared constant for the Turkish
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+ :)
+declare variable $ft:lang-tr as xs:language := xs:language("tr");
+
 (:===========================================================================:)
 
 (:~
  : Gets the current
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
  : either the langauge specified by the
- : <code>declare ft-option using language</code> statement (if any)
+ : <code><a href="http://www.w3.org/TR/xpath-full-text-10/#doc-xquery10-FTOptionDecl">declare ft-option using</a>
+ : <a href="http://www.w3.org/TR/xpath-full-text-10/#ftlanguageoption">language</a></code>
+ : statement (if any)
  : or the one returned by <code>ft:host-lang()</code> (if none).
  :
  : @return said language.

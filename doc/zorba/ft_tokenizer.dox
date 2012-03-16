@@ -36,33 +36,41 @@ public:
 
   class Callback {
   public:
-    typedef Tokenizer::size_type size_type;;
+    typedef Tokenizer::size_type size_type;
 
     virtual ~Callback();
 
-    virtual void operator()( char const *utf8_s, size_type utf8_len,
-                             size_type token_no, size_type sent_no, size_type para_no,
-                             void *payload = 0 ) = 0;
+    virtual void token( char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang,
+                        size_type token_no, size_type sent_no, size_type para_no,
+                        Item const *item = 0 ) = 0;
   };
 
-  enum ElementTraceOptions {
-    trace_none  = 0x0,  // Trace no elements.
-    trace_begin = 0x1,  // Trace the beginning of elements.
-    trace_end   = 0x2   // Trace the ending of elements.
+  struct Properties {
+    typedef std::vector<locale::iso639_1::type> languages_type;
+
+    bool elements_separate_tokens;
+    languages_type languages;
+    char const *uri;
   };
+
+  virtual void properties( Properties *result ) const = 0;
 
   virtual void destroy() const = 0;
-  virtual void element( Item const &qname, int trace_options );
   Numbers& numbers();
   Numbers const& numbers() const;
-  int trace_options() const;
 
-  virtual void tokenize( char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang,
-                         bool wildcards, Callback &callback, void *payload = 0 ) = 0;
+  void tokenize_node( Item const &node, locale::iso639_1::type lang, Callback &callback );
+
+  virtual void tokenize_string( char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang,
+                                bool wildcards, Callback &callback, Item const *item = 0 ) = 0;
 
 protected:
-  Tokenizer( Numbers&, int trace_options = trace_none );
+  Tokenizer( Numbers& );
   virtual ~Tokenizer();
+
+  bool find_lang_attribute( Item const&, locale::iso639_1::type *lang );
+  virtual void item( Item const&, bool entering );
+  virtual void tokenize_node_impl( Item const&, locale::iso639_1::type, Callback&, bool tokenize_acp );
 };
 \endcode
 
@@ -76,8 +84,8 @@ and passed to your constructor.
 It simply keeps track of the current
 token, sentence, and paragraph numbers.
 
-To implement the \c Tokenizer,
-you need to implement the \c %tokenize() function where:
+To implement a \c Tokenizer,
+you need to implement the \c %tokenize_string() function where:
 
 <table>
   <tr>
@@ -115,9 +123,9 @@ you need to implement the \c %tokenize() function where:
     </td>
   </tr>
   <tr>
-    <td>\c payload</td>
+    <td>\c item</td>
     <td>
-      Optional implementation-defined data.
+      The \c Item whence this token came.
     </td>
   </tr>
 </table>
@@ -135,13 +143,22 @@ the things a tokenizer should take into consideration include:
   - Handling apostrophies, e.g., "men's".
   - Handling acronyms, e.g., "AT&T".
 
-\subsection ft_paragraphs Paragraphs
+The task of iterating over an XML element's child nodes
+is done by \c tokenize_node_impl().
+Its default implementation
+treats XML elements, comments, and processing instructions
+as token separators.
+(See \ref ft_tokenizer_properties.)
+If you want to change that,
+you need to override \c tokenize_node_impl().
+
+\subsection ft_tokenizer_paragraphs Paragraphs
 
 By default,
 Zorba increments the current paragraph number once
 for each XML element encountered.
 However,
-this doens't work well for mixed content.
+this doesn't work well for mixed content.
 For example, in the XHTML:
 \code
 <p>The <em>best</em> thing ever!</p>
@@ -150,30 +167,49 @@ all the tokens are both in the same sentence and paragraph,
 but Zorba will consider that 3 paragraphs by default.
 
 Your tokenizer can take control over when the paragraph number is incremented
-by passing the bitwise-or
-of the \c ElementTraceOptions values
-to the constructor
-and overriding the \c element() function.
-The \c element() function is passed the QName of the current XML element
-and (depending on the initial value passed to the constructor)
-one of \c trace_begin or \c trace_end.
-Note that this function is called
-only if the trace options value
-passed to the constructor
-was non-zero.
+by overriding the \c item() function.
+The \c item() function is passed the \c Item of the current XML element
+and whether the item is being entered or exited.
 
 For example,
-the \c element() function for tokenizing XHTML
+the \c item() function for tokenizing XHTML
 would be along the lines of:
 \code
-void MyTokenizer::element( Item const &qname, int trace_options ) {
-  if ( trace_options & trace_end )
-    return;
-  String const name( qname.getLocalName() );
-  if ( /* qname is an XHTML block-level element */ )
-    ++numbers().para;
+void MyTokenizer::item( Item const &item, bool entering ) {
+  if ( entering && item.isNode() && item.getNodeKind() == store::StoreConsts::elementNode ) {
+    Item qname;
+    item.getNodeName( qname );
+    if ( /* qname matches an XHTML block-level element's name */ )
+      ++numbers().para;
 }
 \endcode
+
+\subsection ft_tokenizer_properties Properties
+
+To implement a \c Tokenizer,
+you need also to implement the \c %properties() function where:
+
+<table>
+  <tr>
+    <td>\c elements_separate_tokens</td>
+    <td>
+      If \c true, XML elements separate tokens.  For example,
+      &lt;b&gt;B&lt;/b&gt;old would be 2 tokens instead of 1.
+    </td>
+  </tr>
+  <tr>
+    <td>\c languages</td>
+    <td>
+      The list of languages supported by the tokenizer.
+    </td>
+  </tr>
+  <tr>
+    <td>\c uri</td>
+    <td>
+      The URI that uniquely identifies the %Tokenizer.
+    </td>
+  </tr>
+</table>
 
 \section ft_class_tokenizer_provider The TokenizerProviderClass
 

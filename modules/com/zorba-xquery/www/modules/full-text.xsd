@@ -68,7 +68,11 @@
       <!-- The token string value. -->
       <xs:attribute name="value" type="xs:string" use="required"/>
 
-      <!-- A reference to the originating node. -->
+      <!--
+       ! A reference to the originating node.  If the token occurred within an
+       ! element, the reference refers to the text node.  If the token occurred
+       ! within an attribute, the reference refers to the attribute node.
+      -->
       <xs:attribute name="node-ref" type="xs:anyURI"/>
 
     </xs:complexType>
@@ -81,10 +85,23 @@
       <xs:all>
 
         <!--
-         ! If true, XML elements separate tokens, for example
+         ! If true, XML comments separate tokens.  (No example can be provided
+         ! here because it is illegal to nest an XML comment inside an XML
+         ! comment.)
+        -->
+        <xs:element name="comments-separate-tokens" type="xs:boolean"/>
+
+        <!--
+         ! If true, XML elements separate tokens.  For example,
          ! <b>B</b>old would be 2 tokens instead of 1.
         -->
         <xs:element name="elements-separate-tokens" type="xs:boolean"/>
+
+        <!--
+         ! If true, XML processing instructions separate tokens.  For example,
+         ! net<?PI pi?>workwould be 2 tokens instead of 1.
+        -->
+        <xs:element name="processing-instructions-separate-tokens" type="xs:boolean"/>
 
         <!--
          ! The list of languages that the tokenizer can tokenize.

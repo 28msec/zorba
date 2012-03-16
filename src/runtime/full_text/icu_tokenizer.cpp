@@ -165,7 +165,9 @@ void ICU_Tokenizer::destroy() const {
 }
 
 void ICU_Tokenizer::properties( Properties *p ) const {
+  p->comments_separate_tokens = true;
   p->elements_separate_tokens = true;
+  p->processing_instructions_separate_tokens = true;
 
   p->languages.clear();
   for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
