@@ -74,11 +74,13 @@ static char const ft_thesaurus_path[] =
   "/home/pilot/WordNet-3.0/dict/wordnet-en.zth";
 
 void StaticContextImpl::addThesaurusMapping() {
+#ifndef __APPLE__
   if ( fs::get_type( ft_thesaurus_path ) ) {
     theThesaurusMapper.addMapping( "##default", ft_thesaurus_path );
     theThesaurusMapper.addMapping( "http://wordnet.princeton.edu", ft_thesaurus_path );
     registerURIMapper( &theThesaurusMapper );
   }
+#endif /* __APPLE __ */
 }
 #endif /* ZORBA_FT_THESAURUS_PATH */
 
