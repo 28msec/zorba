@@ -6,6 +6,8 @@ New Features:
   * Add --compile-plan (-c) and --execute-plan (-e) options to zorba command line.
   * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr) 
   * New URI module providing percent-decoding functions.
+  * The core parse-xml module is now able to parse input files in a streaming mode. A number of new options have also been added.
+  * LibXml2 version 2.7.0 or higher is now required in order to build Zorba.  
   * Added index management function to the C++ api's StaticCollectionManager.
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
   * Fixed bug #905050 (setting and getting the context item type via the c++ api).
