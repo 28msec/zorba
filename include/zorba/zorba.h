@@ -305,7 +305,7 @@ class ZORBA_DLL_PUBLIC Zorba
   virtual StaticContext_t
   createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
-  /** \brief Gets the singelton instance of the ItemFactory.
+  /** \brief Gets the singleton instance of the ItemFactory.
    *
    * @return ItemFactory the singleton instance of the ItemFactory.
    */
@@ -314,21 +314,21 @@ class ZORBA_DLL_PUBLIC Zorba
 
   /** \brief Gets the singleton instance of the XmlDataManager object.
    *
-   * @return XmlDataManager the singelton instance of the XmlDataManager.
+   * @return XmlDataManager the singleton instance of the XmlDataManager.
    */
   virtual XmlDataManager*
   getXmlDataManager() = 0;
 
   /** \brief Gets the singleton instance of Zorba's audit provider object.
    *
-   * @return audit::Provider the singelton instance of Zorba's audit provider.
+   * @return audit::Provider the singeleton instance of Zorba's audit provider.
    */
   virtual audit::Provider*
   getAuditProvider() = 0;
 
   /** \brief Gets the singleton instance of Zorba's properties object.
    *
-   * @return zorba::Properties the singelton instance of Zorba's properties object.
+   * @return zorba::Properties the singleton instance of Zorba's properties object.
    */
   virtual PropertiesGlobal* getProperties() = 0;
 
