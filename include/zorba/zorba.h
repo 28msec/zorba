@@ -330,7 +330,7 @@ class ZORBA_DLL_PUBLIC Zorba
    *
    * @return zorba::Properties the singleton instance of Zorba's properties object.
    */
-  virtual PropertiesGlobal* getProperties() = 0;
+  virtual PropertiesGlobal* getPropertiesGlobal() = 0;
 
 }; /* class Zorba */
 
