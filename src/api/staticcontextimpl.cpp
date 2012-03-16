@@ -63,20 +63,20 @@
 
 #ifdef ZORBA_FT_THESAURUS_PATH
 #include <cstdlib>                      /* for getenv(3) */
+#include "util/fs_util.h"
 #endif /* ZORBA_FT_THESAURUS_PATH */
 
 
 namespace zorba {
 
 #ifdef ZORBA_FT_THESAURUS_PATH
+static char const ft_thesaurus_path[] =
+  "/home/pilot/WordNet-3.0/dict/wordnet-en.zth";
+
 void StaticContextImpl::addThesaurusMapping() {
-  if ( char const *th_path = std::getenv( "ZORBA_FT_THESAURUS_PATH" ) ) {
-
-    // This is an even uglier hack on top of an already ugly hack.
-    th_path = "/home/pilot/WordNet-3.0/dict/wordnet-en.zth";
-
-    theThesaurusMapper.addMapping( "##default", th_path );
-    theThesaurusMapper.addMapping( "http://wordnet.princeton.edu", th_path );
+  if ( fs::get_type( ft_thesaurus_path ) ) {
+    theThesaurusMapper.addMapping( "##default", ft_thesaurus_path );
+    theThesaurusMapper.addMapping( "http://wordnet.princeton.edu", ft_thesaurus_path );
     registerURIMapper( &theThesaurusMapper );
   }
 }
