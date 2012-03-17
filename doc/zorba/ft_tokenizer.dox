@@ -48,7 +48,9 @@ public:
   struct Properties {
     typedef std::vector<locale::iso639_1::type> languages_type;
 
+    bool comments_separate_tokens;
     bool elements_separate_tokens;
+    bool processing_instructions_separate_tokens;
     languages_type languages;
     char const *uri;
   };
@@ -187,14 +189,29 @@ void MyTokenizer::item( Item const &item, bool entering ) {
 \subsection ft_tokenizer_properties Properties
 
 To implement a \c Tokenizer,
-you need also to implement the \c %properties() function where:
+you need also to implement the \c %properties() function
+that fills in the \c Properties struct where:
 
 <table>
+  <tr>
+    <td>\c comments_separate_tokens</td>
+    <td>
+      If \c true, XML comments separate tokens.  For example,
+      <code>net&lt;!-- --&gt;work</code> would be 2 tokens instead of 1.
+    </td>
+  </tr>
   <tr>
     <td>\c elements_separate_tokens</td>
     <td>
       If \c true, XML elements separate tokens.  For example,
-      &lt;b&gt;B&lt;/b&gt;old would be 2 tokens instead of 1.
+      <code>&lt;b&gt;B&lt;/b&gt;old</code> would be 2 tokens instead of 1.
+    </td>
+  </tr>
+  <tr>
+    <td>\c processing_instructions_separate_tokens</td>
+    <td>
+      If \c true, XML processing instructions separate tokens.  For example,
+      <code>net&lt;?PI pi?&gt;work</code> would be 2 tokens instead of 1.
     </td>
   </tr>
   <tr>
