@@ -47,7 +47,7 @@ extern "C" {
 #endif
 
   /**
-   * The zorba_implementation function creates a new ::XQC_Implementation object.
+   * The zorba_implementation function creates a new zorba_implementation::XQC_Implementation object.
    * Thereby, the Zorba processor is initialized.
    * The user is responsible for freeing the object by calling the free() function
    * of the XQC_Implementation struct.
@@ -56,8 +56,8 @@ extern "C" {
    *              by this call.
    * \param[out] impl The newly created XQC_Implementation object.
    *
-   * \retval ::XQC_NO_ERROR
-   * \retval ::ZXQP0019_INTERNAL_ERROR
+   * \retval XQC_Error::XQC_NO_ERROR
+   * \retval XQC_INVALID_ARGUMENT
    */
   ZORBA_DLL_PUBLIC XQC_Error
   zorba_implementation(XQC_Implementation **impl, void* store);
@@ -82,9 +82,9 @@ extern "C" {
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param uri The URI of the collation to add.
      *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQST0038
-     * \retval ::XQC_INTERNAL_ERROR
+     * \retval XQC_Error::XQC_NO_ERROR
+     * \retval err::XQST0038
+     * \retval XQC_Error::XQC_INTERNAL_ERROR
      */
       // TODO add collation test cases
     XQC_Error
@@ -97,9 +97,9 @@ extern "C" {
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param uri The URI of the default collation to set
      *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQST0038
-     * \retval ::XQC_INTERNAL_ERROR
+     * \retval XQC_Error::XQC_NO_ERROR
+     * \retval err::XQST0038
+     * \retval XQC_Error::XQC_INTERNAL_ERROR
      */
     XQC_Error
     (*set_default_collation)(Zorba_StaticContext *context, const char* uri);
@@ -120,8 +120,8 @@ extern "C" {
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param mode The xquery_version_t to set in the given context.
      *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQC_INTERNAL_ERROR
+     * \retval XQC_Error::XQC_NO_ERROR
+     * \retval XQC_Error::XQC_INTERNAL_ERROR
      */
       // TODO add xquery version test cases
     XQC_Error
@@ -133,8 +133,8 @@ extern "C" {
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param[out] mode The xquery_version_t that is set in the given context.
      *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQC_INTERNAL_ERROR
+     * \retval XQC_Error::XQC_NO_ERROR
+     * \retval XQC_Error::XQC_INTERNAL_ERROR
      */
     XQC_Error 
     (*get_xquery_version)(Zorba_StaticContext* context, XQC_XQueryVersion* ver);
@@ -153,9 +153,9 @@ extern "C" {
      *                is deinitialized.
      * \param global_user_data User specific data that is passed to the init function as a parameter.
      *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::ZAPI0019_FUNCTION_ALREADY_REGISTERED,
-     * \retval ::XQC_INTERNAL_ERROR
+     * \retval XQC_Error::XQC_NO_ERROR
+     * \retval XQC_INVALID_ARGUMENT,
+     * \retval XQC_Error::XQC_INTERNAL_ERROR
      */
     XQC_Error
     (*register_external_function)(Zorba_StaticContext* context, 
