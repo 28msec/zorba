@@ -41,6 +41,7 @@ namespace zorba { namespace simplestore {
 class SimpleCollection : public Collection
 {
   friend class CollectionIter;
+  friend class UpdTruncateCollection;
 
 public:
   class CollectionIter : public store::Iterator
@@ -123,6 +124,8 @@ public:
 
   // virtual to allow extension by subclasses
   virtual bool removeNode(xs_integer position);
+
+  virtual void removeAll();
 
   // virtual to allow extension by subclasses
   virtual xs_integer removeNodes(xs_integer position, xs_integer num);

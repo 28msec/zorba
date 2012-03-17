@@ -39,6 +39,7 @@ namespace zorba { namespace http_client {
       theSerStream(NULL),
       thePost(NULL),
       theLast(NULL),
+      theLastSerializerOptions(NULL),
       theIsHeadRequest(false)
   {
     theHeaderLists.push_back(NULL);
@@ -57,6 +58,7 @@ namespace zorba { namespace http_client {
     if (thePost != NULL) {
       curl_formfree(thePost);
     }
+    delete theSerStream;
   }
 
   void HttpRequestHandler::begin()
@@ -288,3 +290,4 @@ namespace zorba { namespace http_client {
 
 } // namespace http_client
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */
