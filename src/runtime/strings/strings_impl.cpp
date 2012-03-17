@@ -126,6 +126,7 @@ bool StringToCodepointsIterator::nextImpl(
     }
     else
     {
+      state->theStreamItem = item;
       state->theStream = &item->getStream();
     }
   }
@@ -212,6 +213,7 @@ void StringToCodepointsIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theIterator = 0;
   theResult.clear();
+  theStreamItem = 0;
 }
 
 

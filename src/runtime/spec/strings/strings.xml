@@ -59,6 +59,7 @@
     <zorba:member type="checked_vector&lt;xs_unsignedInt&gt;" name="theResult"
       brief="the resulting vector"/>
     <zorba:member type="std::istream*" name="theStream" />
+    <zorba:member type="store::Item_t" name="theStreamItem" />
   </zorba:state>
 
 </zorba:iterator>
