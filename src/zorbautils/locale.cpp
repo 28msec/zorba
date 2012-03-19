@@ -601,6 +601,9 @@ char const *const string_of[] = {
   "ben",  // Bengali
   "bih",  // Bihari
   "bis",  // Bislama
+  "bos",  // Bosnian
+  "bre",  // Breton
+  "bul",  // Bulgarian
   "dan",  // Danish
   "deu",  // German (T)
   "dut",  // Dutch (B)
@@ -620,6 +623,17 @@ char const *const string_of[] = {
   "spa",  // Spanish
   "swe",  // Swedish
   "tur",  // Turkish
+
+  "cat",  // Catalan
+  "khm",  // Central Khmer
+  "cha",  // Chamorro
+  "che",  // Chechen
+  "nya",  // Chichewa; Chewa; Nyanja
+  "chi",  // Chinese
+  "zho",  // Chinese
+  "zha",  // Zhuang; Chuang
+  "chu"   // Church Slavic; Old Slavonic; Church Slavonic
+
 };
 
 type find( char const *lang ) {
@@ -656,10 +670,19 @@ iso639_1::type find_lang( char const *lang ) {
     bn, // ben
     bh, // bih
     bi, // bis
+    bs, // bos
+    br, // bre
+    br, // bul
+    my, // bur
     hy, // arm
     as, // asm
     av, // ava
     ae, // ave
+    ca, // cat
+    ch, // cha
+    ce, // che
+    zh, // chi
+    cu, // chu
     da, // dan
     de, // deu
     nl, // dut
@@ -670,8 +693,11 @@ iso639_1::type find_lang( char const *lang ) {
     de, // ger
     hu, // hun
     it, // ita
+    km, // khm
+    my, // mya
     nl, // nld
     no, // nor
+    ny, // nya
     pt, // por
     ro, // ron
     ro, // rum
@@ -679,6 +705,8 @@ iso639_1::type find_lang( char const *lang ) {
     es, // spa
     sv, // swe
     tr, // tur
+    za, // zha
+    zh, // zho
   };
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
