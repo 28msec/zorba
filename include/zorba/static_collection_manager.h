@@ -59,7 +59,7 @@ namespace zorba {
     /**
      * Create the index with the given name.
      *
-     * @param aName The name of the index to create.
+     * @param aQName The name of the index to create.
      *
      * @throw zerr:ZDDY0021 if a index with the given name is not declared.
      *
@@ -71,7 +71,7 @@ namespace zorba {
     /**
      * Create the index with the given name.
      *
-     * @param aName The name of the index to create.
+     * @param aQName The name of the index to create.
      *
      * @throw zerr:ZDDY0021 if a index with the given name is not declared.
      *
@@ -92,7 +92,7 @@ namespace zorba {
     /**
      * This function returns true if a index with the given name is available.
      *
-     * @param aName The name of the index that is being checked.
+     * @param aQName The name of the index that is being checked.
      *
      * @return true if the index is available and false otherwise.
      */

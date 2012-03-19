@@ -126,13 +126,14 @@ bool StringToCodepointsIterator::nextImpl(
     }
     else
     {
+      state->theStreamItem = item;
       state->theStream = &item->getStream();
     }
   }
 
   if ( state->theStream )
   {
-    while ( !state->theStream->eof() )
+    while ( true )
     {
       utf8::encoded_char_type ec;
       memset( ec, 0, sizeof( ec ) );
@@ -141,6 +142,8 @@ bool StringToCodepointsIterator::nextImpl(
 
       if ( utf8::read( *state->theStream, ec ) == utf8::npos )
       {
+        if ( state->theStream->eof() )
+          break;
         if ( state->theStream->good() ) {
           //
           // If read() failed but the stream state is good, it means that an
@@ -212,6 +215,7 @@ void StringToCodepointsIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theIterator = 0;
   theResult.clear();
+  theStreamItem = 0;
 }
 
 

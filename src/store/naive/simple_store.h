@@ -369,7 +369,7 @@ public:
 
   /* ------------------------ Node Reference Management ---------------------------*/
 
-  bool getNodeReference(store::Item_t& result, store::Item* node);
+  bool getNodeReference(store::Item_t& result, const store::Item* node);
 
   bool hasReference(const store::Item* node);
 
