@@ -274,11 +274,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:insert-as-first
-class fn_jsoniq_insert_as_first : public function
+//op-zorba:array-insert
+class op_zorba_array_insert : public function
 {
 public:
-  fn_jsoniq_insert_as_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_array_insert(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -289,73 +289,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:insert-after
-class fn_jsoniq_insert_after : public function
-{
-public:
-  fn_jsoniq_insert_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:insert-before
-class fn_jsoniq_insert_before : public function
-{
-public:
-  fn_jsoniq_insert_before(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:insert-as-last
-class fn_jsoniq_insert_as_last : public function
-{
-public:
-  fn_jsoniq_insert_as_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };

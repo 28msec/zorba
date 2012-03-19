@@ -1881,27 +1881,16 @@ UpdJSONObjectInsert::UpdJSONObjectInsert(
     CollectionPul* pul,
     const QueryLoc* loc,
     store::Item_t& target,
-    std::vector<store::Item*>& names,
-    std::vector<store::Item*>& values)
+    std::vector<store::Item_t>& names,
+    std::vector<store::Item_t>& values)
   :
   UpdatePrimitive(pul, loc, target),
   theNumApplied(0)
 {
   assert(names.size() == values.size());
 
-  theNewNames.swap(names);
-  theNewValues.swap(values);
-}
-
-
-UpdJSONObjectInsert::~UpdJSONObjectInsert()
-{
-  csize numPairs = theNewNames.size();
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    theNewNames[i]->removeReference();
-    theNewValues[i]->removeReference();
-  }
+  theNames.swap(names);
+  theValues.swap(values);
 }
 
 
@@ -1911,10 +1900,10 @@ void UpdJSONObjectInsert::apply()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  csize numPairs = theNewNames.size();
+  csize numPairs = theNames.size();
   for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    JSONObjectPair_t pair =  new SimpleJSONObjectPair(theNewNames[i], theNewValues[i]);
+    JSONObjectPair_t pair =  new SimpleJSONObjectPair(theNames[i], theValues[i]);
     if (!obj->add(pair, false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 
@@ -1937,7 +1926,7 @@ void UpdJSONObjectInsert::undo()
 
   for (csize i = theNumApplied; i > 0; --i)
   {
-    obj->remove(theNewNames[i-1]);
+    obj->remove(theNames[i-1]);
   }
 
   theIsApplied = false;
@@ -1947,49 +1936,33 @@ void UpdJSONObjectInsert::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdJSONInsertPositional::UpdJSONInsertPositional(
+UpdJSONArrayInsert::UpdJSONArrayInsert(
       CollectionPul* pul,
       const QueryLoc* loc,
-      store::UpdateConsts::UpdPrimKind kind,
       store::Item_t& target,
-      store::Item_t& pos,
+      xs_integer& pos,
       std::vector<store::Item_t>& members)
-  : UpdatePrimitive(pul, loc, target),
-    theKind(kind),
-    theNewMembers(members),
-    thePosition(pos?pos->getIntegerValue():0),
-    theNumApplied(0)
+  :
+  UpdatePrimitive(pul, loc, target),
+  thePosition(pos),
+  theNumApplied(0)
 {
+  theMembers.swap(members);
 }
 
-void
-UpdJSONInsertPositional::apply()
+
+void UpdJSONArrayInsert::apply()
 {
   JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
 
-  switch (theKind)
-  {
-    case store::UpdateConsts::UP_JSON_INSERT_FIRST:
-      lArray->push_front(theNewMembers);
-      break;
-    case store::UpdateConsts::UP_JSON_INSERT_LAST:
-      lArray->push_back(theNewMembers);
-      break;
-    case store::UpdateConsts::UP_JSON_INSERT_BEFORE:
-      lArray->insert_before(thePosition, theNewMembers);
-      break;
-    case store::UpdateConsts::UP_JSON_INSERT_AFTER:
-      lArray->insert_after(thePosition, theNewMembers);
-      break;
-    default:
-      ZORBA_ASSERT(false);
-  }
+  lArray->insert_before(thePosition, theMembers);
 }
 
-void
-UpdJSONInsertPositional::undo()
+
+void UpdJSONArrayInsert::undo()
 {
 }
+
 
 /*******************************************************************************
 
@@ -1999,7 +1972,8 @@ UpdJSONDelete::UpdJSONDelete(
       const QueryLoc* loc,
       store::Item_t& target,
       store::Item_t& selector)
-  : UpdatePrimitive(pul, loc, target)
+  :
+  UpdatePrimitive(pul, loc, target)
 {
   ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
 

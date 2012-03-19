@@ -397,18 +397,18 @@ JSONNullIterator::~JSONNullIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONInsertAsFirstIterator>
-const char* JSONInsertAsFirstIterator::class_name_str = "JSONInsertAsFirstIterator";
-JSONInsertAsFirstIterator::class_factory<JSONInsertAsFirstIterator>
-JSONInsertAsFirstIterator::g_class_factory;
+// <JSONArrayInsertIterator>
+const char* JSONArrayInsertIterator::class_name_str = "JSONArrayInsertIterator";
+JSONArrayInsertIterator::class_factory<JSONArrayInsertIterator>
+JSONArrayInsertIterator::g_class_factory;
 
 const serialization::ClassVersion 
-JSONInsertAsFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+JSONArrayInsertIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int JSONInsertAsFirstIterator::class_versions_count =
-sizeof(JSONInsertAsFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int JSONArrayInsertIterator::class_versions_count =
+sizeof(JSONArrayInsertIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void JSONInsertAsFirstIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayInsertIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -420,96 +420,9 @@ void JSONInsertAsFirstIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-JSONInsertAsFirstIterator::~JSONInsertAsFirstIterator() {}
+JSONArrayInsertIterator::~JSONArrayInsertIterator() {}
 
-// </JSONInsertAsFirstIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertAfterIterator>
-const char* JSONInsertAfterIterator::class_name_str = "JSONInsertAfterIterator";
-JSONInsertAfterIterator::class_factory<JSONInsertAfterIterator>
-JSONInsertAfterIterator::g_class_factory;
-
-const serialization::ClassVersion 
-JSONInsertAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONInsertAfterIterator::class_versions_count =
-sizeof(JSONInsertAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void JSONInsertAfterIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONInsertAfterIterator::~JSONInsertAfterIterator() {}
-
-// </JSONInsertAfterIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertBeforeIterator>
-const char* JSONInsertBeforeIterator::class_name_str = "JSONInsertBeforeIterator";
-JSONInsertBeforeIterator::class_factory<JSONInsertBeforeIterator>
-JSONInsertBeforeIterator::g_class_factory;
-
-const serialization::ClassVersion 
-JSONInsertBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONInsertBeforeIterator::class_versions_count =
-sizeof(JSONInsertBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void JSONInsertBeforeIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONInsertBeforeIterator::~JSONInsertBeforeIterator() {}
-
-// </JSONInsertBeforeIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertAsLastIterator>
-const char* JSONInsertAsLastIterator::class_name_str = "JSONInsertAsLastIterator";
-JSONInsertAsLastIterator::class_factory<JSONInsertAsLastIterator>
-JSONInsertAsLastIterator::g_class_factory;
-
-const serialization::ClassVersion 
-JSONInsertAsLastIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONInsertAsLastIterator::class_versions_count =
-sizeof(JSONInsertAsLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void JSONInsertAsLastIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONInsertAsLastIterator::~JSONInsertAsLastIterator() {}
-
-// </JSONInsertAsLastIterator>
+// </JSONArrayInsertIterator>
 
 #endif
 #ifdef ZORBA_WITH_JSON

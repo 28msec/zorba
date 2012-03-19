@@ -6405,31 +6405,31 @@ JSONInsertExpr :
         }
     ;
 
+JSONAppendExpr :
+        APPEND JSON ExprSingle TO ExprSingle
+        {
+          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+        }
+    ;
+
 JSONDeleteExpr :
         _DELETE JSON PrimaryExpr LPAR ExprSingle RPAR
         {
-          // TODO: fill in
+          $$ = new JSONDeleteExpr(LOC(@$), $3, $5);
         }
     ;
 
 JSONRenameExpr :
         RENAME JSON PrimaryExpr LPAR ExprSingle RPAR AS ExprSingle
         {
-          // TODO: fill in
+          $$ = new JSONRenameExpr(LOC(@$), $3, $5, $8);
         }
     ;
 
 JSONReplaceExpr :
         REPLACE JSON VALUE OF PrimaryExpr LPAR ExprSingle RPAR WITH ExprSingle
         {
-          // TODO: fill in
-        }
-    ;
-
-JSONAppendExpr :
-        APPEND JSON ExprSingle TO ExprSingle
-        {
-          // TODO: fill in
+          $$ = new JSONReplaceExpr(LOC(@$), $5, $7, $10);
         }
     ;
 

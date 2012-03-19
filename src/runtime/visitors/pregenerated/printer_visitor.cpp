@@ -1861,63 +1861,18 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONInsertAsFirstIterator>
-void PrinterVisitor::beginVisit ( const JSONInsertAsFirstIterator& a) {
-  thePrinter.startBeginVisit("JSONInsertAsFirstIterator", ++theId);
+// <JSONArrayInsertIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayInsertIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayInsertIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONInsertAsFirstIterator& ) {
+void PrinterVisitor::endVisit ( const JSONArrayInsertIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONInsertAsFirstIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertAfterIterator>
-void PrinterVisitor::beginVisit ( const JSONInsertAfterIterator& a) {
-  thePrinter.startBeginVisit("JSONInsertAfterIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONInsertAfterIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONInsertAfterIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertBeforeIterator>
-void PrinterVisitor::beginVisit ( const JSONInsertBeforeIterator& a) {
-  thePrinter.startBeginVisit("JSONInsertBeforeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONInsertBeforeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONInsertBeforeIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONInsertAsLastIterator>
-void PrinterVisitor::beginVisit ( const JSONInsertAsLastIterator& a) {
-  thePrinter.startBeginVisit("JSONInsertAsLastIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONInsertAsLastIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONInsertAsLastIterator>
+// </JSONArrayInsertIterator>
 
 #endif
 #ifdef ZORBA_WITH_JSON

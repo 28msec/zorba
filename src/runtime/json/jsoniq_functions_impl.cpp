@@ -525,9 +525,9 @@ JSONNullIterator::nextImpl(
 /*******************************************************************************
   updating function jn:object-insert(
       $o as object(),
-      $name1 as xs:integer, $value1 as item(), 
+      $name1 as xs:string, $value1 as item(), 
       ..., 
-      $nameN as xs:integer, $valueN as item())
+      $nameN as xs:string, $valueN as item())
 ********************************************************************************/
 JSONObjectInsertIterator::JSONObjectInsertIterator(
     static_context* sctx,
@@ -572,8 +572,8 @@ JSONObjectInsertIterator::nextImpl(
   store::Item_t object;
   store::Item_t name;
   store::Item_t value;
-  std::vector<store::Item*> names;
-  std::vector<store::Item*> values;
+  std::vector<store::Item_t> names;
+  std::vector<store::Item_t> values;
   store::PUL_t pul;
   store::CopyMode copymode;
   csize numPairs;
@@ -590,13 +590,16 @@ JSONObjectInsertIterator::nextImpl(
 
   numPairs = (theChildren.size() - 1) / 2;
 
+  names.resize(numPairs);
+  values.resize(numPairs);
+
   for (csize i = 0; i < numPairs; ++i)
   {
     consumeNext(name, theChildren[i + 1].getp(), planState);
     consumeNext(value, theChildren[i + 2].getp(), planState);
 
-    std::vector<store::Item*>::const_iterator ite = names.begin();
-    std::vector<store::Item*>::const_iterator end = names.end();
+    std::vector<store::Item_t>::const_iterator ite = names.begin();
+    std::vector<store::Item_t>::const_iterator end = ite + i;
     for (; ite != end; ++ite)
     {
       if ((*ite)->equals(name))
@@ -605,12 +608,12 @@ JSONObjectInsertIterator::nextImpl(
       }
     }
 
-    names.push_back(name.release());
+    names[i].transfer(name);
 
     if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
       value = value->copy(NULL, copymode);
 
-    values.push_back(value.release());
+    values[i].transfer(value);
   }
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
@@ -631,212 +634,66 @@ END_SERIALIZABLE_CLASS_VERSIONS(JSONObjectInsertIterator)
 
 
 /*******************************************************************************
+  updating function jn:array-insert(
+      $o as array(),
+      $pos as xs:integer, 
+      $values as item()*, 
 ********************************************************************************/
 bool
-JSONInsertAsFirstIterator::nextImpl(
+JSONArrayInsertIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lArray;
-  store::Item_t lTmp;
-  std::vector<store::Item_t> lMembers;
-  std::auto_ptr<store::PUL> pul;
+  store::Item_t array;
+  store::Item_t member;
+  store::Item_t posItem;
+  xs_integer pos;
+  std::vector<store::Item_t> members;
+  store::PUL_t pul;
   store::CopyMode copymode;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lArray, theChildren[0].getp(), planState);
+  consumeNext(array, theChildren[0].getp(), planState);
+  consumeNext(posItem, theChildren[1].getp(), planState);
 
-  copymode.set(true, 
-    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+  pos = posItem->getIntegerValue();
 
-  while (consumeNext(lTmp, theChildren[1].getp(), planState))
-  {
-    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
-    {
-      lTmp = lTmp->copy(NULL, copymode);
-    }
-    lMembers.push_back(lTmp);
-  }
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  pul->addJSONInsertFirst(&loc, lArray, lMembers);
-
-  result = pul.release();
-  STACK_PUSH(result != NULL, state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-********************************************************************************/
-bool
-JSONInsertAfterIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lArray;
-  store::Item_t lTmp;
-  store::Item_t lPos;
-  std::vector<store::Item_t> lMembers;
-  std::auto_ptr<store::PUL> pul;
-  store::CopyMode copymode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lArray, theChildren[0].getp(), planState);
-  consumeNext(lPos, theChildren[1].getp(), planState);
-
-  if (lPos->getIntegerValue() <= xs_integer::zero())
+  if (pos <= xs_integer::zero())
   {
     RAISE_ERROR(jerr::JUDY0061, loc,
-        ERROR_PARAMS(
-          ZED(JUDY0061_ArrayNegativeOrZero),
-          lPos->getIntegerValue()
-        )
-     );
+    ERROR_PARAMS(ZED(JUDY0061_ArrayNegativeOrZero), pos));
   }
-  else if (lArray->getSize() < lPos->getIntegerValue())
+  else if (array->getSize() < pos)
   {
     RAISE_ERROR(jerr::JUDY0061, loc,
-        ERROR_PARAMS(
-          ZED(JUDY0061_ArrayOutOfBounds),
-          lPos->getIntegerValue(),
-          lArray->getSize()
-        )
-     );
+    ERROR_PARAMS(ZED(JUDY0061_ArrayOutOfBounds), pos, array->getSize()));
   }
 
   copymode.set(true, 
-    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
 
-  while (consumeNext(lTmp, theChildren[2].getp(), planState))
+  while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
+    if (member->isNode() || member->isJSONItem())
     {
-      lTmp = lTmp->copy(NULL, copymode);
+      member = member->copy(NULL, copymode);
     }
-    lMembers.push_back(lTmp);
+
+    members.resize(members.size() + 1);
+    members.back().transfer(member);
   }
 
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  pul->addJSONInsertAfter(&loc, lArray, lPos, lMembers);
+  pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  result = pul.release();
-  STACK_PUSH(result != NULL, state);
+  pul->addJSONArrayInsert(&loc, array, pos, members);
 
-  STACK_END (state);
-}
+  result.transfer(pul);
 
-
-/*******************************************************************************
-********************************************************************************/
-bool
-JSONInsertBeforeIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lArray;
-  store::Item_t lTmp;
-  store::Item_t lPos;
-  std::vector<store::Item_t> lMembers;
-  std::auto_ptr<store::PUL> pul;
-  store::CopyMode lCopyMode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lArray, theChildren[0].getp(), planState);
-  consumeNext(lPos, theChildren[1].getp(), planState);
-
-  if (lPos->getIntegerValue() <= xs_integer::zero())
-  {
-    RAISE_ERROR(jerr::JUDY0061, loc,
-        ERROR_PARAMS(
-          ZED(JUDY0061_ArrayNegativeOrZero),
-          lPos->getIntegerValue()
-        )
-     );
-  }
-  else if (lArray->getSize() < lPos->getIntegerValue())
-  {
-    RAISE_ERROR(jerr::JUDY0061, loc,
-        ERROR_PARAMS(
-          ZED(JUDY0061_ArrayOutOfBounds),
-          lPos->getIntegerValue(),
-          lArray->getSize()
-        )
-     );
-  }
-
-  lCopyMode.set(true, 
-    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
-
-  while (consumeNext(lTmp, theChildren[2].getp(), planState))
-  {
-    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
-    {
-      lTmp = lTmp->copy(NULL, lCopyMode);
-    }
-    lMembers.push_back(lTmp);
-  }
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  pul->addJSONInsertBefore(&loc, lArray, lPos, lMembers);
-
-  result = pul.release();
-  STACK_PUSH(result != NULL, state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-********************************************************************************/
-bool
-JSONInsertAsLastIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t lArray;
-  store::Item_t lTmp;
-  std::vector<store::Item_t> lMembers;
-  std::auto_ptr<store::PUL> pul;
-  store::CopyMode lCopyMode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lArray, theChildren[0].getp(), planState);
-
-  lCopyMode.set(true, 
-    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
-
-  while (consumeNext(lTmp, theChildren[1].getp(), planState))
-  {
-    if (lTmp->isNode() || lTmp->isJSONObject() || lTmp->isJSONArray())
-    {
-      lTmp = lTmp->copy(NULL, lCopyMode);
-    }
-    lMembers.push_back(lTmp);
-  }
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  pul->addJSONInsertLast(&loc, lArray, lMembers);
-
-  result = pul.release();
-  STACK_PUSH(result != NULL, state);
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }

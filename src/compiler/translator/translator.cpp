@@ -1291,101 +1291,6 @@ fo_expr* create_empty_seq(const QueryLoc& loc)
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void normalize_fo(fo_expr* foExpr)
-{
-  const QueryLoc& loc = foExpr->get_loc();
-
-  TypeManager* tm = foExpr->get_type_manager();
-
-  const signature& sign = foExpr->get_signature();
-
-  ulong n = foExpr->num_args();
-
-  const function* func = foExpr->get_func();
-
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
-      (n < 7 || (n - 1) % 6 != 0))
-  {
-    const store::Item* qname = NULL;
-
-    if (n > 0)
-      qname = foExpr->get_arg(0)->getQName(theSctx);
-
-    if (qname != NULL)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue(), "index", n-1, "multiple of 6"));
-    }
-    else
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
-    }
-  }
-
-  for (ulong i = 0; i < n; ++i)
-  {
-    expr::expr_t argExpr = foExpr->get_arg(i);
-
-    xqtref_t paramType;
-
-    if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else if (i % 6 == 1 || i % 6 == 2)
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-      else
-        paramType = theRTM.BOOLEAN_TYPE_ONE;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else
-        paramType = NULL; // Nothing to check as the target function is not known
-    }
-    else
-    {
-      paramType = sign[i];
-    }
-
-    // A NULL value for the parameter's type to signal that no type promotion
-    // or match should be added. This is used by the reflection:invoke() function,
-    if (paramType != NULL)
-    {
-      if (TypeOps::is_subtype(tm,
-                              *paramType,
-                              *theRTM.ANY_ATOMIC_TYPE_STAR,
-                              loc))
-      {
-        argExpr = wrap_in_atomization(argExpr);
-        argExpr = wrap_in_type_promotion(argExpr, paramType);
-      }
-      else
-      {
-        argExpr = wrap_in_type_match(argExpr, paramType, loc);
-      }
-    }
-
-    foExpr->set_arg(i, argExpr);
-  }
-}
-
-
-/*******************************************************************************
   Wrap the given expr in an fn:data() function
 ********************************************************************************/
 expr_t wrap_in_atomization(expr* e)
@@ -1412,7 +1317,6 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = N
 expr_t wrap_in_type_match(
     expr_t e,
     xqtref_t type,
-    const QueryLoc& loc,
     const Error& errorCode = err::XPTY0004,
     store::Item_t fnQName = NULL)
 {
@@ -1420,7 +1324,7 @@ expr_t wrap_in_type_match(
 
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
-  return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type, loc) ?
+  return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type, e->get_loc()) ?
           e :
           new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode, true, fnQName));
 }
@@ -1733,6 +1637,101 @@ void wrap_in_debugger_expr(
     aExpr = lExpr.release();
   }
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void normalize_fo(fo_expr* foExpr)
+{
+  const QueryLoc& loc = foExpr->get_loc();
+
+  TypeManager* tm = foExpr->get_type_manager();
+
+  const signature& sign = foExpr->get_signature();
+
+  ulong n = foExpr->num_args();
+
+  const function* func = foExpr->get_func();
+
+  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
+      (n < 7 || (n - 1) % 6 != 0))
+  {
+    const store::Item* qname = NULL;
+
+    if (n > 0)
+      qname = foExpr->get_arg(0)->getQName(theSctx);
+
+    if (qname != NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qname->getStringValue(), "index", n-1, "multiple of 6"));
+    }
+    else
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
+    }
+  }
+
+  for (ulong i = 0; i < n; ++i)
+  {
+    expr::expr_t argExpr = foExpr->get_arg(i);
+
+    xqtref_t paramType;
+
+    if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+    {
+      if (i == 0)
+        paramType = sign[i];
+      else
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
+    {
+      if (i == 0)
+        paramType = sign[i];
+      else if (i % 6 == 1 || i % 6 == 2)
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+      else
+        paramType = theRTM.BOOLEAN_TYPE_ONE;
+    }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+    {
+      if (i == 0)
+        paramType = sign[i];
+      else
+        paramType = NULL; // Nothing to check as the target function is not known
+    }
+    else
+    {
+      paramType = sign[i];
+    }
+
+    // A NULL value for the parameter's type to signal that no type promotion
+    // or match should be added. This is used by the reflection:invoke() function,
+    if (paramType != NULL)
+    {
+      if (TypeOps::is_subtype(tm,
+                              *paramType,
+                              *theRTM.ANY_ATOMIC_TYPE_STAR,
+                              loc))
+      {
+        argExpr = wrap_in_atomization(argExpr);
+        argExpr = wrap_in_type_promotion(argExpr, paramType);
+      }
+      else
+      {
+        argExpr = wrap_in_type_match(argExpr, paramType);
+      }
+    }
+
+    foExpr->set_arg(i, argExpr);
+  }
 }
 
 
@@ -3518,7 +3517,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else
     {
-      body = wrap_in_type_match(body, returnType, loc, err::XPTY0004, udf->getName());
+      body = wrap_in_type_match(body, returnType, err::XPTY0004, udf->getName());
     }
 
     udf->setBody(body);
@@ -4277,7 +4276,6 @@ void* begin_visit(const IndexKeyList& v)
 
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.ANY_NODE_TYPE_STAR,
-                                  loc,
                                   zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
   // For general indexes, the domain expression must not return duplicate nodes.
@@ -4436,7 +4434,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
       keyExpr = wrap_in_type_match(keyExpr,
                                    type,
-                                   loc,
                                    zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
 
       keyTypes[i] = ptype->getBaseBuiltinType();
@@ -10134,7 +10131,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       const xqtref_t& resultType = f->getSignature().returnType();
 
-      resultExpr = wrap_in_type_match(foExpr.getp(), resultType, loc);
+      resultExpr = wrap_in_type_match(foExpr.getp(), resultType);
     }
 
     // Some further normalization is required for certain builtin functions
@@ -10741,7 +10738,7 @@ void end_visit(const InlineFunction& v, void* aState)
   }
   else
   {
-    body = wrap_in_type_match(body, returnType, loc);
+    body = wrap_in_type_match(body, returnType);
   }
 
   // Make the body be the return expr of the flwor that binds the function params.
@@ -12726,9 +12723,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
   expr_t targetExpr = pop_nodestack();
 
-  targetExpr = wrap_in_type_match(targetExpr,
-                                  rtm.JSON_OBJECT_TYPE_ONE,
-                                  targetExpr->get_loc());
+  targetExpr = wrap_in_type_match(targetExpr, rtm.JSON_OBJECT_TYPE_ONE);
 
   args.push_back(targetExpr);
 
@@ -12754,6 +12749,9 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONArrayInsertExpr& v)
 {
   TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
   return no_state;
 }
 
@@ -12761,6 +12759,107 @@ void* begin_visit(const JSONArrayInsertExpr& v)
 void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  expr_t posExpr = pop_nodestack();
+  expr_t targetExpr = pop_nodestack();
+  expr_t sourceExpr = pop_nodestack();
+
+  posExpr = wrap_in_atomization(posExpr);
+  posExpr = wrap_in_type_promotion(posExpr, rtm.INTEGER_TYPE_ONE);
+
+  targetExpr = wrap_in_type_match(targetExpr, rtm.JSON_ARRAY_TYPE_ONE);
+
+  std::vector<expr_t> args(3);
+  args[0] = targetExpr;
+  args[1] = posExpr;
+  args[2] = sourceExpr;
+
+  expr_t insExpr = new fo_expr(theRootSctx,
+                               loc, 
+                               GET_BUILTIN_FUNCTION(OP_ARRAY_INSERT_N),
+                               args);
+
+  push_nodestack(insExpr);
+#endif
+}
+
+
+void* begin_visit(const JSONArrayAppendExpr& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+
+void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+#endif
+}
+
+
+void* begin_visit(const JSONDeleteExpr& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+
+void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+#endif
+}
+
+
+void* begin_visit(const JSONReplaceExpr& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+
+void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+#endif
+}
+
+
+void* begin_visit(const JSONRenameExpr& v)
+{
+  TRACE_VISIT();
+#ifndef ZORBA_WITH_JSON
+  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
+#endif
+  return no_state;
+}
+
+
+void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+#ifdef ZORBA_WITH_JSON
+#endif
 }
 
 

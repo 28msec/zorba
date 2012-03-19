@@ -166,50 +166,14 @@ PlanIter_t fn_jsoniq_null::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_insert_as_first::codegen(
+PlanIter_t op_zorba_array_insert::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONInsertAsFirstIterator(sctx, loc, argv);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_insert_after::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONInsertAfterIterator(sctx, loc, argv);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_insert_before::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONInsertBeforeIterator(sctx, loc, argv);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_insert_as_last::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONInsertAsLastIterator(sctx, loc, argv);
+  return new JSONArrayInsertIterator(sctx, loc, argv);
 }
 
 #endif
@@ -452,65 +416,13 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_first,
-        (createQName("http://www.jsoniq.org/functions","","insert-as-first"), 
-        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_INSERT_AS_FIRST_2);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_insert_after,
-        (createQName("http://www.jsoniq.org/functions","","insert-after"), 
+    DECL_WITH_KIND(sctx, op_zorba_array_insert,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","array-insert"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_INSERT_AFTER_3);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_insert_before,
-        (createQName("http://www.jsoniq.org/functions","","insert-before"), 
-        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_INSERT_BEFORE_3);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_insert_as_last,
-        (createQName("http://www.jsoniq.org/functions","","insert-as-last"), 
-        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_INSERT_AS_LAST_2);
+        FunctionConsts::OP_ZORBA_ARRAY_INSERT_3);
 
   }
 

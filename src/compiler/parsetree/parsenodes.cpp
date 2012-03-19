@@ -5853,21 +5853,21 @@ void JSONObjectInsertExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayInsertExpr::JSONArrayInsertExpr(
     const QueryLoc& loc,
-    exprnode* sourceExpr,
+    exprnode* valueExpr,
     exprnode* targetExpr,
     exprnode* posExpr)
   :
   exprnode(loc),
-  theSourceExpr(sourceExpr),
   theTargetExpr(targetExpr),
-  thePositionExpr(posExpr)
+  thePositionExpr(posExpr),
+  theValueExpr(valueExpr)
 {
 }
 
 
 JSONArrayInsertExpr::~JSONArrayInsertExpr()
 {
-  delete theSourceExpr;
+  delete theValueExpr;
   delete theTargetExpr;
   delete thePositionExpr;
 }
@@ -5876,9 +5876,141 @@ JSONArrayInsertExpr::~JSONArrayInsertExpr()
 void JSONArrayInsertExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(theSourceExpr);
+  ACCEPT(theValueExpr);
   ACCEPT(theTargetExpr);
   ACCEPT(thePositionExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayAppendExpr::JSONArrayAppendExpr(
+    const QueryLoc& loc,
+    exprnode* valueExpr,
+    exprnode* targetExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theValueExpr(valueExpr)
+{
+}
+
+
+JSONArrayAppendExpr::~JSONArrayAppendExpr()
+{
+  delete theValueExpr;
+  delete theTargetExpr;
+}
+
+
+void JSONArrayAppendExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theValueExpr);
+  ACCEPT(theTargetExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONDeleteExpr::JSONDeleteExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theSelectorExpr(selectorExpr)
+{
+}
+
+
+JSONDeleteExpr::~JSONDeleteExpr()
+{
+  delete theTargetExpr;
+  delete theSelectorExpr;
+}
+
+
+void JSONDeleteExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONReplaceExpr::JSONReplaceExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr,
+    exprnode* valueExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theSelectorExpr(selectorExpr),
+  theValueExpr(valueExpr)
+{
+}
+
+
+JSONReplaceExpr::~JSONReplaceExpr()
+{
+  delete theTargetExpr;
+  delete theSelectorExpr;
+  delete theValueExpr;
+}
+
+
+void JSONReplaceExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theSelectorExpr);
+  ACCEPT(theValueExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONRenameExpr::JSONRenameExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theNameExpr(nameExpr),
+  theNewNameExpr(newNameExpr)
+{
+}
+
+
+JSONRenameExpr::~JSONRenameExpr()
+{
+  delete theTargetExpr;
+  delete theNameExpr;
+  delete theNewNameExpr;
+}
+
+
+void JSONRenameExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theNameExpr);
+  ACCEPT(theNewNameExpr);
   END_VISITOR();
 }
 

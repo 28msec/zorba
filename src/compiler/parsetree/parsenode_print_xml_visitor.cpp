@@ -1042,6 +1042,14 @@ BEGIN_END_TAG(JSONObjectInsertExpr)
 
 BEGIN_END_TAG(JSONArrayInsertExpr)
 
+BEGIN_END_TAG(JSONArrayAppendExpr)
+
+BEGIN_END_TAG(JSONDeleteExpr)
+
+BEGIN_END_TAG(JSONReplaceExpr)
+
+BEGIN_END_TAG(JSONRenameExpr)
+
 void* begin_visit(const JSON_Test& n)
 {
   INDENT;

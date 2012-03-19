@@ -1625,25 +1625,23 @@ class UpdJSONObjectInsert: public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  std::vector<store::Item*>  theNewNames;
-  std::vector<store::Item*>  theNewValues;
+  std::vector<store::Item_t>  theNames;
+  std::vector<store::Item_t>  theValues;
 
-  csize                      theNumApplied;
+  csize                       theNumApplied;
 
 protected:
   UpdJSONObjectInsert(
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      std::vector<store::Item*>& names,
-      std::vector<store::Item*>& values);
-
-  ~UpdJSONObjectInsert();
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
-    return store::UpdateConsts::UP_JSON_INSERT;
+    return store::UpdateConsts::UP_JSON_OBJECT_INSERT;
   }
 
   void apply();
@@ -1654,7 +1652,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdJSONInsertPositional : public UpdatePrimitive
+class UpdJSONArrayInsert : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class CollectionPul;
@@ -1662,21 +1660,23 @@ class UpdJSONInsertPositional : public UpdatePrimitive
 
 protected:
   store::UpdateConsts::UpdPrimKind theKind;
-  std::vector<store::Item_t>       theNewMembers;
+  std::vector<store::Item_t>       theMembers;
   xs_integer                       thePosition;
 
   long                             theNumApplied;
 
-  UpdJSONInsertPositional(
+  UpdJSONArrayInsert(
         CollectionPul* pul,
-        const QueryLoc*,
-        store::UpdateConsts::UpdPrimKind kind,
+        const QueryLoc* loc,
         store::Item_t& target,
-        store::Item_t& pos,
+        xs_integer& pos,
         std::vector<store::Item_t>& members);
 
 public:
-  store::UpdateConsts::UpdPrimKind getKind() const { return theKind; }
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_ARRAY_INSERT;
+  }
 
   void apply();
   void undo();

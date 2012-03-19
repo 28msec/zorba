@@ -17,8 +17,12 @@
 #define ZORBA_SIMPLE_STORE_PUL_PRIMITIVE_FACTORY_H
 
 #include "common/shared_types.h"
+
+#include "zorbatypes/integer.h"
+
 #include "store/api/update_consts.h"
 #include "store/api/index.h"
+
 #include "shared_types.h"
 
 namespace zorba { namespace simplestore {
@@ -64,7 +68,7 @@ namespace zorba { namespace simplestore {
   class UpdRemoveFromHashMap;
 #ifdef ZORBA_WITH_JSON
   class UpdJSONObjectInsert;
-  class UpdJSONInsertPositional;
+  class UpdJSONArrayInsert;
   class UpdJSONDelete;
   class UpdJSONReplaceValue;
   class UpdJSONRename;
@@ -368,17 +372,16 @@ public:
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      std::vector<store::Item*>& names,
-      std::vector<store::Item*>& values);
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
 
-  virtual UpdJSONInsertPositional*
+  virtual UpdJSONArrayInsert*
   createUpdJSONArrayInsert(
         CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::UpdateConsts::UpdPrimKind kind,
-        store::Item_t& aTarget,
-        store::Item_t& aPos,
-        std::vector<store::Item_t>& aMembers);
+        const QueryLoc* loc,
+        store::Item_t& target,
+        xs_integer& pos,
+        std::vector<store::Item_t>& members);
 
   virtual UpdJSONDelete*
   createUpdJSONDelete(

@@ -6613,22 +6613,106 @@ public:
 class JSONArrayInsertExpr : public exprnode
 {
 protected:
-  const exprnode* theSourceExpr;
   const exprnode* theTargetExpr;
   const exprnode* thePositionExpr;
+  const exprnode* theValueExpr;
 
 public:
   JSONArrayInsertExpr(
     const QueryLoc& loc,
-    exprnode* sourceExpr,
+    exprnode* valueExpr,
     exprnode* targetExpr,
     exprnode* posExpr);
 
   ~JSONArrayInsertExpr();
 
-  const exprnode* getSourceExpr() const { return theSourceExpr; }
+  void accept(parsenode_visitor&) const;
+};
 
-  const exprnode* getTargetExpr() const { return theTargetExpr; }
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONArrayAppendExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theValueExpr;
+
+public:
+  JSONArrayAppendExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* valueExpr);
+
+  ~JSONArrayAppendExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONDeleteExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theSelectorExpr;
+
+public:
+  JSONDeleteExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr);
+
+  ~JSONDeleteExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONReplaceExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theSelectorExpr;
+  const exprnode* theValueExpr;
+
+public:
+  JSONReplaceExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr);
+
+  ~JSONReplaceExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONRenameExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theNameExpr;
+  const exprnode* theNewNameExpr;
+
+public:
+  JSONRenameExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr);
+
+  ~JSONRenameExpr();
 
   void accept(parsenode_visitor&) const;
 };

@@ -540,147 +540,33 @@ public:
 #ifdef ZORBA_WITH_JSON
 /**
  * 
- *      json:insert-as-first
+ *      internal function 
  *    
  * Author: Zorba Team
  */
-class JSONInsertAsFirstIterator : public NaryBaseIterator<JSONInsertAsFirstIterator, PlanIteratorState>
+class JSONArrayInsertIterator : public NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(JSONInsertAsFirstIterator);
+  SERIALIZABLE_CLASS(JSONArrayInsertIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONInsertAsFirstIterator,
-    NaryBaseIterator<JSONInsertAsFirstIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayInsertIterator,
+    NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<JSONInsertAsFirstIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>*)this);
   }
 
-  JSONInsertAsFirstIterator(
+  JSONArrayInsertIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONInsertAsFirstIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~JSONInsertAsFirstIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- *      json:insert-after
- *    
- * Author: Zorba Team
- */
-class JSONInsertAfterIterator : public NaryBaseIterator<JSONInsertAfterIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONInsertAfterIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONInsertAfterIterator,
-    NaryBaseIterator<JSONInsertAfterIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONInsertAfterIterator, PlanIteratorState>*)this);
-  }
-
-  JSONInsertAfterIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONInsertAfterIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONInsertAfterIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- *      json:insert-before
- *    
- * Author: Zorba Team
- */
-class JSONInsertBeforeIterator : public NaryBaseIterator<JSONInsertBeforeIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONInsertBeforeIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONInsertBeforeIterator,
-    NaryBaseIterator<JSONInsertBeforeIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONInsertBeforeIterator, PlanIteratorState>*)this);
-  }
-
-  JSONInsertBeforeIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONInsertBeforeIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONInsertBeforeIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- *      json:insert-as-last
- *    
- * Author: Zorba Team
- */
-class JSONInsertAsLastIterator : public NaryBaseIterator<JSONInsertAsLastIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONInsertAsLastIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONInsertAsLastIterator,
-    NaryBaseIterator<JSONInsertAsLastIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONInsertAsLastIterator, PlanIteratorState>*)this);
-  }
-
-  JSONInsertAsLastIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONInsertAsLastIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONInsertAsLastIterator();
+  virtual ~JSONArrayInsertIterator();
 
   void accept(PlanIterVisitor& v) const;
 

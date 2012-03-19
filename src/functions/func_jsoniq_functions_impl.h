@@ -37,10 +37,10 @@ void populate_context_jsoniq_functions_impl(static_context* sctx);
       ..., 
       $nameN as xs:integer, $valueN as item())
 ********************************************************************************/
-class op_object_insert : public function
+class op_zorba_object_insert : public function
 {
 public:
-  op_object_insert(const signature& sig)
+  op_zorba_object_insert(const signature& sig)
     : 
     function(sig, FunctionConsts::OP_OBJECT_INSERT_N)
   {

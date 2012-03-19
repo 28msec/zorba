@@ -1940,6 +1940,14 @@ DEFAULT_END_VISIT (ReverseAxis);
 
   DEFAULT_VISIT (JSONArrayInsertExpr);
 
+  DEFAULT_VISIT (JSONArrayAppendExpr);
+
+  DEFAULT_VISIT (JSONDeleteExpr);
+
+  DEFAULT_VISIT (JSONReplaceExpr);
+
+  DEFAULT_VISIT (JSONRenameExpr);
+
   void* begin_visit(const JSON_Test& n)
   {
     os << store::StoreConsts::toString(n.get_kind()) << "()";

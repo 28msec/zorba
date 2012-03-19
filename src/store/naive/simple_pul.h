@@ -73,25 +73,28 @@ public:
   class CompareFunction
   {
   public:
-    static bool equal(const XmlNode* n1, const XmlNode* n2)
+    static bool equal(const store::Item* n1, const store::Item* n2)
     {
       return n1 == n2;
     }
 
-    static uint32_t hash(const XmlNode* n)
+    static uint32_t hash(const store::Item* n)
     {
       return hashfun::h32((void*)(&n), sizeof(void*), FNV_32_INIT);
     }
   };
 
-  typedef HashMap<XmlNode*, NodeUpdates*, CompareFunction>::iterator iterator;
+  typedef HashMap<store::Item*, NodeUpdates*, CompareFunction> Map;
+
+  typedef Map::iterator iterator;
 
 private:
 
-  HashMap<XmlNode*, NodeUpdates*, CompareFunction> theMap;
+  Map    theMap;
+  csize  theNumDeletes;
 
 public:
-  NodeToUpdatesMap() : theMap(8, false)
+  NodeToUpdatesMap() : theMap(8, false), theNumDeletes(0)
   {
   }
 
@@ -103,11 +106,11 @@ public:
 
   bool empty() const { return theMap.empty(); }
 
-  bool get(XmlNode* key, NodeUpdates*& value) { return theMap.get(key, value); }
+  bool get(store::Item* key, NodeUpdates*& value) { return theMap.get(key, value); }
 
-  bool insert(XmlNode* key, NodeUpdates* value) { return theMap.insert(key, value); }
+  bool insert(store::Item* key, NodeUpdates* value) { return theMap.insert(key, value); }
 
-  bool remove(XmlNode* key) { return theMap.erase(key); }
+  bool remove(store::Item* key) { return theMap.erase(key); }
 
   void clear() { theMap.clear(); }
 };
@@ -153,7 +156,7 @@ class CollectionPul
 
 protected:
   // Bookeeping
-  Collection                 * theCollection;
+  Collection                       * theCollection;
 
   PULImpl                          * thePul;
 
@@ -280,7 +283,9 @@ public:
     UP_LIST_CREATE_COLLECTION,
     UP_LIST_CREATE_INDEX
 #ifdef ZORBA_WITH_JSON
-    ,UP_LIST_JSON_POSITIONAL_INSERT,
+    ,
+    UP_LIST_JSON_OBJECT_INSERT,
+    UP_LIST_JSON_ARRAY_INSERT,
     UP_LIST_JSON_DELETE
 #endif
   };
@@ -393,13 +398,13 @@ public:
   // Revalidation primitives
   void addSetElementType(
         const QueryLoc* aQueryLoc,
-        store::Item_t&               target,
-        store::Item_t&               typeName,
-        store::Item_t&               value,
-        bool                         haveValue,
-        bool                         haveEmptyValue,
-        bool                         haveTypedValue,
-        bool                         isInSubstitutionGroup);
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& value,
+        bool haveValue,
+        bool haveEmptyValue,
+        bool haveTypedValue,
+        bool isInSubstitutionGroup);
 
   void addSetElementType(
         const QueryLoc* aQueryLoc,
@@ -555,39 +560,23 @@ public:
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
 
+  virtual void addJSONObjectInsert(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        std::vector<store::Item_t>& names,
+        std::vector<store::Item_t>& values);
+
+  virtual void addJSONArrayInsert(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& target,
+        xs_integer& pos,
+        std::vector<store::Item_t>& members);
+
   virtual void addJSONDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
       store::Item_t& node);
 
-  virtual void addJSONObjectInsert(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        std::vector<store::Item*>& names,
-        std::vector<store::Item*>& values);
-
-  virtual void addJSONInsertFirst(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        std::vector<store::Item_t>& members);
-
-  virtual void addJSONInsertLast(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        std::vector<store::Item_t>& members);
-
-  virtual void addJSONInsertBefore(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        store::Item_t& pos,
-        std::vector<store::Item_t>& members);
-
-  virtual void addJSONInsertAfter(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        store::Item_t& pos,
-        std::vector<store::Item_t>& members);
-  
   virtual void addJSONReplaceValue(
         const QueryLoc* aQueryLoc,
         store::Item_t& target,
@@ -618,6 +607,7 @@ public:
         store::IndexEntryCreator* creator);
 
   void setValidator(store::SchemaValidator* validator);
+
   store::SchemaValidator* getValidator() const { return theValidator; }
 
   bool inheritNSBindings() const { return theInheritNSBindings; }
@@ -629,22 +619,30 @@ public:
 
 
 protected:
-  void mergeUpdateList(
-        CollectionPul* myPul,
-        std::vector<UpdatePrimitive*>& myList,
-        std::vector<UpdatePrimitive*>& otherList,
-        UpdListKind listKind);
+  void mergeTargetedUpdateLists(
+      CollectionPul* myPul,
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
+
+  void mergeCollectionUpdateLists(
+      CollectionPul* myPul,
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
+    
+  void mergeSimpleUpdateLists(
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
 
 #ifdef ZORBA_WITH_JSON
   void mergeJSONUpdateList(
-        CollectionPul* myPul,
-        std::vector<UpdatePrimitive*>& myList,
-        std::vector<UpdatePrimitive*>& otherList,
-        UpdListKind listKind);
+      CollectionPul* myPul,
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList,
+      UpdListKind listKind);
 #endif
 
   void addInsertChildren(
-        const QueryLoc* aQueryLoc,
+        const QueryLoc* loc,
         store::UpdateConsts::UpdPrimKind kind,
         store::Item_t& target,
         store::Item_t& sibling,

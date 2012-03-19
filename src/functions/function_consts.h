@@ -230,6 +230,7 @@ typedef enum
 
 #ifdef ZORBA_WITH_JSON
   OP_OBJECT_INSERT_N,
+  OP_ARRAY_INSERT_N,
 #endif
 
 #include "functions/function_enum.h"

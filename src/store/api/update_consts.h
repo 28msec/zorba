@@ -103,12 +103,10 @@ public:
     UP_REMOVE_FROM_HASHMAP
 
 #ifdef ZORBA_WITH_JSON
-    ,UP_JSON_INSERT,
+    ,
+    UP_JSON_OBJECT_INSERT,
+    UP_JSON_ARRAY_INSERT,
     UP_JSON_DELETE,
-    UP_JSON_INSERT_FIRST,
-    UP_JSON_INSERT_LAST,
-    UP_JSON_INSERT_BEFORE,
-    UP_JSON_INSERT_AFTER,
     UP_JSON_REPLACE_VALUE,
     UP_JSON_RENAME
 #endif
@@ -122,24 +120,15 @@ public:
   static bool isReplaceValue(UpdPrimKind k)
   {
     return (k == UP_REPLACE_ATTR_VALUE ||
-          k == UP_REPLACE_TEXT_VALUE ||
-          k == UP_REPLACE_PI_VALUE ||
-          k == UP_REPLACE_COMMENT_VALUE);
+            k == UP_REPLACE_TEXT_VALUE ||
+            k == UP_REPLACE_PI_VALUE ||
+            k == UP_REPLACE_COMMENT_VALUE);
   }
 
   static bool isReplaceNode(UpdPrimKind k)
   {
-    return (k == UP_REPLACE_CHILD ||
-          k == UP_REPLACE_ATTRIBUTE);
+    return (k == UP_REPLACE_CHILD || k == UP_REPLACE_ATTRIBUTE);
   }
-
-#ifdef ZORBA_WITH_JSON
-  static bool isPositionalArray(UpdPrimKind k)
-  {
-    return (k == UP_JSON_INSERT_BEFORE ||
-            k == UP_JSON_INSERT_AFTER);
-  }
-#endif
 
 
 static std::string toString(UpdPrimKind k)
@@ -229,8 +218,10 @@ static std::string toString(UpdPrimKind k)
     case UP_REVALIDATE:
       return "revalidate";
 #ifdef ZORBA_WITH_JSON
-    case UP_JSON_INSERT:
-      return "jsonInsert";
+    case UP_JSON_OBJECT_INSERT:
+      return "jsonObjectInsert";
+    case UP_JSON_ARRAY_INSERT:
+      return "jsonArrayInsert";
 #endif
     default:
       return "unknownUpdatePrimitive";

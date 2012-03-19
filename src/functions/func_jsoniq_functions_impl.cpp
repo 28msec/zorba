@@ -37,7 +37,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-bool op_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
+bool op_zorba_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
 {
   if (producer == 0 || (producer % 2))
     return false;
@@ -53,7 +53,7 @@ bool op_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
 }
 
 
-PlanIter_t op_object_insert::codegen(
+PlanIter_t op_zorba_object_insert::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -61,6 +61,21 @@ PlanIter_t op_object_insert::codegen(
     expr& ann) const
 {
   return new JSONObjectInsertIterator(sctx, loc, args, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool op_zorba_array_insert::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  if (producer == 2 &&
+      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+  {
+    return true;
+  }
+
+  return false;
 }
 
 
@@ -90,7 +105,7 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
 
 void populate_context_jsoniq_functions_impl(static_context* sctx)
 {
-  DECL(sctx, op_object_insert,
+  DECL(sctx, op_zorba_object_insert,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops",
                      "",
                      "object-insert"), 
