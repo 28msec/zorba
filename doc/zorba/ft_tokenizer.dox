@@ -128,6 +128,10 @@ you need to implement the \c %tokenize_string() function where:
     <td>\c item</td>
     <td>
       The \c Item whence this token came.
+      If the token occurred within an element,
+      the \c Item is the text node.
+      If the token occurred within an attribute,
+      the \c Item is the attribute node.
     </td>
   </tr>
 </table>
