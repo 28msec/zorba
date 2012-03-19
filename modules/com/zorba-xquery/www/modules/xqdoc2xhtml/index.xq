@@ -1261,7 +1261,7 @@ declare %private function xqdoc2html:imports(
     for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
        concat('import schema namespace ',
-              $namespaces//xqdoc:namespace[@uri = $import/xqdoc:uri/text()][1]/@prefix,
+              $namespaces//xqdoc:namespace[(@uri = $import/xqdoc:uri/text()) and (@isSchema = "true")]/@prefix,
               ' =  "',
               string($import/xqdoc:uri/text()),'";'),"
 ")

@@ -129,7 +129,7 @@ bool external_function::propagatesInputNodes(
 
     for (csize i = 0; i < numLiterals; ++i)
     {
-      if (ann->getLiteral(i)->getLongValue() == input + 1)
+      if (ann->getLiteral(i)->getLongValue() == (unsigned int)input + 1)
         return true;
     }
 
@@ -163,7 +163,7 @@ bool external_function::mustCopyInputNodes(
 
     for (csize i = 0; i < numLiterals; ++i)
     {
-      if (ann->getLiteral(i)->getLongValue() == input + 1)
+      if (ann->getLiteral(i)->getLongValue() == (unsigned int)input + 1)
         return true;
     }
 

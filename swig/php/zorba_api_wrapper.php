@@ -4,7 +4,7 @@ if(!extension_loaded('zorba_api')) {
   $zorbaExtNotLoaded = "Zorba extension couldn't loaded";
   if(function_exists('dl')) {
     if(strtolower(substr(PHP_OS, 0, 3)) === 'win') {
-      if(!dl('php_zorba_api.dll')) {
+      if(!dl('zorba_api.dll')) {
         throw new Exception($zorbaExtNotLoaded);
       }  
     } else {
