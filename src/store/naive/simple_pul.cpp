@@ -1121,7 +1121,7 @@ void PULImpl::addJSONObjectInsert(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(obj, updates);
 
-  // merge object-insert primitives
+  // merge object-insert primitives and raise error if duplicate names
   if (found)
   {
     NodeUpdates::iterator ite = updates->begin();
@@ -1132,25 +1132,25 @@ void PULImpl::addJSONObjectInsert(
       if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_INSERT)
         continue;
 
-      UpdJSONObjectInsert* insUpd = static_cast<UpdJSONObjectInsert*>(*ite);
+      UpdJSONObjectInsert* upd = static_cast<UpdJSONObjectInsert*>(*ite);
 
-      csize numPairs1 = insUpd->theNames.size();
+      csize numPairs1 = upd->theNames.size();
       csize numPairs2 = names.size();
       csize numPairs = numPairs1;
 
-      insUpd->theNames.resize(numPairs1 + numPairs2);
-      insUpd->theValues.resize(numPairs1 + numPairs2);
+      upd->theNames.resize(numPairs1 + numPairs2);
+      upd->theValues.resize(numPairs1 + numPairs2);
 
       for (csize i = 0; i < numPairs2; ++i, ++numPairs)
       {
         for (csize j = 0; j < numPairs1; ++j)
         {
-          if (names[i]->equals(insUpd->theNames[j]))
+          if (names[i]->equals(upd->theNames[j]))
             RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
         }
         
-        insUpd->theNames[numPairs].transfer(names[i]);
-        insUpd->theValues[numPairs].transfer(values[i]);
+        upd->theNames[numPairs].transfer(names[i]);
+        upd->theValues[numPairs].transfer(values[i]);
       }
       
       return;
@@ -1165,6 +1165,86 @@ void PULImpl::addJSONObjectInsert(
   updates = new NodeUpdates(1);
   (*updates)[0] = upd;
   pul->theNodeToUpdatesMap.insert(obj, updates);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectDelete(
+   const QueryLoc* loc,
+   store::Item_t& target,
+   store::Item_t& name)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // skip deletions with duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_DELETE)
+        continue;
+
+      UpdJSONObjectDelete* upd = static_cast<UpdJSONObjectDelete*>(*ite);
+
+      if (upd->theName->equals(name))
+        return;
+    }
+  }
+
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdJSONObjectDelete(pul, loc, target, name);
+
+  pul->theJSONObjectDeleteList.push_back(upd);
+
+  updates = new NodeUpdates(1);
+  (*updates)[0] = upd;
+  pul->theNodeToUpdatesMap.insert(obj, updates);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectReplaceValue(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& name,
+     store::Item_t& newValue)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+
+  pul->theJSONObjectReplaceValueList.push_back(upd);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectRename(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& name,
+     store::Item_t& newName)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdJSONObjectRename(pul, loc, target, name, newName);
+
+  pul->theJSONObjectRenameList.push_back(upd);
 }
 
 
@@ -1229,56 +1309,37 @@ void PULImpl::addJSONArrayInsert(
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addJSONDelete(
+void PULImpl::addJSONArrayDelete(
    const QueryLoc* loc,
    store::Item_t& target,
-   store::Item_t& deletee)
+   xs_integer& pos)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
   UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONDelete(pul, loc, target, deletee);
+  createUpdJSONArrayDelete(pul, loc, target, pos);
 
-  pul->theJSONDeleteList.push_back(upd);
+  pul->theJSONArrayDeleteList.push_back(upd);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addJSONReplaceValue(
+void PULImpl::addJSONArrayReplaceValue(
      const QueryLoc* loc,
      store::Item_t& target,
-     store::Item_t& selector,
+     xs_integer& pos,
      store::Item_t& newValue)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  UpdatePrimitive* upd =
-    GET_STORE().getPULFactory().createUpdJSONReplaceValue(
-      pul, loc, target, selector, newValue);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
 
-  pul->theJSONReplaceValueList.push_back(upd);
+  pul->theJSONArrayReplaceValueList.push_back(upd);
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::addJSONRename(
-     const QueryLoc* loc,
-     store::Item_t& target,
-     store::Item_t& selector,
-     store::Item_t& newName)
-{
-  CollectionPul* pul = getCollectionPul(target.getp());
-
-  UpdatePrimitive* upd =
-    GET_STORE().getPULFactory().createUpdJSONRename(
-      pul, loc, target, selector, newName);
-
-  pul->theJSONRenameList.push_back(upd);
-}
 #endif // ZORBA_WITH_JSON
 
 
@@ -1351,25 +1412,29 @@ void PULImpl::mergeUpdates(store::Item* other)
                                thisPul->theJSONObjectInsertList,
                                otherPul->theJSONObjectInsertList);
 
-      mergeJSONUpdateList(thisPul,
-                          thisPul->theJSONArrayInsertList,
-                          otherPul->theJSONArrayInsertList,
-                          UP_LIST_JSON_ARRAY_INSERT);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectDeleteList,
+                               otherPul->theJSONObjectRenameList);
 
-      mergeJSONUpdateList(thisPul,
-                          thisPul->theJSONDeleteList,
-                          otherPul->theJSONDeleteList,
-                          UP_LIST_JSON_DELETE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectReplaceValueList,
+                               otherPul->theJSONObjectReplaceValueList);
 
-      mergeJSONUpdateList(thisPul,
-                          thisPul->theJSONReplaceValueList,
-                          otherPul->theJSONReplaceValueList,
-                          UP_LIST_NONE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectDeleteList,
+                               otherPul->theJSONObjectRenameList);
 
-      mergeJSONUpdateList(thisPul,
-                          thisPul->theJSONReplaceValueList,
-                          otherPul->theJSONReplaceValueList,
-                          UP_LIST_NONE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayInsertList,
+                               otherPul->theJSONArrayInsertList);
+      
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayDeleteList,
+                               otherPul->theJSONArrayDeleteList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayReplaceValueList,
+                               otherPul->theJSONArrayReplaceValueList);
 #endif
 
       ++thisIte;
@@ -1474,12 +1539,13 @@ void PULImpl::mergeJSONUpdateList(
     }
     case UP_LIST_JSON_DELETE:
     {
-      UpdJSONDelete* lOther = static_cast<UpdJSONDelete*>(otherUpd);
+      /*
+      UpdJSONArrayDelete* lOther = static_cast<UpdJSONArrayDelete*>(otherUpd);
       if (!lOther->theTarget->isJSONObject())
       {
         for (csize j = 0; j < numUpdates; ++j)
         {
-          UpdJSONDelete* lThis = static_cast<UpdJSONDelete*>(myList[j]);
+          UpdJSONArrayDelete* lThis = static_cast<UpdJSONArrayDelete*>(myList[j]);
           if (lThis->theTarget->isJSONObject() ||
               lThis->theDeletee->getIntegerValue() > lOther->theDeletee->getIntegerValue())
           {
@@ -1490,6 +1556,7 @@ void PULImpl::mergeJSONUpdateList(
           inserted = true;
         }
       }
+      */
       break;
     }
     default:
@@ -2136,10 +2203,12 @@ CollectionPul::~CollectionPul()
 
 #ifdef ZORBA_WITH_JSON
   cleanList(theJSONObjectInsertList);
+  cleanList(theJSONObjectDeleteList);
+  cleanList(theJSONObjectReplaceValueList);
+  cleanList(theJSONObjectRenameList);
   cleanList(theJSONArrayInsertList);
-  cleanList(theJSONDeleteList);
-  cleanList(theJSONReplaceValueList);
-  cleanList(theJSONRenameList);
+  cleanList(theJSONArrayDeleteList);
+  cleanList(theJSONArrayReplaceValueList);
 #endif
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -2162,6 +2231,16 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theReplaceContentList);
   switchPulInPrimitivesList(theDeleteList);
   switchPulInPrimitivesList(theRevalidateList);
+
+#ifdef ZORBA_WITH_JSON
+  switchPulInPrimitivesList(theJSONObjectInsertList);
+  switchPulInPrimitivesList(theJSONObjectDeleteList);
+  switchPulInPrimitivesList(theJSONObjectReplaceValueList);
+  switchPulInPrimitivesList(theJSONObjectRenameList);
+  switchPulInPrimitivesList(theJSONArrayInsertList);
+  switchPulInPrimitivesList(theJSONArrayDeleteList);
+  switchPulInPrimitivesList(theJSONArrayReplaceValueList);
+#endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
@@ -2402,11 +2481,14 @@ void CollectionPul::applyUpdates()
     applyList(theDeleteList);
 
 #ifdef ZORBA_WITH_JSON
-    applyList(theJSONReplaceValueList);
-    applyList(theJSONRenameList);
-    applyList(theJSONDeleteList);
-    applyList(theJSONArrayInsertList);
+    applyList(theJSONObjectDeleteList);
+    applyList(theJSONObjectReplaceValueList);
+    applyList(theJSONObjectRenameList);
     applyList(theJSONObjectInsertList);
+
+    applyList(theJSONArrayDeleteList);
+    applyList(theJSONArrayReplaceValueList);
+    applyList(theJSONArrayInsertList);
 #endif
 
     // Check if any inconsistencies that were detected during the application
@@ -2651,10 +2733,13 @@ void CollectionPul::undoUpdates()
 
 #ifdef ZORBA_WITH_JSON
     undoList(theJSONObjectInsertList);
+    undoList(theJSONObjectRenameList);
+    undoList(theJSONObjectReplaceValueList);
+    undoList(theJSONObjectDeleteList);
+
     undoList(theJSONArrayInsertList);
-    undoList(theJSONDeleteList);
-    undoList(theJSONReplaceValueList);
-    undoList(theJSONRenameList);
+    undoList(theJSONArrayReplaceValueList);
+    undoList(theJSONArrayDeleteList);
 #endif
 
     undoList(theDeleteList);

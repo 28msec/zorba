@@ -455,35 +455,6 @@ JSONDeleteIterator::~JSONDeleteIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONRenameIterator>
-const char* JSONRenameIterator::class_name_str = "JSONRenameIterator";
-JSONRenameIterator::class_factory<JSONRenameIterator>
-JSONRenameIterator::g_class_factory;
-
-const serialization::ClassVersion 
-JSONRenameIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONRenameIterator::class_versions_count =
-sizeof(JSONRenameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void JSONRenameIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONRenameIterator::~JSONRenameIterator() {}
-
-// </JSONRenameIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONReplaceValueIterator>
 const char* JSONReplaceValueIterator::class_name_str = "JSONReplaceValueIterator";
 JSONReplaceValueIterator::class_factory<JSONReplaceValueIterator>
@@ -510,6 +481,35 @@ void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const {
 JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 
 // </JSONReplaceValueIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONRenameIterator>
+const char* JSONRenameIterator::class_name_str = "JSONRenameIterator";
+JSONRenameIterator::class_factory<JSONRenameIterator>
+JSONRenameIterator::g_class_factory;
+
+const serialization::ClassVersion 
+JSONRenameIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int JSONRenameIterator::class_versions_count =
+sizeof(JSONRenameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void JSONRenameIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONRenameIterator::~JSONRenameIterator() {}
+
+// </JSONRenameIterator>
 
 #endif
 

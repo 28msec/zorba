@@ -274,11 +274,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//op-zorba:array-insert
-class op_zorba_array_insert : public function
+//op-zorba:json-array-insert
+class op_zorba_json_array_insert : public function
 {
 public:
-  op_zorba_array_insert(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_json_array_insert(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -296,11 +296,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:delete-pair
-class fn_jsoniq_delete_pair : public function
+//op-zorba:json-delete
+class op_zorba_json_delete : public function
 {
 public:
-  fn_jsoniq_delete_pair(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_json_delete(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -310,19 +310,17 @@ public:
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:rename
-class fn_jsoniq_rename : public function
+//op-zorba:json-replace-value
+class op_zorba_json_replace_value : public function
 {
 public:
-  fn_jsoniq_rename(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_json_replace_value(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -333,18 +331,18 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:replace-value-in-object
-class fn_jsoniq_replace_value_in_object : public function
+//op-zorba:json-rename
+class op_zorba_json_rename : public function
 {
 public:
-  fn_jsoniq_replace_value_in_object(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_json_rename(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -354,8 +352,6 @@ public:
   short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
   CODEGEN_DECL();
 };

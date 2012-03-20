@@ -1652,25 +1652,143 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdJSONArrayInsert : public UpdatePrimitive
+class UpdJSONObjectDelete: public UpdatePrimitive
 {
   friend class PULImpl;
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
 
 protected:
-  store::UpdateConsts::UpdPrimKind theKind;
-  std::vector<store::Item_t>       theMembers;
-  xs_integer                       thePosition;
+  store::Item_t  theName;
 
-  long                             theNumApplied;
+  store::Item_t  theOldValue;
 
+protected:
+  UpdJSONObjectDelete(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& name);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_DELETE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectReplaceValue: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theName;
+  store::Item_t  theNewValue;
+
+  store::Item_t  theOldValue;
+
+protected:
+  UpdJSONObjectReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectRename: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theName;
+  store::Item_t  theNewName;
+
+protected:
+  UpdJSONObjectRename(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_RENAME;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayUpdate : public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  xs_integer  thePosition;
+
+protected:
+  UpdJSONArrayUpdate(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayInsert : public UpdJSONArrayUpdate
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  std::vector<store::Item_t>  theMembers;
+
+  long                        theNumApplied;
+
+protected:
   UpdJSONArrayInsert(
-        CollectionPul* pul,
-        const QueryLoc* loc,
-        store::Item_t& target,
-        xs_integer& pos,
-        std::vector<store::Item_t>& members);
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos,
+      std::vector<store::Item_t>& members);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1686,26 +1804,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdJSONDelete: public UpdatePrimitive
+class UpdJSONArrayDelete : public UpdJSONArrayUpdate
 {
   friend class PULImpl;
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
 
 protected:
-  store::UpdateConsts::UpdPrimKind theKind;
-  store::Item_t                    theDeletee;
-
-  UpdJSONDelete(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& selector);
+  UpdJSONArrayDelete(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
-    return store::UpdateConsts::UP_JSON_DELETE;
+    return store::UpdateConsts::UP_JSON_ARRAY_DELETE;
   }
 
   void apply();
@@ -1716,64 +1831,36 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdJSONReplaceValue: public UpdatePrimitive
+class UpdJSONArrayReplaceValue: public UpdJSONArrayUpdate
 {
   friend class PULImpl;
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
 
 protected:
-  store::Item_t  theSelector;
   store::Item_t  theNewValue;
+
   store::Item_t  theOldValue;
 
-  UpdJSONReplaceValue(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& selector,
-        store::Item_t& newValue);
-
-public:
-  store::UpdateConsts::UpdPrimKind getKind() const
-  {
-    return store::UpdateConsts::UP_JSON_REPLACE_VALUE;
-  }
-
-  void apply();
-  void undo();
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class UpdJSONRename: public UpdatePrimitive
-{
-  friend class PULImpl;
-  friend class CollectionPul;
-  friend class PULPrimitiveFactory;
-
 protected:
-  store::Item_t  theSelector;
-  store::Item_t  theNewName;
-
-  UpdJSONRename(
-        CollectionPul* pul,
-        const QueryLoc*,
-        store::Item_t& target,
-        store::Item_t& selector,
-        store::Item_t& newName);
+  UpdJSONArrayReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      xs_integer& pos,
+      store::Item_t& newValue);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
-    return store::UpdateConsts::UP_JSON_RENAME;
+    return store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE;
   }
 
   void apply();
   void undo();
 };
+
+
 #endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */

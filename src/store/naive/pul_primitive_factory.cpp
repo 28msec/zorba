@@ -557,6 +557,47 @@ PULPrimitiveFactory::createUpdJSONObjectInsert(
 
 /******************************************************************************
 *******************************************************************************/
+UpdJSONObjectDelete*
+PULPrimitiveFactory::createUpdJSONObjectDelete(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    store::Item_t& name)
+{
+  return new UpdJSONObjectDelete(pul, loc, target, name);
+}
+
+
+/******************************************************************************
+*******************************************************************************/
+UpdJSONObjectReplaceValue*
+PULPrimitiveFactory::createUpdJSONObjectReplaceValue(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    store::Item_t& name,
+    store::Item_t& newValue)
+{
+  return new UpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+}
+
+
+/******************************************************************************
+*******************************************************************************/
+UpdJSONObjectRename*
+PULPrimitiveFactory::createUpdJSONObjectRename(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    store::Item_t& name,
+    store::Item_t& newName)
+{
+  return new UpdJSONObjectRename(pul, loc, target, name, newName);
+}
+
+
+/******************************************************************************
+*******************************************************************************/
 UpdJSONArrayInsert*
 PULPrimitiveFactory::createUpdJSONArrayInsert(
     CollectionPul* pul,
@@ -568,43 +609,33 @@ PULPrimitiveFactory::createUpdJSONArrayInsert(
   return new UpdJSONArrayInsert(pul, loc, target, pos, members);
 }
 
-  /***************************************************************************
-   ***************************************************************************/
-  UpdJSONDelete*
-  PULPrimitiveFactory::createUpdJSONDelete(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector)
-  {
-    return new UpdJSONDelete(pul, aLoc, aTarget, aSelector);
-  }
 
-  /***************************************************************************
-   ***************************************************************************/
-  UpdJSONReplaceValue*
-  PULPrimitiveFactory::createUpdJSONReplaceValue(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector,
-        store::Item_t& aNewValue)
-  {
-    return new UpdJSONReplaceValue(pul, aLoc, aTarget, aSelector, aNewValue);
-  }
+/******************************************************************************
+*******************************************************************************/
+UpdJSONArrayDelete*
+PULPrimitiveFactory::createUpdJSONArrayDelete(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    xs_integer& pos)
+{
+  return new UpdJSONArrayDelete(pul, loc, target, pos);
+}
 
-  /***************************************************************************
-   ***************************************************************************/
-  UpdJSONRename*
-  PULPrimitiveFactory::createUpdJSONRename(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector,
-        store::Item_t& aNewName)
-  {
-    return new UpdJSONRename(pul, aLoc, aTarget, aSelector, aNewName);
-  }
+
+/******************************************************************************
+*******************************************************************************/
+UpdJSONArrayReplaceValue*
+PULPrimitiveFactory::createUpdJSONArrayReplaceValue(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    xs_integer& pos,
+    store::Item_t& newValue)
+{
+  return new UpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+}
+
 #endif
 
 } /* namespace simplestore */ } /* namespace zorba */

@@ -166,7 +166,7 @@ PlanIter_t fn_jsoniq_null::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t op_zorba_array_insert::codegen(
+PlanIter_t op_zorba_json_array_insert::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -178,7 +178,7 @@ PlanIter_t op_zorba_array_insert::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_delete_pair::codegen(
+PlanIter_t op_zorba_json_delete::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -190,19 +190,7 @@ PlanIter_t fn_jsoniq_delete_pair::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_rename::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONRenameIterator(sctx, loc, argv);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_replace_value_in_object::codegen(
+PlanIter_t op_zorba_json_replace_value::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -210,6 +198,18 @@ PlanIter_t fn_jsoniq_replace_value_in_object::codegen(
   expr& ann) const
 {
   return new JSONReplaceValueIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_json_rename::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONRenameIterator(sctx, loc, argv);
 }
 
 #endif
@@ -416,13 +416,13 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, op_zorba_array_insert,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","array-insert"), 
+    DECL_WITH_KIND(sctx, op_zorba_json_array_insert,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-array-insert"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::OP_ZORBA_ARRAY_INSERT_3);
+        FunctionConsts::OP_ZORBA_JSON_ARRAY_INSERT_3);
 
   }
 
@@ -434,12 +434,12 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_delete_pair,
-        (createQName("http://www.jsoniq.org/functions","","delete-pair"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+    DECL_WITH_KIND(sctx, op_zorba_json_delete,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-delete"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_DELETE_PAIR_2);
+        FunctionConsts::OP_ZORBA_JSON_DELETE_2);
 
   }
 
@@ -451,48 +451,13 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_delete_pair,
-        (createQName("http://www.jsoniq.org/functions","","delete-member"), 
-        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_DELETE_MEMBER_2);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_rename,
-        (createQName("http://www.jsoniq.org/functions","","rename"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_RENAME_3);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_replace_value_in_object,
-        (createQName("http://www.jsoniq.org/functions","","replace-value-in-object"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+    DECL_WITH_KIND(sctx, op_zorba_json_replace_value,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-replace-value"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_REPLACE_VALUE_IN_OBJECT_3);
+        FunctionConsts::OP_ZORBA_JSON_REPLACE_VALUE_3);
 
   }
 
@@ -504,13 +469,13 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_replace_value_in_object,
-        (createQName("http://www.jsoniq.org/functions","","replace-value-in-array"), 
-        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+    DECL_WITH_KIND(sctx, op_zorba_json_rename,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-rename"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::FN_JSONIQ_REPLACE_VALUE_IN_ARRAY_3);
+        FunctionConsts::OP_ZORBA_JSON_RENAME_3);
 
   }
 

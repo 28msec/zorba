@@ -289,28 +289,39 @@ public:
         std::vector<Item_t>& names,
         std::vector<store::Item_t>& values) = 0;
 
+  virtual void addJSONObjectDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name) = 0;
+
+  virtual void addJSONObjectReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue) = 0;
+
+  virtual void addJSONObjectRename(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName) = 0;
+
   virtual void addJSONArrayInsert(
         const QueryLoc* aQueryLoc,
         Item_t& target,
         xs_integer& pos,
         std::vector<Item_t>& members) = 0;
 
-  virtual void addJSONDelete(
+  virtual void addJSONArrayDelete(
       const QueryLoc* aQueryLoc,
-      Item_t& target,
-      Item_t& selector) = 0;
+      store::Item_t& target,
+      xs_integer& pos) = 0;
 
-  virtual void addJSONReplaceValue(
-        const QueryLoc* aQueryLoc,
-        Item_t& target,
-        Item_t& pos,
-        Item_t& newValue) = 0;
-
-  virtual void addJSONRename(
-        const QueryLoc* aQueryLoc,
-        Item_t& target,
-        Item_t& selector,
-        Item_t& newName) = 0;
+  virtual void addJSONArrayReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      xs_integer& pos,
+      store::Item_t& newValue) = 0;
 #endif
 
   //

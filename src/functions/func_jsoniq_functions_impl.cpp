@@ -67,7 +67,22 @@ PlanIter_t op_zorba_object_insert::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-bool op_zorba_array_insert::mustCopyInputNodes(expr* fo, csize producer) const
+bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  if (producer == 2 &&
+      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) const
 {
   if (producer == 2 &&
       fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)

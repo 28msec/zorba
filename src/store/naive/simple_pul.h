@@ -208,10 +208,13 @@ protected:
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
   std::vector<UpdatePrimitive*>      theJSONObjectInsertList;
+  std::vector<UpdatePrimitive*>      theJSONObjectDeleteList;
+  std::vector<UpdatePrimitive*>      theJSONObjectReplaceValueList;
+  std::vector<UpdatePrimitive*>      theJSONObjectRenameList;
+
   std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
-  std::vector<UpdatePrimitive*>      theJSONDeleteList;
-  std::vector<UpdatePrimitive*>      theJSONReplaceValueList;
-  std::vector<UpdatePrimitive*>      theJSONRenameList;
+  std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
+  std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
 #endif
 
 
@@ -547,47 +550,58 @@ public:
         const store::Item_t& aQName);
 
   virtual void addInsertIntoHashMap(
-        const QueryLoc* aQueryLoc,
-        const store::Item_t& aQName,
-        const std::vector<store::Item_t>& aKey,
-        const store::Iterator_t& aValue);
+      const QueryLoc* aQueryLoc,
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey,
+      const store::Iterator_t& aValue);
 
   virtual void addRemoveFromHashMap(
-        const QueryLoc* aQueryLoc,
-        const store::Item_t& aQName,
-        const std::vector<store::Item_t>& aKey);
+      const QueryLoc* aQueryLoc,
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey);
 
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
 
   virtual void addJSONObjectInsert(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        std::vector<store::Item_t>& names,
-        std::vector<store::Item_t>& values);
-
-  virtual void addJSONArrayInsert(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        xs_integer& pos,
-        std::vector<store::Item_t>& members);
-
-  virtual void addJSONDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      store::Item_t& node);
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
 
-  virtual void addJSONReplaceValue(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        store::Item_t& pos,
-        store::Item_t& newValue);
+  virtual void addJSONObjectDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name);
 
-  virtual void addJSONRename(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& target,
-        store::Item_t& selector,
-        store::Item_t& newName);
+  virtual void addJSONObjectReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue);
+
+  virtual void addJSONObjectRename(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName);
+
+  virtual void addJSONArrayInsert(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      xs_integer& pos,
+      std::vector<store::Item_t>& members);
+
+  virtual void addJSONArrayDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      xs_integer& pos);
+
+  virtual void addJSONArrayReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      xs_integer& pos,
+      store::Item_t& newValue);
 #endif
 
   // merge

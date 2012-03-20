@@ -616,45 +616,7 @@ public:
 #ifdef ZORBA_WITH_JSON
 /**
  * 
- *      json:rename
- *    
- * Author: Zorba Team
- */
-class JSONRenameIterator : public NaryBaseIterator<JSONRenameIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONRenameIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONRenameIterator,
-    NaryBaseIterator<JSONRenameIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONRenameIterator, PlanIteratorState>*)this);
-  }
-
-  JSONRenameIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONRenameIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONRenameIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- *      json:replace-value
+ *      internal function
  *    
  * Author: Zorba Team
  */
@@ -681,6 +643,44 @@ public:
   {}
 
   virtual ~JSONReplaceValueIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      
+ *    
+ * Author: Zorba Team
+ */
+class JSONRenameIterator : public NaryBaseIterator<JSONRenameIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONRenameIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONRenameIterator,
+    NaryBaseIterator<JSONRenameIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONRenameIterator, PlanIteratorState>*)this);
+  }
+
+  JSONRenameIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONRenameIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONRenameIterator();
 
   void accept(PlanIterVisitor& v) const;
 

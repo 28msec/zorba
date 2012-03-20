@@ -1936,15 +1936,151 @@ void UpdJSONObjectInsert::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdJSONArrayInsert::UpdJSONArrayInsert(
+UpdJSONObjectDelete::UpdJSONObjectDelete(
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      xs_integer& pos,
-      std::vector<store::Item_t>& members)
+      store::Item_t& name)
   :
   UpdatePrimitive(pul, loc, target),
-  thePosition(pos),
+  theName(name)
+{
+  assert(theTarget->isJSONObject());
+}
+
+
+void UpdJSONObjectDelete::apply()
+{
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
+  JSONObjectPair_t pair = obj->remove(theName);
+  
+  theOldValue = pair->getValue();
+
+  theIsApplied = true;
+}
+
+
+void UpdJSONObjectDelete::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
+  JSONObjectPair_t pair = new SimpleJSONObjectPair(theName, theOldValue);
+
+  bool inserted = obj->add(pair, false);
+
+  ZORBA_ASSERT(inserted);
+
+  theIsApplied = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONObjectReplaceValue::UpdJSONObjectReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue)
+  :
+  UpdatePrimitive(pul, loc, target),
+  theName(name),
+  theNewValue(newValue)
+{
+}
+
+
+void UpdJSONObjectReplaceValue::apply()
+{
+}
+
+
+void UpdJSONObjectReplaceValue::undo()
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONObjectRename::UpdJSONObjectRename(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName)
+  :
+  UpdatePrimitive(pul, loc, target),
+  theName(name),
+  theNewName(newName)
+{
+}
+
+
+void UpdJSONObjectRename::apply()
+{
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
+  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+
+  pair->setName(theNewName);
+
+  theIsApplied = true;
+}
+
+
+void UpdJSONObjectRename::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
+  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
+      lObject->getPair(theNewName)
+    );
+
+  lPair->setName(theNewName);
+
+  theIsApplied = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONArrayUpdate::UpdJSONArrayUpdate(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    xs_integer& pos)
+  :
+  UpdatePrimitive(pul, loc, target),
+  thePosition(pos)
+{
+  assert(theTarget->isJSONArray());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONArrayInsert::UpdJSONArrayInsert(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    xs_integer& pos,
+    std::vector<store::Item_t>& members)
+  :
+  UpdJSONArrayUpdate(pul, loc, target, pos),
   theNumApplied(0)
 {
   theMembers.swap(members);
@@ -1953,9 +2089,9 @@ UpdJSONArrayInsert::UpdJSONArrayInsert(
 
 void UpdJSONArrayInsert::apply()
 {
-  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
-  lArray->insert_before(thePosition, theMembers);
+  array->insert_before(thePosition, theMembers);
 }
 
 
@@ -1967,53 +2103,28 @@ void UpdJSONArrayInsert::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdJSONDelete::UpdJSONDelete(
+UpdJSONArrayDelete::UpdJSONArrayDelete(
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      store::Item_t& selector)
+      xs_integer& pos)
   :
-  UpdatePrimitive(pul, loc, target)
+  UpdJSONArrayUpdate(pul, loc, target, pos)
 {
-  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
-
-  // need to get the pointers to the items that should be deleted
-  // first such that the order of the applies is not relevant
-  if (theTarget->isJSONObject())
-  {
-    JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
-
-    theDeletee = lObj->getPair(selector.getp());
-  }
-  else
-  {
-    theDeletee = selector;
-  }
 }
 
-void UpdJSONDelete::apply()
+
+void UpdJSONArrayDelete::apply()
 {
-  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
-  if (theTarget->isJSONObject())
-  {
-    JSONObject* lObj = static_cast<JSONObject*>(theTarget.getp());
-    JSONObjectPair_t lDeleted = lObj->remove(theDeletee->getName());
-
-    // need to be the same as chosen in the runtime function
-    ZORBA_ASSERT(lDeleted.getp() == theDeletee.getp());
-  }
-  else
-  {
-    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-    xs_integer lPos = theDeletee->getIntegerValue();
-    lArray->remove(lPos);
-  }
+  array->remove(thePosition);
 
   theIsApplied = true;
 }
 
-void UpdJSONDelete::undo()
+
+void UpdJSONArrayDelete::undo()
 {
   if (!theIsApplied)
   {
@@ -2027,113 +2138,48 @@ void UpdJSONDelete::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdJSONReplaceValue::UpdJSONReplaceValue(
+UpdJSONArrayReplaceValue::UpdJSONArrayReplaceValue(
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      store::Item_t& selector,
+      xs_integer& pos,
       store::Item_t& newValue)
-  : UpdatePrimitive(pul, loc, target),
-    theSelector(selector),
-    theNewValue(newValue)
+  :
+  UpdJSONArrayUpdate(pul, loc, target, pos),
+  theNewValue(newValue)
 {
-  ZORBA_ASSERT(theTarget->isJSONObject() || theTarget->isJSONArray());
 }
 
-void UpdJSONReplaceValue::apply()
-{
-  if (theTarget->isJSONObject())
-  {
-    JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
-    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
-        lObject->getPair(theSelector)
-      );
-    theOldValue = lPair->getValue();
-    lPair->setValue(theNewValue);
-  }
-  else
-  {
-    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-    xs_integer lPos = theSelector->getIntegerValue();
-    theOldValue = const_cast<store::Item*>(lArray->operator[](lPos));
-    lArray->remove(lPos);
-    std::vector<store::Item_t> lNewMember;
-    lNewMember.push_back(theNewValue);
-    lArray->insert_before(lPos, lNewMember);
-  }
 
+void UpdJSONArrayReplaceValue::apply()
+{
+  /*
+  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+  xs_integer lPos = theSelector->getIntegerValue();
+  theOldValue = const_cast<store::Item*>(lArray->operator[](lPos));
+  lArray->remove(lPos);
+  std::vector<store::Item_t> lNewMember;
+  lNewMember.push_back(theNewValue);
+  lArray->insert_before(lPos, lNewMember);
+  */
   theIsApplied = true;
 }
 
-void UpdJSONReplaceValue::undo()
+
+void UpdJSONArrayReplaceValue::undo()
 {
   if (!theIsApplied)
   {
     return;
   }
-
-  if (theTarget->isJSONObject())
-  {
-    JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
-    JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
-        lObject->getPair(theSelector)
-      );
-    lPair->setValue(theOldValue);
-  }
-  else
-  {
-    JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-    xs_integer lPos = theSelector->getIntegerValue();
-    lArray->remove(lPos);
-    std::vector<store::Item_t> lOldMember;
-    lOldMember.push_back(theOldValue);
-    lArray->insert_before(lPos, lOldMember);
-
-  }
-
-  theIsApplied = false;
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdJSONRename::UpdJSONRename(
-      CollectionPul* pul,
-      const QueryLoc* loc,
-      store::Item_t& target,
-      store::Item_t& selector,
-      store::Item_t& newName)
-  : UpdatePrimitive(pul, loc, target),
-    theSelector(selector),
-    theNewName(newName)
-{
-  ZORBA_ASSERT(theTarget->isJSONObject());
-}
-
-void UpdJSONRename::apply()
-{
-  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
-  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
-      lObject->getPair(theSelector)
-    );
-  lPair->setName(theNewName);
-
-  theIsApplied = true;
-}
-
-void UpdJSONRename::undo()
-{
-  if (!theIsApplied)
-  {
-    return;
-  }
-
-  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
-  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
-      lObject->getPair(theNewName)
-    );
-  lPair->setName(theSelector);
-
+  /*
+  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
+  xs_integer lPos = theSelector->getIntegerValue();
+  lArray->remove(lPos);
+  std::vector<store::Item_t> lOldMember;
+  lOldMember.push_back(theOldValue);
+  lArray->insert_before(lPos, lOldMember);
+  */
   theIsApplied = false;
 }
 

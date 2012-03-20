@@ -68,10 +68,12 @@ namespace zorba { namespace simplestore {
   class UpdRemoveFromHashMap;
 #ifdef ZORBA_WITH_JSON
   class UpdJSONObjectInsert;
+  class UpdJSONObjectDelete;
+  class UpdJSONObjectReplaceValue;
+  class UpdJSONObjectRename;
   class UpdJSONArrayInsert;
-  class UpdJSONDelete;
-  class UpdJSONReplaceValue;
-  class UpdJSONRename;
+  class UpdJSONArrayDelete;
+  class UpdJSONArrayReplaceValue;
 #endif
 
 class PULPrimitiveFactory 
@@ -375,6 +377,29 @@ public:
       std::vector<store::Item_t>& names,
       std::vector<store::Item_t>& values);
 
+  virtual UpdJSONObjectDelete*
+  createUpdJSONObjectDelete(
+        CollectionPul* pul,
+        const QueryLoc* loc,
+        store::Item_t& target,
+        store::Item_t& name);
+
+  virtual UpdJSONObjectReplaceValue*
+  createUpdJSONObjectReplaceValue(
+        CollectionPul* pul,
+        const QueryLoc* loc,
+        store::Item_t& target,
+        store::Item_t& name,
+        store::Item_t& newValue);
+
+  virtual UpdJSONObjectRename*
+  createUpdJSONObjectRename(
+        CollectionPul* pul,
+        const QueryLoc* loc,
+        store::Item_t& target,
+        store::Item_t& name,
+        store::Item_t& newName);
+
   virtual UpdJSONArrayInsert*
   createUpdJSONArrayInsert(
         CollectionPul* pul,
@@ -383,28 +408,20 @@ public:
         xs_integer& pos,
         std::vector<store::Item_t>& members);
 
-  virtual UpdJSONDelete*
-  createUpdJSONDelete(
+  virtual UpdJSONArrayDelete*
+  createUpdJSONArrayDelete(
         CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector);
+        const QueryLoc* loc,
+        store::Item_t& target,
+        xs_integer& pos);
 
-  virtual UpdJSONReplaceValue*
-  createUpdJSONReplaceValue(
+  virtual UpdJSONArrayReplaceValue*
+  createUpdJSONArrayReplaceValue(
         CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector,
-        store::Item_t& aNewValue);
-
-  virtual UpdJSONRename*
-  createUpdJSONRename(
-        CollectionPul* pul,
-        const QueryLoc* aLoc,
-        store::Item_t& aTarget,
-        store::Item_t& aSelector,
-        store::Item_t& aNewName);
+        const QueryLoc* loc,
+        store::Item_t& target,
+        xs_integer& pos,
+        store::Item_t& newValue);
 #endif
 
 }; /* class PULPrimitiveFactory */

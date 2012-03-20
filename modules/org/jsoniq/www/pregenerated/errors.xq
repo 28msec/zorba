@@ -48,6 +48,11 @@ declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003
 declare variable $jerr:JNTY0004 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0004");
 
 (:~
+ :wrong type for object/array selector in update expr
+:)
+declare variable $jerr:JNTY0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0007");
+
+(:~
 :)
 declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011");
 
@@ -62,41 +67,51 @@ declare variable $jerr:JNDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0003
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
 
 (:~
- :error raised by insert-into
+ :runtime error: duplicate pair to insert
 :)
 declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005");
 
 (:~
- :error raised by insert-into
+ :pair to insert already in object
 :)
 declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006");
 
 (:~
- :error raised by upd:delete, upd:insert-before/after
+ :runtime error: pair to delete not in object
 :)
-declare variable $jerr:JUDY0061 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0061");
+declare variable $jerr:JNUP0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0007");
 
 (:~
- :error raised by upd:delete if the argument is not an object or array
+ :duplicate pair to replace
 :)
-declare variable $jerr:JUDY0062 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0062");
+declare variable $jerr:JNUP0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0008");
 
 (:~
- :error raised by upd:delete if the first argument is an
- : object/array but second argument is not of type xs:string/xs:integer,
- : respectively
- : 
+ :pair to replace not in object
 :)
-declare variable $jerr:JUDY0063 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0063");
+declare variable $jerr:JNUP0009 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0009");
 
 (:~
- :error raised by mergeUpdates. An insert-before or insert-last
- : UP must not have the same target as any other insert-before, -last, -as-first, or -as-last UP
- : 
+ :duplicate pair to rename
 :)
-declare variable $jerr:JUDY0064 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0064");
+declare variable $jerr:JNUP0010 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0010");
 
 (:~
- :error raised by upd:rename
+ :pair to rename not in object
 :)
-declare variable $jerr:JUDY0065 as xs:QName := fn:QName($jerr:NS, "jerr:JUDY0065");
+declare variable $jerr:JNUP0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0011");
+
+(:~
+ :position to insert not in array
+:)
+declare variable $jerr:JNUP0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0018");
+
+(:~
+ :member to delete not in array
+:)
+declare variable $jerr:JNUP0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0020");
+
+(:~
+ :member to replace not in array
+:)
+declare variable $jerr:JNUP0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0021");

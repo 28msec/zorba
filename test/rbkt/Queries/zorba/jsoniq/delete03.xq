@@ -1,5 +1,10 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
-variable $o := "foo" : "bar";
+variable $o := { "foo" : "bar" };
 
-j:delete($o, "foo")
+(
+delete json $o("foo"),
+delete json $o("foo")
+);
+
+$o

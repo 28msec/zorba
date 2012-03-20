@@ -12736,12 +12736,12 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
     args.push_back(valueExpr);
   }
 
-  expr_t insExpr = new fo_expr(theRootSctx,
+  expr_t updExpr = new fo_expr(theRootSctx,
                                loc, 
                                GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
                                args);
 
-  push_nodestack(insExpr);
+  push_nodestack(updExpr);
 #endif
 }
 
@@ -12777,12 +12777,13 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   args[1] = posExpr;
   args[2] = sourceExpr;
 
-  expr_t insExpr = new fo_expr(theRootSctx,
-                               loc, 
-                               GET_BUILTIN_FUNCTION(OP_ARRAY_INSERT_N),
-                               args);
+  fo_expr_t updExpr = new fo_expr(theRootSctx,
+                                  loc, 
+                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
+                                  args);
+  normalize_fo(updExpr.getp());
 
-  push_nodestack(insExpr);
+  push_nodestack(updExpr.getp());
 #endif
 }
 
@@ -12821,6 +12822,17 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
+  expr_t selExpr = pop_nodestack();
+  expr_t targetExpr = pop_nodestack();
+
+  fo_expr_t updExpr = new fo_expr(theRootSctx,
+                                  loc, 
+                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
+                                  targetExpr,
+                                  selExpr);
+  normalize_fo(updExpr.getp());
+
+  push_nodestack(updExpr.getp());
 #endif
 }
 
@@ -12840,6 +12852,22 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
+  expr_t valueExpr = pop_nodestack();
+  expr_t selExpr = pop_nodestack();
+  expr_t targetExpr = pop_nodestack();
+
+  std::vector<expr_t> args(3);
+  args[0] = targetExpr;
+  args[1] = selExpr;
+  args[2] = valueExpr;
+
+  fo_expr_t updExpr = new fo_expr(theRootSctx,
+                                  loc, 
+                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                                  args);
+  normalize_fo(updExpr.getp());
+
+  push_nodestack(updExpr.getp());
 #endif
 }
 
@@ -12859,6 +12887,22 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
+  expr_t newNameExpr = pop_nodestack();
+  expr_t nameExpr = pop_nodestack();
+  expr_t targetExpr = pop_nodestack();
+
+  std::vector<expr_t> args(3);
+  args[0] = targetExpr;
+  args[1] = nameExpr;
+  args[2] = newNameExpr;
+
+  fo_expr_t updExpr = new fo_expr(theRootSctx,
+                                  loc, 
+                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
+                                  args);
+  normalize_fo(updExpr.getp());
+
+  push_nodestack(updExpr.getp());
 #endif
 }
 

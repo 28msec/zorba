@@ -252,11 +252,11 @@ public:
 
 public:
   cast_base_expr(
-        static_context* sctx, 
-        const QueryLoc& loc,
-        expr_kind_t kind,
-        expr_t input,
-        xqtref_t type);
+      static_context* sctx, 
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      expr_t input,
+      xqtref_t type);
 };
 
 
@@ -385,8 +385,7 @@ class promote_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
-                               // is used to cast the function's body to its result type
+  store::Item_t theFnQName;
   
 public:
   SERIALIZABLE_CLASS(promote_expr)

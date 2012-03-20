@@ -2493,6 +2493,20 @@
       <value>$1 items do not have typed value</value>
     </diagnostic>
 
+    <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>wrong type for object/array selector in update expr</comment>
+      <value>$1</value>
+
+     <entry key="Object">
+        <value>"$2": can not be promoted to type xs:string</value>
+      </entry>
+
+     <entry key="Array">
+        <value>"$2": can not be promoted to type xs:integer</value>
+      </entry>
+
+    </diagnostic>
+
     <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
       <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
@@ -2507,57 +2521,58 @@
       <value>$1</value>
     </diagnostic>
 
+    <!-- jsoniq object updates -->
+
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by insert-into</comment>
-      <value>"$1": duplicate pair name in PUL</value>
+      <comment>runtime error: duplicate pair to insert</comment>
+      <value>"$1": duplicate pair to insert</value>
     </diagnostic>
 
     <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by insert-into</comment>
-      <value>"$1": a pair with this name already exists in object</value>
+      <comment>pair to insert already in object</comment>
+      <value>"$1": pair to insert already exists in object</value>
     </diagnostic>
 
-
-    <diagnostic code="JUDY0061" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by upd:delete, upd:insert-before/after</comment>
-      <value>$1</value>
-
-      <entry key="Object">
-        <value>"$2": pair to delete does not exist</value>
-      </entry>
-
-      <entry key="ArrayNegativeOrZero">
-        <value>"$2": invalid array position</value>
-      </entry>
-
-      <entry key="ArrayOutOfBounds">
-        <value>"$2": array out of bounds (size $3)</value>
-      </entry>
+    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>runtime error: pair to delete not in object</comment>
+      <value>"$1": pair to delete does not exist in object</value>
     </diagnostic>
 
-    <diagnostic code="JUDY0062" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by upd:delete if the argument is not an object or array</comment>
-      <value>first argument to delete function is pair() but must be array or object</value>
+    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to replace</comment>
+      <value>"$1": duplicate pair to replace</value>
     </diagnostic>
 
-    <diagnostic code="JUDY0063" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by upd:delete if the first argument is an
-        object/array but second argument is not of type xs:string/xs:integer,
-        respectively
-      </comment>
-      <value>"$1": invalid type of second argument (must be $2)</value>
+    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to replace not in object</comment>
+      <value>"$1": pair to replace does not exist in object</value>
     </diagnostic>
 
-    <diagnostic code="JUDY0064" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by mergeUpdates. An insert-before or insert-last
-        UP must not have the same target as any other insert-before, -last, -as-first, or -as-last UP
-      </comment>
-      <value>array is target of several incompatible inserts</value>
+    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to rename</comment>
+      <value>"$1": duplicate pair to rename</value>
     </diagnostic>
 
-    <diagnostic code="JUDY0065" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by upd:rename</comment>
-      <value>"$1": pair with that name already exists</value>
+    <diagnostic code="JNUP0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename not in object</comment>
+      <value>"$1": pair to rename does not exist in object</value>
+    </diagnostic>
+
+    <!-- jsoniq array updates -->
+
+    <diagnostic code="JNUP0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to insert not in array</comment>
+      <value>"$1": position to insert at is out of array bounds</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>member to delete not in array</comment>
+      <value>"$1": position to delete does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>member to replace not in array</comment>
+      <value>"$1": position to replace does not exist in array</value>
     </diagnostic>
 
   </namespace>

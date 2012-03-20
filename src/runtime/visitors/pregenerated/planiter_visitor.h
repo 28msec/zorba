@@ -298,10 +298,10 @@ namespace zorba{
     class JSONDeleteIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONRenameIterator;
+    class JSONReplaceValueIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONReplaceValueIterator;
+    class JSONRenameIterator;
 #endif
     class SqrtIterator;
 
@@ -1046,12 +1046,12 @@ public:
     virtual void endVisit   ( const JSONDeleteIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONRenameIterator& ) = 0;
-    virtual void endVisit   ( const JSONRenameIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONReplaceValueIterator& ) = 0;
     virtual void endVisit   ( const JSONReplaceValueIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONRenameIterator& ) = 0;
+    virtual void endVisit   ( const JSONRenameIterator& ) = 0;
 #endif
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
