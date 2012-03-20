@@ -180,7 +180,7 @@ protected:
   ulong                     theId;
   xs_integer                thePos;
 
-  Collection        * theCollection;
+  Collection              * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -223,6 +223,13 @@ public:
 
   const Collection* getCollection() const { return theCollection; }
 
+private:
+friend class zorba::simplestore::Collection;
+  // Allows a collection to claim ownership of a node it already owns, but
+  // which does not have the backpointer yet.
+  void claimedByCollection(Collection* coll);
+  
+public:
   void setCollection(Collection* coll, xs_integer pos);
 
   void setPosition(xs_integer pos) { thePos = pos; }
