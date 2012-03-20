@@ -77,6 +77,10 @@ public:
 
   virtual void adjustTreePositions() = 0;
 
+  /**************************** Claim of ownership ****************************/
+
+  virtual void claimOwnership(zorba::simplestore::XmlTree* aTree);
+  
   /***************************** ID Management ********************************/
 
   virtual ulong getId() const = 0;
