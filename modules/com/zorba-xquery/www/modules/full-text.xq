@@ -49,6 +49,17 @@ xquery version "3.0";
  : All that is guaranteed about a stem is that,
  : for a given word,
  : the stem of that word will always be the same byte sequence.
+ : Hence,
+ : you sould never compare the result of one of the <code>stem()</code>
+ : functions against a non-stemmed string,
+ : for example:
+ : <pre>
+ :  if ( ft:stem( "apples" ) eq "apple" )             ** WRONG **
+ : </pre>
+ : Instead do:
+ : <pre>
+ :  if ( ft:stem( "apples" ) eq ft:stem( "apple" ) )  ** CORRECT **
+ : </pre>
  : <h2>Notes on the thesaurus</h2>
  : The <code>thesaurus-lookup()</code> functions have "levels"
  : and "relationship" parameters.
@@ -265,6 +276,7 @@ declare variable $ft:lang-tr as xs:language := xs:language("tr");
  : or the one returned by <code>ft:host-lang()</code> (if none).
  :
  : @return said language.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-lang-true-1.xq
  :)
 declare function ft:current-lang()
   as xs:language external;
@@ -279,7 +291,7 @@ declare function ft:current-lang()
  :      For *nix systems:
  :      <ol>
  :        <li>
- :          If <code>setlocale</code>(3) returns non-null,
+ :          If <a ref="http://www.cplusplus.com/reference/clibrary/clocale/setlocale/"><code>setlocale</code>(3)</a> returns non-null,
  :          the language corresponding to that locale is used.
  :        </li>
  :        <li>
@@ -292,8 +304,10 @@ declare function ft:current-lang()
  :      </ol>
  :    </li>
  :    <li>
- :      For Windows systems, the language corresponding to the locale returned
- :      by the <code>GetLocaleInfoA()</code> function is used.
+ :      For Windows systems,
+ :      the language corresponding to the locale returned by the
+ :      <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dd318101(v=vs.85).aspx"><code>GetLocaleInfo()</code></a>
+ :      function is used.
  :    </li>
  :  </ul>
  :
@@ -600,6 +614,8 @@ declare function ft:tokenize( $node as node(), $lang as xs:language )
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-2.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-3.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-4.xq
  :)
 declare function ft:tokenize( $node as node() )
   as node()* external;
