@@ -374,17 +374,21 @@ protected:
 
     void emit_json_value(store::Item* value, int depth);
 
-    void emit_jsoniq_value(zstring type, zstring value, int depth);
+    void emit_cloudscript_value(zstring type, zstring value, int depth);
+
+    void emit_cloudscript_xdm_node(store::Item *item, int depth);
 
     void emit_json_string(zstring string);
 
-    store::Item_t theJsoniqValueName;
+    store::Item_t theCloudScriptValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
+    store::Item_t theCloudScriptXDMNodeName;
 
     rchandle<emitter> theXMLEmitter;
     rchandle<transcoder> theXMLTranscoder;
     std::stringstream* theXMLStringStream;
+    bool theMultipleItems;
   };
 
 

@@ -38,6 +38,27 @@ module namespace jerr = 'http://www.jsoniq.org/errors';
 declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
 
 (:~
+ :It is a dynamic error to serialize a sequence of less
+ : or more than one item with the JSON output method if the
+ : cloudscript-serialization-multiple-items is set to no.
+:)
+declare variable $jerr:JNSE0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0012");
+
+(:~
+ :It is a dynamic error to serialize an atomic value not
+ : supported by JSON or a node with the JSON output method and with
+ : the cloudscript-serialization-extensions serialization parameter
+ : set to false.
+:)
+declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013");
+
+(:~
+ :It is a dynamic error to serialize a function with the
+ : JSON output method.
+:)
+declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");
+
+(:~
  :objects or arrays don't have a string value
 :)
 declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");

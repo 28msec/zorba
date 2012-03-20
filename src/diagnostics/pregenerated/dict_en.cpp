@@ -98,6 +98,9 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_JSON)
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
 #endif
+  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+  { "JNSE0013", "Cannot serialize value as JSON: $1" },
+  { "JNSE0014", "Cannot serialize a function item as JSON" },
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0003", "$1 items do not have string value" },
 #endif
@@ -295,7 +298,6 @@ extern entry const dict_en[] = {
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
   { "ZAPI0043", "cannot serialize JSON item using current output method" },
-  { "ZAPI0044", "cannot serialize XML item using current output method" },
   { "ZAPI0045", "cannot serialize sequence containing both JSON and XML items" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },

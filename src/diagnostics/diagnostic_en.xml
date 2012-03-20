@@ -1894,10 +1894,6 @@
       <value>cannot serialize JSON item using current output method</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0044" name="CANNOT_SERIALIZE_XML_ITEM">
-      <value>cannot serialize XML item using current output method</value>
-    </diagnostic>
-
     <diagnostic code="ZAPI0045" name="CANNOT_SERIALIZE_MIXED_XDM_JDM">
       <value>cannot serialize sequence containing both JSON and XML items</value>
     </diagnostic>
@@ -2480,6 +2476,29 @@
   </namespace>
 
   <namespace prefix="jerr">
+
+    <!--////////// CloudScript ///////////////////////////////////////////-->
+
+    <diagnostic code="JNSE0012">
+      <comment>It is a dynamic error to serialize a sequence of less
+      or more than one item with the JSON output method if the
+      cloudscript-serialization-multiple-items is set to no.</comment>
+      <value>Cannot serialize multiple top-level items as JSON</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0013">
+      <comment>It is a dynamic error to serialize an atomic value not
+      supported by JSON or a node with the JSON output method and with
+      the cloudscript-serialization-extensions serialization parameter
+      set to false.</comment>
+      <value>Cannot serialize value as JSON: $1</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0014">
+      <comment>It is a dynamic error to serialize a function with the
+      JSON output method.</comment>
+      <value>Cannot serialize a function item as JSON</value>
+    </diagnostic>
 
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 

@@ -223,18 +223,23 @@ SerializerImpl::setSerializationParameters(
   {
     case CLOUDSCRIPT_EXTENSIONS_YES:
       aInternalSerializer.setParameter("cloudscript-extensions", "yes");
+      break;
     case CLOUDSCRIPT_EXTENSIONS_NO:
       aInternalSerializer.setParameter("cloudscript-extensions", "no");
+      break;
   }
 
   switch (aSerializerOptions.cloudscript_multiple_items)
   {
     case CLOUDSCRIPT_MULTIPLE_ITEMS_NO:
       aInternalSerializer.setParameter("cloudscript-multiple-items", "no");
+      break;
     case CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY:
       aInternalSerializer.setParameter("cloudscript-multiple-items", "array");
+      break;
     case CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED:
       aInternalSerializer.setParameter("cloudscript-multiple-items", "appended");
+      break;
   }
 
   convertSerializationMethod(aInternalSerializer,

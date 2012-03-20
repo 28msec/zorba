@@ -531,10 +531,15 @@ main(int argc, char** argv)
                   << i << " doesn't match." << std::endl;
 
         // Don't attempt canonical comparison for test cases using --indent;
-        // can lead to false positives
+        // can lead to false positives.
         if (lSerOptions.indent == ZORBA_INDENT_YES) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with indent==yes" << std::endl;
+        }
+        // Also skip canonicalization for tests using method==json
+        else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
+          std::cout << "testdriver: skipping canonicalization "
+            "when testing with method=json" << std::endl;
         }
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),

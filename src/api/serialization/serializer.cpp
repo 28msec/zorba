@@ -934,7 +934,7 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  JSON emitter                                                              //
+//  JSON emitter - as defined by CloudScript spec                             //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -942,7 +942,8 @@ serializer::json_emitter::json_emitter(
   serializer* the_serializer,
   transcoder& the_transcoder)
   : emitter(the_serializer, the_transcoder),
-    theXMLStringStream(nullptr)
+    theXMLStringStream(nullptr),
+    theMultipleItems(false)
 {
 }
 
@@ -953,11 +954,14 @@ serializer::json_emitter::~json_emitter()
 
 void serializer::json_emitter::emit_item(store::Item *item)
 {
-  if (!item->isJSONItem())
+  // This is called by serializer for each top-level item. Therefore it's the
+  // right place to check for multiple items in the sequence.
+  if (theMultipleItems && ser->cloudscript_multiple_items == PARAMETER_VALUE_NO)
   {
-    throw XQUERY_EXCEPTION(zerr::ZAPI0044_CANNOT_SERIALIZE_XML_ITEM);
+    throw XQUERY_EXCEPTION(jerr::JNSE0012);
   }
   emit_json_item(item, 0);
+  theMultipleItems = true;
 }
 
 void serializer::json_emitter::emit_declaration()
@@ -971,8 +975,7 @@ void serializer::json_emitter::emit_end()
 void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
 {
   // This is called for any item within a JSON array or object, or for a
-  // top-level JSON array or object. So JSON rules for simple types may
-  // apply here.
+  // top-level item. JSON rules for simple types apply here.
   if (item->isJSONObject()) {
     emit_json_object(item, depth);
   }
@@ -992,11 +995,15 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     case store::XS_DOUBLE:
     case store::XS_FLOAT:
       if (item->isNaN()) {
-        emit_jsoniq_value("number", "NaN", depth);
+        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+                               "NaN", depth);
         break;
       }
       else if (item->isPosOrNegInf()) {
-        emit_jsoniq_value("number", "Infinity", depth);
+        // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
+        // I tell which I have?
+        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+                               "Infinity", depth);
         break;
       }
       // else fall through
@@ -1027,24 +1034,14 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
 
     default: {
-      emit_jsoniq_value(item->getType()->getStringValue(),
+      emit_cloudscript_value(item->getType()->getStringValue(),
                         item->getStringValue(), depth);
       break;
     }
     }
   }
   else {
-    // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
-    // and output it as a "JSONiq value".
-    if (!theXMLEmitter) {
-      theXMLStringStream = new std::stringstream();
-      theXMLTranscoder = ser->create_transcoder(*theXMLStringStream);
-      theXMLEmitter = new serializer::xml_emitter(ser, *theXMLTranscoder);
-    }
-    theXMLEmitter->emit_item(item);
-    std::string xml = theXMLStringStream->str();
-    emit_jsoniq_value("XML", xml, depth);
-    theXMLStringStream->str("");
+    emit_cloudscript_xdm_node(item, depth);
   }
 }
 
@@ -1125,18 +1122,23 @@ void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_value(
+void serializer::json_emitter::emit_cloudscript_value(
     zstring type,
     zstring value,
     int depth)
 {
+  // First make sure we should be doing these extended values
+  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS(value));
+  }
+
   // Create items for constant strings, if not already done
-  if (!theJsoniqValueName) 
+  if (!theCloudScriptValueName)
   {
-    zstring jsoniqvaluestring("JSONiq value");
+    zstring cloudscriptvaluestring("CloudScript value");
     zstring typestring("type");
     zstring valuestring("value");
-    GENV_ITEMFACTORY->createString(theJsoniqValueName, jsoniqvaluestring);
+    GENV_ITEMFACTORY->createString(theCloudScriptValueName, cloudscriptvaluestring);
     GENV_ITEMFACTORY->createString(theTypeName, typestring);
     GENV_ITEMFACTORY->createString(theValueName, valuestring);
   }
@@ -1157,13 +1159,54 @@ void serializer::json_emitter::emit_jsoniq_value(
   // Create the outer JSON object with one pair
   names.resize(1);
   values.resize(1);
-  names[0] = theJsoniqValueName;
+  names[0] = theCloudScriptValueName;
   values[0] = inner;
 
   store::Item_t outer;
   GENV_ITEMFACTORY->createJSONObject(outer, names, values);
 
   emit_json_object(outer, depth);
+}
+
+void serializer::json_emitter::emit_cloudscript_xdm_node(
+    store::Item* item,
+    int depth)
+{
+  // First make sure we should be doing these extended values
+  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+    // QQQ probably should put "XML node" in diagnostics_en.xml
+    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS("XML node"));
+  }
+
+  // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
+  // and output it as a "CloudScript XDM node".
+  if (!theXMLEmitter) {
+    theXMLStringStream = new std::stringstream();
+    theXMLTranscoder = ser->create_transcoder(*theXMLStringStream);
+    theXMLEmitter = new serializer::xml_emitter(ser, *theXMLTranscoder);
+  }
+  theXMLEmitter->emit_item(item);
+  zstring xml(theXMLStringStream->str());
+  theXMLStringStream->str("");
+
+  // Create item for constant string, if not already done
+  if (!theCloudScriptValueName)
+  {
+    zstring xdmnodestring("CloudScript XDM node");
+    GENV_ITEMFACTORY->createString(theCloudScriptXDMNodeName, xdmnodestring);
+  }
+
+  // Create the JSON object, which contains one pair
+  std::vector<store::Item_t> names(1);
+  std::vector<store::Item_t> values(1);
+
+  names[0] = theCloudScriptXDMNodeName;
+  GENV_ITEMFACTORY->createString(values[0], xml);
+
+  store::Item_t object;
+  GENV_ITEMFACTORY->createJSONObject(object, names, values);
+
+  emit_json_object(object, depth);
 }
 
 
@@ -2339,6 +2382,9 @@ void serializer::reset()
   // This default should match the default for ser_method in Zorba_SerializerOptions
 #ifdef ZORBA_WITH_JSON
   method = PARAMETER_VALUE_JSONIQ;
+  cloudscript_multiple_items = PARAMETER_VALUE_NO;
+  cloudscript_extensions = PARAMETER_VALUE_NO;
+  cloudscript_xdm_method = PARAMETER_VALUE_XML;
 #else
   method = PARAMETER_VALUE_XML;
 #endif
