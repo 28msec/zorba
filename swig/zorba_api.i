@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-%module(directors="1") zorba_api
+%module zorba_api
 
-/*%feature("director") IStream;*/
 
 %include "std_string.i"
 %include "exception.i"
@@ -57,7 +56,6 @@
   class Item;
   class Iterator;
   class XQuery;
-  class IStream;
   class Store;
   class Zorba;
 
@@ -76,7 +74,7 @@
 %}
 
 
-%include "various.i"
+/* %include "various.i" */
 
 %include "XQuery.i"
 %include "Store.i"

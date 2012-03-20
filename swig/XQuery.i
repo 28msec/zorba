@@ -69,39 +69,6 @@ public:
 
 
 
-
-
-class IStream
-{
-private:
-  std::istream* theIStream;
-
-public:
-  IStream() {}
-  IStream(const IStream& anIStream) : theIStream(anIStream.theIStream) {}
-  IStream(std::istream& anIStream)   : theIStream(&anIStream) {}
-
-  std::string readToString()
-  {
-    std::stringstream lStream;
-
-    lStream << theIStream;
-    return lStream.str();
-  }
-
-
-  int read(char *BYTE, int LENGTH)
-  {
-    theIStream->read(BYTE, LENGTH);
-    //theIStream->read(byteArray, len);
-    int readLength = theIStream->gcount();
-    return readLength;
-  }
-
-
-}; // class IStream
-
-
 class Item 
 {
   friend class Iterator;
@@ -122,6 +89,9 @@ public:
   static Item createEmptyItem()
   { return Item(); }
 
+  std::string getStringValue() const
+  { return std::string(theItem.getStringValue().c_str()); }
+
   std::string serialize() const
   {
     std::stringstream lStream; 
@@ -132,22 +102,6 @@ public:
     return lStream.str();
   }
   
-  void serializeToOutputStream(std::ostream &outStream) const
-  {
-    Zorba_SerializerOptions_t lOptions;
-    zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(lOptions);
-    zorba::SingletonItemSequence lSequence(theItem);
-    lSerializer->serialize(&lSequence, outStream);
-  }
-
-  IStream getStream()
-  {
-    return IStream(theItem.getStream());
-  }
-
-  std::string getStringValue() const
-  { return std::string(theItem.getStringValue().c_str()); }
-
   Iterator getAtomizationValue () const
   { return Iterator(theItem.getAtomizationValue()); }
   
@@ -345,23 +299,12 @@ public:
 };
 
 
-class IStream
-{
-public:
-  std::string readToString();
-  int read(char * BYTE, long LENGTH);
-}; // class IStream
-
-
 class Item
 {
 public: 
   static Item createEmptyItem();
 
   std::string serialize() const;
-  void serializeToOutputStream(std::ostream &outStream) const;
-  IStream getStream();
-
   std::string getStringValue() const;
   Iterator getAtomizationValue () const;
   Iterator getAttributes () const;
