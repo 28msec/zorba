@@ -416,10 +416,12 @@ main(int argc, char** argv)
 
     Zorba_SerializerOptions lSerOptions;
 
-    if (errHandler.errors()) {
+    if (errHandler.errors()) 
+    {
       errors = analyzeError (lSpec, errHandler);
     }
-    else {
+    else 
+    {
       errors = -1;
       {
         // serialize xml/txt

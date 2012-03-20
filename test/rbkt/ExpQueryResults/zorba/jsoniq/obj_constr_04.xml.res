@@ -1,1 +1,1 @@
-{ "n1" : [ { "JSONiq value" : { "type" : "XML", "value" : "<node>10</node>" } }, 1 ], "n2" : { "JSONiq value" : { "type" : "XML", "value" : "<node>20</node>" } } }
+{ "n1" : [ { "CloudScript XDM node" : "<node>10</node>" }, 1 ], "n2" : { "CloudScript XDM node" : "<node>20</node>" } }

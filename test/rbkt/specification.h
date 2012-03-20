@@ -49,22 +49,25 @@ public:
     std::string theOptValue;
   };
 
+public:
   Specification()
-    : theInline(false),
-      theComparisonMethod("Fragment"),
+    :
+    theInline(false),
+    theComparisonMethod("Fragment"),
 #ifdef ZORBA_WITH_JSON
-      theSerializationMethod("JSONiq"),
+    theSerializationMethod("JSONiq"),
 #else
-      theSerializationMethod("XML"),
+    theSerializationMethod("XML"),
 #endif
-      theEnableDtd(false),
-      theEnableUriTestResolver(false)
+    theEnableDtd(false),
+    theEnableUriTestResolver(false)
 #ifndef ZORBA_NO_FULL_TEXT
-      ,
-      theStopWordsMapper(zorba::EntityData::STOP_WORDS),
-      theThesaurusMapper(zorba::EntityData::THESAURUS)
+    ,
+    theStopWordsMapper(zorba::EntityData::STOP_WORDS),
+    theThesaurusMapper(zorba::EntityData::THESAURUS)
 #endif /* ZORBA_NO_FULL_TEXT */
-  {}
+  {
+  }
 
 private:
   bool                     theInline;
@@ -299,14 +302,20 @@ public:
     str.erase(notwhite+1); 
   }
 
-bool isKeyword(std::string& str) {
-  bool c = ((str.find("Args:")!=std::string::npos) || (str.find("Options:")!=std::string::npos) || 
-            (str.find("Serialization:")!=std::string::npos) || (str.find("Result:")!=std::string::npos) || 
-            (str.find("InputQuery:")!=std::string::npos) || (str.find("Comparison:")!=std::string::npos) || 
-            (str.find("DefaultCollection:")!=std::string::npos) || (str.find("Error:")!=std::string::npos) || 
-            (str.find("Date:")!=std::string::npos) || (str.find("Timezone:")!=std::string::npos));
-  return c;
-}
+  bool isKeyword(std::string& str) 
+  {
+    bool c = ((str.find("Args:")!=std::string::npos) ||
+              (str.find("Options:")!=std::string::npos) || 
+              (str.find("Serialization:")!=std::string::npos) || 
+              (str.find("Result:")!=std::string::npos) || 
+              (str.find("InputQuery:")!=std::string::npos) || 
+              (str.find("Comparison:")!=std::string::npos) || 
+              (str.find("DefaultCollection:")!=std::string::npos) ||
+              (str.find("Error:")!=std::string::npos) || 
+              (str.find("Date:")!=std::string::npos) || 
+              (str.find("Timezone:")!=std::string::npos));
+    return c;
+  }
 
   bool parseFile(std::string str, std::string rbkt_src_dir,
     std::string rbkt_binary_dir)
@@ -415,7 +424,7 @@ bool isKeyword(std::string& str) {
         }
         else if ( *lIter == "Serialization:" )
         {
-          for(++lIter; lIter!=tokens.end(); ++lIter)
+          for(++lIter; lIter != tokens.end(); ++lIter)
           {
             trim(*lIter);
             if (lIter->find('=') == std::string::npos) { return false; }

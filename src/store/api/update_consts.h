@@ -220,10 +220,20 @@ static std::string toString(UpdPrimKind k)
     case UP_REVALIDATE:
       return "revalidate";
 #ifdef ZORBA_WITH_JSON
-    case UP_JSON_OBJECT_INSERT:
-      return "jsonObjectInsert";
-    case UP_JSON_ARRAY_INSERT:
-      return "jsonArrayInsert";
+  case UP_JSON_OBJECT_INSERT:
+    return "jsonObjectInsert";
+  case UP_JSON_OBJECT_DELETE:
+    return "jsonObjectDelete";
+  case UP_JSON_OBJECT_REPLACE_VALUE:
+    return "jsonObjectReplaceValue";
+  case UP_JSON_OBJECT_RENAME:
+    return "jsonObjectRename";
+  case UP_JSON_ARRAY_INSERT:
+    return "jsonArrayInsert";
+  case UP_JSON_ARRAY_DELETE:
+    return "jsonArrayDelete";
+  case UP_JSON_ARRAY_REPLACE_VALUE:
+    return "jsonArrayReplaceValue";
 #endif
     default:
       return "unknownUpdatePrimitive";
