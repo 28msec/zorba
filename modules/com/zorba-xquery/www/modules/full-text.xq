@@ -20,6 +20,10 @@ xquery version "3.0";
 
 (:~
  : This module provides an XQuery API to full-text functions.
+ : For general information about Zorba's implementation of the
+ : <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0 specification</a>
+ : as well as instructions for building an installing a thesaurus,
+ : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_thesaurus">Full Text Thesaurus documentation</a>.
  : <h2>Notes on languages</h2>
  : To refer to paricular human languages,
  : Zorba uses both the
@@ -36,8 +40,11 @@ xquery version "3.0";
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>
  : XML schema data type.
  : <h2>Notes on stemming</h2>
- : The <code>stem()</code> functions return the stem of a word.
- : The stem of a word itself, however, is not guaranteed to be a word.
+ : The <code>stem()</code> functions return the
+ : <a href="http://en.wikipedia.org/wiki/Word_stem">stem</a>
+ : of a word.
+ : In Zorba,
+ : the stem of a word itself, however, is not guaranteed to be a word.
  : It is best to consider a stem as an opaque byte sequence.
  : All that is guaranteed about a stem is that,
  : for a given word,
