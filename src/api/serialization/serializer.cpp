@@ -2357,6 +2357,30 @@ void serializer::reset()
   indent = PARAMETER_VALUE_NO;
 }
 
+static short int
+convertMethodString(const char* aValue, const char* aName) {
+  if (!strcmp(aValue, "xml"))
+    return serializer::PARAMETER_VALUE_XML;
+  else if (!strcmp(aValue, "html"))
+    return serializer::PARAMETER_VALUE_HTML;
+  else if (!strcmp(aValue, "xhtml"))
+    return serializer::PARAMETER_VALUE_XHTML;
+  else if (!strcmp(aValue, "text"))
+    return serializer::PARAMETER_VALUE_TEXT;
+  else if (!strcmp(aValue, "binary"))
+    return serializer::PARAMETER_VALUE_BINARY;
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aValue, "json"))
+    return serializer::PARAMETER_VALUE_JSON;
+  else if (!strcmp(aValue, "jsoniq"))
+    return serializer::PARAMETER_VALUE_JSONIQ;
+#endif
+  else
+    throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+        );
+}
+
 
 /*******************************************************************************
 
@@ -2423,26 +2447,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "method"))
   {
-    if (!strcmp(aValue, "xml"))
-      method = PARAMETER_VALUE_XML;
-    else if (!strcmp(aValue, "html"))
-      method = PARAMETER_VALUE_HTML;
-    else if (!strcmp(aValue, "xhtml"))
-      method = PARAMETER_VALUE_XHTML;
-    else if (!strcmp(aValue, "text"))
-      method = PARAMETER_VALUE_TEXT;
-    else if (!strcmp(aValue, "binary"))
-      method = PARAMETER_VALUE_BINARY;
-#ifdef ZORBA_WITH_JSON
-    else if (!strcmp(aValue, "json"))
-      method = PARAMETER_VALUE_JSON;
-    else if (!strcmp(aValue, "jsoniq"))
-      method = PARAMETER_VALUE_JSONIQ;
-#endif
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
-      );
+    method = convertMethodString(aValue, aName);
   }
   else if (!strcmp(aName, "include-content-type"))
   {
@@ -2489,6 +2494,36 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     cdata_section_elements = aValue;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aName, "cloudscript-extensions"))
+  {
+    if (!strcmp(aValue, "yes"))
+      cloudscript_extensions = PARAMETER_VALUE_YES;
+    else if (!strcmp(aValue, "no"))
+      cloudscript_extensions = PARAMETER_VALUE_NO;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
+  }
+  else if (!strcmp(aName, "cloudscript-multiple-items"))
+  {
+    if (!strcmp(aValue, "no"))
+      cloudscript_multiple_items = PARAMETER_VALUE_NO;
+    else if (!strcmp(aValue, "array"))
+      cloudscript_multiple_items = PARAMETER_VALUE_ARRAY;
+    else if (!strcmp(aValue, "appended"))
+      cloudscript_multiple_items = PARAMETER_VALUE_APPENDED;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
+  }
+  else if (!strcmp(aName, "cloudscript-xdm-node-output-method"))
+  {
+    cloudscript_xdm_method = convertMethodString(aValue, aName);
+  }
+#endif /* ZORBA_WITH_JSON */
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );

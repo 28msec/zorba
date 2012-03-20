@@ -57,7 +57,6 @@ public:
 #else
       theSerializationMethod("XML"),
 #endif
-      theUseIndent(false),
       theEnableDtd(false),
       theEnableUriTestResolver(false)
 #ifndef ZORBA_NO_FULL_TEXT
@@ -73,6 +72,7 @@ private:
   std::string              theVarValue;
   std::vector<Variable>    theVariables;
   std::vector<Option>      theOptions;
+  std::vector<Option>      theSerializerOptions;
   std::vector<std::string> theResultFiles;
   std::vector<std::string> theErrors;
   std::string              theDate;
@@ -124,6 +124,11 @@ private:
     theOptions.push_back(opt);
   }
 
+  void addSerializerOption() {
+    Option opt = { theVarName, theVarValue };
+    theSerializerOptions.push_back(opt);
+  }
+
   void addError(iterator_t str, iterator_t end) {
     std::string s(str, end);
     theErrors.push_back(s);
@@ -139,14 +144,6 @@ private:
     theTimezone = s;
   }
 
-  void setSerializationMethod(std::string ser_method)
-  {
-    theSerializationMethod = ser_method;
-  }
-  void setUseIndent() {
-    theUseIndent = true;
-  }
-
 public:
   std::vector<Variable>::const_iterator
   variablesBegin() const { return theVariables.begin(); }
@@ -159,6 +156,12 @@ public:
 
   std::vector<Option>::const_iterator
   optionsEnd() const { return theOptions.end(); }
+
+  std::vector<Option>::const_iterator
+  serializerOptionsBegin() const { return theSerializerOptions.begin(); }
+
+  std::vector<Option>::const_iterator
+  serializerOptionsEnd() const { return theSerializerOptions.end(); }
 
   std::vector<std::string>::const_iterator
   errorsBegin() const { return theErrors.begin(); }
@@ -177,6 +180,9 @@ public:
 
   size_t
   optionsSize() const { return theOptions.size(); }
+
+  size_t
+  serializerOptionsSize() const { return theSerializerOptions.size(); }
 
   size_t
   errorsSize() const { return theErrors.size(); }
@@ -219,14 +225,6 @@ public:
 
   std::string getDefaultCollection() const {
     return theDefaultCollection;
-  }
-
-  std::string getSerializationMethod()
-  {
-    return theSerializationMethod;
-  }
-  bool getUseIndent() const {
-    return theUseIndent;
   }
 
   bool getEnableDtd() const {
@@ -420,17 +418,11 @@ bool isKeyword(std::string& str) {
           for(++lIter; lIter!=tokens.end(); ++lIter)
           {
             trim(*lIter);
-            // Just --indent for now
-            if (*lIter == "--indent") {
-              setUseIndent();
-            } else if(*lIter == "--method") {
-              ++lIter;
-              theSerializationMethod = *lIter;
-              if(theSerializationMethod == "TXT")
-                theComparisonMethod = "Text";
-            } else {
-              return false;
-            }
+            if (lIter->find('=') == std::string::npos) { return false; }
+            // Re-use existing setVarName/Value stuff
+            setVarName(lIter->begin(), lIter->begin() + lIter->find('='));
+            setVarValue(lIter->begin() + lIter->find('=') + 1, lIter->end());
+            addSerializerOption();
           }
           break;
         }

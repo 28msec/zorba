@@ -72,6 +72,8 @@ public:
 #ifdef ZORBA_WITH_JSON
     PARAMETER_VALUE_JSON,
     PARAMETER_VALUE_JSONIQ,
+    PARAMETER_VALUE_ARRAY,
+    PARAMETER_VALUE_APPENDED,
 #endif
 
     PARAMETER_VALUE_UTF_8
@@ -106,6 +108,11 @@ protected:
   void* use_character_maps;        // TODO: list of pairs
   zstring version;                 // "1.0"
   short int indent;                // "yes" or "no", implemented
+#ifdef ZORBA_WITH_JSON
+  short int cloudscript_multiple_items;  // "no", "array", "appended", implemented
+  short int cloudscript_extensions;      // implemented
+  short int cloudscript_xdm_method;  // A legal value for "method", implemented
+#endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
   rchandle<emitter>    e;

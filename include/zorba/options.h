@@ -153,6 +153,18 @@ typedef enum {
   DONT_SAVE_UNUSED_FUNCTIONS = 0,
   SAVE_UNUSED_FUNCTIONS = 1
 } Zorba_save_plan_options_t;
+
+typedef enum {
+  CLOUDSCRIPT_EXTENSIONS_YES,
+  CLOUDSCRIPT_EXTENSIONS_NO
+} Zorba_cloudscript_extensions_t;
+
+typedef enum {
+  CLOUDSCRIPT_MULTIPLE_ITEMS_NO,
+  CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY,
+  CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED
+} Zorba_cloudscript_multiple_items_t;
+
 /** \brief Options that configure the serialization process of a query result.
 *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
 *
@@ -182,6 +194,11 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   zorba::String                 cdata_section_elements;
   zorba::String                 version;
 
+#ifdef ZORBA_WITH_JSON
+  Zorba_cloudscript_extensions_t cloudscript_extensions;
+  Zorba_cloudscript_multiple_items_t cloudscript_multiple_items;
+  Zorba_serialization_method_t   cloudscript_xdm_method;
+#endif /* ZORBA_WITH_JSON */
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all
    *         options (C++ only).
