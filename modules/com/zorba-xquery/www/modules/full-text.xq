@@ -157,6 +157,10 @@ xquery version "3.0";
  :   </tr>
  : </table>
  : Relationships are case-insensitive.
+ : <h2>Notes on tokenization</h2>
+ : For general information about Zorba's implementation of tokenization,
+ : including what constitutes a token,
+ : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
  :)
 
 (:===========================================================================:)

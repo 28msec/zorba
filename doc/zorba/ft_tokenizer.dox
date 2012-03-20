@@ -5,14 +5,25 @@
 The Zorba XQuery processor implements the
 <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
 specification that, among other things,
-tokenizes a string into a sequence of tokens.
-See
-<a href="http://www.w3.org/TR/xpath-full-text-10/#TokenizationSec">Tokenization</a>.
+<a ref="http://www.w3.org/TR/xpath-full-text-10/#TokenizationSec">tokenizes</a>
+a string into a sequence of tokens.
 
-The initial implementation of the toknenizer
-uses the one provided by the
-<a href="http://site.icu-project.org/">ICU library</a>.
-However, you can provide your own tokenizer instead.
+\section ft_tokenizer_tokization Tokenization
+
+Using the
+<a href="http://site.icu-project.org/">ICU library</a>,
+Zorba's implementation of tokenization
+considers only alpha-numeric sequences of characters to be part of a token;
+whitespace and punctuation characters are not
+and separate tokens.
+However, alpha-numeric sequences matching the regular expression
+<code>[0-9][.,][0-9]</code>
+are retained as part of a token, e.g.:
+"98.6" and "1,432.58" are tokens.
+
+Alternatively,
+you can implement your own tokenizer
+by deriving from the \c Tokenizer class.
 
 \section ft_class_tokenizer The Tokenizer Class
 

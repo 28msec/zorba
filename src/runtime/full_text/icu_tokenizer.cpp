@@ -316,8 +316,8 @@ void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
     else if ( IS_WORD_BREAK( NUMBER, rule_status ) ) {
       //
       // "NUMBER" tokens are obviously for numbers.  Note that a sequence of
-      // digits containing a ',' (e.g., "1,2") is considered a single token by
-      // ICU.
+      // digits containing either a '.' (e.g., "98.6") or a ',' (e.g., "1,2")
+      // are considered a single tokens by ICU.
       //
 #     if DEBUG_TOKENIZER
       cout << "(NUMBER)" << endl;
