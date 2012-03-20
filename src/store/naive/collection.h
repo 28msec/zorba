@@ -77,10 +77,6 @@ public:
 
   virtual void adjustTreePositions() = 0;
 
-  /**************************** Claim of ownership ****************************/
-
-  virtual void claimOwnership(zorba::simplestore::XmlTree* aTree);
-  
   /***************************** ID Management ********************************/
 
   virtual ulong getId() const = 0;
@@ -114,6 +110,10 @@ public:
 
   void getActiveICs(std::vector<store::IC*>& ics);
 
+  /**************************** Claim of ownership ****************************/
+protected:
+  virtual void claimOwnership(zorba::simplestore::XmlTree* aTree);
+  
 }; /* class Collection */
 
 } /* namespace simplestore */ } /* namespace zorba */
