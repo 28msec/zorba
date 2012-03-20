@@ -88,7 +88,7 @@ declare variable $jerr:JNDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0003
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
 
 (:~
- :runtime error: duplicate pair to insert
+ :duplicate pair to insert
 :)
 declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005");
 
@@ -98,7 +98,7 @@ declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005
 declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006");
 
 (:~
- :runtime error: pair to delete not in object
+ :pair to delete not in object
 :)
 declare variable $jerr:JNUP0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0007");
 
@@ -121,6 +121,11 @@ declare variable $jerr:JNUP0010 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0010
  :pair to rename not in object
 :)
 declare variable $jerr:JNUP0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0011");
+
+(:~
+ :pair to rename already in object
+:)
+declare variable $jerr:JNUP0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0012");
 
 (:~
  :position to insert not in array

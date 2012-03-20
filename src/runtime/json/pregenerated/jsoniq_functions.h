@@ -622,6 +622,8 @@ public:
  */
 class JSONReplaceValueIterator : public NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>
 { 
+protected:
+  bool theCopyInput; //
 public:
   SERIALIZABLE_CLASS(JSONReplaceValueIterator);
 
@@ -632,15 +634,15 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>*)this);
+
+    ar & theCopyInput;
   }
 
   JSONReplaceValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>(sctx, loc, children)
-  {}
+    std::vector<PlanIter_t>& children,
+    bool copyInput);
 
   virtual ~JSONReplaceValueIterator();
 

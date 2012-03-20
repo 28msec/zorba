@@ -1999,11 +1999,35 @@ UpdJSONObjectReplaceValue::UpdJSONObjectReplaceValue(
 
 void UpdJSONObjectReplaceValue::apply()
 {
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
+  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+
+  if (pair)
+  {
+    theOldValue = pair->getValue();
+
+    pair->setValue(theNewValue);
+
+    theIsApplied = true;
+  }
 }
 
 
 void UpdJSONObjectReplaceValue::undo()
 {
+  if (!theIsApplied)
+    return;
+
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
+  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+
+  ZORBA_ASSERT(pair);
+
+  pair->setValue(theOldValue);
+
+  theIsApplied = false;
 }
 
 
@@ -2028,27 +2052,34 @@ void UpdJSONObjectRename::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
+  if (obj->getPair(theNewName))
+  {
+    RAISE_ERROR(jerr::JNUP0012, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
+  }
+
   JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
 
-  pair->setName(theNewName);
+  if (pair)
+  {
+    pair->setName(theNewName);
 
-  theIsApplied = true;
+    theIsApplied = true;
+  }
 }
 
 
 void UpdJSONObjectRename::undo()
 {
   if (!theIsApplied)
-  {
     return;
-  }
 
-  JSONObject* lObject = static_cast<JSONObject*>(theTarget.getp());
-  JSONObjectPair* lPair = static_cast<JSONObjectPair*>(
-      lObject->getPair(theNewName)
-    );
+  JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  lPair->setName(theNewName);
+  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theNewName));
+
+  ZORBA_ASSERT(pair);
+
+  pair->setName(theName);
 
   theIsApplied = false;
 }

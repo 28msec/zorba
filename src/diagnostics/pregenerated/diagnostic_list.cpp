@@ -1219,6 +1219,9 @@ JSONiqErrorCode JNUP0010( "JNUP0010" );
 JSONiqErrorCode JNUP0011( "JNUP0011" );
 
 
+JSONiqErrorCode JNUP0012( "JNUP0012" );
+
+
 JSONiqErrorCode JNUP0018( "JNUP0018" );
 
 

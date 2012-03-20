@@ -135,6 +135,9 @@ extern entry const dict_en[] = {
   { "JNUP0011", "\"$1\": pair to rename does not exist in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNUP0012", "\"$1\": pair to rename already exists in object" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNUP0018", "\"$1\": position to insert at is out of array bounds" },
 #endif
 #if defined(ZORBA_WITH_JSON)

@@ -1118,6 +1118,24 @@ void PULImpl::addJSONObjectInsert(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
+  csize numPairs = names.size();
+
+  for (csize i = 0; i < numPairs; ++i)
+  {
+    if (obj->getPair(names[i]))
+    {
+      RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
+    }
+
+    for (csize j = 0; j < i; ++j)
+    {
+      if (names[j]->equals(names[i]))
+      {
+        RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
+      }
+    }
+  }
+  
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(obj, updates);
 
@@ -1155,16 +1173,25 @@ void PULImpl::addJSONObjectInsert(
       
       return;
     }
+
+    UpdatePrimitive* upd =  GET_PUL_FACTORY().
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
+
+    pul->theJSONObjectInsertList.push_back(upd);
+
+    updates->push_back(upd);
   }
+  else
+  {
+    UpdatePrimitive* upd =  GET_PUL_FACTORY().
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
 
-  UpdatePrimitive* upd =  GET_PUL_FACTORY().
-  createUpdJSONObjectInsert(pul, loc, target, names, values);
+    pul->theJSONObjectInsertList.push_back(upd);
 
-  pul->theJSONObjectInsertList.push_back(upd);
-
-  updates = new NodeUpdates(1);
-  (*updates)[0] = upd;
-  pul->theNodeToUpdatesMap.insert(obj, updates);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
 }
 
 
@@ -1179,6 +1206,11 @@ void PULImpl::addJSONObjectDelete(
   CollectionPul* pul = getCollectionPul(target.getp());
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc, ERROR_PARAMS(name->getStringValue()));
+  }
 
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(obj, updates);
@@ -1199,16 +1231,25 @@ void PULImpl::addJSONObjectDelete(
       if (upd->theName->equals(name))
         return;
     }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectDelete(pul, loc, target, name);
+
+    pul->theJSONObjectDeleteList.push_back(upd);
+
+    updates->push_back(upd);
   }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectDelete(pul, loc, target, name);
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONObjectDelete(pul, loc, target, name);
+    pul->theJSONObjectDeleteList.push_back(upd);
 
-  pul->theJSONObjectDeleteList.push_back(upd);
-
-  updates = new NodeUpdates(1);
-  (*updates)[0] = upd;
-  pul->theNodeToUpdatesMap.insert(obj, updates);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
 }
 
 
@@ -1223,10 +1264,51 @@ void PULImpl::addJSONObjectReplaceValue(
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  pul->theJSONObjectReplaceValueList.push_back(upd);
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // raise error if duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE)
+        continue;
+
+      UpdJSONObjectReplaceValue* upd = static_cast<UpdJSONObjectReplaceValue*>(*ite);
+
+      if (name->equals(upd->theName))
+        RAISE_ERROR(jerr::JNUP0008, loc, ERROR_PARAMS(name->getStringValue()));
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+
+    pul->theJSONObjectReplaceValueList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+
+    pul->theJSONObjectReplaceValueList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
 }
 
 
@@ -1241,10 +1323,56 @@ void PULImpl::addJSONObjectRename(
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONObjectRename(pul, loc, target, name, newName);
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  pul->theJSONObjectRenameList.push_back(upd);
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0011, loc, ERROR_PARAMS(name->getStringValue()));
+  }
+
+  if (obj->getPair(newName))
+  {
+    RAISE_ERROR(jerr::JNUP0012, loc, ERROR_PARAMS(newName->getStringValue()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // raise error if duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+  
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_RENAME)
+        continue;
+
+      UpdJSONObjectRename* upd = static_cast<UpdJSONObjectRename*>(*ite);
+
+      if (name->equals(upd->theName))
+        RAISE_ERROR(jerr::JNUP0010, loc, ERROR_PARAMS(name->getStringValue()));
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectRename(pul, loc, target, name, newName);
+
+    pul->theJSONObjectRenameList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectRename(pul, loc, target, name, newName);
+
+    pul->theJSONObjectRenameList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
 }
 
 
@@ -1414,14 +1542,14 @@ void PULImpl::mergeUpdates(store::Item* other)
 
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONObjectDeleteList,
-                               otherPul->theJSONObjectRenameList);
+                               otherPul->theJSONObjectDeleteList);
 
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONObjectReplaceValueList,
                                otherPul->theJSONObjectReplaceValueList);
 
       mergeTargetedUpdateLists(thisPul,
-                               thisPul->theJSONObjectDeleteList,
+                               thisPul->theJSONObjectRenameList,
                                otherPul->theJSONObjectRenameList);
 
       mergeTargetedUpdateLists(thisPul,
@@ -1737,15 +1865,11 @@ void PULImpl::mergeTargetedUpdateLists(
           }
         }
         
-        if (merged)
-        {
-          delete otherUpd;
-          myList.pop_back();
-        }
-        
         break;
       }
 
+#ifdef ZORBA_WITH_JSON
+      // merge object-insert primitives and raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_INSERT:
       {
         NodeUpdates::iterator ite = targetUpdates->begin();
@@ -1783,22 +1907,98 @@ void PULImpl::mergeTargetedUpdateLists(
           break;
         }
 
-        if (merged)
+        break;
+      }
+
+      // skip deletions with duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_DELETE:
+      {
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
         {
-          delete otherUpd;
-          myList.pop_back();
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectDelete* myUpd = static_cast<UpdJSONObjectDelete*>(*ite);
+          UpdJSONObjectDelete* otherUpd2 = static_cast<UpdJSONObjectDelete*>(otherUpd);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            merged = true;
+            break;
+          }
         }
 
         break;
       }
 
+      // raise error if duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE:
+      {
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectReplaceValue* myUpd = 
+          static_cast<UpdJSONObjectReplaceValue*>(*ite);
+          UpdJSONObjectReplaceValue* otherUpd2 = 
+          static_cast<UpdJSONObjectReplaceValue*>(otherUpd);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            RAISE_ERROR(jerr::JNUP0008, otherUpd->theLoc, 
+            ERROR_PARAMS(myUpd->theName->getStringValue()));
+          }
+        }
+
+        break;
+      }
+
+      // raise error if duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_RENAME:
+      {
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectRename* myUpd = static_cast<UpdJSONObjectRename*>(*ite);
+          UpdJSONObjectRename* otherUpd2 = static_cast<UpdJSONObjectRename*>(otherUpd);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            RAISE_ERROR(jerr::JNUP0010, otherUpd->theLoc, 
+            ERROR_PARAMS(myUpd->theName->getStringValue()));
+          }
+        }
+
+        break;
+      }
+#endif
+
       default:
         break;
       }
 
-      if (!merged)
+      if (merged)
+      {
+        delete otherUpd;
+        myList.pop_back();
+      }
+      else
+      {
         targetUpdates->push_back(otherUpd);
-    }
+      }
+    } // target has other updates in this pul
   } // for each primitive in other list
 
   otherList.clear();

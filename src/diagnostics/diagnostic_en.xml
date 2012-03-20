@@ -2543,7 +2543,7 @@
     <!-- jsoniq object updates -->
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
-      <comment>runtime error: duplicate pair to insert</comment>
+      <comment>duplicate pair to insert</comment>
       <value>"$1": duplicate pair to insert</value>
     </diagnostic>
 
@@ -2553,7 +2553,7 @@
     </diagnostic>
 
     <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
-      <comment>runtime error: pair to delete not in object</comment>
+      <comment>pair to delete not in object</comment>
       <value>"$1": pair to delete does not exist in object</value>
     </diagnostic>
 
@@ -2575,6 +2575,11 @@
     <diagnostic code="JNUP0011" if="defined(ZORBA_WITH_JSON)">
       <comment>pair to rename not in object</comment>
       <value>"$1": pair to rename does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0012" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename already in object</comment>
+      <value>"$1": pair to rename already exists in object</value>
     </diagnostic>
 
     <!-- jsoniq array updates -->

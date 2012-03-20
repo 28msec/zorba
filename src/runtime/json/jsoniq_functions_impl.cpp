@@ -599,16 +599,6 @@ bool JSONObjectInsertIterator::nextImpl(
     consumeNext(name, theChildren[i + 1].getp(), planState);
     consumeNext(value, theChildren[i + 2].getp(), planState);
 
-    std::vector<store::Item_t>::const_iterator ite = names.begin();
-    std::vector<store::Item_t>::const_iterator end = ite + i;
-    for (; ite != end; ++ite)
-    {
-      if ((*ite)->equals(name))
-      {
-        RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(name->getStringValue()));
-      }
-    }
-
     names[i].transfer(name);
 
     if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
@@ -618,6 +608,7 @@ bool JSONObjectInsertIterator::nextImpl(
   }
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
+
   pul->addJSONObjectInsert(&loc, object, names, values);
 
   result.transfer(pul);
@@ -728,11 +719,6 @@ bool JSONDeleteIterator::nextImpl(
       ERROR_PARAMS(ZED(JNTY0007_Object), type->toSchemaString()));
     }
 
-    if (!target->getPair(selector))
-    {
-      RAISE_ERROR(jerr::JNUP0007, loc, ERROR_PARAMS(selector->getStringValue()));
-    }
-
     pul->addJSONObjectDelete(&loc, target, selector);
   }
   else if (target->isJSONArray())
@@ -771,6 +757,25 @@ bool JSONDeleteIterator::nextImpl(
       $selector as xs:anyAtomicType, 
       $newValue as item()) 
 ********************************************************************************/
+JSONReplaceValueIterator::JSONReplaceValueIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& args,
+    bool copyInput)
+  :
+  NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>(sctx, loc, args)
+{
+  if (theChildren[2]->isConstructor())
+  {
+    theCopyInput = false;
+  }
+  else
+  {
+    theCopyInput = copyInput;
+  }
+}
+
+
 bool JSONReplaceValueIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
@@ -790,7 +795,7 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (newValue->isNode() || newValue->isJSONItem())
+  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
   {
     copymode.set(true, 
       theSctx->construction_mode() == StaticContextConsts::cons_preserve,
@@ -812,11 +817,6 @@ bool JSONReplaceValueIterator::nextImpl(
 
       RAISE_ERROR(jerr::JNTY0007, loc, 
       ERROR_PARAMS(ZED(JNTY0007_Object), type->toSchemaString()));
-    }
-
-    if (!target->getPair(selector))
-    {
-      RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(selector->getStringValue()));
     }
 
     pul->addJSONObjectReplaceValue(&loc, target, selector, newValue);

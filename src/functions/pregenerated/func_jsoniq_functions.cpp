@@ -190,15 +190,6 @@ PlanIter_t op_zorba_json_delete::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t op_zorba_json_replace_value::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONReplaceValueIterator(sctx, loc, argv);
-}
 
 #endif
 #ifdef ZORBA_WITH_JSON

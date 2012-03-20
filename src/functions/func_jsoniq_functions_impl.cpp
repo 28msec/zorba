@@ -94,6 +94,21 @@ bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) c
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t op_zorba_json_replace_value::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONReplaceValueIterator(sctx, loc, argv, true);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/

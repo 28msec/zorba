@@ -427,7 +427,7 @@
       internal function
     </zorba:description>
 
-    <zorba:function>
+    <zorba:function generateCodegen="false">
 
       <zorba:signature localname="json-replace-value" prefix="op-zorba">
         <zorba:param>json-item()</zorba:param>
@@ -443,6 +443,12 @@
       </zorba:methods>
 
     </zorba:function>
+
+  <zorba:constructor generate="false">
+    <zorba:parameter type="bool" name="copyInput" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theCopyInput" />
 
 </zorba:iterator>
 
