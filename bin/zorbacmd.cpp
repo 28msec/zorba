@@ -38,6 +38,7 @@
 #include <zorba/iterator.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/uri_resolvers.h>
+#include <zorba/serialization_callback.h>
 
 #include <zorba/store_manager.h>
 
@@ -72,6 +73,24 @@ const char *copyright_str =
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
 OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
+class URIMapperSerializationCallback : public SerializationCallback
+{
+  private:
+    std::vector<URIMapper*> theURIMappers;
+
+  public:
+    void addURIMapper(URIMapper* lURIMapper)
+    {
+      theURIMappers.push_back(lURIMapper);
+    }
+
+    virtual URIMapper*
+    getURIMapper(size_t i) const
+    {   
+      return theURIMappers[i];
+    }   
+};
+URIMapperSerializationCallback theSerializationCallback;
 
 bool
 populateStaticContext(
@@ -149,7 +168,11 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theStopWordsMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->registerURIMapper(&theStopWordsMapper);
+    if(aProperties.executePlan()) {
+      theSerializationCallback.addURIMapper(&theStopWordsMapper);
+    } else {
+      aStaticContext->registerURIMapper(&theStopWordsMapper);
+    }
   }
   {
     ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
@@ -157,7 +180,11 @@ populateStaticContext(
     for (; lIter != end; ++lIter) {
       theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->registerURIMapper(&theThesaurusMapper);
+    if(aProperties.executePlan()) {
+      theSerializationCallback.addURIMapper(&theStopWordsMapper);
+    } else {
+      aStaticContext->registerURIMapper(&theThesaurusMapper);
+    }
   }
 #endif
   return true;
@@ -170,8 +197,8 @@ populateDynamicContext(
   zorba::DynamicContext* aDynamicContext,
   const ZorbaCMDProperties& aProperties)
 {
-  XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
   if ( aProperties.contextItem().size() != 0 ) {
+    XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
     std::ifstream lInStream(aProperties.contextItem().c_str());
     Item lDoc = lXmlMgr->parseXML(lInStream);
     aDynamicContext->setContextItem(lDoc);
@@ -187,6 +214,7 @@ populateDynamicContext(
     {
       if ((*lIter).inline_file)
       {
+        XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
         std::ifstream lInStream((*lIter).var_value.c_str());
         Item lDoc = lXmlMgr->parseXML(lInStream);
         aDynamicContext->setVariable((*lIter).var_name, lDoc);
@@ -503,7 +531,9 @@ compileAndExecute(
   unsigned long lNumExecutions = properties.multiple();
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
-
+  bool compilePlan = properties.compilePlan();
+  bool executePlan = properties.executePlan();
+  std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
   // default is O1 in the Zorba_CompilerHints constructor
@@ -568,7 +598,11 @@ compileAndExecute(
         query->registerDiagnosticHandler(&diagnosticHandler);
         query->setFileName(qfilepath);
 
-        query->compile(qfile, staticContext, lHints);
+        if(executePlan) {
+          query->loadExecutionPlan(qfile, &theSerializationCallback);
+        } else {
+          query->compile(qfile, staticContext, lHints);
+        }
 
         if (doTiming)
         {
@@ -631,7 +665,11 @@ compileAndExecute(
         }
         else
         {
-          query->execute(outputStream, &lSerOptions);
+          if (compilePlan) {
+            query->saveExecutionPlan(outputStream, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+          } else {
+            query->execute(outputStream, &lSerOptions);
+          }
           if (properties.trailingNl()) {
             outputStream << std::endl;
           }

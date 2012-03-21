@@ -52,6 +52,8 @@ IF (DOXYGEN_FOUND)
   FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/known_issues.dox "/** \\page known_issues Known Issues
 ")
   FILE(READ  ${CMAKE_SOURCE_DIR}/KNOWN_ISSUES.txt KNWON_ISSUES_CONTENS)
+  STRING (REPLACE "\\s" "\\code \\s \\endcode" KNWON_ISSUES_CONTENS ${KNWON_ISSUES_CONTENS})
+  STRING (REPLACE "#others" "\\code #others \\endcode" KNWON_ISSUES_CONTENS ${KNWON_ISSUES_CONTENS})
   FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/known_issues.dox "${KNWON_ISSUES_CONTENS}
 */")
 

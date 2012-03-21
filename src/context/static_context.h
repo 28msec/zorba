@@ -273,7 +273,7 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypeMnager :
+  theTypeManager :
   ---------------
   If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
@@ -296,7 +296,7 @@ public:
 
   theVariablesMap :
   -----------------
-  
+
   theImportedPrivateVariablesMap :
   --------------------------------
 
@@ -465,9 +465,11 @@ public:
   static const char* ZORBA_INTROSP_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
+  static const char* ZORBA_URI_FN_NS;
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;
+  static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
   static const char* ZORBA_UTIL_FN_NS;
@@ -521,7 +523,7 @@ protected:
   xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
-  
+
   VariableMap                           * theImportedPrivateVariablesMap;
 
   FunctionMap                           * theFunctionMap;

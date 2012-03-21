@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_STORE_DEFS_H
 #define ZORBA_SIMPLE_STORE_STORE_DEFS_H
 
-#include "store/naive/store_manager_impl.h"
+#include "store_manager_impl.h"
 
 namespace zorba { 
 

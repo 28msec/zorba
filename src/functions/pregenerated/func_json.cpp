@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_json_parse_internal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONParseInternal(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_zorba_json_serialize_internal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new JSONSerializeInternal(sctx, loc, argv);
 }

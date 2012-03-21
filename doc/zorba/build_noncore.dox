@@ -77,7 +77,7 @@ Zorba provides email support using the CClient library part of the <a href="http
 \subsubsection cclientunix Unix/Linux/Mac OS X
 Notes:
 - There are some known issues with the CClient packages
-  that come with diffrent Linux distributions.
+  that come with different Linux distributions.
 - On x32 bit OpenSuse and also on x64 bit Ubuntu,
   we noticed that the CClient shared library is broken
   (undefined symbol: mm_dlog).
@@ -119,14 +119,14 @@ make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
   or \c libc-client4.a on Mac OS X).
 
 Use the following extra CMake arguments when building Zorba:
-\verbatim
--D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
--D CCLIENT_LIBRARY=path_to_imap-2007e\c-client\libc-client.a"
-\endverbatim
+\code
+-D "CCLIENT_INCLUDE=path_to_imap-2007e/c-client"
+-D "CCLIENT_LIBRARY=path_to_imap-2007e/c-client/libc-client.a"
+\endcode
 
 Here are some quick suggestions to build CClient on Linux:
 - x32-bit Linux: <tt>make lnp</tt>
-- x64-bit Linux: <tt>make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</tt> in order to build with SSL and Kerberos support.<br /></ul>
+- x64-bit Linux: <tt>make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</tt> in order to build with SSL and Kerberos support.<br />
 
 For more detailed build instructions,
 please see the

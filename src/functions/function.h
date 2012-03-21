@@ -39,7 +39,6 @@ namespace zorba
 class fo_expr;
 class CompilerCB;
 class expr;
-class AnnotationHolder;
 
 
 /*******************************************************************************
@@ -218,7 +217,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const = 0;
+        expr& ann) const = 0;
 };
 
 

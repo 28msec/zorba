@@ -412,6 +412,26 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual void
   getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const = 0;
 
+  /** \brief Get all functions declared in the given static context
+   *
+   * @return aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(std::vector<Function_t>& aFunctions) const = 0;
+
+  /** \brief Get all functions with a specified namespace and airty\
+   *    declared in the given static context.
+   *
+   * @param aFnNameUri the namespace for the functions to return
+   * @param arity the arity for the functions to return
+   * @param aFunctions all of the said functions
+   */
+  virtual void
+  getFunctions(
+      const String& aFnNameUri,
+      uint32_t arity,
+      std::vector<Function_t>& aFunctions) const = 0;
+
   /** \brief Set the type of the context item.
    */
   virtual void
@@ -456,9 +476,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /**
    * @brief Set the URI and library lookup paths (lists of filesystem
    * directories) for this static context. Note that calling this method
-   * will override any values previously passed to \link setURIPath()
-   * and \link setLibPath().
-   * @deprecated Use \link setURIPath() and \link setLibPath().
+   * will override any values previously passed to StaticContext::setURIPath()
+   * and StaticContext::setLibPath().
+   * @deprecated Use StaticContext::setURIPath() and StaticContext::setLibPath().
    *
    * Convenience method which adds the listed directories to both the
    * URI path and Library path for this static context.
@@ -468,11 +488,11 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
 
   /**
    * @brief Return the union of the URI and library lookup paths (lists of
-   * filesystem directories) for this static context. @deprecated Use \link
-   * getURIPath() and \link getLibPath().
-   * @deprecated Use \link getURIPath() and \link getLibPath().
+   * filesystem directories) for this static context. @deprecated Use 
+   * StaticContext::getURIPath() and StaticContext::getLibPath().
+   * @deprecated Use StaticContext::getURIPath() and StaticContext::getLibPath().
    *
-   * Returns any values set by \link setLibPath() and/or \link setURIPath()
+   * Returns any values set by StaticContext::setLibPath() and/or StaticContext::setURIPath()
    * on this static context.
    */
   virtual void
@@ -481,7 +501,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /**
    * @brief Return the union of the URI and library lookup paths (lists of
    * filesystem directories) for this static context and all its parents.
-   * @deprecated Use \link getFullURIPath() and \link getFullLibPath().
+   * @deprecated Use StaticContext::getFullURIPath() and StaticContext::getFullLibPath().
    */
   virtual void
   getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
@@ -623,9 +643,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @brief Return the URI lookup path (list of filesystem directories) for
    * this static context.
    *
-   * Returns any values set by \link setURIPath() on this static context.
+   * Returns any values set by StaticContext::setURIPath() on this static context.
    * To return the full URI lookup path for this static context and
-   * all its parents (usually most useful), call \link getFullURIPath().
+   * all its parents (usually most useful), call StaticContext::getFullURIPath().
    */
   virtual void
   getURIPath(std::vector<String>& aURIPath) const = 0;
@@ -652,9 +672,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @brief Return the URI lookup path (list of filesystem directories) for
    * this static context.
    *
-   * Returns any values set by \link setLibPath() on this static context.
+   * Returns any values set by StaticContext::setLibPath() on this static context.
    * To return the full library lookup path for this static context and
-   * all its parents (usually most useful), call \link getFullLibPath().
+   * all its parents (usually most useful), call StaticContext::getFullLibPath().
    */
   virtual void
   getLibPath(std::vector<String>& aLibPath) const = 0;

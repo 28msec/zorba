@@ -1,141 +1,63 @@
-/*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER} Documentation
+/*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER} Documentation
 
+\section installbuild Installation and Build
+  - \ref installation
+  - \ref build
+  - \ref build_ubuntu
+  - \ref php_ubuntu_tutorial
+  - \ref php_windows_tutorial
+  - \ref python_windows_tutorial
+  - \ref commandline
+  - <a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a>
 
-<table>
-<tr><td class="tdDocIndexTable">
+\section apis APIs
+  - <a href="../../cxx/html/index.html">C++ API</a>
+  - <a class="el" href="../../c/html/index.html">C API</a>
+  - <a class="el" href="../../java/html/index.html">Java API</a>
+  - <a class="el" href="../../python/html/index.html">Python API</a>
+  - <a class="el" href="../../ruby/html/index.html">Ruby API</a>
+  - <a class="el" href="../../php/html/index.html">PHP API</a>
 
+\section generalarchitecture General Architecture
+  - \ref data_lifecycle
+    - \ref dlexamples
+    - \ref dlzorbastore
+  - \ref schema_lifecycle
+  - \ref uriresolvers
+  - \ref data_converters
+  - \ref ft_intro
+  - \ref errors_warnings
+  - \ref impl_dep_features
+  - \ref memory_management
+  - \ref memory_leaks
 
-    <h2>Installation and Build</h2>
-    \ref installation
+\section xqlib XQuery Modules
+ - <a href="../xqdoc/xhtml/index.html">XQuery Module Library</a>
+ - \ref modules_top
+ - \ref mod_importing
+ - \ref mod_versioning
+ - \ref modules_authoring
+ - \ref modules_authoring_2
+ - \ref modules_building_in
+ - \ref external_functions
 
-    \ref build
-    <ul>
-      <li>\ref build_ubuntu </li>
-      <li>\ref php_ubuntu_tutorial </li>
-      <li>\ref php_windows_tutorial </li>
-      <li>\ref python_windows_tutorial </li>
-    </ul>
+\section w3cspecs W3C Specifications
+  - \ref overview
+  - <a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a>  (\ref conformanceXQTS)
+  - <a href="http://www.w3.org/TR/xpath-functions-30/">W3C XPath and XQuery Functions and Operators</a> (<a href="../xqdoc/xhtml/function_index.html">List of Supported Functions</a>)
+  - <a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a>  (\ref conformanceXQUTS)
+  - <a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a>  (\ref conformanceXQFTTS)
+  - <a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a>  (\ref partial_support "Partial Support")
+  - <a href="http://www.w3.org/XML/Schema">W3C XML Schema</a>
+  - <a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a>
+  - <a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</a>
+  - <a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</a>
 
-    \ref commandline
+\section zorbaspec Zorba Proprietary Specifications
+  - \ref xqddf
+  - <a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
+  - \ref options_and_annotations
 
-    <a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a>
-
-
-</td><td class="tdDocIndexTable">
-
-
-    <h2>APIs</h2>
-    <a href="../../cxx/html/index.html">C++ API</a>
-
-    <h3>Language Bindings</h3>
-    <ul>
-      <li><a class="el" href="../../c/html/index.html">C API</a></li>
-      <li><a class="el" href="../../java/html/index.html">Java API</a></li>
-      <li><a class="el" href="../../python/html/index.html">Python API</a></li>
-      <li><a class="el" href="../../ruby/html/index.html">Ruby API</a></li>
-      <li><a class="el" href="../../php/html/index.html">PHP API</a></li>
-    </ul>
-
-
-</td></tr>
-<tr><td class="tdDocIndexTable">
-
-
-    <h2>General Architecture</h2>
-    \ref data_lifecycle
-
-    <ul>
-      <li>\ref dl_examples</li>
-      <li>\ref dl_zorba_store</li>
-    </ul>
-
-    \ref schema_lifecycle
-
-    \ref uriresolvers
-
-    \ref data_converters
-
-    \ref ft_intro
-    <ul>
-      <li>\ref ft_thesaurus</li>
-    </ul>
-
-    \ref errors_warnings
-
-    \ref impl_dep_features
-
-    <div style="display:none;">\ref controlling_memory</div>
-    <div style="display:none;">\ref plugable_components </div>
-
-
-</td><td class="tdDocIndexTable">
-
-
-    <h2>XQuery Libraries</h2>
-    <a href="../xqdoc/xhtml/index.html">XQuery Module Library</a>
-
-    \ref modules_top
-    <ul>
-      <li>\ref mod_importing</li>
-      <li>\ref mod_versioning</li>
-      <li>\ref modules_authoring</li>
-      <li>\ref modules_authoring_2</li>
-      <li>\ref modules_building_in</li>
-      <li>\ref external_functions</li>
-    </ul>
-
-
-</td></tr>
-<tr><td class="tdDocIndexTable">
-
-
-    <h2>W3C Specifications</h2>
-
-    \ref overview
-
-    <a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a>  (\ref conformanceXQTS)
-
-    <a href="http://www.w3.org/TR/xpath-functions-30/">W3C XPath and XQuery Functions and Operators</a>
-         (<a href="../xqdoc/xhtml/function_index.html">List of Supported Functions</a>)
-
-    <a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a>  (\ref conformanceXQUTS)
-
-    <a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a>  (\ref conformanceXQFTTS)
-
-    <a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a>  (\ref partial_support "Partial Support")
-
-    <a href="http://www.w3.org/XML/Schema">W3C XML Schema</a>
-
-    <a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a>
-
-    <a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</a>
-
-    <a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</a>
-
-
-</td><td class="tdDocIndexTable">
-
-
-    <h2>Zorba Proprietary Specifications</h2>
-
-    \ref xqddf
-
-    <a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
-
-    \ref options_and_annotations
-
-    <!--li>\ref extensions_update</li-->
-
-
-</td></tr>
-<tr><td class="tdDocIndexTable">
-
-
-    <h2>Tutorials</h2>
-
-    \ref web_crawler_tutorial
-
-</td><tr>
-</table>
-
+\section tutorials Tutorials
+  - \ref web_crawler_tutorial
 */

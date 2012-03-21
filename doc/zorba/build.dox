@@ -116,7 +116,8 @@ and development headers.
   To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel),
   you can pass an additional parameter to CMake, e.g.,
   <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
-- Zorba has other options as well.
+- Zorba has other build options as well
+  (see \ref build_options).
   You can tweak the performance and library footprint
   by enabling or disabling various features from Zorba.
 
@@ -151,13 +152,13 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
   you need a working Visual Studio (Express) installation (2008, 2010).
 - If you want to compile Zorba using Visual Studio 2008,
   you will need to install the
-  <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&displaylang=en" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
+  <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
 - Make sure that the libraries required for Zorba
   are built with the same version of Visual Studio that you use.
 - The Windows version of some required packages
   are distributed by other web sites
   (all of them are pointed to from the main package web sites
-  indicated in the \ref required section):
+  indicated in the \ref required_libs section):
   - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
   - CURL: http://curl.haxx.se/download.html
   - Libxslt: http://www.zlatkovic.com/pub/libxml/
@@ -171,7 +172,10 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
   - all the directories pointed by the \c ZORBA_THIRD_PARTY_REQUIREMENTS
     cmake variable
     - e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools",
-      you must build with -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool
+      you must build with 
+      \code
+      -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool
+      \endcode
       and Zorba will find all it needs from Xerces and Iconv.
       (The directory names must contain "xerces" and "iconv" respectively, case insensitive)
   - in the program files directory on your system
@@ -233,10 +237,10 @@ Now you are ready to call \c nmake from the \c [ZORBABUILD] directory.
   a set of public keys freely available on the internet. 
 - On Windows,
   Zorba expects this file to be called \c cacert.pem
-  and searches for it in current directory and system paths. 
+  and searches for it in the current directory and system paths. 
 - This \c cacert.pem file can be found on the curl page:
   http://curl.haxx.se/docs/caextract.html .
-- In order to disable the validation of server certificate,
+- In order to disable the validation of the server certificate,
   the \c ZORBA_VERIFY_PEER_SSL_CERTIFICATE can be set to \c OFF
   in cmake 
   (and actually this is the default value).

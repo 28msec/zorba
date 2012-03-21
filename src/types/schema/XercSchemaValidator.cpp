@@ -23,7 +23,6 @@
 //  Includes
 // ---------------------------------------------------------------------------
 #include "stdafx.h"
-#include "XercSchemaValidator.h"
 
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/framework/XMLDocumentHandler.hpp>
@@ -54,7 +53,8 @@
 
 
 #include "diagnostics/assert.h"
-//#include "StrX.h"
+#include "StrX.h"
+#include "XercSchemaValidator.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 

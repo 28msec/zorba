@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
@@ -279,7 +280,7 @@ token::type lexer::parse_literal( char first_c, token::value_type *value ) {
   static token::value_type const null_value ( "null"  );
   static token::value_type const true_value ( "true"  );
 
-  token::type tt;
+  token::type tt = token::none;
   switch ( first_c ) {
     case 'f': *value = false_value; tt = token::json_false; break;
     case 'n': *value = null_value ; tt = token::json_null ; break;

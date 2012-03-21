@@ -343,13 +343,14 @@ MaterializeClause::MaterializeClause(
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theLocation;
-  ar & theOrderSpecs;
-  ar & theStable;
 
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
   ar & theOutputLetVarsRefs;
+
+  ar & theOrderSpecs;
+  ar & theStable;
 }
 
 
@@ -1215,7 +1216,7 @@ bool FLWORIterator::bindVariable(
     if (!flc.thePosVarRefs.empty())
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->createInteger(posItem, Integer(bindingState));
+      GENV_ITEMFACTORY->createInteger(posItem, xs_integer(bindingState));
 
       std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();

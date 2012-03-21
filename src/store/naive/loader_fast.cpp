@@ -76,9 +76,10 @@ namespace simplestore {
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
     bool dataguide)
   :
-  XmlLoader(factory, xqueryDiagnostics, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, loadProperties, dataguide),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -297,6 +298,13 @@ store::Item_t FastXmlLoader::loadXml(
                                    theBuffer,
                                    static_cast<int>(numChars),
                                    docUri.c_str());
+
+    // Apply loader options
+    store::LoadProperties new_props = theLoadProperties;
+    new_props.setSubstituteEntities(true); // This is required for some Zorba tests,
+                                           // e.g. rbkt/Queries/zorba/entity/entity.xq
+                                           // It should probably be handled in a different way
+    applyLoadOptions(new_props, ctxt);
 
     if (ctxt == NULL)
     {

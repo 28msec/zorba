@@ -303,7 +303,7 @@ public:
     * @param aBindings An STL list to receive the namespace bindings of this node (each
     * represented as a std::pair<zorba::String,zorba::String> where the
     * first string is the namespace prefix and the second is the namespace URI).
-    * @param aScope An instance of NsScoping to declare which bindings to return:
+    * @param aNsScoping An instance of NsScoping to declare which bindings to return:
     * those local to the element; those local to all parent elements; or all bindings
     * (the default).
     * @throw ZorbaException if an error occured, e.g. the Item is not of type element.
@@ -362,6 +362,29 @@ public:
    */
   std::istream&
   getStream();
+
+  /**
+   * Returns true if the contents of a binary item is already encoded
+   * 
+   * @return true if the content is already encoded, false otherwise
+   */
+  bool
+  isEncoded() const;
+
+  /**
+   * Returns the value and size of the given base64Binary item
+   *
+   * The value is a string which is base64 encoded if isEncoded()
+   * returns true. Otherwise, it is the original unencoded binary
+   * data.
+   *
+   * If the given item is streamable (i.e. isStreamable() returns true),
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
+   */
+  const char*
+  getBase64BinaryValue(size_t& s) const;
 
   /** \brief Returns the name of the collection this node is stored in.
    *

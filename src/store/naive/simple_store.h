@@ -16,13 +16,13 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/shared_types.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/hashmap_nodep.h"
+#include "shared_types.h"
+#include "store_defs.h"
+#include "hashmap_nodep.h"
 #include "tree_id.h"
 
 #if (defined (WIN32) || defined (WINCE))
-#include "store/naive/node_items.h"
+#include "node_items.h"
 #include "store/api/collection.h"
 #include "store/api/index.h"
 #include "store/api/ic.h"
@@ -150,6 +150,10 @@ public:
 
 protected:
   static const ulong NAMESPACE_POOL_SIZE;
+  static const ulong DEFAULT_DOCUMENT_SET_SIZE;
+  static const ulong DEFAULT_URI_COLLECTION_SET_SIZE;
+  static const ulong DEFAULT_INDICES_SET_SIZE;
+  static const ulong DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE;
 
 public:
   zstring                       theEmptyNs;
@@ -376,7 +380,7 @@ public:
 
   /* ------------------------ Node Reference Management ---------------------------*/
 
-  bool getNodeReference(store::Item_t& result, store::Item* node);
+  bool getNodeReference(store::Item_t& result, const store::Item* node);
 
   bool hasReference(const store::Item* node);
 

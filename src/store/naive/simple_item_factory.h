@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
@@ -107,6 +107,19 @@ public:
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
+  bool createBase64Binary(
+      store::Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded);
+
+  bool createStreamableBase64Binary(
+      store::Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false);
+
   bool createBoolean(store::Item_t& result, xs_boolean value);
 
 
@@ -118,9 +131,9 @@ public:
 
   bool createInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNonNegativeInteger(store::Item_t& result, const xs_uinteger& value);
+  bool createNonNegativeInteger(store::Item_t& result, const xs_nonNegativeInteger& value);
 
-  bool createPositiveInteger(store::Item_t& result,  const xs_uinteger& value );
+  bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
   bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
 

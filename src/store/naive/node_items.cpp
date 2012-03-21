@@ -34,7 +34,7 @@
 #include "node_items.h"
 #include "node_iterators.h"
 #include "simple_store.h"
-#include "simple_collection.h"
+#include "collection.h"
 #include "simple_item_factory.h"
 #include "qname_pool.h"
 #include "store_defs.h"
@@ -43,6 +43,7 @@
 #include "dataguide.h"
 #include "node_factory.h"
 
+#include "util/stl_util.h"
 #include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -104,7 +105,17 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection, ulong pos)
+void XmlTree::claimedByCollection(Collection* collection)
+{
+  ZORBA_ASSERT(collection != NULL);
+  theCollection = collection;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::setCollection(Collection* collection, xs_integer pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -721,7 +732,7 @@ void XmlNode::destroy(bool removeType)
   }
   catch (...)
   {
-    ZORBA_FATAL(false, "Unexpectd exception");
+    ZORBA_FATAL(false, "Unexpected exception");
   }
 }
 
@@ -1047,6 +1058,113 @@ void OrdPathNode::setOrdPath(
     {
       theOrdPath = parent->theOrdPath;
       theOrdPath.appendComp(1);
+    }
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::getDescendantNodeByOrdPath(
+    const OrdPath& aOrdPath,
+    store::Item_t& aResult,
+    bool aAttribute) const
+{
+#ifdef TEXT_ORDPATH
+  if (getOrdPath() == aOrdPath)
+  {
+    aResult = this;
+    return true;
+  }
+#else
+  if (getNodeKind() == store::StoreConsts::textNode)
+  {
+    aResult = NULL;
+    return false;
+  }
+  else if (getOrdPath() == aOrdPath)
+  {
+    aResult = this;
+    return true;
+  }
+#endif
+
+  const XmlNode* parent = static_cast<const XmlNode*>(this);
+  csize i;
+
+  while (1)
+  {
+    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
+        parent->getNodeKind() != store::StoreConsts::elementNode)
+    {
+      aResult = NULL;
+      return false;
+    }
+
+    if (aAttribute && parent->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      const ElementNode* elemParent = reinterpret_cast<const ElementNode*>(parent);
+
+      csize numAttrs = elemParent->numAttrs();
+      for (i = 0; i < numAttrs; ++i)
+      {
+        AttributeNode* child = elemParent->getAttr(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(aOrdPath);
+
+        if (pos == OrdPath::SELF)
+        {
+          aResult = child;
+          return true;
+        }
+        else if (pos != OrdPath::FOLLOWING) // Includes DESCENDANT case
+        {
+          aResult = NULL;
+          return false;
+        }
+      }
+    }
+
+    const InternalNode* this2 = reinterpret_cast<const InternalNode*>(parent);
+
+    csize numChildren = this2->numChildren();
+    for (i = 0; i < numChildren; ++i)
+    {
+#ifdef TEXT_ORDPATH
+      OrdPathNode* child = static_cast<OrdPathNode*>(this2->getChild(i));
+#else
+      XmlNode* c = this2->getChild(i);
+
+      if (c->getNodeKind() == store::StoreConsts::textNode)
+        continue;
+
+      OrdPathNode* child = static_cast<OrdPathNode*>(c);
+#endif
+
+      OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(aOrdPath);
+
+      if (pos == OrdPath::SELF)
+      {
+        aResult = child;
+        return true;
+      }
+      else if (pos == OrdPath::DESCENDANT)
+      {
+        parent = child;
+        break;
+      }
+      else if (pos != OrdPath::FOLLOWING)
+      {
+        aResult = NULL;
+        return false;
+      }
+    }
+
+    if (i == numChildren)
+    {
+      aResult = NULL;
+      return false;
     }
   }
 }
@@ -4635,6 +4753,13 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
   tokens_( tokens )
 {
   push_lang( lang );
+}
+
+
+XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
+{
+  while ( !tokenizer_stack_.empty() )
+    ztd::pop_stack( tokenizer_stack_ )->destroy();
 }
 
 

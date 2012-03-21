@@ -16,7 +16,9 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
+
+#include "collection.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -39,9 +41,10 @@ namespace zorba { namespace simplestore {
                    The current value of the counter is then assigned as the id
                    the new tree.
 ********************************************************************************/
-class SimpleCollection : public store::Collection
+class SimpleCollection : public Collection
 {
   friend class CollectionIter;
+  friend class UpdTruncateCollection;
 
 public:
   class CollectionIter : public store::Iterator
@@ -89,6 +92,9 @@ public:
       bool aDynamicCollection = false);
 
   virtual ~SimpleCollection();
+  
+  /********************** All these methods implement the **********************
+  ***************** zorba::simplestore::Collection interface ******************/
 
   // virtual to allow extension by subclasses
   virtual ulong getId() const { return theId; }
@@ -111,7 +117,7 @@ public:
         xs_integer position = -1);
 
   // virtual to allow extension by subclasses
-  virtual ulong addNodes(
+  virtual xs_integer addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);
@@ -122,6 +128,8 @@ public:
   // virtual to allow extension by subclasses
   virtual bool removeNode(xs_integer position);
 
+  virtual void removeAll();
+
   // virtual to allow extension by subclasses
   virtual xs_integer removeNodes(xs_integer position, xs_integer num);
 
@@ -131,15 +139,6 @@ public:
 
   // virtual to allow extension by subclasses
   virtual void adjustTreePositions();
-
-  // virtual to allow extension by subclasses
-  virtual void getIndexes(std::vector<store::Index*>& indexes);
-
- /**
-  * Returns active integrity constraints referencing this collection.
-  * Virtual to allow extension by subclasses
-  */
-  virtual void getActiveICs(std::vector<store::IC*>& ics);
 };
 
 } // namespace store
