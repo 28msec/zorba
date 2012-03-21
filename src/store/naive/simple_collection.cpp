@@ -379,9 +379,7 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   std::size_t lPosition = to_xs_unsignedInt(position);
 
   if (lPosition < theXmlTrees.size() &&
-      TreeIdTraits::equals(
-          BASE_NODE(theXmlTrees[lPosition])->getTreeId(),
-          n->getTreeId()))
+      BASE_NODE(theXmlTrees[lPosition])->getTreeId() == n->getTreeId())
   {
     return true;
   }

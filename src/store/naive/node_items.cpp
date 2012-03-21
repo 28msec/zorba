@@ -1548,7 +1548,7 @@ DocumentNode::DocumentNode(
   theDocUri(docUri)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
-              << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
 }
 
@@ -1900,7 +1900,7 @@ ElementNode::ElementNode(
 
   NODE_TRACE1("Constructed element node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " type = " << getType()->getStringValue());
@@ -3332,7 +3332,7 @@ AttributeNode::AttributeNode(
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " value = " << getStringValue());
@@ -3708,13 +3708,13 @@ TextNode::TextNode(
 #ifdef TEXT_ORDPATH
   NODE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " content = " << getText());
 #else
   NODE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " content = " << getText());
 #endif
 }
@@ -4396,7 +4396,7 @@ PiNode::PiNode(
 
   NODE_TRACE1("Constructed pi node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " target = " << theTarget);
 }
 
@@ -4521,7 +4521,7 @@ CommentNode::CommentNode(
 
   NODE_TRACE1("Constructed comment node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << TreeIdTraits::toString(getTree()->getId()) << ":" << getTree()
+              << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
               << theContent);
 }

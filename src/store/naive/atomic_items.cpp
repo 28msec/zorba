@@ -1060,68 +1060,58 @@ StructuralAnyUriItem::StructuralAnyUriItem(
 StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   theValue.take(value);
+  std::istringstream input(theValue.str());
 
   ulong prefixlen = (ulong)strlen("zorba:");
-
-  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
+  input.width(prefixlen);
+  std::string prefix;
+  input >> prefix;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (prefix != "zorba:")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  const char* start;
+  input >> theCollectionId;
 
-  errno = 0;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  char period;
+  input >> &period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
 
-  //
-  // Decode collection id
-  //
-  start = theValue.c_str() + prefixlen;
-
-  char* next = const_cast<char*>(start);
-
-  theCollectionId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  input >> theTreeId;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  input >> &period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
-
-  if (*start != '.')
+  int lNodeKind;
+  input >> lNodeKind;
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (lNodeKind <= '0' || lNodeKind >'6')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));  //
 
-  ++start;
-
-  //
-  // Decode tree id
-  //
-  theTreeId = TreeIdTraits::decode(start, &next);
-  if (errno != 0 || start == next)
+  input >> &period;
+  if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  start = next;
-
-  if (*start != '.')
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  //
-  // Parse the node kind
-  //
-  if (*start > '0' && *start <='6')
-    theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
-  else
+    
+  input >> prefix;
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  //
-  // Decode OrdPath
-  //
-  theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
+  
+  theOrdPath = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
 
@@ -1144,7 +1134,7 @@ bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
 
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::ANCESTOR);
   }
 }
@@ -1169,7 +1159,7 @@ bool StructuralAnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      other->theNodeKind != store::StoreConsts::attributeNode &&
      theNodeKind != store::StoreConsts::attributeNode &&
      theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::FOLLOWING_SIBLING);
@@ -1196,7 +1186,7 @@ bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
 
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::FOLLOWING);
   }
 }
@@ -1220,7 +1210,7 @@ bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      other->theNodeKind != store::StoreConsts::attributeNode &&
      theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::DESCENDANT);
   }
@@ -1245,7 +1235,7 @@ bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::DESCENDANT);
   }
 }
@@ -1269,7 +1259,7 @@ bool StructuralAnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      other->theNodeKind != store::StoreConsts::attributeNode &&
      theNodeKind != store::StoreConsts::attributeNode &&
      theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::PRECEDING_SIBLING);
@@ -1295,7 +1285,7 @@ bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::PRECEDING);
   }
 }
@@ -1319,7 +1309,7 @@ bool StructuralAnyUriItem::isChild(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      other->theNodeKind != store::StoreConsts::attributeNode &&
      theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::CHILD);
   }
@@ -1344,7 +1334,7 @@ bool StructuralAnyUriItem::isAttribute(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      other->theNodeKind == store::StoreConsts::attributeNode &&
      theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::CHILD);
   }
@@ -1369,7 +1359,7 @@ bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return 
     (other->theCollectionId == theCollectionId &&
-     TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+     other->theTreeId == theTreeId &&
      theOrdPath.getRelativePosition2(other->theOrdPath) == OrdPath::PARENT);
   }
 }
@@ -1392,9 +1382,9 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
     return
     (theCollectionId > other->theCollectionId ||
     (theCollectionId == other->theCollectionId &&
-        TreeIdTraits::isBefore(other->theTreeId, theTreeId)) ||
+        other->theTreeId < theTreeId) ||
     (theCollectionId == other->theCollectionId &&
-        TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+        other->theTreeId == theTreeId &&
         theOrdPath > other->theOrdPath));
   }
 }
@@ -1417,9 +1407,9 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
     return
     (theCollectionId < other->theCollectionId ||
     (theCollectionId == other->theCollectionId &&
-        TreeIdTraits::isBefore(theTreeId, other->theTreeId)) ||
+        theTreeId < other->theTreeId) ||
     (theCollectionId == other->theCollectionId &&
-        TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+        other->theTreeId == theTreeId &&
         theOrdPath < other->theOrdPath));
   }
 }
@@ -1485,7 +1475,7 @@ bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
 
     if (other->theCollectionId == theCollectionId &&
-        TreeIdTraits::equals(other->theTreeId, theTreeId) &&
+        other->theTreeId == theTreeId &&
         other->theNodeKind != store::StoreConsts::attributeNode &&
         theNodeKind != store::StoreConsts::attributeNode)
     {
@@ -1518,7 +1508,7 @@ bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
   {
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return (theCollectionId == other->theCollectionId &&
-            TreeIdTraits::equals(other->theTreeId, theTreeId));
+            other->theTreeId == theTreeId);
   }
 }
 

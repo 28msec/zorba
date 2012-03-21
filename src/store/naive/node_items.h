@@ -1623,10 +1623,10 @@ inline long XmlNode::compare2(const XmlNode* other) const
       const TreeId& tree1 = this->getTreeId();
       const TreeId& tree2 = other->getTreeId();
 
-      if (TreeIdTraits::isBefore(tree1, tree2))
+      if (tree1 < tree2)
         return -1;
 
-      if (TreeIdTraits::equals(tree1, tree2))
+      if (tree1 < tree2)
         return compareInSameTree(this, other);
     }
     else

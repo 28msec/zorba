@@ -25,32 +25,15 @@ namespace zorba {
 namespace simplestore {
 
 /*
-This file (typedef, traits) can be changed to implement a different kind of tree ID
+This file (typedef, traits) can be changed to implement a different kind of tree ID.
+
+TreeIDs must support:
+- Comparison operators ==, !=, <, >
+- Streaming operators << (to an std::ostream), >> (to an std::istream)
+
 */
 
 typedef ulong TreeId;
-
-class TreeIdTraits {
-public:
-  static bool equals(const TreeId& id1, const TreeId& id2)
-  {
-    return id1 == id2;
-  }
-  static bool isBefore(const TreeId& id1, const TreeId& id2)
-  {
-    return id1 < id2;
-  }
-  static unsigned long int decode(const char* str, char** endptr)
-  {
-    return strtoul(str, endptr, 10);
-  }
-  static zstring toString(const TreeId& id)
-  {
-    std::ostringstream oss;
-    oss << std::dec << id;
-    return oss.str();
-  }
-};
 
 } // simplestore
 } // zorba

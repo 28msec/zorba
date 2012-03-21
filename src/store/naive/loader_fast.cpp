@@ -260,7 +260,7 @@ store::Item_t FastXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << TreeIdTraits::toString(theTree->getId());
+    uristream << "zorba://internalDocumentURI-" << theTree->getId();
 
     theDocUri = uristream.str();
   }
