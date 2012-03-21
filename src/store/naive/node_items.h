@@ -1642,7 +1642,7 @@ inline long XmlNode::compare2(const XmlNode* other) const
       if (tree1 < tree2)
         return -1;
 
-      if (tree1 < tree2)
+      if (tree1 == tree2)
         return compareInSameTree(this, other);
     }
     else

@@ -38,281 +38,11 @@ void populate_context_durations_dates_times(static_context* sctx);
 
 
 
-//fn:timezone-from-time
-class fn_timezone_from_time : public function
+//fn:years-from-duration
+class fn_years_from_duration : public function
 {
 public:
-  fn_timezone_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:seconds-from-time
-class fn_seconds_from_time : public function
-{
-public:
-  fn_seconds_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:minutes-from-time
-class fn_minutes_from_time : public function
-{
-public:
-  fn_minutes_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:hours-from-time
-class fn_hours_from_time : public function
-{
-public:
-  fn_hours_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:timezone-from-date
-class fn_timezone_from_date : public function
-{
-public:
-  fn_timezone_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:day-from-date
-class fn_day_from_date : public function
-{
-public:
-  fn_day_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:month-from-date
-class fn_month_from_date : public function
-{
-public:
-  fn_month_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:year-from-date
-class fn_year_from_date : public function
-{
-public:
-  fn_year_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:timezone-from-dateTime
-class fn_timezone_from_dateTime : public function
-{
-public:
-  fn_timezone_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:seconds-from-dateTime
-class fn_seconds_from_dateTime : public function
-{
-public:
-  fn_seconds_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:minutes-from-dateTime
-class fn_minutes_from_dateTime : public function
-{
-public:
-  fn_minutes_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:hours-from-dateTime
-class fn_hours_from_dateTime : public function
-{
-public:
-  fn_hours_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:day-from-dateTime
-class fn_day_from_dateTime : public function
-{
-public:
-  fn_day_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:month-from-dateTime
-class fn_month_from_dateTime : public function
-{
-public:
-  fn_month_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:year-from-dateTime
-class fn_year_from_dateTime : public function
-{
-public:
-  fn_year_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:seconds-from-duration
-class fn_seconds_from_duration : public function
-{
-public:
-  fn_seconds_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:minutes-from-duration
-class fn_minutes_from_duration : public function
-{
-public:
-  fn_minutes_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:hours-from-duration
-class fn_hours_from_duration : public function
-{
-public:
-  fn_hours_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:days-from-duration
-class fn_days_from_duration : public function
-{
-public:
-  fn_days_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_years_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -338,11 +68,281 @@ public:
 };
 
 
-//fn:years-from-duration
-class fn_years_from_duration : public function
+//fn:days-from-duration
+class fn_days_from_duration : public function
 {
 public:
-  fn_years_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_days_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:hours-from-duration
+class fn_hours_from_duration : public function
+{
+public:
+  fn_hours_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:minutes-from-duration
+class fn_minutes_from_duration : public function
+{
+public:
+  fn_minutes_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:seconds-from-duration
+class fn_seconds_from_duration : public function
+{
+public:
+  fn_seconds_from_duration(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:year-from-dateTime
+class fn_year_from_dateTime : public function
+{
+public:
+  fn_year_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:month-from-dateTime
+class fn_month_from_dateTime : public function
+{
+public:
+  fn_month_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:day-from-dateTime
+class fn_day_from_dateTime : public function
+{
+public:
+  fn_day_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:hours-from-dateTime
+class fn_hours_from_dateTime : public function
+{
+public:
+  fn_hours_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:minutes-from-dateTime
+class fn_minutes_from_dateTime : public function
+{
+public:
+  fn_minutes_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:seconds-from-dateTime
+class fn_seconds_from_dateTime : public function
+{
+public:
+  fn_seconds_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:timezone-from-dateTime
+class fn_timezone_from_dateTime : public function
+{
+public:
+  fn_timezone_from_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:year-from-date
+class fn_year_from_date : public function
+{
+public:
+  fn_year_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:month-from-date
+class fn_month_from_date : public function
+{
+public:
+  fn_month_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:day-from-date
+class fn_day_from_date : public function
+{
+public:
+  fn_day_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:timezone-from-date
+class fn_timezone_from_date : public function
+{
+public:
+  fn_timezone_from_date(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:hours-from-time
+class fn_hours_from_time : public function
+{
+public:
+  fn_hours_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:minutes-from-time
+class fn_minutes_from_time : public function
+{
+public:
+  fn_minutes_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:seconds-from-time
+class fn_seconds_from_time : public function
+{
+public:
+  fn_seconds_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:timezone-from-time
+class fn_timezone_from_time : public function
+{
+public:
+  fn_timezone_from_time(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
