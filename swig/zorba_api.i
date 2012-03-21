@@ -67,6 +67,7 @@ namespace std {
   class Iterator;
 
   class DynamicException;
+  class DocumentManager;
   class XQueryException;
   class SerializationException;
   class StaticException;
