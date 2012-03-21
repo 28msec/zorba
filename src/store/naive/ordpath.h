@@ -170,6 +170,8 @@ public:
       delete [] getRemoteBuffer();
   }
 
+  void init(const unsigned char* buf, ulong byteLen);
+
   bool isValid() const { return getByteLength() != 0; }
 
   uint32_t hash() const;
@@ -194,6 +196,8 @@ public:
   void appendComp(int32_t value);
 
   std::string serialize() const;
+
+  bool deserialize(std::string);
 
   zstring show() const;
 

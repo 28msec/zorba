@@ -1115,7 +1115,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   
   char period;
-  input >> &period;
+  input >> period;
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   if (period != '.')
@@ -1126,7 +1126,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   
-  input >> &period;
+  input >> period;
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   if (period != '.')
@@ -1134,22 +1134,24 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 
   int lNodeKind;
   input >> lNodeKind;
+  theNodeKind = static_cast<store::StoreConsts::NodeKind>(lNodeKind);
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-  if (lNodeKind <= '0' || lNodeKind >'6')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));  //
+  if (lNodeKind <= 0 || lNodeKind > 6)
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  input >> &period;
+  input >> period;
   if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
     
   input >> prefix;
-  if (!input.good())
+  if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   
-  theOrdPath = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
+  theOrdPath.deserialize(prefix);
+  // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
 

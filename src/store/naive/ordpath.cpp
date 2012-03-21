@@ -193,6 +193,11 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 ********************************************************************************/
 OrdPath::OrdPath(const unsigned char* str, ulong strLen)
 {
+  init(str, strLen);
+}
+
+void OrdPath::init(const unsigned char* str, ulong strLen)
+{
   unsigned char* buf;
   bool isLocal;
 
@@ -1491,6 +1496,23 @@ std::string OrdPath::serialize() const
   return str.str().c_str();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool OrdPath::deserialize(std::string input)
+{
+  reset();
+  const char* signed_chars = input.c_str();
+  ulong size = input.size();
+  unsigned char* unsigned_chars = (unsigned char*)malloc(size * sizeof(unsigned char));
+  for(ulong i = 0; i < size; ++i)
+  {
+    unsigned_chars[i] = (unsigned char)signed_chars[i];
+  }
+  init(unsigned_chars, size);
+  free(unsigned_chars);
+  return true;
+}
 
 /*******************************************************************************
 
