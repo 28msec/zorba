@@ -80,7 +80,7 @@
 // #include "compiler/expression/ft_expr.h"
 // #include "compiler/expression/ftnode.h"
 // #include "compiler/parser/query_loc.h"
-#include "util/cxx_util.h"
+  #include "util/cxx_util.h"
 // #include "util/indent.h"
 // #include "util/stl_util.h"
 // #include "diagnostics/xquery_diagnostics.h"
@@ -371,6 +371,7 @@
  #include "zorba/xquery_warning.h"
  #include "runtime/full_text/ftcontains_visitor.h"
  #include "store/naive/naive_ft_token_iterator.h"
-
+ #include "store/api/ft_token_iterator.h"
+ #include "store/naive/ft_token_store.h"
 #endif
 /* vim:set et sw=2 ts=2: */

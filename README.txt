@@ -11,7 +11,7 @@
   -------------
 
   The documentation is included in the doc directory, as well as 
-  on the website of the project at http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/.
+  on the website of the project at http://www.zorba-xquery.org/html/documentation
 
   Build & Installation
   --------------------
@@ -45,4 +45,4 @@
   https://bugs.launchpad.net/zorba.
 
   o If you want to participate in actively developing Zorba or
-  support Zorba, please write a mail to: zorba-coders@lists.inf.ethz.ch.
+  support Zorba, please write a mail to: zorba-dev@googlegroups.com

@@ -17,10 +17,7 @@
 #include <iostream>
 
 #if defined(_MSC_VER)
-// Important definition for PHP Signature
-// please review it and compare with your current version of PHP
 #define PHP_COMPILER_ID "VC9"
-
 #define strtoll _strtoi64
 #define strtoull _strtoui64
 #endif

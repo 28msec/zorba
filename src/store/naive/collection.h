@@ -110,6 +110,10 @@ public:
 
   void getActiveICs(std::vector<store::IC*>& ics);
 
+  /**************************** Claim of ownership ****************************/
+protected:
+  virtual void claimOwnership(zorba::simplestore::XmlTree* aTree);
+  
 }; /* class Collection */
 
 } /* namespace simplestore */ } /* namespace zorba */

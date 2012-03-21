@@ -48,30 +48,30 @@ typedef struct XQC_Sequence_s XQC_Sequence;
 typedef struct XQC_InputStream_s XQC_InputStream;
 typedef struct XQC_ErrorHandler_s XQC_ErrorHandler;
 
-/**
+/*! \enum ::XQC_Error
  * The error enumeration used by all XQC functions to designate error condition.
  * All XQC functions return a value of type ::XQC_Error.
  */
 typedef enum {
-	XQC_NO_ERROR = 0,          ///< No error.
-	XQC_END_OF_SEQUENCE,       ///< The end of the XQC_Sequence has been reached.
+	XQC_NO_ERROR = 0,          /*!< No error. */
+	XQC_END_OF_SEQUENCE,       /*!< The end of the XQC_Sequence has been reached. */
 	XQC_NO_CURRENT_ITEM,
 	XQC_PARSE_ERROR,
 	XQC_INVALID_ARGUMENT,
 	XQC_NOT_NODE,
 
-	XQC_INTERNAL_ERROR,        ///< An implementation specific error has occurred.
-	XQC_NOT_IMPLEMENTED,       ///< The implementation does not implement that function.
+	XQC_INTERNAL_ERROR,        /*!< An implementation specific error has occurred. */
+	XQC_NOT_IMPLEMENTED,       /*!< The implementation does not implement that function. */
 	/**
 	 * The encoding of the query has not been recognized, or is not supported by the
 	 * implementation. All implementations must support queries in UTF-8.
 	 */
 	XQC_UNRECOGNIZED_ENCODING,
 
-	XQC_STATIC_ERROR,          ///< A static error has occured while preparing the query
-	XQC_TYPE_ERROR,            ///< A type error has occured while preparing or executing the query
-	XQC_DYNAMIC_ERROR,         ///< A dynamic error has occured while preparing or executing the query
-	XQC_SERIALIZATION_ERROR    ///< A serialization error has occured while serializing the output of a query
+	XQC_STATIC_ERROR,          /*!< A static error has occured while preparing the query. */
+	XQC_TYPE_ERROR,            /*!< A type error has occured while preparing or executing the query. */
+	XQC_DYNAMIC_ERROR,         //*!< A dynamic error has occured while preparing or executing the query. */
+	XQC_SERIALIZATION_ERROR    /*!< A serialization error has occured while serializing the output of a query. */
 } XQC_Error;
 
 /**
