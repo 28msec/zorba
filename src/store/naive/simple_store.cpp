@@ -376,7 +376,9 @@ void SimpleStore::shutdown(bool soft)
     // LIBXML_TEST_VERSION if he wants to use libxml2
     // beyond the lifecycle of zorba
     xmlCleanupParser();
-
+    
+    theNumUsers = 0;
+    
     StoreManagerImpl::theStore = NULL;
   }
 }
