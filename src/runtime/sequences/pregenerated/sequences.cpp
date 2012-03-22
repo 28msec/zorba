@@ -1163,8 +1163,6 @@ FnUnparsedTextLinesIterator::~FnUnparsedTextLinesIterator() {}
 
 FnUnparsedTextLinesIteratorState::FnUnparsedTextLinesIteratorState() {}
 
-FnUnparsedTextLinesIteratorState::~FnUnparsedTextLinesIteratorState() {}
-
 // </FnUnparsedTextLinesIterator>
 
 

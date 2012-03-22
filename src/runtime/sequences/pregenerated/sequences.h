@@ -1572,7 +1572,8 @@ public:
 class FnUnparsedTextLinesIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theIterator; //the current iterator
+  std::istream* theStream; //the current iterator
+   internal::StreamResource* theStreamResource; //the current iterator
 
   FnUnparsedTextLinesIteratorState();
 

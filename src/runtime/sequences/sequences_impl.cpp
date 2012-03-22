@@ -1987,65 +1987,6 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
 /**
   * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
   */
-
-static void readDocument(
-  zstring const& aUri,
-  zstring const& aEncoding,
-  static_context* aSctx, 
-  PlanState& aPlanState,
-  QueryLoc const& loc,
-  store::Iterator_t& oResult)
-{
-  //Normilize input to handle filesystem paths, etc.
-  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
-
-  store::LoadProperties lLoadProperties;
-
-  //Resolve URI to stream
-  zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
-    (lNormUri, internal::EntityData::SOME_CONTENT, lErrorMessage);
-
-  internal::StreamResource* lStreamResource =
-    dynamic_cast<internal::StreamResource*>(lResource.get());
-    
- if (lStreamResource == NULL)
-  {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
-  }
-
-  std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamResource->getStreamReleaser());
-  lStreamResource->setStreamReleaser(nullptr);  
-
-  //check if encoding is needed
-  if (transcode::is_necessary(aEncoding.c_str()))
-  {
-    if (!transcode::is_supported(aEncoding.c_str()))
-    {
-      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
-    }
-    transcode::attach(*lStream.get(), aEncoding.c_str());
-  }
-
-  
-  std::vector<store::Item_t> lStreamLines;
-  zstring line;
-  while( getline(*lStream.get(), line) )
-  {
-    store::Item_t lItem;
-    GENV_ITEMFACTORY->createString( lItem, line ); 
-    lStreamLines.push_back(lItem);
-  }
-
-  if(lStreamLines.empty())
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
-
-  oResult = GENV_STORE.createTempSeq(lStreamLines)->getIterator();
-
-  if(oResult.isNull())
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
-}
-
 static void readDocument(
   zstring const& aUri,
   zstring const& aEncoding,
@@ -2054,7 +1995,7 @@ static void readDocument(
   QueryLoc const& loc,
   store::Item_t& oResult)
 {
-  //Normilize input to handle filesystem paths, etc.
+  //Normalize input to handle filesystem paths, etc.
   zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
 
   store::LoadProperties lLoadProperties;
@@ -2073,6 +2014,7 @@ static void readDocument(
   }
 
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamResource->getStreamReleaser());
+
   lStreamResource->setStreamReleaser(nullptr);  
 
   //check if encoding is needed
@@ -2091,7 +2033,6 @@ static void readDocument(
     lStream.get_deleter()
     );
 
-  
   if (oResult.isNull())
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -2170,16 +2111,28 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 }
 
 /*******************************************************************************
-  14.8.6 fn:unparsed-text-available
+  14.8.6 fn:unparsed-text-lines
 ********************************************************************************/
- 
+FnUnparsedTextLinesIteratorState::~FnUnparsedTextLinesIteratorState()
+{
+  delete theStream;
+  theStream = 0;
+  theStreamResource = 0;
+}
+
 bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t uriItem;
   store::Item_t encodingItem;
+  store::Item_t streamItem;
+  zstring streamLine;
   zstring uriString;
   zstring encodingString("UTF-8");
-  
+  zstring lNormUri;
+  store::LoadProperties lLoadProperties;
+  zstring lErrorMessage;
+  std::auto_ptr<internal::Resource> lResource;
+
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
 
@@ -2187,22 +2140,48 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     STACK_PUSH(false, state);
   }
-
+  
   if (theChildren.size() == 2)
   {
     consumeNext(encodingItem, theChildren[1].getp(), planState);
     encodingItem->getStringValue2(encodingString);
   }
   
+  //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
-  readDocument(uriString, encodingString, theSctx, planState, loc, state->theIterator);
+  lNormUri = normalizeInput(uriString, theSctx, loc);
 
-  state->theIterator->open();
-  while(state->theIterator->next(result))
+  //Resolve URI to stream
+  lResource = theSctx->resolve_uri
+    (lNormUri, internal::EntityData::SOME_CONTENT, lErrorMessage);
+
+  state->theStreamResource =
+    dynamic_cast<internal::StreamResource*>(lResource.get());
+  state->theStreamResource->setStreamReleaser(nullptr);  
+
+  if (state->theStreamResource != NULL)
   {
-    STACK_PUSH(true, state);
+    state->theStream = state->theStreamResource->getStream();
+
+    //check if encoding is needed
+    if (transcode::is_necessary(encodingString.c_str()))
+    {
+      if (!transcode::is_supported(encodingString.c_str()))
+      {
+        throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
+      }
+      transcode::attach(*state->theStream, encodingString.c_str());
+    }
+
+    while (getline(*state->theStream, streamLine))
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
+    }
   }
-  state->theIterator->close();
+  else
+  { 
+    STACK_PUSH(false, state);
+  }
 
   STACK_END(state);
 }
@@ -2210,13 +2189,16 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 void FnUnparsedTextLinesIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theIterator = 0;
+  theStreamResource = 0;
+  theStream = 0;
 }
 
 void FnUnparsedTextLinesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theIterator = 0;
+  delete theStream;
+  theStream = 0;
+  theStreamResource = 0;
 }
 
 } // namespace zorba

@@ -1297,13 +1297,16 @@
         <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
-
     </zorba:function>
 
-    <zorba:state generateInit="false" generateReset="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"
+    
+    <zorba:state generateInit="false" generateReset="false"
+                 generateDestructor="false">
+      <zorba:member type="std::istream*" name="theStream"
                     brief="the current iterator"/>
-    </zorba:state>
+      <zorba:member type=" internal::StreamResource*" name="theStreamResource"
+                  brief="the current iterator"/>
+    </zorba:state> 
     
     <zorba:methods>
       <zorba:accessesDynCtx returnValue="true"/>
