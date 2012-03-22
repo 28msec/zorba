@@ -106,6 +106,16 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
+void XmlTree::claimedByCollection(Collection* collection)
+{
+  ZORBA_ASSERT(collection != NULL);
+  theCollection = collection;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void XmlTree::setCollection(Collection* collection, xs_integer pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
