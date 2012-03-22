@@ -1,7 +1,7 @@
 <tokenizer-properties xmlns="http://www.zorba-xquery.com/modules/full-text" uri="http://www.zorba-xquery.com/full-text/tokenizer/icu">
-  <comments-separate-tokens>true</comments-separate-tokens>
-  <elements-separate-tokens>true</elements-separate-tokens>
-  <processing-instructions-separate-tokens>true</processing-instructions-separate-tokens>
+  <comments-separate-tokens value="true"/>
+  <elements-separate-tokens value="true"/>
+  <processing-instructions-separate-tokens value="true"/>
   <supported-languages>
     <lang>af</lang>
     <lang>ak</lang>

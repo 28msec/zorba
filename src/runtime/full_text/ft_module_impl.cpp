@@ -587,7 +587,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
 
-  // <comments-separate-tokens>...</comments-separate-tokens>
+  // <comments-separate-tokens value="..."/>
   GENV_ITEMFACTORY->createQName(
     name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "comments-separate-tokens"
   );
@@ -595,10 +595,12 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createElementNode(
     element, result, name, type_name, false, false, ns_bindings, base_uri
   );
-  value_string = props.comments_separate_tokens ? "true" : "false";
-  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  GENV_ITEMFACTORY->createBoolean( item, props.comments_separate_tokens );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
 
-  // <elements-separate-tokens>...</elements-separate-tokens>
+  // <elements-separate-tokens value="..."/>
   GENV_ITEMFACTORY->createQName(
     name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "elements-separate-tokens"
   );
@@ -606,20 +608,24 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createElementNode(
     element, result, name, type_name, false, false, ns_bindings, base_uri
   );
-  value_string = props.elements_separate_tokens ? "true" : "false";
-  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
 
-  // <processing-instructions-separate-tokens>...</processing-instructions-separate-tokens>
+  // <processing-instructions-separate-tokens value="..."/>
   GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "processing-instructions-separate-tokens"
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "",
+    "processing-instructions-separate-tokens"
   );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createElementNode(
     element, result, name, type_name, false, false, ns_bindings, base_uri
   );
-  value_string = props.processing_instructions_separate_tokens ?
-    "true" : "false";
-  GENV_ITEMFACTORY->createTextNode( junk, element.getp(), value_string );
+  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  GENV_ITEMFACTORY->createBoolean( item, props.processing_instructions_separate_tokens );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
 
   // <supported-languages>...</supported-languages>
   GENV_ITEMFACTORY->createQName(

@@ -51,6 +51,10 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:complexType name="boolean-value">
+    <xs:attribute name="value" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
   <!--======================================================================-->
 
   <xs:element name="token">
@@ -89,19 +93,19 @@
          ! here because it is illegal to nest an XML comment inside an XML
          ! comment.)
         -->
-        <xs:element name="comments-separate-tokens" type="xs:boolean"/>
+        <xs:element name="comments-separate-tokens" type="boolean-value"/>
 
         <!--
          ! If true, XML elements separate tokens.  For example,
          ! <b>B</b>old would be 2 tokens instead of 1.
         -->
-        <xs:element name="elements-separate-tokens" type="xs:boolean"/>
+        <xs:element name="elements-separate-tokens" type="boolean-value"/>
 
         <!--
          ! If true, XML processing instructions separate tokens.  For example,
          ! net<?PI pi?>workwould be 2 tokens instead of 1.
         -->
-        <xs:element name="processing-instructions-separate-tokens" type="xs:boolean"/>
+        <xs:element name="processing-instructions-separate-tokens" type="boolean-value"/>
 
         <!--
          ! The list of languages that the tokenizer can tokenize.
