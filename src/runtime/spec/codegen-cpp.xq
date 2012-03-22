@@ -194,7 +194,7 @@ declare function local:create-function($iter, $function, $suffix as xs:string) a
     if (count($function/zorba:signature) = 0)
     then 
       (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'
     else
       let $name := concat(local:function-name($function), $suffix)
       let $ret := if($iter/@name = "") then "return NULL;"
@@ -351,7 +351,7 @@ declare function local:get-zorba-ns($prefix as xs:string, $mapping) as xs:string
     then 
       $tmp/@uri
     else  (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'  
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'  
 };
 
 

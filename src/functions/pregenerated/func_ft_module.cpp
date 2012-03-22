@@ -139,7 +139,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_current_lang,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","current-lang"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","current-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
         FunctionConsts::FULL_TEXT_CURRENT_LANG_0);
 
@@ -150,7 +150,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_host_lang,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","host-lang"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","host-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
         FunctionConsts::FULL_TEXT_HOST_LANG_0);
 
@@ -161,7 +161,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_stem_lang_supported,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stem-lang-supported"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stem-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FULL_TEXT_IS_STEM_LANG_SUPPORTED_1);
@@ -173,7 +173,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_stop_word_lang_supported,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word-lang-supported"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FULL_TEXT_IS_STOP_WORD_LANG_SUPPORTED_1);
@@ -185,7 +185,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-thesaurus-lang-supported"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_1);
@@ -197,7 +197,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-thesaurus-lang-supported"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -210,7 +210,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_stop_word,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FULL_TEXT_IS_STOP_WORD_1);
@@ -222,7 +222,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_is_stop_word,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -235,7 +235,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_stem,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","stem"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FULL_TEXT_STEM_1);
@@ -247,7 +247,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_stem,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","stem"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -260,7 +260,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_strip_diacritics,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","strip-diacritics"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","strip-diacritics"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FULL_TEXT_STRIP_DIACRITICS_1);
@@ -272,7 +272,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_1);
@@ -284,7 +284,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
@@ -297,7 +297,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -311,7 +311,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -326,7 +326,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -343,7 +343,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_tokenize,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_1);
@@ -355,7 +355,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_tokenize,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
@@ -368,7 +368,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_tokenize_string,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize-string"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_STRING_1);
@@ -380,7 +380,7 @@ void populate_context_ft_module(static_context* sctx)
     
 
     DECL_WITH_KIND(sctx, full_text_tokenize_string,
-        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize-string"), 
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),

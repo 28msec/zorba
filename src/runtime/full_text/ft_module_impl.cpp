@@ -23,8 +23,12 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
+#include "common/shared_types.h"
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+
+#include "functions/function_impl.h"
 
 #include "store/api/index.h"
 #include "store/api/item.h"
@@ -38,6 +42,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "system/globalenv.h"
+
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/casting.h"
@@ -61,8 +66,8 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void populate_context_full_text_impl( static_context *sctx ) {
-  xqref_t tokenizer_properties_return_type =
+void populate_context_ft_module_impl( static_context *sctx ) {
+  xqtref_t tokenizer_properties_return_type =
     GENV_TYPESYSTEM.create_node_type(
       store::StoreConsts::elementNode,
       createQName(

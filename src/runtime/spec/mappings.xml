@@ -85,7 +85,7 @@
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/full-text"
       define="ZORBA_FULL_TEXT_FN_NS"
-      prefix="zorba-full-text"/>
+      prefix="full-text"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
