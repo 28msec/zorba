@@ -2157,31 +2157,34 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   state->theStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-  state->theStreamResource->setStreamReleaser(nullptr);  
 
-  if (state->theStreamResource != NULL)
+  if (state->theStreamResource == NULL)
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
+  
+  state->theStreamResource->setStreamReleaser(nullptr);
+  state->theStream = state->theStreamResource->getStream();
+
+  //check if encoding is needed
+  if (transcode::is_necessary(encodingString.c_str()))
   {
-    state->theStream = state->theStreamResource->getStream();
-
-    //check if encoding is needed
-    if (transcode::is_necessary(encodingString.c_str()))
+    if (!transcode::is_supported(encodingString.c_str()))
     {
-      if (!transcode::is_supported(encodingString.c_str()))
-      {
-        throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
-      }
-      transcode::attach(*state->theStream, encodingString.c_str());
+      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
     }
+    transcode::attach(*state->theStream, encodingString.c_str());
+  }
 
-    while (getline(*state->theStream, streamLine))
+  //if file is empty return an empty sequence
+  if(getline(*state->theStream, streamLine))
+  {
+    do
     {
       STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
-    }
+    } 
+    while (getline(*state->theStream, streamLine));
   }
-  else
-  { 
+  else 
     STACK_PUSH(false, state);
-  }
 
   STACK_END(state);
 }
