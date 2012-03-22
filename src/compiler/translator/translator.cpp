@@ -3298,22 +3298,22 @@ void* begin_visit(const VFO_DeclList& v)
             assert(numParams <= 1);
 
             if (numParams == 1)
-              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_1;
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
             else
-              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_0;
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
 
-            f = new zorba_full_text_tokenizer_properties(f->getSignature(), kind);
+            f = new full_text_tokenizer_properties(f->getSignature(), kind);
           }
           else 
           {
             assert(numParams == 1 || numParams == 2);
 
             if (numParams == 2)
-              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_2;
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
             else
-              kind = FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_1;
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
 
-            f = new zorba_full_text_tokenize(f->getSignature(), kind);
+            f = new full_text_tokenize(f->getSignature(), kind);
           }
 
           f->setStaticContext(theRootSctx);

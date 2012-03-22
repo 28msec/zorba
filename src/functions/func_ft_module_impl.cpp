@@ -26,7 +26,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t zorba_full_text_tokenizer_properties::codegen(
+PlanIter_t full_text_tokenizer_properties::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t zorba_full_text_tokenizer_properties::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t zorba_full_text_tokenize::codegen(
+PlanIter_t full_text_tokenize::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
