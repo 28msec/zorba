@@ -16,7 +16,7 @@
 
 <zorba:iterator name="CurrentLangIterator">
   <zorba:function>
-    <zorba:signature localname="current-lang" prefix="zorba-full-text">
+    <zorba:signature localname="current-lang" prefix="full-text">
       <zorba:output>xs:language</zorba:output>
     </zorba:signature>
   </zorba:function>
@@ -24,7 +24,7 @@
 
 <zorba:iterator name="HostLangIterator">
   <zorba:function>
-    <zorba:signature localname="host-lang" prefix="zorba-full-text">
+    <zorba:signature localname="host-lang" prefix="full-text">
       <zorba:output>xs:language</zorba:output>
     </zorba:signature>
   </zorba:function>
@@ -32,7 +32,7 @@
 
 <zorba:iterator name="IsStemLangSupportedIterator">
   <zorba:function>
-    <zorba:signature localname="is-stem-lang-supported" prefix="zorba-full-text">
+    <zorba:signature localname="is-stem-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
@@ -41,7 +41,7 @@
 
 <zorba:iterator name="IsStopWordLangSupportedIterator">
   <zorba:function>
-    <zorba:signature localname="is-stop-word-lang-supported" prefix="zorba-full-text">
+    <zorba:signature localname="is-stop-word-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
@@ -50,11 +50,11 @@
 
 <zorba:iterator name="IsThesaurusLangSupportedIterator">
   <zorba:function>
-    <zorba:signature localname="is-thesaurus-lang-supported" prefix="zorba-full-text">
+    <zorba:signature localname="is-thesaurus-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="is-thesaurus-lang-supported" prefix="zorba-full-text">
+    <zorba:signature localname="is-thesaurus-lang-supported" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:language</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
@@ -64,11 +64,11 @@
 
 <zorba:iterator name="IsStopWordIterator">
   <zorba:function>
-    <zorba:signature localname="is-stop-word" prefix="zorba-full-text">
+    <zorba:signature localname="is-stop-word" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="is-stop-word" prefix="zorba-full-text">
+    <zorba:signature localname="is-stop-word" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>xs:boolean</zorba:output>
@@ -78,11 +78,11 @@
 
 <zorba:iterator name="StemIterator">
   <zorba:function>
-    <zorba:signature localname="stem" prefix="zorba-full-text">
+    <zorba:signature localname="stem" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="stem" prefix="zorba-full-text">
+    <zorba:signature localname="stem" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>xs:string</zorba:output>
@@ -92,7 +92,7 @@
 
 <zorba:iterator name="StripDiacriticsIterator">
   <zorba:function>
-    <zorba:signature localname="strip-diacritics" prefix="zorba-full-text">
+    <zorba:signature localname="strip-diacritics" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
@@ -102,29 +102,29 @@
 <zorba:iterator name="ThesaurusLookupIterator"
                 generateResetImpl="true">
   <zorba:function>
-    <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
+    <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:output>xs:string+</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
+    <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:output>xs:string+</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
+    <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>xs:string+</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
+    <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:param>xs:string</zorba:param>    <!-- relationship -->
       <zorba:output>xs:string+</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
+    <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
@@ -149,12 +149,12 @@
 
   <zorba:function generateCodegen="false">
 
-    <zorba:signature localname="tokenize" prefix="zorba-full-text">
+    <zorba:signature localname="tokenize" prefix="full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="tokenize" prefix="zorba-full-text">
+    <zorba:signature localname="tokenize" prefix="full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>node()*</zorba:output>
@@ -174,11 +174,11 @@
 
   <zorba:function generateCodegen="false" generateDECL="false">
 
-    <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
+    <zorba:signature localname="tokenizer-properties" prefix="full-text">
       <zorba:output>node()</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
+    <zorba:signature localname="tokenizer-properties" prefix="full-text">
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>node()</zorba:output>
     </zorba:signature>
@@ -202,12 +202,12 @@
 
   <zorba:function>
 
-    <zorba:signature localname="tokenize-string" prefix="zorba-full-text">
+    <zorba:signature localname="tokenize-string" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- string -->
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="tokenize-string" prefix="zorba-full-text">
+    <zorba:signature localname="tokenize-string" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- string -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>xs:string*</zorba:output>

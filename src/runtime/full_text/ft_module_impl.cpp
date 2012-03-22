@@ -55,21 +55,18 @@
 using namespace std;
 using namespace zorba::locale;
 
+#define FT_MODULE_NS "http://www.zorba-xquery.com/modules/full-text"
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void populate_return_types( static_context *sctx ) {
-
-  // When is this function called?
-  // Who calls this function?
-  // What am I supposed to do with this type?
-
-  xqref_t tokenizer_properties_result_type =
+void populate_context_full_text_impl( static_context *sctx ) {
+  xqref_t tokenizer_properties_return_type =
     GENV_TYPESYSTEM.create_node_type(
       store::StoreConsts::elementNode,
       createQName(
-        "http://www.zorba-xquery.com/modules/full-text",
+        FT_MODULE_NS,
         "",
         "tokenizer-properties"
       ),
@@ -77,6 +74,22 @@ void populate_return_types( static_context *sctx ) {
       false,
       false
     );
+
+  {
+    DECL_WITH_KIND( sctx, full_text_tokenizer_properties,
+      (createQName( FT_MODULE_NS, "", "tokenizer-properties"),
+        tokenizer_properties_return_type),
+      FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES
+    );
+  }
+  {
+    DECL_WITH_KIND( sctx, full_text_tokenizer_properties,
+      (createQName( FT_MODULE_NS, "", "tokenizer-properties"),
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE,
+        tokenizer_properties_return_type),
+      FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES
+    );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t zorba_full_text_current_lang::codegen(
+PlanIter_t full_text_current_lang::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -41,7 +41,7 @@ PlanIter_t zorba_full_text_current_lang::codegen(
   return new CurrentLangIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_host_lang::codegen(
+PlanIter_t full_text_host_lang::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -51,7 +51,7 @@ PlanIter_t zorba_full_text_host_lang::codegen(
   return new HostLangIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_is_stem_lang_supported::codegen(
+PlanIter_t full_text_is_stem_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -61,7 +61,7 @@ PlanIter_t zorba_full_text_is_stem_lang_supported::codegen(
   return new IsStemLangSupportedIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_is_stop_word_lang_supported::codegen(
+PlanIter_t full_text_is_stop_word_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -71,7 +71,7 @@ PlanIter_t zorba_full_text_is_stop_word_lang_supported::codegen(
   return new IsStopWordLangSupportedIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_is_thesaurus_lang_supported::codegen(
+PlanIter_t full_text_is_thesaurus_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -81,7 +81,7 @@ PlanIter_t zorba_full_text_is_thesaurus_lang_supported::codegen(
   return new IsThesaurusLangSupportedIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_is_stop_word::codegen(
+PlanIter_t full_text_is_stop_word::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -91,7 +91,7 @@ PlanIter_t zorba_full_text_is_stop_word::codegen(
   return new IsStopWordIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_stem::codegen(
+PlanIter_t full_text_stem::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -101,7 +101,7 @@ PlanIter_t zorba_full_text_stem::codegen(
   return new StemIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_strip_diacritics::codegen(
+PlanIter_t full_text_strip_diacritics::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -111,7 +111,7 @@ PlanIter_t zorba_full_text_strip_diacritics::codegen(
   return new StripDiacriticsIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_thesaurus_lookup::codegen(
+PlanIter_t full_text_thesaurus_lookup::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -123,7 +123,7 @@ PlanIter_t zorba_full_text_thesaurus_lookup::codegen(
 
 
 
-PlanIter_t zorba_full_text_tokenize_string::codegen(
+PlanIter_t full_text_tokenize_string::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -138,10 +138,10 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_current_lang,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","current-lang"), 
+    DECL_WITH_KIND(sctx, full_text_current_lang,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","current-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_CURRENT_LANG_0);
+        FunctionConsts::FULL_TEXT_CURRENT_LANG_0);
 
   }
 
@@ -149,10 +149,10 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_host_lang,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","host-lang"), 
+    DECL_WITH_KIND(sctx, full_text_host_lang,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","host-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_HOST_LANG_0);
+        FunctionConsts::FULL_TEXT_HOST_LANG_0);
 
   }
 
@@ -160,11 +160,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_stem_lang_supported,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stem-lang-supported"), 
+    DECL_WITH_KIND(sctx, full_text_is_stem_lang_supported,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stem-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_STEM_LANG_SUPPORTED_1);
+        FunctionConsts::FULL_TEXT_IS_STEM_LANG_SUPPORTED_1);
 
   }
 
@@ -172,11 +172,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_stop_word_lang_supported,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word-lang-supported"), 
+    DECL_WITH_KIND(sctx, full_text_is_stop_word_lang_supported,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_STOP_WORD_LANG_SUPPORTED_1);
+        FunctionConsts::FULL_TEXT_IS_STOP_WORD_LANG_SUPPORTED_1);
 
   }
 
@@ -184,11 +184,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_thesaurus_lang_supported,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
+    DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_1);
+        FunctionConsts::FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_1);
 
   }
 
@@ -196,12 +196,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_thesaurus_lang_supported,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
+    DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_2);
+        FunctionConsts::FULL_TEXT_IS_THESAURUS_LANG_SUPPORTED_2);
 
   }
 
@@ -209,11 +209,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_stop_word,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
+    DECL_WITH_KIND(sctx, full_text_is_stop_word,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_STOP_WORD_1);
+        FunctionConsts::FULL_TEXT_IS_STOP_WORD_1);
 
   }
 
@@ -221,12 +221,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_is_stop_word,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
+    DECL_WITH_KIND(sctx, full_text_is_stop_word,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_IS_STOP_WORD_2);
+        FunctionConsts::FULL_TEXT_IS_STOP_WORD_2);
 
   }
 
@@ -234,11 +234,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_stem,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
+    DECL_WITH_KIND(sctx, full_text_stem,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_STEM_1);
+        FunctionConsts::FULL_TEXT_STEM_1);
 
   }
 
@@ -246,12 +246,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_stem,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
+    DECL_WITH_KIND(sctx, full_text_stem,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_STEM_2);
+        FunctionConsts::FULL_TEXT_STEM_2);
 
   }
 
@@ -259,11 +259,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_strip_diacritics,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","strip-diacritics"), 
+    DECL_WITH_KIND(sctx, full_text_strip_diacritics,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","strip-diacritics"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_STRIP_DIACRITICS_1);
+        FunctionConsts::FULL_TEXT_STRIP_DIACRITICS_1);
 
   }
 
@@ -271,11 +271,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_thesaurus_lookup,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
+    DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
-        FunctionConsts::ZORBA_FULL_TEXT_THESAURUS_LOOKUP_1);
+        FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_1);
 
   }
 
@@ -283,12 +283,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_thesaurus_lookup,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
+    DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
-        FunctionConsts::ZORBA_FULL_TEXT_THESAURUS_LOOKUP_2);
+        FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_2);
 
   }
 
@@ -296,13 +296,13 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_thesaurus_lookup,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
+    DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
-        FunctionConsts::ZORBA_FULL_TEXT_THESAURUS_LOOKUP_3);
+        FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_3);
 
   }
 
@@ -310,14 +310,14 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_thesaurus_lookup,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
+    DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
-        FunctionConsts::ZORBA_FULL_TEXT_THESAURUS_LOOKUP_4);
+        FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_4);
 
   }
 
@@ -325,8 +325,8 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_thesaurus_lookup,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
+    DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -334,7 +334,7 @@ void populate_context_ft_module(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_PLUS),
-        FunctionConsts::ZORBA_FULL_TEXT_THESAURUS_LOOKUP_6);
+        FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_6);
 
   }
 
@@ -342,11 +342,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenize,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize"), 
+    DECL_WITH_KIND(sctx, full_text_tokenize,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_1);
+        FunctionConsts::FULL_TEXT_TOKENIZE_1);
 
   }
 
@@ -354,12 +354,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenize,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize"), 
+    DECL_WITH_KIND(sctx, full_text_tokenize,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_2);
+        FunctionConsts::FULL_TEXT_TOKENIZE_2);
 
   }
 
@@ -367,11 +367,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenize_string,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
+    DECL_WITH_KIND(sctx, full_text_tokenize_string,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_STRING_1);
+        FunctionConsts::FULL_TEXT_TOKENIZE_STRING_1);
 
   }
 
@@ -379,12 +379,12 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenize_string,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
+    DECL_WITH_KIND(sctx, full_text_tokenize_string,
+        (createQName("Error: could not find "prefix" and "localname" attributes for "zorba:function" element","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_STRING_2);
+        FunctionConsts::FULL_TEXT_TOKENIZE_STRING_2);
 
   }
 

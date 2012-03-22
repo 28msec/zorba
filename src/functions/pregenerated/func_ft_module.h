@@ -38,11 +38,11 @@ void populate_context_ft_module(static_context* sctx);
 
 
 
-//zorba-full-text:current-lang
-class zorba_full_text_current_lang : public function
+//full-text:current-lang
+class full_text_current_lang : public function
 {
 public:
-  zorba_full_text_current_lang(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_current_lang(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -53,11 +53,11 @@ public:
 };
 
 
-//zorba-full-text:host-lang
-class zorba_full_text_host_lang : public function
+//full-text:host-lang
+class full_text_host_lang : public function
 {
 public:
-  zorba_full_text_host_lang(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_host_lang(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -68,11 +68,11 @@ public:
 };
 
 
-//zorba-full-text:is-stem-lang-supported
-class zorba_full_text_is_stem_lang_supported : public function
+//full-text:is-stem-lang-supported
+class full_text_is_stem_lang_supported : public function
 {
 public:
-  zorba_full_text_is_stem_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_is_stem_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -83,11 +83,11 @@ public:
 };
 
 
-//zorba-full-text:is-stop-word-lang-supported
-class zorba_full_text_is_stop_word_lang_supported : public function
+//full-text:is-stop-word-lang-supported
+class full_text_is_stop_word_lang_supported : public function
 {
 public:
-  zorba_full_text_is_stop_word_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_is_stop_word_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -98,11 +98,11 @@ public:
 };
 
 
-//zorba-full-text:is-thesaurus-lang-supported
-class zorba_full_text_is_thesaurus_lang_supported : public function
+//full-text:is-thesaurus-lang-supported
+class full_text_is_thesaurus_lang_supported : public function
 {
 public:
-  zorba_full_text_is_thesaurus_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_is_thesaurus_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -113,11 +113,11 @@ public:
 };
 
 
-//zorba-full-text:is-stop-word
-class zorba_full_text_is_stop_word : public function
+//full-text:is-stop-word
+class full_text_is_stop_word : public function
 {
 public:
-  zorba_full_text_is_stop_word(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_is_stop_word(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -128,11 +128,11 @@ public:
 };
 
 
-//zorba-full-text:stem
-class zorba_full_text_stem : public function
+//full-text:stem
+class full_text_stem : public function
 {
 public:
-  zorba_full_text_stem(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_stem(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -143,11 +143,11 @@ public:
 };
 
 
-//zorba-full-text:strip-diacritics
-class zorba_full_text_strip_diacritics : public function
+//full-text:strip-diacritics
+class full_text_strip_diacritics : public function
 {
 public:
-  zorba_full_text_strip_diacritics(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_strip_diacritics(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -158,11 +158,11 @@ public:
 };
 
 
-//zorba-full-text:thesaurus-lookup
-class zorba_full_text_thesaurus_lookup : public function
+//full-text:thesaurus-lookup
+class full_text_thesaurus_lookup : public function
 {
 public:
-  zorba_full_text_thesaurus_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_thesaurus_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -173,11 +173,11 @@ public:
 };
 
 
-//zorba-full-text:tokenize
-class zorba_full_text_tokenize : public function
+//full-text:tokenize
+class full_text_tokenize : public function
 {
 public:
-  zorba_full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -188,11 +188,11 @@ public:
 };
 
 
-//zorba-full-text:tokenizer-properties
-class zorba_full_text_tokenizer_properties : public function
+//full-text:tokenizer-properties
+class full_text_tokenizer_properties : public function
 {
 public:
-  zorba_full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -205,11 +205,11 @@ public:
 };
 
 
-//zorba-full-text:tokenize-string
-class zorba_full_text_tokenize_string : public function
+//full-text:tokenize-string
+class full_text_tokenize_string : public function
 {
 public:
-  zorba_full_text_tokenize_string(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_tokenize_string(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
