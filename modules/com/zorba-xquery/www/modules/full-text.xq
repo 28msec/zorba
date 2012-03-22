@@ -664,7 +664,7 @@ declare function ft:tokenize-string( $string as xs:string )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-1.xq
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )
-  as node() external;
+  as element(ft-schema:tokenizer-properties) external;
 
 (:~
  : Gets properties of the tokenizer for the
@@ -677,7 +677,7 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-2.xq
  :)
 declare function ft:tokenizer-properties()
-  as node() external;
+  as element(ft-schema:tokenizer-properties) external;
 
 (:===========================================================================:)
 

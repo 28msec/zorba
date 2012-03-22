@@ -59,6 +59,28 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void populate_return_types( static_context *sctx ) {
+
+  // When is this function called?
+  // Who calls this function?
+  // What am I supposed to do with this type?
+
+  xqref_t tokenizer_properties_result_type =
+    GENV_TYPESYSTEM.create_node_type(
+      store::StoreConsts::elementNode,
+      createQName(
+        "http://www.zorba-xquery.com/modules/full-text",
+        "",
+        "tokenizer-properties"
+      ),
+      TypeConstants::QUANT_ONE,
+      false,
+      false
+    );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
   return lang ? lang : get_host_lang();

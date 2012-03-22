@@ -367,29 +367,6 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenizer_properties,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenizer-properties"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_0);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, zorba_full_text_tokenizer_properties,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenizer-properties"), 
-        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
-        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_1);
-
-  }
-
-
-  {
-    
-
     DECL_WITH_KIND(sctx, zorba_full_text_tokenize_string,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

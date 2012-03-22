@@ -103,7 +103,7 @@
 
         <!--
          ! If true, XML processing instructions separate tokens.  For example,
-         ! net<?PI pi?>workwould be 2 tokens instead of 1.
+         ! net<?PI pi?>work would be 2 tokens instead of 1.
         -->
         <xs:element name="processing-instructions-separate-tokens" type="boolean-value"/>
 
