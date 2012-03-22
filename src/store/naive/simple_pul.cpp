@@ -82,10 +82,10 @@ void cleanIndexDeltas(std::vector<store::IndexDelta>& deltas)
 /*******************************************************************************
 
 ********************************************************************************/
-void applyList(std::vector<UpdatePrimitive*>& aVector)
+void applyList(std::vector<UpdatePrimitive*>& list)
 {
-  std::vector<UpdatePrimitive*>::iterator iter = aVector.begin();
-  std::vector<UpdatePrimitive*>::iterator end = aVector.end();
+  std::vector<UpdatePrimitive*>::iterator iter = list.begin();
+  std::vector<UpdatePrimitive*>::iterator end = list.end();
 
   for (; iter != end; ++iter) 
   {
@@ -1382,12 +1382,19 @@ void PULImpl::addJSONObjectRename(
 void PULImpl::addJSONArrayInsert(
      const QueryLoc* loc,
      store::Item_t& target,
-     xs_integer& pos,
+     store::Item_t& position,
      std::vector<store::Item_t>& members)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
   json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() + 1 < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0018, loc, ERROR_PARAMS(pos));
+  }
 
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(arr, updates);
@@ -1403,34 +1410,43 @@ void PULImpl::addJSONArrayInsert(
       if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_INSERT)
         continue;
 
-      UpdJSONArrayInsert* insUpd = static_cast<UpdJSONArrayInsert*>(*ite);
+      UpdJSONArrayInsert* upd = static_cast<UpdJSONArrayInsert*>(*ite);
 
-      if (insUpd->thePosition != pos)
+      if (upd->thePosition != pos)
         continue;
 
-      csize numMembers1 = insUpd->theMembers.size();
+      csize numMembers1 = upd->theMembers.size();
       csize numMembers2 = members.size();
       csize numMembers = numMembers1;
 
-      insUpd->theMembers.resize(numMembers1 + numMembers2);
+      upd->theMembers.resize(numMembers1 + numMembers2);
 
       for (csize i = 0; i < numMembers2; ++i, ++numMembers)
       {
-        insUpd->theMembers[numMembers].transfer(members[i]);
+        upd->theMembers[numMembers].transfer(members[i]);
       }
 
       return;
     }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayInsert(pul, loc, target, pos, members);
+
+    pul->theJSONArrayInsertList.push_back(upd);
+
+    updates->push_back(upd);
   }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayInsert(pul, loc, target, pos, members);
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONArrayInsert(pul, loc, target, pos, members);
+    pul->theJSONArrayInsertList.push_back(upd);
 
-  pul->theJSONArrayInsertList.push_back(upd);
-
-  updates = new NodeUpdates(1);
-  (*updates)[0] = upd;
-  pul->theNodeToUpdatesMap.insert(arr, updates);
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
 }
 
 
@@ -1440,14 +1456,59 @@ void PULImpl::addJSONArrayInsert(
 void PULImpl::addJSONArrayDelete(
    const QueryLoc* loc,
    store::Item_t& target,
-   xs_integer& pos)
+   store::Item_t& position)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONArrayDelete(pul, loc, target, pos);
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
 
-  pul->theJSONArrayDeleteList.push_back(upd);
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0020, loc, ERROR_PARAMS(pos.toString()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // skip duplicate deletes
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+        continue;
+
+      UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+      if (upd->thePosition == pos)
+      {
+        return;
+      }
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayDelete(pul, loc, target, pos);
+
+    pul->theJSONArrayDeleteList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayDelete(pul, loc, target, pos);
+
+    pul->theJSONArrayDeleteList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
 }
 
 
@@ -1457,15 +1518,69 @@ void PULImpl::addJSONArrayDelete(
 void PULImpl::addJSONArrayReplaceValue(
      const QueryLoc* loc,
      store::Item_t& target,
-     xs_integer& pos,
+     store::Item_t& position,
      store::Item_t& newValue)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
-  UpdatePrimitive* upd = GET_PUL_FACTORY().
-  createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
 
-  pul->theJSONArrayReplaceValueList.push_back(upd);
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0021, loc, ERROR_PARAMS(pos.toString()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // raise error if duplicate positions and skip if same position as delete
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
+      {
+        UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+        if (upd->thePosition == pos)
+        {
+          RAISE_ERROR(jerr::JNUP0022, loc, ERROR_PARAMS(pos.toString()));
+        }
+      }
+      else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+      {
+        UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+        
+        if (upd->thePosition == pos)
+        {
+          return;
+        }
+      }
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+
+    pul->theJSONArrayReplaceValueList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+
+    pul->theJSONArrayReplaceValueList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
 }
 
 #endif // ZORBA_WITH_JSON
@@ -1618,91 +1733,6 @@ void PULImpl::mergeUpdates(store::Item* other)
   // merge validation primitives
   mergeSimpleUpdateLists(theValidationList, otherp->theValidationList);
 }
-
-
-#ifdef ZORBA_WITH_JSON
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::mergeJSONUpdateList(
-    CollectionPul* myPul,
-    std::vector<UpdatePrimitive*>& myList,
-    std::vector<UpdatePrimitive*>& otherList,
-    UpdListKind listKind)
-{
-  csize numUpdates = myList.size();
-  csize numOtherUpdates = otherList.size();
-
-  for (csize i = 0; i < numOtherUpdates; ++i)
-  {
-    bool inserted = false;
-    UpdatePrimitive* otherUpd = otherList[i];
-
-    switch (listKind)
-    {
-    case UP_LIST_JSON_ARRAY_INSERT:
-    {
-      for (csize j = 0; j < numUpdates; ++j)
-      {
-        UpdJSONArrayInsert* myUpd = static_cast<UpdJSONArrayInsert*>(myList[j]);
-        UpdJSONArrayInsert* otherUpd = static_cast<UpdJSONArrayInsert*>(otherList[i]);
-
-        if (myUpd->theTarget == otherUpd->theTarget &&
-            myUpd->thePosition == otherUpd->thePosition)
-        {
-          csize myNumMembers = myUpd->theMembers.size();
-          csize otherNumMembers = otherUpd->theMembers.size();
-
-          myUpd->theMembers.resize(myNumMembers + otherNumMembers);
-
-          for (csize i = 0; i < otherNumMembers; ++i)
-          {
-            myUpd->theMembers[myNumMembers + i].transfer(otherUpd->theMembers[i]);
-          }
-
-          inserted = true;
-        }
-      }
-      break;
-    }
-    case UP_LIST_JSON_DELETE:
-    {
-      /*
-      UpdJSONArrayDelete* lOther = static_cast<UpdJSONArrayDelete*>(otherUpd);
-      if (!lOther->theTarget->isJSONObject())
-      {
-        for (csize j = 0; j < numUpdates; ++j)
-        {
-          UpdJSONArrayDelete* lThis = static_cast<UpdJSONArrayDelete*>(myList[j]);
-          if (lThis->theTarget->isJSONObject() ||
-              lThis->theDeletee->getIntegerValue() > lOther->theDeletee->getIntegerValue())
-          {
-            break;
-          }
-          myList.insert(myList.begin() + j, lOther); 
-          otherList[i] = NULL;
-          inserted = true;
-        }
-      }
-      */
-      break;
-    }
-    default:
-      break;
-    }
-
-    if (!inserted)
-    {
-      otherUpd->thePul = this;
-      otherUpd->theCollectionPul = myPul;
-      myList.push_back(otherUpd);
-      otherList[i] = NULL;
-    }
-  }
-
-  otherList.clear();
-}
-#endif
 
 
 /*******************************************************************************
@@ -1872,6 +1902,8 @@ void PULImpl::mergeTargetedUpdateLists(
       // merge object-insert primitives and raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_INSERT:
       {
+        UpdJSONObjectInsert* otherUpd2 = static_cast<UpdJSONObjectInsert*>(otherUpd);
+
         NodeUpdates::iterator ite = targetUpdates->begin();
         NodeUpdates::iterator end = targetUpdates->end();
 
@@ -1881,7 +1913,6 @@ void PULImpl::mergeTargetedUpdateLists(
             continue;
           
           UpdJSONObjectInsert* myUpd = static_cast<UpdJSONObjectInsert*>(*ite);
-          UpdJSONObjectInsert* otherUpd2 = static_cast<UpdJSONObjectInsert*>(otherUpd);
 
           csize numMyPairs = myUpd->theNames.size();
           csize numOtherPairs = otherUpd2->theNames.size();
@@ -1913,6 +1944,8 @@ void PULImpl::mergeTargetedUpdateLists(
       // skip deletions with duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_DELETE:
       {
+        UpdJSONObjectDelete* otherUpd2 = static_cast<UpdJSONObjectDelete*>(otherUpd);
+
         NodeUpdates::iterator ite = targetUpdates->begin();
         NodeUpdates::iterator end = targetUpdates->end();
 
@@ -1922,7 +1955,6 @@ void PULImpl::mergeTargetedUpdateLists(
             continue;
           
           UpdJSONObjectDelete* myUpd = static_cast<UpdJSONObjectDelete*>(*ite);
-          UpdJSONObjectDelete* otherUpd2 = static_cast<UpdJSONObjectDelete*>(otherUpd);
 
           if (myUpd->theName->equals(otherUpd2->theName))
           {
@@ -1937,6 +1969,9 @@ void PULImpl::mergeTargetedUpdateLists(
       // raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE:
       {
+        UpdJSONObjectReplaceValue* otherUpd2 = 
+        static_cast<UpdJSONObjectReplaceValue*>(otherUpd);
+
         NodeUpdates::iterator ite = targetUpdates->begin();
         NodeUpdates::iterator end = targetUpdates->end();
 
@@ -1947,8 +1982,6 @@ void PULImpl::mergeTargetedUpdateLists(
           
           UpdJSONObjectReplaceValue* myUpd = 
           static_cast<UpdJSONObjectReplaceValue*>(*ite);
-          UpdJSONObjectReplaceValue* otherUpd2 = 
-          static_cast<UpdJSONObjectReplaceValue*>(otherUpd);
 
           if (myUpd->theName->equals(otherUpd2->theName))
           {
@@ -1963,6 +1996,8 @@ void PULImpl::mergeTargetedUpdateLists(
       // raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_RENAME:
       {
+        UpdJSONObjectRename* otherUpd2 = static_cast<UpdJSONObjectRename*>(otherUpd);
+
         NodeUpdates::iterator ite = targetUpdates->begin();
         NodeUpdates::iterator end = targetUpdates->end();
 
@@ -1972,7 +2007,6 @@ void PULImpl::mergeTargetedUpdateLists(
             continue;
           
           UpdJSONObjectRename* myUpd = static_cast<UpdJSONObjectRename*>(*ite);
-          UpdJSONObjectRename* otherUpd2 = static_cast<UpdJSONObjectRename*>(otherUpd);
 
           if (myUpd->theName->equals(otherUpd2->theName))
           {
@@ -1983,6 +2017,65 @@ void PULImpl::mergeTargetedUpdateLists(
 
         break;
       }
+
+      // skip duplicate deletes
+      case store::UpdateConsts::UP_JSON_ARRAY_DELETE:
+      {
+        UpdJSONArrayUpdate* otherUpd2 = static_cast<UpdJSONArrayUpdate*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+
+          UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+          if (myUpd->thePosition == otherUpd2->thePosition)
+          {
+            merged = true;
+            break;
+          }
+        }
+
+        break;
+      }
+
+      // raise error if duplicate positions and skip if same position as delete
+      case store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE:
+      {
+        UpdJSONArrayUpdate* otherUpd2 = static_cast<UpdJSONArrayUpdate*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+          if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
+          {
+            if (myUpd->thePosition == otherUpd2->thePosition)
+            {
+              RAISE_ERROR(jerr::JNUP0022, otherUpd->theLoc, 
+              ERROR_PARAMS(myUpd->thePosition.toString()));
+            }
+          }
+          else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+          {
+            if (myUpd->thePosition == otherUpd2->thePosition)
+            {
+              merged = true;
+              break;
+            }
+          }
+        }
+
+        break;
+      }
+
 #endif
 
       default:
@@ -2686,9 +2779,29 @@ void CollectionPul::applyUpdates()
     applyList(theJSONObjectRenameList);
     applyList(theJSONObjectInsertList);
 
-    applyList(theJSONArrayDeleteList);
-    applyList(theJSONArrayReplaceValueList);
-    applyList(theJSONArrayInsertList);
+    if (!theJSONArrayDeleteList.empty() ||
+        !theJSONArrayInsertList.empty() ||
+        !theJSONArrayReplaceValueList.empty())
+    {
+      NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
+      NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
+      for (; ite != end; ++ite)
+      {
+        if (!(*ite).first->isJSONArray())
+          continue;
+
+        NodeUpdates* updates = (*ite).second;
+
+        std::sort(updates->begin(), updates->end(), UpdJSONArrayUpdate::Comparator());
+
+        NodeUpdates::iterator updIte = updates->begin();
+        NodeUpdates::iterator updEnd = updates->end();
+        for (; updIte != updEnd; ++updIte)
+        {
+          (*updIte)->apply();
+        }
+      }
+    }
 #endif
 
     // Check if any inconsistencies that were detected during the application
@@ -2937,9 +3050,27 @@ void CollectionPul::undoUpdates()
     undoList(theJSONObjectReplaceValueList);
     undoList(theJSONObjectDeleteList);
 
-    undoList(theJSONArrayInsertList);
-    undoList(theJSONArrayReplaceValueList);
-    undoList(theJSONArrayDeleteList);
+    if (!theJSONArrayDeleteList.empty() ||
+        !theJSONArrayInsertList.empty() ||
+        !theJSONArrayReplaceValueList.empty())
+    {
+      NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
+      NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
+      for (; ite != end; ++ite)
+      {
+        if (!(*ite).first->isJSONArray())
+          continue;
+
+        NodeUpdates* updates = (*ite).second;
+
+        NodeUpdates::reverse_iterator updIte = updates->rbegin();
+        NodeUpdates::reverse_iterator updEnd = updates->rend();
+        for (; updIte != updEnd; ++updIte)
+        {
+          (*updIte)->undo();
+        }
+      }
+    }
 #endif
 
     undoList(theDeleteList);

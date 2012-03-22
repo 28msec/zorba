@@ -261,6 +261,9 @@ public:
   virtual void
   remove(const xs_integer& aPos) = 0;
 
+  virtual void
+  replace(const xs_integer& aPos, const store::Item_t& value) = 0;
+
   virtual xs_integer
   getSize() const = 0;
 
@@ -356,6 +359,9 @@ public:
 
   virtual void
   remove(const xs_integer& aPos);
+
+  virtual void
+  replace(const xs_integer& aPos, const store::Item_t& value);
 
   virtual xs_integer
   getSize() const { return theContent.size(); }

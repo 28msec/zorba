@@ -431,7 +431,7 @@
 
       <zorba:signature localname="json-replace-value" prefix="op-zorba">
         <zorba:param>json-item()</zorba:param>
-        <zorba:param>xs:string</zorba:param>
+        <zorba:param>xs:anyAtomicType</zorba:param>
         <zorba:param>item()</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>

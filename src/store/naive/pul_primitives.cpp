@@ -2101,6 +2101,26 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
 }
 
 
+bool UpdJSONArrayUpdate::Comparator::operator() (
+    const UpdatePrimitive* lhs,
+    const UpdatePrimitive* rhs)
+{
+  const UpdJSONArrayUpdate* l = static_cast<const UpdJSONArrayUpdate*>(lhs);
+  const UpdJSONArrayUpdate* r = static_cast<const UpdJSONArrayUpdate*>(rhs);
+
+  if (l->thePosition > r->thePosition)
+    return true;
+
+  if (l->thePosition == r->thePosition)
+  {
+    if (l->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+      return true;
+  }
+
+  return false;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2149,6 +2169,8 @@ void UpdJSONArrayDelete::apply()
 {
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
+  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
+
   array->remove(thePosition);
 
   theIsApplied = true;
@@ -2184,15 +2206,12 @@ UpdJSONArrayReplaceValue::UpdJSONArrayReplaceValue(
 
 void UpdJSONArrayReplaceValue::apply()
 {
-  /*
-  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-  xs_integer lPos = theSelector->getIntegerValue();
-  theOldValue = const_cast<store::Item*>(lArray->operator[](lPos));
-  lArray->remove(lPos);
-  std::vector<store::Item_t> lNewMember;
-  lNewMember.push_back(theNewValue);
-  lArray->insert_before(lPos, lNewMember);
-  */
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
+
+  array->replace(thePosition, theNewValue);
+
   theIsApplied = true;
 }
 

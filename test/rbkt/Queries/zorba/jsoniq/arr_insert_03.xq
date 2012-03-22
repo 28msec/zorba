@@ -6,34 +6,37 @@ variable $a1 := [ 1, 2, 3 ];
 
 try 
 {
-  j:insert-before($a1, -2, 1 to 2)
+  insert json 1 to 2 into $a1 at position -2
 } 
-catch jerr:JUDY0061 
+catch jerr:JNUP0018 
 {
   fn:true()
-},
+}
+,
 try 
 {
-  j:insert-before($a1, 4, 1 to 2)
+  insert json 1 to 2 into $a1 at position 5
 } 
-catch jerr:JUDY0061 
+catch jerr:JNUP0018
 {
   fn:true()
-},
+}
+,
 try 
 {
-  j:insert-after($a1, -2, 1 to 2)
+  insert json 1 to 2 into $a1 at position -1
 } 
-catch jerr:JUDY0061 
+catch jerr:JNUP0018 
 {
   fn:true()
-},
+}
+,
 try 
 {
-  j:insert-after($a1, 4, 1 to 2)
-} 
-catch jerr:JUDY0061 
+  insert json 1 to 2 into $a1 at position 4
+}
+catch jerr:JNUP0018 
 {
-  fn:true()
+  fn:false()
 }
 

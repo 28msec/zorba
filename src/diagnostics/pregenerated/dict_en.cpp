@@ -147,6 +147,9 @@ extern entry const dict_en[] = {
   { "JNUP0021", "\"$1\": position to replace does not exist in array" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNUP0022", "\"$1\": duplicate position to replace" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },

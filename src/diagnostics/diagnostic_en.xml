@@ -2590,13 +2590,18 @@
     </diagnostic>
 
     <diagnostic code="JNUP0020" if="defined(ZORBA_WITH_JSON)">
-      <comment>member to delete not in array</comment>
+      <comment>position to delete not in array</comment>
       <value>"$1": position to delete does not exist in array</value>
     </diagnostic>
 
     <diagnostic code="JNUP0021" if="defined(ZORBA_WITH_JSON)">
-      <comment>member to replace not in array</comment>
+      <comment>position to replace not in array</comment>
       <value>"$1": position to replace does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate position to replace</comment>
+      <value>"$1": duplicate position to replace</value>
     </diagnostic>
 
   </namespace>

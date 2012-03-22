@@ -4,6 +4,10 @@ declare namespace jerr = "http://www.jsoniq.org/errors";
 
 variable $a := [ 3 ];
 
-(j:insert-before($a, 1, 2), j:insert-as-first($a,  1 to 2));
+(
+insert json 2 into $a at position 1
+, 
+insert json 1 to 2 into $a at position 1
+);
 
 $a

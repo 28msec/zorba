@@ -836,6 +836,8 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0018;
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0020;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0021;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0022;
 #endif
 
 } // namespace jerr

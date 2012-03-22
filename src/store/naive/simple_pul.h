@@ -275,24 +275,6 @@ class PULImpl : public store::PUL
   friend class UpdRevalidate;
 
 public:
-  enum UpdListKind
-  {
-    UP_LIST_NONE,
-    UP_LIST_DO_FIRST,
-    UP_LIST_REPLACE_NODE,
-    UP_LIST_REPLACE_CONTENT,
-    UP_LIST_DELETE,
-    UP_LIST_PUT,
-    UP_LIST_CREATE_COLLECTION,
-    UP_LIST_CREATE_INDEX
-#ifdef ZORBA_WITH_JSON
-    ,
-    UP_LIST_JSON_OBJECT_INSERT,
-    UP_LIST_JSON_ARRAY_INSERT,
-    UP_LIST_JSON_DELETE
-#endif
-  };
-
   typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
 
 protected:
@@ -589,18 +571,18 @@ public:
   virtual void addJSONArrayInsert(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      xs_integer& pos,
+      store::Item_t& pos,
       std::vector<store::Item_t>& members);
 
   virtual void addJSONArrayDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      xs_integer& pos);
+      store::Item_t& pos);
 
   virtual void addJSONArrayReplaceValue(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      xs_integer& pos,
+      store::Item_t& pos,
       store::Item_t& newValue);
 #endif
 
@@ -646,14 +628,6 @@ protected:
   void mergeSimpleUpdateLists(
       std::vector<UpdatePrimitive*>& myList,
       std::vector<UpdatePrimitive*>& otherList);
-
-#ifdef ZORBA_WITH_JSON
-  void mergeJSONUpdateList(
-      CollectionPul* myPul,
-      std::vector<UpdatePrimitive*>& myList,
-      std::vector<UpdatePrimitive*>& otherList,
-      UpdListKind listKind);
-#endif
 
   void addInsertChildren(
         const QueryLoc* loc,

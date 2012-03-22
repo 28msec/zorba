@@ -1756,6 +1756,12 @@ class UpdJSONArrayUpdate : public UpdatePrimitive
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
 
+public:
+  struct Comparator
+  {
+    bool operator() (const UpdatePrimitive* lhs, const UpdatePrimitive* rhs);
+  };
+
 protected:
   xs_integer  thePosition;
 
@@ -1809,6 +1815,9 @@ class UpdJSONArrayDelete : public UpdJSONArrayUpdate
   friend class PULImpl;
   friend class CollectionPul;
   friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theOldValue;
 
 protected:
   UpdJSONArrayDelete(

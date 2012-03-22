@@ -54,7 +54,7 @@ return
    copy $out := $feed
    modify
       let $f := $out("feed")
-      for $entry at $pos in j:values($f("entry"))
+      for $entry at $pos in j:members($f("entry"))
       where $entry("app$control")("yt$state")("name") = "restricted"
       return delete json $f("entry")($pos)
    return $out

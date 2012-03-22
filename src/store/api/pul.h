@@ -309,18 +309,18 @@ public:
   virtual void addJSONArrayInsert(
         const QueryLoc* aQueryLoc,
         Item_t& target,
-        xs_integer& pos,
+        store::Item_t& pos,
         std::vector<Item_t>& members) = 0;
 
   virtual void addJSONArrayDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      xs_integer& pos) = 0;
+      store::Item_t& pos) = 0;
 
   virtual void addJSONArrayReplaceValue(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
-      xs_integer& pos,
+      store::Item_t& pos,
       store::Item_t& newValue) = 0;
 #endif
 

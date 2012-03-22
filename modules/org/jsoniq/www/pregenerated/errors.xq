@@ -133,11 +133,16 @@ declare variable $jerr:JNUP0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0012
 declare variable $jerr:JNUP0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0018");
 
 (:~
- :member to delete not in array
+ :position to delete not in array
 :)
 declare variable $jerr:JNUP0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0020");
 
 (:~
- :member to replace not in array
+ :position to replace not in array
 :)
 declare variable $jerr:JNUP0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0021");
+
+(:~
+ :duplicate position to replace
+:)
+declare variable $jerr:JNUP0022 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0022");

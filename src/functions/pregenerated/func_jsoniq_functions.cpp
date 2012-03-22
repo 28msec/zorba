@@ -445,7 +445,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
     DECL_WITH_KIND(sctx, op_zorba_json_replace_value,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-replace-value"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_REPLACE_VALUE_3);

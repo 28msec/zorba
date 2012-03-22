@@ -637,8 +637,7 @@ bool JSONArrayInsertIterator::nextImpl(
 {
   store::Item_t array;
   store::Item_t member;
-  store::Item_t posItem;
-  xs_integer pos;
+  store::Item_t pos;
   std::vector<store::Item_t> members;
   store::PUL_t pul;
   store::CopyMode copymode;
@@ -647,14 +646,7 @@ bool JSONArrayInsertIterator::nextImpl(
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(array, theChildren[0].getp(), planState);
-  consumeNext(posItem, theChildren[1].getp(), planState);
-
-  pos = posItem->getIntegerValue();
-
-  if (pos <= xs_integer::zero() || array->getSize() < pos)
-  {
-    RAISE_ERROR(jerr::JNUP0018, loc, ERROR_PARAMS(pos));
-  }
+  consumeNext(pos, theChildren[1].getp(), planState);
 
   copymode.set(true, 
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
@@ -733,14 +725,7 @@ bool JSONDeleteIterator::nextImpl(
       ERROR_PARAMS(ZED(JNTY0007_Array), type->toSchemaString()));
     }
 
-    xs_integer pos = selector->getIntegerValue();
-
-    if (pos <= xs_integer::zero() || target->getSize() < pos)
-    {
-      RAISE_ERROR(jerr::JNUP0020, loc, ERROR_PARAMS(pos));
-    }
-
-    pul->addJSONArrayDelete(&loc, target, pos);
+    pul->addJSONArrayDelete(&loc, target, selector);
   }
 
   result.transfer(pul);
@@ -833,14 +818,7 @@ bool JSONReplaceValueIterator::nextImpl(
       ERROR_PARAMS(ZED(JNTY0007_Array), type->toSchemaString()));
     }
 
-    xs_integer pos = selector->getIntegerValue();
-
-    if (pos <= xs_integer::zero() || target->getSize() < pos)
-    {
-      RAISE_ERROR(jerr::JNUP0021, loc, ERROR_PARAMS(pos));
-    }
-
-    pul->addJSONArrayReplaceValue(&loc, target, pos, newValue);
+    pul->addJSONArrayReplaceValue(&loc, target, selector, newValue);
   }
 
   result.transfer(pul);

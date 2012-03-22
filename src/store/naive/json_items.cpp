@@ -492,6 +492,7 @@ SimpleJSONArray::add(
 
 }
 
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -502,6 +503,18 @@ SimpleJSONArray::remove(const xs_integer& aPos)
   store::Item* lItem = const_cast<store::Item*>(operator[](aPos));
   theContent.erase(theContent.begin() + lPos);
   lItem->removeReference();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
+{
+  uint64_t pos = cast(aPos) - 1;
+  theContent[pos] = value.getp();
+  value->addReference();
 }
 
 
