@@ -47,7 +47,7 @@
 
   <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="names" prefix="fn-jsoniq">
+    <zorba:signature localname="keys" prefix="fn-jsoniq">
       <zorba:param>object()</zorba:param>
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
@@ -273,33 +273,6 @@
     </zorba:methods>
 
   </zorba:function>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="JSONItemEmptyAccessorIterator" arity="unary"
-  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
-
-  <zorba:function isDeterministic="true">
-
-    <zorba:signature localname="json-item-empty-accessor" prefix="op-zorba">
-      <zorba:param>json-item()</zorba:param>
-      <zorba:output>xs:anyAtomicType*</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:propagatesInputNodes value="false"/>
-      <zorba:mustCopyInputNodes value="false"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:state>
-    <zorba:member type="store::Iterator_t" name="thePairs" brief=""/>
-  </zorba:state>
 
 </zorba:iterator>
 

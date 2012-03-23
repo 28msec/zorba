@@ -286,9 +286,6 @@ namespace zorba{
     class JSONItemAccessorIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONItemEmptyAccessorIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
     class JSONNullIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -1028,10 +1025,6 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
     virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONItemEmptyAccessorIterator& ) = 0;
-    virtual void endVisit   ( const JSONItemEmptyAccessorIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONNullIterator& ) = 0;

@@ -458,55 +458,6 @@ public:
  * 
  * Author: 
  */
-class JSONItemEmptyAccessorIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t thePairs; //
-
-  JSONItemEmptyAccessorIteratorState();
-
-  ~JSONItemEmptyAccessorIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONItemEmptyAccessorIterator : public UnaryBaseIterator<JSONItemEmptyAccessorIterator, JSONItemEmptyAccessorIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONItemEmptyAccessorIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemEmptyAccessorIterator,
-    UnaryBaseIterator<JSONItemEmptyAccessorIterator, JSONItemEmptyAccessorIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONItemEmptyAccessorIterator, JSONItemEmptyAccessorIteratorState>*)this);
-  }
-
-  JSONItemEmptyAccessorIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<JSONItemEmptyAccessorIterator, JSONItemEmptyAccessorIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~JSONItemEmptyAccessorIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- * Author: 
- */
 class JSONNullIterator : public NoaryBaseIterator<JSONNullIterator, PlanIteratorState>
 { 
 public:

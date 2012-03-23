@@ -22,7 +22,7 @@ return
 {
   "visible" : [
      let $sats := $satsDoc("satellites")
-     for $satName in $sats()
+     for $satName in j:keys($sats)
      let $satData := $sats($satName)
      where $satData("visible")
      return $satName
@@ -30,7 +30,7 @@ return
   ,
   "invisible" : [
      let $sats := $satsDoc("satellites")
-     for $satName in $sats()
+     for $satName in j:keys($sats)
      let $satData := $sats($satName)
      where fn:not($satData("visible"))
      return $satName

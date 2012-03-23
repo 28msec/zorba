@@ -335,43 +335,6 @@ JSONItemAccessorIterator::~JSONItemAccessorIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONItemEmptyAccessorIterator>
-const char* JSONItemEmptyAccessorIterator::class_name_str = "JSONItemEmptyAccessorIterator";
-JSONItemEmptyAccessorIterator::class_factory<JSONItemEmptyAccessorIterator>
-JSONItemEmptyAccessorIterator::g_class_factory;
-
-const serialization::ClassVersion 
-JSONItemEmptyAccessorIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONItemEmptyAccessorIterator::class_versions_count =
-sizeof(JSONItemEmptyAccessorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void JSONItemEmptyAccessorIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  theChild->accept(v);
-
-  v.endVisit(*this);
-}
-
-JSONItemEmptyAccessorIterator::~JSONItemEmptyAccessorIterator() {}
-
-JSONItemEmptyAccessorIteratorState::JSONItemEmptyAccessorIteratorState() {}
-
-JSONItemEmptyAccessorIteratorState::~JSONItemEmptyAccessorIteratorState() {}
-
-
-void JSONItemEmptyAccessorIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONItemEmptyAccessorIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-// </JSONItemEmptyAccessorIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONNullIterator>
 const char* JSONNullIterator::class_name_str = "JSONNullIterator";
 JSONNullIterator::class_factory<JSONNullIterator>

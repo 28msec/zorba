@@ -58,11 +58,11 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:names
-class fn_jsoniq_names : public function
+//fn-jsoniq:keys
+class fn_jsoniq_keys : public function
 {
 public:
-  fn_jsoniq_names(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_jsoniq_keys(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -230,26 +230,6 @@ public:
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//op-zorba:json-item-empty-accessor
-class op_zorba_json_item_empty_accessor : public function
-{
-public:
-  op_zorba_json_item_empty_accessor(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 

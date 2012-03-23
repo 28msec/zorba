@@ -469,45 +469,6 @@ JSONItemAccessorIterator::nextImpl(
 
 
 /*******************************************************************************
-  op_zorba:json-empty-item-accessor($i as json-item()) as item()?
-********************************************************************************/
-bool
-JSONItemEmptyAccessorIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t input;
-
-  JSONItemEmptyAccessorIteratorState* state;
-  DEFAULT_STACK_INIT(JSONItemEmptyAccessorIteratorState, state, planState);
-
-  consumeNext(input, theChild.getp(), planState);
-
-  if (input->isJSONObject())
-  {
-    state->thePairs = input->getPairs();
-    state->thePairs->open();
-    while (state->thePairs->next(result))
-    {
-      result = result->getName();
-      STACK_PUSH(true, state);
-    }
-    state->thePairs->close();
-  }
-  else if (input->isJSONArray())
-  {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, input->getSize()), state);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
   j:null()) as jdm:null
 ********************************************************************************/
 bool

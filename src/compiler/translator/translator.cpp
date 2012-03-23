@@ -10462,7 +10462,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   xqtref_t srcType = sourceExpr->get_return_type();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (numArgs <= 1 &&
+      (numArgs == 1 &&
        !TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
   {
     function* func;
@@ -10473,47 +10473,24 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
     expr* flworVarExpr = fc->get_var();
 
-    if (numArgs == 1)
+    if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_VALUE_2);
-      }
-      else
-      {
-        func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
-      }
-
-      accessorExpr = new fo_expr(theRootSctx,
-                                 loc,
-                                 func,
-                                 flworVarExpr,
-                                 arguments[0]);
+      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
+    }
+    else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+    {
+      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_VALUE_2);
     }
     else
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_SIZE_1);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = GET_BUILTIN_FUNCTION(FN_JSONIQ_NAMES_1);
-      }
-      else
-      {
-        func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_EMPTY_ACCESSOR_1);
-      }
-
-      accessorExpr = new fo_expr(theRootSctx,
-                                 loc,
-                                 func,
-                                 flworVarExpr);
+      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
     }
+
+    accessorExpr = new fo_expr(theRootSctx,
+                               loc,
+                               func,
+                               flworVarExpr,
+                               arguments[0]);
 
     normalize_fo(accessorExpr.getp());
 
