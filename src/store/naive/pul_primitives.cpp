@@ -2143,11 +2143,26 @@ void UpdJSONArrayInsert::apply()
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
   array->insert_before(thePosition, theMembers);
+
+  theIsApplied = true;
 }
 
 
 void UpdJSONArrayInsert::undo()
 {
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  csize numNewMembers = theMembers.size();
+
+  for (csize i = 0; i < numNewMembers; ++i) 
+    array->remove(thePosition);
+
+  theIsApplied = false;
 }
 
 
@@ -2183,10 +2198,14 @@ void UpdJSONArrayDelete::undo()
   {
     return;
   }
-  ZORBA_ASSERT(false);
+
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  array->insert_before(thePosition, theOldValue);
 
   theIsApplied = false;
 }
+
 
 /*******************************************************************************
 
@@ -2222,14 +2241,11 @@ void UpdJSONArrayReplaceValue::undo()
   {
     return;
   }
-  /*
-  JSONArray* lArray = static_cast<JSONArray*>(theTarget.getp());
-  xs_integer lPos = theSelector->getIntegerValue();
-  lArray->remove(lPos);
-  std::vector<store::Item_t> lOldMember;
-  lOldMember.push_back(theOldValue);
-  lArray->insert_before(lPos, lOldMember);
-  */
+
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  array->replace(thePosition, theOldValue);
+
   theIsApplied = false;
 }
 

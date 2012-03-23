@@ -249,20 +249,19 @@ public:
   push_front(const std::vector<store::Item_t>& members) = 0;
 
   virtual void
-  insert_before(
-      const xs_integer& aPos,
-      const std::vector<store::Item_t>& members) = 0;
+  insert_before(const xs_integer& pos, const store::Item_t& member) = 0;
 
   virtual void
-  insert_after(
-      const xs_integer& aPos,
-      const std::vector<store::Item_t>& members) = 0;
+  insert_before(const xs_integer& pos, const std::vector<store::Item_t>& members) = 0;
 
   virtual void
-  remove(const xs_integer& aPos) = 0;
+  insert_after(const xs_integer& pos, const std::vector<store::Item_t>& members) = 0;
 
   virtual void
-  replace(const xs_integer& aPos, const store::Item_t& value) = 0;
+  remove(const xs_integer& pos) = 0;
+
+  virtual void
+  replace(const xs_integer& pos, const store::Item_t& value) = 0;
 
   virtual xs_integer
   getSize() const = 0;
@@ -348,14 +347,13 @@ public:
   push_front(const std::vector<store::Item_t>& members);
 
   virtual void
-  insert_before(
-      const xs_integer& aPos,
-      const std::vector<store::Item_t>& members);
+  insert_before(const xs_integer& pos, const store::Item_t& member);
 
   virtual void
-  insert_after(
-      const xs_integer& aPos,
-      const std::vector<store::Item_t>& members);
+  insert_before(const xs_integer& pos, const std::vector<store::Item_t>& members);
+
+  virtual void
+  insert_after(const xs_integer& pos, const std::vector<store::Item_t>& members);
 
   virtual void
   remove(const xs_integer& aPos);
@@ -373,7 +371,7 @@ public:
   getMembers() const;
 
   virtual store::Item*
-  getMember(const store::Item_t& aPosition) const;
+  getMember(const store::Item_t& position) const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
@@ -392,7 +390,7 @@ public:
 
 protected:
   void
-  add(uint64_t aTargetPos, const std::vector<store::Item_t>& aNewMembers);
+  add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
 
   static uint64_t
   cast(const xs_integer& i);

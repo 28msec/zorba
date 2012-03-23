@@ -447,6 +447,17 @@ SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 
 *******************************************************************************/
 void
+SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& member)
+{
+  theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+  member->addReference();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
 SimpleJSONArray::insert_before(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
