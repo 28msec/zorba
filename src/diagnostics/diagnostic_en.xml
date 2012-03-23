@@ -1769,7 +1769,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQD0003" name="INCONSISTENT_PARSE_FRAGMENT_OPTIONS">
-      <value>inconsistent options to the parse-xml-fragment() function: $1</value>
+      <value>inconsistent options to the parse-xml() function: $1</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0004" name="INVALID_PARAMETER">
@@ -2635,6 +2635,10 @@
 
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
+    </entry>
+    
+    <entry key="BadXMLNoOpeningTag">
+      <value>closing tag without matching opening tag</value>
     </entry>
 
     <entry key="BadXMLForXQDoc_3">
@@ -3533,12 +3537,12 @@
       <value>xqueryx content is empty</value>
     </entry>
 
-    <entry key="ParseFragmentOptionDSLNotAllowed">
-      <value>if the e option is specified, none of the options d, s, or l may be enabled</value>
-    </entry>
-
     <entry key="ParseFragmentOptionCombinationNotAllowed">
-      <value>specifying both $2 and $3 is an error</value>
+      <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
+    </entry>
+    
+    <entry key="ParseFragmentInvalidOptions">
+      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
     </entry>
 
   </subvalues>

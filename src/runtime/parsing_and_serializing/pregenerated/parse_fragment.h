@@ -36,7 +36,7 @@
 namespace zorba {
 
 /**
- * fn-zorba-xml:parse-xml-fragment
+ * fn-zorba-xml:parse
  * Author: Zorba Team
  */
 class FnParseXmlFragmentIteratorState : public PlanIteratorState
