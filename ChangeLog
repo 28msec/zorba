@@ -1,5 +1,10 @@
 Zorba - The XQuery Processor
 
+version 2.5
+
+New Features:
+  * API for Python, Java, PHP and Ruby has been extended.
+
 version 2.2
 
 New Features:

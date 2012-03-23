@@ -20,8 +20,13 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
   SWIG_ADD_MODULE (zorba_api_python python zorba_api.i)
   SWIG_LINK_LIBRARIES (zorba_api_python zorba_simplestore ${PYTHON_LIBRARIES})
   SET_TARGET_PROPERTIES (_zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api")
-  SET_PROPERTY( TARGET _zorba_api_python PROPERTY PROJECT_LABEL "Api_Python" )
-
+  
+  IF (MSVC_IDE)
+    SET_PROPERTY( TARGET _zorba_api_python PROPERTY PROJECT_LABEL "Api_Python" )
+    SET_PROPERTY( TARGET _zorba_api_python PROPERTY LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/swig/python )
+    SET_PROPERTY( TARGET _zorba_api_python PROPERTY LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/swig/python )
+  ENDIF (MSVC_IDE)
+  
   EXECUTE_PROCESS (
     COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig;print sysconfig.get_python_lib(0)"
     OUTPUT_VARIABLE PYTHON_INSTALL_PATH
@@ -53,17 +58,10 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
       DESTINATION ${PYTHON_INSTALL_PATH}
     )
   ELSE(NOT WIN32)
-    IF (MSVC_IDE)
-      INSTALL ( FILES 
-      ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/_zorba_api.pyd
-      DESTINATION share/python
-      COMPONENT "python_swig" )
-    ELSE (MSVC_IDE)
       INSTALL ( FILES 
       ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.pyd
       DESTINATION share/python
       COMPONENT "python_swig" )
-    ENDIF (MSVC_IDE)
   ENDIF(NOT WIN32)
   
   ADD_SUBDIRECTORY (tests)

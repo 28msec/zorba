@@ -27,6 +27,8 @@ public:
   XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
 
   DocumentManager getDocumentManager();
+  CollectionManager getCollectionManager();
+  CollectionManager getW3CCollectionManager();
   Iterator parseXML(const std::string& aDoc);
 
 };
