@@ -23,23 +23,14 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "common/shared_types.h"
-
 #include "context/static_context.h"
 #include "context/namespace_context.h"
-
-#include "functions/function_impl.h"
 
 #include "store/api/index.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
-#include "store/api/iterator_factory.h" // for creating the probe iterator
-#include "store/api/pul.h"
 #include "store/api/store.h"
-
-#include "runtime/core/apply_updates.h"
-#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "system/globalenv.h"
 
@@ -60,42 +51,7 @@
 using namespace std;
 using namespace zorba::locale;
 
-#define FT_MODULE_NS "http://www.zorba-xquery.com/modules/full-text"
-
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-void populate_context_ft_module_impl( static_context *sctx ) {
-  xqtref_t tokenizer_properties_return_type =
-    GENV_TYPESYSTEM.create_node_type(
-      store::StoreConsts::elementNode,
-      createQName(
-        FT_MODULE_NS,
-        "",
-        "tokenizer-properties"
-      ),
-      TypeConstants::QUANT_ONE,
-      false,
-      false
-    );
-
-  {
-    DECL_WITH_KIND( sctx, full_text_tokenizer_properties,
-      (createQName( FT_MODULE_NS, "", "tokenizer-properties"),
-        tokenizer_properties_return_type),
-      FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES
-    );
-  }
-  {
-    DECL_WITH_KIND( sctx, full_text_tokenizer_properties,
-      (createQName( FT_MODULE_NS, "", "tokenizer-properties"),
-        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE,
-        tokenizer_properties_return_type),
-      FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES
-    );
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

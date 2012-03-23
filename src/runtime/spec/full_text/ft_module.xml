@@ -147,7 +147,7 @@
 <zorba:iterator name="TokenizeIterator"
                 generateResetImpl="true">
 
-  <zorba:function generateCodegen="false">
+  <zorba:function generateCodegen="false" generateDECL="false">
 
     <zorba:signature localname="tokenize" prefix="full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
