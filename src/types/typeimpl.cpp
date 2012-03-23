@@ -361,7 +361,7 @@ bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 
 
 bool NodeXQType::is_subtype(
-    const TypeManager* tm, 
+    const TypeManager* tm,
     const NodeXQType& supertype,
     const QueryLoc& loc) const
 {
@@ -443,7 +443,7 @@ bool NodeXQType::is_subtype(
 
 
 bool NodeXQType::is_supertype(
-    const TypeManager* tm, 
+    const TypeManager* tm,
     const store::Item* subitem,
     const QueryLoc& loc) const
 {
@@ -488,13 +488,29 @@ bool NodeXQType::is_supertype(
     }
   }
 
-  if (m_node_kind != store::StoreConsts::elementNode && 
-      m_node_kind != store::StoreConsts::attributeNode)
+  // document-node( E ) matches any document node that contains exactly one element
+  // node, optionally accompanied by one or more comment and processing instruction
+  // nodes, if E is an ElementTest or SchemaElementTest that matches the element node.
+  bool is_element_test = (
+      m_node_kind == store::StoreConsts::documentNode &&
+      m_content_type != NULL &&
+      m_content_type->type_kind() == XQType::NODE_TYPE_KIND &&
+      dynamic_cast<const NodeXQType*>(m_content_type.getp())->m_schema_test == false);
+
+  if (m_node_kind != store::StoreConsts::elementNode &&
+      m_node_kind != store::StoreConsts::attributeNode &&
+      !is_element_test)
     return true;
 
   if (m_content_type == NULL ||
       m_content_type->type_kind() == XQType::ANY_TYPE_KIND)
     return true;
+
+  if (is_element_test)
+  {
+    xqtref_t documentNodeType = tm->create_value_type(subitem, loc);
+    return TypeOps::is_subtype(tm, *documentNodeType, *this);
+  }
 
   xqtref_t subContentType = tm->create_named_type(subitem->getType(),
                                                   TypeConstants::QUANT_ONE,

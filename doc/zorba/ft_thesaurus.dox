@@ -90,11 +90,11 @@ you can download a precompiled WordNet database from
 
 In order to use thesauri,
 you need to specify where they are to the Zorba engine
-via one or more thesaurus \e mappings.
-A \e mapping maps a symbolic URI to URI for an actual thesaurus.
+via one or more thesaurus <i>mappings</i>.
+A <i>mapping</i> maps a symbolic URI to URI for an actual thesaurus.
 A mapping is of the form:
 
-<i>from_uri</i><code>:=</code><b>[</b><i>implementation</i><code>|</code><b>]</b></i>to_uri</i>
+<i>from_uri</i><code>:=</code><b>[</b><i>implementation</i><code>|</code><b>]</b><i>to_uri</i>
 
 For example:
 
@@ -117,7 +117,10 @@ return $x contains text "wealthy"
 If the \e implementation is omitted,
 it defaults to \c wordnet.
 As a special-case,
-the \e from_uri can be \c default or \c ##default
+the \e from_uri can be \c default or 
+\code 
+##default
+\endcode
 to allow for specifying the default thesaurus
 as was done for the first example on this page.
 

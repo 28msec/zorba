@@ -293,6 +293,21 @@ PlanIter_t zorba_store_collections_static_dml_delete_nodes::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t zorba_store_collections_static_dml_truncate::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new ZorbaTruncateCollectionIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t zorba_store_collections_static_dml_delete_node_first::codegen(
   CompilerCB*,
   static_context* sctx,

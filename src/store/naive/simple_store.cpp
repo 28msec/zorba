@@ -354,7 +354,7 @@ void SimpleStore::shutdown(bool soft)
         std::cerr << "Reference: " << (*iter).second
                   << "is still in the nodes to references map" << std::endl;
       }
-      ZORBA_FATAL(0, theNodeToReferencesMap.size() + 
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() +
                      " node references still in the nodes to references map");
     }
 
@@ -364,7 +364,7 @@ void SimpleStore::shutdown(bool soft)
       RefNodeMap::iterator end = theReferencesToNodeMap.end();
       for (; iter != end; ++iter)
       {
-        std::cerr << "Reference: " << (*iter).first 
+        std::cerr << "Reference: " << (*iter).first
                   << "is still in the references to nodes map" << std::endl;
       }
       ZORBA_FATAL(0, theReferencesToNodeMap.size() +
@@ -376,7 +376,9 @@ void SimpleStore::shutdown(bool soft)
     // LIBXML_TEST_VERSION if he wants to use libxml2
     // beyond the lifecycle of zorba
     xmlCleanupParser();
-
+    
+    theNumUsers = 0;
+    
     StoreManagerImpl::theStore = NULL;
   }
 }
@@ -490,18 +492,20 @@ ulong SimpleStore::createTreeId()
 XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
-  if (loadProperties.getEnableExtParsedEntity())
+  if (loadProperties.getParseExternalParsedEntity())
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
+                                 loadProperties,
                                  store::Properties::instance()->buildDataguide());
-  else if (loadProperties.getEnableDtd())
+  else if (loadProperties.getDTDValidate())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
-                            store::Properties::instance()->buildDataguide(),
-                            loadProperties.getEnableExtParsedEntity());
+                            loadProperties,
+                            store::Properties::instance()->buildDataguide());
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
+                             loadProperties,
                              store::Properties::instance()->buildDataguide());
 }
 
@@ -987,7 +991,7 @@ store::Collection_t SimpleStore::getCollection(
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  if (theCollections->get(aName, collection, aDynamicCollection))
   {
     return collection;
   }
@@ -1315,7 +1319,7 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
   Computes the Structural Reference for the given node.
 ********************************************************************************/
 bool SimpleStore::getStructuralInformation(
-    store::Item_t& result, 
+    store::Item_t& result,
     const store::Item* node)
 {
 #ifdef TEXT_ORDPATH
@@ -1355,7 +1359,7 @@ bool SimpleStore::getStructuralInformation(
 
 /*******************************************************************************
  Computes the reference of the given node.
- 
+
  @param node XDM node
  @return the identifier as an item of type xs:anyURI
 ********************************************************************************/
@@ -1388,7 +1392,7 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
 
 /*******************************************************************************
   Returns the node which is identified by the given reference.
- 
+
   @param reference an xs:anyURI item
   @result the node identified by the reference, or NULL if no node with the given
           reference exists
@@ -1417,7 +1421,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
 
 /*******************************************************************************
   Returns whether a reference has already been generated for the given node.
- 
+
   @param item XDM node
   @return whether a reference has already been generated for the given node.
 ********************************************************************************/
@@ -1429,7 +1433,7 @@ bool SimpleStore::hasReference(const store::Item* node)
 
 /*******************************************************************************
   Removes a node from the reference-to-nodes and nodes-to-references maps.
- 
+
   @param node XDM node
   @return whether the node was registered or not.
 ********************************************************************************/

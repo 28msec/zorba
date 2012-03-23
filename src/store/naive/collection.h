@@ -73,6 +73,8 @@ public:
       zorba::xs_integer position,
       zorba::xs_integer num) = 0;
 
+  virtual void removeAll() = 0;
+
   virtual void adjustTreePositions() = 0;
 
   /***************************** ID Management ********************************/
@@ -108,6 +110,10 @@ public:
 
   void getActiveICs(std::vector<store::IC*>& ics);
 
+  /**************************** Claim of ownership ****************************/
+protected:
+  virtual void claimOwnership(zorba::simplestore::XmlTree* aTree);
+  
 }; /* class Collection */
 
 } /* namespace simplestore */ } /* namespace zorba */

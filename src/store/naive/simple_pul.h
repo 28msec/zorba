@@ -183,6 +183,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theTruncateCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
   // Validate in place primitives
@@ -194,6 +195,7 @@ protected:
   std::vector<XmlNode*>              theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
+  std::vector<IndexImpl*>            theTruncatedIndices;
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
@@ -465,6 +467,11 @@ public:
         bool isLast,
         bool dyn_collection = false);
 
+  void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool dyn_collection = false);
+
   // Index primitives
   void addCreateIndex(
         const QueryLoc* aQueryLoc,
@@ -539,12 +546,18 @@ public:
   // utils
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
-  void getIndicesToRefresh(std::vector<store::Index*>& indices);
+  void getIndicesToRefresh(
+      std::vector<store::Index*>& indices,
+      std::vector<store::Index*>& truncate_indices);
 
   void addIndexEntryCreator(
         const store::Item* collectionName,
         store::Index* idx,
         store::IndexEntryCreator* creator);
+
+  void addIndexTruncator(
+      const store::Item* collectionName,
+      store::Index* idx);
 
   void setValidator(store::SchemaValidator* validator);
   store::SchemaValidator* getValidator() const { return theValidator; }
