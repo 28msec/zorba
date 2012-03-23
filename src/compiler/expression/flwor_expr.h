@@ -494,7 +494,7 @@ public:
   rebind_list_t::iterator endNonGroupVars() { return theNonGroupVars.end(); }
 
   rebind_list_t::const_iterator endNonGroupVars() const { return theNonGroupVars.end(); }
-  
+
   expr* get_input_for_group_var(const var_expr* var);
 
   expr* get_input_for_nongroup_var(const var_expr* var);
@@ -551,7 +551,13 @@ public:
 
   std::vector<expr_t>::iterator begin() { return theOrderingExprs.begin(); }
 
+  std::vector<expr_t>::const_iterator begin() const
+    { return theOrderingExprs.begin(); }
+
   std::vector<expr_t>::iterator end() { return theOrderingExprs.end(); }
+
+  std::vector<expr_t>::const_iterator end() const
+    { return theOrderingExprs.end(); }
 
   csize num_columns() const { return theOrderingExprs.size(); }
 

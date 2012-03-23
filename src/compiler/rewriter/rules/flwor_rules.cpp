@@ -669,26 +669,59 @@ static bool safe_to_fold_single_use(
         break;
       }
     }
-	else if (kind == flwor_clause::window_clause)
-	{
-		// TODO?
-	}
-    else if (kind == flwor_clause::order_clause)
+    else if(kind == flwor_clause::order_clause)
     {
-      // TODO
+      if(varQuant != TypeConstants::QUANT_ONE)
+        continue;
+
+      bool already_found = false;
+      const orderby_clause &oc = *static_cast<const orderby_clause*>(&c);
+
+      for(std::vector<expr_t>::const_iterator expr = oc.begin();
+          expr != oc.end();
+          expr++)
+      {
+        int var_uses = expr_tools::count_variable_uses(*expr, var, NULL, 1);
+        if(var_uses > 0)
+        {
+          if(already_found)
+          {
+            return false;
+          }
+
+          if(var_uses == 1)
+          {
+            already_found = true;
+            referencingExpr = *expr;
+          }
+          else
+          {
+            continue;
+          }
+        }
+      }
     }
     else if (kind == flwor_clause::group_clause)
     {
-      // TODO
+      //TODO: it should be possible to fold this variables
     }
+	  else if (kind == flwor_clause::window_clause)
+	  {
+		  // TODO
+      // Need to make sure that it's only used once in one of the following:
+      // The group expression which is the same as for
+      // The start condition which should be the same as where
+      // The end condition which sould also be the same as where
+	  }
     else if (kind == flwor_clause::materialize_clause)
     {
       // TODO
     }
-	else if (kind == flwor_clause::count_clause)
-	{
-	  // TODO
-	}
+	  else if (kind == flwor_clause::count_clause)
+	  {
+	    // Nothing to do, count clauses can't reference
+      // existing variables
+	  }
     else
     {
       ZORBA_ASSERT(false);
@@ -1043,11 +1076,11 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         for_clause* clause = posVar->get_for_clause();
         clause->set_expr(&*result);
         clause->set_pos_var(NULL);
-        
+
         flwor->remove_clause(whereClausePos);
         --whereClausePos;
         --numClauses;
-        
+
         modified = true;
       }
     }
