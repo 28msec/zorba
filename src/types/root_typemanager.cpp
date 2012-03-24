@@ -431,25 +431,21 @@ RootTypeManager::RootTypeManager()
 #define JSON_TYPE_DEFN(basename, kind)                                  \
   basename##_TYPE_ONE = new JSONXQType(this,                            \
                                        kind,                            \
-                                       NULL,                            \
                                        TypeConstants::QUANT_ONE,        \
                                        true);                           \
                                                                         \
   basename##_TYPE_QUESTION = new JSONXQType(this,                       \
                                             kind,                       \
-                                            NULL,                       \
                                             TypeConstants::QUANT_QUESTION, \
                                             true);                      \
                                                                         \
   basename##_TYPE_STAR = new JSONXQType(this,                           \
                                         kind,                           \
-                                        NULL,                           \
                                         TypeConstants::QUANT_STAR,      \
                                         true);                          \
                                                                         \
   basename##_TYPE_PLUS = new JSONXQType(this,                           \
                                         kind,                           \
-                                        NULL,                           \
                                         TypeConstants::QUANT_PLUS,      \
                                         true);                          \
                                                                         \

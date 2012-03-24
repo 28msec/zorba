@@ -127,7 +127,6 @@ public:
 
   xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
-        const xqtref_t& contentType,
         TypeConstants::quantifier_t quantifier) const;
 #endif
 

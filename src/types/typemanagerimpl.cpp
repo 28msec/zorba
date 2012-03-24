@@ -395,15 +395,9 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_json_type(
     store::StoreConsts::JSONItemKind kind,
-    const xqtref_t& contentType,
     TypeConstants::quantifier_t quantifier) const
 {
-  if (contentType == NULL)
-    return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
-
-  assert(kind == store::StoreConsts::jsonArray);
-
-  return new JSONXQType(this, kind, contentType, quantifier, false);
+  return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
 }
 #endif
 
@@ -726,7 +720,7 @@ xqtref_t TypeManagerImpl::create_value_type(
 #ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
-    return create_json_type(item->getJSONItemKind(), NULL, quant);
+    return create_json_type(item->getJSONItemKind(), quant);
   }
 #endif
 
@@ -899,7 +893,7 @@ xqtref_t TypeManagerImpl::create_type(
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
-    return create_json_type(jt.get_json_kind(), jt.get_content_type(), quantifier);
+    return create_json_type(jt.get_json_kind(), quantifier);
   }
 #endif
 
@@ -1073,16 +1067,16 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
 #ifdef ZORBA_WITH_JSON
   case IdentTypes::JSON_ITEM_TYPE:
-    return create_json_type(store::StoreConsts::jsonItem, NULL, q);
+    return create_json_type(store::StoreConsts::jsonItem, q);
 
   case IdentTypes::JSON_OBJECT_TYPE:
-    return create_json_type(store::StoreConsts::jsonObject, NULL, q);
+    return create_json_type(store::StoreConsts::jsonObject, q);
 
   case IdentTypes::JSON_ARRAY_TYPE:
-    return create_json_type(store::StoreConsts::jsonArray, NULL, q);
+    return create_json_type(store::StoreConsts::jsonArray, q);
 
   case IdentTypes::JSON_PAIR_TYPE:
-    return create_json_type(store::StoreConsts::jsonPair, NULL, q);
+    return create_json_type(store::StoreConsts::jsonPair, q);
 
 #endif // #ifdef ZORBA_WITH_JSON
 

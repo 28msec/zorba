@@ -6375,13 +6375,15 @@ private:
 
 ////////// FTPosFilter & derived classes //////////////////////////////////////
 
-class FTPosFilter : public parsenode {
+class FTPosFilter : public parsenode 
+{
 protected:
   FTPosFilter( QueryLoc const &loc ) : parsenode( loc ) { }
 };
 
 
-class FTContent : public FTPosFilter {
+class FTContent : public FTPosFilter 
+{
 public:
   FTContent(
     QueryLoc const&,
@@ -6397,7 +6399,8 @@ private:
 };
 
 
-class FTDistance : public FTPosFilter {
+class FTDistance : public FTPosFilter 
+{
 public:
   FTDistance(
     QueryLoc const&,
@@ -6417,7 +6420,8 @@ private:
 };
 
 
-class FTOrder : public FTPosFilter {
+class FTOrder : public FTPosFilter 
+{
 public:
   FTOrder( QueryLoc const& );
 
@@ -6425,7 +6429,8 @@ public:
 };
 
 
-class FTScope : public FTPosFilter {
+class FTScope : public FTPosFilter 
+{
 public:
   FTScope(
     QueryLoc const&,
@@ -6445,7 +6450,8 @@ private:
 };
 
 
-class FTWindow : public FTPosFilter {
+class FTWindow : public FTPosFilter 
+{
 public:
   FTWindow(
     QueryLoc const&,
@@ -6463,6 +6469,7 @@ private:
   AdditiveExpr const *const window_;
   FTUnit const *const unit_;
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
@@ -6568,17 +6575,13 @@ class JSON_Test : public parsenode
 {
 private:
   store::StoreConsts::JSONItemKind jt_;
-  rchandle<ItemType>               theContentType;
 
 public:
   JSON_Test(
       const QueryLoc& loc, 
-      store::StoreConsts::JSONItemKind jt,
-      ItemType* ct);
+      store::StoreConsts::JSONItemKind jt);
 
   store::StoreConsts::JSONItemKind get_kind() const { return jt_; }
-
-  ItemType* get_content_type() const { return theContentType.getp(); }
 
   void accept(parsenode_visitor&) const;
 };

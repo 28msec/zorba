@@ -5799,12 +5799,10 @@ void JSONPairConstructor::accept(parsenode_visitor& v) const
 
 JSON_Test::JSON_Test(
     const QueryLoc& loc,
-    store::StoreConsts::JSONItemKind k,
-    ItemType* ct)
+    store::StoreConsts::JSONItemKind k)
   :
   parsenode(loc),
-  jt_(k),
-  theContentType(ct)
+  jt_(k)
 {
 }
 
@@ -5812,7 +5810,6 @@ JSON_Test::JSON_Test(
 void JSON_Test::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(theContentType);
   END_VISITOR();
 }
 

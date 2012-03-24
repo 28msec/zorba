@@ -291,16 +291,7 @@ std::string XQType::toSchemaString() const
     }
     else if (kind == store::StoreConsts::jsonArray)
     {
-      if (type->get_content_type() == NULL)
-      {
-        result = "array()";
-      }
-      else
-      {
-        result = "array(";
-        result += type->get_content_type()->toSchemaString();
-        result += ")";
-      }
+      result = "array()";
     }
 
     break;
@@ -473,13 +464,11 @@ void StructuredItemXQType::serialize(::zorba::serialization::Archiver& ar)
 JSONXQType::JSONXQType(
     const TypeManager* manager,
     store::StoreConsts::JSONItemKind kind,
-    const xqtref_t& contentType,
     TypeConstants::quantifier_t quantifier,
     bool builtin)
   :
   XQType(manager, JSON_TYPE_KIND, quantifier, builtin),
-  theJSONKind(kind),
-  theContentType(contentType)
+  theJSONKind(kind)
 {
 }
 
@@ -491,7 +480,6 @@ void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
   SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, theJSONKind);
-  ar & theContentType;
 }
 
 
@@ -502,12 +490,6 @@ std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 {
   os << "[JSONXQType " << store::StoreConsts::toString(theJSONKind)
      << TypeOps::decode_quantifier(get_quantifier());
-
-  if (theContentType != NULL)
-  {
-    os << " content=";
-    os << theContentType->toString();
-  }
 
   return os << "]";
 }

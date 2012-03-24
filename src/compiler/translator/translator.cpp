@@ -12071,7 +12071,7 @@ void end_visit(const StructuredItemType& v, void* /*visit_state*/)
 
   JSONItemTest ::= "json-item" "(" ")"
   JSONObjectTest ::= "object" "(" ")"
-  JSONArrayTest ::= "array" "(" ItemType? ")"
+  JSONArrayTest ::= "array" "(" ")"
 
 ********************************************************************************/
 
@@ -12099,22 +12099,7 @@ void end_visit(const JSON_Test& v, void* /*visit_state*/)
   }
   case store::StoreConsts::jsonArray:
   {
-    ItemType* ct = v.get_content_type();
-
-    if (ct == NULL)
-    {
-      theTypeStack.push(rtm.JSON_ARRAY_TYPE_ONE);
-    }
-    else
-    {
-      xqtref_t contentType = pop_tstack();
-      
-      theTypeStack.push(new JSONXQType(CTX_TM, 
-                                       store::StoreConsts::jsonArray,
-                                       contentType,
-                                       TypeConstants::QUANT_ONE,
-                                       false));
-    }
+    theTypeStack.push(rtm.JSON_ARRAY_TYPE_ONE);
 
     break;
   }

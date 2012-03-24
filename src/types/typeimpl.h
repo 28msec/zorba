@@ -506,7 +506,6 @@ class JSONXQType : public XQType
 {
 private:
   store::StoreConsts::JSONItemKind  theJSONKind;
-  xqtref_t                          theContentType;
 
 public:
   SERIALIZABLE_CLASS(JSONXQType)
@@ -517,13 +516,10 @@ public:
   JSONXQType(
       const TypeManager* manager,
       store::StoreConsts::JSONItemKind kind,
-      const xqtref_t& contentType,
       TypeConstants::quantifier_t quantifier,
       bool builtin = false);
 
   store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
-
-  const XQType* get_content_type() const { return theContentType.getp(); }
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -550,14 +546,14 @@ public:
 
 public:
   NodeXQType(
-        const TypeManager* manager,
-        store::StoreConsts::NodeKind nodeKind,
-        const store::Item_t& nodeName,
-        const xqtref_t& contentType,
-        TypeConstants::quantifier_t quantifier,
-        bool nillable,
-        bool schematest,
-        bool builtin = false);
+      const TypeManager* manager,
+      store::StoreConsts::NodeKind nodeKind,
+      const store::Item_t& nodeName,
+      const xqtref_t& contentType,
+      TypeConstants::quantifier_t quantifier,
+      bool nillable,
+      bool schematest,
+      bool builtin = false);
 
   NodeXQType(
         const NodeXQType& source,

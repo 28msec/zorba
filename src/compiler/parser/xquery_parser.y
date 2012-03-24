@@ -6451,27 +6451,21 @@ JSONTest :
 JSONItemTest :
         JSON_ITEM LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem, NULL);
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
         }
 ;
 
 JSONObjectTest :
         OBJECT LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject, NULL);
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }
 ;
 
 JSONArrayTest :
         ARRAY LPAR RPAR
         {
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray, NULL);
-        }
-    |   ARRAY LPAR ItemType RPAR
-        {
-          $$ = new JSON_Test(LOC(@$),
-                             store::StoreConsts::jsonArray, 
-                             static_cast<ItemType*>($3));
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
         }
 ;
 
