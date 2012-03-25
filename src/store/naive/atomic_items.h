@@ -1357,6 +1357,12 @@ public:
 
   xs_long getLongValue() const;
 
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
   virtual store::SchemaTypeCode getTypeCode() const { return store::XS_INTEGER; }
 
   virtual store::Item* getType() const;
@@ -1374,12 +1380,6 @@ public:
         const XQPCollator* aCollation = 0) const;
 
   bool getEBV( ) const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring& buf) const;
 
   bool isNaN() const { return false; }
 
