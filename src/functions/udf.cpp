@@ -105,9 +105,9 @@ void user_function::prepare_for_serialize(CompilerCB* compilerCB)
   getPlan(compilerCB, planStateSize);
 
   std::vector<user_function*>::iterator udf_it;
-  for (udf_it = theMutuallyRecursiveUDFs.begin(); 
-       udf_it != theMutuallyRecursiveUDFs.end();
-       udf_it++)
+  for(udf_it = theMutuallyRecursiveUDFs.begin();
+      udf_it != theMutuallyRecursiveUDFs.end();
+      ++udf_it)
   {
     if ((*udf_it)->thePlan == NULL)
       (*udf_it)->prepare_for_serialize(compilerCB);
@@ -317,27 +317,19 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
+const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
 {
-  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
-  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
-
-  if (argMustCopy == ANNOTATION_TRUE)
-  {
-    // The decision depends on the caller
-    return callerMustCopy;
-  }
-
-  return argMustCopy;
+  return theArgVarsRefs;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
+void user_function::invalidatePlan() 
 {
-  return theArgVarsRefs;
+  thePlan = NULL;
+  theArgVarsRefs.clear();
 }
 
 

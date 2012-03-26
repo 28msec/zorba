@@ -100,13 +100,19 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
   return conv;
 }
 
-bool icu_streambuf::is_necessary( char const *charset ) {
+bool icu_streambuf::is_necessary( char const *cc_charset ) {
   //
-  // Checking for "US-ASCII" explicitly isn't necessary since ICU knows about
-  // aliases.
+  // Apparently, ucnv_compareNames() doesn't consider "US-ASCII" an alias for
+  // "ASCII", so check for "US-ASCII" ourselves.
   //
-  return  ucnv_compareNames( charset, "ASCII" )
-      &&  ucnv_compareNames( charset, "UTF-8" );
+  zstring charset( cc_charset );
+  ascii::trim_whitespace( charset );
+  ascii::to_upper( charset );
+  if ( charset == "US-ASCII" )
+    cc_charset += 3; // skip "US-"
+
+  return  ucnv_compareNames( cc_charset, "ASCII" )
+      &&  ucnv_compareNames( cc_charset, "UTF-8" );
 }
 
 bool icu_streambuf::is_supported( char const *charset ) {

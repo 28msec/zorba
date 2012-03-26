@@ -398,6 +398,7 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
     case ARCHIVE_FIELD_IS_NULL:          small_treat = 1;break;
     case ARCHIVE_FIELD_IS_REFERENCING:   small_treat = 2;break;
     case ARCHIVE_FIELD_IS_BASECLASS:     small_treat = 3;break;//??
+    default: break;
     }
 
     write_bits(small_treat, 2);

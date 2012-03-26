@@ -29,7 +29,7 @@
       ("loop-hoisting", po::value<bool>()->default_value (true), "hoist expressions out of loops (1=enabled (default), 0=off)")
       ("infer-joins", po::value<bool>()->default_value (true), "infer joins (1=enabled (default), 0=off)")
       ("no-copy-optim", po::value<bool>()->default_value(true), "no copy optim (1=enabled (default), 0=off)")
-      ("serialize-only-query", po::value<int>()->default_value(-1), "serialize-only query (1=true, 0=false (default))")
+      ("serialize-only-query", po::value<int>()->default_value(-1), "serialize-only query (1=true, 0=false, -1 unknown (default))")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")

@@ -205,10 +205,19 @@ void operator&(Archiver &ar, MAPM &obj)
   }
 }
 
-void operator&(serialization::Archiver &ar, Integer &obj)
+#ifdef ZORBA_WITH_BIG_INTEGER
+void operator&(serialization::Archiver &ar, IntegerImpl &obj)
+#else
+template<typename IntType>
+void operator&(serialization::Archiver &ar, IntegerImpl<IntType> &obj)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 {
   ar & obj.value_;
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template void operator&(serialization::Archiver&, IntegerImpl<long long>&);
+template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long>&);
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)
 {
@@ -597,7 +606,7 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "nonNegativeInteger")
       {
-        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_nonNegativeInteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createNonNegativeInteger, (result, value));
       }
       else if(name_of_type == "negativeInteger")
@@ -607,7 +616,7 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "positiveInteger")
       {
-        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_positiveInteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createPositiveInteger, (result, value));
       }
          

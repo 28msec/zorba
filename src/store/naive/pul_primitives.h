@@ -1112,7 +1112,7 @@ class UpdInsertBeforeIntoCollection : public  UpdCollection
 
 protected:
   store::Item_t theFirstNode;
-  ulong         theFirstPos;
+  xs_integer    theFirstPos;
 
   UpdInsertBeforeIntoCollection(
         CollectionPul* pul,
@@ -1146,7 +1146,7 @@ class UpdInsertAfterIntoCollection : public  UpdCollection
 
 protected:
   store::Item_t theFirstNode;
-  ulong         theFirstPos;
+  xs_integer    theFirstPos;
 
   UpdInsertAfterIntoCollection(
         CollectionPul* pul,
@@ -1203,6 +1203,35 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdTruncateCollection: public  UpdCollection
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  UpdTruncateCollection(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& name,
+        bool dyn_collection)
+    :
+    UpdCollection(pul, aLoc, name, dyn_collection)
+  {
+  }
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_TRUNCATE_COLLECTION;
   }
 
   void apply();

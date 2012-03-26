@@ -288,7 +288,7 @@ Item
 ItemFactoryImpl::createInteger(long long aInteger)
 {
   store::Item_t lItem;
-  Integer const lInteger(aInteger);
+  xs_integer const lInteger(aInteger);
   theItemFactory->createInteger(lItem, lInteger);
   return &*lItem;
 }
@@ -300,7 +300,7 @@ ItemFactoryImpl::createInteger(const String& aInteger)
   zstring const &lString = Unmarshaller::getInternalString( aInteger );
   store::Item_t lItem;
   try {
-    Integer const lInteger( lString.c_str() );
+    xs_integer const lInteger( lString.c_str() );
     theItemFactory->createInteger(lItem, lInteger);
   }
   catch ( std::exception const& ) {
@@ -497,7 +497,7 @@ Item ItemFactoryImpl::createNegativeInteger ( long long aValue )
 {
   store::Item_t lItem;
   if (aValue < 0) {
-    Integer const lInteger(aValue);
+    xs_integer const lInteger(aValue);
     theItemFactory->createNegativeInteger(lItem, lInteger);
   }
   return &*lItem;
@@ -507,7 +507,7 @@ Item ItemFactoryImpl::createNegativeInteger ( long long aValue )
 Item ItemFactoryImpl::createNonNegativeInteger ( unsigned long long aValue )
 {
   store::Item_t lItem;
-  Integer lInteger(aValue);
+  xs_nonNegativeInteger lInteger(aValue);
   theItemFactory->createNonNegativeInteger(lItem, lInteger);
   return &*lItem;
 }
@@ -517,7 +517,7 @@ Item ItemFactoryImpl::createNonPositiveInteger ( long long aValue )
 {
   store::Item_t lItem;
   if (aValue < 0) {
-    Integer const lInteger(aValue);
+    xs_integer const lInteger(aValue);
     theItemFactory->createNonPositiveInteger(lItem, lInteger);
   }
   return &*lItem;
@@ -527,7 +527,7 @@ Item ItemFactoryImpl::createNonPositiveInteger ( long long aValue )
 Item ItemFactoryImpl::createPositiveInteger ( unsigned long long aValue )
 {
   store::Item_t lItem;
-  Integer lInteger(aValue);
+  xs_nonNegativeInteger lInteger(aValue);
   theItemFactory->createPositiveInteger(lItem, lInteger);
   return &*lItem;
 }

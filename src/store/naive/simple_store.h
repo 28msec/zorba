@@ -143,6 +143,10 @@ public:
 
 protected:
   static const ulong NAMESPACE_POOL_SIZE;
+  static const ulong DEFAULT_DOCUMENT_SET_SIZE;
+  static const ulong DEFAULT_URI_COLLECTION_SET_SIZE;
+  static const ulong DEFAULT_INDICES_SET_SIZE;
+  static const ulong DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE;
 
 public:
   zstring                       theEmptyNs;
@@ -365,7 +369,7 @@ public:
 
   /* ------------------------ Node Reference Management ---------------------------*/
 
-  bool getNodeReference(store::Item_t& result, store::Item* node);
+  bool getNodeReference(store::Item_t& result, const store::Item* node);
 
   bool hasReference(const store::Item* node);
 

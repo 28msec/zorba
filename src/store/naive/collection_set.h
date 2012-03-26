@@ -29,82 +29,58 @@ namespace zorba {
     
     /*******************************************************************************
       Collections container to ease the implementation of stores which contain 
-      a different kind of memory management. For the simplestore, the Collections
-      is only a wrapper class around an ItemPointerHashMap.
+      a different kind of memory management.
     ********************************************************************************/
     class CollectionSet
     {
     public:
-      typedef ItemPointerHashMap<store::Collection_t> Set;
-      static const ulong DEFAULT_COLLECTION_MAP_SIZE;
-    
-    protected:
-      Set  theCollections;
-    
-    public:
-      CollectionSet();
-    
-      // needs to be virtual to allow implementation of additional stores
+      virtual ~CollectionSet() {}
+      
       virtual void
-      clear();
+      clear() = 0;
     
-      // needs to be virtual to allow implementation of additional stores
       virtual bool
       insert(
-          const store::Item* aName,
-          store::Collection_t& aCollection);
+          const zorba::store::Item* aName,
+          zorba::store::Collection_t& aCollection) = 0;
     
-      // needs to be virtual to allow implementation of additional stores
       virtual bool
       get(
-          const store::Item* aName,
-          store::Collection_t& aCollection,
-          bool aDynamicCollection = false);
+          const zorba::store::Item* aName,
+          zorba::store::Collection_t& aCollection,
+          bool aDynamicCollection = false) = 0;
     
-      // needs to be virtual to allow implementation of additional stores
       virtual bool
-      remove(const store::Item* aName, bool aDynamicCollection = false);
+      remove(const zorba::store::Item* aName, bool aDynamicCollection = false) = 0;
     
-      // needs to be virtual to allow implementation of additional stores
-      virtual store::Iterator_t
-      names(bool aDynamicCollection = false);
+      virtual zorba::store::Iterator_t
+      names(bool aDynamicCollection = false) = 0;
     
-      // needs to be virtual to allow implementation of additional stores
-      virtual CollectionIterator_t
-      collections(bool aDynamicCollection = false);
+      virtual CollectionSetIterator_t
+      collections(bool aDynamicCollection = false) = 0;
     
     }; /* class CollectionSet */
     
     /*******************************************************************************
-      Collection iterator
+      Collection set iterator
       Returned by the CollectionSet::collections function
     ********************************************************************************/
-    class CollectionIterator : public SimpleRCObject
+    class CollectionSetIterator : public SimpleRCObject
     {
-    protected:
-      CollectionSet::Set*          theCollections;
-      CollectionSet::Set::iterator theIterator;
-      bool                         theOpened;
-      bool                         theDynamicCollections;
-    
     public:
-      CollectionIterator(
-          CollectionSet::Set* aCollections,
-          bool aDynamicCollections);
-    
-      virtual ~CollectionIterator();
+      virtual ~CollectionSetIterator() {}
     
       virtual void
-      open();
+      open() = 0;
     
       virtual bool
-      next(store::Collection_t&);
+      next(zorba::store::Collection_t&) = 0;
     
       virtual void
-      reset();
+      reset() = 0;
     
       virtual void
-      close();
+      close() throw() = 0;
     };
 
   } /* namespace simplestore */
