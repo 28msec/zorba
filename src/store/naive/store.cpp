@@ -357,19 +357,21 @@ XmlLoader* Store::getXmlLoader(
     XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
-  if (loadProperties.getEnableExtParsedEntity())
+  if (loadProperties.getParseExternalParsedEntity())
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
+                                 loadProperties,
                                  store::Properties::instance()->buildDataguide());
 
-  else if (loadProperties.getEnableDtd())
+  else if (loadProperties.getDTDValidate())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
-                            store::Properties::instance()->buildDataguide(),
-                            loadProperties.getEnableExtParsedEntity());
+                            loadProperties,
+                            store::Properties::instance()->buildDataguide());
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
+                             loadProperties,
                              store::Properties::instance()->buildDataguide());
 }
 

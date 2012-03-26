@@ -99,25 +99,10 @@ protected:
 
 public:
   XmlLoader(
-<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
       bool dataguide);
-=======
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        const store::LoadProperties& loadProperties,
-        bool dataguide)
-    :
-    theLoadProperties(loadProperties),
-    ctxt(NULL),
-    theFactory(factory),
-    theXQueryDiagnostics(xqueryDiagnostics),
-    theTraceLevel(0),
-    theBuildDataGuide(dataguide)
-  {
-  }
->>>>>>> MERGE-SOURCE
 
   virtual ~XmlLoader();
 
@@ -170,16 +155,10 @@ protected:
 
 public:
   FastXmlLoader(
-<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
       bool dataguide);
-=======
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        const store::LoadProperties& loadProperties,
-        bool dataguide);
->>>>>>> MERGE-SOURCE
 
   ~FastXmlLoader();
 
@@ -267,16 +246,10 @@ class FragmentXmlLoader : public FastXmlLoader
 {
 public:
   FragmentXmlLoader(
-<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
       bool dataguide);
-=======
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        const store::LoadProperties& loadProperties,
-        bool dataguide);
->>>>>>> MERGE-SOURCE
 
   ~FragmentXmlLoader();
 
@@ -375,17 +348,10 @@ protected:
 
 public:
   DtdXmlLoader(
-<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
-      bool dataguide,
-      bool parseExtParsedEntity);
-=======
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        const store::LoadProperties& loadProperties,
-        bool dataguide);
->>>>>>> MERGE-SOURCE
+      const store::LoadProperties& loadProperties,
+      bool dataguide);
 
   ~DtdXmlLoader();
 

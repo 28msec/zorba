@@ -380,7 +380,7 @@ public:
 
 /*---------------------- Node Reference Management ---------------------------*/
 public:
-  virtual bool getNodeReference(store::Item_t& result, store::Item* node) = 0;
+  virtual bool getNodeReference(store::Item_t& result, const store::Item* node) = 0;
 
   virtual bool hasReference(const store::Item* node) = 0;
 
