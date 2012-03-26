@@ -21,6 +21,7 @@
 #include <libxml/xmlstring.h>
 
 #include "store/api/item.h"
+#include "store/api/load_properties.h"
 
 #include "ordpath.h"
 
@@ -74,6 +75,8 @@ protected:
   static const ulong INPUT_CHUNK_SIZE = 8192;
 
 protected:
+  const store::LoadProperties    & theLoadProperties;
+
   xmlParserCtxtPtr                 ctxt;
 
   xmlSAXHandler                    theSaxHandler;
@@ -89,11 +92,32 @@ protected:
 
   bool                             theBuildDataGuide;
 
+
+protected:
+  void applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt);
+
+
 public:
   XmlLoader(
+<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
       bool dataguide);
+=======
+        BasicItemFactory* factory,
+        XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
+        bool dataguide)
+    :
+    theLoadProperties(loadProperties),
+    ctxt(NULL),
+    theFactory(factory),
+    theXQueryDiagnostics(xqueryDiagnostics),
+    theTraceLevel(0),
+    theBuildDataGuide(dataguide)
+  {
+  }
+>>>>>>> MERGE-SOURCE
 
   virtual ~XmlLoader();
 
@@ -146,9 +170,16 @@ protected:
 
 public:
   FastXmlLoader(
+<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
       bool dataguide);
+=======
+        BasicItemFactory* factory,
+        XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
+        bool dataguide);
+>>>>>>> MERGE-SOURCE
 
   ~FastXmlLoader();
 
@@ -236,9 +267,16 @@ class FragmentXmlLoader : public FastXmlLoader
 {
 public:
   FragmentXmlLoader(
+<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
       bool dataguide);
+=======
+        BasicItemFactory* factory,
+        XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
+        bool dataguide);
+>>>>>>> MERGE-SOURCE
 
   ~FragmentXmlLoader();
 
@@ -248,7 +286,15 @@ public:
       std::istream& xmlStream);
   
 protected:
-  static void checkStopParsing(void* ctx);
+  bool fillBuffer(FragmentIStream* theFragmentStream);
+
+  unsigned long getCurrentInputOffset() const;
+
+  static void checkStopParsing(void* ctx, bool force = false);
+
+  static void startDocument(void * ctx);
+
+  static void endDocument(void * ctx);
 
   static void startElement(
         void * ctx,
@@ -288,7 +334,6 @@ protected:
 
 protected:
   FragmentIStream* theFragmentStream;
-  int element_depth;
 };
 
 /*******************************************************************************
@@ -324,18 +369,23 @@ protected:
   zorba::Stack<PathStepInfo>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  bool                             theParseExtParsedEntity;
-
 #ifdef DATAGUIDE
   zorba::Stack<ElementGuideNode*>  theGuideStack;
 #endif
 
 public:
   DtdXmlLoader(
+<<<<<<< TREE
       store::ItemFactory* factory,
       XQueryDiagnostics* xqueryDiagnostics,
       bool dataguide,
       bool parseExtParsedEntity);
+=======
+        BasicItemFactory* factory,
+        XQueryDiagnostics* xqueryDiagnostics,
+        const store::LoadProperties& loadProperties,
+        bool dataguide);
+>>>>>>> MERGE-SOURCE
 
   ~DtdXmlLoader();
 

@@ -949,7 +949,8 @@ void SourceFinder::findNodeSourcesRec(
         sources.push_back(node);
 
       std::vector<expr*>* varSources = new std::vector<expr*>;
-      theVarSourcesMap.insert(VarSourcesPair(e, varSources));
+      if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
+        delete varSources;
 
       return;
     }

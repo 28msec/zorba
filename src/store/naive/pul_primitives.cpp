@@ -1279,6 +1279,31 @@ void UpdDeleteNodesFromCollection::undo()
 }
 
 
+/*******************************************************************************
+  UpdTruncateCollection
+********************************************************************************/
+void UpdTruncateCollection::apply()
+{
+  Collection* lColl = static_cast<Collection*>
+                      (GET_STORE().getCollection(theName, theDynamicCollection).getp());
+  assert(lColl);
+  
+  lColl->removeAll();
+  theIsApplied = true;
+
+}
+
+void UpdTruncateCollection::undo()
+{
+  if (!theIsApplied) return;
+
+  throw ZORBA_EXCEPTION(
+    zerr::ZDDY0019_UNDO_NOT_POSSIBLE,
+    ERROR_PARAMS( theName->getStringValue(), "truncation" )
+  );
+
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

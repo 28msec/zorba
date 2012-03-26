@@ -1178,8 +1178,10 @@ class eval_expr : public namespace_context_base_expr
 
 protected:
   expr_t                      theExpr;
+
   std::vector<var_expr_t>     theVars;
   std::vector<expr_t>         theArgs;
+
   expr_script_kind_t          theInnerScriptingKind;
   bool                        theDoNodeCopy;
 

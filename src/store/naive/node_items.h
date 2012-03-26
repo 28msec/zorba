@@ -180,7 +180,7 @@ protected:
   ulong                     theId;
   xs_integer                thePos;
 
-  Collection        * theCollection;
+  Collection              * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -223,6 +223,13 @@ public:
 
   const Collection* getCollection() const { return theCollection; }
 
+private:
+friend class zorba::simplestore::Collection;
+  // Allows a collection to claim ownership of a node it already owns, but
+  // which does not have the backpointer yet.
+  void claimedByCollection(Collection* coll);
+  
+public:
   void setCollection(Collection* coll, xs_integer pos);
 
   void setPosition(xs_integer pos) { thePos = pos; }
@@ -563,7 +570,7 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
-  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+  bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -663,6 +670,15 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  // Looks for a descendant node with the ordpath aOrdPath and puts it into the
+  // aResult variable. aAttribute specifies whether to look for an attribute or
+  // not.
+  bool
+  getDescendantNodeByOrdPath(
+      const OrdPath& aOrdPath,
+      store::Item_t& aResult,
+      bool aAttribute = false) const;
 
   virtual bool
   isAncestor(const store::Item_t&) const;

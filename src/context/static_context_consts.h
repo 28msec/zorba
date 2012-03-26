@@ -90,6 +90,7 @@ namespace StaticContextConsts
     validation_unknown,
     strict_validation,
     lax_validation,
+    lax_dtd_validation,
     skip_validation
   };
 

@@ -343,6 +343,8 @@ void Store::shutdown(bool soft)
     // beyond the lifecycle of zorba
     xmlCleanupParser();
 
+    theNumUsers = 0;
+
     StoreManagerImpl::theStore = NULL;
   }
 }

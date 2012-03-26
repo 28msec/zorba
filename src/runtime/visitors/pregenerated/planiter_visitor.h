@@ -92,6 +92,8 @@ namespace zorba{
 
     class ZorbaDeleteNodesLastIterator;
 
+    class ZorbaTruncateCollectionIterator;
+
     class ZorbaCollectionNameIterator;
 
     class IsAvailableCollectionIterator;
@@ -588,6 +590,8 @@ namespace zorba{
 
     class StringSplitIterator;
 
+    class DecodeURIIterator;
+
     class XQDocIterator;
 
     class XQDocContentIterator;
@@ -694,6 +698,9 @@ public:
 
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
@@ -1437,6 +1444,9 @@ public:
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
+
+    virtual void beginVisit ( const DecodeURIIterator& ) = 0;
+    virtual void endVisit   ( const DecodeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

@@ -47,6 +47,13 @@ namespace simplestore
 /******************************************************************************
 
 ********************************************************************************/
+IndexImpl::IndexImpl()
+{
+}
+
+/******************************************************************************
+
+********************************************************************************/
 IndexImpl::IndexImpl(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
@@ -129,6 +136,8 @@ std::string IndexConditionImpl::getKindString(store::IndexCondition::Kind k)
     return "BOX_VALUE";
   case BOX_GENERAL:
     return "BOX_GENERAL";
+  default:
+    return "";
   }
 }
 
