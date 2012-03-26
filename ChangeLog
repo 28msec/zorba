@@ -1,5 +1,10 @@
 Zorba - The XQuery Processor
 
+version 2.5
+  * Fixed bug in window iterator
+  * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+
+	
 version 2.2
 
 New Features:
