@@ -172,20 +172,30 @@ CompilerCB::~CompilerCB()
 {
 }
 
-//compile all the user_functions so the expr tree is stable at serialize
+
+/*******************************************************************************
+  Compile all the user_functions so the expr tree is stable at serialize.
+
+  Called from XQueryImpl::serialize(), if serializing out.
+********************************************************************************/
 void CompilerCB::prepare_for_serialize()
 {
   rclist<user_function*>::iterator udf_it;
-  for(udf_it=theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
+  for (udf_it = theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
   {
     (*udf_it)->prepare_for_serialize(this);
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
 {
   return theLocalUdfs;
 }
+
 
 /*******************************************************************************
 
