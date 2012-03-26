@@ -296,6 +296,8 @@ void OrdPath::initFromString(const unsigned char* str, ulong strLen)
     if (!isLocal && buf != NULL)
       delete [] buf;
 
+    memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
+    markLocal();
     throw;
   }
 
@@ -1527,14 +1529,9 @@ bool OrdPath::deserialize(const std::string& input)
 {
   reset();
   const char* signed_chars = input.c_str();
-  ulong size = input.size();
-  unsigned char* unsigned_chars = (unsigned char*)malloc(size * sizeof(unsigned char));
-  for(ulong i = 0; i < size; ++i)
-  {
-    unsigned_chars[i] = (unsigned char)signed_chars[i];
-  }
-  initFromString(unsigned_chars, size);
-  free(unsigned_chars);
+  const unsigned char* unsigned_chars =
+      reinterpret_cast<const unsigned char*>(signed_chars);
+  initFromString(unsigned_chars, input.size());
   return true;
 }
 

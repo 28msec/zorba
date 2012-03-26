@@ -1149,8 +1149,12 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   input >> prefix;
   if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-  
-  theOrdPath.deserialize(prefix);
+
+  try {
+    theOrdPath.deserialize(prefix);
+  } catch(...) {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  }
   // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
