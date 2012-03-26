@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.5
 
 New Features:
+  * Added XQJ support.
   * Extended API for Python, Java, PHP and Ruby.
 
 Bug Fixes/Other Changes:
