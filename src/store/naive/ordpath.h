@@ -162,7 +162,13 @@ public:
     markLocal();
   }
 
-  OrdPath(const unsigned char* buf, ulong byteLen);
+  // If isBinary is true, interprets the supplied char array as binary data. If
+  // it is false, interprets it as a hexadecimal representation (with even
+  // length) of binary data.
+  OrdPath(
+      const unsigned char* buf,
+      ulong byteLen,
+      bool isBinary = false);
 
   ~OrdPath() 
   {
@@ -170,13 +176,20 @@ public:
       delete [] getRemoteBuffer();
   }
 
-  void init(const unsigned char* buf, ulong byteLen);
+  // Inits the instance with binary ORDPATH data.
+  void initFromData(const unsigned char* buf, ulong byteLen);
+
+  // Inits the instance with a string containing a hexadecimal
+  // representation of the binary ORDPATH data.
+  void initFromString(const unsigned char* buf, ulong byteLen);
 
   bool isValid() const { return getByteLength() != 0; }
 
   uint32_t hash() const;
 
   void setAsRoot();
+  
+  bool isRoot() const;
 
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
@@ -197,7 +210,7 @@ public:
 
   std::string serialize() const;
 
-  bool deserialize(std::string);
+  bool deserialize(const std::string&);
 
   zstring show() const;
 

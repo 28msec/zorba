@@ -188,15 +188,33 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 };
 
 
-/*******************************************************************************
-  Create a binary ordpath out of a strigified one.
-********************************************************************************/
-OrdPath::OrdPath(const unsigned char* str, ulong strLen)
+OrdPath::OrdPath(const unsigned char* str, ulong strLen, bool isBinary)
 {
-  init(str, strLen);
+  if (isBinary)
+  {
+    initFromData(str, strLen);
+  } else {
+    initFromString(str, strLen);
+  }
 }
 
-void OrdPath::init(const unsigned char* str, ulong strLen)
+void OrdPath::initFromData(const unsigned char* buf, ulong byteLen)
+{
+  memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
+
+  if (byteLen < MAX_EMBEDDED_BYTE_LEN)
+  {
+    memcpy(getLocalData(), buf, byteLen);
+    markLocal();
+  }
+  else
+  {
+    initRemote(byteLen);
+    memcpy(getRemoteData(), buf, byteLen);
+  }
+}
+
+void OrdPath::initFromString(const unsigned char* str, ulong strLen)
 {
   unsigned char* buf;
   bool isLocal;
@@ -293,6 +311,12 @@ void OrdPath::setAsRoot()
   reset();
 
   theBuffer.local[0] = 0x40;
+}
+
+
+bool OrdPath::isRoot() const
+{
+  return theBuffer.local[0] == 0x40;
 }
 
 
@@ -1499,7 +1523,7 @@ std::string OrdPath::serialize() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool OrdPath::deserialize(std::string input)
+bool OrdPath::deserialize(const std::string& input)
 {
   reset();
   const char* signed_chars = input.c_str();
@@ -1509,7 +1533,7 @@ bool OrdPath::deserialize(std::string input)
   {
     unsigned_chars[i] = (unsigned char)signed_chars[i];
   }
-  init(unsigned_chars, size);
+  initFromString(unsigned_chars, size);
   free(unsigned_chars);
   return true;
 }
