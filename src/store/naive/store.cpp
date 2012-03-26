@@ -178,7 +178,7 @@ void Store::init()
 void Store::initTypeNames()
 {
   const char* ns = XS_URI;
-  BasicItemFactory* f = theItemFactory;
+  BasicItemFactory* f = static_cast<BasicItemFactory*>(theItemFactory);
 
   theSchemaTypeNames.resize(store::XS_LAST);
 
@@ -351,22 +351,15 @@ void Store::shutdown(bool soft)
 /*******************************************************************************
 
 ********************************************************************************/
-store::ItemFactory* Store::getItemFactory() const
-{
-  return theItemFactory;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-XmlLoader* Store::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
+XmlLoader* Store::getXmlLoader(
+    XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
   if (loadProperties.getEnableExtParsedEntity())
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
                                  store::Properties::instance()->buildDataguide());
+
   else if (loadProperties.getEnableDtd())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
@@ -376,6 +369,74 @@ XmlLoader* Store::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
                              store::Properties::instance()->buildDataguide());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void Store::addCollection(store::Collection_t& collection)
+{
+  const store::Item* lName = collection->getName();
+
+  bool inserted = theCollections->insert(lName, collection);
+
+  if (!inserted)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
+    ERROR_PARAMS(lName->getStringValue()));
+  }
+}
+
+
+/*******************************************************************************
+  Delete the collection with the given QName. If there is no collection with
+  that QName, this method is a NOOP.
+********************************************************************************/
+void Store::deleteCollection(
+    const store::Item* aName,
+    bool aDynamicCollection)
+{
+  if (aName == NULL)
+    return;
+
+  if (!theCollections->remove(aName, aDynamicCollection))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
+    ERROR_PARAMS(aName->getStringValue()));
+  }
+}
+
+
+/*******************************************************************************
+  Return an rchandle to the Collection object corresponding to the given QName,
+  or NULL if there is no collection with that QName.
+********************************************************************************/
+store::Collection_t Store::getCollection(
+    const store::Item* aName,
+    bool aDynamicCollection)
+{
+  if (aName == NULL)
+    return NULL;
+
+  store::Collection_t collection;
+  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  {
+    return collection;
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+  Returns an iterator that lists the QName's of all the available collections.
+********************************************************************************/
+store::Iterator_t Store::listCollectionNames(bool aDynamicCollections)
+{
+  return theCollections->names(aDynamicCollections);
 }
 
 
@@ -426,6 +487,7 @@ store::Index_t Store::createIndex(
 
   return index;
 }
+
 
 /*******************************************************************************
 
@@ -489,6 +551,7 @@ void Store::populateValueIndex(
 
   aSourceIter->close();
 }
+
 
 /*******************************************************************************
 
@@ -587,6 +650,7 @@ void Store::populateGeneralIndex(
   sourceIter->close();
 }
 
+
 /*******************************************************************************
   Refreshes an index with a given URI and return an rchandle to the index object.
   If an index with the given URI exists already and the index we want to create
@@ -623,6 +687,7 @@ store::Index_t Store::refreshIndex(
   return index;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -636,6 +701,7 @@ void Store::addIndex(store::Index_t& index)
   theIndices.insert(qname, index);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -648,6 +714,7 @@ void Store::deleteIndex(const store::Item* qname)
 
   theIndices.erase(qname2);
 }
+
 
 /*******************************************************************************
 
@@ -665,6 +732,7 @@ store::Index* Store::getIndex(const store::Item* qname)
 
   return NULL;
 }
+
 
 /*******************************************************************************
 
@@ -732,6 +800,9 @@ store::IC_t Store::activateForeignKeyIC(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::IC_t
 Store::deactivateIC(const store::Item_t& icQName,
     bool& isApplied)
@@ -751,12 +822,18 @@ Store::deactivateIC(const store::Item_t& icQName,
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Iterator_t Store::listActiveICNames()
 {
   return new NameIterator<ICSet>(theICs);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::IC* Store::getIC(const store::Item* icQName)
 {
   store::Item* qname = const_cast<store::Item*>(icQName);
@@ -770,15 +847,93 @@ store::IC* Store::getIC(const store::Item* icQName)
 /*******************************************************************************
 
 ********************************************************************************/
+store::Index_t
+Store::createHashMap(
+    const store::Item_t& aQName,
+    const store::IndexSpecification& aSpec)
+{
+  store::Index_t lIndex;
+
+  if (theHashMaps.get(aQName.getp(), lIndex))
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
+      ERROR_PARAMS( aQName->getStringValue() )
+    );
+  }
+
+  lIndex = new ValueHashIndex(aQName, aSpec);
+
+  addHashMap(lIndex);
+
+  return lIndex;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index_t
+Store::destroyHashMap(const store::Item_t& aQName)
+{
+  store::Index_t lIndex;
+  if (!theHashMaps.get(aQName.getp(), lIndex))
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( aQName->getStringValue() )
+    );
+  }
+
+  theHashMaps.erase(aQName.getp());
+  return lIndex;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Index*
 Store::getMap(const store::Item* aQName) const
 {
   store::Item* lQName = const_cast<store::Item*>(aQName);
+
   store::Index_t lIndex;
   const_cast<IndexSet*>(&theHashMaps)->get(lQName, lIndex);
 
   return lIndex.getp();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index_t
+Store::getHashMap(const store::Item_t& aQName) const
+{
+  store::Index_t lIndex;
+  if (const_cast<IndexSet*>(&theHashMaps)->get(aQName.getp(), lIndex))
+  {
+    return lIndex;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+Store::addHashMap(const store::Index_t& aIndex)
+{
+  store::Item* lName = aIndex->getName();
+  store::Index_t lIndex = aIndex;
+  theHashMaps.insert(lName, lIndex);
+}
+
 
 /*******************************************************************************
 
@@ -788,72 +943,6 @@ store::Iterator_t Store::listMapNames()
   return new NameIterator<IndexSet>(theHashMaps);
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-void Store::addCollection(store::Collection_t& collection)
-{
-  const store::Item* lName = collection->getName();
-
-  bool inserted = theCollections->insert(lName, collection);
-
-  if (!inserted)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
-    ERROR_PARAMS(lName->getStringValue()));
-  }
-}
-
-
-/*******************************************************************************
-  Return an rchandle to the Collection object corresponding to the given QName,
-  or NULL if there is no collection with that QName.
-********************************************************************************/
-store::Collection_t Store::getCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
-{
-  if (aName == NULL)
-    return NULL;
-
-  store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) 
-  {
-    return collection;
-  }
-  else
-  {
-    return NULL;
-  }
-}
-
-
-/*******************************************************************************
-  Delete the collection with the given QName. If there is no collection with
-  that QName, this method is a NOOP.
-********************************************************************************/
-void Store::deleteCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
-{
-  if (aName == NULL)
-    return;
-
-  if (!theCollections->remove(aName, aDynamicCollection))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-    ERROR_PARAMS(aName->getStringValue()));
-  }
-}
-
-
-/*******************************************************************************
-  Returns an iterator that lists the QName's of all the available collections.
-********************************************************************************/
-store::Iterator_t Store::listCollectionNames(bool aDynamicCollections)
-{
-  return theCollections->names(aDynamicCollections);
-}
 
 
 /*******************************************************************************
@@ -1001,80 +1090,6 @@ void Store::deleteAllDocuments()
 
 
 /*******************************************************************************
-
-********************************************************************************/
-store::Index_t
-Store::createHashMap(
-    const store::Item_t& aQName,
-    const store::IndexSpecification& aSpec)
-{
-  store::Index_t lIndex;
-
-  if (theHashMaps.get(aQName.getp(), lIndex))
-  {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( aQName->getStringValue() )
-    );
-  }
-
-  lIndex = new ValueHashIndex(aQName, aSpec);
-
-  addHashMap(lIndex);
-
-  return lIndex;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Index_t
-Store::destroyHashMap(const store::Item_t& aQName)
-{
-  store::Index_t lIndex;
-  if (!theHashMaps.get(aQName.getp(), lIndex))
-  {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( aQName->getStringValue() )
-    );
-  }
-  theHashMaps.erase(aQName.getp());
-  return lIndex;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Index_t
-Store::getHashMap(const store::Item_t& aQName) const
-{
-  store::Index_t lIndex;
-  if (const_cast<IndexSet*>(&theHashMaps)->get(aQName.getp(), lIndex))
-  {
-    return lIndex;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-Store::addHashMap(const store::Index_t& aIndex)
-{
-  store::Item* lName = aIndex->getName();
-  store::Index_t lIndex = aIndex;
-  theHashMaps.insert(lName, lIndex);
-}
-
-/*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
@@ -1163,21 +1178,21 @@ bool Store::getStructuralInformation(
     const TextNode* n = static_cast<const TextNode*>(node);
     n->getOrdPath(ordPath);
 
-    return theItemFactory->createStructuralAnyURI(result,
-                                                  n->getCollectionId(),
-                                                  n->getTreeId(),
-                                                  store::StoreConsts::textNode,
-                                                  ordPath);
+    return GET_FACTORY().createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                store::StoreConsts::textNode,
+                                                ordPath);
   }
   else
   {
     const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-    return theItemFactory->createStructuralAnyURI(result,
-                                                  n->getCollectionId(),
-                                                  n->getTreeId(),
-                                                  n->getNodeKind(),
-                                                  n->getOrdPath());
+    return GET_FACTORY().createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
   }
 #endif
 }

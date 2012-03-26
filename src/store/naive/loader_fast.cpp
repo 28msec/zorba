@@ -70,11 +70,34 @@ namespace simplestore {
       return; \
   } while (0);
 
+
+/*******************************************************************************
+
+********************************************************************************/
+XmlLoader::XmlLoader(
+    store::ItemFactory* factory,
+    XQueryDiagnostics* xqueryDiagnostics,
+    bool dataguide)
+  :
+  ctxt(NULL),
+  theFactory(static_cast<BasicItemFactory*>(factory)),
+  theXQueryDiagnostics(xqueryDiagnostics),
+  theTraceLevel(0),
+  theBuildDataGuide(dataguide)
+{
+}
+
+
+XmlLoader::~XmlLoader() 
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
-    BasicItemFactory* factory,
+    store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
     bool dataguide)
   :

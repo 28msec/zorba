@@ -77,7 +77,7 @@ namespace zorba { namespace simplestore {
 
 ********************************************************************************/
 FragmentXmlLoader::FragmentXmlLoader(
-    BasicItemFactory* factory,
+    store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
     bool dataguide)
   :
@@ -376,7 +376,7 @@ void FragmentXmlLoader::processingInstruction(
 
 ********************************************************************************/
 DtdXmlLoader::DtdXmlLoader(
-    BasicItemFactory* factory,
+    store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
     bool dataguide,
     bool parseExtParsedEntity)

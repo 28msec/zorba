@@ -91,24 +91,16 @@ protected:
 
 public:
   XmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide)
-    :
-    ctxt(NULL),
-    theFactory(factory),
-    theXQueryDiagnostics(xqueryDiagnostics),
-    theTraceLevel(0),
-    theBuildDataGuide(dataguide)
-  {
-  }
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      bool dataguide);
 
-  virtual ~XmlLoader() {}
+  virtual ~XmlLoader();
 
   virtual store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& xmlStream) = 0;
+      const zstring& baseUri,
+      const zstring& docUri,
+      std::istream& xmlStream) = 0;
 };
 
 
@@ -154,16 +146,16 @@ protected:
 
 public:
   FastXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      bool dataguide);
 
   ~FastXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
 
 protected:
   void abortload();
@@ -180,31 +172,31 @@ public:
   static void endDocument(void * ctx);
 
   static void startElement(
-        void * ctx,
-        const xmlChar * localname,
-        const xmlChar * prefix,
-        const xmlChar * URI,
-        int nb_namespaces,
-        const xmlChar ** namespaces,
-        int nb_attributes,
-        int nb_defaulted,
-        const xmlChar ** attributes);
+      void * ctx,
+      const xmlChar * localname,
+      const xmlChar * prefix,
+      const xmlChar * URI,
+      int nb_namespaces,
+      const xmlChar ** namespaces,
+      int nb_attributes,
+      int nb_defaulted,
+      const xmlChar ** attributes);
 
   static void endElement(
-        void * ctx,
-        const xmlChar * localname,
-        const xmlChar * prefix,
-        const xmlChar * URI);
+      void * ctx,
+      const xmlChar * localname,
+      const xmlChar * prefix,
+      const xmlChar * URI);
 
   static void characters(
-        void * ctx,
-        const xmlChar * ch,
-        int len);
+      void * ctx,
+      const xmlChar * ch,
+      int len);
 
   static void	cdataBlock(
-        void * ctx,
-        const xmlChar * value,
-        int len);
+      void * ctx,
+      const xmlChar * value,
+      int len);
 
   static void comment(
         void * ctx,
@@ -236,6 +228,7 @@ public:
         xmlChar *content);
 };
 
+
 /*******************************************************************************
   FragmentXmlLoader
 *******************************************************************************/
@@ -243,17 +236,17 @@ class FragmentXmlLoader : public FastXmlLoader
 {
 public:
   FragmentXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      bool dataguide);
 
   ~FragmentXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
-
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
+  
 protected:
   static void checkStopParsing(void* ctx);
 
@@ -339,17 +332,17 @@ protected:
 
 public:
   DtdXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide,
-        bool parseExtParsedEntity);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      bool dataguide,
+      bool parseExtParsedEntity);
 
   ~DtdXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
 
 protected:
   void abortload();

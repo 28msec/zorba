@@ -1034,9 +1034,12 @@ void UpdInsertIntoCollection::undo()
   assert(lColl);
 
   uint64_t lastPos;
-  try {
+  try 
+  {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
-  } catch (std::range_error& e) {
+  }
+  catch (std::range_error& e)
+  {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
         ERROR_PARAMS(
@@ -1556,7 +1559,8 @@ void UpdDeActivateIC::undo()
   {
     Store* store = &GET_STORE();
     bool isApplied;
-    switch (theICKind) {
+    switch (theICKind) 
+    {
       case store::IC::ic_collection:
         store->activateIC(theQName, theFromCollectionName,isApplied);
         break;

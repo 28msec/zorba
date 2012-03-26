@@ -1176,7 +1176,7 @@ store::Item_t OrdPathNode::getLevel() const
     lCurrent = lCurrent->getParent();
   }
   store::Item_t lRes;
-  GET_STORE().getItemFactory()->createInteger(lRes, lNumLevels);
+  GET_FACTORY().createInteger(lRes, lNumLevels);
   return lRes;
 }
 
@@ -1648,7 +1648,7 @@ void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) co
 {
   zstring rch;
   getStringValue2(rch);
-  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+  GET_FACTORY().createUntypedAtomic(val, rch);
   iter = NULL;
 }
 
@@ -2526,7 +2526,7 @@ store::Item_t ElementNode::getNilled() const
 
   if (getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
-    GET_STORE().getItemFactory()->createBoolean(val, false);
+    GET_FACTORY().createBoolean(val, false);
     return val;
   }
 
@@ -2570,7 +2570,7 @@ store::Item_t ElementNode::getNilled() const
     }
   }
 
-  GET_STORE().getItemFactory()->createBoolean(val, nilled);
+  GET_FACTORY().createBoolean(val, nilled);
   return val;
 }
 
@@ -3037,7 +3037,7 @@ void ElementNode::addBaseUriProperty(
 
   if (relUri.empty())
   {
-    GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
+    GET_FACTORY().createAnyURI(typedValue, absUri);
   }
   else
   {
@@ -3054,7 +3054,7 @@ void ElementNode::addBaseUriProperty(
       resolvedUriString = relUri;
     }
 
-    GET_STORE().getItemFactory()->createAnyURI(typedValue, resolvedUriString);
+    GET_FACTORY().createAnyURI(typedValue, resolvedUriString);
   }
 
   checkUniqueAttr(qname.getp());
@@ -3385,21 +3385,21 @@ XmlNode* AttributeNode::copyInternal(
     {
       zstring rch;
       getStringValue2(rch);
-      GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, rch);
+      GET_FACTORY().createUntypedAtomic(typedValue, rch);
     }
   }
 
   try
   {
     if (parent == NULL)
-      tree = GET_STORE().getNodeFactory().createXmlTree();
+      tree = GET_NODE_FACTORY().createXmlTree();
 
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
 
     bool append = (rootParent != parent);
 
-    copyNode = GET_STORE().getNodeFactory().createAttributeNode(
+    copyNode = GET_NODE_FACTORY().createAttributeNode(
                  tree,
                  static_cast<ElementNode*>(parent),
                  append,
@@ -4033,12 +4033,12 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   if (isTyped())
   {
     getValue()->getStringValue2(rch);
-    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+    GET_FACTORY().createUntypedAtomic(val, rch);
   }
   else
   {
     rch = getText();
-    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+    GET_FACTORY().createUntypedAtomic(val, rch);
   }
   iter = NULL;
 }
@@ -4317,7 +4317,7 @@ store::Item_t TextNode::getLevel() const
   xs_integer lParentLevel = getParent()->getLevel()->getIntegerValue();
 
   store::Item_t lRes;
-  GET_STORE().getItemFactory()->createInteger(lRes, ++lParentLevel);
+  GET_FACTORY().createInteger(lRes, ++lParentLevel);
 
   return lRes;
 }
@@ -4464,7 +4464,7 @@ store::Item* PiNode::getType() const
 void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   zstring rch = theContent;
-  GET_STORE().getItemFactory()->createString(val, rch);
+  GET_FACTORY().createString(val, rch);
   iter = NULL;
 }
 
@@ -4588,7 +4588,7 @@ store::Item* CommentNode::getType() const
 void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   zstring rch = theContent;
-  GET_STORE().getItemFactory()->createString(val, rch);
+  GET_FACTORY().createString(val, rch);
   iter = NULL;
 }
 

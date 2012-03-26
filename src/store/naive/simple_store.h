@@ -21,8 +21,33 @@
 namespace zorba {
 namespace simplestore {
 
+
+/*******************************************************************************
+
+  theCollectionCounter:
+  ---------------------
+  Incremented every time a new collection is created. The current value of the  
+  counter is then assigned as the id of the new collection.
+
+  theTreeCounter:
+  ---------------
+
+  theReferencesToNodeMap:
+  -----------------------
+  A hashmap that maps node references to the referenced nodes
+
+  theNodeToReferencesMap:
+  -----------------------
+  A hashmap that maps nodes into their references
+
+********************************************************************************/
 class SimpleStore : public Store
 {
+  friend class zorba::StoreManager;
+
+  typedef std::map<const zstring, const store::Item*> RefNodeMap;
+  typedef NodePointerHashMap<zstring> NodeRefMap;
+
 private:
   ulong                         theCollectionCounter;
   SYNC_CODE(Mutex               theCollectionCounterMutex;)
@@ -30,65 +55,64 @@ private:
   ulong                         theTreeCounter;
   SYNC_CODE(Mutex               theTreeCounterMutex;)
 
-  typedef std::map<const zstring, const store::Item*> RefNodeMap;
-  typedef NodePointerHashMap<zstring> NodeRefMap;
-
   RefNodeMap                    theReferencesToNodeMap;
   NodeRefMap                    theNodeToReferencesMap;
 
 public:
-  virtual ulong createTreeId();
+  ulong createTreeId();
   
-  virtual ulong createCollectionId();
+  ulong createCollectionId();
 
-  virtual store::Collection_t createCollection(
+  store::Collection_t createCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
       bool aDynamicCollection = false);
 
 protected:
-  virtual NodeFactory* createNodeFactory() const;
-
-  virtual void destroyNodeFactory(NodeFactory*) const;
-
-  virtual BasicItemFactory* createItemFactory() const;
-
-  virtual void destroyItemFactory(BasicItemFactory*) const;
-
-  virtual store::IteratorFactory* createIteratorFactory() const;
-
-  virtual void destroyIteratorFactory(store::IteratorFactory*) const;
-
-  virtual PULPrimitiveFactory* createPULFactory() const;
-
-  virtual void destroyPULFactory(PULPrimitiveFactory*) const;
-
-  virtual CollectionSet* createCollectionSet() const;
-
-  virtual void destroyCollectionSet(CollectionSet*) const;
-
-  /* store API */ bool getNodeReference(
-      store::Item_t& result,
-      store::Item* node);
-
-  /* store API */ bool hasReference(const store::Item* node);
-
-  /* store API */ virtual bool getNodeByReference(
-      store::Item_t& result,
-      const zstring& reference);
-      
-  virtual bool unregisterNode(XmlNode* node);
-
-protected:
-  friend class zorba::StoreManager;
   SimpleStore();
 
   virtual ~SimpleStore();
   
-  virtual void init();
+  void init();
   
-  virtual void shutdown(bool soft);
+  void shutdown(bool soft);
+
+  NodeFactory* createNodeFactory() const;
+
+  void destroyNodeFactory(NodeFactory*) const;
+
+  store::ItemFactory* createItemFactory() const;
+
+  void destroyItemFactory(store::ItemFactory*) const;
+
+  store::IteratorFactory* createIteratorFactory() const;
+
+  void destroyIteratorFactory(store::IteratorFactory*) const;
+
+  PULPrimitiveFactory* createPULFactory() const;
+
+  void destroyPULFactory(PULPrimitiveFactory*) const;
+
+  CollectionSet* createCollectionSet() const;
+
+  void destroyCollectionSet(CollectionSet*) const;
+      
+  bool unregisterNode(XmlNode* node);
+
+  //
+  // Store api methods
+  //
+
+  bool getNodeReference(
+      store::Item_t& result,
+      store::Item* node);
+
+  bool hasReference(const store::Item* node);
+
+  bool getNodeByReference(
+      store::Item_t& result,
+      const zstring& reference);
 };
 
 } // namespace store

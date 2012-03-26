@@ -76,7 +76,9 @@ void SimpleStore::init()
 void SimpleStore::shutdown(bool soft)
 {
   Store::shutdown(soft);
-  if (theNumUsers == 0 || soft == false) {
+
+  if (theNumUsers == 0 || soft == false) 
+  {
     if (theNodeToReferencesMap.size() > 0)
     {
       NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
@@ -105,6 +107,7 @@ void SimpleStore::shutdown(bool soft)
   }
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -113,6 +116,7 @@ SimpleStore::createPULFactory() const
 {
   return new PULPrimitiveFactory();
 }
+
 
 /*******************************************************************************
 
@@ -123,6 +127,7 @@ SimpleStore::destroyPULFactory(PULPrimitiveFactory* f) const
   delete f;
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -130,6 +135,7 @@ CollectionSet* SimpleStore::createCollectionSet() const
 {
   return new SimpleCollectionSet();
 }
+
 
 /*******************************************************************************
 
@@ -139,6 +145,7 @@ void SimpleStore::destroyCollectionSet(CollectionSet* c) const
   delete c;
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -146,6 +153,7 @@ NodeFactory* SimpleStore::createNodeFactory() const
 {
   return new NodeFactory();
 }
+
 
 /*******************************************************************************
 
@@ -155,21 +163,24 @@ void SimpleStore::destroyNodeFactory(NodeFactory* f) const
   delete f;
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
-BasicItemFactory* SimpleStore::createItemFactory() const
+store::ItemFactory* SimpleStore::createItemFactory() const
 {
   return new BasicItemFactory(theNamespacePool, theQNamePool);
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
-void SimpleStore::destroyItemFactory(BasicItemFactory* f) const
+void SimpleStore::destroyItemFactory(store::ItemFactory* f) const
 {
   delete f;
 }
+
 
 /*******************************************************************************
 
@@ -179,6 +190,7 @@ store::IteratorFactory* SimpleStore::createIteratorFactory() const
   return new SimpleIteratorFactory();
 }
 
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -186,6 +198,7 @@ void SimpleStore::destroyIteratorFactory(store::IteratorFactory* f) const
 {
   delete f;
 }
+
 
 /*******************************************************************************
   create a tree id for a new tree that does not belong to any collection.
@@ -196,6 +209,7 @@ ulong SimpleStore::createTreeId()
   return theTreeCounter++;
 }
 
+
 /*******************************************************************************
   Create an id for a new collection
 ********************************************************************************/
@@ -204,6 +218,7 @@ ulong SimpleStore::createCollectionId()
   SYNC_CODE(AutoMutex lock(&theCollectionCounterMutex);)
   return theCollectionCounter++;
 }
+
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -239,6 +254,7 @@ store::Collection_t SimpleStore::createCollection(
   return collection;
 }
 
+
 /*******************************************************************************
  Computes the reference of the given node.
  
@@ -271,6 +287,7 @@ bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
   return theItemFactory->createAnyURI(result, uuidStr);
 }
 
+
 /*******************************************************************************
   Returns whether a reference has already been generated for the given node.
  
@@ -281,6 +298,7 @@ bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
 }
+
 
 /*******************************************************************************
   Returns the node which is identified by the given reference.
@@ -309,6 +327,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
   result = NULL;
   return false;
 }
+
 
 /*******************************************************************************
   Removes a node from the reference-to-nodes and nodes-to-references maps.

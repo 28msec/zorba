@@ -75,11 +75,6 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theSchemaTypeCodes:
   -------------------
 
-  theCollectionCounter:
-  ---------------------
-  Incremented every time a new collection is created. The current value of the  
-  counter is then assigned as the id of the new collection.
-
   theNamespacePool:
   -----------------
 
@@ -118,14 +113,6 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   A hashmap the for each integrity constraint, maps the qname of the ic to the
   ic's container object.
 
-  theReferencesToNodeMap:
-  -----------------------
-  A hashmap that maps node references to the referenced nodes
-
-  theNodeToReferencesMap:
-  -----------------------
-  A hashmap that maps nodes into their references
-
 ********************************************************************************/
 class Store : public zorba::store::Store
 {
@@ -159,7 +146,7 @@ protected:
   StringPool                  * theNamespacePool;
   QNamePool                   * theQNamePool;
 
-  BasicItemFactory            * theItemFactory;
+  store::ItemFactory          * theItemFactory;
   store::IteratorFactory      * theIteratorFactory;
   NodeFactory                 * theNodeFactory;
   PULPrimitiveFactory         * thePULFactory;
@@ -181,6 +168,10 @@ protected:
 
 /*----------------------- Initialization, shutdown ---------------------------*/
 protected:
+  Store();
+
+  virtual ~Store();
+
   virtual void init();
 
   void initTypeNames();
@@ -188,7 +179,7 @@ protected:
 public:
   virtual void shutdown(bool soft = true);
 
-  /* store API */ SYNC_CODE(Lock& getGlobalLock() { return theGlobalLock; })
+  SYNC_CODE(Lock& getGlobalLock() { return theGlobalLock; })
 
   long getTraceLevel() const { return theTraceLevel; }
 
@@ -198,10 +189,12 @@ public:
       
 /*------------------------------ Factories -----------------------------------*/
 public:
-  /* store API */ store::ItemFactory* getItemFactory() const;
+  store::ItemFactory* getItemFactory() const { return theItemFactory; }
 
-  /* store API */ store::IteratorFactory* getIteratorFactory() const
-  { return theIteratorFactory; }
+  store::IteratorFactory* getIteratorFactory() const
+  {
+    return theIteratorFactory; 
+  }
 
   NodeFactory& getNodeFactory() const { return *theNodeFactory; }
 
@@ -221,9 +214,9 @@ protected:
 
   virtual void destroyNodeFactory(NodeFactory*) const = 0;
 
-  virtual BasicItemFactory* createItemFactory() const = 0;
+  virtual store::ItemFactory* createItemFactory() const = 0;
 
-  virtual void destroyItemFactory(BasicItemFactory*) const = 0;
+  virtual void destroyItemFactory(store::ItemFactory*) const = 0;
 
   virtual store::IteratorFactory* createIteratorFactory() const = 0;
 
@@ -239,13 +232,6 @@ protected:
 
 /*---------------------------- Collections -----------------------------------*/
 public:
-  /* store API */ store::Collection_t getCollection(
-      const store::Item* aName,
-      bool aDynamicCollection = false);
-
-  /* store API */ store::Iterator_t listCollectionNames(
-      bool aDynamicCollections = false);
-
   virtual ulong createCollectionId() = 0;
 
   virtual ulong createTreeId() = 0;
@@ -256,39 +242,25 @@ public:
       const store::Item_t& aNodeType,
       bool aDynamicCollection = false) = 0;
 
-  void deleteCollection(
+  virtual void addCollection(store::Collection_t& collection);
+
+  virtual void deleteCollection(
       const store::Item* aName,
       bool aDynamicCollection = false);
 
-  void addCollection(store::Collection_t& collection);
+  virtual store::Collection_t getCollection(
+      const store::Item* aName,
+      bool aDynamicCollection = false);
+
+  virtual store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
 
 /*-------------------------------- Indices -----------------------------------*/
 public:
-  /* store API */ store::Index_t createIndex(
+  virtual store::Index_t createIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec,
       store::Iterator* sourceIter);
-  
-  /* store API */ store::Index* getIndex(const store::Item* qname);
 
-  /* store API */ store::Iterator_t listIndexNames();
-
-  // needs to be virtual to allow implementation of additional stores
-  virtual const IndexSet& getIndices() const { return theIndices; }
-
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateValueIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
-
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateGeneralIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
-
-  // needs to be virtual to allow implementation of additional stores
   virtual store::Index_t refreshIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec,
@@ -298,146 +270,146 @@ public:
 
   virtual void deleteIndex(const store::Item* qname);
 
+  virtual store::Index* getIndex(const store::Item* qname);
+
+  virtual store::Iterator_t listIndexNames();
+
+  const IndexSet& getIndices() const { return theIndices; }
+
+protected:
+  virtual void populateValueIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
+
+  virtual void populateGeneralIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
+
 /*------------------------- Integrity constraints ----------------------------*/
 public:
-  /* store API */ store::Iterator_t listActiveICNames();
-
-  /* store API */ store::IC* getIC(const store::Item* icQName);
-
-  store::IC_t activateIC(
+  virtual store::IC_t activateIC(
       const store::Item_t& icQName,
       const store::Item_t& collectionQName,
       bool& isApplied);
   
-  store::IC_t activateForeignKeyIC(
+  virtual store::IC_t activateForeignKeyIC(
       const store::Item_t& icQName,
       const store::Item_t& fromCollectionQName,
       const store::Item_t& toCollectionQName,
       bool& isApplied);
 
-  store::IC_t deactivateIC(
+  virtual store::IC_t deactivateIC(
       const store::Item_t& icQName,
       bool& isApplied);
 
+  virtual store::Iterator_t listActiveICNames();
+
+  virtual store::IC* getIC(const store::Item* icQName);
+
 /*------------------------------------- Maps ---------------------------------*/
 public:
-  /* store API */ virtual store::Index* getMap(const store::Item* aQName) const;
-
-  /* store API */ virtual store::Iterator_t listMapNames();
-
-/*-------------------------------- Documents ---------------------------------*/
-public:
-  /* store API */ store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& stream,
-        const store::LoadProperties& loadProperties);
-
-  /* store API */ store::Item_t loadDocument(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream* stream,
-        const store::LoadProperties& loadProperties);
-
-  /* store API */ void addNode(const zstring& uri, const store::Item_t& node);
-
-  /* store API */ store::Iterator_t getDocumentNames() const;
-
-  /* store API */ store::Item_t getDocument(const zstring& uri);
-
-  void deleteDocument(const zstring& uri);
-
-  void deleteAllDocuments();
-
-/*-------------------------------- Hasp Maps ---------------------------------*/
-public:
-  store::Index_t createHashMap(
+  virtual store::Index_t createHashMap(
       const store::Item_t& aQName,
       const store::IndexSpecification& aSpec);
 
-  store::Index_t destroyHashMap(const store::Item_t& aQName);
+  virtual store::Index_t destroyHashMap(const store::Item_t& aQName);
 
-  store::Index_t getHashMap(const store::Item_t& aQName) const;
+  virtual store::Index* getMap(const store::Item* aQName) const;
 
-  void addHashMap(const store::Index_t& aMap);
+  virtual store::Index_t getHashMap(const store::Item_t& aQName) const;
+
+  virtual void addHashMap(const store::Index_t& aMap);
+
+  virtual store::Iterator_t listMapNames();
+
+/*-------------------------------- Documents ---------------------------------*/
+public:
+  virtual store::Item_t loadDocument(
+      const zstring& baseUri,
+      const zstring& docUri,
+      std::istream& stream,
+      const store::LoadProperties& loadProperties);
+
+  virtual store::Item_t loadDocument(
+      const zstring& baseUri,
+      const zstring& docUri,
+      std::istream* stream,
+      const store::LoadProperties& loadProperties);
+
+  virtual void addNode(const zstring& uri, const store::Item_t& node);
+
+  virtual store::Iterator_t getDocumentNames() const;
+
+  virtual store::Item_t getDocument(const zstring& uri);
+
+  virtual void deleteDocument(const zstring& uri);
+
+  virtual void deleteAllDocuments();
 
 /*----------------------------- Node operations ------------------------------*/
 public:
-  /* store API */ short compareNodes(
+  virtual short compareNodes(
       store::Item* node1,
       store::Item* node2) const;
 
-  /* store API */ store::Iterator_t sortNodes(
-        store::Iterator* iterator,
-        bool ascendent,
-        bool duplicateElemination,
-        bool aAllowAtomics = false);
-
-  /* store API */ store::Iterator_t distinctNodes(
+  virtual store::Iterator_t sortNodes(
+      store::Iterator* iterator,
+      bool ascendent,
+      bool duplicateElemination,
+      bool aAllowAtomics = false);
+  
+  virtual store::Iterator_t distinctNodes(
       store::Iterator* input,
       bool aAllowAtomics);
 
-  /* store API */ store::Iterator_t checkDistinctNodes(store::Iterator* input);
+  virtual store::Iterator_t checkDistinctNodes(store::Iterator* input);
 
-  /* store API */ bool getStructuralInformation(
+  virtual bool getStructuralInformation(
       store::Item_t& result,
       const store::Item* node);
 
-  /* store API */ bool getPathInfo(
-        const store::Item* docUri,
-        std::vector<const store::Item*>& contextPath,
-        std::vector<const store::Item*>& relativePath,
-        bool isAttrPath,
-        bool& found,
-        bool& unique);
+  virtual bool getPathInfo(
+      const store::Item* docUri,
+      std::vector<const store::Item*>& contextPath,
+      std::vector<const store::Item*>& relativePath,
+      bool isAttrPath,
+      bool& found,
+      bool& unique);
 
 /*---------------------- Node Reference Management ---------------------------*/
 public:
-  /* store API */ virtual bool getNodeReference(
-      store::Item_t& result,
-      store::Item* node) = 0;
+  virtual bool getNodeReference(store::Item_t& result, store::Item* node) = 0;
 
-  /* store API */ virtual bool hasReference(const store::Item* node) = 0;
+  virtual bool hasReference(const store::Item* node) = 0;
 
-  /* store API */ virtual bool getNodeByReference(
-      store::Item_t& result,
-      const zstring& reference) = 0;
+  virtual bool getNodeByReference(store::Item_t& result, const zstring& ref) = 0;
 
   virtual bool unregisterNode(XmlNode* node) = 0;
 
 /*----------------------- Temp Sequence Management ---------------------------*/
 public:
-  /* store API */ store::TempSeq_t createTempSeq(bool lazy);
+  virtual store::TempSeq_t createTempSeq(bool lazy);
 
-  /* store API */ store::TempSeq_t createTempSeq(
-      const store::Iterator_t& iterator,
-      bool lazy);
+  virtual store::TempSeq_t createTempSeq(const store::Iterator_t& iterator, bool lazy);
 
-  /* store API */ store::TempSeq_t createTempSeq(
-      std::vector<store::Item_t>& item_v);
+  virtual store::TempSeq_t createTempSeq(std::vector<store::Item_t>& item_v);
 
-  /* store API */ store::TempSeq_t createTempSeq(store::Item_t& item);
+  virtual store::TempSeq_t createTempSeq(store::Item_t& item);
 
 /*--------------------------- Full Text Management ---------------------------*/
 public:
 #ifndef ZORBA_NO_FULL_TEXT
-  /* store API */ internal::StemmerProvider const* getStemmerProvider() const;
+  virtual internal::StemmerProvider const* getStemmerProvider() const;
 
-  /* store API */ void setStemmerProvider(internal::StemmerProvider const*);
-#endif /* ZORBA_NO_FULL_TEXT */
+  virtual void setStemmerProvider(internal::StemmerProvider const*);
 
 protected:
-#ifndef ZORBA_NO_FULL_TEXT
-  /* store API */ TokenizerProvider const* getTokenizerProvider() const;
+  virtual TokenizerProvider const* getTokenizerProvider() const;
 
-  /* store API */ void setTokenizerProvider(TokenizerProvider const*);
+  virtual void setTokenizerProvider(TokenizerProvider const*);
 #endif /* ZORBA_NO_FULL_TEXT */
-
-/*---------------------- Construction, destruction ---------------------------*/
-protected:
-  Store();
-
-  virtual ~Store();
 };
 
 } // namespace simplestore
