@@ -83,7 +83,7 @@ protected:
 };
 
 /**
- * A %StemmerProvider, given an language, provies a stemmer for it.
+ * A %StemmerProvider, given an language, provides a stemmer for it.
  */
 class ZORBA_DLL_PUBLIC StemmerProvider {
 public:
