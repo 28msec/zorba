@@ -718,7 +718,8 @@ ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
 
 TEMPLATE_DECL(T) inline
-INTEGER_IMPL(T) operator/( INTEGER_IMPL(T) const &i, INTEGER_IMPL(T) const &j ) {
+INTEGER_IMPL(T) operator/( INTEGER_IMPL(T) const &i,
+                           INTEGER_IMPL(T) const &j ) {
   return INTEGER_IMPL(T)::ftoi( i.value_ / j.value_ );
 }
 
@@ -790,14 +791,14 @@ ZORBA_INTEGER_OP(%,float)
 ZORBA_INTEGER_OP(%,double)
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_DIV(TYPE)                                   \
-  TEMPLATE_DECL(T) inline                                         \
-  INTEGER_IMPL(T) operator/( INTEGER_IMPL(T) const& i, TYPE n ) { \
-    return INTEGER_IMPL(T)::ftoi( i.value_ / n );                 \
-  }                                                               \
-  TEMPLATE_DECL(T) inline                                         \
-  INTEGER_IMPL(T) operator/( TYPE n, INTEGER_IMPL(T) const &i ) { \
-    return INTEGER_IMPL(T)::ftoi( n / i.value_ );                 \
+#define ZORBA_INTEGER_DIV(TYPE)                                         \
+  TEMPLATE_DECL(T) inline                                               \
+  INTEGER_IMPL(T) operator/( INTEGER_IMPL(T) const& i, TYPE n ) {       \
+    return INTEGER_IMPL(T)::ftoi( i.value_ / static_cast<long>( n ) );  \
+  }                                                                     \
+  TEMPLATE_DECL(T) inline                                               \
+  INTEGER_IMPL(T) operator/( TYPE n, INTEGER_IMPL(T) const &i ) {       \
+    return INTEGER_IMPL(T)::ftoi( static_cast<long>( n ) / i.value_ );  \
   }
 ZORBA_INTEGER_DIV(char)
 ZORBA_INTEGER_DIV(signed char)
@@ -902,7 +903,7 @@ ZORBA_INTEGER_OP(%=,double)
 #define ZORBA_INTEGER_DIV(TYPE)                             \
   TEMPLATE_DECL(T) inline                                   \
   INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator/=( TYPE n ) {  \
-    value_ = ftoi( value_ / n );                            \
+    value_ = ftoi( value_ / static_cast<long>( n ) );       \
     return *this;                                           \
   }
 
