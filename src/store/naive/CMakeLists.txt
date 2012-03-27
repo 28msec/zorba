@@ -48,6 +48,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     inmemorystorec.cpp
     dataguide.cpp
     collection.cpp
+    store.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

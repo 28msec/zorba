@@ -894,6 +894,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
       !condExpr->is_sequential() &&
+      !thenExpr->is_sequential() &&
       (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
       !elseExpr->isNonDiscardable() &&
       TypeOps::is_empty(tm, *elseExpr->get_return_type()))
