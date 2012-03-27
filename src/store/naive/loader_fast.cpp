@@ -77,7 +77,7 @@ namespace simplestore {
 XmlLoader::XmlLoader(
     store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
-     const store::LoadProperties& loadProperties,
+    const store::LoadProperties& loadProperties,
     bool dataguide)
   :
   theLoadProperties(loadProperties),
