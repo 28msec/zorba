@@ -32,6 +32,7 @@
 #include "store/api/xs_type_codes.h"
 #include "store_defs.h"
 #include "shared_types.h"
+#include "tree_id.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "naive_ft_token_iterator.h"
@@ -707,7 +708,7 @@ class StructuralAnyUriItem : public AnyUriItem
 
 protected:
   ulong                        theCollectionId;
-  ulong                        theTreeId;
+  TreeId                       theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
 
@@ -722,7 +723,7 @@ protected:
   StructuralAnyUriItem(
       zstring& value,
       ulong collectionId,
-      ulong treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 

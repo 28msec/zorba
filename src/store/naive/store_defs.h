@@ -38,8 +38,7 @@ namespace simplestore {
 
 #define GET_PUL_FACTORY() \
   (GET_STORE().getPULFactory())
-
-
+  
 #define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 
 #define INTERNAL_NODE(item) (reinterpret_cast<InternalNode*>((item).getp()))
