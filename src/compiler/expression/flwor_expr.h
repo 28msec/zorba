@@ -115,7 +115,7 @@ public:
 
 /***************************************************************************//**
 
-  ForClause ::=	"outer"? "for" "$" VarName TypeDeclaration? PositionalVar?
+  ForClause ::= "outer"? "for" "$" VarName TypeDeclaration? PositionalVar?
                 "in" DomainExpr
 
   LetClause ::= "let" "$" VarName TypeDeclaration? ":=" DomainExpr
@@ -424,7 +424,7 @@ public:
 
   GroupByClause ::= "group" "by" GroupingSpecList
 
-  GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
+  GroupSpecList ::= GroupingSpec ("," GroupingSpec)*
 
   GroupSpec ::= "$" VarName ("collation" URILiteral)?
 
@@ -510,9 +510,9 @@ public:
 
   OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
 
-  OrderSpecList ::= 	OrderSpec ("," OrderSpec)*
+  OrderSpecList ::= OrderSpec ("," OrderSpec)*
 
-  OrderSpec ::= 	ExprSingle OrderModifier
+  OrderSpec ::= ExprSingle OrderModifier
 
   OrderModifier ::= ("ascending" | "descending")?
                     ("empty" ("greatest" | "least"))?
