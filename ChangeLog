@@ -6,7 +6,8 @@ New Features:
   * Extended API for Python, Java, PHP and Ruby.
 
 Bug Fixes/Other Changes:
-  * Fixed bug in window iterator
+  * Fixed bug in window iterator (binding the end vars in the output tuple stream)
+  * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
 
