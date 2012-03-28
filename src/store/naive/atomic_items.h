@@ -710,6 +710,12 @@ protected:
   ulong                        theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
+   
+  // The value is computed lazily when needed.
+  // The field "theValue" of the base class is not used,
+  // because it is not mutable.
+  mutable bool                 theIsEncoded;
+  mutable zstring              theEncodedValue;
 
 protected:
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
@@ -720,7 +726,6 @@ protected:
   StructuralAnyUriItem(zstring& value);
 
   StructuralAnyUriItem(
-      zstring& value,
       ulong collectionId,
       ulong treeId,
       store::StoreConsts::NodeKind nodeKind,
@@ -728,7 +733,41 @@ protected:
 
   StructuralAnyUriItem() {}
 
+private:
+  // Forces computation of the value.
+  void encode() const;
+ 
 public:
+  bool equals(
+        const store::Item* item,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  // A structural URI is never empty.
+  bool getEBV() const { return true; }
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  const zstring& getString() const
+  {
+    if (!theIsEncoded)
+    {
+      encode();
+    }
+    return theEncodedValue;
+  }
+
+  zstring show() const;
+
   bool
   isAncestor(const store::Item_t&) const;
 

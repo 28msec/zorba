@@ -125,16 +125,7 @@ bool BasicItemFactory::createStructuralAnyURI(
     const OrdPath& ordPath)
 {
   ZORBA_FATAL(nodeKind,"Unexpected node kind");
-  std::ostringstream stream;
-  stream   << "zorba:"
-           << collectionId << "."
-           << treeId << "."
-           << static_cast<int>(nodeKind) << "."
-           << ordPath.serialize();
-  zstring uri = stream.str();
-
-  theUriPool->insert(uri);
-  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  result = new StructuralAnyUriItem(collectionId, treeId, nodeKind, ordPath);
   return true;
 }
 

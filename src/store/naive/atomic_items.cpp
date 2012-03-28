@@ -1079,7 +1079,6 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 
 StructuralAnyUriItem::StructuralAnyUriItem(
-    zstring& encoded,
     ulong collectionId,
     ulong treeId, 
     store::StoreConsts::NodeKind nodeKind,
@@ -1088,20 +1087,21 @@ StructuralAnyUriItem::StructuralAnyUriItem(
   theCollectionId(collectionId),
   theTreeId(treeId),
   theNodeKind(nodeKind),
-  theOrdPath(ordPath)
-{
-  theValue.take(encoded);
-}
-
+  theOrdPath(ordPath),
+  theIsEncoded(false),
+  theEncodedValue("")
+{}
 
 StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
+  : theIsEncoded(true)
 {
-  theValue.take(value);
+  theEncodedValue.take(value);
+  std::istringstream input(theEncodedValue.str());
 
   ulong prefixlen = (ulong)strlen("zorba:");
 
-  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (strncmp(theEncodedValue.c_str(), "zorba:", prefixlen))
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   const char* start;
 
@@ -1110,19 +1110,19 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   //
   // Decode collection id
   //
-  start = theValue.c_str() + prefixlen;
+  start = theEncodedValue.c_str() + prefixlen;
 
   char* next = const_cast<char*>(start);
 
   theCollectionId = strtoul(start, &next, 10);
 
   if (errno != 0 || start == next)
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   start = next;
 
   if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   ++start;
 
@@ -1132,12 +1132,12 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   theTreeId = strtoul(start, &next, 10);
 
   if (errno != 0 || start == next)
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   start = next;
 
   if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   ++start;
 
@@ -1147,12 +1147,12 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   if (*start > '0' && *start <='6')
     theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
   else
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   ++start;
 
   if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
 
   ++start;
 
@@ -1162,6 +1162,97 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
 }
 
+void StructuralAnyUriItem::encode() const
+{
+  ZORBA_FATAL(theNodeKind,"Unexpected node kind");
+  std::ostringstream stream;
+  stream   << "zorba:"
+           << theCollectionId << "."
+           << theTreeId << "."
+           << static_cast<int>(theNodeKind) << "."
+           << theOrdPath.serialize();
+  zorba::zstring lValue = stream.str();
+  theEncodedValue.take(lValue);
+  theIsEncoded = true;
+}
+
+
+zstring StructuralAnyUriItem::show() const
+{
+  zstring res("xs:anyURI(");
+  res += getString();
+  res += ")";
+  return res;
+}
+ 
+bool StructuralAnyUriItem::equals(
+        const store::Item* item,
+        long timezone,
+        const XQPCollator* aCollation) const
+{
+  const StructuralAnyUriItem* lOther =
+      dynamic_cast<const StructuralAnyUriItem*>(item);
+  return (lOther &&
+      lOther->theCollectionId == theCollectionId &&
+      lOther->theTreeId == theTreeId &&
+      lOther->theNodeKind == theNodeKind &&
+      lOther->theOrdPath == theOrdPath);
+}
+ 
+long StructuralAnyUriItem::compare(
+      const Item* other,
+      long timezone,
+      const XQPCollator* aCollation) const
+{
+  const StructuralAnyUriItem* lOther =
+      dynamic_cast<const StructuralAnyUriItem*>(other);
+  assert(lOther);
+  if (theCollectionId < lOther->theCollectionId)
+  {
+    return -1;
+  }
+  if (theCollectionId > lOther->theCollectionId)
+  {
+    return 1;
+  }
+  if (theTreeId < lOther->theTreeId)
+  {
+    return -1;
+  }
+  if (theTreeId > lOther->theTreeId)
+  {
+    return 1;
+  }
+  if (theNodeKind < lOther->theNodeKind)
+  {
+    return -1;
+  }
+  if (theNodeKind > lOther->theNodeKind)
+  {
+    return 1;
+  }
+  if (theOrdPath < lOther->theOrdPath)
+  {
+    return -1;
+  }
+  if (theOrdPath > lOther->theOrdPath)
+  {
+    return 1;
+  }
+  return 0;
+}
+ 
+zstring StructuralAnyUriItem::getStringValue() const {
+  return getString();
+}
+ 
+void StructuralAnyUriItem::getStringValue2(zstring& val) const {
+  val = getString();
+}
+ 
+void StructuralAnyUriItem::appendStringValue(zstring& buf) const {
+  buf += getString();
+}
 
 bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
 {
