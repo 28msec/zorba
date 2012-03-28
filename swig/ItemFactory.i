@@ -7,11 +7,12 @@
     return Item(theItemFactory->createAnyURI(aURI));
   }
   
-  Item 	ItemFactory::createAttributeNode (Item aParent, Item aNodeName, Item aTypeName, Item aTypedValue){
+  Item 	ItemFactory::createAttributeNode (Item& aParent, Item& aNodeName, Item& aTypeName, Item& aTypedValue){
     return Item( theItemFactory->createAttributeNode( aParent.theItem, aNodeName.theItem, aTypeName.theItem, aTypedValue.theItem ));
   }
   
-  Item 	ItemFactory::createAttributeNode (Item aParent, Item aNodeName, Item aTypeName, std::vector< Item > aTypedValue){
+#ifndef SWIGRUBY
+  Item 	ItemFactory::createAttributeNode (Item& aParent, Item& aNodeName, Item& aTypeName, std::vector< Item > aTypedValue){
 
     std::vector< zorba::Item > typedValue;
     typedValue.reserve(aTypedValue.size());
@@ -21,6 +22,7 @@
     }
     return Item( theItemFactory->createAttributeNode (aParent.theItem, aNodeName.theItem, aTypeName.theItem, typedValue ));
   }
+#endif
   
   Item 	ItemFactory::createBase64Binary (const char *aBinData, size_t aLength){
     return Item( theItemFactory->createBase64Binary(aBinData, aLength));
@@ -36,6 +38,10 @@
   }
   Item 	ItemFactory::createByte (char aByte){
     return Item( theItemFactory->createByte(aByte));
+  }
+  Item 	ItemFactory::createCommentNode (Item &aParent, const std::string &aContent){
+    zorba::String lContent = zorba::String(aContent);
+    return Item( theItemFactory->createCommentNode (aParent.theItem, lContent));
   }
   Item 	ItemFactory::createDate (const std::string &aDate){
     return Item( theItemFactory->createDate(aDate));
@@ -70,11 +76,32 @@
   Item 	ItemFactory::createDuration (short aYear, short aMonths, short aDays, short aHours, short aMinutes, double aSeconds){
     return Item( theItemFactory->createDuration (aYear, aMonths, aDays, aHours, aMinutes, aSeconds));
   }
-  /*
-  Item 	ItemFactory::createElementNode (Item &aParent, Item aNodeName, Item aTypeName, bool aHasTypedValue, bool aHasEmptyValue, std::vector< std::pair< std::string, std::string > > aNsBindings){
-    return Item( theItemFactory->createElementNode (aParent.theItem, aNodeName.theItem, aTypeName.theItem, aHasTypedValue, aHasEmptyValue, aNsBindings));
+  Item 	ItemFactory::createDayTimeDuration (const std::string &aValue){
+    return Item( theItemFactory->createDayTimeDuration (aValue));
   }
-  */
+  Item 	ItemFactory::createYearMonthDuration (const std::string &aValue){
+    return Item( theItemFactory->createYearMonthDuration (aValue));
+  }
+  Item 	ItemFactory::createDocumentNode (const std::string &aBaseUri, const std::string &aDocUri){
+    return Item( theItemFactory->createDocumentNode (aBaseUri, aDocUri));
+  }
+#ifndef SWIGRUBY
+  Item 	ItemFactory::createElementNode (Item &aParent, Item& aNodeName, Item& aTypeName, bool aHasTypedValue, bool aHasEmptyValue, std::vector< std::pair< std::string, std::string > > aNsBindings){
+    std::vector< std::pair< zorba::String, zorba::String > > items;
+    items.reserve(aNsBindings.size());
+    std::vector< std::pair< std::string, std::string > >::iterator iter;
+    for(iter = aNsBindings.begin(); iter != aNsBindings.end(); iter++) {
+      std::pair< zorba::String, zorba::String > pair;
+      pair.first = (*iter).first;
+      pair.second = (*iter).second;
+      items.push_back(pair);
+    }
+    return Item( theItemFactory->createElementNode (aParent.theItem, aNodeName.theItem, aTypeName.theItem, aHasTypedValue, aHasEmptyValue, items));
+  }
+#endif
+  Item 	ItemFactory::createElementNode (Item &aParent, Item& aNodeName, Item& aTypeName, bool aHasTypedValue, bool aHasEmptyValue){
+    return Item( theItemFactory->createElementNode (aParent.theItem, aNodeName.theItem, aTypeName.theItem, aHasTypedValue, aHasEmptyValue, std::vector<std::pair<zorba::String, zorba::String> >()));
+  }
   Item 	ItemFactory::createFloat (const std::string &aValue){
     return Item( theItemFactory->createFloat (aValue));
   }
@@ -138,6 +165,12 @@
   Item 	ItemFactory::createNonPositiveInteger (long long aValue){
     return Item( theItemFactory->createNonPositiveInteger (aValue));
   }
+  Item 	ItemFactory::createPiNode (Item &aParent, const std::string &aTarget, const std::string &aContent, const std::string &aBaseUri){
+    zorba::String lTarget = zorba::String(aTarget);
+    zorba::String lContent = zorba::String(aContent);
+    zorba::String lBaseUri = zorba::String(aBaseUri);
+    return Item( theItemFactory->createPiNode (aParent.theItem, lTarget, lContent, lBaseUri));
+  }
   Item 	ItemFactory::createPositiveInteger (unsigned long long aValue){
     return Item( theItemFactory->createPositiveInteger (aValue));
   }
@@ -161,8 +194,9 @@
   Item 	ItemFactory::createString (const std::string &aString){
     return Item( theItemFactory->createString (aString));
   }
-  Item 	ItemFactory::createTextNode (Item parent, std::string content){
-    return Item( theItemFactory->createTextNode (parent.theItem, content));
+  Item 	ItemFactory::createTextNode (Item &aParent, const std::string &aContent){
+    zorba::String lContent = zorba::String(aContent);
+    return Item( theItemFactory->createTextNode (aParent.theItem, lContent));
   }
   Item 	ItemFactory::createTime (short aHour, short aMinute, double aSecond, short aTimeZone_hours){
     return Item( theItemFactory->createTime (aHour, aMinute, aSecond, aTimeZone_hours));
