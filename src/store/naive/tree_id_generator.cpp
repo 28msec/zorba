@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-#include "tree_id.h"
 #include "tree_id_generator.h"
+
 #include <iostream>
 #include <sstream>
+
+#include "tree_id.h"
 
 namespace zorba {
 namespace simplestore {
   
-TreeId ZorbaTreeIdGenerator::create() {
+TreeId SimpleTreeIdGenerator::create() {
+  SYNC_CODE(AutoMutex lock(&theCounterMutex);)
   ++theNextId;
   return theNextId;
 }
 
-TreeIdGenerator* ZorbaTreeIdGeneratorFactory::createTreeGenerator()
+TreeIdGenerator* SimpleTreeIdGeneratorFactory::createTreeGenerator()
 {
-  return new ZorbaTreeIdGenerator();
+  return new SimpleTreeIdGenerator();
 }
 
-TreeIdGenerator& ZorbaTreeIdGeneratorFactory::getDefaultTreeIdGenerator()
+TreeIdGenerator& SimpleTreeIdGeneratorFactory::getDefaultTreeIdGenerator()
 {
-  static ZorbaTreeIdGenerator lSingleton;
+  static SimpleTreeIdGenerator lSingleton;
   return lSingleton;
 }
 

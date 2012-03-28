@@ -132,7 +132,7 @@ SimpleStore::destroyPULFactory(PULPrimitiveFactory* f) const
 TreeIdGeneratorFactory*
 SimpleStore::createTreeIdGeneratorFactory() const
 {
-  return new ZorbaTreeIdGeneratorFactory();
+  return new SimpleTreeIdGeneratorFactory();
 }
 
 

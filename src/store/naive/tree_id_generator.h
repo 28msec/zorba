@@ -16,8 +16,10 @@
 #ifndef ZORBA_TREE_ID_GENERATOR_H
 #define ZORBA_TREE_ID_GENERATOR_H
 
-#include "store/naive/shared_types.h"
-#include "zorbautils/hashmap_itemh.h"
+#include <zorbautils/hashmap_itemh.h>
+#include <zorbautils/mutex.h>
+
+#include "tree_id.h"
 
 namespace zorba {
 
@@ -50,18 +52,19 @@ public:
 /*
 Zorba's implementation of the tree ID generator.
 */
-class ZorbaTreeIdGenerator : public TreeIdGenerator {
+class SimpleTreeIdGenerator : public TreeIdGenerator {
 private:
   ulong theNextId;
+  SYNC_CODE(Mutex theCounterMutex;)
 public:
-  ZorbaTreeIdGenerator() : theNextId(1) {}
+  SimpleTreeIdGenerator() : theNextId(1) {}
   virtual TreeId create();
 };
 
 /*
 Zorba's implementation of the tree ID generator factory.
 */
-class ZorbaTreeIdGeneratorFactory : public TreeIdGeneratorFactory {
+class SimpleTreeIdGeneratorFactory : public TreeIdGeneratorFactory {
 public:
   virtual TreeIdGenerator* createTreeGenerator();
   virtual TreeIdGenerator& getDefaultTreeIdGenerator();
