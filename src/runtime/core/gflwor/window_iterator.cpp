@@ -944,10 +944,13 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
     {
       if (!theEndClause.theOnlyEnd || lState->theCurWindow->theEndPos != 0)
       {
+        if (lState->theCurWindow->theEndPos == 0)
+          lState->theCurWindow->theEndPos = lState->theCurInputPos - 1;
+
         bindVariable(aPlanState,
                      lState->theDomainSeq,
                      lState->theOpenWindows[0].theStartPos,
-                     lState->theCurInputPos - 1);
+                     lState->theCurWindow->theEndPos);
 
         theStartClause.bindExtern(aPlanState,
                                   lState->theDomainSeq,
@@ -955,7 +958,7 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
         theEndClause.bindExtern(aPlanState,
                                 lState->theDomainSeq,
-                                lState->theCurInputPos-1);
+                                lState->theCurWindow->theEndPos);
 
         lState->theCurWindow = lState->theOpenWindows.erase(lState->theCurWindow);
 

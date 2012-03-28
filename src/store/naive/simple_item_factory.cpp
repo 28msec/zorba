@@ -1164,10 +1164,8 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED( NotAllowedForTypeName)));
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||

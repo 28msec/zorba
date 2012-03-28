@@ -70,11 +70,36 @@ namespace simplestore {
       return; \
   } while (0);
 
+
+/*******************************************************************************
+
+********************************************************************************/
+XmlLoader::XmlLoader(
+    store::ItemFactory* factory,
+    XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
+    bool dataguide)
+  :
+  theLoadProperties(loadProperties),
+  ctxt(NULL),
+  theFactory(static_cast<BasicItemFactory*>(factory)),
+  theXQueryDiagnostics(xqueryDiagnostics),
+  theTraceLevel(0),
+  theBuildDataGuide(dataguide)
+{
+}
+
+
+XmlLoader::~XmlLoader() 
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
-    BasicItemFactory* factory,
+    store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
     const store::LoadProperties& loadProperties,
     bool dataguide)
@@ -542,7 +567,7 @@ void FastXmlLoader::startElement(
     int numDefaulted,
     const xmlChar ** attributes)
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
   NodeFactory& nfactory = store.getNodeFactory();
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);

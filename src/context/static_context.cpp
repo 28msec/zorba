@@ -183,7 +183,7 @@ void PrologOption::serialize(::zorba::serialization::Archiver& ar)
 *******************************************************************************/
 void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     // serialize out: the uri of the module that is used in this plan
 

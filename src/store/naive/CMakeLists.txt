@@ -49,6 +49,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     dataguide.cpp
     tree_id_generator.cpp
     collection.cpp
+    store.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

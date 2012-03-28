@@ -439,8 +439,6 @@ if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
 
   void operator&(Archiver &ar, std::string* &obj);
 
-  // void operator&(Archiver &ar, zstring &obj);
-
   void operator&(Archiver &ar, char* &obj);//like char *p=strdup("io");
 
 //  template<class T>
@@ -468,46 +466,9 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
           ar.set_is_temp_field_one_level(false);\
         }
 
-/*
-#define  SERIALIZE_FUNCTION(f)                      \
-  {                                                 \
-    bool is_uf = false;                             \
-    user_function *uf = NULL;                       \
-    try{                                            \
-      if(ar.is_serializing_out())                   \
-      {                                             \
-        uf = dynamic_cast<user_function*>(f);       \
-        if(uf)                                      \
-          is_uf = true;                             \
-      }                                             \
-    }catch(...)                                     \
-    {                                               \
-    }                                               \
-    ar.set_is_temp_field(true);                     \
-    ar & is_uf;                                     \
-    ar.set_is_temp_field(false);                    \
-    if(is_uf)                                       \
-    {                                               \
-      ar & f;                                       \
-    }                                               \
-    else if(!ar.is_serializing_out())               \
-      f = NULL;                                     \
-  }
-*/
+
 #define  SERIALIZE_FUNCTION(f)    ar & f;
-/*
-#define SERIALIZE_RAW_PTR(ptr)                      \
-  if(!ar.is_serializing_out())                      \
-     ptr = NULL;                                    \
-  try{                                              \
-    ar & ptr;                                       \
-  }catch(...)                                       \
-  {                                                 \
-    if(!ar.is_serializing_out())                    \
-     delete ptr;                                    \
-    throw;                                          \
-  }
-*/
+
 
 } // namespace serialization
 } // namespace zorba
