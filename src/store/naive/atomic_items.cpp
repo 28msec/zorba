@@ -602,6 +602,7 @@ QNameItem::QNameItem(
     const char* aPrefix,
     const char* aLocalName)
   :
+  theNormalizedQName(NULL),
   theIsInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
@@ -613,6 +614,7 @@ QNameItem::QNameItem(
     const zstring& aPrefix,
     const zstring& aLocalName)
   :
+  theNormalizedQName(NULL),
   theIsInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);

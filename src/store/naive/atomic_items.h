@@ -459,7 +459,7 @@ protected:
   bool isNormalized() const 
   {
     assert(theNormalizedQName != this || thePrefix.empty());
-    assert(theNormalizedQName == this || !thePrefix.empty());
+    assert(!theIsInPool || theNormalizedQName == this || !thePrefix.empty());
 
     return theNormalizedQName == this;
   }
