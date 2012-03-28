@@ -188,16 +188,27 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 };
 
 
+/*******************************************************************************
+  If isBinary is true, interprets the supplied char array as binary data. If
+  it is false, interprets it as a hexadecimal representation (with even length)
+  of binary data.
+********************************************************************************/
 OrdPath::OrdPath(const unsigned char* str, ulong strLen, bool isBinary)
 {
   if (isBinary)
   {
     initFromData(str, strLen);
-  } else {
+  }
+  else
+  {
     initFromString(str, strLen);
   }
 }
 
+
+/*******************************************************************************
+  Inits the instance with binary ORDPATH data.
+********************************************************************************/
 void OrdPath::initFromData(const unsigned char* buf, ulong byteLen)
 {
   memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
@@ -214,6 +225,11 @@ void OrdPath::initFromData(const unsigned char* buf, ulong byteLen)
   }
 }
 
+
+/*******************************************************************************
+  Inits the instance with a string containing a hexadecimal representation of 
+  the binary ORDPATH data.
+********************************************************************************/
 void OrdPath::initFromString(const unsigned char* str, ulong strLen)
 {
   unsigned char* buf;
@@ -226,10 +242,8 @@ void OrdPath::initFromString(const unsigned char* str, ulong strLen)
 
   if (byteLen > MAX_BYTE_LEN)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0030_NODEID_ERROR,
+    ERROR_PARAMS(ZED(NodeIDNeedsBytes_2), int(MAX_BYTE_LEN)));
   }
 
   memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
@@ -265,9 +279,7 @@ void OrdPath::initFromString(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION(
-          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(str));
 
       buf[i] <<= 4;
       start++;
@@ -280,9 +292,7 @@ void OrdPath::initFromString(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION(
-          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(str));
 
       start++;
       i++;
@@ -316,9 +326,12 @@ void OrdPath::setAsRoot()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool OrdPath::isRoot() const
 {
-  return theBuffer.local[0] == 0x40;
+  return isLocal() && theBuffer.local[0] == 0x40;
 }
 
 

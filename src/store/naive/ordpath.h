@@ -59,7 +59,8 @@ public:
   typedef std::vector<int32_t> DeweyID;
 
 public:
-  enum {
+  enum 
+  {
     MAX_BYTE_LEN = 255,
     MAX_BIT_LEN = MAX_BYTE_LEN * 8
   };
@@ -162,9 +163,6 @@ public:
     markLocal();
   }
 
-  // If isBinary is true, interprets the supplied char array as binary data. If
-  // it is false, interprets it as a hexadecimal representation (with even
-  // length) of binary data.
   OrdPath(
       const unsigned char* buf,
       ulong byteLen,
@@ -176,11 +174,8 @@ public:
       delete [] getRemoteBuffer();
   }
 
-  // Inits the instance with binary ORDPATH data.
   void initFromData(const unsigned char* buf, ulong byteLen);
 
-  // Inits the instance with a string containing a hexadecimal
-  // representation of the binary ORDPATH data.
   void initFromString(const unsigned char* buf, ulong byteLen);
 
   bool isValid() const { return getByteLength() != 0; }
