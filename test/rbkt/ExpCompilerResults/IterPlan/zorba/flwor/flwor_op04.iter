@@ -15,19 +15,16 @@ Iterator tree for const-folded expr:
   <SingletonIterator value="xs:integer(4)"/>
 </SequencePointAccessIterator>
 
+Iterator tree for const-folded expr:
+<IfThenElseIterator>
+  <CompareIterator>
+    <SingletonIterator value="xs:integer(4)"/>
+    <SingletonIterator value="xs:integer(4)"/>
+  </CompareIterator>
+  <SingletonIterator value="xs:integer(4)"/>
+  <FnConcatIterator/>
+</IfThenElseIterator>
+
 Iterator tree for main query:
-<flwor::TupleStreamIterator>
-  <flwor::WhereIterator>
-    <flwor::ForIterator>
-      <ForVariable name="x"/>
-      <flwor::TupleSourceIterator/>
-      <SingletonIterator value="xs:integer(4)"/>
-    </flwor::ForIterator>
-    <TypedValueCompareIterator_INTEGER>
-      <ForVarIterator varname="x"/>
-      <SingletonIterator value="xs:integer(4)"/>
-    </TypedValueCompareIterator_INTEGER>
-  </flwor::WhereIterator>
-  <ForVarIterator varname="x"/>
-</flwor::TupleStreamIterator>
+<SingletonIterator value="xs:integer(4)"/>
 
