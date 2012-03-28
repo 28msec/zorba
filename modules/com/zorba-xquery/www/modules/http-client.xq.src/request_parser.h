@@ -21,13 +21,15 @@ class Item;
 
 namespace http_client {
 class RequestHandler;
+class ErrorThrower;
 
 class RequestParser {
 protected:
   RequestHandler* theHandler;
+  ErrorThrower*   theThrower;
 
 public:
-  RequestParser(RequestHandler* aHandler) : theHandler(aHandler) {}
+  RequestParser(RequestHandler* aHandler, ErrorThrower& aThrower) : theHandler(aHandler), theThrower(&aThrower) {}
   bool parse(const Item& aItem);
 
 private:

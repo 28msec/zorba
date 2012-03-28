@@ -1,10 +1,16 @@
 Zorba - The XQuery Processor
 
 version 2.5
+
+New Features:
+  * Extended API for Python, Java, PHP and Ruby.
+
+Bug Fixes/Other Changes:
   * Fixed bug in window iterator
+  * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
 
-	
+
 version 2.2
 
 New Features:
@@ -59,6 +65,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #911585 (management of variables during eval)
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
+  * Fixed bug #955574 (http-client "hangs" if following a POST request)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
   * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be
