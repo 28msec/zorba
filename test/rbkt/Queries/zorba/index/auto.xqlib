@@ -1,0 +1,11 @@
+module namespace auto = "http://www.zorba-xquery.com/test/indexes/automatic";
+
+import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare collection auto:coll as node()*;
+
+declare %ann:automatic %ann:unique %ann:value-equality index auto:index
+  on nodes cdml:collection(xs:QName("auto:coll"))
+  by xs:string(@id) as xs:string;
