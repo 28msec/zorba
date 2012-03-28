@@ -19,6 +19,7 @@
 #include "shared_types.h"
 #include "store_defs.h"
 #include "hashmap_nodep.h"
+#include "tree_id.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "node_items.h"
@@ -60,6 +61,7 @@ class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
 class TreeIdGeneratorFactory;
+class TreeIdGenerator;
 
 typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
@@ -75,6 +77,9 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
   theSchemaTypeCodes:
   -------------------
+
+  theNumUsers:
+  ------------
 
   theNamespacePool:
   -----------------
@@ -93,6 +98,15 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theNodeFactory:
   ---------------
   Factory to create node items.
+
+  theTreeIdGeneratorFactory:
+  --------------------------
+  Factory to create ID generators (Each collection can have its own ID generator in
+  addition to the default one).
+
+  theTreeIdGenerator:
+  -------------------
+  The tree-id generator used by the store for trees that are not in collections.
 
   theDocuments:
   -------------
@@ -113,12 +127,6 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   -------
   A hashmap the for each integrity constraint, maps the qname of the ic to the
   ic's container object.
-
- 
-  theTreeIdGeneratorFactory:
-  --------------------------
-  An factory of ID generators (each collection can have its own in
-  addition to the default one).
 
 ********************************************************************************/
 class Store : public zorba::store::Store
@@ -159,6 +167,8 @@ protected:
   PULPrimitiveFactory         * thePULFactory;
   TreeIdGeneratorFactory      * theTreeIdGeneratorFactory;
   
+  TreeIdGenerator             * theTreeIdGenerator;
+
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
   IndexSet                      theIndices;
@@ -208,14 +218,14 @@ public:
 
   PULPrimitiveFactory& getPULFactory() const { return *thePULFactory; }
 
-  StringPool& getNamespacePool() const { return *theNamespacePool; }
-
-  QNamePool& getQNamePool() const { return *theQNamePool; }
-  
   TreeIdGeneratorFactory& getTreeIdGeneratorFactory() const
   {
     return *theTreeIdGeneratorFactory;
   }
+
+  StringPool& getNamespacePool() const { return *theNamespacePool; }
+
+  QNamePool& getQNamePool() const { return *theQNamePool; }
 
 protected:
   // Functions to create/destory the node and item factories. These functions
@@ -251,7 +261,7 @@ protected:
 public:
   virtual ulong createCollectionId() = 0;
 
-  virtual ulong createTreeId();
+  virtual TreeId createTreeId();
 
   virtual store::Collection_t createCollection(
       const store::Item_t& aName,

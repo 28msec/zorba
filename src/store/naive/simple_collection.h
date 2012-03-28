@@ -73,12 +73,12 @@ protected:
   checked_vector<store::Item_t>   theXmlTrees;
   bool                            theIsDynamic;
 
-  TreeIdGenerator*                theTreeIdGenerator;
+  TreeIdGenerator               * theTreeIdGenerator;
 
   const std::vector<store::Annotation_t> theAnnotations;
   store::Item_t                   theNodeType;
 
-  SYNC_CODE(Latch               theLatch;)
+  SYNC_CODE(Latch                 theLatch;)
 
   // default constructor added in order to allow subclasses to instantiate
   // a collection without name
@@ -96,8 +96,7 @@ public:
   /********************** All these methods implement the **********************
   ***************** zorba::simplestore::Collection interface ******************/
 
-  // virtual to allow extension by subclasses
-  virtual ulong getId() const { return theId; }
+  ulong getId() const { return theId; }
 
   const store::Item* getName() const { return theName.getp(); }
 
@@ -107,38 +106,30 @@ public:
 
   void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
 
-  // virtual to allow extension by subclasses
-  virtual TreeId createTreeId();
+  TreeId createTreeId();
 
   store::Iterator_t getIterator();
 
-  void addNode(
-        store::Item* node,
-        xs_integer position = -1);
+  void addNode(store::Item* node, xs_integer position = -1);
 
-  // virtual to allow extension by subclasses
-  virtual xs_integer addNodes(
-        std::vector<store::Item_t>& nodes,
-        const store::Item* aTargetNode,
-        bool before);
+  xs_integer addNodes(
+      std::vector<store::Item_t>& nodes,
+      const store::Item* aTargetNode,
+      bool before);
 
-  // virtual to allow extension by subclasses
-  virtual bool removeNode(store::Item* node, xs_integer& pos);
+  bool removeNode(store::Item* node, xs_integer& pos);
 
-  // virtual to allow extension by subclasses
-  virtual bool removeNode(xs_integer position);
+  bool removeNode(xs_integer position);
 
-  virtual void removeAll();
+  void removeAll();
 
-  // virtual to allow extension by subclasses
-  virtual xs_integer removeNodes(xs_integer position, xs_integer num);
+  xs_integer removeNodes(xs_integer position, xs_integer num);
 
   bool findNode(const store::Item* node, xs_integer& position) const;
 
   store::Item_t nodeAt(xs_integer position);
 
-  // virtual to allow extension by subclasses
-  virtual void adjustTreePositions();
+  void adjustTreePositions();
 };
 
 } // namespace store

@@ -105,6 +105,7 @@ Store::Store()
   theNodeFactory(NULL),
   thePULFactory(NULL),
   theTreeIdGeneratorFactory(NULL),
+  theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
   theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
@@ -164,6 +165,8 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
+
+    theTreeIdGenerator = theTreeIdGeneratorFactory->createTreeGenerator();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -306,6 +309,17 @@ void Store::shutdown(bool soft)
       theIteratorFactory = NULL;
     }
 
+    if (theTreeIdGeneratorFactory != NULL)
+    {
+      destroyTreeIdGeneratorFactory(theTreeIdGeneratorFactory);
+    }
+
+    if (theTreeIdGenerator)
+    {
+      delete theTreeIdGenerator;
+      theTreeIdGenerator = NULL;
+    }
+
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
@@ -377,6 +391,15 @@ XmlLoader* Store::getXmlLoader(
                              aXQueryDiagnostics,
                              loadProperties,
                              store::Properties::instance()->buildDataguide());
+}
+
+
+/*******************************************************************************
+  create a tree id for a new tree that does not belong to any collection.
+********************************************************************************/
+TreeId Store::createTreeId()
+{
+  return theTreeIdGenerator->create();
 }
 
 
@@ -1319,15 +1342,6 @@ TokenizerProvider const* Store::getTokenizerProvider() const
   return theTokenizerProvider ?
     theTokenizerProvider : &default_tokenizer_provider();
 }
-
-/*******************************************************************************
-  create a tree id for a new tree that does not belong to any collection.
-********************************************************************************/
-TreeId Store::createTreeId()
-{
-  return getTreeIdGeneratorFactory().getDefaultTreeIdGenerator().create();
-}
-
 
 #endif /* ZORBA_NO_FULL_TEXT */
 

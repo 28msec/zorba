@@ -1098,14 +1098,19 @@ StructuralAnyUriItem::StructuralAnyUriItem(
 StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   theValue.take(value);
+
   std::istringstream input(theValue.str());
 
   ulong prefixlen = (ulong)strlen("zorba:");
+
   input.width(prefixlen);
+
   std::string prefix;
   input >> prefix;
+
   if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+
   if (prefix != "zorba:")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
@@ -1150,9 +1155,12 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  try {
+  try 
+  {
     theOrdPath.deserialize(prefix);
-  } catch(...) {
+  }
+  catch(...) 
+  {
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
   }
   // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());

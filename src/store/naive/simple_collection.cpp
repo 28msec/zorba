@@ -48,6 +48,7 @@ SimpleCollection::SimpleCollection(
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -59,11 +60,13 @@ SimpleCollection::SimpleCollection()
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
+  delete theTreeIdGenerator;
 }
 
 
@@ -411,14 +414,16 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   return false;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void SimpleCollection::getAnnotations(
-    std::vector<store::Annotation_t>& annotations
-) const
+    std::vector<store::Annotation_t>& annotations) const
 {
   annotations = theAnnotations;
 }
+
 
 /*******************************************************************************
   For each tree in the collection, set its current position within the collection.
@@ -433,6 +438,7 @@ void SimpleCollection::adjustTreePositions()
   }
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -440,6 +446,7 @@ TreeId SimpleCollection::createTreeId()
 {
   return theTreeIdGenerator->create();
 }
+
 
 /*******************************************************************************
 

@@ -24,21 +24,33 @@
 namespace zorba {
 namespace simplestore {
   
-TreeId SimpleTreeIdGenerator::create() {
+
+/*******************************************************************************
+
+*******************************************************************************/
+TreeId SimpleTreeIdGenerator::create() 
+{
   SYNC_CODE(AutoMutex lock(&theCounterMutex);)
   ++theNextId;
   return theNextId;
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
 TreeIdGenerator* SimpleTreeIdGeneratorFactory::createTreeGenerator()
 {
   return new SimpleTreeIdGenerator();
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
 TreeIdGenerator& SimpleTreeIdGeneratorFactory::getDefaultTreeIdGenerator()
 {
-  static SimpleTreeIdGenerator lSingleton;
-  return lSingleton;
+  return theDefaultGenerator;
 }
 
 } // simplestore

@@ -25,48 +25,62 @@ namespace zorba {
 
 namespace simplestore {
 
-/*
-This class is an abstract class for tree ID generation. It provides
-a creation method, two comparison methods (= and <) as well as a way
-to parse a string back to an ID.
-*/
-class TreeIdGenerator {
+/*******************************************************************************
+  This class is an abstract class for tree ID generation. It provides
+  a creation method, two comparison methods (= and <) as well as a way
+  to parse a string back to an ID.
+********************************************************************************/
+class TreeIdGenerator 
+{
 public:
   virtual ~TreeIdGenerator() {}
 
   virtual TreeId create() = 0;
 };
 
-/*
-This class allows generation of independent tree ID generators (each of
-them might have its own counter).
-*/
-class TreeIdGeneratorFactory {
+
+/*******************************************************************************
+  Zorba's implementation of the tree ID generator.
+********************************************************************************/
+class SimpleTreeIdGenerator : public TreeIdGenerator 
+{
+private:
+  ulong theNextId;
+  SYNC_CODE(Mutex theCounterMutex;)
+
+public:
+  SimpleTreeIdGenerator() : theNextId(1) {}
+
+  virtual TreeId create();
+};
+
+
+/*******************************************************************************
+  This class allows generation of independent tree ID generators (each of
+  them might have its own counter).
+********************************************************************************/
+class TreeIdGeneratorFactory 
+{
 public:
   virtual ~TreeIdGeneratorFactory() {}
   
   virtual TreeIdGenerator* createTreeGenerator() = 0;
+
   virtual TreeIdGenerator& getDefaultTreeIdGenerator() = 0;
 };
 
-/*
-Zorba's implementation of the tree ID generator.
-*/
-class SimpleTreeIdGenerator : public TreeIdGenerator {
-private:
-  ulong theNextId;
-  SYNC_CODE(Mutex theCounterMutex;)
-public:
-  SimpleTreeIdGenerator() : theNextId(1) {}
-  virtual TreeId create();
-};
 
-/*
-Zorba's implementation of the tree ID generator factory.
-*/
-class SimpleTreeIdGeneratorFactory : public TreeIdGeneratorFactory {
+/*******************************************************************************
+  Zorba's implementation of the tree ID generator factory.
+********************************************************************************/
+class SimpleTreeIdGeneratorFactory : public TreeIdGeneratorFactory 
+{
+protected:
+  SimpleTreeIdGenerator theDefaultGenerator;
+
 public:
   virtual TreeIdGenerator* createTreeGenerator();
+
   virtual TreeIdGenerator& getDefaultTreeIdGenerator();
 };
 
