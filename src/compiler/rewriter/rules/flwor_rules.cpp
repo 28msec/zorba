@@ -704,7 +704,25 @@ static bool safe_to_fold_single_use(
     }
     else if (kind == flwor_clause::group_clause)
     {
-      //TODO: it should be possible to fold this variables
+      if(varQuant != TypeConstants::QUANT_ONE)
+        continue;
+
+      bool already_found = false;
+      const group_clause& grp_clause = *static_cast<const group_clause*>(&c);
+
+      for(flwor_clause::rebind_list_t::const_iterator group_var=
+            grp_clause.beginGroupVars();
+          group_var != grp_clause.endGroupVars();
+          group_var++)
+      {
+        expr* group_var_expr = (*group_var).first.getp();
+        if(expr_tools::count_variable_uses(group_var_expr, var, NULL, 1) == 1)
+        {
+          if(already_found) return false;
+          already_found = true;
+          referencingExpr = group_var_expr;
+        }
+      }
     }
     else if (kind == flwor_clause::window_clause)
     {
