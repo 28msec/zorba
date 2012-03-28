@@ -33,5 +33,8 @@ IF(WIN32)
 ENDIF(WIN32)
 
 # Generate project's projectConfig.cmake file.
-CREATE_MODULE_CONFIG(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}"
-  "${PROJECT_BINARY_DIR}")
+# QQQ need to create an installable version of this too, once we know
+# how installing a module package should work.
+CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+

@@ -692,14 +692,11 @@ MACRO (ADD_TEST_DIRECTORY TEST_DIR)
   FOREACH(TESTFILE ${TESTFILES})
     SET(TESTNAME "${PROJECT_NAME}/${TESTFILE}")
 
-    IF(WIN32)
-      SET(PATH_SEP ",")
-    ELSE(WIN32)
-      SET(PATH_SEP ":")
-    ENDIF(WIN32)
+    # DEPENDENCY_MODULE_PATH will always start with an appropriate
+    # path separator
     ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
       "--rbkt-src" "${TEST_DIR}"
-      "--module-path" "${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
+      "--module-path" "${CMAKE_BINARY_DIR}/URI_PATH/${DEPENDENCY_MODULE_PATH}"
       "${TESTFILE}")
 
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
@@ -710,18 +707,6 @@ MACRO (ADD_TEST_DIRECTORY TEST_DIR)
   ENDFOREACH(TESTFILE)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
 ENDMACRO (ADD_TEST_DIRECTORY)
-
-# Macro to install a basic CMake config file for a module. Provide a
-# source and binary directory. Result will be installed in binary
-# directory. This is a macro because it is called from two different
-# places: ZorbaUse.cmake, and Zorba's modules/CMakeLists.txt.
-MACRO(CREATE_MODULE_CONFIG name src_dir bin_dir)
-  # Set variables referenced in ExternalModuleConfig.cmake.in
-  SET(MODULE_SOURCE_DIR ${src_dir})
-  SET(MODULE_BINARY_DIR ${bin_dir})
-  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-    "${MODULE_BINARY_DIR}/${name}Config.cmake" @ONLY)
-ENDMACRO(CREATE_MODULE_CONFIG)
 
 # This macro easies the process of adding test for store dependent
 # executables. It has the same naming convection for the target as the
