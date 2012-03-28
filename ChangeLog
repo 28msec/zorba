@@ -7,6 +7,7 @@ New Features:
 
 Bug Fixes/Other Changes:
   * Fixed bug in window iterator
+  * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
 
 
