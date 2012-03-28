@@ -17,8 +17,6 @@
 #define ZORBA_SIMPLE_STORE
 
 #include "store.h"
-#include "tree_id.h"
-#include "tree_id_generator.h"
 
 namespace zorba {
 namespace simplestore {
@@ -30,9 +28,6 @@ namespace simplestore {
   ---------------------
   Incremented every time a new collection is created. The current value of the  
   counter is then assigned as the id of the new collection.
-
-  theTreeCounter:
-  ---------------
 
   theReferencesToNodeMap:
   -----------------------

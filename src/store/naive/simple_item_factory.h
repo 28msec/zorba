@@ -25,6 +25,7 @@
 
 #include "zorbatypes/schema_types.h"
 
+#include "tree_id.h"
 
 namespace zorba
 {

@@ -56,6 +56,7 @@
 #include "name_iterator.h"
 #include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
+#include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
@@ -1318,6 +1319,16 @@ TokenizerProvider const* Store::getTokenizerProvider() const
   return theTokenizerProvider ?
     theTokenizerProvider : &default_tokenizer_provider();
 }
+
+/*******************************************************************************
+  create a tree id for a new tree that does not belong to any collection.
+********************************************************************************/
+TreeId Store::createTreeId()
+{
+  return getTreeIdGeneratorFactory().getDefaultTreeIdGenerator().create();
+}
+
+
 #endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace store

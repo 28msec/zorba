@@ -243,7 +243,6 @@ protected:
 
   virtual void destroyCollectionSet(CollectionSet*) const = 0;
 
-
   virtual TreeIdGeneratorFactory* createTreeIdGeneratorFactory() const = 0;
 
   virtual void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory*) const = 0;
@@ -252,7 +251,7 @@ protected:
 public:
   virtual ulong createCollectionId() = 0;
 
-  virtual ulong createTreeId() = 0;
+  virtual ulong createTreeId();
 
   virtual store::Collection_t createCollection(
       const store::Item_t& aName,
