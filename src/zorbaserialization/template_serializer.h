@@ -74,7 +74,7 @@ void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
       int   version;
       bool  is_simple = true;
       bool  is_class = false;
-      enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+      enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
       int   referencing;
       bool  retval;
       retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -143,7 +143,7 @@ void operator&(Archiver &ar, std::list<T> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -196,7 +196,7 @@ void operator&(Archiver &ar, std::vector<T> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -260,13 +260,13 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "std::vector<T>*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_nonclass_field(retval, type, "std::vector<T>*", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;
@@ -349,7 +349,7 @@ void operator&(Archiver &ar, std::vector<T*> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -393,7 +393,7 @@ void operator&(Archiver &ar, std::pair<T1, T2> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -442,13 +442,13 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;
@@ -533,13 +533,13 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "std::map<T1, T2>", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_nonclass_field(retval, type, "std::map<T1, T2>", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;
@@ -634,7 +634,7 @@ void operator&(Archiver &ar, std::map<T1, T2, Tcomp> &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -688,7 +688,7 @@ void operator&(Archiver &ar, T &obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = true;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -795,13 +795,13 @@ void operator&(Archiver &ar, T *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = true;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       assert(!ar.is_serialize_base_class());

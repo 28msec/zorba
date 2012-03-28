@@ -41,7 +41,7 @@ public:
                                 int *version, 
                                 bool *is_simple, 
                                 bool *is_class,
-                                enum ArchiveFieldTreat *field_treat,
+                                enum ArchiveFieldKind *field_treat,
                                 int *referencing);
 
   virtual void read_end_current_level_impl();

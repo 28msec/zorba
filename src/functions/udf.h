@@ -134,7 +134,7 @@ private:
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
-  rchandle<rclist<user_function*> >  theLocalUdfs;//for plan serializer
+  rchandle<rclist<user_function*> > theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)
