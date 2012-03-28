@@ -1121,6 +1121,13 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      else
       (<div class="subsubsection">XQuery version and encoding for this module:</div>,
        <p class="annotationText">xquery version "{$module/xqdoc:comment/xqdoc:custom[@tag='XQuery version']/text()}" encoding "{$module/xqdoc:comment/xqdoc:custom[@tag='encoding']/text()}";</p>)
+     ),
+     let $modVersion := xqdoc2html:get-module-version($moduleUri)
+     return
+     if($modVersion = "") then ()
+     else
+     (<div class="subsubsection">Zorba version for this module:</div>,
+      <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information about module versioning in Zorba please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
      )
 };
 
@@ -1221,8 +1228,17 @@ declare %private function xqdoc2html:imports(
     }
     </ul></p>
   else (),
+  if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]) > 0) then
+    <p>External C++ library dependencies:<ul>
+      {
+      for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]
+        return
+         <li>{$library/node()}</li>
+      }
+    </ul></p>
+  else (),
   if (fn:count($xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]) > 0) then
-    <p>Imported schemas:<ul>
+    (<p>Imported schemas:<ul>
     {
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
@@ -1236,16 +1252,23 @@ declare %private function xqdoc2html:imports(
         else
           <li>{string($import/xqdoc:uri/text())}</li>
     }
-    </ul></p>
-  else (),
-  if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]) > 0) then
-    <p>External C++ library dependencies:<ul>
-      {
-      for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="library"]
-        return
-         <li>{$library/node()}</li>
-      }
-    </ul></p>
+    </ul></p>,
+    <p>Please note that the schemas are not automatically imported in the modules that import this module. <br />
+    In order to import and use the schemas, please add:
+    <pre class="brush: xquery;">
+    {
+    let $namespaces := $xqdoc/xqdoc:module//xqdoc:custom[@tag = "namespaces"]
+    return
+    string-join(
+    for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
+      return
+       concat('import schema namespace ',
+              $namespaces//xqdoc:namespace[(@uri = $import/xqdoc:uri/text()) and (@isSchema = "true")]/@prefix,
+              ' =  "',
+              string($import/xqdoc:uri/text()),'";'),"
+")
+    }
+    </pre></p>)
   else ()
   )
 };
@@ -1407,7 +1430,7 @@ declare %private function xqdoc2html:split-function-signature($signature as xs:s
             substring-before($rest, ") external")
           (: no external function :)
           else
-            $rest
+            substring-before($rest, ")")
         (: the return type is specified :)
         else
           $tmp

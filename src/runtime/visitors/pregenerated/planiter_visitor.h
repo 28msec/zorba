@@ -25,7 +25,7 @@
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "types/typeconstants.h"
+#include "store/api/xs_type_codes.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -91,6 +91,8 @@ namespace zorba{
     class ZorbaDeleteNodesFirstIterator;
 
     class ZorbaDeleteNodesLastIterator;
+
+    class ZorbaTruncateCollectionIterator;
 
     class ZorbaCollectionNameIterator;
 
@@ -250,6 +252,10 @@ namespace zorba{
     class OptionIterator;
 
     class FunctionAnnotationsIterator;
+
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
 
     class SqrtIterator;
 
@@ -584,6 +590,8 @@ namespace zorba{
 
     class StringSplitIterator;
 
+    class DecodeURIIterator;
+
     class XQDocIterator;
 
     class XQDocContentIterator;
@@ -690,6 +698,9 @@ public:
 
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
@@ -928,6 +939,12 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
@@ -1427,6 +1444,9 @@ public:
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
+
+    virtual void beginVisit ( const DecodeURIIterator& ) = 0;
+    virtual void endVisit   ( const DecodeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

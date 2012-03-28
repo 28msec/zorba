@@ -1,5 +1,16 @@
 Zorba - The XQuery Processor
 
+version 2.5
+
+New Features:
+  * Extended API for Python, Java, PHP and Ruby.
+
+Bug Fixes/Other Changes:
+  * Fixed bug in window iterator
+  * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+  * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+
+
 version 2.2
 
   * No-copy optimization: avoids copying nodes during node-constructor expressions.

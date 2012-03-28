@@ -39,7 +39,44 @@
        It is a static error if an expression is not a valid instance of the
        grammar.
       </comment>
+
       <value>invalid expression${: 1}</value>
+
+      <entry key="XQueryVersionAtLeast30_2">
+        <value>"$2": XQuery version must be at least 3.0</value>
+      </entry>
+
+      <entry key="OuterForClause11">
+        <value>"outer-for" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="WindowClause11">
+        <value>"window" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="CountClause11">
+        <value>"count" clause only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="SwitchExpr11">
+        <value>"switch" expressions only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="TryCatchExpr11">
+        <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="Anotations">
+        <value>function and variable annotations only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="Scripting">
+        <value>scripting feature not available</value>
+      </entry>
+
+      <entry key="PiTarget">
+        <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPTY0004">
@@ -51,6 +88,11 @@
        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
       <value>$1</value>
+
+      <entry key="FormatNumber_2">
+        <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -1576,6 +1618,10 @@
       <value>"$1": feature not enabled</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0006" name="UNKNOWN_ENCODING">
+      <value>"$1": unknown character encoding</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0007" name="FUNCTION_SIGNATURE_NOT_EQUAL">
       <value>"$1": function signature does not match declaration</value>
     </diagnostic>
@@ -1665,7 +1711,9 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
+
       <value>"$1": feature not available</value>
+
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
@@ -1705,7 +1753,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQD0003" name="INCONSISTENT_PARSE_FRAGMENT_OPTIONS">
-      <value>inconsistent options to the parse-xml-fragment() function: $1</value>
+      <value>inconsistent options to the parse-xml() function: $1</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0004" name="INVALID_PARAMETER">
@@ -1822,6 +1870,10 @@
 
     <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
       <value>can not retrieve node-reference for a node that is not in a collection.</value>
+    </diagnostic>
+     
+    <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
+      <value>a non root element cannot be validated in place.</value>
     </diagnostic>
 
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
@@ -1967,6 +2019,10 @@
 
     <diagnostic code="ZDDY0018" name="NODES_NOT_IN_SAME_COLLECTION">
       <value>all nodes must be in same collection</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
+      <value>"$1": collection $2 cannot be undone</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
@@ -2188,6 +2244,10 @@
       <value>"$1": error loading dynamic library${: 2}</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0006" name="TRANSCODING_ERROR">
+      <value>stream transcoding error ($1)</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2274,6 +2334,10 @@
       <value>out of range: $1</value>
     </diagnostic>
 
+    <diagnostic code="ZSTR0065" name="STRINGS_IN_POOL">
+      <value>Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.</value>
+    </diagnostic>
+
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
 
     <diagnostic code="XSST0001">
@@ -2305,6 +2369,63 @@
     </diagnostic>
     <diagnostic code="XSST0010">
       <value>"continue loop" statement not inside while statement</value>
+    </diagnostic>
+
+   <!--////////// JSON Parse Errors ////////////////////////////////////////-->
+
+    <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
+      <value>'$1': illegal JSON character</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
+      <value>"$1": illegal Unicode code-point</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
+      <value>'\\$1': illegal JSON character escape</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
+      <value>illegal JSON literal</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
+      <value>illegal JSON number</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
+      <value>"$1": unexpected JSON token</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
+      <value>unterminated JSON string</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
+      <value>"$1": illegal QName</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
+      <value>illegal empty string</value>
+    </diagnostic>
+
+   <!--////////// JSON Serialization Errors ////////////////////////////////-->
+
+    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
+      <value>JSON serialization requires document or element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
+      <value>"$1" element missing required "$2" attribute</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
+      <value>"$1": illegal value for attribute "$2"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
+      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
+      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
+      <value>JSON type "$1" can not have a child element node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
+      <value>JSON type "$1" can not have a child text node</value>
+    </diagnostic>
+    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+      <value>"$1": illegal value for JSON type "$2"</value>
     </diagnostic>
 
   </namespace>
@@ -2499,6 +2620,10 @@
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
     </entry>
+    
+    <entry key="BadXMLNoOpeningTag">
+      <value>closing tag without matching opening tag</value>
+    </entry>
 
     <entry key="BadXMLForXQDoc_3">
       <value>can not parse as XML for xqdoc: $3</value>
@@ -2550,10 +2675,6 @@
 
     <entry key="CollectionIteratorNotOpen">
       <value>collection iterator not open</value>
-    </entry>
-
-    <entry key="CountClause11">
-      <value>"count" clause only available in XQuery 1.1 or later</value>
     </entry>
 
     <entry key="DefaultCollation">
@@ -2824,6 +2945,10 @@
       <value>sequence of more than one item can not be operand for function "$2()"</value>
     </entry>
 
+    <entry key="NoSeqForConcat">
+      <value>multi-item sequence can not be operand for concatenation</value>
+    </entry>
+
     <entry key="NoSeqInValueComp">
       <value>sequnce of more than one item can not be in value comparisons</value>
     </entry>
@@ -2968,10 +3093,6 @@
       <value>"$2": operation not possible with parameters of type "$3" and "$4"</value>
     </entry>
 
-    <entry key="OuterForClause11">
-      <value>"outer-for" clause only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="ParserInitFailed">
       <value>parser initialization failed</value>
     </entry>
@@ -3056,16 +3177,8 @@
       <value>sum not possible with parameters of type "$2" and "$3"</value>
     </entry>
 
-    <entry key="SwitchExpr11">
-      <value>"switch" expressions only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="TrailingChar_3">
       <value>trailing '$3'</value>
-    </entry>
-
-    <entry key="TryCatchExpr11">
-      <value>"try/catch" expressions only available in XQuery 1.1 or later</value>
     </entry>
 
     <entry key="TwoDecimalFormatsSameName_2">
@@ -3188,16 +3301,8 @@
       <value>undeclared variable</value>
     </entry>
 
-    <entry key="WindowClause11">
-      <value>"window" clause only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="XMLSchema">
       <value>XML schema</value>
-    </entry>
-
-    <entry key="XQueryVersionAtLeast10_2">
-      <value>"$2": XQuery version must be at least 1.0</value>
     </entry>
 
     <entry key="XUST0002_Transform">
@@ -3262,6 +3367,14 @@
 
     <entry key="Zorba warning">
       <value>Zorba warning</value>
+    </entry>
+
+    <entry key="JSON parser error">
+      <value>JSON parser error</value>
+    </entry>
+
+    <entry key="JSON serialization error">
+      <value>JSON serialization error</value>
     </entry>
 
     <entry key="dynamic error">
@@ -3408,12 +3521,12 @@
       <value>xqueryx content is empty</value>
     </entry>
 
-    <entry key="ParseFragmentOptionDSLNotAllowed">
-      <value>if the e option is specified, none of the options d, s, or l may be enabled</value>
-    </entry>
-
     <entry key="ParseFragmentOptionCombinationNotAllowed">
-      <value>specifying both $2 and $3 is an error</value>
+      <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
+    </entry>
+    
+    <entry key="ParseFragmentInvalidOptions">
+      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
     </entry>
 
   </subvalues>

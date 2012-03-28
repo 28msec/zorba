@@ -72,7 +72,7 @@ void root_static_context::init()
   const char* const default_ns_initializers[] = 
     {
       //"err", XQUERY_ERR_NS,
-      "fn", static_context::W3C_FN_NS.c_str(),
+      "fn", static_context::W3C_FN_NS,
       "local", XQUERY_LOCAL_FN_NS,
       //"math", XQUERY_MATH_FN_NS,
       "xml", XML_NS,

@@ -140,7 +140,7 @@ store::Item_t TypeOps::getQName(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
+store::SchemaTypeCode TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
   return (static_cast<const AtomicXQType&>(type)).get_type_code();
@@ -288,6 +288,15 @@ bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
+bool TypeOps::is_numeric(store::SchemaTypeCode type)
+{
+  return store::XS_FLOAT <= type && type <= store::XS_POSITIVE_INTEGER;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_numeric(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);
@@ -325,15 +334,15 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
   case XQType::ATOMIC_TYPE_KIND:
     switch (static_cast<const AtomicXQType &>(type).get_type_code()) 
     {
-    case TypeConstants::XS_ANY_ATOMIC:
-    case TypeConstants::XS_DATE:
-    case TypeConstants::XS_TIME:
-    case TypeConstants::XS_DATETIME:
-    case TypeConstants::XS_GYEAR_MONTH:
-    case TypeConstants::XS_GYEAR:
-    case TypeConstants::XS_GMONTH_DAY:
-    case TypeConstants::XS_GDAY:
-    case TypeConstants::XS_GMONTH:
+    case store::XS_ANY_ATOMIC:
+    case store::XS_DATE:
+    case store::XS_TIME:
+    case store::XS_DATETIME:
+    case store::XS_GYEAR_MONTH:
+    case store::XS_GYEAR:
+    case store::XS_GMONTH_DAY:
+    case store::XS_GDAY:
+    case store::XS_GMONTH:
       return true;
     default: return false;
     }
@@ -487,6 +496,17 @@ bool TypeOps::is_equal(
   }
 
   return true;
+}
+
+
+/*******************************************************************************
+  Returns true iff "subtype" is a subtype of "supertype".
+********************************************************************************/
+bool TypeOps::is_subtype(
+    store::SchemaTypeCode subtype,
+    store::SchemaTypeCode supertype)
+{
+  return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[subtype][supertype];
 }
 
 
@@ -730,7 +750,7 @@ bool TypeOps::is_subtype(
 
       const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
 
-      if (a2.get_type_code() == TypeConstants::XS_ANY_ATOMIC)
+      if (a2.get_type_code() == store::XS_ANY_ATOMIC)
         return true;
 
       xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
@@ -896,7 +916,6 @@ bool TypeOps::is_treatable(
     const XQType& targetType,
     const QueryLoc& loc)
 {
-  // return is_subtype(tm, *tm->create_value_type(item.getp(), loc), targetType, loc);
   return is_subtype(tm, item.getp(), targetType, loc);
 }
 
@@ -1158,9 +1177,10 @@ static inline IdentTypes::quantifier_t get_typeident_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-type_ident_ref_t TypeOps::get_type_identifier(
+TypeIdentifier_t TypeOps::get_type_identifier(
     const TypeManager* tm,
-    const XQType& type)
+    const XQType& type,
+    bool nested)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -1171,6 +1191,7 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
+
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString(qname->getNamespace()),
       Unmarshaller::newString(qname->getLocalName()),
@@ -1181,11 +1202,12 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
 
-    type_ident_ref_t content_type = (nt.get_content_type() != NULL ?
-                                     get_type_identifier(tm, *nt.get_content_type()) :
-                                     type_ident_ref_t());
-
     const store::Item* nodeName = nt.get_node_name();
+
+    TypeIdentifier_t content_type;
+ 
+    if (nt.get_content_type() != NULL && !nt.is_schema_test())
+      content_type = get_type_identifier(tm, *nt.get_content_type(), true);
 
     switch(nt.get_node_kind()) 
     {
@@ -1206,34 +1228,67 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::elementNode:
     {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+      if (nt.is_schema_test()) 
+      {
+        ZORBA_ASSERT(nodeName);
+        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
 
-      return TypeIdentifier::createElementType(uri,
-                                               nodeName == NULL,
-                                               local,
-                                               nodeName == NULL,
-                                               content_type,
-                                               q);
-    }  
-    case store::StoreConsts::attributeNode:
-    {
-      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        return TypeIdentifier::createSchemaElementType(uri, local, q);
+      }
+      else
+      {
+        String uri;
+        String local;
+        if (nodeName)
+        {
+          uri   = nodeName->getNamespace().c_str();
+          local = nodeName->getLocalName().c_str();
+        }
 
-      return TypeIdentifier::createAttributeType(uri,
+        return TypeIdentifier::createElementType(uri,
                                                  nodeName == NULL,
                                                  local,
                                                  nodeName == NULL,
                                                  content_type,
-                                                 q);
+                                                 q); 
+      }
+    }  
+    case store::StoreConsts::attributeNode:
+    {
+      if (nt.is_schema_test()) 
+      {
+        ZORBA_ASSERT(nodeName);
+        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+
+        return TypeIdentifier::createSchemaAttributeType(uri, local, q);
+      }
+      else
+      {
+        String uri;
+        String local;
+        if (nodeName)
+        {
+          uri   = nodeName->getNamespace().c_str();
+          local = nodeName->getLocalName().c_str();
+        }
+
+        return TypeIdentifier::createAttributeType(uri,
+                                                   nodeName == NULL,
+                                                   local,
+                                                   nodeName == NULL,
+                                                   content_type,
+                                                   q);
+      }
     }
     default:
       // cannot happen
       ZORBA_ASSERT(false);
-      return type_ident_ref_t();
+      return NULL;
     }
   }
+
   case XQType::ANY_TYPE_KIND:
     return TypeIdentifier::createNamedType(
       Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getNamespace() ),
@@ -1262,13 +1317,23 @@ type_ident_ref_t TypeOps::get_type_identifier(
     return TypeIdentifier::createEmptyType();
 
   case XQType::USER_DEFINED_KIND:
-    //TODO for Vinayak return type identifier
+  {
+    ZORBA_ASSERT(nested || is_atomic(tm, type));
+
+    store::Item* lQname = type.get_qname().getp();
+
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString( lQname->getNamespace() ), 
+      Unmarshaller::newString( lQname->getLocalName() ),
+      q
+    );
+  }
   default:
     break;
   }
 
   ZORBA_ASSERT(false);
-  return type_ident_ref_t();
+  return NULL;
 }
 
 

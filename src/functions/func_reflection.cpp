@@ -95,7 +95,7 @@ PlanIter_t fn_zorba_invoke::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -107,7 +107,7 @@ PlanIter_t fn_zorba_invoke_n::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -119,7 +119,7 @@ PlanIter_t fn_zorba_invoke_u::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -131,7 +131,7 @@ PlanIter_t fn_zorba_invoke_s::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -141,25 +141,25 @@ PlanIter_t fn_zorba_invoke_s::codegen(
 void populate_context_reflection(static_context* sctx)
 {
   DECL(sctx, fn_zorba_invoke,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "invoke"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_zorba_invoke_n,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-n"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "invoke-n"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_zorba_invoke_u,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-u"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "invoke-u"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_invoke_s,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-s"),
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "invoke-s"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));

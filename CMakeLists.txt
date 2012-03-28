@@ -237,11 +237,21 @@ ENDIF(ZORBA_WITH_CPU_PROFILE)
 MESSAGE(STATUS "Looking for LibXml2")
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
-  MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
-    
-  INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-  SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
-  SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  # Now check LibXml2's version
+  FILE(STRINGS ${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h LIBXML2_VERSION_TMP REGEX 
+       "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\".*\"")
+  STRING(REGEX REPLACE "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\"(.*)\"" "\\1" 
+         LIBXML2_VERSION ${LIBXML2_VERSION_TMP})
+         
+  IF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  ELSE(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(FATAL_ERROR "The libxml2 library version 2.7.0 or higher is required in order to build Zorba.")
+  ENDIF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+
 ELSE(LIBXML2_FOUND)
   MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
@@ -417,7 +427,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "1")
+SET(ZORBA_MINOR_NUMBER "2")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
@@ -498,14 +508,15 @@ ADD_SUBDIRECTORY(cmake_modules)
 # Subdirectory ordering: We need to include "test" before "config" so
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
-# ZorbaConfig.cmake.
+# ZorbaConfig.cmake. We need to include "modules" before "include" so
+# config.h can know eg. whether we found CURL.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)

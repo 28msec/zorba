@@ -23,17 +23,17 @@
 
 #include <zorba/store_consts.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/loader.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "string_pool.h"
+#include "qname_pool.h"
+#include "simple_store.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "dataguide.h"
+#include "nsbindings.h"
+#include "loader.h"
+#include "simple_item_factory.h"
+#include "node_factory.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
@@ -70,15 +70,41 @@ namespace simplestore {
       return; \
   } while (0);
 
+
+/*******************************************************************************
+
+********************************************************************************/
+XmlLoader::XmlLoader(
+    store::ItemFactory* factory,
+    XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
+    bool dataguide)
+  :
+  theLoadProperties(loadProperties),
+  ctxt(NULL),
+  theFactory(static_cast<BasicItemFactory*>(factory)),
+  theXQueryDiagnostics(xqueryDiagnostics),
+  theTraceLevel(0),
+  theBuildDataGuide(dataguide)
+{
+}
+
+
+XmlLoader::~XmlLoader() 
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
-    BasicItemFactory* factory,
+    store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
+    const store::LoadProperties& loadProperties,
     bool dataguide)
   :
-  XmlLoader(factory, xqueryDiagnostics, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, loadProperties, dataguide),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -297,6 +323,13 @@ store::Item_t FastXmlLoader::loadXml(
                                    theBuffer,
                                    static_cast<int>(numChars),
                                    docUri.c_str());
+
+    // Apply loader options
+    store::LoadProperties new_props = theLoadProperties;
+    new_props.setSubstituteEntities(true); // This is required for some Zorba tests,
+                                           // e.g. rbkt/Queries/zorba/entity/entity.xq
+                                           // It should probably be handled in a different way
+    applyLoadOptions(new_props, ctxt);
 
     if (ctxt == NULL)
     {
@@ -534,7 +567,7 @@ void FastXmlLoader::startElement(
     int numDefaulted,
     const xmlChar ** attributes)
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
   NodeFactory& nfactory = store.getNodeFactory();
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);

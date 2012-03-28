@@ -126,7 +126,7 @@ namespace zorba { namespace http_client {
     String lLocalName = "response";
     Item lNodeName = theFactory->createQName(theNamespace, lLocalName);
     theResponse = theFactory->createElementNode(lNullParent, lNodeName,
-      theUntypedQName, true, false, std::vector<std::pair<String, String> >());
+      theUntypedQName, true, false, NsBindings());
     theFactory->createAttributeNode(theResponse,
       theFactory->createQName("", "status"), lNullType,
       theFactory->createInteger(aStatus));
@@ -165,7 +165,7 @@ namespace zorba { namespace http_client {
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
       theFactory->createQName(theNamespace, "header"), theUntypedQName, true,
-      true, std::vector<std::pair<String, String> >());
+      true, NsBindings());
     theFactory->createAttributeNode(lElem, theFactory->createQName("", "name"),
       lNullType, theFactory->createString(aName));
     theFactory->createAttributeNode(lElem, theFactory->createQName("", "value"),
@@ -180,7 +180,7 @@ namespace zorba { namespace http_client {
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
       theFactory->createQName(theNamespace, "body"), theUntypedQName, true,
-      true, std::vector<std::pair<String, String> >());
+      true, NsBindings());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "media-type"),
       lNullType, theFactory->createString(aContentType));
@@ -201,7 +201,7 @@ namespace zorba { namespace http_client {
     Item lNullType;
     Item lElem = theFactory->createElementNode(theResponse,
       theFactory->createQName(theNamespace, "body"), theUntypedQName, true,
-      true, std::vector<std::pair<String, String> >());
+      true, NsBindings());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "content-type"),
       lNullType, theFactory->createString(aContentType));

@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include "zorbautils/fatal.h"
-#include "store/naive/nsbindings.h"
+#include "nsbindings.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
 #include "zorbamisc/ns_consts.h"

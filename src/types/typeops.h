@@ -22,13 +22,15 @@
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
 #include "zorba/typeident.h"
-#include "store/api/item.h"
+
 #include "compiler/parser/query_loc.h"
 
+#include "store/api/xs_type_codes.h"
+#include "store/api/item.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-typedef TypeIdentifier_t type_ident_ref_t;
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC TypeOps 
@@ -91,7 +93,7 @@ public:
    * Returns the atomic_type_code_t for a given type, which is assumed to be
    * a quantified builtin atomic type.
    */
-  static TypeConstants::atomic_type_code_t get_atomic_type_code(const XQType& type);
+  static store::SchemaTypeCode get_atomic_type_code(const XQType& type);
 
   /**
    * Return true is the given type is among the known types of the given type mgr
@@ -131,6 +133,12 @@ public:
    * numeric type (xs:decimal, xs:double, or xs:float)
    */
   static bool is_numeric(const TypeManager* tm, const XQType& type);
+
+  /**
+   * Returns true is the given sequence type is a subtype of an atomic builtin
+   * numeric type (xs:decimal, xs:double, or xs:float)
+   */
+  static bool is_numeric(store::SchemaTypeCode type);
  
   /**
    * Returns true is the given sequence type is a subtype of an atomic builtin
@@ -157,6 +165,13 @@ public:
         const XQType& type1,
         const XQType& type2,
         const QueryLoc& loc = QueryLoc::null);
+
+  /*
+   * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
+   */
+  static bool is_subtype(
+        store::SchemaTypeCode subtype,
+        store::SchemaTypeCode supertype);
 
   /*
    * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
@@ -238,9 +253,10 @@ public:
    * The invariant that is guaranteed is:
    *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
    */
-  static type_ident_ref_t get_type_identifier(
+  static TypeIdentifier_t get_type_identifier(
         const TypeManager* tm,
-        const XQType& type);
+        const XQType& type,
+        bool nested = false);
 
   /*
    * Writes a textual representation of the given type to the output stream.

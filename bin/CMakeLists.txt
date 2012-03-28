@@ -21,16 +21,17 @@ IF (ZORBA_WITH_DEBUGGER)
     IF (LIBEDIT_FOUND)
       INCLUDE_DIRECTORIES (${LIBEDIT_INCLUDE_DIRS})
       SET (LIBEDIT_LIBS ${LIBEDIT_LIBRARIES})
+      SET (ZORBA_HAVE_LIBEDIT_H ${LIBEDIT_FOUND})
     ENDIF (LIBEDIT_FOUND)
   ENDIF (NOT WIN32)
 
-  CHECK_INCLUDE_FILES ("editline/readline.h" ZORBA_HAVE_READLINE_H)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/debugger/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/debugger/config.h)
   MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/debugger/config.h.cmake --> ${CMAKE_CURRENT_BINARY_DIR}/debugger/config.h")
   INCLUDE_DIRECTORIES (BEFORE ${CMAKE_CURRENT_BINARY_DIR}/debugger)
 
   SET (DEBUG_CLIENT_SRCS
     debugger/main.cpp
+    debugger/xqdb_client.cpp
     debugger/process_listener.cpp
     debugger/command_prompt.cpp
     debugger/command_line_handler.cpp

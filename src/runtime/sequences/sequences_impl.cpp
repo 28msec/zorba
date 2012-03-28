@@ -21,7 +21,9 @@
 #include <sstream>
 
 #include <zorbautils/fatal.h>
-#include <diagnostics/xquery_diagnostics.h>
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include <zorbatypes/URI.h>
 #include <zorbamisc/ns_consts.h>
 
@@ -154,11 +156,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
-		throw XQUERY_EXCEPTION(
-			err::FORG0006,
-			ERROR_PARAMS( ZED( EmptySeqNoSearchItem ) ),
-			ERROR_LOC( loc )
-		);
+		RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
   }
 
   if ( theChildren.size() == 3 )
@@ -213,11 +211,12 @@ FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   if ( !consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
   }
   else
   {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, false ), state);
+    theChildren[0]->reset(planState);
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, false), state);
   }
 
   STACK_END (state);
@@ -235,6 +234,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   if ( consumeNext(lSequenceItem, theChildren[0].getp(), planState) )
   {
+    theChildren[0]->reset(planState);
     STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( result, true ), state);
   }
   else
@@ -464,13 +464,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   state->theIsChildReset = false;
 
   CONSUME(startPosItem, 1);
-  startPos = 
+  startPos =
   static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining = 
+    state->theRemaining =
     static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
   }
 
@@ -493,13 +493,21 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
-         CONSUME(result, 0))
+  if (theChildren.size() < 3)
   {
-    if (theChildren.size () >= 3)
+    while (CONSUME(result, 0))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    while (state->theRemaining > 0 && CONSUME(result, 0))
+    {
       state->theRemaining--;
-
-    STACK_PUSH (true, state);
+      
+      STACK_PUSH(true, state);
+    }
   }
 
 done:
@@ -571,13 +579,21 @@ bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planStat
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
-         CONSUME(result, 0))
+  if (theChildren.size() < 3)
   {
-    if (theChildren.size () >= 3)
+    while (CONSUME(result, 0))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    while (state->theRemaining > 0 && CONSUME(result, 0))
+    {
       state->theRemaining--;
 
-    STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
+    }
   }
 
 done:
@@ -586,6 +602,7 @@ done:
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   zorbaop:sequence-point-access
@@ -1016,7 +1033,7 @@ static bool DeepEqual(
 }
 
 bool FnDeepEqualIterator::nextImpl(
-    store::Item_t& result, 
+    store::Item_t& result,
     PlanState& planState) const
 {
   PlanIteratorState* state;
@@ -1044,7 +1061,7 @@ bool FnDeepEqualIterator::nextImpl(
       break;
     }
 
-    if (arg1->isFunction() || arg2->isFunction()) 
+    if (arg1->isFunction() || arg2->isFunction())
     {
 			throw XQUERY_EXCEPTION(
           err::FOTY0015,
@@ -1144,12 +1161,12 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
 
-  for (;;) 
+  for (;;)
   {
     // load items
-    for (i = 0; i < 2; i++) 
+    for (i = 0; i < 2; i++)
     {
-      if (item [i] == NULL) 
+      if (item [i] == NULL)
       {
         if (!CONSUME (item[i], i))
         {
@@ -1161,7 +1178,7 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     // advance, output
     order = GENV_STORE.compareNodes(item[0].getp(), item[1].getp());
-    if ( order == 0 ) 
+    if ( order == 0 )
     {
       result = item[0];
       STACK_PUSH (true, state);
@@ -1513,8 +1530,9 @@ bool FnSumDoubleIterator::nextImpl(
     STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.5 fn:sum - Float
@@ -1721,7 +1739,7 @@ static void fillTime (
   planState.theGlobalDynCtx->theDocLoadingUserTime +=
     zorbatm::get_cputime_elapsed(t0user, t1user);
 
-  planState.theGlobalDynCtx->theDocLoadingTime += 
+  planState.theGlobalDynCtx->theDocLoadingTime +=
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
@@ -1815,7 +1833,7 @@ static void loadDocument(
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
-  lLoadProperties.setEnableDtd( aSctx->is_feature_set( feature::dtd ) );
+  lLoadProperties.setDTDValidate( aSctx->is_feature_set( feature::dtd ) );
 
   // Resolve URI to a stream
   zstring lErrorMessage;

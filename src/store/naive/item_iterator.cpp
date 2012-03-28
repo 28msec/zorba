@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 #include "store/api/item.h"
-#include "store/naive/item_iterator.h"
+#include "item_iterator.h"
 #include "store/api/collection.h"
 
 namespace zorba { namespace simplestore {

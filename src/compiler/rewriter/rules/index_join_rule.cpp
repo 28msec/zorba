@@ -242,7 +242,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   // Determine the outer and inner side of the join
   ulong outerVarId;
-  ulong innerVarId;
 
   if (var1id < var2id)
   {
@@ -252,7 +251,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     predInfo.theInnerOp = op2;
     predInfo.theInnerVar = var2;
     outerVarId = var1id;
-    innerVarId = var2id;
   }
   else
   {
@@ -262,7 +260,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     predInfo.theInnerOp = op1;
     predInfo.theInnerVar = var1;
     outerVarId = var2id;
-    innerVarId = var1id;
   }
 
   TypeManager* tm = sctx->get_typemanager();

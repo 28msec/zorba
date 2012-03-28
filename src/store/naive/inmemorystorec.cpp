@@ -17,7 +17,7 @@
 
 #include <zorba/store_manager_c.h>
 #include <zorba/store_manager.h>
-#include "store/naive/simple_store.h"
+#include "simple_store.h"
 
 void* 
 create_store()
@@ -29,6 +29,6 @@ create_store()
 void 
 shutdown_store(void* aStore)
 {
-  static_cast<zorba::simplestore::SimpleStore*>(aStore)->shutdown();
+  static_cast<zorba::simplestore::Store*>(aStore)->shutdown();
 }
 /* vim:set et sw=2 ts=2: */

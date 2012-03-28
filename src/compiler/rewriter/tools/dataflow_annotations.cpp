@@ -215,6 +215,17 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case pi_expr_kind:
     compute_pi_expr(static_cast<pi_expr *>(e));
     break;
+
+#ifdef ZORBA_WITH_JSON
+  case json_pair_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+  }
+#endif
     
   case dynamic_function_invocation_expr_kind: // TODO
   case function_item_expr_kind: // TODO
@@ -266,7 +277,7 @@ void DataflowAnnotationsComputer::default_walk(expr* e)
 bool DataflowAnnotationsComputer::generic_compute(expr* e)
 {
   xqtref_t rt = e->get_return_type();
-  TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
+  TypeConstants::quantifier_t quant = rt->get_quantifier();
 
   if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) 
   {
@@ -617,13 +628,13 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
   {
     TypeManager* tm = e->get_type_manager();
 
-    ulong num_steps = (ulong)e->size();
+    csize num_steps = e->size();
     bool only_child_axes = true;
     ulong num_desc_axes = 0;
     ulong num_following_axes = 0;
     bool reverse_axes = false;
 
-    for (ulong i = 1; i < num_steps; ++i) 
+    for (csize i = 1; i < num_steps; ++i) 
     {
       axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i]);
       assert(ase != NULL);
@@ -774,11 +785,18 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 
 SourceFinder::~SourceFinder()
 {
-  UdfSourcesMap::iterator ite = theUdfSourcesMap.begin();
-  UdfSourcesMap::iterator end = theUdfSourcesMap.end();
-  for (; ite != end; ++ite)
+  UdfSourcesMap::iterator ite1 = theUdfSourcesMap.begin();
+  UdfSourcesMap::iterator end1 = theUdfSourcesMap.end();
+  for (; ite1 != end1; ++ite1)
   {
-    delete ite->second;
+    delete ite1->second;
+  }
+
+  VarSourcesMap::iterator ite2 = theVarSourcesMap.begin();
+  VarSourcesMap::iterator end2 = theVarSourcesMap.end();
+  for (; ite2 != end2; ++ite2)
+  {
+    delete ite2->second;
   }
 }
 
@@ -795,6 +813,11 @@ void SourceFinder::findNodeSources(
     UDFCallChain* udfCaller,
     std::vector<expr*>& sources)
 {
+  theStartingUdf = NULL;
+
+  if (udfCaller->theFo)
+    theStartingUdf = static_cast<user_function*>(udfCaller->theFo->get_func());
+
   findNodeSourcesRec(node, sources, NULL);
 
   for (csize i = 0; i < sources.size(); ++i)
@@ -829,11 +852,19 @@ void SourceFinder::findNodeSources(
     {
       ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
                    source->get_expr_kind() == elem_expr_kind);
+
+      user_function* udf = theSourceUdfMap.find(source)->second;
+
+      if (udf)
+        udf->invalidatePlan();
     }
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void SourceFinder::findNodeSourcesRec(
     expr* node,
     std::vector<expr*>& sources,
@@ -870,16 +901,22 @@ void SourceFinder::findNodeSourcesRec(
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
+      std::vector<expr*>* varSources;
+
       if (ite == theVarSourcesMap.end())
       {
-        std::vector<expr*> varSources;
-        findNodeSourcesRec(e->get_domain_expr(), varSources, currentUdf);
+        varSources = new std::vector<expr*>;
+        theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        ite = (theVarSourcesMap.insert(VarSourcesPair(e, varSources))).first;
+        findNodeSourcesRec(e->get_domain_expr(), *varSources, currentUdf);
+      }
+      else
+      {
+        varSources = (*ite).second;
       }
 
-      std::vector<expr*>::iterator ite2 = (*ite).second.begin();
-      std::vector<expr*>::iterator end2 = (*ite).second.end();
+      std::vector<expr*>::const_iterator ite2 = (*varSources).begin();
+      std::vector<expr*>::const_iterator end2 = (*varSources).end();
       for (; ite2 != end2; ++ite2)
       {
         if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
@@ -911,6 +948,10 @@ void SourceFinder::findNodeSourcesRec(
       if (std::find(sources.begin(), sources.end(), node) == sources.end())
         sources.push_back(node);
 
+      std::vector<expr*>* varSources = new std::vector<expr*>;
+      if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
+        delete varSources;
+
       return;
     }
 
@@ -919,9 +960,11 @@ void SourceFinder::findNodeSourcesRec(
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
+      std::vector<expr*>* varSources;
+
       if (ite == theVarSourcesMap.end())
       {
-        std::vector<expr*> varSources;
+        varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
         std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
@@ -934,7 +977,7 @@ void SourceFinder::findNodeSourcesRec(
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
             findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                               varSources,
+                               *varSources,
                                currentUdf);
           }
           else
@@ -942,17 +985,23 @@ void SourceFinder::findNodeSourcesRec(
             assert(setExpr->get_expr_kind() == var_set_expr_kind);
 
             findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                               varSources,
+                               *varSources,
                                currentUdf);
           }
         }
-
-        ite = theVarSourcesMap.find(e);
-        
-        (*ite).second.insert((*ite).second.end(), varSources.begin(), varSources.end());
+      }
+      else
+      {
+        varSources = (*ite).second;
       }
 
-      sources.insert(sources.end(), (*ite).second.begin(), (*ite).second.end());
+      std::vector<expr*>::const_iterator ite2 = (*varSources).begin();
+      std::vector<expr*>::const_iterator end2 = (*varSources).end();
+      for (; ite2 != end2; ++ite2)
+      {
+        if (std::find(sources.begin(), sources.end(), *ite2) == sources.end())
+          sources.push_back(*ite2);
+      }
 
       return;
     }
@@ -979,7 +1028,12 @@ void SourceFinder::findNodeSourcesRec(
   case elem_expr_kind:
   {
     if (std::find(sources.begin(), sources.end(), node) == sources.end())
+    {
       sources.push_back(node);
+
+      theSourceUdfMap.
+      insert(SourceUdfMapPair(node, (currentUdf ? currentUdf : theStartingUdf)));
+    }
 
     std::vector<expr*> enclosedExprs;
     node->get_fo_exprs_of_kind(FunctionConsts::OP_ENCLOSED_1, false, enclosedExprs);

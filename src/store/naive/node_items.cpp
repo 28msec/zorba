@@ -30,19 +30,20 @@
 #include "zorbamisc/ns_consts.h"
 
 #include "store/api/copymode.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/nsbindings.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/dataguide.h"
-#include "store/naive/node_factory.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "simple_store.h"
+#include "collection.h"
+#include "simple_item_factory.h"
+#include "qname_pool.h"
+#include "store_defs.h"
+#include "nsbindings.h"
+#include "item_iterator.h"
+#include "dataguide.h"
+#include "node_factory.h"
 
+#include "util/stl_util.h"
 #include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -104,7 +105,17 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection, ulong pos)
+void XmlTree::claimedByCollection(Collection* collection)
+{
+  ZORBA_ASSERT(collection != NULL);
+  theCollection = collection;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::setCollection(Collection* collection, xs_integer pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -485,12 +496,10 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t XmlNode::getEBV() const
+bool XmlNode::getEBV() const
 {
   assert(!isConnectorNode());
-  store::Item_t bVal;
-  GET_FACTORY().createBoolean(bVal, true);
-  return bVal;
+  return true;
 }
 
 
@@ -723,7 +732,7 @@ void XmlNode::destroy(bool removeType)
   }
   catch (...)
   {
-    ZORBA_FATAL(false, "Unexpectd exception");
+    ZORBA_FATAL(false, "Unexpected exception");
   }
 }
 
@@ -1053,6 +1062,113 @@ void OrdPathNode::setOrdPath(
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::getDescendantNodeByOrdPath(
+    const OrdPath& aOrdPath,
+    store::Item_t& aResult,
+    bool aAttribute) const
+{
+#ifdef TEXT_ORDPATH
+  if (getOrdPath() == aOrdPath)
+  {
+    aResult = this;
+    return true;
+  }
+#else
+  if (getNodeKind() == store::StoreConsts::textNode)
+  {
+    aResult = NULL;
+    return false;
+  }
+  else if (getOrdPath() == aOrdPath)
+  {
+    aResult = this;
+    return true;
+  }
+#endif
+
+  const XmlNode* parent = static_cast<const XmlNode*>(this);
+  csize i;
+
+  while (1)
+  {
+    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
+        parent->getNodeKind() != store::StoreConsts::elementNode)
+    {
+      aResult = NULL;
+      return false;
+    }
+
+    if (aAttribute && parent->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      const ElementNode* elemParent = reinterpret_cast<const ElementNode*>(parent);
+
+      csize numAttrs = elemParent->numAttrs();
+      for (i = 0; i < numAttrs; ++i)
+      {
+        AttributeNode* child = elemParent->getAttr(i);
+
+        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(aOrdPath);
+
+        if (pos == OrdPath::SELF)
+        {
+          aResult = child;
+          return true;
+        }
+        else if (pos != OrdPath::FOLLOWING) // Includes DESCENDANT case
+        {
+          aResult = NULL;
+          return false;
+        }
+      }
+    }
+
+    const InternalNode* this2 = reinterpret_cast<const InternalNode*>(parent);
+
+    csize numChildren = this2->numChildren();
+    for (i = 0; i < numChildren; ++i)
+    {
+#ifdef TEXT_ORDPATH
+      OrdPathNode* child = static_cast<OrdPathNode*>(this2->getChild(i));
+#else
+      XmlNode* c = this2->getChild(i);
+
+      if (c->getNodeKind() == store::StoreConsts::textNode)
+        continue;
+
+      OrdPathNode* child = static_cast<OrdPathNode*>(c);
+#endif
+
+      OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(aOrdPath);
+
+      if (pos == OrdPath::SELF)
+      {
+        aResult = child;
+        return true;
+      }
+      else if (pos == OrdPath::DESCENDANT)
+      {
+        parent = child;
+        break;
+      }
+      else if (pos != OrdPath::FOLLOWING)
+      {
+        aResult = NULL;
+        return false;
+      }
+    }
+
+    if (i == numChildren)
+    {
+      aResult = NULL;
+      return false;
+    }
+  }
+}
+
 
 /*******************************************************************************
   Return true if "aOther" is an ancestore of "this".
@@ -1177,7 +1293,7 @@ store::Item_t OrdPathNode::getLevel() const
     lCurrent = lCurrent->getParent();
   }
   store::Item_t lRes;
-  GET_STORE().getItemFactory()->createInteger(lRes, lNumLevels);
+  GET_FACTORY().createInteger(lRes, lNumLevels);
   return lRes;
 }
 
@@ -1638,7 +1754,7 @@ store::Iterator_t DocumentNode::getChildren() const
 store::Item* DocumentNode::getType() const
 {
   // ???? should return NULL?
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED];
+  return GET_STORE().XS_UNTYPED_QNAME;
 }
 
 
@@ -1649,7 +1765,7 @@ void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) co
 {
   zstring rch;
   getStringValue2(rch);
-  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+  GET_FACTORY().createUntypedAtomic(val, rch);
   iter = NULL;
 }
 
@@ -1724,7 +1840,7 @@ zstring DocumentNode::show() const
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
   strStream << " baseUri = \"" << theBaseUri << "\"";
-  strStream << " docUri = \"" << theDocUri;
+  strStream << " docUri = \"" << theDocUri << "\"";
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
@@ -2071,8 +2187,8 @@ XmlNode* ElementNode::copyInternal(
         store::Item* typeName = getType();
 
         if (typeName != NULL &&
-            (typeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
-             typeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
+            (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
+             typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
         {
           throw XQUERY_EXCEPTION(err::XQTY0086);
         }
@@ -2258,7 +2374,7 @@ store::Item* ElementNode::getType() const
 {
   return (theTypeName != NULL ?
           theTypeName.getp() :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
+          GET_STORE().XS_UNTYPED_QNAME);
 }
 
 
@@ -2273,7 +2389,7 @@ store::Item* ElementNode::getType() const
 {
   return (haveType() ?
           getTree()->getType(this) :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
+          GET_STORE().XS_UNTYPED_QNAME.getp());
 }
 
 
@@ -2282,7 +2398,7 @@ void ElementNode::setType(store::Item_t& type)
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+        type == GET_STORE().XS_UNTYPED_QNAME)
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -2293,7 +2409,7 @@ void ElementNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+           type != GET_STORE().XS_UNTYPED_QNAME)
   {
     getTree()->addType(this, type);
     setHaveType();
@@ -2525,9 +2641,9 @@ store::Item_t ElementNode::getNilled() const
 {
   store::Item_t val;
 
-  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
+  if (getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
-    GET_STORE().getItemFactory()->createBoolean(val, false);
+    GET_FACTORY().createBoolean(val, false);
     return val;
   }
 
@@ -2571,7 +2687,7 @@ store::Item_t ElementNode::getNilled() const
     }
   }
 
-  GET_STORE().getItemFactory()->createBoolean(val, nilled);
+  GET_FACTORY().createBoolean(val, nilled);
   return val;
 }
 
@@ -3029,16 +3145,16 @@ void ElementNode::addBaseUriProperty(
 {
   ZORBA_FATAL(!absUri.empty(), "");
 
-  const SimpleStore& store = GET_STORE();
+  const Store& store = GET_STORE();
 
   store::Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
-  store::Item_t typeName = store.theSchemaTypeNames[XS_ANY_URI];
+  store::Item_t typeName = store.theSchemaTypeNames[store::XS_ANY_URI];
 
   store::Item_t typedValue;
 
   if (relUri.empty())
   {
-    GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
+    GET_FACTORY().createAnyURI(typedValue, absUri);
   }
   else
   {
@@ -3055,7 +3171,7 @@ void ElementNode::addBaseUriProperty(
       resolvedUriString = relUri;
     }
 
-    GET_STORE().getItemFactory()->createAnyURI(typedValue, resolvedUriString);
+    GET_FACTORY().createAnyURI(typedValue, resolvedUriString);
   }
 
   checkUniqueAttr(qname.getp());
@@ -3354,7 +3470,7 @@ XmlNode* AttributeNode::copyInternal(
   assert(parent != NULL || rootParent == NULL);
   ZORBA_FATAL(!isHidden(), "");
 
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
 
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;
@@ -3378,7 +3494,7 @@ XmlNode* AttributeNode::copyInternal(
     typeName = NULL;
 
     if (!haveListValue() &&
-        theTypedValue->getType()->equals(store.theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+        theTypedValue->getType()->equals(store.theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
     {
       typedValue = theTypedValue;
     }
@@ -3386,21 +3502,21 @@ XmlNode* AttributeNode::copyInternal(
     {
       zstring rch;
       getStringValue2(rch);
-      GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, rch);
+      GET_FACTORY().createUntypedAtomic(typedValue, rch);
     }
   }
 
   try
   {
     if (parent == NULL)
-      tree = GET_STORE().getNodeFactory().createXmlTree();
+      tree = GET_NODE_FACTORY().createXmlTree();
 
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
 
     bool append = (rootParent != parent);
 
-    copyNode = GET_STORE().getNodeFactory().createAttributeNode(
+    copyNode = GET_NODE_FACTORY().createAttributeNode(
                  tree,
                  static_cast<ElementNode*>(parent),
                  append,
@@ -3432,7 +3548,7 @@ store::Item* AttributeNode::getType() const
 {
   return (theTypeName != NULL ?
           theTypeName.getp() :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
+          GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC].getp());
 }
 
 
@@ -3447,7 +3563,7 @@ store::Item* AttributeNode::getType() const
 {
   return (haveType() ?
           getTree()->getType(this) :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
+          GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC].getp());
 }
 
 
@@ -3456,7 +3572,7 @@ void AttributeNode::setType(store::Item_t& type)
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+        type == GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -3467,7 +3583,7 @@ void AttributeNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+           type != GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
   {
     getTree()->addType(this, type);
     setHaveType();
@@ -3540,9 +3656,10 @@ bool AttributeNode::isIdRefs() const
       else if (dynamic_cast<UserTypedAtomicItem*>(values.getItem(i)) != NULL)
       {
         UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(values.getItem(i));
-        if (utai->getTypeCode() == XS_IDREF)
+        if (utai->getTypeCode() == store::XS_IDREF)
           return true;
-        if ((dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF)
+
+        if (utai->getBaseItem()->getTypeCode() == store::XS_IDREF)
           return true;
       }
     }
@@ -3554,9 +3671,11 @@ bool AttributeNode::isIdRefs() const
   else if (dynamic_cast<UserTypedAtomicItem*>(theTypedValue.getp()) != NULL)
   {
     UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(theTypedValue.getp());
-    if (utai->getTypeCode() == XS_IDREF)
+
+    if (utai->getTypeCode() == store::XS_IDREF)
       return true;
-    if ((dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF)
+
+    if (utai->getBaseItem()->getTypeCode() == store::XS_IDREF)
       return true;
   }
 
@@ -4017,7 +4136,7 @@ void TextNode::revertToTextContent()
 ********************************************************************************/
 store::Item* TextNode::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
 }
 
 
@@ -4031,12 +4150,12 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   if (isTyped())
   {
     getValue()->getStringValue2(rch);
-    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+    GET_FACTORY().createUntypedAtomic(val, rch);
   }
   else
   {
     rch = getText();
-    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+    GET_FACTORY().createUntypedAtomic(val, rch);
   }
   iter = NULL;
 }
@@ -4049,7 +4168,7 @@ bool TextNode::isIdInternal() const
 {
   if (isTyped() &&
       getValue()->isAtomic() &&
-      static_cast<AtomicItem*>(getValue())->getTypeCode() == XS_ID)
+      getValue()->getTypeCode() == store::XS_ID)
     return true;
 
   return false;
@@ -4079,9 +4198,10 @@ bool TextNode::isIdRefsInternal() const
         else if (dynamic_cast<UserTypedAtomicItem*>(values.getItem(i)) != NULL)
         {
           UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(values.getItem(i));
-          if ( utai->getTypeCode() == XS_IDREF )
+          if (utai->getTypeCode() == store::XS_IDREF)
             return true;
-          if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+
+          if (utai->getBaseItem()->getTypeCode() == store::XS_IDREF)
             return true;
         }
       }
@@ -4093,9 +4213,9 @@ bool TextNode::isIdRefsInternal() const
     else if (dynamic_cast<UserTypedAtomicItem*>(value) != NULL)
     {
       UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(value);
-      if ( utai->getTypeCode() == XS_IDREF )
+      if ( utai->getTypeCode() == store::XS_IDREF )
         return true;
-      if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+      if (utai->getBaseItem()->getTypeCode() == store::XS_IDREF )
         return true;
     }
   }
@@ -4314,7 +4434,7 @@ store::Item_t TextNode::getLevel() const
   xs_integer lParentLevel = getParent()->getLevel()->getIntegerValue();
 
   store::Item_t lRes;
-  GET_STORE().getItemFactory()->createInteger(lRes, ++lParentLevel);
+  GET_FACTORY().createInteger(lRes, ++lParentLevel);
 
   return lRes;
 }
@@ -4454,14 +4574,14 @@ XmlNode* PiNode::copyInternal(
 ********************************************************************************/
 store::Item* PiNode::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  return GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC];
 }
 
 
 void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   zstring rch = theContent;
-  GET_STORE().getItemFactory()->createString(val, rch);
+  GET_FACTORY().createString(val, rch);
   iter = NULL;
 }
 
@@ -4585,7 +4705,7 @@ store::Item* CommentNode::getType() const
 void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   zstring rch = theContent;
-  GET_STORE().getItemFactory()->createString(val, rch);
+  GET_FACTORY().createString(val, rch);
   iter = NULL;
 }
 
@@ -4633,6 +4753,13 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
   tokens_( tokens )
 {
   push_lang( lang );
+}
+
+
+XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
+{
+  while ( !tokenizer_stack_.empty() )
+    ztd::pop_stack( tokenizer_stack_ )->destroy();
 }
 
 
@@ -4785,8 +4912,8 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
     {
       const AtomicItem* avalue = static_cast<const AtomicItem*>(value);
 
-      if (avalue->getTypeCode() < XS_STRING ||
-          avalue->getTypeCode() > XS_ENTITY)
+      if (avalue->getTypeCode() < store::XS_STRING ||
+          avalue->getTypeCode() > store::XS_ENTITY)
         return;
 
       text = &avalue->getString();
@@ -4803,8 +4930,8 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 
         const AtomicItem* avalue = static_cast<const AtomicItem*>(lvalue->getItem(i));
 
-        if (avalue->getTypeCode() < XS_STRING ||
-            avalue->getTypeCode() > XS_ENTITY)
+        if (avalue->getTypeCode() < store::XS_STRING ||
+            avalue->getTypeCode() > store::XS_ENTITY)
           continue;
 
         listText += avalue->getString();

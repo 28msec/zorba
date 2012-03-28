@@ -1757,9 +1757,9 @@ void collect_flwor_vars (
 
   // Find the ordinal number of the "end-1" clause.
   int i;
-  for (i = (int)clauses.size () - 1; i >= 0; --i)
+  for (i = (int)clauses.size() - 1; i >= 0; --i)
   {
-    if (&*clauses [i] == end)
+    if (&*clauses[i] == end)
     {
       --i;
       break;
@@ -1772,17 +1772,26 @@ void collect_flwor_vars (
   {
     const FLWORClause& c = *clauses[i];
 
-    if (typeid (c) == typeid (ForClause))
+    if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
-      for (int j =  (int)lV.size() - 1; j >= 0; --j)
+      const VarInDeclList& varDecls = 
+      *(static_cast<const ForClause*>(&c)->get_vardecl_list());
+
+      for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
+        VarInDecl* varDecl = varDecls[j].getp();
+
+        vars.insert(lookup_var(varDecl->get_name(), loc, err::XPST0008));
+
+        if (varDecl->get_posvar() != NULL)
+          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
       }
     }
-    else if (typeid (c) == typeid (LetClause))
+    else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+      const VarGetsDeclList& lV = 
+      *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
@@ -3148,8 +3157,7 @@ void* begin_visit(const VFO_DeclList& v)
     {
       if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
       {
-        RAISE_ERROR(err::XPST0003, loc,
-        ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"));
+        RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
       }
 
       lAnns->accept(*this);
@@ -3331,7 +3339,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
+      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
     }
 
     f->setAnnotations(theAnnotations);
@@ -3839,7 +3847,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  bool recognised = false;
+  //bool recognised = false;
 
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
@@ -3860,7 +3868,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
                     + ":" + lExpandedQName->getLocalName())));
     }
 
-    recognised = true;
+    //recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -3907,7 +3915,7 @@ void* begin_visit(const CtxItemDecl& v)
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
 
   theHaveContextItemDecl = true;
 
@@ -5324,12 +5332,9 @@ void* begin_visit(const BlockBody& v)
     return NULL;
   }
 
-  if ( !theSctx->is_feature_set(feature::scripting) )
+  if (!theSctx->is_feature_set(feature::scripting))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
 
   bool topLevel = v.isTopLevel();
@@ -5345,14 +5350,14 @@ void* begin_visit(const BlockBody& v)
 
   push_scope();
 
-  ulong numScopes = theAssignedVars.size();
+  csize numScopes = theAssignedVars.size();
 
   theAssignedVars.resize(numScopes + 1);
 
-  ulong numExprs = v.size();
+  csize numExprs = v.size();
   bool declaresVars = false;
 
-  for (ulong i = 0; i < numExprs; ++i)
+  for (csize i = 0; i < numExprs; ++i)
   {
     v[i]->accept(*this);
 
@@ -5460,12 +5465,9 @@ void* begin_visit(const AssignExpr& v)
 {
   TRACE_VISIT();
 
-  if ( !theSctx->is_feature_set(feature::scripting) )
+  if (!theSctx->is_feature_set(feature::scripting))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
   return no_state;
 }
@@ -5763,7 +5765,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       v.is_non_10())
   {
     RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
   }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theRootSctx, loc, v.is_general());
@@ -5868,7 +5870,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(OuterForClause11)));
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause11)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -6078,9 +6080,7 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( WindowClause11 ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause11)));
 
   return no_state;
 }
@@ -6699,9 +6699,7 @@ void* begin_visit(const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( CountClause11 ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause11)));
 
   return no_state;
 }
@@ -6765,9 +6763,7 @@ void* begin_visit(const SwitchExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(SwitchExpr11)),
-                           ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr11)));
   }
 
   v.get_switch_expr()->accept(*this);
@@ -7166,9 +7162,7 @@ void* begin_visit(const TryExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(TryCatchExpr11)),
-                           ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr11)));
   }
 
   theTryStack.push_back(&v);
@@ -9376,6 +9370,48 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr_t> concat_args;
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  concat_args.push_back(left);
+ 
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  bool rightLeafIsConcatExpr = false;
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+  
+  if(!rightLeafIsConcatExpr)
+  {
+    concat_args.push_back(right);
+  }
+
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  push_nodestack(concat);
+}
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -9709,8 +9745,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9719,7 +9755,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(2)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(2)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -10337,11 +10373,8 @@ void* begin_visit(const DynamicFunctionInvocation& v)
   TRACE_VISIT();
   if ( !theSctx->is_feature_set(feature::hof) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("higher-order functions (hof)" ));
   }
   return no_state;
 }
@@ -10424,7 +10457,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     user_function* udf = new user_function(loc,
                                            fn->getSignature(),
                                            NULL, // no body for now
-                                           fn->getScriptingKind());
+                                           fn->getScriptingKind(),
+                                           theCCB);
 
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -10632,7 +10666,8 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -11365,7 +11400,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   utf8::to_upper(target_str, &target_upper);
 
   if (target_upper == "XML")
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_PiTarget)));
 
   expr_t target = new const_expr(theRootSctx, loc, target_str);
   expr_t content = new const_expr(theRootSctx, loc, v.get_pi_content().str());
@@ -11934,11 +11969,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -12437,7 +12469,8 @@ void end_visit(const VarBinding& v, void*)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-template<typename FTNodeType> bool flatten( ftnode *n ) {
+template<typename FTNodeType> bool flatten( ftnode *n ) 
+{
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
     typename FTNodeType::ftnode_list_t &list = n2->get_node_list();
     typename FTNodeType::ftnode_list_t::iterator i = list.begin();
@@ -12452,7 +12485,8 @@ template<typename FTNodeType> bool flatten( ftnode *n ) {
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-void *begin_visit (const FTAnd& v) {
+void *begin_visit (const FTAnd& v) 
+{
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( NULL ); // sentinel
@@ -12460,7 +12494,8 @@ void *begin_visit (const FTAnd& v) {
   return no_state;
 }
 
-void end_visit (const FTAnd& v, void* /*visit_state*/) {
+void end_visit (const FTAnd& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftand::ftnode_list_t list;
@@ -12480,35 +12515,46 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTAnyallOption& v) {
+
+void *begin_visit (const FTAnyallOption& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTAnyallOption& v, void* /*visit_state*/) {
+
+void end_visit (const FTAnyallOption& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTBigUnit& v) {
+
+void *begin_visit (const FTBigUnit& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTBigUnit& v, void* /*visit_state*/) {
+
+void end_visit (const FTBigUnit& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTCaseOption& v) {
+void *begin_visit (const FTCaseOption& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
+
+void end_visit (const FTCaseOption& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
@@ -12521,7 +12567,9 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTContainsExpr& v) {
+
+void *begin_visit (const FTContainsExpr& v) 
+{
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
   throw XQUERY_EXCEPTION(
@@ -12531,7 +12579,8 @@ void *begin_visit (const FTContainsExpr& v) {
   return no_state;
 }
 
-void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
+void end_visit (const FTContainsExpr& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t ftignore = NULL;
@@ -13276,10 +13325,8 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   std::map<zstring, zstring> modulesStack;
 
   if (typeid(root) != typeid(MainModule))
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( ModuleDeclNotInMain ) ),
-      ERROR_LOC( root.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, root.get_location(),
+    ERROR_PARAMS(ZED(ModuleDeclNotInMain)));
 
   ModulesInfo minfo(ccb);
 

@@ -286,6 +286,7 @@ declare option ver:module-version "2.0";
  : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
  : @error error:HC005 The input request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request
  :
  : @example test/rbkt/Queries/zorba/http-client/send-request/send-request_href.xq
  : @example test/rbkt/Queries/zorba/http-client/send-request/http3-post.xq
@@ -354,7 +355,7 @@ declare %ann:nondeterministic function http:get($href as xs:string) as item()+
  :)
 declare %ann:nondeterministic function http:get-node($href as xs:string) as item()+
 {
-  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/xml"/>}, (), ())
+  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/xml; charset=utf-8"/>}, (), ())
 };
 
 (:~
@@ -374,7 +375,7 @@ declare %ann:nondeterministic function http:get-node($href as xs:string) as item
  :)
 declare %ann:nondeterministic function http:get-text($href as xs:string) as item()+
 {
-  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/plain"/>}, (), ())
+  http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/plain; charset=utf-8"/>}, (), ())
 };
 
 (:~
@@ -455,6 +456,7 @@ declare %ann:nondeterministic function http:options($href as xs:string) as xs:st
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
  : @example test/rbkt/Queries/zorba/http-client/put/put2_element.xq
  :)
@@ -498,6 +500,7 @@ declare %ann:sequential function http:put($href as xs:string, $body as item()) a
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
  : @example test/rbkt/Queries/zorba/http-client/put/put3_html_br.xq
  :)
@@ -538,6 +541,7 @@ declare %ann:sequential function http:put($href as xs:string, $body as item(), $
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a DELETE request.
  :
  : @example test/rbkt/Queries/zorba/http-client/delete/delete.xq
  :)
@@ -564,6 +568,7 @@ declare %ann:sequential function http:delete($href as xs:string) as item()+
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
  : @example test/rbkt/Queries/zorba/http-client/post/post2_comment.xq
  :)
@@ -608,6 +613,7 @@ declare %ann:sequential function http:post($href as xs:string, $body as item()) 
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
  : @example test/rbkt/Queries/zorba/http-client/post/post3_xml.xq
  :)

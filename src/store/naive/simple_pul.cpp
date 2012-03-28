@@ -19,16 +19,16 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_collection.h"
-#include "store/naive/simple_index_value.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/pul_primitives.h"
-#include "store/naive/node_items.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/pul_primitive_factory.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "collection.h"
+#include "simple_index_value.h"
+#include "simple_pul.h"
+#include "pul_primitives.h"
+#include "node_items.h"
+#include "atomic_items.h"
+#include "pul_primitive_factory.h"
+#include "node_factory.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -236,7 +236,7 @@ CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dyn
   }
   else
   {
-    SimpleCollection* collection = static_cast<SimpleCollection*>
+    Collection* collection = static_cast<Collection*>
     (GET_STORE().getCollection(collName,dynamicCollection).getp());
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
@@ -262,7 +262,7 @@ void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
 
   if (!found)
   {
-    UpdDelete* upd = GET_STORE().getPULFactory().createUpdDelete(pul, aQueryLoc, target);
+    UpdDelete* upd = GET_PUL_FACTORY().createUpdDelete(pul, aQueryLoc, target);
     pul->theDeleteList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -278,7 +278,7 @@ void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
         return;
     }
 
-    UpdDelete* upd = GET_STORE().getPULFactory().createUpdDelete(pul,  aQueryLoc,target);
+    UpdDelete* upd = GET_PUL_FACTORY().createUpdDelete(pul,  aQueryLoc,target);
     pul->theDeleteList.push_back(upd);
     updates->push_back(upd);
   }
@@ -361,7 +361,7 @@ void PULImpl::addInsertChildren(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertChildren* upd = GET_STORE().getPULFactory().
+  UpdInsertChildren* upd = GET_PUL_FACTORY().
   createUpdInsertChildren(pul, aQueryLoc, kind, target, sibling, children);
 
   if (kind == store::UpdateConsts::UP_INSERT_INTO)
@@ -403,7 +403,7 @@ void PULImpl::addInsertAttributes(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertAttributes* upd = GET_STORE().getPULFactory().
+  UpdInsertAttributes* upd = GET_PUL_FACTORY().
   createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
 
   pul->theDoFirstList.push_back(upd);
@@ -511,7 +511,7 @@ void PULImpl::addReplaceContent(
 
   if (!found)
   {
-    UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
     pul->theReplaceContentList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -527,7 +527,7 @@ void PULImpl::addReplaceContent(
         throw XQUERY_EXCEPTION(err::XUDY0017);
     }
 
-    UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
     pul->theReplaceContentList.push_back(upd);
     updates->push_back(upd);
   }
@@ -555,20 +555,20 @@ void PULImpl::addReplaceValue(
   {
   case store::StoreConsts::attributeNode:
   {
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceAttrValue(pul, aQueryLoc, target, newValue);
     break;
   }
   case store::StoreConsts::textNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceTextValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::piNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplacePiValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::commentNode:
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdReplaceCommentValue(pul, aQueryLoc, target, newValue);
     break;
   default:
@@ -625,7 +625,7 @@ void PULImpl::addRename(
     ElementNode* elemTarget = ELEM_NODE(target);
     elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
-    upd = GET_STORE().getPULFactory().
+    upd = GET_PUL_FACTORY().
     createUpdRenameElem(pul, aQueryLoc, target, newName);
     break;
   }
@@ -636,14 +636,14 @@ void PULImpl::addRename(
     if (elemParent != NULL)
       elemParent->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
-    upd = GET_STORE().getPULFactory().createUpdRenameAttr(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, aQueryLoc, target, newName);
     break;
   }
   case store::StoreConsts::piNode:
   {
     zstring tmp;
     newName->getStringValue2(tmp);
-    upd = GET_STORE().getPULFactory().createUpdRenamePi(pul, aQueryLoc, target, tmp);
+    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, aQueryLoc, target, tmp);
     break;
   }
   default:
@@ -698,7 +698,7 @@ void PULImpl::addPut(
     }
   }
 
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdPut(this, aQueryLoc, target, uri);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdPut(this, aQueryLoc, target, uri);
 
   thePutList.push_back(upd);
 }
@@ -718,7 +718,7 @@ void PULImpl::addSetElementType(
     bool isInSubstitutionGroup)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdSetElementType(this,
+  GET_PUL_FACTORY().createUpdSetElementType(this,
                                                       aQueryLoc,
                                                       target,
                                                       typeName,
@@ -746,7 +746,7 @@ void PULImpl::addSetElementType(
   store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd =
-  GET_STORE().getPULFactory().createUpdSetElementType(this,
+  GET_PUL_FACTORY().createUpdSetElementType(this,
                                                       aQueryLoc,
                                                       target,
                                                       typeName,
@@ -768,7 +768,7 @@ void PULImpl::addSetAttributeType(
     store::Item_t& typedValue)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this, 
+  GET_PUL_FACTORY().createUpdSetAttributeType(this, 
                                                         aQueryLoc,
                                                         target,
                                                         typeName,
@@ -788,7 +788,7 @@ void PULImpl::addSetAttributeType(
   store::Item_t typedValue = new ItemVector(typedValueV);
 
   UpdatePrimitive* upd =
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this,
+  GET_PUL_FACTORY().createUpdSetAttributeType(this,
                                                         aQueryLoc,
                                                         target,
                                                         typeName,
@@ -810,7 +810,7 @@ void PULImpl::addRevalidate(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdRevalidate* upd = GET_STORE().getPULFactory().
+  UpdRevalidate* upd = GET_PUL_FACTORY().
   createUpdRevalidate(this, aQueryLoc, target);
 
   pul->theRevalidateList.push_back(upd);
@@ -841,7 +841,7 @@ void PULImpl::addCreateCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theCreateCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdCreateCollection(
+  GET_PUL_FACTORY().createUpdCreateCollection(
     pul,
     aQueryLoc,
     name,
@@ -859,7 +859,7 @@ void PULImpl::addDeleteCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
+  GET_PUL_FACTORY().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
 }
 
 
@@ -872,7 +872,7 @@ void PULImpl::addInsertIntoCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 } 
 
 
@@ -885,7 +885,7 @@ void PULImpl::addInsertFirstIntoCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 }
 
 
@@ -898,7 +898,7 @@ void PULImpl::addInsertLastIntoCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
 }
 
 
@@ -912,7 +912,7 @@ void PULImpl::addInsertBeforeIntoCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
 }
 
 
@@ -926,7 +926,7 @@ void PULImpl::addInsertAfterIntoCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  GET_PUL_FACTORY().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
 }
 
 
@@ -940,9 +940,20 @@ void PULImpl::addDeleteFromCollection(
   CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteFromCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
+  GET_PUL_FACTORY().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
 }
 
+
+void PULImpl::addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool dyn_collection)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+
+  pul->theTruncateCollectionList.push_back(
+  GET_PUL_FACTORY().createUpdTruncateCollection(pul, aQueryLoc, name, dyn_collection));
+}
 
 /*******************************************************************************
   Index primitives
@@ -953,7 +964,7 @@ void PULImpl::addCreateIndex(
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
   theCreateIndexList.push_back(upd);
 }
 
@@ -963,7 +974,7 @@ void PULImpl::addDeleteIndex(
     const store::Item_t& qname)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdDeleteIndex(this, aQueryLoc, qname);
+  GET_PUL_FACTORY().createUpdDeleteIndex(this, aQueryLoc, qname);
 
   theDeleteIndexList.push_back(upd);
 }
@@ -975,7 +986,7 @@ void PULImpl::addRefreshIndex(
     store::Iterator* sourceIter)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
+  GET_PUL_FACTORY().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
 
   theRefreshIndexList.push_back(upd);
 }
@@ -990,7 +1001,7 @@ void PULImpl::addActivateIC(
       const store::Item_t& aCollectionName)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
+  GET_PUL_FACTORY().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
 
   theICActivationList.push_back(upd);
 }
@@ -1001,7 +1012,7 @@ void PULImpl::addActivateForeignKeyIC(
       const store::Item_t& aFromCollectionName,
       const store::Item_t& aToCollectionName)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdActivateForeignKeyIC(this,
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdActivateForeignKeyIC(this,
       aQueryLoc,
       qname,
       aFromCollectionName,
@@ -1013,7 +1024,7 @@ void PULImpl::addDeActivateIC(
     const QueryLoc* aQueryLoc,
       const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeActivateIC(this, aQueryLoc, qname);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeActivateIC(this, aQueryLoc, qname);
   theICActivationList.push_back(upd);
 }
 
@@ -1026,7 +1037,7 @@ void PULImpl::addCreateDocument(
     const store::Item_t& uri,
     store::Item_t& doc)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateDocument(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateDocument(
       this, aQueryLoc, uri, doc);
   theCreateDocumentList.push_back(upd);
 }
@@ -1036,7 +1047,7 @@ void PULImpl::addDeleteDocument(
     const QueryLoc* aQueryLoc,
     const store::Item_t& uri)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteDocument(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeleteDocument(
       this, aQueryLoc, uri);
   theDeleteDocumentList.push_back(upd);
 }
@@ -1052,7 +1063,7 @@ void PULImpl::addCreateHashMap(
     const std::vector<zstring>& aCollations,
     long  aTimezone)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateHashMap(
       this, aQueryLoc, aQName, aKeyTypes, aCollations, aTimezone);
   theCreateHashMapList.push_back(upd);
 }
@@ -1061,7 +1072,7 @@ void PULImpl::addDestroyHashMap(
     const QueryLoc* aQueryLoc,
     const store::Item_t& aQName)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDestroyHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDestroyHashMap(
       this, aQueryLoc, aQName);
   theDestroyHashMapList.push_back(upd);
 }
@@ -1072,7 +1083,7 @@ void PULImpl::addInsertIntoHashMap(
     const std::vector<store::Item_t>& aKey,
     const store::Iterator_t& aValue)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdInsertIntoHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdInsertIntoHashMap(
       this, aQueryLoc, aQName, aKey, aValue);
   theInsertIntoHashMapList.push_back(upd);
 }
@@ -1082,7 +1093,7 @@ void PULImpl::addRemoveFromHashMap(
       const store::Item_t& aQName,
       const std::vector<store::Item_t>& aKey)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdRemoveFromHashMap(
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdRemoveFromHashMap(
       this, aQueryLoc, aQName, aKey);
   theRemoveFromHashMapList.push_back(upd);
 }
@@ -1157,6 +1168,11 @@ void PULImpl::mergeUpdates(store::Item* other)
                       UP_LIST_NONE);
 
       mergeUpdateList(thisPul,
+                      thisPul->theTruncateCollectionList,
+                      otherPul->theTruncateCollectionList,
+                      UP_LIST_NONE);
+
+      mergeUpdateList(thisPul,
                       thisPul->theDeleteCollectionList,
                       otherPul->theDeleteCollectionList,
                       UP_LIST_NONE);
@@ -1205,6 +1221,7 @@ void PULImpl::mergeUpdates(store::Item* other)
     }
 
     thePutList.push_back(otherUpd);
+    otherUpd->thePul = this;
     otherp->thePutList[i] = NULL;
   }
 
@@ -1501,9 +1518,11 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   This method is invoked by the ApplyIterator before any of the pul primitives
   is applied.
 ********************************************************************************/
-void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
+void PULImpl::getIndicesToRefresh(
+    std::vector<store::Index*>& indices,
+    std::vector<store::Index*>& truncate_indices)
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if (store->getIndices().empty())
     return;
@@ -1512,6 +1531,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
   // modified/inserted/deleted collection docs, because they will be need later
   // to maintain indices.
   std::set<store::Collection*> collections;
+  std::set<store::Collection*> truncated_collections;
 
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::iterator collEnd = theCollectionPuls.end();
@@ -1527,6 +1547,12 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
     collections.insert(collection);
 
     CollectionPul* pul = collIte->second;
+
+    if (pul->theTruncateCollectionList.size() > 0)
+    {
+      truncated_collections.insert(collection);
+      continue;
+    }
 
     NodeToUpdatesMap::iterator ite = pul->theNodeToUpdatesMap.begin();
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
@@ -1594,6 +1620,21 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       if (colIte != colEnd)
         break;
     }
+
+    for (csize i = 0; i < numIndexSources; ++i)
+    {
+      std::set<store::Collection*>::const_iterator colIte = truncated_collections.begin();
+      std::set<store::Collection*>::const_iterator colEnd = truncated_collections.end();
+
+      for (; colIte != colEnd; ++colIte)
+      {
+        if (indexSources[i]->equals((*colIte)->getName()))
+        {
+          truncate_indices.push_back(index);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -1610,6 +1651,18 @@ void PULImpl::addIndexEntryCreator(
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addIndexTruncator(
+    const store::Item* collectionName,
+    store::Index* idx)
+{
+  CollectionPul* pul = getCollectionPulByName(collectionName,false);
+  pul->theTruncatedIndices.push_back(static_cast<IndexImpl*>(idx));
 }
 
 
@@ -1770,7 +1823,7 @@ void PULImpl::undoUpdates()
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionPul::CollectionPul(PULImpl* pul, SimpleCollection* collection) 
+CollectionPul::CollectionPul(PULImpl* pul, Collection* collection) 
   :
   theCollection(collection),
   thePul(pul),
@@ -1795,6 +1848,7 @@ CollectionPul::~CollectionPul()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
+  cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
   cleanIndexDeltas(theBeforeIndexDeltas);
@@ -1821,6 +1875,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
+  switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
 }
 
@@ -1945,7 +2000,14 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  csize numIncrementalIndices = theIncrementalIndices.size();
+  csize numIncrementalIndices = theTruncatedIndices.size();
+  for (csize idx = 0; idx < numIncrementalIndices; ++idx)
+  {
+    ValueIndex* index = static_cast<ValueIndex*>(theTruncatedIndices[idx]);
+    index->clear();
+  }
+
+  numIncrementalIndices = theIncrementalIndices.size();
 
   for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
@@ -2133,6 +2195,7 @@ void CollectionPul::applyUpdates()
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
+    applyList(theTruncateCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
@@ -2265,6 +2328,7 @@ void CollectionPul::undoUpdates()
 
   try
   {
+    undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);

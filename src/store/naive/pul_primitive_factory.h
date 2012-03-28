@@ -19,7 +19,7 @@
 #include "common/shared_types.h"
 #include "store/api/update_consts.h"
 #include "store/api/index.h"
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 namespace zorba { namespace simplestore {
 
@@ -50,6 +50,7 @@ namespace zorba { namespace simplestore {
   class UpdInsertBeforeIntoCollection;
   class UpdInsertAfterIntoCollection;
   class UpdDeleteNodesFromCollection;
+  class UpdTruncateCollection;
   class UpdCreateIndex;
   class UpdDeleteIndex;
   class UpdRefreshIndex;
@@ -310,6 +311,15 @@ class PULPrimitiveFactory
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool dyn_collection = false);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdTruncateCollection*
+  createUpdTruncateCollection(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& name,
         bool dyn_collection = false);
     
   /***************************************************************************

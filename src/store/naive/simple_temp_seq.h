@@ -24,14 +24,14 @@
 namespace zorba { namespace simplestore {
 
 /**
- * Very simple implementation of Temp Sequence. It saves the resulting items
- * of an iterator eager in a vector.
+ * 
  */
 typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 
 
 /*******************************************************************************
-
+  Very simple implementation of Temp Sequence. It eagerly saves the items
+  returned by an iterator into a vector.
 ********************************************************************************/
 class SimpleTempSeq : public store::TempSeq
 {
@@ -108,16 +108,15 @@ class SimpleTempSeqIter : public store::TempSeqIterator
  public:
   SimpleTempSeqIter() {}
 
-  SimpleTempSeqIter(const SimpleTempSeq* aTempSeq);
+  SimpleTempSeqIter(const SimpleTempSeq* seq);
 
-  SimpleTempSeqIter(
-      const SimpleTempSeq* aTempSeq,
-      xs_integer startPos,
-      xs_integer endPos);
+  SimpleTempSeqIter(const SimpleTempSeq* seq, xs_integer startPos, xs_integer endPos);
 
   ~SimpleTempSeqIter() {}
 
   void init(const store::TempSeq_t& seq);
+
+  void init(const store::TempSeq_t& seq, xs_integer startPos, xs_integer endPos);
 
   store::Item* next();
 

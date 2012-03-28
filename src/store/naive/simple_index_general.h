@@ -18,8 +18,8 @@
 
 #include <map>
 
-#include "store/naive/simple_index.h"
-#include "store/naive/store_defs.h"
+#include "simple_index.h"
+#include "store_defs.h"
 
 namespace zorba 
 { 
@@ -138,7 +138,7 @@ private:
   static const double         theDoubleMinLong;
 
 protected:
-  SchemaTypeCode              theKeyTypeCode;
+  store::SchemaTypeCode       theKeyTypeCode;
 
   GeneralIndexCompareFunction theCompFunction;
 
@@ -153,17 +153,17 @@ protected:
 
   virtual ~GeneralIndex();
 
-  bool isTyped() const { return (theKeyTypeCode != XS_LAST); }
+  bool isTyped() const { return (theKeyTypeCode != store::XS_LAST); }
 
   bool insertInMap(
       store::Item_t& key,
       store::Item_t& node,
-      SchemaTypeCode targetMap,
+      store::SchemaTypeCode targetMap,
       bool untyped);
 
   bool probeMap(
       const store::Item* key,
-      SchemaTypeCode targetMap);
+      store::SchemaTypeCode targetMap);
 
 public:
   const XQPCollator* getCollator(ulong i) const;
@@ -218,7 +218,7 @@ class GeneralHashIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  IndexMap  * theMaps[XS_LAST];
+  IndexMap  * theMaps[store::XS_LAST];
   IndexMap  * theSingleMap;
 
 protected:
@@ -238,6 +238,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool);
+
+  void clear();
 };
 
 
@@ -270,7 +272,7 @@ class GeneralTreeIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  IndexMap       * theMaps[XS_LAST];
+  IndexMap       * theMaps[store::XS_LAST];
   IndexMap       * theSingleMap;
   SYNC_CODE(Mutex  theMapMutex;)
 
@@ -291,6 +293,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool all);
+
+  void clear();
 };
 
 
@@ -406,12 +410,12 @@ protected:
 
   void initBox();
 
-  bool haveMap(SchemaTypeCode targetMap) const;
+  bool haveMap(store::SchemaTypeCode targetMap) const;
 
-  void probeMap(SchemaTypeCode targetMap, const store::Item* key);
+  void probeMap(store::SchemaTypeCode targetMap, const store::Item* key);
 
   void probeMap(
-      const SchemaTypeCode targetMap,
+      const store::SchemaTypeCode targetMap,
       const store::Item* lowerKey,
       const store::Item* upperKey);
 

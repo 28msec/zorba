@@ -25,7 +25,9 @@ namespace zorba
 class UDFCallChain;
 
 
+/*******************************************************************************
 
+********************************************************************************/
 class DataflowAnnotationsComputer 
 {
 public:
@@ -69,17 +71,28 @@ private:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class SourceFinder
 {
-  typedef std::map<var_expr*, std::vector<expr*> > VarSourcesMap;
-  typedef std::pair<var_expr*, std::vector<expr*> > VarSourcesPair;
+  friend class MarkNodeCopyProps;
+
+  typedef std::map<var_expr*, std::vector<expr*>* > VarSourcesMap;
+  typedef std::pair<var_expr*, std::vector<expr*>* > VarSourcesPair;
 
   typedef std::map<user_function*, std::vector<expr*>* > UdfSourcesMap;
   typedef std::pair<user_function*, std::vector<expr*>* > UdfSourcesPair;
 
+  typedef std::map<expr*, user_function*> SourceUdfMap;
+  typedef std::pair<expr*, user_function*> SourceUdfMapPair;
+
 protected:
   VarSourcesMap                theVarSourcesMap;
   UdfSourcesMap                theUdfSourcesMap;
+  SourceUdfMap                 theSourceUdfMap;
+
+  user_function              * theStartingUdf;
   std::vector<fo_expr*>        theUdfCallPath;
 
 protected:

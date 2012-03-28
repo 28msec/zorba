@@ -21,7 +21,7 @@
 #include "zorbamisc/config/platform.h"
 #include "common/shared_types.h"
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 
 namespace zorba 
@@ -41,13 +41,13 @@ namespace simplestore
   class CommentNode;
 
 
-/** 
- * This class implements the Abstract Factory Pattern and is responsible for
- * creating node items of the SimpleStore. Having a factory for node items
- * allows other stores to derive from the node items of the SimpleStore without
- * modifying a lot of code (e.g. of the loader). The class can only be
- * instantiated by the SimpleStore.
- */
+/*******************************************************************************
+  This class implements the Abstract Factory Pattern and is responsible for
+  creating node items of the SimpleStore. Having a factory for node items
+  allows other stores to derive from the node items of the SimpleStore without
+  modifying a lot of code (e.g. of the loader). The class can only be
+  instantiated by the SimpleStore.
+********************************************************************************/
 class NodeFactory 
 {
  protected:
@@ -108,7 +108,7 @@ public:
   virtual TextNode* createTextNode(
         XmlTree*       tree,
         InternalNode*  parent,
-        bool           aqppend,
+        bool           append,
         csize          pos,
         zstring&       content);
 

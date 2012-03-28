@@ -67,7 +67,7 @@ PlanIter_t ctx_var_get::codegen(
     static_context* sctx, 
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
 
@@ -88,7 +88,7 @@ PlanIter_t ctx_var_get::codegen(
 ********************************************************************************/
 void populateContext_VarDecl(static_context* sctx)
 {
-  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS;
 
   DECL(sctx, ctx_var_get,
        (createQName(zorba_op_ns, "", "ctxvar-get"),

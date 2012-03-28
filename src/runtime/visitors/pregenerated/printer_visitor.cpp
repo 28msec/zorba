@@ -50,6 +50,7 @@
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/json/json.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/node_position.h"
 #include "runtime/nodes/nodes.h"
@@ -63,6 +64,7 @@
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
 #include "runtime/strings/strings.h"
+#include "runtime/uris/uris.h"
 #include "runtime/xqdoc/xqdoc.h"
 
 namespace zorba{
@@ -541,6 +543,20 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaDeleteNodesLastIterator>
+
+
+// <ZorbaTruncateCollectionIterator>
+void PrinterVisitor::beginVisit ( const ZorbaTruncateCollectionIterator& a) {
+  thePrinter.startBeginVisit("ZorbaTruncateCollectionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaTruncateCollectionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaTruncateCollectionIterator>
 
 
 // <ZorbaCollectionNameIterator>
@@ -1648,6 +1664,34 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionAnnotationsIterator>
+
+
+// <JSONParseInternal>
+void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
+  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONParseInternal>
+
+
+// <JSONSerializeInternal>
+void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
+  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONSerializeInternal>
 
 
 // <SqrtIterator>
@@ -3973,6 +4017,20 @@ void PrinterVisitor::endVisit ( const StringSplitIterator& ) {
   thePrinter.endEndVisit();
 }
 // </StringSplitIterator>
+
+
+// <DecodeURIIterator>
+void PrinterVisitor::beginVisit ( const DecodeURIIterator& a) {
+  thePrinter.startBeginVisit("DecodeURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DecodeURIIterator>
 
 
 // <XQDocIterator>

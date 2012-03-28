@@ -24,7 +24,60 @@
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
 
+#include "system/properties.h"
+
 using namespace zorba;
+
+bool
+save_and_load(Zorba* aZorba, const char* aQueryFile)
+{
+  try 
+  {
+     std::ifstream lIn(aQueryFile);
+     std::ostringstream lOut;
+
+     {
+       Zorba_CompilerHints_t lHints;
+       lHints.opt_level = ZORBA_OPT_LEVEL_O1;
+
+       StaticContext_t lSctx = aZorba->createStaticContext();
+       XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx, lHints);
+       lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+     }
+
+     {
+       std::istringstream lIn(lOut.str());
+       XQuery_t lQuery = aZorba->createQuery();
+       lQuery->loadExecutionPlan(lIn);
+       std::cout << lQuery << std::endl;
+     }
+     return true;
+  }
+  catch (ZorbaException& e) 
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+}
+
+bool
+plan_serializer1(Zorba* aZorba)
+{
+  return save_and_load(aZorba, "guestbook_main.xq");
+}
+
+bool
+plan_serializer2(Zorba* aZorba)
+{
+  return save_and_load(aZorba, "mini_http.xq");
+}
+
+
+bool
+plan_serializer3(Zorba* aZorba)
+{
+  return save_and_load(aZorba, "mini_audit.xq");
+}
 
 
 int
@@ -33,28 +86,22 @@ plan_serializer(int argc, char* argv[])
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
-  try {
-     std::ifstream lIn("guestbook_main.xq");
-     std::ostringstream lOut;
+  zorba::Properties::load(0, NULL);
 
-     {
-       StaticContext_t lSctx = lZorba->createStaticContext();
-
-       XQuery_t lQuery = lZorba->compileQuery(lIn, lSctx);
-       lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
-     }
-
-
-     {
-       std::istringstream lIn(lOut.str());
-       XQuery_t lQuery = lZorba->createQuery();
-       lQuery->loadExecutionPlan(lIn);
-       std::cout << lQuery << std::endl;
-     }
-  } catch (ZorbaException& e) {
-    std::cerr << e << std::endl;
+  std::cout << "executing test 1" << std::endl;
+  if (!plan_serializer1(lZorba))
     return 1;
-  }
+  std::cout << std::endl;
+
+  std::cout << "executing test 2" << std::endl;
+  if (!plan_serializer2(lZorba))
+    return 2;
+
+  std::cout << "executing test 3" << std::endl;
+  if (!plan_serializer3(lZorba))
+    return 3;
+
+  std::cout << std::endl;
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);

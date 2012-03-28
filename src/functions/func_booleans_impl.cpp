@@ -76,7 +76,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const
+        expr &ann) const
   {
     return createIterator(sctx, loc, argv);
   }
@@ -101,13 +101,13 @@ function* GenericOpComparison::specialize(
   if (! (TypeOps::is_builtin_atomic(tm, *t0) && TypeOps::is_builtin_atomic(tm, *t1)))
     return NULL;
 
-  TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-  TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+  store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+  store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
 
-  if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC ||
-      tc1 == TypeConstants::XS_UNTYPED_ATOMIC ||
-      tc0 == TypeConstants::XS_ANY_ATOMIC ||
-      tc1 == TypeConstants::XS_ANY_ATOMIC)
+  if (tc0 == store::XS_UNTYPED_ATOMIC ||
+      tc1 == store::XS_UNTYPED_ATOMIC ||
+      tc0 == store::XS_ANY_ATOMIC ||
+      tc1 == store::XS_ANY_ATOMIC)
     return NULL;
 
   return toValueComp(sctx);
@@ -200,26 +200,26 @@ function* ValueOpComparison::specialize(
 
   if (TypeOps::is_builtin_simple(tm, *t0) && TypeOps::is_builtin_simple(tm, *t1))
   {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
+    store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
 
     if (tc0 == tc1)
     {
       switch(tc0)
       {
-      case TypeConstants::XS_DOUBLE:
+      case store::XS_DOUBLE:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DOUBLE);
 
-      case TypeConstants::XS_DECIMAL:
+      case store::XS_DECIMAL:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DECIMAL);
 
-      case TypeConstants::XS_FLOAT:
+      case store::XS_FLOAT:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, FLOAT);
 
-      case TypeConstants::XS_INTEGER:
+      case store::XS_INTEGER:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, INTEGER);
 
-      case TypeConstants::XS_STRING:
+      case store::XS_STRING:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, STRING);
 
       default:
@@ -241,7 +241,7 @@ function* ValueOpComparison::specialize(
   class op_value_greater : SpecificValueComparison<CompareConsts::GREATER>
 
   class op_value_greater_double : TypedValueComparison<CompareConsts::GREATER,
-                                                       TypeConstants::XS_DOUBLE>
+                                                       store::XS_DOUBLE>
 
 
 ********************************************************************************/
@@ -266,7 +266,7 @@ public:
 };
 
 
-template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t>
+template<enum CompareConsts::CompareType CC, store::SchemaTypeCode t>
 class TypedValueComparison : public SpecificValueComparison<CC>
 {
 public:
@@ -291,13 +291,13 @@ public:
 #define DECL_SPECIFIC_TYPED_OP( cc, op, t, xqt )                        \
 class op_value_##op##_##t :                                             \
 public TypedValueComparison<CompareConsts::VALUE_##cc,                  \
-                            TypeConstants::XS_##xqt>                    \
+                            store::XS_##xqt>                            \
 {                                                                       \
 public:                                                                 \
   op_value_##op##_##t(const signature& sig)                             \
     :                                                                   \
     TypedValueComparison<CompareConsts::VALUE_##cc,                     \
-                         TypeConstants::XS_##xqt>                       \
+                         store::XS_##xqt>                               \
     (sig, FunctionConsts::OP_VALUE_##cc##_##xqt##_2)                    \
   {                                                                     \
   }                                                                     \
@@ -583,7 +583,7 @@ public:
                     static_context* sctx,
                     const QueryLoc& loc,
                     std::vector<PlanIter_t>& argv,
-                    AnnotationHolder& ann) const
+                    expr& ann) const
   {
     return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
   }
@@ -623,7 +623,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new AndIterator(sctx, loc, argv);
@@ -660,7 +660,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new OrIterator(sctx, loc, argv);
@@ -686,7 +686,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, true);
@@ -708,7 +708,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, false);
@@ -745,7 +745,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0], true);
   }
@@ -783,7 +783,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0]);
   }
@@ -795,7 +795,7 @@ public:
 ********************************************************************************/
 void populateContext_Comparison(static_context* sctx)
 {
-  const char* zorba_ns = static_context::ZORBA_OP_NS.c_str();
+  const char* zorba_ns = static_context::ZORBA_OP_NS;
 
   // General Comparison;
   DECL(sctx, op_equal,
@@ -874,15 +874,14 @@ DECL(sctx, op_atomic_values_equivalent,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Atomic Values Equivalent
 
 }
 
 
 void populate_context_booleans_impl(static_context* sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
   // Boolean
   DECL(sctx, fn_true,

@@ -140,6 +140,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaTruncateCollectionIterator& );
+    void endVisit  ( const ZorbaTruncateCollectionIterator& );
+
     void beginVisit( const ZorbaCollectionNameIterator& );
     void endVisit  ( const ZorbaCollectionNameIterator& );
 
@@ -378,6 +381,12 @@ namespace zorba {
 
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
+
+    void beginVisit( const JSONParseInternal& );
+    void endVisit  ( const JSONParseInternal& );
+
+    void beginVisit( const JSONSerializeInternal& );
+    void endVisit  ( const JSONSerializeInternal& );
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
@@ -878,6 +887,9 @@ namespace zorba {
 
     void beginVisit( const StringSplitIterator& );
     void endVisit  ( const StringSplitIterator& );
+
+    void beginVisit( const DecodeURIIterator& );
+    void endVisit  ( const DecodeURIIterator& );
 
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );
