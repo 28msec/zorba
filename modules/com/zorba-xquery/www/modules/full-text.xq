@@ -83,80 +83,249 @@ xquery version "3.0";
  : <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
  : with the exceptions of "HN" (history note)
  : and "X SN" (see scope note for).
- : Additionally, Zorba also supports all WordNet relationships.
- : <table>
- :   <tr>
- :     <th>Rel.</th>
- :     <th>Meaning</th>
- :     <th>WordNet Rel.</th>
- :   </tr>
- :   <tr>
- :     <td>BT</td>
- :     <td>broader term</td>
- :     <td>hypernym</td>
- :   </tr>
- :   <tr>
- :     <td>BTG</td>
- :     <td>broader term generic</td>
- :     <td>hypernym</td>
- :   </tr>
- :   <tr>
- :     <td>BTI</td>
- :     <td>broader term instance</td>
- :     <td>instance hypernym</td>
- :   </tr>
- :   <tr>
- :     <td>BTP</td>
- :     <td>broader term partitive</td>
- :     <td>part meronym</td>
- :   </tr>
- :   <tr>
- :     <td>NT</td>
- :     <td>narrower term</td>
- :     <td>hyponym</td>
- :   </tr>
- :   <tr>
- :     <td>NTG</td>
- :     <td>narrower term generic</td>
- :     <td>hyponym</td>
- :   </tr>
- :   <tr>
- :     <td>NTI</td>
- :     <td>narrower term instance</td>
- :     <td>instance hyponym</td>
- :   </tr>
- :   <tr>
- :     <td>NTP</td>
- :     <td>narrower term partitive</td>
- :     <td>part holonym</td>
- :   </tr>
- :   <tr>
- :     <td>RT</td>
- :     <td>related term</td>
- :     <td>also see</td>
- :   </tr>
- :   <tr>
- :     <td>SN</td>
- :     <td>scope note</td>
- :     <td>n/a</td>
- :   </tr>
- :   <tr>
- :     <td>TT</td>
- :     <td>top term</td>
- :     <td>hypernym</td>
- :   </tr>
- :   <tr>
- :     <td>UF</td>
- :     <td>non-preferred term</td>
- :     <td>n/a</td>
- :   </tr>
- :   <tr>
- :     <td>USE</td>
- :     <td>preferred term</td>
- :     <td>n/a</td>
- :   </tr>
- : </table>
+ : These relationships are:
+ :  <table>
+ :    <tr>
+ :      <th>Rel.</th>
+ :      <th>Meaning</th>
+ :      <th>WordNet Rel.</th>
+ :    </tr>
+ :    <tr>
+ :      <td>BT</td>
+ :      <td>broader term</td>
+ :      <td>hypernym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>BTG</td>
+ :      <td>broader term generic</td>
+ :      <td>hypernym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>BTI</td>
+ :      <td>broader term instance</td>
+ :      <td>instance hypernym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>BTP</td>
+ :      <td>broader term partitive</td>
+ :      <td>part meronym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>NT</td>
+ :      <td>narrower term</td>
+ :      <td>hyponym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>NTG</td>
+ :      <td>narrower term generic</td>
+ :      <td>hyponym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>NTI</td>
+ :      <td>narrower term instance</td>
+ :      <td>instance hyponym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>NTP</td>
+ :      <td>narrower term partitive</td>
+ :      <td>part holonym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>RT</td>
+ :      <td>related term</td>
+ :      <td>also see</td>
+ :    </tr>
+ :    <tr>
+ :      <td>SN</td>
+ :      <td>scope note</td>
+ :      <td>n/a</td>
+ :    </tr>
+ :    <tr>
+ :      <td>TT</td>
+ :      <td>top term</td>
+ :      <td>hypernym</td>
+ :    </tr>
+ :    <tr>
+ :      <td>UF</td>
+ :      <td>non-preferred term</td>
+ :      <td>n/a</td>
+ :    </tr>
+ :    <tr>
+ :      <td>USE</td>
+ :      <td>preferred term</td>
+ :      <td>n/a</td>
+ :    </tr>
+ :  </table>
+ : Note that you can specify relationships
+ : either by their abbreviation
+ : or their meaning.
  : Relationships are case-insensitive.
+ :
+ : In addition to the
+ : <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
+ : and
+ : <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
+ : relationships,
+ : Zorba also supports all of the relationships offered by WordNet.
+ : These relationships are:
+ :  <table class="ft_rels">
+ :    <tr>
+ :      <th>Relationship</th>
+ :      <th>Meaning</th>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">also see</td>
+ :      <td>
+ :        A word that is related to another,
+ :        e.g., for "varnished" (furniture)
+ :        one should <em>also see</em> "finished."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>antonym</td>
+ :      <td>
+ :        A word opposite in meaning to another,
+ :        e.g., "light" is an <em>antonym</em> for "heavy."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>attribute</td>
+ :      <td>
+ :        A noun for which adjectives express values,
+ :        e.g., "weight" is an <em>attribute</em>
+ :        for which the adjectives "light" and "heavy"
+ :        express values.
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>cause</td>
+ :      <td>
+ :        A verb that causes another,
+ :        e.g., "show" is a <em>cause</em> of "see."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">derivationally related form</td>
+ :      <td>
+ :        A word that is derived from a root word,
+ :        e.g., "metric" is a <em>derivationally related form</em> of "meter."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">derived from adjective</td>
+ :      <td>
+ :        An adverb that is derived from an adjective,
+ :        e.g., "correctly" is <em>derived from the adjective</em> "correct."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>entailment</td>
+ :      <td>
+ :        A verb that presupposes another,
+ :        e.g., "snoring" <em>entails</em> "sleeping."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>hypernym</td>
+ :      <td>
+ :        A word with a broad meaning that more specific words fall under,
+ :        e.g., "meal" is a <em>hypernym</em> of "breakfast."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>hyponym</td>
+ :      <td>
+ :        A word of more specific meaning than a general term applicable to it,
+ :        e.g., "breakfast" is a <em>hyponym</em> of "meal."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">instance hypernym</td>
+ :      <td>
+ :        A word that denotes a category of some specific instance,
+ :        e.g., "author" is an <em>instance hypernym</em> of "Asimov."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">instance hyponym</td>
+ :      <td>
+ :        A term that donotes a specific instance of some general category,
+ :        e.g., "Asimov" is an <em>instance hyponym</em> of "author."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">member holonym</td>
+ :      <td>
+ :        A word that denotes a collection of individuals,
+ :        e.g., "faculty" is a <em>member holonym</em> of "professor."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">member meronym</td>
+ :      <td>
+ :        A word that denotes a member of a larger group,
+ :        e.g., a "person" is a <em>member meronym</em> of a "crowd."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">part holonym</td>
+ :      <td>
+ :        A word that denotes a larger whole comprised of some part,
+ :        e.g., "car" is a <em>part holonym</em> of "engine."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">part meronym</td>
+ :      <td>
+ :        A word that denotes a part of a larger whole,
+ :        e.g., an "engine" is <em>part meronym</em> of a "car."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">participle of verb</td>
+ :      <td>
+ :        An adjective that is the participle of some verb,
+ :        e.g., "breaking" is the <em>participle of the verb</em> "break."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td>pertainym</td>
+ :      <td>
+ :        An adjective that classifies its noun,
+ :        e.g., "musical" is a <em>pertainym</em> in "musical instrument."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">similar to</td>
+ :      <td>
+ :        Similar, though not necessarily interchangeable, adjectives.
+ :        For example, "shiny" is <em>similar to</em> "bright",
+ :        but they have subtle differences.
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">substance holonym</td>
+ :      <td>
+ :        A word that denotes a larger whole containing some constituent
+ :        substance, e.g., "bread" is a <em>substance holonym</em> of "flour."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">substance meronym</td>
+ :      <td>
+ :        A word that denotes a constituant substance of some larger whole,
+ :        e.g., "flour" is a <em>substance meronym</em> of "bread."
+ :      </td>
+ :    </tr>
+ :    <tr>
+ :      <td nowrap="nowrap">verb group</td>
+ :      <td>
+ :        A verb that is a member of a group of similar verbs,
+ :        e.g., "live" is in the <em>verb group</em>
+ :        of "dwell", "live", "inhabit", etc.
+ :      </td>
+ :    </tr>
+ :  </table>
  : <h2>Notes on tokenization</h2>
  : For general information about Zorba's implementation of tokenization,
  : including what constitutes a token,
