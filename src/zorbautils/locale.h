@@ -257,7 +257,7 @@ namespace zorba {
         TZ,   ///< Tanzania
         UA,   ///< Ukraine
         UG,   ///< Uganda
-        UM,   ///< United states Minor Outlying Islands
+        UM,   ///< United States Minor Outlying Islands
         US,   ///< United States
         UY,   ///< Uruguay
         UZ,   ///< Uzbekistan
