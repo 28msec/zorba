@@ -77,7 +77,11 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
   if (node->get_expr_kind() == gflwor_expr_kind)
     return node;
 
-  if (node->get_expr_kind() == flwor_expr_kind)
+  if (node->get_expr_kind() == trycatch_expr_kind)
+  {
+    rCtx.theFlworStack.push_back(node);
+  }
+  else if (node->get_expr_kind() == flwor_expr_kind)
   {
     flworExpr = static_cast<flwor_expr *>(node);
 
@@ -171,7 +175,12 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     iter.next();
   }
 
-  if (node->get_expr_kind() == flwor_expr_kind)
+  if (node->get_expr_kind() == trycatch_expr_kind)
+  {
+    rCtx.theFlworStack.pop_back();
+    return node;
+  }
+  else if (node->get_expr_kind() == flwor_expr_kind)
   {
     expr_t e = rCtx.theFlworStack.back();
 
@@ -798,6 +807,9 @@ static bool findFlworForVar(
  
   for (long i = numFlwors - 1; i >= 0; --i)
   {
+    if (rCtx.theFlworStack[i]->get_expr_kind() == trycatch_expr_kind)
+      return false;
+
     flworExpr = dynamic_cast<flwor_expr*>(rCtx.theFlworStack[i].getp());
 
     assert(flworExpr != NULL);
