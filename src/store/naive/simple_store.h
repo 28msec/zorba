@@ -29,9 +29,6 @@ namespace simplestore {
   Incremented every time a new collection is created. The current value of the  
   counter is then assigned as the id of the new collection.
 
-  theTreeCounter:
-  ---------------
-
   theReferencesToNodeMap:
   -----------------------
   A hashmap that maps node references to the referenced nodes
@@ -39,7 +36,7 @@ namespace simplestore {
   theNodeToReferencesMap:
   -----------------------
   A hashmap that maps nodes into their references
-
+  
 ********************************************************************************/
 class SimpleStore : public Store
 {
@@ -52,15 +49,10 @@ private:
   ulong                         theCollectionCounter;
   SYNC_CODE(Mutex               theCollectionCounterMutex;)
 
-  ulong                         theTreeCounter;
-  SYNC_CODE(Mutex               theTreeCounterMutex;)
-
   RefNodeMap                    theReferencesToNodeMap;
   NodeRefMap                    theNodeToReferencesMap;
 
 public:
-  ulong createTreeId();
-  
   ulong createCollectionId();
 
   store::Collection_t createCollection(
@@ -98,6 +90,10 @@ protected:
 
   void destroyCollectionSet(CollectionSet*) const;
       
+  TreeIdGeneratorFactory* createTreeIdGeneratorFactory() const;
+
+  void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const;
+
   bool unregisterNode(XmlNode* node);
 
   //

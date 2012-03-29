@@ -47,7 +47,6 @@ typedef rchandle<store::TempSeq> TempSeq_t;
 SimpleStore::SimpleStore()
   :
   theCollectionCounter(1),
-  theTreeCounter(1),
   theNodeToReferencesMap(128, true)
 {
 }
@@ -68,7 +67,6 @@ SimpleStore::~SimpleStore()
 void SimpleStore::init()
 {
   theCollectionCounter = 1;
-  theTreeCounter = 1;
 
   Store::init();
 }
@@ -125,6 +123,26 @@ void
 SimpleStore::destroyPULFactory(PULPrimitiveFactory* f) const
 {
   delete f;
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+TreeIdGeneratorFactory*
+SimpleStore::createTreeIdGeneratorFactory() const
+{
+  return new SimpleTreeIdGeneratorFactory();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void
+SimpleStore::destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const
+{
+  delete g;
 }
 
 
@@ -197,16 +215,6 @@ store::IteratorFactory* SimpleStore::createIteratorFactory() const
 void SimpleStore::destroyIteratorFactory(store::IteratorFactory* f) const
 {
   delete f;
-}
-
-
-/*******************************************************************************
-  create a tree id for a new tree that does not belong to any collection.
-********************************************************************************/
-ulong SimpleStore::createTreeId()
-{
-  SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
-  return theTreeCounter++;
 }
 
 

@@ -74,6 +74,9 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   flwor_expr* flworExpr = NULL;
 
+  if (node->get_expr_kind() == gflwor_expr_kind)
+    return node;
+
   if (node->get_expr_kind() == flwor_expr_kind)
   {
     flworExpr = static_cast<flwor_expr *>(node);

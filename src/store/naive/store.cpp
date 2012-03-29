@@ -56,6 +56,7 @@
 #include "name_iterator.h"
 #include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
+#include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
@@ -103,6 +104,8 @@ Store::Store()
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
   thePULFactory(NULL),
+  theTreeIdGeneratorFactory(NULL),
+  theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
   theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
@@ -160,6 +163,10 @@ void Store::init()
     theNodeFactory = createNodeFactory();
 
     thePULFactory = createPULFactory();
+    
+    theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
+
+    theTreeIdGenerator = theTreeIdGeneratorFactory->createTreeGenerator();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -302,6 +309,17 @@ void Store::shutdown(bool soft)
       theIteratorFactory = NULL;
     }
 
+    if (theTreeIdGeneratorFactory != NULL)
+    {
+      destroyTreeIdGeneratorFactory(theTreeIdGeneratorFactory);
+    }
+
+    if (theTreeIdGenerator)
+    {
+      delete theTreeIdGenerator;
+      theTreeIdGenerator = NULL;
+    }
+
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
@@ -373,6 +391,15 @@ XmlLoader* Store::getXmlLoader(
                              aXQueryDiagnostics,
                              loadProperties,
                              store::Properties::instance()->buildDataguide());
+}
+
+
+/*******************************************************************************
+  create a tree id for a new tree that does not belong to any collection.
+********************************************************************************/
+TreeId Store::createTreeId()
+{
+  return theTreeIdGenerator->create();
 }
 
 
@@ -1315,6 +1342,7 @@ TokenizerProvider const* Store::getTokenizerProvider() const
   return theTokenizerProvider ?
     theTokenizerProvider : &default_tokenizer_provider();
 }
+
 #endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace store

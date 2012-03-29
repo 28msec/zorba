@@ -18,6 +18,8 @@
 # include <windows.h>
 # include <string.h>
 # include <strsafe.h>
+#else
+#include <unistd.h>
 #endif
 
 #include <vector>
