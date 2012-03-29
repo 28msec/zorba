@@ -248,6 +248,19 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
+void user_function::addRecursiveCall(expr* call)
+{
+  if (std::find(theRecursiveCalls.begin(), theRecursiveCalls.end(), call) ==
+      theRecursiveCalls.end())
+  {
+    theRecursiveCalls.push_back(call);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool user_function::isRecursive() const
 {
   assert(isOptimized());
