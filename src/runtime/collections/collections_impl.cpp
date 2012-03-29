@@ -467,8 +467,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
   STACK_END (state);
@@ -1789,7 +1788,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+  for (xs_integer i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);

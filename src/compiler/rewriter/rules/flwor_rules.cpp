@@ -1016,7 +1016,7 @@ static bool is_subseq_pred(
                                                  err::XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
-            val->getIntegerValue() >= xs_integer::one())
+            val->getIntegerValue() >= 1)
         {
           return true;
         }
