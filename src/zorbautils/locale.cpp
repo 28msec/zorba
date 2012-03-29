@@ -454,7 +454,7 @@ char const *const string_of[] = {
   "it", // Italian
   "iu", // Inuktitut
   "ja", // Japanese
-  "jw", // Javanese
+  "jv", // Javanese
   "ka", // Georgian
   "kg", // Kongo
   "ki", // Gikuyu
@@ -580,8 +580,8 @@ namespace iso639_2 {
 
 char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
-  "abk",  // Abkhazian
   "aar",  // Afar
+  "abk",  // Abkhazian
   "afr",  // Afrikaans
   "aka",  // Akan
   "alb",  // Albanian
@@ -589,13 +589,13 @@ char const *const string_of[] = {
   "ara",  // Arabic
   "arg",  // Aragonese
   "arm",  // Armenian
-  "asm",  // Assamese
+  "asm",  // Assamese [without '_', it's a C++ keyword]
   "ava",  // Avaric
   "ave",  // Avestan
   "aym",  // Aymara
   "aze",  // Azerbaijani
-  "bam",  // Bambara
   "bak",  // Bashkir
+  "bam",  // Bambara
   "baq",  // Basque
   "bel",  // Belarusian
   "ben",  // Bengali
@@ -604,18 +604,86 @@ char const *const string_of[] = {
   "bos",  // Bosnian
   "bre",  // Breton
   "bul",  // Bulgarian
+  "bur",  // Burmese
+  "cat",  // Catalan
+  "cha",  // Chamorro
+  "che",  // Chechen
+  "chi",  // Chinese
+  "chu",  // Church Slavic; Old Slavonic; Church Slavonic
+  "cym",  // Welsh
   "dan",  // Danish
   "deu",  // German (T)
+  "div",  // Divehi; Dhivehi; Maldivian
   "dut",  // Dutch (B)
+  "dzo",  // Dzongkha
+  "ell",  // Modern Greek
   "eng",  // English
+  "epo",  // Esperanto
+  "est",  // Estonian
+  "ewe",  // Ewe
+  "fao",  // Faroese
+  "fij",  // Fijian
   "fin",  // Finnish
   "fra",  // French (T)
   "fre",  // French (B)
+  "fry",  // Western Frisian
+  "ful",  // Fulah
+  "geo",  // Georgian
   "ger",  // German (B)
+  "gla",  // Scottish Gaelic; Gaelic
+  "gle",  // Irish
+  "glg",  // Galician
+  "glv",  // Manx
+  "gre",  // Modern Greek
+  "grn",  // Guarani
+  "guj",  // Gujarati
+  "hat",  // Haitian Creole; Haitian
+  "hau",  // Hausa
+  "heb",  // Hebrew
+  "her",  // Herero
+  "hin",  // Hindi
+  "hmo",  // Hiri Motu
+  "hrv",  // Croatian
   "hun",  // Hungarian
+  "ibo",  // Igbo
+  "ice",  // Icelandic
+  "ido",  // Ido
+  "iku",  // Inuktitut
+  "ile",  // Interlingue; Occidental
+  "ina",  // Interlingua
+  "ind",  // Indonesian
+  "ipk",  // Inupiaq
+  "isl",  // Icelandic
   "ita",  // Italian
+  "jav",  // Javanese
+  "jpn",  // Japanese
+  "kal",  // Kalaallisut; Greenlandic
+  "kan",  // Kannada
+  "kas",  // Kashmiri
+  "kat",  // Georgian
+  "kau",  // Kanuri
+  "kaz",  // Kazakh
+  "khm",  // Central Khmer
+  "kik",  // Kikuyu; Gikuyu
+  "kin",  // Kinyarwanda
+  "kir",  // Kirghiz; Kyrgyz
+  "kom",  // Komi
+  "kon",  // Kongo
+  "kor",  // Korean
+  "kua",  // Kuanyama; Kwanyama
+  "kur",  // Kurdish
+  "lao",  // Lao
+  "lat",  // Latin
+  "lav",  // Latvian
+  "lim",  // Limburgan; Limburger; Limburgish
+  "lin",  // Lingala
+  "lit",  // Lithuanian
+  "ltz",  // Luxembourgish; Letzeburgesch
+  "lib",  // Luba-Katanga
+  "mya",  // Burmese
   "nld",  // Dutch (T)
   "nor",  // Norwegian
+  "nya",  // Chichewa; Chewa; Nyanja
   "por",  // Portuguese
   "ron",  // Romanian (T)
   "rum",  // Romanian (B)
@@ -623,17 +691,18 @@ char const *const string_of[] = {
   "spa",  // Spanish
   "swe",  // Swedish
   "tur",  // Turkish
-
-  "cat",  // Catalan
-  "khm",  // Central Khmer
-  "cha",  // Chamorro
-  "che",  // Chechen
-  "nya",  // Chichewa; Chewa; Nyanja
-  "chi",  // Chinese
-  "zho",  // Chinese
+  "vie",  // Vietnamese
+  "ven",  // Venda
+  "vol",  // Volapuk
+  "wel",  // Welsh
+  "wln",  // Walloon
+  "wol",  // Wolof
+  "xho",  // Xhosa
+  "yid",  // Yiddish
+  "yor",  // Yoruba
   "zha",  // Zhuang; Chuang
-  "chu"   // Church Slavic; Old Slavonic; Church Slavonic
-
+  "zho",  // Chinese
+  "zul",  // Zulu
 };
 
 type find( char const *lang ) {
@@ -653,18 +722,22 @@ iso639_1::type find_lang( char const *lang ) {
 
   static type const iso639_2_to_639_1[] = {
     unknown,
-    ab, // abk
     aa, // aar
-    af, // arf
+    ab, // abk
+    af, // afr
     ak, // aka
     sq, // alb
     am, // amh
     ar, // ara
     an, // arg
+    hy, // arm
+    as, // asm
+    av, // ava
+    ae, // ave
     ay, // aym
     az, // aze
-    bm, // bam
     ba, // bak
+    bm, // bam
     eu, // baq
     be, // bel
     bn, // ben
@@ -674,26 +747,81 @@ iso639_1::type find_lang( char const *lang ) {
     br, // bre
     br, // bul
     my, // bur
-    hy, // arm
-    as, // asm
-    av, // ava
-    ae, // ave
     ca, // cat
     ch, // cha
     ce, // che
     zh, // chi
     cu, // chu
+    cy, // cym
     da, // dan
     de, // deu
+    dv, // div
     nl, // dut
+    dz, // dzo
+    el, // ell
     en, // eng
+    eo, // epo
+    et, // est
+    ee, // ewe
+    fo, // fao
+    fj, // fij
     fi, // fin
     fr, // fra
     fr, // fre
+    fy, // fry
+    ff, // ful
+    ka, // geo
     de, // ger
+    gd, // gla
+    ga, // gle
+    gl, // glg
+    gv, // glv
+    el, // gre
+    gn, // grn
+    gu, // guj
+    ht, // hat
+    ha, // hau
+    he, // heb
+    hz, // her
+    hi, // hin
+    ho, // hmo
+    hr, // hrv
     hu, // hun
+    ig, // ibo
+    is, // ice
+    io, // ido
+    iu, // iku
+    ie, // ile
+    ia, // ina
+    id, // ind
+    ik, // ipk
+    is, // isl
     it, // ita
+    jv, // jav
+    ja, // jpn
+    kl, // kal
+    kn, // kan
+    ks, // kas
+    ka, // kat
+    kr, // kau
+    kk, // kaz
     km, // khm
+    ki, // kik
+    rw, // kin
+    ky, // kir
+    kv, // kom
+    kg, // kon
+    ko, // kor
+    kj, // kua
+    ku, // kur
+    lo, // lao
+    la, // lat
+    lv, // lav
+    li, // lim
+    ln, // lin
+    lt, // lit
+    lb, // ltz
+    lu, // lub
     my, // mya
     nl, // nld
     no, // nor
@@ -705,8 +833,18 @@ iso639_1::type find_lang( char const *lang ) {
     es, // spa
     sv, // swe
     tr, // tur
+    ve, // ven
+    vi, // vie
+    vo, // vol
+    cy, // wel
+    wa, // wln
+    wo, // wol
+    xh, // xho
+    yi, // yid
+    yo, // yor
     za, // zha
     zh, // zho
+    zu, // zul
   };
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }

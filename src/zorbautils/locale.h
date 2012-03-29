@@ -294,7 +294,7 @@ namespace zorba {
        * Finds the ISO 3166-1 country code enumeration from the given string.
        *
        * @param country An ISO 3166-1 country code.
-       * @return Returns said enumeration or <code>unknown</code>.
+       * @return Returns said enumeration or \c unknown.
        */
       type find( char const *country );
     }
@@ -319,7 +319,7 @@ namespace zorba {
        * Finds the ISO 639-1 language code enumeration from the given string.
        *
        * @param lang An ISO 639-1 langauge code.
-       * @return Returns said enumeration or <code>unknown</code>.
+       * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
     }
@@ -359,17 +359,76 @@ namespace zorba {
         che,  ///< Chechen
         chi,  ///< Chinese
         chu,  ///< Church Slavic; Old Slavonic; Church Slavonic
+        cym,  ///< Welsh
         dan,  ///< Danish
         deu,  ///< German (T)
+        div,  ///< Divehi; Dhivehi; Maldivian
         dut,  ///< Dutch (B)
+        dzo,  ///< Dzongkha
+        ell,  ///< Modern Greek
         eng,  ///< English
+        epo,  ///< Esperanto
+        est,  ///< Estonian
+        ewe,  ///< Ewe
+        fao,  ///< Faroese
+        fij,  ///< Fijian
         fin,  ///< Finnish
         fra,  ///< French (T)
         fre,  ///< French (B)
+        fry,  ///< Western Frisian
+        ful,  ///< Fulah
+        geo,  ///< Georgian
         ger,  ///< German (B)
+        gla,  ///< Scottish Gaelic; Gaelic
+        gle,  ///< Irish
+        glg,  ///< Galician
+        glv,  ///< Manx
+        gre,  ///< Modern Greek
+        grn,  ///< Guarani
+        guj,  ///< Gujarati
+        hat,  ///< Haitian Creole; Haitian
+        hau,  ///< Hausa
+        heb,  ///< Hebrew
+        her,  ///< Herero
+        hin,  ///< Hindi
+        hmo,  ///< Hiri Motu
+        hrv,  ///< Croatian
         hun,  ///< Hungarian
+        ibo,  ///< Igbo
+        ice,  ///< Icelandic
+        ido,  ///< Ido
+        iku,  ///< Inuktitut
+        ile,  ///< Interlingue; Occidental
+        ina,  ///< Interlingua
+        ind,  ///< Indonesian
+        ipk,  ///< Inupiaq
+        isl,  ///< Icelandic
         ita,  ///< Italian
+        jav,  ///< Javanese
+        jpn,  ///< Japanese
+        kal,  ///< Kalaallisut; Greenlandic
+        kan,  ///< Kannada
+        kas,  ///< Kashmiri
+        kat,  ///< Georgian
+        kau,  ///< Kanuri
+        kaz,  ///< Kazakh
         khm,  ///< Central Khmer
+        kik,  ///< Kikuyu; Gikuyu
+        kin,  ///< Kinyarwanda
+        kir,  ///< Kirghiz; Kyrgyz
+        kom,  ///< Komi
+        kon,  ///< Kongo
+        kor,  ///< Korean
+        kua,  ///< Kuanyama; Kwanyama
+        kur,  ///< Kurdish
+        lao,  ///< Lao
+        lat,  ///< Latin
+        lav,  ///< Latvian
+        lim,  ///< Limburgan; Limburger; Limburgish
+        lin,  ///< Lingala
+        lit,  ///< Lithuanian
+        ltz,  ///< Luxembourgish; Letzeburgesch
+        lub,  ///< Luba-Katanga
         mya,  ///< Burmese
         nld,  ///< Dutch (T)
         nor,  ///< Norwegian
@@ -381,8 +440,18 @@ namespace zorba {
         spa,  ///< Spanish
         swe,  ///< Swedish
         tur,  ///< Turkish
+        ven,  ///< Venda
+        vie,  ///< Vietnamese
+        vol,  ///< Volapuk
+        wel,  ///< Welsh
+        wln,  ///< Walloon
+        wol,  ///< Wolof
+        xho,  ///< Xhosa
+        yid,  ///< Yiddish
+        yor,  ///< Yoruba
         zha,  ///< Zhuang; Chuang
         zho,  ///< Chinese
+        zul,  ///< Zulu
         NUM_ENTRIES
       };
       extern char const *const string_of[];
@@ -402,7 +471,7 @@ namespace zorba {
        * Finds the ISO 639-2 language code enumeration from the given string.
        *
        * @param lang An ISO 639-2 langauge code.
-       * @return Returns said enumeration or <code>unknown</code>.
+       * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
     }
@@ -413,21 +482,21 @@ namespace zorba {
      * Finds the ISO 639-1 language code enumeration from the given string.
      *
      * @param lang Either an ISO 639-1 or an ISO 639-2 langauge code.
-     * @return Returns said enumeration or <code>unknown</code>.
+     * @return Returns said enumeration or \c unknown.
      */
     iso639_1::type find_lang( char const *lang );
 
     /**
      * Gets the ISO 3166-1 country code enumeration for the host system.
      *
-     * @return Returns said enumeration or <code>unknown</code>.
+     * @return Returns said enumeration or \c unknown.
      */
     iso3166_1::type get_host_country();
 
     /**
      * Gets the ISO 639-1 language code enumeration for the host system.
      *
-     * @return Returns said enumeration defaulting to <code>en</code>.
+     * @return Returns said enumeration defaulting to \c en.
      */
     iso639_1::type get_host_lang();
 

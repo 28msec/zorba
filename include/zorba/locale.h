@@ -103,7 +103,7 @@ namespace zorba {
         it,   ///< Italian
         iu,   ///< Inuktitut
         ja,   ///< Japanese
-        jw,   ///< Javanese
+        jv,   ///< Javanese
         ka,   ///< Georgian
         kg,   ///< Kongo
         ki,   ///< Gikuyu
