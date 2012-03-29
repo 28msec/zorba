@@ -82,7 +82,7 @@ XmlTree::XmlTree()
 }
 
 
-XmlTree::XmlTree(XmlNode* root, ulong id)
+XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   :
   theRefCount(0),
   theId(id),
