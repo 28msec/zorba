@@ -1210,6 +1210,35 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class UpdTruncateCollection: public  UpdCollection
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  UpdTruncateCollection(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& name,
+        bool dyn_collection)
+    :
+    UpdCollection(pul, aLoc, name, dyn_collection)
+  {
+  }
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_TRUNCATE_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Index Primitives                                                           //

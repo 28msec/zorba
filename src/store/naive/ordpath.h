@@ -59,7 +59,8 @@ public:
   typedef std::vector<int32_t> DeweyID;
 
 public:
-  enum {
+  enum 
+  {
     MAX_BYTE_LEN = 255,
     MAX_BIT_LEN = MAX_BYTE_LEN * 8
   };
@@ -162,7 +163,10 @@ public:
     markLocal();
   }
 
-  OrdPath(const unsigned char* buf, ulong byteLen);
+  OrdPath(
+      const unsigned char* buf,
+      ulong byteLen,
+      bool isBinary = false);
 
   ~OrdPath() 
   {
@@ -170,11 +174,17 @@ public:
       delete [] getRemoteBuffer();
   }
 
+  void initFromData(const unsigned char* buf, ulong byteLen);
+
+  void initFromString(const unsigned char* buf, ulong byteLen);
+
   bool isValid() const { return getByteLength() != 0; }
 
   uint32_t hash() const;
 
   void setAsRoot();
+  
+  bool isRoot() const;
 
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
@@ -194,6 +204,8 @@ public:
   void appendComp(int32_t value);
 
   std::string serialize() const;
+
+  bool deserialize(const std::string&);
 
   zstring show() const;
 

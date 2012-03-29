@@ -41,12 +41,13 @@ SimpleCollection::SimpleCollection(
   : 
   theName(aName),
   theIsDynamic(aDynamicCollection),
-  theTreeCounter(1),
   theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
@@ -54,16 +55,18 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theTreeCounter(1),
   theNodeType(NULL)
 {
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
+  delete theTreeIdGenerator;
 }
 
 
@@ -336,6 +339,17 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 
 
 /*******************************************************************************
+ * Remove all the nodes from the collection
+********************************************************************************/
+void SimpleCollection::removeAll()
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  theXmlTrees.clear();
+}
+
+
+/*******************************************************************************
   Return the node at the given position within the collection, or NULL if the
   given position is >= than the number of nodes in the collection.
 ********************************************************************************/
@@ -400,14 +414,16 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   return false;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void SimpleCollection::getAnnotations(
-    std::vector<store::Annotation_t>& annotations
-) const
+    std::vector<store::Annotation_t>& annotations) const
 {
   annotations = theAnnotations;
 }
+
 
 /*******************************************************************************
   For each tree in the collection, set its current position within the collection.
@@ -421,6 +437,16 @@ void SimpleCollection::adjustTreePositions()
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TreeId SimpleCollection::createTreeId()
+{
+  return theTreeIdGenerator->create();
+}
+
 
 /*******************************************************************************
 

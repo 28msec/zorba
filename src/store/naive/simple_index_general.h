@@ -238,6 +238,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool);
+
+  void clear();
 };
 
 
@@ -291,6 +293,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool all);
+
+  void clear();
 };
 
 

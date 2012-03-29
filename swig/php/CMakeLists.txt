@@ -35,6 +35,8 @@ ELSE (NOT PHP5_FOUND)
   ENDIF (APPLE)
 
   IF (WIN32)
+    STRING(REGEX REPLACE "\\\\" "/" PHP5_LIBRARY "${PHP5_LIBRARY}")
+    MESSAGE (STATUS "SWIG PHP: Link library: " ${PHP5_LIBRARY})
     SWIG_LINK_LIBRARIES (zorba_api ${PHP5_LIBRARY})
   ENDIF (WIN32)
 
@@ -47,6 +49,17 @@ ELSE (NOT PHP5_FOUND)
 
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemFactory.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemFactory.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Item.h" "${CMAKE_CURRENT_BINARY_DIR}/Item.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Iterator.h" "${CMAKE_CURRENT_BINARY_DIR}/Iterator.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../XQuery.h" "${CMAKE_CURRENT_BINARY_DIR}/XQuery.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../DynamicContext.h" "${CMAKE_CURRENT_BINARY_DIR}/DynamicContext.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../XmlDataManager.h" "${CMAKE_CURRENT_BINARY_DIR}/XmlDataManager.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../TypeIdentifier.h" "${CMAKE_CURRENT_BINARY_DIR}/TypeIdentifier.h")
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../SerializationOptions.h" "${CMAKE_CURRENT_BINARY_DIR}/SerializationOptions.h" COPYONLY)
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Collection.h" "${CMAKE_CURRENT_BINARY_DIR}/Collection.h" COPYONLY)
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../CollectionManager.h" "${CMAKE_CURRENT_BINARY_DIR}/CollectionManager.h" COPYONLY)
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../DocumentManager.h" "${CMAKE_CURRENT_BINARY_DIR}/DocumentManager.h" COPYONLY)
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemSequence.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemSequence.h" COPYONLY)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
@@ -84,4 +97,5 @@ ELSE (NOT PHP5_FOUND)
         DESTINATION share/php )
     ENDIF (MSVC_IDE)
   ENDIF (NOT WIN32 OR CYGWIN)
+  ADD_SUBDIRECTORY (tests) 
 ENDIF (NOT PHP5_FOUND)

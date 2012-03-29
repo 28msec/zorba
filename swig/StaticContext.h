@@ -1,4 +1,68 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#ifndef API_STATIC_CONTEXT_H
+#define API_STATIC_CONTEXT_H
+
 #include <zorba/static_context_consts.h>
+
+class ZorbaConstants
+{
+public:
+  typedef enum {
+    PRESERVE,
+    NO_PRESERVE
+  } PreserveMode;
+
+  typedef enum {
+    INHERIT,
+    NO_INHERIT
+  } InheritMode;
+
+  typedef enum {
+    PRESERVE_SPACE,
+    STRIP_SPACE
+  } BoundarySpaceMode;
+
+  typedef enum {
+    PRESERVE_CONSTRUCTION,
+    STRIP_CONSTRUCTION
+  } ConstructionMode;
+
+  typedef enum {
+    EMPTY_GREATEST,
+    EMPTY_LEAST
+  } OrderEmptyMode;
+
+  typedef enum {
+    ORDERED,
+    UNORDERED
+  } OrderingMode;
+
+  typedef enum {
+    VALIDATE_SKIP,
+    VALIDATE_LAX,
+    VALIDATE_STRICT
+  } RevalidationMode;
+
+  typedef enum {
+    XPATH2_0,
+    XPATH1_0
+  } XPath1_0CompatibleMode;
+
+}; // ZorbaConstants
 
 class StaticContext 
 {
@@ -8,62 +72,73 @@ friend class XQuery;
 private:
   zorba::StaticContext_t theStaticContext;
 public:
-  StaticContext();
+
   StaticContext(const StaticContext& aStaticContext);
   StaticContext(zorba::StaticContext_t aStaticContext);
   
-  virtual void addColation(const std::string& aURI); 
-  virtual bool addNamespace(const std::string& aPrefix,
+  void addColation(const std::string& aURI); 
+  bool addNamespace(const std::string& aPrefix,
                             const std::string& aURI);
-  void addReference() const;
-  virtual bool containsFunction(const std::string &aFnNameUri, 
+
+  bool containsFunction(const std::string &aFnNameUri, 
                                 const std::string &aFnNameLocal, 
                                 int arity) const;
 
-  virtual StaticContext createChildContext() const;
-  virtual void declareOption(const Item &aQName, 
+  StaticContext createChildContext() const;
+  void declareOption(const Item &aQName, 
                              const std::string &aOptionVal);
-  virtual void disableFunction(const Item &aQName, int arity);
+  void disableFunction(const Item &aQName, int arity);
 
-  virtual void free ();
-  virtual std::string getBaseURI () const;
-  virtual zorba::boundary_space_mode_t getBoundarySpacePolicy () const;
+  std::string getBaseURI () const;
 
-  virtual zorba::construction_mode_t getConstructionMode () const;
-  virtual void getCopyNamespacesMode (zorba::preserve_mode_t &aPreserve, zorba::inherit_mode_t &aInherit) const;
-  virtual std::string getDefaultCollation () const;
-  virtual std::string getDefaultElementAndTypeNamespace () const;
-  virtual std::string getDefaultFunctionNamespace () const;
-  virtual zorba::order_empty_mode_t getDefaultOrderForEmptySequences () const;
+  ZorbaConstants::BoundarySpaceMode getBoundarySpacePolicy ();
+  ZorbaConstants::ConstructionMode  getConstructionMode();
+  ZorbaConstants::PreserveMode getCopyNamespacesModePreserve();
+  ZorbaConstants::InheritMode  getCopyNamespacesModeInherit();
+  ZorbaConstants::OrderEmptyMode getDefaultOrderForEmptySequences();
+  ZorbaConstants::OrderingMode getOrderingMode();
+  ZorbaConstants::RevalidationMode getRevalidationMode();
+  ZorbaConstants::XPath1_0CompatibleMode getXPath1_0CompatibMode();
 
-  virtual std::string getNamespaceURIByPrefix(const std::string &aPrefix) const;
-  virtual bool getOption(const Item &aQName, std::string &aOptionValue) const;
-  virtual zorba::ordering_mode_t getOrderingMode() const;
-  long getRefCount() const;
-  virtual zorba::validation_mode_t getRevalidationMode();
-  virtual zorba::xpath1_0compatib_mode_t getXPath1_0CompatibMode () const;
-  virtual void loadProlog (const std::string & aProlog, 
-                           const CompilerHints &hints);
+  std::string getDefaultCollation () const;
+  std::string getDefaultElementAndTypeNamespace () const;
+  std::string getDefaultFunctionNamespace () const;
+  
+  std::vector< std::pair< std::string, std::string > > getNamespaceBindings ();
 
-  void removeReference ();
-  virtual void resetTraceStream ();
-  virtual bool setBaseURI (const std::string &aBaseURI);
-  virtual bool setBoundarySpacePolicy (zorba::boundary_space_mode_t aMode);
+  std::string getNamespaceURIByPrefix(const std::string &aPrefix) const;
+  bool getOption(const Item &aQName, std::string &aOptionValue) const;
+  void loadProlog (const std::string & aProlog, const CompilerHints &hints);
 
-  virtual bool setConstructionMode (zorba::construction_mode_t aMode);
+  void getExternalVariables(Iterator& vars) const;
+  
+  TypeIdentifier getCollectionType(const std::string &aCollectionUri);
+  TypeIdentifier getDocumentType(const std::string &aDocUri);
+  TypeIdentifier getContextItemStaticType();
 
-  virtual bool setCopyNamespacesMode (zorba::preserve_mode_t aPreserve, 
-                                      zorba::inherit_mode_t aInherit);
-  virtual void setDefaultCollation (const std::string &aURI);
-  virtual bool setDefaultElementAndTypeNamespace (const std::string &aURI);
-  virtual bool setDefaultFunctionNamespace (const std::string &aURI);
-  virtual bool setDefaultOrderForEmptySequences (zorba::order_empty_mode_t aMode);
+  void setContextItemStaticType(const TypeIdentifier &aType);
+  
+  void resetTraceStream ();
+  bool setBaseURI (const std::string &aBaseURI);
 
-  virtual bool setOrderingMode (zorba::ordering_mode_t aMode);
-  virtual void setRevalidationMode (zorba::validation_mode_t aMode);
+  bool setBoundarySpacePolicy (ZorbaConstants::BoundarySpaceMode aMode);
+  bool setConstructionMode (ZorbaConstants::ConstructionMode aMode);
+  bool setCopyNamespacesMode (ZorbaConstants::PreserveMode aPreserve, ZorbaConstants::InheritMode aInherit);
+  bool setDefaultOrderForEmptySequences (ZorbaConstants::OrderEmptyMode aMode);
+  bool setOrderingMode (ZorbaConstants::OrderingMode aMode);
+  void setRevalidationMode (ZorbaConstants::RevalidationMode aMode);
 
-  virtual bool setXPath1_0CompatibMode (zorba::xpath1_0compatib_mode_t aMode);
+  void setURIPath(std::vector< std::string > &aURIPath );
+  void setLIBPath(std::vector< std::string > &aLIBPath );
+  void setModulePath(std::vector< std::string > &aModulePath );
+
+  bool setXPath1_0CompatibMode (ZorbaConstants::XPath1_0CompatibleMode aMode);
+  
+  void setDefaultCollation (const std::string &aURI);
+  bool setDefaultElementAndTypeNamespace (const std::string &aURI);
+  bool setDefaultFunctionNamespace (const std::string &aURI);
 
   void destroy();
 }; // class StaticContext
 
+#endif

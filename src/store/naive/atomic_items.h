@@ -32,6 +32,7 @@
 #include "store/api/xs_type_codes.h"
 #include "store_defs.h"
 #include "shared_types.h"
+#include "tree_id.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "naive_ft_token_iterator.h"
@@ -459,7 +460,7 @@ protected:
   bool isNormalized() const 
   {
     assert(theNormalizedQName != this || thePrefix.empty());
-    assert(theNormalizedQName == this || !thePrefix.empty());
+    assert(!theIsInPool || theNormalizedQName == this || !thePrefix.empty());
 
     return theNormalizedQName == this;
   }
@@ -707,7 +708,7 @@ class StructuralAnyUriItem : public AnyUriItem
 
 protected:
   ulong                        theCollectionId;
-  ulong                        theTreeId;
+  TreeId                       theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
 
@@ -722,7 +723,7 @@ protected:
   StructuralAnyUriItem(
       zstring& value,
       ulong collectionId,
-      ulong treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 
@@ -1460,9 +1461,10 @@ public:
 
   xs_integer getIntegerValue() const { return theValue; }
 
-  xs_long getLongValue() const; 
+  xs_long getLongValue() const;
 
   xs_unsignedInt getUnsignedIntValue() const;
+
   xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   zstring getStringValue() const;
