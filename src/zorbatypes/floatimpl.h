@@ -56,23 +56,23 @@ public:
 
   ////////// constructors /////////////////////////////////////////////////////
 
-  FloatImpl( char );
-  FloatImpl( signed char c );
-  FloatImpl( short n );
-  FloatImpl( int n = 0 );
-  FloatImpl( long n );
-  FloatImpl( long long n );
-  FloatImpl( unsigned char c );
-  FloatImpl( unsigned short n );
-  FloatImpl( unsigned int n );
-  FloatImpl( unsigned long n );
-  FloatImpl( unsigned long long n );
-  FloatImpl( float n );
-  FloatImpl( double n );
-  FloatImpl( Decimal const &d );
+  explicit FloatImpl( char );
+  explicit FloatImpl( signed char c );
+  explicit FloatImpl( short n );
+  explicit FloatImpl( int n = 0 );
+  explicit FloatImpl( long n );
+  explicit FloatImpl( long long n );
+  explicit FloatImpl( unsigned char c );
+  explicit FloatImpl( unsigned short n );
+  explicit FloatImpl( unsigned int n );
+  explicit FloatImpl( unsigned long n );
+  explicit FloatImpl( unsigned long long n );
+  explicit FloatImpl( float n );
+  explicit FloatImpl( double n );
+  explicit FloatImpl( Decimal const &d );
 
-  TEMPLATE_DECL(T)
-  FloatImpl( INTEGER_IMPL(T) const &i );
+  TEMPLATE_DECL(IntType)
+  FloatImpl( INTEGER_IMPL(IntType) const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -84,7 +84,7 @@ public:
    * @throw std::range_error if \a s contains a number that either underflows
    * or overflows the smallest or largest representable floating point number.
    */
-  FloatImpl( char const *s );
+  explicit FloatImpl( char const *s );
 
   template<typename FloatType2>
   FloatImpl( FloatImpl<FloatType2> const &f );
@@ -95,6 +95,11 @@ public:
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator=( A n );
+
+  FloatImpl& operator=( Decimal const &d );
+
+  TEMPLATE_DECL(T)
+  FloatImpl& operator=( INTEGER_IMPL(T) const &i );
 
   template<typename FloatType2>
   FloatImpl& operator=( FloatImpl<FloatType2> const &f );
@@ -466,43 +471,47 @@ inline FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const {
 }
 
 inline Double operator+( Double const &d, Float const &f ) {
-  return d.getNumber() + f.getNumber();
+  return Double( d.getNumber() + f.getNumber() );
 }
 
 inline Double operator+( Float const &f, Double const &d ) {
-  return f.getNumber() + d.getNumber();
+  return Double( f.getNumber() + d.getNumber() );
 }
 
 inline Double operator-( Double const &d, Float const &f ) {
-  return d.getNumber() - f.getNumber();
+  return Double( d.getNumber() - f.getNumber() );
 }
 
 inline Double operator-( Float const &f, Double const &d ) {
-  return f.getNumber() - d.getNumber();
+  return Double( f.getNumber() - d.getNumber() );
 }
 
 inline Double operator*( Double const &d, Float const &f ) {
-  return d.getNumber() * f.getNumber();
+  return Double( d.getNumber() * f.getNumber() );
 }
 
 inline Double operator*( Float const &f, Double const &d ) {
-  return f.getNumber() * d.getNumber();
+  return Double( f.getNumber() * d.getNumber() );
 }
 
 inline Double operator/( Double const &d, Float const &f ) {
-  return d.getNumber() / f.getNumber();
+  return Double( d.getNumber() / f.getNumber() );
 }
 
 inline Double operator/( Float const &f, Double const &d ) {
-  return f.getNumber() / d.getNumber();
+  return Double( f.getNumber() / d.getNumber() );
 }
 
 inline Double operator%( Double const &d, Float const &f ) {
-  return std::fmod( d.getNumber(), static_cast<double>( f.getNumber() ) );
+  return Double(
+    std::fmod( d.getNumber(), static_cast<double>( f.getNumber() ) )
+  );
 }
 
 inline Double operator%( Float const &f, Double const &d ) {
-  return std::fmod( static_cast<double>( f.getNumber() ), d.getNumber() );
+  return Double(
+    std::fmod( static_cast<double>( f.getNumber() ), d.getNumber() )
+  );
 }
 
 ////////// relational operators ///////////////////////////////////////////////
@@ -602,74 +611,74 @@ inline bool operator>=( double d, FloatImpl<T> const &f ) {
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::acosh() const {
   // formula from www.mathworks.com
-  return std::log( value_ + std::sqrt( value_ * value_ - 1 ) );
+  return FloatImpl<FloatType>( std::log( value_ + std::sqrt( value_ * value_ - 1 ) ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::asinh() const {
   // formula from www.mathworks.com
-  return std::log( value_ + std::sqrt( value_ * value_ + 1 ) );
+  return FloatImpl<FloatType>( std::log( value_ + std::sqrt( value_ * value_ + 1 ) ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::atan() const {
-  return std::atan( value_ );
+  return FloatImpl<FloatType>( std::atan( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::atanh() const {
   // formula from www.mathworks.com
-  return 0.5 * std::log( (1 + value_) / (1 - value_) );
+  return FloatImpl<FloatType>( 0.5 * std::log( (1 + value_) / (1 - value_) ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::atan2( double x ) const {
-  return std::atan2( value_, static_cast<value_type>( x ) );
+  return FloatImpl<FloatType>( std::atan2( value_, static_cast<value_type>( x ) ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::atan2( FloatImpl<FloatType> const &x ) const {
-  return atan2( x.value_ );
+  return FloatImpl<FloatType>( atan2( x.value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::ceil() const {
-  return std::ceil( value_ );
+  return FloatImpl<FloatType>( std::ceil( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::cos() const {
-  return std::cos( value_ );
+  return FloatImpl<FloatType>( std::cos( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::cosh() const {
-  return std::cosh( value_ );
+  return FloatImpl<FloatType>( std::cosh( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::exp() const {
-  return std::exp( value_ );
+  return FloatImpl<FloatType>( std::exp( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::exp10() const {
-  return std::pow( 10, value_ );
+  return FloatImpl<FloatType>( std::pow( 10, value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::floor() const {
-  return std::floor( value_ );
+  return FloatImpl<FloatType>( std::floor( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::fmod( double d ) const {
-  return std::fmod( value_, static_cast<value_type>( d ) );
+  return FloatImpl<FloatType>( std::fmod( value_, static_cast<value_type>( d ) ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::fmod( FloatImpl<FloatType> const &f ) const {
-  return fmod( f.value_ );
+  return FloatImpl<FloatType>( fmod( f.value_ ) );
 }
 
 template<typename FloatType>
@@ -684,22 +693,22 @@ FloatImpl<FloatType> FloatImpl<FloatType>::log10() const {
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::pow( int p ) const {
-  return std::pow( value_, p );
+  return FloatImpl<FloatType>( std::pow( value_, p ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::pow( FloatImpl<FloatType> const &p ) const {
-  return p.isNaN() ? value_ : std::pow( value_, p.value_ );
+  return FloatImpl<FloatType>( p.isNaN() ? value_ : std::pow( value_, p.value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::sin() const {
-  return std::sin( value_ );
+  return FloatImpl<FloatType>( std::sin( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::sinh() const {
-  return std::sinh( value_ );
+  return FloatImpl<FloatType>( std::sinh( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
@@ -709,12 +718,12 @@ FloatImpl<FloatType>::sqrt() const {
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::tan() const {
-  return std::tan( value_ );
+  return FloatImpl<FloatType>( std::tan( value_ ) );
 }
 
 template<typename FloatType> inline FloatImpl<FloatType>
 FloatImpl<FloatType>::tanh() const {
-  return std::tanh( value_ );
+  return FloatImpl<FloatType>( std::tanh( value_ ) );
 }
 
 ////////// miscellaneous //////////////////////////////////////////////////////

@@ -452,7 +452,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  xs_integer pos = 1;
+  xs_integer pos( 1 );
   bool found;
 
   PlanIteratorState* state;
@@ -1630,7 +1630,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1666,7 +1666,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = 0; i < numNodes; ++i)
+  for (xs_integer i( 0 ); i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
@@ -1754,7 +1754,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 

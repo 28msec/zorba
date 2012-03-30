@@ -269,7 +269,8 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // function arity
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getFnArity() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getFnArity()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lFunction.getp(), lArityQName, lTypeName,
         lTmpValue);
@@ -284,28 +285,31 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // location line begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLine() );
+    GENV_ITEMFACTORY->createInteger( lTmpValue, xs_integer(lIter->getLine()) );
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineBeginQName, lTypeName,
         lTmpValue);
 
     // location line end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLineEnd() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getLineEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineEndQName, lTypeName,
         lTmpValue);
 
     // location column begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumn() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumn()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnBeginQName, lTypeName,
         lTmpValue);
 
     // location column end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumnEnd() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumnEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnEndQName, lTypeName,
         lTmpValue);
@@ -441,7 +445,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorLineItem;
-            GENV_ITEMFACTORY->createInteger(lErrorLineItem, ue->source_line());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorLineItem, xs_integer(ue->source_line()));
             lErrorLineIter = new ItemIterator(lErrorLineItem);
 	        }
           else
@@ -467,7 +472,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorColumnItem;
-            GENV_ITEMFACTORY->createInteger(lErrorColumnItem, ue->source_column());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorColumnItem, xs_integer(ue->source_column()));
             lErrorColumnIter = new ItemIterator(lErrorColumnItem);
 	        }
           else

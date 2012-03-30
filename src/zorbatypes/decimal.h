@@ -46,19 +46,19 @@ public:
 
   ////////// constructors /////////////////////////////////////////////////////
 
-  Decimal( char c );
-  Decimal( signed char c );
-  Decimal( short n );
-  Decimal( int n = 0 );
-  Decimal( long n );
-  Decimal( long long n );
-  Decimal( unsigned char c );
-  Decimal( unsigned short n );
-  Decimal( unsigned int n );
-  Decimal( unsigned long n );
-  Decimal( unsigned long long n );
-  Decimal( float n );
-  Decimal( double n );
+  explicit Decimal( char c );
+  explicit Decimal( signed char c );
+  explicit Decimal( short n );
+  explicit Decimal( int n = 0 );
+  explicit Decimal( long n );
+  explicit Decimal( long long n );
+  explicit Decimal( unsigned char c );
+  explicit Decimal( unsigned short n );
+  explicit Decimal( unsigned int n );
+  explicit Decimal( unsigned long n );
+  explicit Decimal( unsigned long long n );
+  explicit Decimal( float n );
+  explicit Decimal( double n );
   Decimal( Decimal const &d );
 
   TEMPLATE_DECL(T)
@@ -71,7 +71,7 @@ public:
    * whitespace is ignored.
    * @throw std::invalid_argument if \a s does not contain a valid decimal.
    */
-  Decimal( char const *s );
+  explicit Decimal( char const *s );
 
   /**
    * Constructs a %Decimal from a Double.
@@ -79,7 +79,7 @@ public:
    * @param n The Double.
    * @throw std::invalid_argument if \a n is not finite.
    */
-  Decimal( Double const &n );
+  explicit Decimal( Double const &n );
 
   /**
    * Constructs a %Decimal from a Float.
@@ -87,7 +87,7 @@ public:
    * @param n The Float.
    * @throw std::invalid_argument if \a n is not finite.
    */
-  Decimal( Float const &n );
+  explicit Decimal( Float const &n );
 
   ////////// assignment operators /////////////////////////////////////////////
 
@@ -223,10 +223,10 @@ private:
 
   static void reduce( char *s );
 
-  static value_type round( value_type const &v, value_type const &precision );
+  static value_type round2( value_type const &v, value_type const &precision );
 
-  static value_type roundHalfToEven( value_type const &v,
-                                     value_type const &precision );
+  static value_type roundHalfToEven2( value_type const &v,
+                                      value_type const &precision );
 
   static zstring toString( value_type const&,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
