@@ -79,8 +79,7 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
     if (inNode->isNode()) {
-      result = inNode->getNilled();
-      STACK_PUSH(result != NULL, state);
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, inNode->getNilled() != NULL), state);
     } else
 			throw XQUERY_EXCEPTION(
 				err::XPTY0004,

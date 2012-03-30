@@ -118,7 +118,6 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   14.9.2 fn:serialize
 ********************************************************************************/

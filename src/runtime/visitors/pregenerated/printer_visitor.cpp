@@ -2660,6 +2660,20 @@ void PrinterVisitor::endVisit ( const LeastCommonAncestor& ) {
 // </LeastCommonAncestor>
 
 
+// <FnPathIterator>
+void PrinterVisitor::beginVisit ( const FnPathIterator& a) {
+  thePrinter.startBeginVisit("FnPathIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnPathIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnPathIterator>
+
+
 // <AbsIterator>
 void PrinterVisitor::beginVisit ( const AbsIterator& a) {
   thePrinter.startBeginVisit("AbsIterator", ++theId);
@@ -2756,6 +2770,20 @@ void PrinterVisitor::endVisit ( const FormatIntegerIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FormatIntegerIterator>
+
+
+// <FnZorbaParseXmlFragmentIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaParseXmlFragmentIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaParseXmlFragmentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnZorbaParseXmlFragmentIterator>
 
 
 // <FnParseXmlFragmentIterator>

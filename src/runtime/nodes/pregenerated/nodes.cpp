@@ -588,6 +588,34 @@ LeastCommonAncestor::~LeastCommonAncestor() {}
 // </LeastCommonAncestor>
 
 
+// <FnPathIterator>
+const char* FnPathIterator::class_name_str = "FnPathIterator";
+FnPathIterator::class_factory<FnPathIterator>
+FnPathIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnPathIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnPathIterator::class_versions_count =
+sizeof(FnPathIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnPathIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnPathIterator::~FnPathIterator() {}
+
+// </FnPathIterator>
+
+
 
 }
 

@@ -720,6 +720,40 @@ public:
 };
 
 
+/**
+ * 
+ * Author: Zorba Team
+ */
+class FnPathIterator : public NaryBaseIterator<FnPathIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnPathIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPathIterator,
+    NaryBaseIterator<FnPathIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnPathIterator, PlanIteratorState>*)this);
+  }
+
+  FnPathIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnPathIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnPathIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*
