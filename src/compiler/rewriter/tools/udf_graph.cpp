@@ -310,7 +310,6 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
       }
       else
       {
-        assert(false);
         deterministic = node->theUDF->isDeterministic();
       }
     }

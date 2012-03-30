@@ -34,14 +34,14 @@ void* StoreManager::getStore()
 
 void StoreManager::shutdownStore(void* store)
 {
-  static_cast<simplestore::SimpleStore*>(store)->shutdown();
+  static_cast<simplestore::Store*>(store)->shutdown();
 }
 
 
 namespace simplestore
 {
 
-SimpleStore* StoreManagerImpl::theStore = NULL;
+Store* StoreManagerImpl::theStore = NULL;
 
 }
 

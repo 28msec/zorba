@@ -18,10 +18,16 @@
 #include "zorbaserialization/xml_archiver.h"
 #include "diagnostics/xquery_diagnostics.h"
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
 
-XmlArchiver::XmlArchiver(std::istream *is) : Archiver(false)
+namespace serialization
+{
+
+
+XmlArchiver::XmlArchiver(std::istream* is) 
+  :
+  Archiver(false)
 {
   //open archiver for input
   this->is = is;
@@ -60,6 +66,7 @@ read_tag:
   read_tag_level++;
 }
 
+
 XmlArchiver::XmlArchiver(std::ostream *os) : Archiver(true)
 {
   //open archiver for output
@@ -70,6 +77,7 @@ XmlArchiver::XmlArchiver(std::ostream *os) : Archiver(true)
   indent_spaces[sizeof(indent_spaces)-1] = 0;
   indent_off = sizeof(indent_spaces)-1;
 }
+
 
 void XmlArchiver::serialize_out()
 {
@@ -82,56 +90,56 @@ void XmlArchiver::serialize_out()
 
   write_string("<?xml version=\"1.0\"?>\n");
   write_string("<zorba_archive archive_name=\"");
-  encode_string(archive_name.c_str());
+  encode_string(theArchiveName.c_str());
   write_string("\" ");
   write_string("archive_info=\"");
-  encode_string(archive_info.c_str());
+  encode_string(theArchiveInfo.c_str());
   write_string("\" ");
-  *os << "archive_version=\"" << archive_version << "\" ";
+  *os << "archive_version=\"" << theArchiveVersion << "\" ";
   *os << "nr_ids=\"" << nr_ids << "\" >" << std::endl;
-  serialize_compound_fields(out_fields);
+  serialize_compound_fields(theRootField);
   write_string("</zorba_archive>\n");
-
 }
+
 
 void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
 {
-  archive_field   *current_field = parent_field->first_child;
+  archive_field   *current_field = parent_field->theFirstChild;
   char strtemp[100];
   while(current_field)
   {
     write_string(indent_off >= 0 ? indent_spaces+indent_off : indent_spaces);
     write_string("<obj_field is_simple=\"");
-    write_string(current_field->is_simple ? "true" : "false");
+    write_string(current_field->theIsSimple ? "true" : "false");
     write_string("\" ");
     write_string("type=\"");
-    write_string(current_field->type);
+    write_string(current_field->theTypeName);
     write_string("\" ");
     write_string("version=\"");
-    sprintf(strtemp, "%d", current_field->version);
+    sprintf(strtemp, "%d", current_field->theClassVersion);
     write_string(strtemp);
     write_string("\" ");
     write_string("field_treat=\"");
-    write_string(get_field_treat_string(current_field->field_treat));
+    write_string(get_field_treat_string(current_field->theKind));
     write_string("\" ");
     write_string("referencing=\"");
     sprintf(strtemp, "%d", current_field->referencing);
     write_string(strtemp);
     write_string("\" ");
     write_string("id=\"");
-    sprintf(strtemp, "%d", current_field->id);
+    sprintf(strtemp, "%d", current_field->theId);
     write_string(strtemp);
     write_string("\" ");
     write_string("is_class=\"");
-    write_string(current_field->is_class ? "true" : "false");
+    write_string(current_field->theIsClass ? "true" : "false");
     write_string("\" ");
     write_string("value=\"");
-    encode_string(current_field->value);
+    encode_string(current_field->theValue);
     write_string("\" ");
 
-    if(current_field->is_simple || 
-      (current_field->field_treat == ARCHIVE_FIELD_IS_REFERENCING) ||
-      (current_field->first_child == NULL))
+    if(current_field->theIsSimple || 
+      (current_field->theKind == ARCHIVE_FIELD_IS_REFERENCING) ||
+      (current_field->theFirstChild == NULL))
     {
       write_string("/>\n");
     }
@@ -144,9 +152,10 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
       write_string(indent_off >= 0 ? indent_spaces+indent_off : indent_spaces);
       write_string("</obj_field>\n");
     }
-    current_field = current_field->next;
+    current_field = current_field->theNextSibling;
   }
 }
+
 
 void XmlArchiver::encode_string(const char *value)
 {
@@ -164,12 +173,14 @@ void XmlArchiver::encode_string(const char *value)
   }
 }
 
+
 void XmlArchiver::write_string(const char *str)
 {
   os->write(str, (std::streamsize)strlen(str));
 }
 
-const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldTreat field_treat)
+
+const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_treat)
 {
   switch(field_treat)
   {
@@ -185,14 +196,15 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldTreat field_tre
 
 ////////////reading archive
 
-bool XmlArchiver::read_next_field_impl( char **type, 
-                              std::string *value,
-                              int *id, 
-                              int *version, 
-                              bool *is_simple, 
-                              bool *is_class,
-                              enum ArchiveFieldTreat *field_treat,
-                              int *referencing)
+bool XmlArchiver::read_next_field_impl(
+    char **type, 
+    std::string *value,
+    int *id, 
+    int *version, 
+    bool *is_simple, 
+    bool *is_class,
+    enum ArchiveFieldKind *field_treat,
+    int *referencing)
 {
   if(!is)
   {
@@ -204,7 +216,7 @@ bool XmlArchiver::read_next_field_impl( char **type,
   *version = -1; 
   *is_simple = false; 
   *is_class = false,
-  *field_treat = (enum ArchiveFieldTreat)-1;
+  *field_treat = (enum ArchiveFieldKind)-1;
   *referencing = -1;
 
   if(is_compound_field_without_children)
@@ -253,14 +265,14 @@ read_tag:
 
   while(read_attrib_name(attrib_name))
   {
-//    write_string("<obj_field is_simple=\"" << (current_field->is_simple ? "true" : "false") << "\" "
-//        <<"type=\"" << current_field->type << "\" "
+//    write_string("<obj_field is_simple=\"" << (current_field->theIsSimple ? "true" : "false") << "\" "
+//        <<"type=\"" << current_field->theTypeName << "\" "
 //        <<"version=\"" << current_field->version << "\" "
-//        <<"field_treat=\"" << get_field_treat_string(current_field->field_treat) << "\" "
+//        <<"field_treat=\"" << get_field_treat_string(current_field->theKind) << "\" "
 //        <<"referencing=\"" << current_field->referencing << "\" "
 //        <<"id=\"" << current_field->id << "\" "
-//        <<"is_class=\"" << current_field->is_class << "\" "
-//        <<"value=\"" ;//<< current_field->value ? current_field->value : "" << "\" ";
+//        <<"is_class=\"" << current_field->theIsClass << "\" "
+//        <<"value=\"" ;//<< current_field->theValue ? current_field->theValue : "" << "\" ";
 process_attr:
     switch(attr_index)
     {
@@ -378,7 +390,6 @@ process_attr:
 }
 
 
-
 bool XmlArchiver::read_root_tag(char c)
 {
   if(!match_string(c, "zorba_archive"))
@@ -400,16 +411,16 @@ bool XmlArchiver::read_root_tag(char c)
   {
     if(!strcmp(attrib_name, "archive_name"))
     {
-      read_attrib_value(&archive_name);
+      read_attrib_value(&theArchiveName);
     }
     else if(!strcmp(attrib_name, "archive_info"))
     {
-      read_attrib_value(&archive_info);
+      read_attrib_value(&theArchiveInfo);
     }
     else if(!strcmp(attrib_name, "archive_version"))
     {
       read_attrib_value(attrib_value);
-      archive_version = atoi(attrib_value);
+      theArchiveVersion = atoi(attrib_value);
     }
     else if(!strcmp(attrib_name, "nr_ids"))
     {
@@ -420,6 +431,7 @@ bool XmlArchiver::read_root_tag(char c)
   root_tag_is_read();
   return true;
 }
+
 
 void XmlArchiver::read_end_current_level_impl()
 {
@@ -470,6 +482,7 @@ read_tag:
   return;
 }
 
+
 bool XmlArchiver::match_string(char c, const char *match)
 {
   if(match[0] != c)
@@ -489,6 +502,7 @@ bool XmlArchiver::match_string(char c, const char *match)
     has_attributes = true;
   return true;
 }
+
 
 bool XmlArchiver::read_attrib_name(char *attrib_name)
 {
@@ -539,6 +553,7 @@ read_name:
   }
   return true;
 }
+
 
 void XmlArchiver::read_attrib_value(char *attrib_value)
 {
@@ -651,6 +666,7 @@ void XmlArchiver::read_attrib_value(char *attrib_value)
   *attrib_value = 0;
 }
 
+
 void XmlArchiver::read_attrib_value(std::string *attrib_value)
 {
   char c = 0;
@@ -755,6 +771,7 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
   }
 }
 
+
 void XmlArchiver::skip_tag()
 {
   std::string   temp_val;
@@ -777,6 +794,7 @@ void XmlArchiver::skip_tag()
     read_attrib_value(&temp_val);
   }
 }
+
 
 void XmlArchiver::skip_comment_tag()
 {
