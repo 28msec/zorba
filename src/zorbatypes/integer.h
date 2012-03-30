@@ -108,11 +108,19 @@ public:
 
   ////////// assignment operators /////////////////////////////////////////////
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  /**
+   * For every built-in arithmetic type T, assign to this %IntegerImpl.
+   *
+   * @tparam T The built-in arithmetic type.
+   * @param n The arithmetic value to assign.
+   * @return Returns \c *this.
+   */
+  template<typename T>
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<T>::value,
                           IntegerImpl&>::type
-  operator=( A n );
+  operator=( T n );
 
+  // These arithmetic types have to be special-cased.
   IntegerImpl& operator=( long long );
   IntegerImpl& operator=( unsigned long );
   IntegerImpl& operator=( unsigned long long );
@@ -609,10 +617,10 @@ inline INTEGER_IMPL(T)::IntegerImpl( INTEGER_IMPL(U) const &i ) :
 ////////// assignment operators ///////////////////////////////////////////////
 
 TEMPLATE_DECL(T)
-template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+template<typename T> inline
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<T>::value,
                         INTEGER_IMPL(T)&>::type
-INTEGER_IMPL(T)::operator=( A n ) {
+INTEGER_IMPL(T)::operator=( T n ) {
   value_ = static_cast<long>( n );
   return *this;
 }
