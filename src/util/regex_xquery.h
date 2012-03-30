@@ -19,7 +19,7 @@
 
 #include <list>
 #include <vector>
-
+#include <util/unicode_util.h>
 namespace zorba {
   namespace regex_xquery{
 

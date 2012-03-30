@@ -17,10 +17,9 @@
 #ifndef ZORBA_PASSTHRU_STREAMBUF_H
 #define ZORBA_PASSTHRU_STREAMBUF_H
 
-//#include <zorba/transcode_streambuf.h>
-//#include <util/transcode_streambuf.h>
 #include <zorba/transcode_stream.h>
-
+#include "zorbatypes/zstring.h"
+#include "util/ascii_util.h"
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
