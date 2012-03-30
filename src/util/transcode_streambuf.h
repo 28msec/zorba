@@ -32,7 +32,7 @@ namespace internal {
 namespace transcode {
 
 #ifdef ZORBA_NO_ICU
-typedef passthru_streambuf streambuf;
+typedef zorba::passthru_streambuf streambuf;
 #else
 typedef icu_streambuf streambuf;
 #endif /* ZORBA_NO_ICU */

@@ -17,7 +17,9 @@
 #ifndef ZORBA_PASSTHRU_STREAMBUF_H
 #define ZORBA_PASSTHRU_STREAMBUF_H
 
-#include <zorba/transcode_streambuf.h>
+//#include <zorba/transcode_streambuf.h>
+//#include <util/transcode_streambuf.h>
+#include <zorba/transcode_stream.h>
 
 namespace zorba {
 
@@ -48,6 +50,13 @@ public:
    * @return \c true only if the character encoding is supported.
    */
   static bool is_supported( char const *charset );
+  static bool is_necessary( char const *cc_charset );
+
+  typedef std::streambuf::char_type char_type;
+  typedef std::streambuf::int_type int_type;
+  typedef std::streambuf::off_type off_type;
+  typedef std::streambuf::pos_type pos_type;
+  typedef std::streambuf::traits_type traits_type;
 
 protected:
   void imbue( std::locale const& );
