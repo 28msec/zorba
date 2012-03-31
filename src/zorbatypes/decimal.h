@@ -21,6 +21,7 @@
 #include <zorba/config.h>
 
 #include "common/common.h"
+#include "util/stl_util.h"
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/class_serializer.h"
 
@@ -30,11 +31,11 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(T)  IntegerImpl
+# define TEMPLATE_DECL(I) /* nothing */
+# define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(T) template<typename T>
-# define INTEGER_IMPL(T)  IntegerImpl<T>
+# define TEMPLATE_DECL(I) template<typename I>
+# define INTEGER_IMPL(I)  IntegerImpl<I>
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
@@ -59,10 +60,11 @@ public:
   explicit Decimal( unsigned long long n );
   explicit Decimal( float n );
   explicit Decimal( double n );
+
   Decimal( Decimal const &d );
 
-  TEMPLATE_DECL(T)
-  Decimal( INTEGER_IMPL(T) const &i );
+  TEMPLATE_DECL(I)
+  Decimal( INTEGER_IMPL(I) const &i );
 
   /**
    * Constructs a %Decimal from a C string.
@@ -91,26 +93,35 @@ public:
 
   ////////// assignment operators /////////////////////////////////////////////
 
-  Decimal& operator=( char c );
-  Decimal& operator=( signed char c );
-  Decimal& operator=( short n );
-  Decimal& operator=( int n );
-  Decimal& operator=( long n );
-  Decimal& operator=( long long n );
-  Decimal& operator=( unsigned char c );
-  Decimal& operator=( unsigned short n );
-  Decimal& operator=( unsigned int n );
-  Decimal& operator=( unsigned long n );
-  Decimal& operator=( unsigned long long n );
-  Decimal& operator=( float n );
-  Decimal& operator=( double n );
-  Decimal& operator=( char const *s );
+  /**
+   * Canonical assignment operator.
+   *
+   * @param d The %Decimal to assign from.
+   * @return Returns \c *this.
+   */
   Decimal& operator=( Decimal const &d );
+
+  /**
+   * For every built-in arithmetic type A, assign to this %Decimal.
+   *
+   * @tparam A The built-in arithmetic type.
+   * @param n The arithmetic value to assign.
+   * @return Returns \c *this.
+   */
+  template<typename A>
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,Decimal&>::type
+  operator=( A n );
+
+  // These arithmetic types have to be special-cased.
+  Decimal& operator=( long long n );
+  Decimal& operator=( unsigned long long n );
+
+  Decimal& operator=( char const *s );
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
 
-  TEMPLATE_DECL(T)
-  Decimal& operator=( INTEGER_IMPL(T) const &i );
+  TEMPLATE_DECL(I)
+  Decimal& operator=( INTEGER_IMPL(I) const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -121,10 +132,11 @@ public:
   friend Decimal operator%( Decimal const&, Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP)                                            \
-  TEMPLATE_DECL(T)                                                      \
-  friend Decimal operator OP( Decimal const&, INTEGER_IMPL(T) const& ); \
-  TEMPLATE_DECL(T)                                                      \
-  friend Decimal operator OP( INTEGER_IMPL(T) const&, Decimal const& )
+  TEMPLATE_DECL(I)                                                      \
+  friend Decimal operator OP( Decimal const&, INTEGER_IMPL(I) const& ); \
+                                                                        \
+  TEMPLATE_DECL(I)                                                      \
+  friend Decimal operator OP( INTEGER_IMPL(I) const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(+);
   ZORBA_DECIMAL_OP(-);
@@ -140,7 +152,7 @@ public:
   Decimal& operator%=( Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP) \
-  TEMPLATE_DECL(T) Decimal& operator OP( INTEGER_IMPL(T) const& )
+  TEMPLATE_DECL(I) Decimal& operator OP( INTEGER_IMPL(I) const& )
 
   ZORBA_DECIMAL_OP(+=);
   ZORBA_DECIMAL_OP(-=);
@@ -155,10 +167,10 @@ public:
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
   friend bool operator OP( Decimal const&, Decimal const& );          \
-  TEMPLATE_DECL(T)                                                    \
-  friend bool operator OP( Decimal const&, INTEGER_IMPL(T) const& );  \
-  TEMPLATE_DECL(T)                                                    \
-  friend bool operator OP( INTEGER_IMPL(T) const&, Decimal const& )
+  TEMPLATE_DECL(I)                                                    \
+  friend bool operator OP( Decimal const&, INTEGER_IMPL(I) const& );  \
+  TEMPLATE_DECL(I)                                                    \
+  friend bool operator OP( INTEGER_IMPL(I) const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(==);
   ZORBA_DECIMAL_OP(!=);
@@ -176,11 +188,11 @@ public:
   Decimal floor() const;
   Decimal round() const;
 
-  TEMPLATE_DECL(T)
-  Decimal round( INTEGER_IMPL(T) const &precision ) const;
+  TEMPLATE_DECL(I)
+  Decimal round( INTEGER_IMPL(I) const &precision ) const;
 
-  TEMPLATE_DECL(T)
-  Decimal roundHalfToEven( INTEGER_IMPL(T) const &precision ) const;
+  TEMPLATE_DECL(I)
+  Decimal roundHalfToEven( INTEGER_IMPL(I) const &precision ) const;
 
   Decimal sqrt() const;
 
@@ -231,8 +243,8 @@ private:
   static zstring toString( value_type const&,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
-  TEMPLATE_DECL(T) friend class IntegerImpl;
-  template<typename T> friend class FloatImpl;
+  TEMPLATE_DECL(I) friend class IntegerImpl;
+  template<typename F> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );
 };
@@ -274,63 +286,20 @@ inline Decimal::Decimal( Decimal const &d ) :
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-inline Decimal& Decimal::operator=( char c ) {
-  value_ = static_cast<long>( c );
+inline Decimal& Decimal::operator=( Decimal const &d ) {
+  value_ = d.value_;
   return *this;
 }
 
-inline Decimal& Decimal::operator=( signed char c ) {
-  value_ = static_cast<long>( c );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( short n ) {
+template<typename A> inline
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,Decimal&>::type
+Decimal::operator=( A n ) {
   value_ = static_cast<long>( n );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( int n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( long n ) {
-  value_ = n;
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( unsigned char c ) {
-  value_ = static_cast<long>( c );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( unsigned short n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( unsigned int n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( float n ) {
-  value_ = n;
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( double n ) {
-  value_ = n;
   return *this;
 }
 
 inline Decimal& Decimal::operator=( char const *s ) {
   parse( s, &value_ );
-  return *this;
-}
-
-inline Decimal& Decimal::operator=( Decimal const &d ) {
-  value_ = d.value_;
   return *this;
 }
 
