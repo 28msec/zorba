@@ -61,10 +61,8 @@ public:
   explicit Decimal( float n );
   explicit Decimal( double n );
 
-  Decimal( Decimal const &d );
-
   TEMPLATE_DECL(I)
-  Decimal( INTEGER_IMPL(I) const &i );
+  explicit Decimal( INTEGER_IMPL(I) const &i );
 
   /**
    * Constructs a %Decimal from a C string.
@@ -91,10 +89,17 @@ public:
    */
   explicit Decimal( Float const &n );
 
+  /**
+   * Conventional copy constructor.
+   *
+   * @param d The %Decimal to copy from.
+   */
+  Decimal( Decimal const &d );
+
   ////////// assignment operators /////////////////////////////////////////////
 
   /**
-   * Canonical assignment operator.
+   * Conventional assignment operator.
    *
    * @param d The %Decimal to assign from.
    * @return Returns \c *this.
@@ -305,50 +310,30 @@ inline Decimal& Decimal::operator=( char const *s ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-inline Decimal operator+( Decimal const &d1, Decimal const &d2 ) {
-  return d1.value_ + d2.value_;
-}
+#define ZORBA_DECIMAL_OP(OP)                                            \
+  inline Decimal operator OP( Decimal const &d1, Decimal const &d2 ) {  \
+    return d1.value_ OP d2.value_;                                      \
+  }
 
-inline Decimal operator-( Decimal const &d1, Decimal const &d2 ) {
-  return d1.value_ - d2.value_;
-}
+ZORBA_DECIMAL_OP(+)
+ZORBA_DECIMAL_OP(-)
+ZORBA_DECIMAL_OP(*)
+ZORBA_DECIMAL_OP(/)
+ZORBA_DECIMAL_OP(%)
+#undef ZORBA_DECIMAL_OP
 
-inline Decimal operator*( Decimal const &d1, Decimal const &d2 ) {
-  return d1.value_ * d2.value_;
-}
+#define ZORBA_DECIMAL_OP(OP)                                  \
+  inline Decimal& Decimal::operator OP( Decimal const &d ) {  \
+    value_ OP d.value_;                                       \
+    return *this;                                             \
+  }
 
-inline Decimal operator/( Decimal const &d1, Decimal const &d2 ) {
-  return d1.value_ / d2.value_;
-}
-
-inline Decimal operator%( Decimal const &d1, Decimal const &d2 ) {
-  return d1.value_ % d2.value_;
-}
-
-inline Decimal& Decimal::operator+=( Decimal const &d ) {
-  value_ += d.value_;
-  return *this;
-}
-
-inline Decimal& Decimal::operator-=( Decimal const &d ) {
-  value_ -= d.value_;
-  return *this;
-}
-
-inline Decimal& Decimal::operator*=( Decimal const &d ) {
-  value_ *= d.value_;
-  return *this;
-}
-
-inline Decimal& Decimal::operator/=( Decimal const &d ) {
-  value_ /= d.value_;
-  return *this;
-}
-
-inline Decimal& Decimal::operator%=( Decimal const &d ) {
-  value_ %= d.value_;
-  return *this;
-}
+ZORBA_DECIMAL_OP(+=)
+ZORBA_DECIMAL_OP(-=)
+ZORBA_DECIMAL_OP(*=)
+ZORBA_DECIMAL_OP(/=)
+ZORBA_DECIMAL_OP(%=)
+#undef ZORBA_DECIMAL_OP
 
 inline Decimal Decimal::operator-() const {
   return -value_;

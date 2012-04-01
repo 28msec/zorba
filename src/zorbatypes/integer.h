@@ -34,11 +34,13 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
+# define TEMPLATE_DECL(I)     /* nothing */
+# define TEMPLATE_DECL2(I,A)  template<typename A>
+# define INTEGER_IMPL(I)      IntegerImpl
 #else
-# define TEMPLATE_DECL(I) template<typename I>
-# define INTEGER_IMPL(I)  IntegerImpl<I>
+# define TEMPLATE_DECL(I)     template<typename I>
+# define TEMPLATE_DECL2(I,A)  template<typename I,typename A>
+# define INTEGER_IMPL(I)      IntegerImpl<I>
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
@@ -75,9 +77,6 @@ public:
   explicit IntegerImpl( double n );
   explicit IntegerImpl( Decimal const &d );
 
-  TEMPLATE_DECL(IntType2)
-  IntegerImpl( INTEGER_IMPL(IntType2) const &i );
-
   /**
    * Constructs an %IntegerImpl from a C string.
    *
@@ -106,11 +105,21 @@ public:
    */
   explicit IntegerImpl( Float const &f );
 
+  /**
+   * Constructs from another %IntegerImpl even if its \c IntType is different.
+   * (This subsumes the conventional copy constructor.)
+   *
+   * @tparam IntType2 the integer type of \a i.
+   * @param i The %IntegerImpl to copy from.
+   */
+  TEMPLATE_DECL(IntType2)
+  IntegerImpl( INTEGER_IMPL(IntType2) const &i );
+
   ////////// assignment operators /////////////////////////////////////////////
 
   /**
    * Assign from an %IntegerImpl even if its \c IntType is different.
-   * (This subsumes the canonical assignment operator.)
+   * (This subsumes the conventional assignment operator.)
    *
    * @tparam IntType2 the integer type of \a i.
    * @param i The %IntegerImpl to assign from.
@@ -162,12 +171,12 @@ public:
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                      \
-  TEMPLATE_DECL(I) template<typename A> friend                    \
+  TEMPLATE_DECL2(I,A) friend                                      \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
                           INTEGER_IMPL(I)>::type                  \
   operator OP( INTEGER_IMPL(I) const&, A );                       \
                                                                   \
-  TEMPLATE_DECL(I) template<typename A> friend                    \
+  TEMPLATE_DECL2(I,A) friend                                      \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
                           INTEGER_IMPL(I)>::type                  \
   operator OP( A, INTEGER_IMPL(I) const& )
@@ -190,9 +199,9 @@ public:
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                      \
-  TEMPLATE_DECL(I) template<typename A>                           \
+  template<typename A>                                            \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          INTEGER_IMPL(I)&>::type                 \
+                          IntegerImpl&>::type                     \
   operator OP( A )
 
   ZORBA_INTEGER_OP(+=);
@@ -230,11 +239,11 @@ public:
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                                \
-  TEMPLATE_DECL(I) template<typename A> friend                              \
+  TEMPLATE_DECL2(I,A) friend                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( INTEGER_IMPL(I) const&, A );                                 \
                                                                             \
-  TEMPLATE_DECL(I) template<typename A> friend                              \
+  TEMPLATE_DECL2(I,A) friend                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( A, INTEGER_IMPL(I) const& )
 
@@ -499,14 +508,14 @@ INTEGER_IMPL(I) operator/( INTEGER_IMPL(I) const &i,
 }
 
 #define ZORBA_INTEGER_OP(OP)                                          \
-  TEMPLATE_DECL(I) template<typename A> inline                        \
+  TEMPLATE_DECL2(I,A) inline                                          \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,      \
                           INTEGER_IMPL(I)>::type                      \
   operator OP( INTEGER_IMPL(I) const& i, A n ) {                      \
     return INTEGER_IMPL(I)( i.value_ OP INTEGER_IMPL(I)::cast( n ) ); \
   }                                                                   \
                                                                       \
-  TEMPLATE_DECL(I) template<typename A> inline                        \
+  TEMPLATE_DECL2(I,A) inline                                          \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,      \
                           INTEGER_IMPL(I)>::type                      \
   operator OP( A n, INTEGER_IMPL(I) const &i ) {                      \
@@ -519,7 +528,7 @@ ZORBA_INTEGER_OP(*)
 ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
 
-TEMPLATE_DECL(I) template<typename A> inline
+TEMPLATE_DECL2(I,A) inline
 typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                         INTEGER_IMPL(I)>::type
 operator/( INTEGER_IMPL(I) const &i, A n ) {
@@ -528,7 +537,7 @@ operator/( INTEGER_IMPL(I) const &i, A n ) {
   );
 }
 
-TEMPLATE_DECL(I) template<typename A> inline
+TEMPLATE_DECL2(I,A) inline
 typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                         INTEGER_IMPL(I)>::type
 operator/( A n, INTEGER_IMPL(I) const &i ) {
@@ -627,13 +636,13 @@ ZORBA_INTEGER_OP(>=)
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                                \
-  TEMPLATE_DECL(I) template<typename A> inline                              \
+  TEMPLATE_DECL2(I,A) inline                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( INTEGER_IMPL(I) const &i, A n ) {                            \
     return i.value_ OP INTEGER_IMPL(I)::cast( n );                          \
   }                                                                         \
                                                                             \
-  TEMPLATE_DECL(I) template<typename A> inline                              \
+  TEMPLATE_DECL2(I,A) inline                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( A n, INTEGER_IMPL(I) const &i ) {                            \
     return INTEGER_IMPL(I)::cast( n ) OP i.value_;                          \
@@ -661,24 +670,24 @@ inline int IntegerImpl::sign() const {
 
 #else
 
-template<typename IntType>
-inline int IntegerImpl<IntType>::compare( IntegerImpl const &i ) const {
+template<typename I>
+inline int IntegerImpl<I>::compare( IntegerImpl const &i ) const {
   return value_ < i.value_ ? -1 : value_ > i.value_ ? 1 : 0;
 }
 
-template<typename IntType>
-inline uint32_t IntegerImpl<IntType>::hash() const {
+template<typename I>
+inline uint32_t IntegerImpl<I>::hash() const {
   return static_cast<uint32_t>( value_ );
 }
 
-template<typename IntType>
-inline bool IntegerImpl<IntType>::is_long() const {
+template<typename I>
+inline bool IntegerImpl<I>::is_long() const {
   return  value_ >= std::numeric_limits<long>::min() &&
           value_ <= std::numeric_limits<long>::max();
 }
 
-template<typename IntType>
-inline int IntegerImpl<IntType>::sign() const {
+template<typename I>
+inline int IntegerImpl<I>::sign() const {
   return ztd::lt0( value_ ) ? -1 : value_ > 0 ? 1 : 0;
 }
 
