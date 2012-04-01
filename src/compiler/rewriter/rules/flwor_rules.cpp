@@ -307,9 +307,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --i;
 
         flwor.compute_return_type(true, NULL);
-
-        std::cout << "After eliminating var : " << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
       }
     }
     else if (c.get_kind() == flwor_clause::let_clause)
@@ -357,9 +354,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --numClauses;
         --numForLetClauses;
         --i;
-        
-        std::cout << "After eliminating var : " << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
