@@ -71,8 +71,9 @@ static void fix_if_annotations(if_expr* ifExpr)
 class SubstVars : public PrePostRewriteRule
 {
 protected:
-  const var_expr   * theVarExpr;
-  expr             * theSubstExpr;
+  const var_expr     * theVarExpr;
+  expr               * theSubstExpr;
+  std::vector<expr*>   thePath;
 
 public:
   SubstVars(const var_expr* var, expr* subst)
@@ -91,12 +92,32 @@ protected:
 
 RULE_REWRITE_PRE(SubstVars)
 {
-  return (node == theVarExpr) ? theSubstExpr : NULL;
+  thePath.push_back(node);
+
+  if (node == theVarExpr)
+  {
+    std::vector<expr*>::iterator ite = thePath.begin();
+    std::vector<expr*>::iterator end = thePath.end();
+    for (; ite != end; ++ite)
+    {
+      expr::FreeVars& vars = (*ite)->getFreeVars();
+      vars.erase(theVarExpr);
+      vars.insert(theSubstExpr->getFreeVars().begin(),
+                  theSubstExpr->getFreeVars().end());
+    }
+
+    return theSubstExpr;
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 
 RULE_REWRITE_POST(SubstVars)
 {
+  thePath.pop_back();
   return NULL;
 }
 
@@ -286,6 +307,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --i;
 
         flwor.compute_return_type(true, NULL);
+
+        std::cout << "After eliminating var : " << std::endl;
+        rCtx.getRoot()->put(std::cout) << std::endl;
       }
     }
     else if (c.get_kind() == flwor_clause::let_clause)
@@ -333,6 +357,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --numClauses;
         --numForLetClauses;
         --i;
+        
+        std::cout << "After eliminating var : " << std::endl;
+        rCtx.getRoot()->put(std::cout) << std::endl;
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
