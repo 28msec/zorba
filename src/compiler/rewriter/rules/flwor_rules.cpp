@@ -691,7 +691,7 @@ static bool safe_to_fold_single_use(
           if (var_uses == 1)
           {
             already_found = true;
-            referencingExpr = *expr;
+            referencingExpr = *ite;
           }
           else
           {
