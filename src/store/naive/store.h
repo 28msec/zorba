@@ -16,10 +16,17 @@
 #ifndef ZORBA_SIMPLESTORE_STORE_H
 #define ZORBA_SIMPLESTORE_STORE_H
 
+#include "store/api/store.h"
+
 #include "shared_types.h"
 #include "store_defs.h"
 #include "hashmap_nodep.h"
 #include "tree_id.h"
+#include "store/util/hashmap_stringbuf.h"
+#include "zorbautils/mutex.h"
+#include "zorbautils/lock.h"
+#include "zorbautils/hashmap.h"
+#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "node_items.h"
@@ -27,15 +34,6 @@
 #include "store/api/index.h"
 #include "store/api/ic.h"
 #endif
-
-#include "store/api/store.h"
-
-#include "store/util/hashmap_stringbuf.h"
-
-#include "zorbautils/mutex.h"
-#include "zorbautils/lock.h"
-#include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 namespace zorba
 {

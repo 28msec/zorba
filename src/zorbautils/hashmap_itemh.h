@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef HASHMAP_ITEMH_H
+#define HASHMAP_ITEMH_H
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
@@ -110,3 +112,5 @@ public:
 };
 
 }
+
+#endif
