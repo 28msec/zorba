@@ -62,7 +62,7 @@ WindowVars::WindowVars()
 /***************************************************************************//**
   Constructor
 ********************************************************************************/
-WindowVars::WindowVars (
+WindowVars::WindowVars(
     const std::vector<PlanIter_t >& aCurVars,
     const std::vector<PlanIter_t >& aPrevVars,
     const std::vector<PlanIter_t >& aNextVars,
@@ -112,26 +112,68 @@ void WindowVars::serialize(::zorba::serialization::Archiver& ar)
 /***************************************************************************//**
 
 ********************************************************************************/
-void WindowVars::accept(PlanIterVisitor& v) const
+void WindowVars::accept(PlanIterVisitor& v, bool startClause) const
 {
+  zstring varName;
+
+  if (startClause)
+    varName = "start-";
+  else
+    varName = "end-";
+
   if (!theCurVars.empty())
   {
-    v.beginVisitWinCondVariable("CurrentIn", theCurVars);
+    varName += "CurrentIn";
+    v.beginVisitWinCondVariable(varName, theCurVars);
     v.endVisitWinCondVariable();
   }
+
   if (!thePrevVars.empty())
   {
-    v.beginVisitWinCondVariable("PrevIn", thePrevVars);
+    varName += "PrevIn";
+    v.beginVisitWinCondVariable(varName, thePrevVars);
     v.endVisitWinCondVariable();
   }
+
   if (!theNextVars.empty())
   {
-    v.beginVisitWinCondVariable("NextIn", theNextVars);
+    varName += "NextIn";
+    v.beginVisitWinCondVariable(varName, theNextVars);
     v.endVisitWinCondVariable();
   }
+
   if (!thePosVars.empty())
   {
-    v.beginVisitWinCondVariable("PosIn", thePosVars);
+    varName += "PosIn";
+    v.beginVisitWinCondVariable(varName, thePosVars);
+    v.endVisitWinCondVariable();
+  }
+
+  if (!theCurOuterVars.empty())
+  {
+    varName += "CurrentOut";
+    v.beginVisitWinCondVariable(varName, theCurOuterVars);
+    v.endVisitWinCondVariable();
+  }
+
+  if (!thePrevOuterVars.empty())
+  {
+    varName += "PrevOut";
+    v.beginVisitWinCondVariable(varName, thePrevOuterVars);
+    v.endVisitWinCondVariable();
+  }
+
+  if (!theNextOuterVars.empty())
+  {
+    varName += "NextOut";
+    v.beginVisitWinCondVariable(varName, theNextOuterVars);
+    v.endVisitWinCondVariable();
+  }
+
+  if (!thePosOuterVars.empty())
+  {
+    varName += "PosOut";
+    v.beginVisitWinCondVariable(varName, thePosOuterVars);
     v.endVisitWinCondVariable();
   }
 }
@@ -294,7 +336,7 @@ uint32_t StartClause::getStateSizeOfSubtree() const
 ********************************************************************************/
 void StartClause::accept(PlanIterVisitor& v) const
 {
-  theWindowVars.accept(v);
+  theWindowVars.accept(v, true);
   theStartClauseIter->accept(v);
 }
 
@@ -432,7 +474,7 @@ void EndClause::accept(PlanIterVisitor& v) const
   //TODO more output
   if (theHasEndClause)
   {
-    theWindowVars.accept(v);
+    theWindowVars.accept(v, false);
     theEndClauseIter->accept(v);
   }
 }

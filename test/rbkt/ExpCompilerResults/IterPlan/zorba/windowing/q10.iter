@@ -1,0 +1,126 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="seq">
+    <FnDocIterator>
+      <SingletonIterator value="xs:string(person_events.xml)"/>
+    </FnDocIterator>
+  </CtxVarDeclareIterator>
+  <ElementIterator>
+    <SingletonIterator value="xs:QName(,,result)"/>
+    <EnclosedIterator attr_cont="false">
+      <flwor::TupleStreamIterator>
+        <flwor::WhereIterator>
+          <flwor::WindowIterator>
+            <WindowVariable name="w">
+              <NodeSortIterator distinct="true" ascending="true">
+                <flwor::FLWORIterator>
+                  <ForVariable name="$$dot">
+                    <NodeDistinctIterator allow-atomics="false" check-only="false">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+                        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                          <CtxVarIterator varid="2" varname="seq" varkind="global"/>
+                        </TreatIterator>
+                      </ChildAxisIterator>
+                    </NodeDistinctIterator>
+                  </ForVariable>
+                  <ForVariable name="$$dot">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$dot"/>
+                    </ChildAxisIterator>
+                  </ForVariable>
+                  <WhereClause>
+                    <FnBooleanIterator>
+                      <CompareIterator>
+                        <PromoteIterator type="xs:anyAtomicType">
+                          <FnDataIterator>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
+                              <ForVarIterator varname="$$dot"/>
+                            </ChildAxisIterator>
+                          </FnDataIterator>
+                        </PromoteIterator>
+                        <SingletonIterator value="xs:string(in)"/>
+                      </CompareIterator>
+                    </FnBooleanIterator>
+                  </WhereClause>
+                  <ReturnClause>
+                    <ForVarIterator varname="$$dot"/>
+                  </ReturnClause>
+                </flwor::FLWORIterator>
+              </NodeSortIterator>
+            </WindowVariable>
+            <WinCondVariable name="start-CurrentIn"/>
+            <WinCondVariable name="start-CurrentInCurrentOut"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <WinCondVariable name="end-NextIn"/>
+            <FnBooleanIterator>
+              <CompareIterator>
+                <CastIterator type="xs:date">
+                  <CastIterator type="xs:dateTime">
+                    <FnDataIterator>
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="s"/>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                  </CastIterator>
+                </CastIterator>
+                <CastIterator type="xs:date">
+                  <CastIterator type="xs:dateTime">
+                    <FnDataIterator>
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="e"/>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                  </CastIterator>
+                </CastIterator>
+              </CompareIterator>
+            </FnBooleanIterator>
+            <flwor::TupleSourceIterator/>
+          </flwor::WindowIterator>
+          <FnBooleanIterator>
+            <flwor::FLWORIterator>
+              <ForVariable name="$$dot">
+                <LetVarIterator varname="w"/>
+              </ForVariable>
+              <WhereClause>
+                <FnBooleanIterator>
+                  <CompareIterator>
+                    <PromoteIterator type="xs:anyAtomicType">
+                      <FnDataIterator>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="$$dot"/>
+                        </ChildAxisIterator>
+                      </FnDataIterator>
+                    </PromoteIterator>
+                    <SingletonIterator value="xs:string(Barbara)"/>
+                  </CompareIterator>
+                </FnBooleanIterator>
+              </WhereClause>
+              <ReturnClause>
+                <ForVarIterator varname="$$dot"/>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </FnBooleanIterator>
+        </flwor::WhereIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,alert)"/>
+          <AttributeIterator qname="xs:QName(,,date)">
+            <EnclosedIterator attr_cont="true">
+              <CastIterator type="xs:date">
+                <CastIterator type="xs:dateTime">
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="s"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </CastIterator>
+              </CastIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <TextIterator>
+            <SingletonIterator value="xs:string(Barbara did not come to work)"/>
+          </TextIterator>
+        </ElementIterator>
+      </flwor::TupleStreamIterator>
+    </EnclosedIterator>
+  </ElementIterator>
+</SequentialIterator>

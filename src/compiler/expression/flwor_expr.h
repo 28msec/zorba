@@ -552,12 +552,12 @@ public:
   std::vector<expr_t>::iterator begin() { return theOrderingExprs.begin(); }
 
   std::vector<expr_t>::const_iterator begin() const
-    { return theOrderingExprs.begin(); }
+  { return theOrderingExprs.begin(); }
 
   std::vector<expr_t>::iterator end() { return theOrderingExprs.end(); }
 
   std::vector<expr_t>::const_iterator end() const
-    { return theOrderingExprs.end(); }
+  { return theOrderingExprs.end(); }
 
   csize num_columns() const { return theOrderingExprs.size(); }
 

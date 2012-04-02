@@ -161,10 +161,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "let $x := E return $x"  --> "E"
   // Single windowing clauses are left alone
   if (numClauses == 1 &&
-    flwor.get_clause(0)->get_kind() != flwor_clause::window_clause &&
-    ! (flwor.get_clause(0)->get_kind() == flwor_clause::for_clause &&
-      static_cast<for_clause*>(flwor.get_clause(0))->is_allowing_empty()
-    ) &&
+      flwor.get_clause(0)->get_kind() != flwor_clause::window_clause &&
+      ! (flwor.get_clause(0)->get_kind() == flwor_clause::for_clause &&
+         static_cast<for_clause*>(flwor.get_clause(0))->is_allowing_empty()) &&
       myVars.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
@@ -219,7 +218,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
 
@@ -229,10 +228,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       gc = static_cast<group_clause *>(&c);
     }
-  else if (c.get_kind() == flwor_clause::window_clause)
-  {
-    numForLetWinClauses++;
-  }
+    else if (c.get_kind() == flwor_clause::window_clause)
+    {
+      numForLetWinClauses++;
+    }
     else if (c.get_kind() == flwor_clause::for_clause)
     {
       numForLetWinClauses++;
@@ -258,28 +257,28 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         continue;
 
       // FOR clause with 0 cardinality
-    if (domainCount == 0 && ! fc->is_allowing_empty())
+      if (domainCount == 0 && ! fc->is_allowing_empty())
         return fo_expr::create_seq(sctx, LOC(node));
 
       // FOR clause with cardinality 0 or 1
 
       if (pvar != NULL)
       {
-    if(fc->is_allowing_empty() && domainCount == 0)
-    {
-      MODIFY(subst_vars(rCtx,
-                  node,
-                  pvar,
-                  new const_expr(sctx, loc, xs_integer::zero())));
-    }
-    else
-    {
-      MODIFY(subst_vars(rCtx,
-                  node,
-                  pvar,
-                  new const_expr(sctx, loc, xs_integer::one())));
+        if(fc->is_allowing_empty() && domainCount == 0)
+        {
+          MODIFY(subst_vars(rCtx,
+                            node,
+                            pvar,
+                            new const_expr(sctx, loc, xs_integer::zero())));
         }
-    }
+        else
+        {
+          MODIFY(subst_vars(rCtx,
+                            node,
+                            pvar,
+                            new const_expr(sctx, loc, xs_integer::one())));
+        }
+      }
 
       int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
 
@@ -484,30 +483,30 @@ static void collect_flw_vars(
         if (condvars.next != NULL) vars.insert(condvars.next);
       }
     }
-  else if (c.get_kind() == flwor_clause::group_clause)
-  {
-    const group_clause* gc = static_cast<const group_clause *>(&c);
-
-    for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginGroupVars();
-      iter != gc->endGroupVars();
-      iter++)
+    else if (c.get_kind() == flwor_clause::group_clause)
     {
-    vars.insert((*iter).second);
+      const group_clause* gc = static_cast<const group_clause *>(&c);
+
+      for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginGroupVars();
+          iter != gc->endGroupVars();
+          ++iter)
+      {
+        vars.insert((*iter).second);
+      }
+
+      for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginNonGroupVars();
+          iter != gc->endNonGroupVars();
+          ++iter)
+      {
+        vars.insert((*iter).second);
+      }
     }
-    for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginNonGroupVars();
-      iter != gc->endNonGroupVars();
-      iter++)
+    else if (c.get_kind() == flwor_clause::count_clause)
     {
-    vars.insert((*iter).second);
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      
+      vars.insert(cc->get_var());
     }
-  }
-  else if(c.get_kind() == flwor_clause::count_clause)
-  {
-    const count_clause* cc = static_cast<const count_clause *>(&c);
-
-    vars.insert(cc->get_var());
-  }
-
   }
 }
 
@@ -568,7 +567,7 @@ static bool safe_to_fold_single_use(
 
   bool hasNodeConstr = domainExpr->contains_node_construction();
 
-  for (ulong i = 0; i < flwor.num_clauses(); ++i)
+  for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
     flwor_clause::ClauseKind kind = c.get_kind();
@@ -669,28 +668,27 @@ static bool safe_to_fold_single_use(
         break;
       }
     }
-    else if(kind == flwor_clause::order_clause)
+    else if (kind == flwor_clause::order_clause)
     {
-      if(varQuant != TypeConstants::QUANT_ONE)
+      if (varQuant != TypeConstants::QUANT_ONE)
         continue;
 
       bool already_found = false;
-      const orderby_clause& ord_clause =
-        *static_cast<const orderby_clause*>(&c);
+      const orderby_clause& ord_clause = *static_cast<const orderby_clause*>(&c);
 
-      for(std::vector<expr_t>::const_iterator expr = ord_clause.begin();
-          expr != ord_clause.end();
-          expr++)
+      for(std::vector<expr_t>::const_iterator ite = ord_clause.begin();
+          ite != ord_clause.end();
+          ++ite)
       {
-        int var_uses = expr_tools::count_variable_uses(*expr, var, NULL, 1);
-        if(var_uses > 0)
+        int var_uses = expr_tools::count_variable_uses(*ite, var, NULL, 1);
+        if (var_uses > 0)
         {
-          if(already_found)
+          if (already_found)
           {
             return false;
           }
 
-          if(var_uses == 1)
+          if (var_uses == 1)
           {
             already_found = true;
             referencingExpr = *expr;
@@ -710,10 +708,10 @@ static bool safe_to_fold_single_use(
       bool already_found = false;
       const group_clause& grp_clause = *static_cast<const group_clause*>(&c);
 
-      for(flwor_clause::rebind_list_t::const_iterator group_var=
+      for (flwor_clause::rebind_list_t::const_iterator group_var=
             grp_clause.beginGroupVars();
-          group_var != grp_clause.endGroupVars();
-          group_var++)
+           group_var != grp_clause.endGroupVars();
+           group_var++)
       {
         expr* group_var_expr = (*group_var).first.getp();
         if(expr_tools::count_variable_uses(group_var_expr, var, NULL, 1) == 1)
