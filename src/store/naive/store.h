@@ -62,8 +62,8 @@ class TreeIdGeneratorFactory;
 class TreeIdGenerator;
 
 typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
-typedef ItemPointerHashMap<store::Index_t> IndexSet;
-typedef ItemPointerHashMap<store::IC_t> ICSet;
+typedef zorba::ItemPointerHashMap<store::Index_t> IndexSet;
+typedef zorba::ItemPointerHashMap<store::IC_t> ICSet;
 
 
 
