@@ -22,10 +22,19 @@ PATH=$PATH:$XQJ_LOAD_PATH
 # The following for Mac OS X
 export DYLD_LIBRARY_PATH=$JAVA_LOAD_PATH
 export CLASSPATH="tck:$XQJ_LOAD_PATH"
+CURRENT_D=$PWD
+cd $XQJ_LOAD_PATH
 
 echo "xqj_test.bat: Deleting old Java API if found..."
-rm -r "$XQJ_LOAD_PATH/tck/org"
-rm "$XQJ_LOAD_PATH/tck/zorba_api.jar"
+if [ -d "$XQJ_LOAD_PATH/tck/org" ]
+then
+  rm -rf "$XQJ_LOAD_PATH/tck/org"
+fi
+
+if [ -f "$XQJ_LOAD_PATH/tck/zorba_api.jar" ]
+then
+  rm -rf "$XQJ_LOAD_PATH/tck/zorba_api.jar"
+fi
 
 echo "java_test.sh: Compile Java API ..."
 "@Java_JAVAC_EXECUTABLE@"  -source 1.6 -target 1.6 -d tck $JAVA_LOAD_PATH/*.java
