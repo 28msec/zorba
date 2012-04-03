@@ -33,6 +33,7 @@
 #include "qname_pool.h"
 #include "string_pool.h"
 #include "node_factory.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 
@@ -120,7 +121,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {

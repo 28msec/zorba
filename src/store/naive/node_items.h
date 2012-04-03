@@ -29,6 +29,8 @@
 #include "item_vector.h"
 #include "ordpath.h"
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "tree_id.h"
+#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -177,7 +179,7 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong                     theId;
+  TreeId                    theId;
   xs_integer                thePos;
 
   Collection              * theCollection;
@@ -200,7 +202,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, const TreeId& id);
 
 public:
   XmlTree();
@@ -215,9 +217,9 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(ulong id) { theId = id; }
+  void setId(const TreeId& id) { theId = id; }
 
-  ulong getId() const { return theId; }
+  const TreeId& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
@@ -519,7 +521,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  ulong getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -1634,8 +1636,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;
