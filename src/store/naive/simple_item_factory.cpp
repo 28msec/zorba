@@ -33,6 +33,7 @@
 #include "qname_pool.h"
 #include "string_pool.h"
 #include "node_factory.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 
@@ -120,7 +121,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
@@ -1163,10 +1164,8 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED( NotAllowedForTypeName)));
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
