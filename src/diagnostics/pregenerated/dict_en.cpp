@@ -102,6 +102,9 @@ extern entry const dict_en[] = {
   { "JNSE0013", "Cannot serialize value as JSON: $1" },
   { "JNSE0014", "Cannot serialize a function item as JSON" },
 #if defined(ZORBA_WITH_JSON)
+  { "JNTY0002", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -754,7 +757,6 @@ extern entry const dict_en[] = {
   { "~XPTY0004_FormatNumber_2", "\"the first parameter to the format-number() function is of type $2, which is not allowed" },
   { "~XPTY0004_NoTypePromotion_23", "\"$2\": can not promote to type \"$3\"" },
   { "~XPTY0004_NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $4()" },
-  { "~XPTY0004_NoTypePromotion_json", "\"$2\": can not promote to object() or array()" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },

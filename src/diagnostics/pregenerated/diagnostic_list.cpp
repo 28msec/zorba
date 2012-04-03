@@ -1180,6 +1180,9 @@ JSONiqErrorCode JNSE0014( "JNSE0014" );
 
 
 #if defined(ZORBA_WITH_JSON)
+JSONiqErrorCode JNTY0002( "JNTY0002" );
+
+
 JSONiqErrorCode JNTY0003( "JNTY0003" );
 
 

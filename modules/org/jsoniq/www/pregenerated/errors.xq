@@ -41,6 +41,7 @@ declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
  :It is a dynamic error to serialize a sequence of less
  : or more than one item with the JSON output method if the
  : cloudscript-serialization-multiple-items is set to no.
+ : 
 :)
 declare variable $jerr:JNSE0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0012");
 
@@ -57,6 +58,12 @@ declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013
  : JSON output method.
 :)
 declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");
+
+(:~
+ :Expression computing the value of a pair does not return exactly
+ : one item.
+:)
+declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002");
 
 (:~
  :objects or arrays don't have a string value

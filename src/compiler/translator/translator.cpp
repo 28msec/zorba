@@ -10973,7 +10973,7 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                              valueExpr->get_loc(),
                              valueExpr,
                              GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                             err::XPTY0004,
+                             jerr::JNTY0002,
                              false,
                              NULL);
 
@@ -12662,6 +12662,10 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONObjectInsertExpr& v)
 {
   TRACE_VISIT();
@@ -12708,6 +12712,9 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONArrayInsertExpr& v)
 {
   TRACE_VISIT();
@@ -12750,6 +12757,9 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONArrayAppendExpr& v)
 {
   TRACE_VISIT();
@@ -12769,6 +12779,9 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONDeleteExpr& v)
 {
   TRACE_VISIT();
@@ -12799,6 +12812,9 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONReplaceExpr& v)
 {
   TRACE_VISIT();
@@ -12834,6 +12850,9 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const JSONRenameExpr& v)
 {
   TRACE_VISIT();
@@ -12869,6 +12888,9 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void* begin_visit(const DeleteExpr& v)
 {
   TRACE_VISIT ();

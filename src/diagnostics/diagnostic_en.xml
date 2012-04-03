@@ -111,10 +111,6 @@
         <value>"$2": can not promote to return type "$3" of function $4()</value>
       </entry>
 
-      <entry key="NoTypePromotion_json">
-        <value>"$2": can not promote to object() or array()</value>
-      </entry>
-
       <entry key="FormatNumber_2">
         <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
       </entry>
@@ -2482,7 +2478,9 @@
     <diagnostic code="JNSE0012">
       <comment>It is a dynamic error to serialize a sequence of less
       or more than one item with the JSON output method if the
-      cloudscript-serialization-multiple-items is set to no.</comment>
+      cloudscript-serialization-multiple-items is set to no.
+      </comment>
+
       <value>Cannot serialize multiple top-level items as JSON</value>
     </diagnostic>
 
@@ -2491,6 +2489,7 @@
       supported by JSON or a node with the JSON output method and with
       the cloudscript-serialization-extensions serialization parameter
       set to false.</comment>
+
       <value>Cannot serialize value as JSON: $1</value>
     </diagnostic>
 
@@ -2502,18 +2501,28 @@
 
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
+    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
+      <comment>Expression computing the value of a pair does not return exactly
+      one item.</comment>
+
+      <value>$1</value>
+    </diagnostic>
+
     <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
+
       <value>$1 items do not have string value</value>
     </diagnostic>
 
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a typed value</comment>
+
       <value>$1 items do not have typed value</value>
     </diagnostic>
 
     <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
       <comment>wrong type for object/array selector in update expr</comment>
+
       <value>$1</value>
 
      <entry key="Object">
