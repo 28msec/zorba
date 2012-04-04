@@ -43,31 +43,24 @@ FOREACH (module_dir ${modules_dir_items})
   ENDIF (IS_DIRECTORY "${ZORBA_MODULES_DIR}/${module_dir}")
 ENDFOREACH (module_dir)
 
-# First, form the DAG. This comprises one list of all module projects
-# (module_projects); one list containing only those module projects
-# that some other module project depends on (dep_module_projects); and
-# a series of CMake variables named eg. "zorba-email-module_DEPS"
-# containing the module projects that the named project depends
-# on. Also, for each project, there is a variable named
-# eg. "zorba-email-module_DIR" with the path to that project's
+# First, form a simple list of all known module projects in the
+# variable "module_projects". Also, for each project, set a variable
+# named eg. "zorba-email-module_DIR" with the path to that project's
 # directory, relative to ZORBA_MODULES_DIR.
 SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt] *\\( *([^ )]*)")
-SET (find_package_regex
-  "[Ff][Ii][Nn][Dd]_[Pp][Aa][Cc][Kk][Aa][Gg][Ee] *\\( *([^ )]*)")
 SET (module_projects)
-SET (dep_module_projects)
 FOREACH (module_dir ${module_dirs})
   SET (module_project)
   SET (cmakelists_file "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt")
-  FILE (STRINGS "${cmakelists_file}" cmakelists
-    REGEX "${project_regex}|${find_package_regex}")
+  FILE (STRINGS "${cmakelists_file}" cmakelists REGEX "${project_regex}")
   FOREACH (line ${cmakelists})
+
     IF (line MATCHES "${project_regex}")
-      IF (NOT ${module_project} STREQUAL "")
+      IF (NOT "${module_project}" STREQUAL "")
 	MESSAGE (FATAL_ERROR
 	  "${cmakelists_file} contains duplicate PROJECT() statements - "
 	  "cannot parse!")
-      ENDIF (NOT ${module_project} STREQUAL "")
+      ENDIF (NOT "${module_project}" STREQUAL "")
       SET (module_project "${CMAKE_MATCH_1}")
       LIST (APPEND module_projects "${module_project}")
       SET ("${module_project}_DIR" "${module_dir}")
@@ -85,26 +78,47 @@ FOREACH (module_dir ${module_dirs})
       MESSAGE (STATUS "${border}")
 
     ENDIF (line MATCHES "${project_regex}")
-
-    IF (line MATCHES "${find_package_regex}")
-      SET (dependee ${CMAKE_MATCH_1})
-      # All modules depend on Zorba - we don't need to remember that
-      IF (NOT dependee STREQUAL "Zorba")
-
-	# Save the dependency in a variable based on the current project
-	LIST (APPEND "${module_project}_DEPS" ${dependee})
-	
-	# Also add this dependee to dep_module_projects
-	LIST (APPEND dep_module_projects ${dependee})
-	
-      ENDIF (NOT dependee STREQUAL "Zorba")
-    ENDIF (line MATCHES "${find_package_regex}")
   ENDFOREACH (line)
 
   IF (NOT module_project)
     MESSAGE (FATAL_ERROR "Directory ${ZORBA_MODULES_DIR}/${module_dir} "
       "does not contain a recognizable CMake project.")
   ENDIF (NOT module_project)
+
+ENDFOREACH (module_dir)
+
+# Next, form the DAG. This comprises one list containing only those
+# module projects that some other module project depends on
+# (dep_module_projects), and a series of CMake variables named
+# eg. "zorba-email-module_DEPS" containing the module projects that
+# the named project depends on. Doing this unfortunately requires us
+# to read through all CMakeLists.txt files again.
+SET (find_package_regex
+  "[Ff][Ii][Nn][Dd]_[Pp][Aa][Cc][Kk][Aa][Gg][Ee] *\\( *([^ )]*)")
+SET (dep_module_projects)
+FOREACH (module_dir ${module_dirs})
+  SET (module_project)
+  SET (cmakelists_file "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt")
+  FILE (STRINGS "${cmakelists_file}" cmakelists
+    REGEX "${project_regex}|${find_package_regex}")
+  FOREACH (line ${cmakelists})
+    IF (line MATCHES "${project_regex}")
+      # Don't have to do error checking here; was done in last pass.
+      SET (module_project "${CMAKE_MATCH_1}")
+    ELSEIF (line MATCHES "${find_package_regex}")
+      SET (dependee ${CMAKE_MATCH_1})
+      # Ensure this dependency is a known module project, and not some
+      # other dependency like "Zorba" - don't want those in the DAG.
+      LIST (FIND module_projects "${dependee}" is_known)
+      IF (is_known GREATER -1)
+	message (STATUS "${module_project} depends on ${dependee}")
+	# Save the dependency in a variable based on the current project
+	LIST (APPEND "${module_project}_DEPS" ${dependee})
+	# Also add this dependee to dep_module_projects
+	LIST (APPEND dep_module_projects ${dependee})
+      ENDIF (is_known GREATER -1)
+    ENDIF (line MATCHES "${project_regex}")
+  ENDFOREACH (line)
 
 ENDFOREACH (module_dir)
 
