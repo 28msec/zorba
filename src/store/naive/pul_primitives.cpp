@@ -155,6 +155,9 @@ void UpdDelete::apply()
   {
     theParent->deleteChild(*this);
   }
+  
+  static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
+        ->unregisterReferencesToDeletedSubtree();
 }
 
 

@@ -211,6 +211,8 @@ public:
 
   void free();
 
+  void destroy() throw();
+
   long getRefCount() const { return theRefCount; }
 
   long& getRefCount()      { return theRefCount; }
@@ -574,6 +576,8 @@ public:
 
   bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
+  void unregisterReferencesToDeletedSubtree();
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
@@ -859,6 +863,8 @@ public:
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void finalizeNode();
+
+  void unregisterReferencesToDeletedSubtree();
 
 protected:
   csize findChild(const XmlNode* child) const;
