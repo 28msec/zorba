@@ -58,7 +58,7 @@ bool MemArchiver::read_next_field_impl(
   is_after_last = false;
   if(current_field->theFirstChild)
     current_field = current_field->theFirstChild;
-  else if(!*is_simple && ((*field_treat == ARCHIVE_FIELD_IS_BASECLASS) || (*field_treat == ARCHIVE_FIELD_IS_PTR)))
+  else if(!*is_simple && ((*field_treat == ARCHIVE_FIELD_BASECLASS) || (*field_treat == ARCHIVE_FIELD_PTR)))
   {
     //class without childs
     temp_field.theParent = current_field;
