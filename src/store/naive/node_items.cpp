@@ -176,11 +176,17 @@ void XmlTree::free()
 ********************************************************************************/
 store::Item* XmlTree::getType(const XmlNode* n) const
 {
-  assert(theTypesMap != NULL);
+  if(theTypesMap == NULL)
+  {
+    return NULL;
+  }
 
   NodeTypeMap::iterator ite = theTypesMap->find(n);
 
-  assert(ite != theTypesMap->end());
+  if (ite == theTypesMap->end())
+  {
+    return NULL;
+  }
 
   return ite.getValue().getp();
 }
@@ -2387,6 +2393,14 @@ void ElementNode::setType(store::Item_t& type)
 
 store::Item* ElementNode::getType() const
 {
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
+
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().XS_UNTYPED_QNAME.getp());
@@ -2395,10 +2409,17 @@ store::Item* ElementNode::getType() const
 
 void ElementNode::setType(store::Item_t& type)
 {
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().XS_UNTYPED_QNAME)
+        type->equals(GET_STORE().XS_UNTYPED_QNAME))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -2409,11 +2430,45 @@ void ElementNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().XS_UNTYPED_QNAME)
+           !type->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
+}
+
+void ElementNode::setTree(const XmlTree* aNewTree)
+{
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+
+  if (haveType())
+  {
+    store::Item_t type = getType();
+    getTree()->removeType(this);
+    XmlNode::setTree(aNewTree);
+    getTree()->addType(this, type);
+  }
+  else
+  {
+    XmlNode::setTree(aNewTree);
+  }
+
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
 }
 
 #endif
@@ -2424,6 +2479,13 @@ void ElementNode::setType(store::Item_t& type)
 ********************************************************************************/
 bool ElementNode::haveTypedTypedValue(TextNode*& textChild) const
 {
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
   textChild = NULL;
 
   if (numChildren() == 1 &&
@@ -2530,6 +2592,11 @@ bool ElementNode::isIdRefs() const
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef EMBEDED_TYPE
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
   if (haveTypedValue())
   {
     TextNode* textChild;
@@ -3310,7 +3377,6 @@ zstring ElementNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
@@ -3561,18 +3627,55 @@ void AttributeNode::setType(store::Item_t& type)
 
 store::Item* AttributeNode::getType() const
 {
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC].getp());
 }
 
+void AttributeNode::setTree(const XmlTree* aNewTree)
+{
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+
+  if (haveType())
+  {
+    store::Item_t type = getType();
+    getTree()->removeType(this);
+    XmlNode::setTree(aNewTree);
+    getTree()->addType(this, type);
+  }
+  else
+  {
+    XmlNode::setTree(aNewTree);
+  }
+
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+}
 
 void AttributeNode::setType(store::Item_t& type)
 {
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+        type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -3583,11 +3686,17 @@ void AttributeNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+           !type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
 }
 
 #endif
@@ -3597,8 +3706,24 @@ void AttributeNode::setType(store::Item_t& type)
 ********************************************************************************/
 void AttributeNode::setTypedValue(store::Item_t& value)
 {
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
+
   resetHaveListValue();
   theTypedValue.transfer(value);
+
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
 }
 
 
@@ -3607,6 +3732,14 @@ void AttributeNode::setTypedValue(store::Item_t& value)
 ********************************************************************************/
 void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
+
   if (haveListValue())
   {
     iter = new ItemIterator(getValueVector().getItems(), true);
@@ -3617,6 +3750,14 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
     val = theTypedValue;
     iter = NULL;
   }
+
+#ifndef EMBEDED_TYPE
+#ifndef NDEBUG
+  ATTRIBUTE_ELEMENT_INVARIANT1;
+  ATTRIBUTE_ELEMENT_INVARIANT2;
+  ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
+#endif
 }
 
 
