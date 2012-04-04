@@ -108,10 +108,10 @@ otherwise. For example, it may be able to avoid the copying of nodes that
 are returned by an enclosed expression within a node constructor. 
 
 The following query shows the usage of this hint. The query groups a number of
-sale records by country, and prints the sales in each country within a <country>
+sale records by country, and prints the sales in each country within a \code <country> \endcode
 tag whose name attribute gives the name of the associated country. The optimizer
 can use the for-serialization-only hint to avoid copying the $sale nodes when
-it constructs each of the new <country> nodes.
+it constructs each of the new \code <country> \endcode nodes.
 
 \code
 declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";

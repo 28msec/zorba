@@ -685,20 +685,6 @@ void MarkNodeCopyProps::applyInternal(
     {
       user_function* udf = static_cast<user_function*>(f);
 
-#if 0
-      UdfCalls::iterator ite = std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e);
-
-      if (ite == theUdfCallPath.end())
-      {
-        theUdfCallPath.push_back(e);
-
-        UDFCallChain nextUdfCall(e, &udfCaller);
-
-        applyInternal(rCtx, udf->getBody(), nextUdfCall);
-
-        theUdfCallPath.pop_back();
-      }
-#else
       UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
 
       if (ite == theProcessedUDFCalls.end())
@@ -716,6 +702,9 @@ void MarkNodeCopyProps::applyInternal(
         {
           var_expr* argVar = udf->getArgVar(i);
 
+          // if an arg var of this udf has been marked as a source before, it 
+          // means that that var is consumed in some "nodeid-sesitive" operation,
+          // so we now have to find the sources of the arg expr and mark them.
           if (theSourceFinder->theVarSourcesMap.find(argVar) !=
               theSourceFinder->theVarSourcesMap.end())
           {
@@ -725,7 +714,6 @@ void MarkNodeCopyProps::applyInternal(
           }
         }
       }
-#endif
     } // f->isUdf()
     else
     {

@@ -27,3 +27,14 @@ declare %ann:ordered collection mod2:coll as node()*;
 declare index mod2:index
   on nodes ddl:collection(xs:QName("mod2:coll"))
   by data(@id) as xs:string;
+
+
+(: test that a temp index doesn't have impact on the indexes 
+   returned by the static collection mgr :)
+declare function mod2:foo()
+{
+  for $i in 1 to 10
+  for $j in 1 to 10
+  where $i eq $j
+  return $i
+};

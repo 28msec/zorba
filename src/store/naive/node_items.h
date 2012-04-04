@@ -29,6 +29,8 @@
 #include "item_vector.h"
 #include "ordpath.h"
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "tree_id.h"
+#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -177,10 +179,10 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong                     theId;
+  TreeId                    theId;
   xs_integer                thePos;
 
-  Collection        * theCollection;
+  Collection              * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -200,7 +202,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, const TreeId& id);
 
 public:
   XmlTree();
@@ -215,14 +217,21 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(ulong id) { theId = id; }
+  void setId(const TreeId& id) { theId = id; }
 
-  ulong getId() const { return theId; }
+  const TreeId& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
   const Collection* getCollection() const { return theCollection; }
 
+private:
+friend class zorba::simplestore::Collection;
+  // Allows a collection to claim ownership of a node it already owns, but
+  // which does not have the backpointer yet.
+  void claimedByCollection(Collection* coll);
+  
+public:
   void setCollection(Collection* coll, xs_integer pos);
 
   void setPosition(xs_integer pos) { thePos = pos; }
@@ -512,7 +521,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  ulong getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -563,7 +572,7 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
-  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+  bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -663,6 +672,15 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  // Looks for a descendant node with the ordpath aOrdPath and puts it into the
+  // aResult variable. aAttribute specifies whether to look for an attribute or
+  // not.
+  bool
+  getDescendantNodeByOrdPath(
+      const OrdPath& aOrdPath,
+      store::Item_t& aResult,
+      bool aAttribute = false) const;
 
   virtual bool
   isAncestor(const store::Item_t&) const;
@@ -1626,8 +1644,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;

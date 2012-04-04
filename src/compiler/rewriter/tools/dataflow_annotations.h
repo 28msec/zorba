@@ -93,7 +93,6 @@ protected:
   SourceUdfMap                 theSourceUdfMap;
 
   user_function              * theStartingUdf;
-  std::vector<fo_expr*>        theUdfCallPath;
 
 protected:
   void findNodeSourcesRec(

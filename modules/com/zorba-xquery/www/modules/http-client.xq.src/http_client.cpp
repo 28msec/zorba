@@ -187,7 +187,7 @@ namespace zorba {
 
       if (lReqSet) {
         lHandler.reset(new HttpRequestHandler(lCURL, args[2]));
-        lParser.reset(new RequestParser(lHandler.get()));
+        lParser.reset(new RequestParser(lHandler.get(), thrower));
         lParser->parse(lRequest);
       }
       if (lHrefSet) {
