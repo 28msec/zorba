@@ -36,7 +36,10 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/latch.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
+#include "zorbaserialization/serialize_basic_types.h"
 
 
 namespace zorba {

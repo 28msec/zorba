@@ -138,7 +138,7 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
     write_string("\" ");
 
     if(current_field->theIsSimple || 
-      (current_field->theKind == ARCHIVE_FIELD_IS_REFERENCING) ||
+      (current_field->theKind == ARCHIVE_FIELD_REFERENCING) ||
       (current_field->theFirstChild == NULL))
     {
       write_string("/>\n");
@@ -185,10 +185,10 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_trea
   switch(field_treat)
   {
   case ARCHIVE_FIELD_NORMAL : return "ARCHIVE_FIELD_NORMAL"; break;
-  case ARCHIVE_FIELD_IS_PTR : return "ARCHIVE_FIELD_IS_PTR"; break;
-  case ARCHIVE_FIELD_IS_NULL : return "ARCHIVE_FIELD_IS_NULL"; break;
-  case ARCHIVE_FIELD_IS_BASECLASS : return "ARCHIVE_FIELD_IS_BASECLASS"; break;
-  case ARCHIVE_FIELD_IS_REFERENCING : return "ARCHIVE_FIELD_IS_REFERENCING"; break;
+  case ARCHIVE_FIELD_PTR : return "ARCHIVE_FIELD_IS_PTR"; break;
+  case ARCHIVE_FIELD_NULL : return "ARCHIVE_FIELD_IS_NULL"; break;
+  case ARCHIVE_FIELD_BASECLASS : return "ARCHIVE_FIELD_IS_BASECLASS"; break;
+  case ARCHIVE_FIELD_REFERENCING : return "ARCHIVE_FIELD_IS_REFERENCING"; break;
   }
   return NULL;
 }
@@ -314,13 +314,13 @@ process_attr:
         if(!strcmp(attrib_value, "ARCHIVE_FIELD_NORMAL"))
           *field_treat = ARCHIVE_FIELD_NORMAL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_PTR"))
-          *field_treat = ARCHIVE_FIELD_IS_PTR;
+          *field_treat = ARCHIVE_FIELD_PTR;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_NULL"))
-          *field_treat = ARCHIVE_FIELD_IS_NULL;
+          *field_treat = ARCHIVE_FIELD_NULL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_BASECLASS"))
-          *field_treat = ARCHIVE_FIELD_IS_BASECLASS;
+          *field_treat = ARCHIVE_FIELD_BASECLASS;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_REFERENCING"))
-          *field_treat = ARCHIVE_FIELD_IS_REFERENCING;
+          *field_treat = ARCHIVE_FIELD_REFERENCING;
         else
         {
           return false;
@@ -380,7 +380,7 @@ process_attr:
   is_compound_field_without_children = false;
   if(!strcmp(attrib_name, "/"))//empty tag
   {
-    if(!*is_simple && (*field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    if(!*is_simple && (*field_treat != ARCHIVE_FIELD_REFERENCING))
       is_compound_field_without_children = true;
   }
   else
