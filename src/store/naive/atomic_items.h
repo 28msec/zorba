@@ -578,7 +578,6 @@ public:
 class AnyUriItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class StructuralAnyUriItem;
 
 protected:
   zstring theValue;
@@ -702,10 +701,8 @@ public:
 /*******************************************************************************
   class StructuralAnyUriItem
 ********************************************************************************/
-class StructuralAnyUriItem : public AnyUriItem
+class StructuralAnyUriItem : public AtomicItem
 {
-  friend class BasicItemFactory;
-
 protected:
   ulong                        theCollectionId;
   TreeId                       theTreeId;
@@ -713,32 +710,24 @@ protected:
   OrdPath                      theOrdPath;
    
   // The value is computed lazily when needed.
-  // The field "theValue" of the base class is not used,
-  // because it is not mutable.
-  mutable bool                 theIsEncoded;
+  // The empty string is used if it has not been computed yet.
   mutable zstring              theEncodedValue;
 
-protected:
+public:
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
   {
     return STRUCTURAL_INFORMATION_ANY_URI;
   }
+  
+  store::SchemaTypeCode getTypeCode() const
+  {
+    return store::XS_ANY_URI;
+  }
 
-  StructuralAnyUriItem(zstring& value);
+  store::Item* getType() const;
 
-  StructuralAnyUriItem(
-      ulong collectionId,
-      const TreeId& treeId,
-      store::StoreConsts::NodeKind nodeKind,
-      const OrdPath& ordPath);
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  StructuralAnyUriItem() {}
-
-private:
-  // Forces computation of the value.
-  void encode() const;
- 
-public:
   bool equals(
         const store::Item* item,
         long timezone = 0,
@@ -760,7 +749,7 @@ public:
 
   const zstring& getString() const
   {
-    if (!theIsEncoded)
+    if (theEncodedValue == "")
     {
       encode();
     }
@@ -837,6 +826,23 @@ public:
 
   bool
   inSameCollection(const store::Item_t&) const;
+  
+private:
+  // Forces computation of the value.
+  void encode() const;
+ 
+protected:
+  friend class BasicItemFactory;
+
+  StructuralAnyUriItem(const zstring& value);
+
+  StructuralAnyUriItem(
+      ulong collectionId,
+      const TreeId& treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
+
+  StructuralAnyUriItem() {}
 };
 
 
