@@ -13,6 +13,7 @@ Bug Fixes/Other Changes:
   * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
 
 
 version 2.2
