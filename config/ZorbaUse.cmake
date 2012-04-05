@@ -31,10 +31,3 @@ IF(WIN32)
   # Load Zorba module support macros.
   INCLUDE("${Zorba_CMAKE_MODULES_DIR}/Windows/ProxyFindModule.cmake")
 ENDIF(WIN32)
-
-# Generate project's projectConfig.cmake file.
-# QQQ need to create an installable version of this too, once we know
-# how installing a module package should work.
-CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-

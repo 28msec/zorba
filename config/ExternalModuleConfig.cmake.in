@@ -25,10 +25,16 @@ ENDIF (WIN32)
 SET (DEPENDENCY_MODULE_PATH 
   "${DEPENDENCY_MODULE_PATH}${PATH_SEP}@PROJECT_BINARY_DIR@/URI_PATH/${PATH_SEP}${DEPENDENCY_LIB_PATH}${PATH_SEP}@PROJECT_BINARY_DIR@/LIB_PATH/")
 
+# Dynamic libraries created by this project to link against
+SET (@PROJECT_NAME@_LIBRARIES @ZORBA_PROJECT_LIBRARIES@)
+
+# Include directories exported by this project
+SET (@PROJECT_NAME@_INCLUDE_DIRS @ZORBA_PROJECT_INCLUDE_DIRS@)
+
 # Offer a "use file" to the user of this module. For most module
 # packages, this is unnecessary. However it can be utilized by
 # advanced packages which wish to, for example, export a C++ header
 # file to dependent packages. As above, note that this currently is
 # non-functional if this module package is installed; this will only
 # work from a project build directory.
-SET (@PROJECT_NAME@_USE_FILE "${@PROJECT_NAME@_USE_FILE}")
+SET (@PROJECT_NAME@_USE_FILE "@ZORBA_PROJECT_USE_FILE@")

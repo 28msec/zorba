@@ -170,7 +170,7 @@ FOREACH (module_project ${ordered_modules})
   FILE (MAKE_DIRECTORY "${module_builddir}")
   LIST (APPEND CMAKE_PREFIX_PATH "${module_builddir}")
   ADD_SUBDIRECTORY("${ZORBA_MODULES_DIR}/${module_dir}"
-    "${CMAKE_BINARY_DIR}/zorba_modules/zorba_${module_dir}_module")
+    "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
 ENDFOREACH (module_project)
 
 MESSAGE(STATUS "End modules")

@@ -322,6 +322,14 @@ MACRO (DECLARE_ZORBA_MODULE)
     GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
     ADD_COPY_RULE ("LIB" "${lib_location}" "${module_path}/${lib_filename}"
       "" "${module_lib_target}" 0 "${MODULE_TEST_ONLY}")
+    # While we're at it, remember this library for the auto-generated
+    # module Config.cmake file. Need to use the LIB_PATH location
+    # since that's what will be dlopen()'d by Zorba at runtime. QQQ
+    # and what about the installed version? Also, it'd be nice if we
+    # didn't have to replicate the path from ADD_COPY_RULE(),
+    # especially since we don't handle TEST_ONLY here.
+    SET_PROPERTY (GLOBAL APPEND PROPERTY "${PROJECT_NAME}_LIBRARIES"
+      "${CMAKE_BINARY_DIR}/LIB_PATH/${module_path}/${lib_filename}")
   ENDIF (module_lib_target)
 
   # Last but not least, whip up a test case that ensures the module
@@ -579,6 +587,8 @@ ENDMACRO (ADD_ZORBA_MANIFEST_ENTRY)
 # files to their corresponding output directories, with appropriate
 # dependencies. This macro will only have any effect when called by
 # the top-level project in a build.
+# Also, this function automatically generates a CMake projectConfig.cmake
+# file for the project, based on config/ExternalModuleConfig.cmake.in.
 MACRO (DONE_DECLARING_ZORBA_URIS)
   IF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     # Close out the zorba modules and schemas manifests
@@ -635,6 +645,18 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
     #add 'xqdoc' and 'xqdoc-xml' targets
     ADD_XQDOC_TARGETS()
   ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+
+  # Now, do things that should be done at the end of *any* project, not
+  # just the top-level project.
+
+  # Generate project's projectConfig.cmake file.
+  # QQQ need to create an installable version of this too, once we know
+  # how installing a module package should work.
+  GET_PROPERTY (ZORBA_PROJECT_LIBRARIES
+    GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
+  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 
 # Initialize expected failures and zorba modules output files when
