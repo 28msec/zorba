@@ -2593,9 +2593,11 @@ bool ElementNode::isIdRefs() const
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
 #ifndef EMBEDED_TYPE
+#ifndef NDEBUG
   ATTRIBUTE_ELEMENT_INVARIANT1;
   ATTRIBUTE_ELEMENT_INVARIANT2;
   ATTRIBUTE_ELEMENT_INVARIANT3;
+#endif
 #endif
   if (haveTypedValue())
   {
