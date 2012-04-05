@@ -28,8 +28,12 @@
 
 #include "util/ascii_util.h"
 
+#include "zorbaserialization/serialize_basic_types.h"
+
+
 namespace zorba
 {
+
 SERIALIZABLE_CLASS_VERSIONS(Duration)
 END_SERIALIZABLE_CLASS_VERSIONS(Duration)
 

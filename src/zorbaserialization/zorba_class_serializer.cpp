@@ -84,15 +84,16 @@ public:
     /*register this class into plan serializer*/  
     ::zorba::serialization::ClassSerializer::getInstance()->register_class_factory("XQPCollator*", this);
   }
+
   virtual ::zorba::serialization::SerializeBaseClass *create_new(::zorba::serialization::Archiver &ar)
   {
     return NULL;
   }
+
   virtual void cast_ptr(::zorba::serialization::SerializeBaseClass* ptr, void **class_ptr)
   {
     *class_ptr = (void*)dynamic_cast<XQPCollator*>(ptr);
   }
-
 };
 
 xqpcollator_class_factory    g_xqpcollator_class_factory;
@@ -109,35 +110,39 @@ void operator&(Archiver &ar, const XQType *&obj)
 
 void operator&(Archiver &ar, XQPCollator*& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
-    if(obj == NULL)
+    if (obj == NULL)
     {
       ar.add_simple_field("XQPCollator*", 
-                            "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
+                          "NULL", 
+                          NULL,//(SerializeBaseClass*)obj, 
+                          ARCHIVE_FIELD_NULL);
       return;
     }
 
-    ar.add_simple_field("XQPCollator*", obj->getURI().c_str(), obj, ARCHIVE_FIELD_IS_PTR);
+    ar.add_simple_field("XQPCollator*", obj->getURI().c_str(), obj, ARCHIVE_FIELD_PTR);
   }
   else
   {
-    char  *type;
+    char* type;
     std::string value;
     int   id;
     int   version;
     bool  is_simple = true;
     bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
+
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "XQPCollator*", is_simple, field_treat, ARCHIVE_FIELD_IS_PTR, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+
+    ar.check_simple_field(retval, type, "XQPCollator*", is_simple, field_treat, ARCHIVE_FIELD_PTR, id);
+
+    if(field_treat == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       return;
@@ -310,7 +315,7 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
     if(obj)                                                             \
       obj->addReference();                                              \
     ar.set_is_temp_field(false);                                        \
-    ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);               \
+    ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);                  \
     ar.set_is_temp_field(true);                                         \
   }      
 
@@ -325,7 +330,7 @@ void operator&(Archiver &ar, store::Item* &obj)
   int  is_function = 0;
   
   int   id;
-  enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
+  enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
   int   referencing;
 
   if (ar.is_serializing_out())
@@ -336,7 +341,7 @@ void operator&(Archiver &ar, store::Item* &obj)
                             1 ,//class_version
                             FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
+                            ARCHIVE_FIELD_NULL);
       return;
     }
 
@@ -360,7 +365,7 @@ void operator&(Archiver &ar, store::Item* &obj)
                                    FIELD_IS_CLASS,
                                    strtemp,
                                    obj,
-                                   ARCHIVE_FIELD_IS_PTR);
+                                   ARCHIVE_FIELD_PTR);
 
     if (is_node || is_function)
       ar.set_is_temp_field(false);
@@ -377,20 +382,20 @@ void operator&(Archiver &ar, store::Item* &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldKind)-1, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    if(field_treat == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
     //ar.register_reference(id, &obj);
-    if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    if((field_treat != ARCHIVE_FIELD_PTR) && (field_treat != ARCHIVE_FIELD_REFERENCING))
     {
       throw ZORBA_EXCEPTION(
         zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
       );
     }
-    is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
+    is_ref = (field_treat == ARCHIVE_FIELD_REFERENCING);
     if(!is_ref)
     {
       sscanf(value.c_str(), "n%da%dp%de%df%d",
@@ -766,7 +771,7 @@ EndAtomicItem:;
         obj = fitem;
         if(obj)                                         
           obj->addReference();     
-        ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                
+        ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);                
       }
       ar.set_is_temp_field(true);    
     }
@@ -798,7 +803,7 @@ EndAtomicItem:;
     else
     {
       store::Item  *new_obj = NULL;
-      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
@@ -844,7 +849,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
   ar.set_is_temp_field(false);
 
   int   id;
-  enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
+  enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
   int   referencing;
   bool is_ref;
   if(ar.is_serializing_out())
@@ -855,11 +860,11 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
                             1 ,//class_version
                             !FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
+                            ARCHIVE_FIELD_NULL);
       ar.set_is_temp_field(true);
       return;
     }
-    is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
+    is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_PTR);
   }
   else
   {
@@ -872,7 +877,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    if(field_treat == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
@@ -881,13 +886,13 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     }
     ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldKind)-1, id);
     //ar.register_reference(id, &obj);
-    if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    if((field_treat != ARCHIVE_FIELD_PTR) && (field_treat != ARCHIVE_FIELD_REFERENCING))
     {
       throw ZORBA_EXCEPTION(
         zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
       );
     }
-    is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
+    is_ref = (field_treat == ARCHIVE_FIELD_REFERENCING);
   }
   ar.set_is_temp_field(true);
 
@@ -1009,7 +1014,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     else
     {
       store::Item  *new_obj = NULL;
-      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
@@ -1045,7 +1050,7 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
                             1 ,//class_version
                             !FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
+                            ARCHIVE_FIELD_NULL);
       return;
     }
     bool is_ref;
@@ -1063,7 +1068,7 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
                                    1, 
                                    !FIELD_IS_CLASS, err_type, 
                                    obj, 
-                                   ARCHIVE_FIELD_IS_PTR);
+                                   ARCHIVE_FIELD_PTR);
     if(!is_ref)
     {
       if(user_err)
@@ -1090,21 +1095,21 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "Diagnostic*", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    if(field_treat == ARCHIVE_FIELD_NULL)
     {
       assert(!ar.is_serialize_base_class());
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
-    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    if(field_treat == ARCHIVE_FIELD_PTR)
     {
       int is_user, is_xquery, is_zorba;
       sscanf(value.c_str(), "u%dx%dz%d", &is_user, &is_xquery, &is_zorba);
@@ -1152,7 +1157,7 @@ void operator&(Archiver &ar, ZorbaException *&obj)
                             1 ,//class_version
                             !FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
+                            ARCHIVE_FIELD_NULL);
       return;
     }
     bool is_ref;
@@ -1167,7 +1172,7 @@ void operator&(Archiver &ar, ZorbaException *&obj)
                                    1, 
                                    !FIELD_IS_CLASS, ex_type,
                                    obj, 
-                                   ARCHIVE_FIELD_IS_PTR);
+                                   ARCHIVE_FIELD_PTR);
     if(!is_ref)
     {
       ar & obj->diagnostic_;
@@ -1196,21 +1201,21 @@ void operator&(Archiver &ar, ZorbaException *&obj)
     int   version;
     bool  is_simple = false;
     bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_IS_PTR;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "ZorbaException*", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    if(field_treat == ARCHIVE_FIELD_NULL)
     {
       assert(!ar.is_serialize_base_class());
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
-    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    if(field_treat == ARCHIVE_FIELD_PTR)
     {
       int is_user, is_xquery;
       sscanf(value.c_str(), "u%dx%d", &is_user, &is_xquery);

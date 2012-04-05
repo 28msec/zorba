@@ -123,7 +123,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   theArchiveVersion(g_zorba_classes_version),
   theRootField(0),
   current_compound_field(0),
-  simple_hashout_fields(0),
+  theSimpleFieldsMap(0),
   hash_out_fields(0),
   nr_ids(0),
   current_class_version(0),
@@ -155,7 +155,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 
     current_compound_field = theRootField;
 
-    simple_hashout_fields = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*,
+    theSimpleFieldsMap = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*,
                                         SimpleHashoutFieldCompare>(1000, false);
     hash_out_fields = new hash64map<archive_field*>(10000, 0.6f);
   }
@@ -175,7 +175,7 @@ Archiver::~Archiver()
 {
   delete theRootField;
   delete [] all_reference_list;
-  delete simple_hashout_fields;
+  delete theSimpleFieldsMap;
   delete hash_out_fields;
 
   std::list<fwd_ref>::iterator it;
@@ -218,7 +218,7 @@ archive_field* Archiver::get_prev(archive_field* field)
 
 
 /*******************************************************************************
-  Check whether there exists already a field for the simple object at the given
+  Check whether there exists already a field for the nonclass object at the given
   memory address.
 ********************************************************************************/
 archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr)
@@ -230,7 +230,7 @@ archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr
 
   SIMPLE_HASHOUT_FIELD f(type, ptr);
 
-  simple_hashout_fields->get(f, duplicate_field);
+  theSimpleFieldsMap->get(f, duplicate_field);
 
   if (!duplicate_field)
   {
@@ -246,14 +246,14 @@ archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr
 
 
 /*******************************************************************************
-  Create a "simple" field (ARCHIVE_FIELD_IS_PTR, or ARCHIVE_FIELD_IS_NUL, or
+  Create a "simple" field (ARCHIVE_FIELD_PTR, or ARCHIVE_FIELD_NUL, or
   ARCHIVE_FIELD_NORMAL).
 
   @param type : The type of the object to serialize.
   @param value : The value of the object to serialize, if it is not a pointer).
   @param ptr : Pointer to the object being serialized (may be NULL)
   @param fieldKind : The kind of the field (if ptr is NULL, then the fieldKind is
-         set unconditionally to ARCHIVE_FIELD_IS_NUL).
+         set unconditionally to ARCHIVE_FIELD_NUL).
 
   Return true if field is not referencing
 ********************************************************************************/
@@ -267,29 +267,38 @@ bool Archiver::add_simple_field(
   archive_field* ref_field = NULL;
   bool exch_fields = false;
 
-  assert(fieldKind != ARCHIVE_FIELD_IS_BASECLASS);
-  assert(fieldKind != ARCHIVE_FIELD_IS_REFERENCING);
+  assert(fieldKind != ARCHIVE_FIELD_BASECLASS);
+  assert(fieldKind != ARCHIVE_FIELD_REFERENCING);
 
   theCurrentLevel++;
 
   if (!ptr)
   {
-    fieldKind = ARCHIVE_FIELD_IS_NULL;
+    fieldKind = ARCHIVE_FIELD_NULL;
   }
-  else if (!get_is_temp_field() &&
-           (!get_is_temp_field_one_level() ||
-            (fieldKind == ARCHIVE_FIELD_IS_PTR && !get_is_temp_field_also_for_ptr())))
+  else
   {
-    ref_field = lookup_nonclass_field(type, ptr);
+    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
+
+    if (!get_is_temp_field() &&
+        (!get_is_temp_field_one_level() ||
+         (fieldKind == ARCHIVE_FIELD_PTR && !get_is_temp_field_also_for_ptr())))
+    {
+      ref_field = lookup_nonclass_field(type, ptr);
+    }
   }
 
   if (ref_field)
   {
+    // If we are trying to register the actual obj (i.e. fieldKind == FIELD_NORMAL)
+    // and there is already a field for the same obj, then the pre-existing field
+    // must be a PTR or REFERENCING field.
     assert(fieldKind != ARCHIVE_FIELD_NORMAL ||
-           ref_field->theKind != ARCHIVE_FIELD_NORMAL);
+           ref_field->theKind == ARCHIVE_FIELD_PTR ||
+           ref_field->theKind == ARCHIVE_FIELD_REFERENCING);
 
     if (get_is_temp_field_one_level() &&
-        fieldKind == ARCHIVE_FIELD_IS_PTR &&
+        fieldKind == ARCHIVE_FIELD_PTR &&
         theAllowDelay2 == ALLOW_DELAY)
     {
       theAllowDelay2 = DONT_ALLOW_DELAY;
@@ -297,11 +306,12 @@ bool Archiver::add_simple_field(
 
     if (fieldKind == ARCHIVE_FIELD_NORMAL)
     {
-      //special case: move the prev field into this one
+      // special case: we registered a pointer to the obj before the obj itself
+      // and now we try to register the obj itself.
       exch_fields = true;
     }
 
-    fieldKind = ARCHIVE_FIELD_IS_REFERENCING;
+    fieldKind = ARCHIVE_FIELD_REFERENCING;
     value = NULL;
     ptr = NULL;
   }
@@ -324,10 +334,12 @@ bool Archiver::add_simple_field(
       ptr &&
       !get_is_temp_field() &&
       (!get_is_temp_field_one_level() ||
-       (fieldKind == ARCHIVE_FIELD_IS_PTR && !get_is_temp_field_also_for_ptr())))
+       (fieldKind == ARCHIVE_FIELD_PTR && !get_is_temp_field_also_for_ptr())))
   {
+    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
+
     SIMPLE_HASHOUT_FIELD f(type, ptr);
-    simple_hashout_fields->insert(f, new_field);
+    theSimpleFieldsMap->insert(f, new_field);
   }
 
   if (!exch_fields)
@@ -356,7 +368,8 @@ bool Archiver::add_simple_field(
 
 
 /*******************************************************************************
-
+  Place new_field in the position occupied by ref_field, and disconnect 
+  ref_field from the tree.
 ********************************************************************************/
 void Archiver::replace_field(archive_field* new_field, archive_field* ref_field)
 {
@@ -391,24 +404,26 @@ void Archiver::replace_field(archive_field* new_field, archive_field* ref_field)
 ********************************************************************************/
 void Archiver::exchange_fields(archive_field* new_field, archive_field* ref_field)
 {
-  new_field->theKind = ARCHIVE_FIELD_IS_REFERENCING;
   ref_field->theKind = ARCHIVE_FIELD_NORMAL;
 
+  new_field->theKind = ARCHIVE_FIELD_REFERENCING;
   new_field->theId = ++nr_ids;
   new_field->referencing = ref_field->theId;
+  new_field->theAllowDelay2 = ref_field->theAllowDelay2;
 
   replace_field(new_field, ref_field);
 
   ref_field->theParent = current_compound_field;
+
   if(current_compound_field->theLastChild)
     current_compound_field->theLastChild->theNextSibling = ref_field;
   else
     current_compound_field->theFirstChild = ref_field;
+
   ref_field->theNextSibling = NULL;
   current_compound_field->theLastChild = ref_field;
-  ref_field->theOrder = nr_ids;
 
-  new_field->theAllowDelay2 = ref_field->theAllowDelay2;
+  ref_field->theOrder = nr_ids;
 }
 
 
@@ -431,14 +446,14 @@ bool Archiver::add_compound_field(
 
   if (!ptr)
   {
-    fieldKind = ARCHIVE_FIELD_IS_NULL;
+    fieldKind = ARCHIVE_FIELD_NULL;
     theCurrentLevel--;
   }
-  else if(fieldKind != ARCHIVE_FIELD_IS_BASECLASS &&
-          ptr &&
-          !get_is_temp_field() &&
-          (!get_is_temp_field_one_level() ||
-           (fieldKind == ARCHIVE_FIELD_IS_PTR && !get_is_temp_field_also_for_ptr())))
+  else if (fieldKind != ARCHIVE_FIELD_BASECLASS &&
+           ptr &&
+           !get_is_temp_field() &&
+           (!get_is_temp_field_one_level() ||
+            (fieldKind == ARCHIVE_FIELD_PTR && !get_is_temp_field_also_for_ptr())))
   {
     if (!is_class)
       ref_field = lookup_nonclass_field(type, ptr);
@@ -452,18 +467,20 @@ bool Archiver::add_compound_field(
            ref_field->theKind != ARCHIVE_FIELD_NORMAL);
 
     if (get_is_temp_field_one_level() && 
-        fieldKind == ARCHIVE_FIELD_IS_PTR &&
+        fieldKind == ARCHIVE_FIELD_PTR &&
         theAllowDelay2 == ALLOW_DELAY)
+    {
       theAllowDelay2 = DONT_ALLOW_DELAY;
+    }
 
-    if(fieldKind == ARCHIVE_FIELD_NORMAL)
+    if (fieldKind == ARCHIVE_FIELD_NORMAL)
     {
       //special case
       //move the prev field into this one
       exch_fields = true;
     }
 
-    fieldKind = ARCHIVE_FIELD_IS_REFERENCING;
+    fieldKind = ARCHIVE_FIELD_REFERENCING;
 
     ptr = NULL;
   }
@@ -482,16 +499,16 @@ bool Archiver::add_compound_field(
   theAllowDelay2 = ALLOW_DELAY;
 
   if (!ref_field &&
-      fieldKind != ARCHIVE_FIELD_IS_BASECLASS &&
+      fieldKind != ARCHIVE_FIELD_BASECLASS &&
       ptr &&
       !get_is_temp_field() &&
       (!get_is_temp_field_one_level() ||
-       (fieldKind == ARCHIVE_FIELD_IS_PTR && !get_is_temp_field_also_for_ptr())))
+       (fieldKind == ARCHIVE_FIELD_PTR && !get_is_temp_field_also_for_ptr())))
   {
     if (!is_class)
     {
       SIMPLE_HASHOUT_FIELD  f(type, ptr);
-      simple_hashout_fields->insert(f, new_field);
+      theSimpleFieldsMap->insert(f, new_field);
     }
     else
     {
@@ -583,7 +600,7 @@ bool Archiver::read_next_field(
     int* referencing)
 {
   bool retval = read_next_field_impl(type, value, id, version, is_simple, is_class, fieldKind, referencing);
-  if(retval && !*is_simple && (*fieldKind != ARCHIVE_FIELD_IS_REFERENCING))
+  if(retval && !*is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
     theCurrentLevel++;
   return retval;
 }
@@ -623,7 +640,7 @@ void Archiver::check_simple_field(
   }
 #endif
 
-  if(field_treat == ARCHIVE_FIELD_IS_NULL)
+  if(field_treat == ARCHIVE_FIELD_NULL)
     return;
 
 #ifndef NDEBUG
@@ -666,7 +683,7 @@ void Archiver::check_nonclass_field(
   }
 #endif
 
-  if (field_treat == ARCHIVE_FIELD_IS_NULL)
+  if (field_treat == ARCHIVE_FIELD_NULL)
     return;
 
 #ifndef NDEBUG
@@ -709,7 +726,7 @@ void Archiver::check_class_field(
   }
 #endif
 
-  if (field_treat == ARCHIVE_FIELD_IS_NULL)
+  if (field_treat == ARCHIVE_FIELD_NULL)
     return;
 
 #ifndef NDEBUG
@@ -735,9 +752,9 @@ void Archiver::register_reference(
     enum ArchiveFieldKind field_treat,
     const void* ptr)
 {
-  if(get_is_temp_field())// && (field_treat != ARCHIVE_FIELD_IS_PTR))
+  if(get_is_temp_field())// && (field_treat != ARCHIVE_FIELD_PTR))
     return;
-  if(get_is_temp_field_one_level() && ((field_treat != ARCHIVE_FIELD_IS_PTR) || get_is_temp_field_also_for_ptr()))
+  if(get_is_temp_field_one_level() && ((field_treat != ARCHIVE_FIELD_PTR) || get_is_temp_field_also_for_ptr()))
     return;
 
 //  all_reference_list->put((uint32_t)id, (void*)ptr);
@@ -997,7 +1014,7 @@ archive_field* Archiver::replace_with_null(archive_field* current_field)
                                                   "",
                                                   NULL,
                                                   0,
-                                                  ARCHIVE_FIELD_IS_NULL,
+                                                  ARCHIVE_FIELD_NULL,
                                                   NULL,
                                                   false,
                                                   ALLOW_DELAY,
@@ -1062,7 +1079,7 @@ archive_field* Archiver::find_top_most_eval_only_field(archive_field* parent_fie
     if(child->theOnlyForEval)
     {
     }
-    else if((child->theKind == ARCHIVE_FIELD_IS_REFERENCING) &&
+    else if((child->theKind == ARCHIVE_FIELD_REFERENCING) &&
         get_only_for_eval(child->theReferredField))
     {
       int new_depth = compute_field_depth(child->theReferredField);
@@ -1181,7 +1198,7 @@ bool Archiver::check_only_for_eval_nondelay_referencing(archive_field* parent_fi
   {
     if(current_field->theOnlyForEval && (current_field->theKind != ARCHIVE_FIELD_NORMAL))
     {
-      if((current_field->theKind == ARCHIVE_FIELD_IS_REFERENCING) &&
+      if((current_field->theKind == ARCHIVE_FIELD_REFERENCING) &&
         (current_field->theAllowDelay2 != ALLOW_DELAY) &&
         (!current_field->theReferredField->theOnlyForEval))
       {
@@ -1222,7 +1239,7 @@ void Archiver::replace_only_for_eval_with_null(archive_field* parent_field)
   {
     if(current_field->theOnlyForEval &&
       (current_field->theKind != ARCHIVE_FIELD_NORMAL) &&
-      (current_field->theKind != ARCHIVE_FIELD_IS_BASECLASS))
+      (current_field->theKind != ARCHIVE_FIELD_BASECLASS))
     {
     //don't save it, replace it with NULL if possible
       archive_field *null_field = replace_with_null(current_field);
@@ -1313,7 +1330,7 @@ bool Archiver::check_allowed_delays(archive_field* parent_field)
 
   while (child)
   {
-    if (child->theKind == ARCHIVE_FIELD_IS_REFERENCING &&
+    if (child->theKind == ARCHIVE_FIELD_REFERENCING &&
        ((child->theAllowDelay2 == DONT_ALLOW_DELAY &&
          check_order(theRootField, child, child->theReferredField) < 1 &&
          child->theAllowDelay2 == DONT_ALLOW_DELAY) ||

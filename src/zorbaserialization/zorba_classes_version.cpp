@@ -17,8 +17,10 @@
 
 #include "zorbaserialization/class_serializer.h"
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
+namespace serialization
+{
 
 const unsigned long g_zorba_classes_version = 21;
 
