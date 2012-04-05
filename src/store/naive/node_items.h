@@ -1272,6 +1272,8 @@ protected:
   {
     return *reinterpret_cast<ItemVector*>(theTypedValue.getp());
   }
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1428,6 +1430,8 @@ protected:
   void setValue(store::Item_t& val) { theContent.setValue(val); }
 
   void setValue(store::Item* val) { theContent.setValue(val); }
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1493,6 +1497,8 @@ public:
   void replaceName(UpdRenamePi& upd);
 
   void restoreName(UpdRenamePi& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1548,6 +1554,8 @@ public:
   void replaceValue(UpdReplaceCommentValue& upd);
 
   void restoreValue(UpdReplaceCommentValue& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
