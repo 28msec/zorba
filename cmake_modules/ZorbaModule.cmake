@@ -266,6 +266,13 @@ MACRO (DECLARE_ZORBA_MODULE)
       SET (module_filewe "${module_filewe}_${MODULE_VERSION}")
     ENDIF (MODULE_VERSION)
 
+    # Choose output base directory
+    IF (${MODULE_TEST_ONLY} EQUAL 1)
+      SET (_output_basedir "${CMAKE_BINARY_DIR}/TEST_LIB_PATH")
+    ELSE (${MODULE_TEST_ONLY} EQUAL 1)
+      SET (_output_basedir "${CMAKE_BINARY_DIR}/LIB_PATH")
+    ENDIF (${MODULE_TEST_ONLY} EQUAL 1)
+
     # It seems like it would be nice to set the VERSION and/or
     # SOVERSION target properties here. However: On Windows, it
     # doesn't seem to do anything (the .rc file configured above
@@ -277,11 +284,19 @@ MACRO (DECLARE_ZORBA_MODULE)
     # FOLDER is to group IDE projects into folders.
     SET_TARGET_PROPERTIES (${module_lib_target} PROPERTIES
       OUTPUT_NAME "${module_filewe}${SUFFIX}"
-      ${target_type}_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
+      ${target_type}_OUTPUT_DIRECTORY "${_output_basedir}/${module_path}"
       FOLDER "Modules"
     )
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
+
+    # While we're at it, remember this library for the auto-generated
+    # module Config.cmake file. Need to use the LIB_PATH location
+    # since that's what will be dlopen()'d by Zorba at runtime. QQQ
+    # and what about the installed version?
+    GET_TARGET_PROPERTY (_lib_location "${module_lib_target}" LOCATION)
+    SET_PROPERTY (GLOBAL APPEND PROPERTY "${PROJECT_NAME}_LIBRARIES"
+      "${_lib_location}")
 
     # Install the library, if it's not a TEST_ONLY module
     IF (NOT MODULE_TEST_ONLY)
@@ -315,22 +330,6 @@ MACRO (DECLARE_ZORBA_MODULE)
     ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${module_path}/${module_filename}"
       "${version_infix}" "" 1 "${MODULE_TEST_ONLY}")
   ENDFOREACH (version_infix)
-
-  # Also copy the dynamic library from the location it was built.
-  IF (module_lib_target)
-    GET_TARGET_PROPERTY (lib_location "${module_lib_target}" LOCATION)
-    GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
-    ADD_COPY_RULE ("LIB" "${lib_location}" "${module_path}/${lib_filename}"
-      "" "${module_lib_target}" 0 "${MODULE_TEST_ONLY}")
-    # While we're at it, remember this library for the auto-generated
-    # module Config.cmake file. Need to use the LIB_PATH location
-    # since that's what will be dlopen()'d by Zorba at runtime. QQQ
-    # and what about the installed version? Also, it'd be nice if we
-    # didn't have to replicate the path from ADD_COPY_RULE(),
-    # especially since we don't handle TEST_ONLY here.
-    SET_PROPERTY (GLOBAL APPEND PROPERTY "${PROJECT_NAME}_LIBRARIES"
-      "${CMAKE_BINARY_DIR}/LIB_PATH/${module_path}/${lib_filename}")
-  ENDIF (module_lib_target)
 
   # Last but not least, whip up a test case that ensures the module
   # can at least be compiled. Don't bother for test-only modules
@@ -422,13 +421,17 @@ ENDMACRO (DECLARE_ZORBA_URI_FILE)
 # Inform Zorba of a .jar file that should be made available on the CLASSPATH
 # of the JVM, should the JVM be started. QQQ more doc needed
 #
-# Args: FILE - path to file (must be absolute)
+# Args: FILE - path to file(s) (must be absolute)
+#       TARGET - (optional) a CMake target that must be executed in order
+#              for FILEs to be generated
 #       EXTERNAL - (optional) FILE specifies a path that should be added
 #              to CLASSPATH as-is
 #       TEST_ONLY - (optional) Jar file is for testcases only and should not
 #              be installed
+#
+# Must supply at least one value to FILE or TARGET.
 MACRO (DECLARE_ZORBA_JAR)
-  PARSE_ARGUMENTS (JAR "FILE" "" "TEST_ONLY;EXTERNAL" ${ARGN})
+  PARSE_ARGUMENTS (JAR "FILE;TARGET" "TARGET" "TEST_ONLY;EXTERNAL" ${ARGN})
   IF (NOT JAR_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for DECLARE_ZORBA_JAR")
   ENDIF (NOT JAR_FILE)
@@ -452,8 +455,8 @@ MACRO (DECLARE_ZORBA_JAR)
     ELSE (JAR_EXTERNAL)
       # Copy jar to jars/ directory and add relative path to classpath file
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
-      ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" ""
-  1 "${JAR_TEST_ONLY}")
+      ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
+	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
       FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
     ENDIF (JAR_EXTERNAL)
 
@@ -607,9 +610,10 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
       LIST (GET copy_rules 2 _depend_target)
       LIST (GET copy_rules 3 _is_core)
       LIST (REMOVE_AT copy_rules 0 1 2 3)
-      SET (_depends "${_input_file}")
       IF (_depend_target)
-        LIST (APPEND _depends "${_depend_target}")
+        SET (_depends "${_depend_target}")
+      ELSE (_depend_target) 
+	SET (_depends "${_input_file}")
       ENDIF (_depend_target)
       ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
         COMMAND "${CMAKE_COMMAND}" -E copy
