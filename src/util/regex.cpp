@@ -102,6 +102,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   bool got_backslash = false;
   bool in_char_class = false;           // within [...]
+  bool is_first_char = true;
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -253,6 +254,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else
             in_char_class = false;
           break;
+        case '^':
+          if ( q_flag )
+            *icu_re += '\\';
+          else if ( !is_first_char && !in_char_class )
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), *xq_c );
+          break;
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
             if ( !in_char_class )
@@ -267,6 +274,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
     }
     *icu_re += *xq_c;
+    is_first_char = false;
   } // FOR_EACH
 
   if ( i_flag ) {

@@ -2517,11 +2517,11 @@
       <value>attribute node</value>
     </entry>
 
-    <entry key="BackRef0Illegal">
+    <entry key="BackRef0Illegal" if="!defined(ZORBA_NO_ICU)">
       <value>"0": illegal backreference</value>
     </entry>
 
-    <entry key="BackRefIllegalInCharClass">
+    <entry key="BackRefIllegalInCharClass" if="!defined(ZORBA_NO_ICU)">
       <value>backreference illegal in character class</value>
     </entry>
 
@@ -2569,7 +2569,7 @@
       <value>invalid library module</value>
     </entry>
 
-    <entry key="BadRegexEscape_3">
+    <entry key="BadRegexEscape_3" if="!defined(ZORBA_NO_ICU)">
       <value>"$3": illegal escape character</value>
     </entry>
 
@@ -3029,7 +3029,7 @@
       <value>nodeid component too big for encoding</value>
     </entry>
 
-    <entry key="NonClosedBackRef_3">
+    <entry key="NonClosedBackRef_3" if="!defined(ZORBA_NO_ICU)">
       <value>'$$3': non-closed backreference</value>
     </entry>
 
@@ -3041,7 +3041,7 @@
       <value>non-localhost authority</value>
     </entry>
 
-    <entry key="NonexistentBackRef_3">
+    <entry key="NonexistentBackRef_3" if="!defined(ZORBA_NO_ICU)">
       <value>'$$3': non-existent backreference</value>
     </entry>
 
@@ -3351,20 +3351,23 @@
     </entry>
 
     <entry key="REGEX_MISSING_CLOSE_BRACKET" if="defined(ZORBA_NO_ICU)">
-      <value>missing close bracket in char group</value>
+      <value>missing ']' in character group</value>
     </entry>
 
     <entry key="REGEX_MAX_LT_MIN" if="defined(ZORBA_NO_ICU)">
       <value>in {min,max}, max is less than min</value>
     </entry>
 
-
     <entry key="UnaryArithOp">
       <value>unary arithmetic operator</value>
     </entry>
 
-    <entry key="UnbalancedChar_3">
+    <entry key="UnbalancedChar_3" if="!defined(ZORBA_NO_ICU)">
       <value>missing '$3'</value>
+    </entry>
+
+    <entry key="UnescapedChar_3" if="!defined(ZORBA_NO_ICU)">
+      <value>character '$3' must be escaped here</value>
     </entry>
 
     <entry key="UnexpectedElement">

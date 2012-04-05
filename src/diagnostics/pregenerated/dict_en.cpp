@@ -437,8 +437,12 @@ extern entry const dict_en[] = {
   { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
+#if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
+#endif
   { "~BadAnyURI", "invalid xs:anyURI" },
   { "~BadArgTypeForFn_2o34o", "${\"2\": }invalid argument type for function $3()${: 4}" },
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
@@ -451,7 +455,9 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
@@ -567,10 +573,14 @@ extern entry const dict_en[] = {
   { "~NoUntypedKeyNodeValue_2", "node with untyped key value found during probe on index \"$2\"" },
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+#endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+#endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotDefInDynamicCtx", "not defined in dynamic context" },
@@ -617,7 +627,7 @@ extern entry const dict_en[] = {
   { "~REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_MISSING_CLOSE_BRACKET", "missing close bracket in char group" },
+  { "~REGEX_MISSING_CLOSE_BRACKET", "missing ']' in character group" },
 #endif
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_MULTICHAR_IN_CHAR_RANGE", "multichars or char categories cannot be part of a char range" },
@@ -734,7 +744,12 @@ extern entry const dict_en[] = {
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
+#if !defined(ZORBA_NO_ICU)
   { "~UnbalancedChar_3", "missing '$3'" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~UnescapedChar_3", "character '$3' must be escaped here" },
+#endif
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~Variable", "variable" },
