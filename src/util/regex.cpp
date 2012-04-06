@@ -231,6 +231,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             ++open_cap_subs;
             cap_sub.push_back( true );
             cur_cap_sub = cap_sub.size();
+            is_first_char = true;
+            goto append;
           }
           break;
         case ')':
@@ -245,8 +247,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '[':
           if ( q_flag )
             *icu_re += '\\';
-          else
+          else {
             in_char_class = true;
+            goto append;
+          }
           break;
         case ']':
           if ( q_flag )
@@ -271,10 +275,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             //
             *icu_re += '\\';
           }
-      }
-    }
-    *icu_re += *xq_c;
+      } // switch
+    } // else
     is_first_char = false;
+append:
+    *icu_re += *xq_c;
   } // FOR_EACH
 
   if ( i_flag ) {
