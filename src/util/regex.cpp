@@ -264,6 +264,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else if ( !is_first_char && !in_char_class )
             throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), *xq_c );
           break;
+        case '|':
+          if ( q_flag )
+            *icu_re += '\\';
+          else {
+            is_first_char = true;
+            goto append;
+          }
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
             if ( !in_char_class )
