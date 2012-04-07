@@ -3335,7 +3335,7 @@
     </entry>
 
     <entry key="REGEX_INVALID_ATOM_CHAR" if="defined(ZORBA_NO_ICU)">
-      <value>$3 - invalid character for an atom; forbidden characters are: [{}?*+|^]</value>
+      <value>'$3': invalid character for an atom; forbidden characters are: [{}?*+|^]</value>
     </entry>
 
     <entry key="REGEX_INVALID_SUBCLASS" if="defined(ZORBA_NO_ICU)">
