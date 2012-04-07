@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include "regex.h"
-
 #include <cstring>
 #include <vector>
 
@@ -28,6 +26,7 @@
 
 #include "ascii_util.h"
 #include "cxx_util.h"
+#include "regex.h"
 #include "stl_util.h"
 
 #define INVALID_RE_EXCEPTION(...) \
@@ -102,7 +101,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   bool got_backslash = false;
   bool in_char_class = false;           // within [...]
-  bool is_first_char = true;
+  bool is_first_char = true;            // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -289,32 +288,35 @@ append:
     *icu_re += *xq_c;
   } // FOR_EACH
 
-  if ( i_flag ) {
-    //
-    // XQuery 3.0 F&O 5.6.1.1: All other constructs are unaffected by the "i"
-    // flag.  For example, "\p{Lu}" continues to match upper-case letters only.
-    //
-    // However, ICU lower-cases everything for the 'i' flag; hence we have to
-    // turn off the 'i' flag for just the \p{Lu}.
-    //
-    // Note that the "6" and "12" below are correct since "\\" represents a
-    // single '\'.
-    //
-    ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
-  }
+  if ( !q_flag ) {
+    if ( i_flag ) {
+      //
+      // XQuery 3.0 F&O 5.6.1.1: All other constructs are unaffected by the "i"
+      // flag.  For example, "\p{Lu}" continues to match upper-case letters
+      // only.
+      //
+      // However, ICU lower-cases everything for the 'i' flag; hence we have to
+      // turn off the 'i' flag for just the \p{Lu}.
+      //
+      // Note that the "6" and "12" below are correct since "\\" represents a
+      // single '\'.
+      //
+      ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
+    }
 
-  //
-  // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
-  // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
-  // Hangul Jamo, CJK Compatibility, etc. The set containing all characters
-  // that have block name X (with all white space stripped out), can be
-  // identified with a block escape \p{IsX}.
-  //
-  // However, ICU uses \p{InX} rather than \p{IsX}.
-  //
-  // Note that the "5" below is correct since "\\" represents a single '\'.
-  //
-  ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+    //
+    // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
+    // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
+    // Hangul Jamo, CJK Compatibility, etc. The set containing all characters
+    // that have block name X (with all white space stripped out), can be
+    // identified with a block escape \p{IsX}.
+    //
+    // However, ICU uses \p{InX} rather than \p{IsX}.
+    //
+    // Note that the "5" below is correct since "\\" represents a single '\'.
+    //
+    ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+  } // q_flag
 }
 
 ///////////////////////////////////////////////////////////////////////////////
