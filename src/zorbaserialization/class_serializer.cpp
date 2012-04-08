@@ -36,15 +36,15 @@ namespace serialization
 class ClassFactoriesCompare
 {
 public: 
-  uint32_t hash(const char * s1) const
+  uint32_t hash(const char* s1) const
   {
-    uint32_t  h = 0;
-    h = hashfun::h32(s1, FNV_32_INIT);
+    uint32_t h = hashfun::h32(s1, FNV_32_INIT);
     return h;
   }
+
   bool equal(const char * s1, const char * s2) const
   {
-    if((s1 == s2) || !strcmp(s1, s2))
+    if (s1 == s2 || !strcmp(s1, s2))
       return true;
     else
       return false;
@@ -55,30 +55,36 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ClassFactoriesMap : public zorba::HashMap<const char *, class_deserializer  *, ClassFactoriesCompare>
+class ClassFactoriesMap : public zorba::HashMap<const char*,
+                                                class_deserializer*,
+                                                ClassFactoriesCompare>
 {
 public:
-  ClassFactoriesMap(ulong sz = 1024) :
-      zorba::HashMap<const char *, class_deserializer  *, ClassFactoriesCompare>(sz, false) {}
+  ClassFactoriesMap(ulong sz = 1024) 
+    :
+    zorba::HashMap<const char*, class_deserializer*, ClassFactoriesCompare>(sz, false)
+  {
+  }
 };
 
-
-//////////////////////////////////////////////
-///////////////////////////////////////////Global serialization Operators
 
 /*******************************************************************************
 
 ********************************************************************************/
-ClassSerializer::ClassSerializer() : class_names(1000), class_names_count(0)
+const unsigned long ClassSerializer::g_zorba_classes_version = 25;
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ClassSerializer::ClassSerializer() 
+  :
+  class_names(1000),
+  class_names_count(0)
 {
-/*
-  class_name_pool_size = 10000;
-  class_name_pool = (char*)malloc(class_name_pool_size);
-  class_name_pool_filled = 0;
-*/
-  class_factories = NULL;//new ClassFactoriesMap;
+  class_factories = NULL;
+
   t0 = clock();
-//  g_class_serializer_destroyer.activate();
 
   harcoded_objects_archive = NULL;
   harcoded_objects_archive = new MemArchiver(true, true);//simulate serialize out
@@ -90,9 +96,6 @@ ClassSerializer::ClassSerializer() : class_names(1000), class_names_count(0)
 ********************************************************************************/
 ClassSerializer::~ClassSerializer()
 {
-/*
-  free(class_name_pool);
-*/
   delete class_factories;
   delete harcoded_objects_archive;
 }
@@ -112,35 +115,10 @@ ClassSerializer* ClassSerializer::getInstance()
 
 ********************************************************************************/
 void ClassSerializer::register_class_factory(
-    const char *class_name,
-    class_deserializer *class_factory)
+    const char* class_name,
+    class_deserializer* class_factory)
 {
-/*+
-#ifndef NDEBUG
-  //check for class name duplicates
-  if(get_class_factory(class_name))
-  {
-    assert(false);
-  }
-#endif
-*/
-/*  int name_size = strlen(class_name);
-  if((name_size + class_name_pool_filled + 1) > class_name_pool_size)
-  {
-    class_name_pool_size += 10000;
-    class_name_pool = (char*)realloc(class_name_pool, class_name_pool_size);
-  }
-//  std::cout << "register class factory " << class_name << std::endl;
-  class_factories->resize(class_factories->size()+1);
-  ClassSerializer::registered_factory  &r = class_factories->back();
-  //strcpy(r.class_name, class_name);
-  strcpy(class_name_pool + class_name_pool_filled, class_name);
-  r.cls_name_off = class_name_pool_filled;
-  class_name_pool_filled += name_size + 1;
-  r.class_factory = class_factory;
-*/
-
-  if(class_factories)
+  if (class_factories)
   {
     class_factories->insert(class_name, class_factory);
   }
@@ -148,7 +126,7 @@ void ClassSerializer::register_class_factory(
   {
     class_names[class_names_count++] = std::pair<const char *, class_deserializer*>(class_name, class_factory);
   }
-//  printf("register class_factory %s\n", class_name);
+
   t1 = clock();
 }
 
@@ -156,28 +134,22 @@ void ClassSerializer::register_class_factory(
 /*******************************************************************************
 
 ********************************************************************************/
-class_deserializer *ClassSerializer::get_class_factory(const char *classname)
+class_deserializer* ClassSerializer::get_class_factory(const char* classname)
 {
-/*
-  std::list<struct registered_factory>::iterator  it;
-  for(it = class_factories->begin(); it != class_factories->end(); it++)
-  {
-    if(!strcmp(class_name_pool + (*it).cls_name_off, classname))
-      return (*it).class_factory;
-  }
-  return NULL;
-*/
-  if(class_factories == NULL)
+  if (class_factories == NULL)
   {
     class_factories = new ClassFactoriesMap;
+
     int i;
-    std::vector<std::pair<const char *, class_deserializer*> >::iterator cls_it = class_names.begin();
-    for(i=0;i<class_names_count;i++, cls_it++)
+    std::vector<std::pair<const char*, class_deserializer*> >::iterator cls_it = class_names.begin();
+
+    for (i = 0; i < class_names_count; i++, cls_it++)
     {
       class_factories->insert((*cls_it).first, (*cls_it).second);
     }
   }
-  class_deserializer  *cls_factory = NULL;
+
+  class_deserializer* cls_factory = NULL;
   class_factories->get(classname, cls_factory);
   return cls_factory;
 }
@@ -193,13 +165,13 @@ Archiver* ClassSerializer::getArchiverForHardcodedObjects()
 
 
 /*******************************************************************************
-
+  called at shutdown
 ********************************************************************************/
 void ClassSerializer::destroyArchiverForHardcodedObjects()
 {
   delete harcoded_objects_archive;
   harcoded_objects_archive = NULL;
-  harcoded_objects_archive = new MemArchiver(true, true);//simulate serialize out
+  harcoded_objects_archive = new MemArchiver(true, true);
 }
 
 

@@ -43,8 +43,7 @@
 
 namespace zorba
 {
-SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
+
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<AddOperation>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<SubtractOperation>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<MultiplyOperation>, 3)
@@ -52,8 +51,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<Divid
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<IntegerDivideOperation>, 5)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<ModOperation>, 6)
 
-SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>, 1);
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_FLOAT>, 2);
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>, 3);
@@ -77,10 +74,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumAr
 
 
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
+
 
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)

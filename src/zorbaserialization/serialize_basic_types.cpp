@@ -52,7 +52,6 @@ void operator&(Archiver& ar, int& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
@@ -62,7 +61,6 @@ void operator&(Archiver& ar, int& obj)
     retval = ar.read_next_field(&type,
                                 &value,
                                 &id,
-                                &version,
                                 &is_simple,
                                 &is_class,
                                 &field_treat,
@@ -103,7 +101,6 @@ void operator&(Archiver& ar, uint32_t& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
@@ -113,7 +110,6 @@ void operator&(Archiver& ar, uint32_t& obj)
     retval = ar.read_next_field(&type,
                                 &value,
                                 &id,
-                                &version,
                                 &is_simple,
                                 &is_class,
                                 &field_treat,
@@ -154,7 +150,6 @@ void operator&(Archiver& ar, long& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
@@ -164,7 +159,6 @@ void operator&(Archiver& ar, long& obj)
     retval = ar.read_next_field(&type,
                                 &value,
                                 &id,
-                                &version,
                                 &is_simple,
                                 &is_class,
                                 &field_treat,
@@ -205,7 +199,6 @@ void operator&(Archiver& ar, unsigned long& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
@@ -215,7 +208,6 @@ void operator&(Archiver& ar, unsigned long& obj)
     retval = ar.read_next_field(&type,
                                 &value,
                                 &id,
-                                &version,
                                 &is_simple,
                                 &is_class,
                                 &field_treat,
@@ -256,7 +248,6 @@ void operator&(Archiver& ar, long long& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
@@ -266,7 +257,6 @@ void operator&(Archiver& ar, long long& obj)
     retval = ar.read_next_field(&type,
                                 &value,
                                 &id,
-                                &version,
                                 &is_simple,
                                 &is_class,
                                 &field_treat,
@@ -307,14 +297,13 @@ void operator&(Archiver& ar, unsigned long long& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id, 
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -347,14 +336,13 @@ void operator&(Archiver& ar, short& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -387,14 +375,13 @@ void operator&(Archiver& ar, unsigned short& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -427,14 +414,13 @@ void operator&(Archiver& ar, char& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id, 
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -469,14 +455,13 @@ void operator&(Archiver& ar, char*& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -527,14 +512,13 @@ void operator&(Archiver& ar, signed char& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -569,14 +553,13 @@ void operator&(Archiver& ar, unsigned char& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -618,14 +601,13 @@ void operator&(Archiver& ar, float& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -665,14 +647,13 @@ void operator&(Archiver& ar, double& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -703,14 +684,13 @@ void operator&(Archiver& ar, bool& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -751,14 +731,13 @@ void operator&(Archiver& ar, std::string& obj)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())
@@ -789,14 +768,13 @@ void operator&(Archiver& ar, std::string*& obj)
     char  *type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if(!retval && ar.get_read_optional_field())
@@ -848,14 +826,13 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len)
     char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = true;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, &version,
+    retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
     if (!retval && ar.get_read_optional_field())

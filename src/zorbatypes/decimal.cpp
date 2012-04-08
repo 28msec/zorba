@@ -41,7 +41,7 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
-END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
