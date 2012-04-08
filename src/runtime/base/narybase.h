@@ -28,9 +28,6 @@ namespace zorba
 
 class PlanIterVisitor;
 
-extern const ::zorba::serialization::ClassVersion g_NaryBaseIterator_class_versions[];
-extern const int g_NaryBaseIterator_class_versions_count;
-
 
 /*******************************************************************************
   Superclass for all iterators which have N child iterators and no additional

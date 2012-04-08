@@ -42,7 +42,6 @@ public:
   virtual bool read_next_field_impl( char **type, 
                                 std::string *value,
                                 int *id, 
-                                int *version, 
                                 bool *is_simple, 
                                 bool *is_class,
                                 enum ArchiveFieldKind *field_treat,

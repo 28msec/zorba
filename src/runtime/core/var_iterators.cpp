@@ -41,22 +41,17 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

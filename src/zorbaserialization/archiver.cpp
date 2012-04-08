@@ -44,7 +44,6 @@ archive_field::archive_field(
     bool is_class,
     const void* value,
     const void* assoc_ptr,
-    int version,
     enum ArchiveFieldKind  kind,
     archive_field* refered,
     int only_for_eval,
@@ -55,8 +54,6 @@ archive_field::archive_field(
 
   theIsSimple = is_simple;
   theIsClass = is_class;
-
-  theClassVersion = version;
 
   theTypeName = strdup(type);
   theTypeNamePosInPool = 0;//initialy is the number of references to this field
@@ -120,7 +117,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   theSerializingOut(is_serializing_out),
   serialize_base_class(false),
   all_reference_list(0),
-  theArchiveVersion(g_zorba_classes_version),
+  theArchiveVersion(ClassSerializer::g_zorba_classes_version),
   theRootField(0),
   current_compound_field(0),
   theSimpleFieldsMap(0),
@@ -146,7 +143,6 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
                                      false, // is_class
                                      NULL,  // value
                                      NULL,  // assoc_ptr
-                                     0,     // version
                                      ARCHIVE_FIELD_NORMAL,
                                      NULL,  // referred
                                      false, // only for eval
@@ -321,7 +317,6 @@ bool Archiver::add_simple_field(
                                 false,      // is_class
                                 value,
                                 ptr,
-                                0,          // version
                                 fieldKind,
                                 ref_field,
                                 get_serialize_only_for_eval(),
@@ -432,7 +427,6 @@ void Archiver::exchange_fields(archive_field* new_field, archive_field* ref_fiel
 ********************************************************************************/
 bool Archiver::add_compound_field(
     const char* type,
-    int version,
     bool is_class,
     const void* info,
     const void* ptr,//for classes, pointer to SerializeBaseClass
@@ -490,7 +484,6 @@ bool Archiver::add_compound_field(
                                 is_class,
                                 info,
                                 ptr,
-                                version,
                                 fieldKind,
                                 ref_field,
                                 get_serialize_only_for_eval(), 
@@ -593,15 +586,17 @@ bool Archiver::read_next_field(
     char** type,
     std::string* value,
     int* id,
-    int* version,
     bool* is_simple,
     bool* is_class,
     enum ArchiveFieldKind* fieldKind,
     int* referencing)
 {
-  bool retval = read_next_field_impl(type, value, id, version, is_simple, is_class, fieldKind, referencing);
-  if(retval && !*is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
+  bool retval = read_next_field_impl(type, value, id,
+                                     is_simple, is_class, fieldKind, referencing);
+
+  if (retval && !*is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
     theCurrentLevel++;
+
   return retval;
 }
 
@@ -945,30 +940,12 @@ void Archiver::finalize_input_serialization()
 /*******************************************************************************
 
 ********************************************************************************/
-int Archiver::get_class_version()
-{
-  return current_class_version;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void Archiver::set_class_version(int new_class_version)
-{
-  current_class_version = new_class_version;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void Archiver::root_tag_is_read()
 {
-  if (theArchiveVersion != g_zorba_classes_version)
+  if (theArchiveVersion != ClassSerializer::g_zorba_classes_version)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION,
-    ERROR_PARAMS(theArchiveVersion, g_zorba_classes_version));
+    ERROR_PARAMS(theArchiveVersion, ClassSerializer::g_zorba_classes_version));
   }
 
   all_reference_list = new void*[nr_ids+1];
@@ -1013,7 +990,6 @@ archive_field* Archiver::replace_with_null(archive_field* current_field)
                                                   current_field->theIsClass,
                                                   "",
                                                   NULL,
-                                                  0,
                                                   ARCHIVE_FIELD_NULL,
                                                   NULL,
                                                   false,

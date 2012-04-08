@@ -35,7 +35,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(Duration)
-END_SERIALIZABLE_CLASS_VERSIONS(Duration)
 
 
 const int Duration::FRAC_SECONDS_UPPER_LIMIT = 1000000;

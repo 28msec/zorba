@@ -32,16 +32,9 @@
 
 namespace zorba {
 
-const char* FTContainsIterator::class_name_str = "FTContainsIterator";
 FTContainsIterator::class_factory<FTContainsIterator>
   FTContainsIterator::g_class_factory;
 
-const serialization::ClassVersion 
-  FTContainsIterator::class_versions[] = { { 1, 0x000905, false } };
-
-const int FTContainsIterator::class_versions_count =
-  sizeof( FTContainsIterator::class_versions ) /
-  sizeof( struct serialization::ClassVersion );
 
 void FTContainsIterator::accept( PlanIterVisitor &v ) const {
   v.beginVisit( *this );
