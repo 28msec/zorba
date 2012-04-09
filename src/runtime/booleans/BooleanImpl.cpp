@@ -44,19 +44,12 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OrIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AndIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
@@ -65,7 +58,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCom
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 
 
 /*******************************************************************************
@@ -845,7 +837,7 @@ bool CompareIterator::equal(
   {
     // There are 2 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
-    // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
+    // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
@@ -935,7 +927,7 @@ long CompareIterator::compare(
     {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
-      // type-inheritance subtree rooted at xs:Integer.
+      // type-inheritance subtree rooted at xs:integer.
       if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
           TypeOps::is_subtype(type1, store::XS_INTEGER))
       {

@@ -26,7 +26,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(signature)
-END_SERIALIZABLE_CLASS_VERSIONS(signature)
 
 
 signature::signature(

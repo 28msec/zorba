@@ -42,7 +42,6 @@ namespace zorba {
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(Breakable)
-END_SERIALIZABLE_CLASS_VERSIONS(Breakable)
 
 void
 Breakable::serialize(serialization::Archiver& ar)
@@ -54,7 +53,7 @@ Breakable::serialize(serialization::Archiver& ar)
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
-END_SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
+
 
 void
 QueryLocComparator::serialize(serialization::Archiver& ar) {
@@ -113,7 +112,7 @@ QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
+
 
 DebuggerSingletonIterator::DebuggerSingletonIterator(
   static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons)
@@ -145,7 +144,7 @@ DebuggerSingletonIterator::nextImpl(store::Item_t& result, PlanState& planState)
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
-END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+
 
 DebuggerCommons::DebuggerCommons(static_context* sctx)
   : theBreak(false),

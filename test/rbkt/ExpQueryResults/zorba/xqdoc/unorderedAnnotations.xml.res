@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date/><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.28msec.com/modules/mymodule</xqdoc:uri><xqdoc:name>unorderedAnnotations.xqlib</xqdoc:name><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="mymod" uri="http://www.28msec.com/modules/mymodule"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function contains some unordered annotations.
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date/><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.28msec.com/modules/mymodule</xqdoc:uri><xqdoc:name>unorderedAnnotations.xqlib</xqdoc:name><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="mymod" uri="http://www.28msec.com/modules/mymodule" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function contains some unordered annotations.
  They should be ordered in the resulting XQDoc XML
  according to the XQDoc schema:
  description author version param return error deprecated see since

@@ -15,6 +15,8 @@
  */
 
 %{  // start Implementation
+
+#include <zorba/store_consts.h>
  
 class Store 
 {

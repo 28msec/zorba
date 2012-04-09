@@ -25,7 +25,6 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
-END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
 
 /*******************************************************************************

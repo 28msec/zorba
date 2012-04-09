@@ -261,13 +261,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual bool createNonNegativeInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createNonNegativeInteger(Item_t& result, const xs_nonNegativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual bool createPositiveInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createPositiveInteger(Item_t& result, const xs_positiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
@@ -623,8 +623,9 @@ public:
         zstring& content) = 0;
 
   /**
-   * Create a new text node N to store the typed value of an element node P.
-   * In this case, N can be the only child of P. 
+   * Create a new text node N to store the typed value of an element node P, and
+   * place N as the last child of P. Notice that in this case, P cannot have any
+   * subelements. 
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may NOT be NULL.

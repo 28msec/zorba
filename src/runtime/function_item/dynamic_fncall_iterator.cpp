@@ -37,15 +37,8 @@ namespace zorba
 {
 
 
-const char* DynamicFnCallIterator::class_name_str = "DynamicFnCallIterator";
 DynamicFnCallIterator::class_factory<DynamicFnCallIterator>
 DynamicFnCallIterator::g_class_factory;
-
-const serialization::ClassVersion 
-DynamicFnCallIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DynamicFnCallIterator::class_versions_count =
-sizeof(DynamicFnCallIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 
 /*******************************************************************************

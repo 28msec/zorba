@@ -1,45 +1,33 @@
 Zorba - The XQuery Processor
 
+version 2.5
+
+New Features:
+  * Extended API for Python, Java, PHP and Ruby.
+
+Bug Fixes/Other Changes:
+  * Fixed bug #967864 (var substitution did not update theFreeVars property)
+  * Fixed bug in window iterator (binding the end vars in the output tuple stream)
+  * Fixed bug #866547 (protect index-join rule from general flwor)
+  * Fixed bug #967428 (do not hoist index creation outside a try-catch)
+  * Fixed performance problem with the findNodeSources function of the no-copy rule
+  * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+  * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
+
+
 version 2.2
 
+New Features:
   * Add --compile-plan (-c) and --execute-plan (-e) options to zorba command line.
   * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr) 
-  * Fixed bug 923015 (clone() not implemented for full-text expressions)
-  * No-copy optimization: avoids copying nodes during node-constructor expressions.
-  * Added external function annotations %ann:propagates-input-nodes and 
-    %ann:must-copy-input-nodes to be used by the no-copy optimization.
-  * Caching of results for recursive functions with atomic parameter and return types.
-  * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
-  * Fixed bug 917923 (bug in copying outer var values into the eval dynamic context)
-  * Fixed bug 924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
-  * Optimization: change the implementation of the free-vars annotation and got rid
-    of the annotations map in expressions.
-  * Fixed bug 909126 (bug in cloning of var_expr)
-  * Fixed bug in destruction of exit_catcher_expr
-  * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
-    Compare, instance-of, cast, castable, treat, promote).
-  * Fixed bug #911585 (management of variables during eval)
-  * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
-    case of early-out)
-  * More efficient implementation for base64Binary items
+  * New URI module providing percent-decoding functions.
+  * The core parse-xml module is now able to parse input files in a streaming mode. A number of new options have also been added.
+  * LibXml2 version 2.7.0 or higher is now required in order to build Zorba.  
   * Added index management function to the C++ api's StaticCollectionManager.
-  * Fixed bug #872288 (reset recursive flag during node rename)
-  * Fixed bug #905041 (allow for the default element and function namespaces to be
-    set multiple times via the c++ api).
-  * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
-  * Fixed bug #905050 (setting and getting the context item type via the c++ api).
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
-  * Fixed bug in codegen: do not create a materialize clause if one exists already
+  * Fixed bug #905050 (setting and getting the context item type via the c++ api).
   * Added split function to the string module that allows for streamable tokenization but doesn't have regular expression
-    support.
-  * Fixed bug involving positional var and groupby 
-  * Optimization: preallocate and reuse temp sequence iterator for LetVarITerator
-    and CtxVarIterator.
-  * Optimization: enhanced push-down of positional predicate into LetVarITerator
-    and CtxVarIterator.
-  * Fixed bug #867266 (do not hoist updating expressions)
-  * Fixed bug #867022 (added location and params to some XPTY0004 errors)
-  * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
   * Add new XQuery interface for the PHP bindings.
   * Added two API methods StaticContext::getFunctions to introspect the functions of a static context
   * Added API method Item::getNamespaceBindings().
@@ -47,14 +35,63 @@ version 2.2
     from and to UTF-8
   * file:read-text is able to handle arbitrary encodings (fixes bug #867159)
   * http:send-request is able to handle arbitrary encodings
-  * Fixed bug #917981 (disallow declaring same module twice).
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
+  * New version of the JSON converter module in the core of Zorba (no external dependencies anymore)
+  * Added truncate function to the collection modules for efficient deletion of all nodes in a collection.
+
+
+Optimization:
+  * No-copy optimization: avoids copying nodes during node-constructor expressions.
+  * Added external function annotations %ann:propagates-input-nodes and 
+    %ann:must-copy-input-nodes to be used by the no-copy optimization.
+  * Caching of results for recursive functions with atomic parameter and return types.
+  * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
+  * Types-related optimizations for runtime operators (comparisons, FnBoolean, Or, And,
+    Compare, instance-of, cast, castable, treat, promote).
+  * More efficient implementation for base64Binary items
+  * Preallocate and reuse temp sequence iterator for LetVarITerator
+    and CtxVarIterator.
+  * Enhanced push-down of positional predicate into LetVarITerator
+    and CtxVarIterator.
+  * Change the implementation of the free-vars annotation and got rid
+    of the annotations map in expressions.
+
+Bug Fixes/Other Changes:
+  * Fixed bug #923015 (clone() not implemented for full-text expressions)
+  * Fixed bug #917923 (bug in copying outer var values into the eval dynamic context)
+  * Fixed bug #867509 (Can not handle largest xs:unsignedLong values)
+  * Fixed bug #924063 (sentence is incorrectly incremented when token characters end without sentence terminator)
+  * Fixed bug #909126 (bug in cloning of var_expr)
+  * Fixed bug in destruction of exit_catcher_expr
+  * Fixed bug #867024 (error messages)
+  * Fixed bug #957580 (stream read failure in StringToCodepointsIteartor)
+  * Fixed bug #911585 (management of variables during eval)
+  * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
+    case of early-out)
+  * Fixed bug #955574 (http-client "hangs" if following a POST request)
+  * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
+  * Fixed bug #872288 (reset recursive flag during node rename)
+  * Fixed bug #905041 (allow for the default element and function namespaces to be
+    set multiple times via the c++ api).
+  * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
+  * Fixed bug in codegen: do not create a materialize clause if one exists already
+    support.
+  * Fixed bug involving positional var and groupby 
+  * Fixed bug #867266 (do not hoist updating expressions)
+  * Fixed bug #867022 (added location and params to some XPTY0004 errors)
+  * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
+  * Fixed bug #917981 (disallow declaring same module twice).
   * Deprecated StaticContext:getNamespaceURIByPrefix()
-  * Fixed bug 921624 (slow queries with bogus example.com schema URIs)
+  * Fixed bug #943788 (streamable string is not seekable)
+  * Fixed bug #921624 (slow queries with bogus example.com schema URIs)
   * Fixed bug #918211 (xqueryx fulltext w3c conformance generation)
   * Fixed bug #918157 (Add XQFTTS to validation queue)
   * Fixed bug with unversioned modules with C++ external functions
-  * Fixed bug #878508 (JSON Module not escaping escape characters)
+  * Fixed bug #912579 (validate-in-place on non-root elements)
+  * Fixed bug #891209 (validation with xsi:type returns untyped)
+  * Fixed bug #952829 (Nondeterministic annotation doesn't seem to be checked)
+  * Fixed bug #951772 (Comment node crashes serialization)
+  * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
 version 2.1
 

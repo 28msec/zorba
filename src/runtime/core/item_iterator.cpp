@@ -24,17 +24,14 @@
 #include "store/api/item.h"
 
 
-using namespace std;
+
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 
 
 /*******************************************************************************
@@ -55,7 +52,7 @@ NOARY_ACCEPT(EmptyIterator);
 bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   result = theValue;
   STACK_PUSH ( result != NULL, state );

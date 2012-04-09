@@ -31,10 +31,10 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) :
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) 
+  :
   store::Item(store::Item::FUNCTION)
 {
 }

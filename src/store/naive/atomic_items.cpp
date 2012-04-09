@@ -40,13 +40,14 @@
 #include "node_items.h"
 #include "atomic_items.h"
 #include "ordpath.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
 #define CREATE_XS_TYPE(aType) \
-  GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
+  GET_STORE().getItemFactory()->createQName(Store::XS_URI, "xs", aType);
 
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
@@ -137,7 +138,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = to_xs_long(item->theValue);
+      longValue = item->getLongValue();
       GET_FACTORY().createLong(result, longValue);
     }
     catch (std::range_error const&)
@@ -207,11 +208,11 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
-    doubleValue = item->theValue;
+    doubleValue = item->getIntegerValue();
 
     const xs_integer intValue(doubleValue);
 
-    lossy = (intValue != item->theValue);
+    lossy = (intValue != item->getIntegerValue());
     break;
   }
 
@@ -597,31 +598,69 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-
-QNameItem::~QNameItem()
+QNameItem::QNameItem(
+    const char* aNamespace,
+    const char* aPrefix,
+    const char* aLocalName)
+  :
+  theNormalizedQName(NULL),
+  theIsInPool(false)
 {
-  if (isValid())
-  {
-    assert(theLocal.empty() || theNormQName == NULL);
-  }
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+QNameItem::QNameItem(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+  :
+  theNormalizedQName(NULL),
+  theIsInPool(false)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+void QNameItem::initializeAsQNameNotInPool(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+{
+  assert(!isValid());
+
+  store::Item_t lPoolQName =
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
+
+  theIsInPool = false;
 }
 
 
 void QNameItem::free()
 {
-  GET_STORE().getQNamePool().remove(this);
-}
+  QNamePool& thePool = GET_STORE().getQNamePool();
 
+  if (theIsInPool)
+  {
+    thePool.remove(this);
+    return;
+  }
+  
+  assert(!isNormalized());
 
-QNameItem* QNameItem::getNormalized() const
-{
-  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  invalidate(false, NULL);
+  delete this;
 }
 
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
+  const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
@@ -644,7 +683,8 @@ bool QNameItem::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+  return theNormalizedQName ==
+      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 
@@ -698,7 +738,7 @@ bool QNameItem::isIdQName() const
   if (ZSTREQ(getLocalName(), "id"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(theNamespace, Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -711,7 +751,7 @@ bool QNameItem::isBaseUri() const
   if (ZSTREQ(getLocalName(), "base"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(getNamespace(), Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -731,14 +771,14 @@ zstring QNameItem::show() const
   return res;
 }
 
-
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
-NotationItem::NotationItem(const zstring& nameSpace,
-                           const zstring& prefix,
-                           const zstring& localName)
+NotationItem::NotationItem(
+    const zstring& nameSpace,
+    const zstring& prefix,
+    const zstring& localName)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -752,12 +792,13 @@ NotationItem::NotationItem(store::Item* qname)
 }
 
 
-bool NotationItem::equals(const store::Item* item,
-                          long timezone,
-                          const XQPCollator* aCollation) const
+bool NotationItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == 
-          static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return theQName->equals(
+      static_cast<const NotationItem*>(item)->theQName);
 }
 
 
@@ -1043,7 +1084,7 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 StructuralAnyUriItem::StructuralAnyUriItem(
     zstring& encoded,
     ulong collectionId,
-    ulong treeId, 
+    const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
@@ -1060,68 +1101,71 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   theValue.take(value);
 
+  std::istringstream input(theValue.str());
+
   ulong prefixlen = (ulong)strlen("zorba:");
 
-  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
+  input.width(prefixlen);
+
+  std::string prefix;
+  input >> prefix;
+
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  const char* start;
-
-  errno = 0;
-
-  //
-  // Decode collection id
-  //
-  start = theValue.c_str() + prefixlen;
-
-  char* next = const_cast<char*>(start);
-
-  theCollectionId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  if (prefix != "zorba:")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
+  input >> theCollectionId;
 
-  if (*start != '.')
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  char period;
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+
+  input >> theTreeId;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Decode tree id
-  //
-  theTreeId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  int lNodeKind;
+  input >> lNodeKind;
+  theNodeKind = static_cast<store::StoreConsts::NodeKind>(lNodeKind);
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (lNodeKind <= 0 || lNodeKind > 6)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
-
-  if (*start != '.')
+  input >> period;
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+  input >> prefix;
+  if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Parse the node kind
-  //
-  if (*start > '0' && *start <='6')
-    theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
-  else
+  try 
+  {
+    theOrdPath.deserialize(prefix);
+  }
+  catch(...) 
+  {
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  //
-  // Decode OrdPath
-  //
-  theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
+  }
+  // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
 
@@ -1391,8 +1435,11 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId > other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId > other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath > other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId < theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath > other->theOrdPath));
   }
 }
 
@@ -1413,8 +1460,11 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId < other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId < other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath < other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        theTreeId < other->theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath < other->theOrdPath));
   }
 }
 
@@ -1512,7 +1562,7 @@ bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
   {
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return (theCollectionId == other->theCollectionId &&
-            theTreeId == other->theTreeId);
+            other->theTreeId == theTreeId);
   }
 }
 
@@ -1749,6 +1799,7 @@ std::istream& StreamableStringItem::getStream()
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
+    theIstream.clear();
   }
   theIsConsumed = true;
   return theIstream;
@@ -2350,10 +2401,11 @@ zstring DecimalItem::show() const
 
 
 /*******************************************************************************
-  class IntegerItem
+  class IntegerItemImpl
 ********************************************************************************/
 
-long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
+long IntegerItemImpl::compare( Item const *other, long,
+                               const XQPCollator* ) const {
   try
   {
     return theValue.compare( other->getIntegerValue() );
@@ -2364,8 +2416,8 @@ long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
   }
 }
 
-bool IntegerItem::equals( const store::Item* other, long,
-                          const XQPCollator*) const
+bool IntegerItemImpl::equals( const store::Item* other, long,
+                              const XQPCollator*) const
 {
   try
   {
@@ -2377,13 +2429,13 @@ bool IntegerItem::equals( const store::Item* other, long,
   }
 }
 
-xs_decimal IntegerItem::getDecimalValue() const
+xs_decimal IntegerItemImpl::getDecimalValue() const
 {
   return xs_decimal(theValue);
 }
 
 
-xs_long IntegerItem::getLongValue() const
+xs_long IntegerItemImpl::getLongValue() const
 {
   try
   {
@@ -2397,41 +2449,56 @@ xs_long IntegerItem::getLongValue() const
 }
 
 
-store::Item* IntegerItem::getType() const
+xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
+{
+  try 
+  {
+    return to_xs_unsignedInt(theValue);
+  }
+  catch ( std::range_error const& ) 
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+  }
+}
+
+
+store::Item* IntegerItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
 }
 
 
-bool IntegerItem::getEBV() const
+bool IntegerItemImpl::getEBV() const
 {
-  return ( theValue != xs_integer::zero() );
+  return !!theValue.sign();
 }
 
 
-zstring IntegerItem::getStringValue() const
+zstring IntegerItemImpl::getStringValue() const
 {
   return theValue.toString();
 }
 
 
-void IntegerItem::getStringValue2(zstring& val) const
+void IntegerItemImpl::getStringValue2(zstring& val) const
 {
   val = theValue.toString();
 }
 
-uint32_t IntegerItem::hash(long, const XQPCollator*) const
+uint32_t IntegerItemImpl::hash(long, const XQPCollator*) const
 {
   return theValue.hash();
 }
 
-void IntegerItem::appendStringValue(zstring& buf) const
+
+void IntegerItemImpl::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
 }
 
 
-zstring IntegerItem::show() const
+zstring IntegerItemImpl::show() const
 {
   zstring res("xs:integer(");
   appendStringValue(res);
@@ -2443,9 +2510,86 @@ zstring IntegerItem::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+long NonPositiveIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonPositiveIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
+}
+
+xs_decimal NonPositiveIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonPositiveIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonPositiveIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
+}
+
+zstring NonPositiveIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonPositiveIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonPositiveIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonPositiveIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+bool NonPositiveIntegerItem::getEBV() const
+{
+  return !!theValue.sign();
 }
 
 zstring NonPositiveIntegerItem::show() const
@@ -2476,13 +2620,90 @@ zstring NegativeIntegerItem::show() const
 
 
 /*******************************************************************************
-  class NonNegativeINtegerItem
+  class NonNegativeIntegerItem
 ********************************************************************************/
+long NonNegativeIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getUnsignedIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonNegativeIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getUnsignedIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
 }
 
+
+xs_decimal NonNegativeIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonNegativeIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonNegativeIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
+}
+
+zstring NonNegativeIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonNegativeIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonNegativeIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonNegativeIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+bool NonNegativeIntegerItem::getEBV() const
+{
+  return !!theValue.sign();
+}
 
 zstring NonNegativeIntegerItem::show() const
 {
@@ -2525,6 +2746,9 @@ xs_integer LongItem::getIntegerValue() const
   return xs_integer(theValue);
 }
 
+xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
+  return theValue >= 0 ? theValue : -theValue;
+}
 
 store::Item* LongItem::getType() const
 {
@@ -2758,9 +2982,9 @@ xs_integer UnsignedLongItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedLongItem::getUnsignedIntegerValue() const
 {
-  return xs_uinteger(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2822,9 +3046,9 @@ xs_integer UnsignedIntItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedIntItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedIntItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2886,9 +3110,9 @@ xs_integer UnsignedShortItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedShortItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedShortItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2946,13 +3170,13 @@ xs_decimal UnsignedByteItem::getDecimalValue() const
 
 xs_integer UnsignedByteItem::getIntegerValue() const
 {
-  return Integer((uint32_t)theValue);
+  return xs_integer((uint32_t)theValue);
 }
 
 
-xs_uinteger UnsignedByteItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedByteItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 

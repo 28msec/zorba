@@ -29,6 +29,8 @@
 #include "item_vector.h"
 #include "ordpath.h"
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "tree_id.h"
+#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -89,7 +91,7 @@ class UpdRenamePi;
 class UpdReplaceCommentValue;
 class NodeTypeInfo;
 
-class SimpleCollection;
+class Collection;
 
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
@@ -138,7 +140,7 @@ class XmlNodeTokenizerCallback;
 
   theId          : An internally generated id for the tree. The id uniquely
                    identifies the tree within its containing collection (see
-                   SimpleCollection::createTreeId() method). Trees that do not
+                   Collection::createTreeId() method). Trees that do not
                    belong to any collection, are considered to belong to a
                    "virtual" collection (with collection id equal to 0), and
                    their id is created by the SimpleStore::createId() method.
@@ -177,10 +179,10 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong                     theId;
-  ulong                     thePos;
+  TreeId                    theId;
+  xs_integer                thePos;
 
-  SimpleCollection        * theCollection;
+  Collection              * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -200,7 +202,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, const TreeId& id);
 
 public:
   XmlTree();
@@ -215,19 +217,26 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(ulong id) { theId = id; }
+  void setId(const TreeId& id) { theId = id; }
 
-  ulong getId() const { return theId; }
+  const TreeId& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
-  const SimpleCollection* getCollection() const { return theCollection; }
+  const Collection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, ulong pos);
+private:
+friend class zorba::simplestore::Collection;
+  // Allows a collection to claim ownership of a node it already owns, but
+  // which does not have the backpointer yet.
+  void claimedByCollection(Collection* coll);
+  
+public:
+  void setCollection(Collection* coll, xs_integer pos);
 
-  void setPosition(ulong pos) { thePos = pos; }
+  void setPosition(xs_integer pos) { thePos = pos; }
 
-  ulong getPosition() const { return thePos; }
+  xs_integer getPosition() const { return thePos; }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -512,11 +521,11 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  ulong getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos)
+  void setCollection(Collection* coll, xs_integer pos)
   {
     assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
@@ -563,7 +572,7 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
-  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+  bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -663,6 +672,15 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  // Looks for a descendant node with the ordpath aOrdPath and puts it into the
+  // aResult variable. aAttribute specifies whether to look for an attribute or
+  // not.
+  bool
+  getDescendantNodeByOrdPath(
+      const OrdPath& aOrdPath,
+      store::Item_t& aResult,
+      bool aAttribute = false) const;
 
   virtual bool
   isAncestor(const store::Item_t&) const;
@@ -1265,6 +1283,8 @@ protected:
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
 #endif
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1425,6 +1445,8 @@ protected:
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
 #endif /* ZORBA_NO_FULL_TEXT */
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1490,6 +1512,8 @@ public:
   void replaceName(UpdRenamePi& upd);
 
   void restoreName(UpdRenamePi& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1545,6 +1569,8 @@ public:
   void replaceValue(UpdReplaceCommentValue& upd);
 
   void restoreValue(UpdReplaceCommentValue& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1582,8 +1608,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1618,8 +1644,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;
@@ -1629,8 +1655,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1665,6 +1691,8 @@ public:
                             Tokenizer::Numbers &numbers,
                             locale::iso639_1::type lang,
                             container_type &tokens );
+
+  ~XmlNodeTokenizerCallback();
 
   begin_type beginTokenization() const;
 

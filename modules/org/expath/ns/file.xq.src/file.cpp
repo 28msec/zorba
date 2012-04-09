@@ -215,7 +215,7 @@ ReadTextFunction::evaluate(
   }
   lFile->openInputStream(*lInStream.get(), false, true);
   lResult = theModule->getItemFactory()->createStreamableString(
-      *lInStream.release(), &FileModule::streamReleaser
+      *lInStream.release(), &FileModule::streamReleaser, true
     );
   return ItemSequence_t(new SingletonItemSequence(lResult));
 

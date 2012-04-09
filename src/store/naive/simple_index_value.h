@@ -73,13 +73,15 @@ public:
 *******************************************************************************/
 class ValueIndex : public IndexImpl
 {
-  friend class SimpleStore;
+  friend class Store;
 
 protected:
   ValueIndexCompareFunction   theCompFunction;
 
 protected:
   ValueIndex(const store::Item_t& qname, const store::IndexSpecification& spec);
+  
+  ValueIndex();
 
   virtual ~ValueIndex();
 
@@ -100,7 +102,7 @@ public:
 *******************************************************************************/
 class ValueHashIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueHashIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
@@ -134,6 +136,8 @@ protected:
   ValueHashIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec);
+      
+  ValueHashIndex();
 
   ~ValueHashIndex();
 
@@ -187,7 +191,7 @@ public:
 ********************************************************************************/
 class ValueTreeIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueTreeIndexIterator;
 
   typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;
@@ -217,6 +221,8 @@ protected:
   ValueTreeIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
+        
+  ValueTreeIndex();
 
   ~ValueTreeIndex();
 

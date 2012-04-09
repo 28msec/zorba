@@ -41,12 +41,13 @@ SimpleCollection::SimpleCollection(
   : 
   theName(aName),
   theIsDynamic(aDynamicCollection),
-  theTreeCounter(1),
   theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
@@ -54,16 +55,18 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theTreeCounter(1),
   theNodeType(NULL)
 {
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
+  delete theTreeIdGenerator;
 }
 
 
@@ -141,7 +144,7 @@ void SimpleCollection::addNode(
   method raises an error. The moethod returns the position occupied by the first
   new node after the insertion is done.
 ********************************************************************************/
-ulong SimpleCollection::addNodes(
+xs_integer SimpleCollection::addNodes(
     std::vector<store::Item_t>& nodes,
     const store::Item* targetNode,
     bool before)
@@ -336,6 +339,17 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 
 
 /*******************************************************************************
+ * Remove all the nodes from the collection
+********************************************************************************/
+void SimpleCollection::removeAll()
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  theXmlTrees.clear();
+}
+
+
+/*******************************************************************************
   Return the node at the given position within the collection, or NULL if the
   given position is >= than the number of nodes in the collection.
 ********************************************************************************/
@@ -400,14 +414,16 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   return false;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void SimpleCollection::getAnnotations(
-    std::vector<store::Annotation_t>& annotations
-) const
+    std::vector<store::Annotation_t>& annotations) const
 {
   annotations = theAnnotations;
 }
+
 
 /*******************************************************************************
   For each tree in the collection, set its current position within the collection.
@@ -423,72 +439,12 @@ void SimpleCollection::adjustTreePositions()
 }
 
 
-
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
+TreeId SimpleCollection::createTreeId()
 {
-  const IndexSet& availableIndexes = GET_STORE().getIndices();
-
-  IndexSet::iterator idxIte = availableIndexes.begin();
-  IndexSet::iterator idxEnd = availableIndexes.end();
-
-  for (; idxIte != idxEnd; ++idxIte)
-  {
-    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
-    const store::IndexSpecification& indexSpec = index->getSpecification();
-
-    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    uint64_t numIndexSources = (uint64_t)indexSources.size();
-
-    for (std::size_t i = 0; i < numIndexSources; ++i)
-    {
-      if (indexSources[i]->equals(getName()))
-      {
-        indexes.push_back(index);
-        break;
-      }
-    }
-  }
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
-{
-  store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
-
-  store::Item_t activeICName;
-  activeICNames->open();
-
-  while ( activeICNames->next(activeICName) )
-  {
-
-    store::IC* activeIC = GET_STORE().getIC(activeICName);
-
-    switch( activeIC->getICKind() )
-    {
-    case store::IC::ic_collection:
-      if ( activeIC->getCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    case store::IC::ic_foreignkey:
-      if ( activeIC->getToCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-
-      if ( activeIC->getFromCollectionName()->equals(getName()) )
-        ics.push_back(activeIC);
-      break;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-  }
-
-  activeICNames->close();
+  return theTreeIdGenerator->create();
 }
 
 

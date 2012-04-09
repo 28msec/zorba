@@ -59,7 +59,6 @@
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(Schema)
-END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 //#define DO_TRACE
 //#define DO_PRINT_SCHEMA_INFO

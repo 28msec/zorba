@@ -38,7 +38,6 @@ declare function local:process-iterator($iter) as xs:string
 
     '// &lt;',$iter/@name,'&gt;',$gen:newline,
     local:serializable-class-versions($iter/@name),
-    local:end-serializable-class-versions($iter/@name),
 
     (: generate the visitor if requested :)
     if(fn:not($iter/@generateAccept) or $iter/@generateAccept eq "true") 
@@ -196,21 +195,15 @@ declare function local:get-include($XMLdoc, $name) as xs:string*
   )
 };
 
+
 declare function local:serializable-class-versions($name as xs:string) as xs:string
 {
-  string-join(('const char* ',$name,'::class_name_str = "',$name,'";',$gen:newline,
-  $name,'::class_factory<',$name,'>',$gen:newline,$name,'::g_class_factory;',$gen:newline,$gen:newline,
-  'const serialization::ClassVersion ',$gen:newline,$name,'::class_versions[] =',
-  '{{ 1, ',$gen:zorba_version,', ',string(not($gen:backward_compatible)),'}')
-  ,'')
+  string-join(
+     ($name, '::class_factory<', $name, '>', $gen:newline, $name, '::g_class_factory;',
+       $gen:newline, $gen:newline)
+      ,'')
 };
 
-declare function local:end-serializable-class-versions($name as xs:string) as xs:string
-{
-  string-join(('};',$gen:newline,$gen:newline, 'const int ',$name,'::class_versions_count =',$gen:newline,
-  'sizeof(',$name,'::class_versions)/sizeof(struct serialization::ClassVersion);',$gen:newline)
-  ,'')
-};
 
 declare variable $files external;
 

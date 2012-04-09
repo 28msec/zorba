@@ -1,0 +1,21 @@
+
+module namespace foo = "http://foo.com";
+
+import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare collection foo:bet as element(bet)*;
+
+declare collection foo:game as element(game)*;
+
+
+declare function foo:bet()
+{
+  for $bet in db:collection(xs:QName("foo:bet"))[@uid = 1]
+  let $game := db:collection(xs:QName("foo:game"))[@gid = $bet/@gid]
+  where not($game/result)
+  let $gid := fn:data($game/@gid)
+  return 1
+};
+
+
+

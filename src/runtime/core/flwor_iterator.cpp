@@ -51,19 +51,15 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
-END_SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
 
 SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
-END_SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
 
 SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -1216,7 +1212,7 @@ bool FLWORIterator::bindVariable(
     if (!flc.thePosVarRefs.empty())
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->createInteger(posItem, Integer(bindingState));
+      GENV_ITEMFACTORY->createInteger(posItem, xs_integer(bindingState));
 
       std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();

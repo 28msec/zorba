@@ -25,6 +25,7 @@
 
 #include "zorbatypes/schema_types.h"
 
+#include "tree_id.h"
 
 namespace zorba
 {
@@ -91,7 +92,7 @@ public:
   bool createStructuralAnyURI(
       store::Item_t& result,
       ulong collectionId,
-      ulong treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 
@@ -131,9 +132,9 @@ public:
 
   bool createInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNonNegativeInteger(store::Item_t& result, const xs_uinteger& value);
+  bool createNonNegativeInteger(store::Item_t& result, const xs_nonNegativeInteger& value);
 
-  bool createPositiveInteger(store::Item_t& result,  const xs_uinteger& value );
+  bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
   bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
 

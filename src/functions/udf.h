@@ -120,7 +120,9 @@ private:
 
   bool                        theIsExiting;
   bool                        theIsLeaf;
+
   std::vector<user_function*> theMutuallyRecursiveUDFs;
+  std::vector<expr*>          theRecursiveCalls;
 
   bool                        theIsOptimized;
 
@@ -132,13 +134,13 @@ private:
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
-  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
+  rchandle<rclist<user_function*> > theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize(CompilerCB *compilerCB);
+  void prepare_for_serialize(CompilerCB* compilerCB);
 
 public:
   user_function(
@@ -146,7 +148,7 @@ public:
       const signature& sig,
       expr_t expr_body,
       short kind,
-      CompilerCB  *compilerCB);
+      CompilerCB* compilerCB);
 
   virtual ~user_function();
 
@@ -182,6 +184,10 @@ public:
       const std::vector<user_function*>& udfs,
       const std::vector<user_function*>::const_iterator& cycle);
 
+  void addRecursiveCall(expr* call);
+
+  const std::vector<expr*>& getRecursiveCalls() const { return theRecursiveCalls; }
+
   bool isMutuallyRecursiveWith(const user_function* udf);
 
   bool isRecursive() const;
@@ -192,10 +198,10 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
-  BoolAnnotationValue mustCopyNodes(expr* fo, csize input) const;
-
   PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
+  void invalidatePlan();
+
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;

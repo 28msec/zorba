@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <FnParseXmlIterator>
-const char* FnParseXmlIterator::class_name_str = "FnParseXmlIterator";
 FnParseXmlIterator::class_factory<FnParseXmlIterator>
 FnParseXmlIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FnParseXmlIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnParseXmlIterator::class_versions_count =
-sizeof(FnParseXmlIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FnParseXmlIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ FnParseXmlIterator::~FnParseXmlIterator() {}
 
 
 // <FnSerializeIterator>
-const char* FnSerializeIterator::class_name_str = "FnSerializeIterator";
 FnSerializeIterator::class_factory<FnSerializeIterator>
 FnSerializeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FnSerializeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnSerializeIterator::class_versions_count =
-sizeof(FnSerializeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FnSerializeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

@@ -24,8 +24,6 @@
 
 namespace zorba
 {
-extern const ::zorba::serialization::ClassVersion g_NoaryBaseIterator_class_versions[];
-extern const int g_NoaryBaseIterator_class_versions_count;
 
 
 /*******************************************************************************

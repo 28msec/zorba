@@ -33,6 +33,7 @@
 #include "qname_pool.h"
 #include "string_pool.h"
 #include "node_factory.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 
@@ -120,7 +121,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
@@ -318,7 +319,7 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItem( value );
+  result = new IntegerItemImpl( value );
   return true;
 }
 
@@ -327,7 +328,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value <= Integer::zero());
+  ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem( value );
   return true;
 }
@@ -337,7 +338,7 @@ bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value < xs_integer::zero());
+  ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(value);
   return true;
 }
@@ -345,7 +346,7 @@ bool BasicItemFactory::createNegativeInteger(
 
 bool BasicItemFactory::createNonNegativeInteger(
     store::Item_t& result,
-    const xs_uinteger& value )
+    const xs_nonNegativeInteger& value )
 {
   result = new NonNegativeIntegerItem( value );
   return true;
@@ -355,9 +356,9 @@ bool BasicItemFactory::createNonNegativeInteger(
 
 bool BasicItemFactory::createPositiveInteger(
     store::Item_t& result,
-    const xs_uinteger& value)
+    const xs_positiveInteger& value)
 {
-  ZORBA_ASSERT(value > Integer::zero());
+  ZORBA_ASSERT(value.sign() > 0);
   result = new PositiveIntegerItem( value );
   return true;
 }
@@ -1163,10 +1164,8 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED( NotAllowedForTypeName)));
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
