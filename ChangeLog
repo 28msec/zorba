@@ -1,5 +1,21 @@
 Zorba - The XQuery Processor
 
+version 2.5
+
+New Features:
+  * Extended API for Python, Java, PHP and Ruby.
+
+Bug Fixes/Other Changes:
+  * Fixed bug #967864 (var substitution did not update theFreeVars property)
+  * Fixed bug in window iterator (binding the end vars in the output tuple stream)
+  * Fixed bug #866547 (protect index-join rule from general flwor)
+  * Fixed bug #967428 (do not hoist index creation outside a try-catch)
+  * Fixed performance problem with the findNodeSources function of the no-copy rule
+  * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+  * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
+
+
 version 2.2
 
 New Features:
@@ -52,6 +68,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #911585 (management of variables during eval)
   * Fixed bug #866423 (fn:empty and fn:exists iterators must reset their input in
     case of early-out)
+  * Fixed bug #955574 (http-client "hangs" if following a POST request)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
   * Fixed bug #872288 (reset recursive flag during node rename)
   * Fixed bug #905041 (allow for the default element and function namespaces to be

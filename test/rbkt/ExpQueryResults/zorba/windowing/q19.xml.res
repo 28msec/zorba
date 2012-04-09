@@ -7,6 +7,5 @@
       <Item partID="ID3" quantity="100" unitPrice="100"/>
     </OrderRequest>
   </bundleWith>
-  <bundleWith orderId="OID02"/>
   <bundleWith orderId="OID03"/>
 </result>

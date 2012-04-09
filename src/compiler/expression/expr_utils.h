@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_EXPR_UTILS
 #define ZORBA_COMPILER_EXPR_UTILS
 
+#include "zorbaserialization/serialize_basic_types.h"
+
 namespace zorba 
 {
 

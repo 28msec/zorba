@@ -32,10 +32,8 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
 
 
 std::vector<store::Item_t> 

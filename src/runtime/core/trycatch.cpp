@@ -38,20 +38,22 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
 
 
 TryCatchIteratorState::TryCatchIteratorState()
-  : theTempIterator(NULL),
+  : 
+  theTempIterator(NULL),
   theCatchIterator(NULL)
-{}
+{
+}
+
 
 TryCatchIteratorState::~TryCatchIteratorState()
 {
-  if (theTempIterator != NULL) {
+  if (theTempIterator != NULL) 
+  {
     theTempIterator->close();
     theTempIterator = NULL;
   }
@@ -61,16 +63,19 @@ TryCatchIteratorState::~TryCatchIteratorState()
   for (; lIters != lItersEnd; ++lIters) {
     (*lIters)->close();
   }
-
 }
 
+
 void
-TryCatchIteratorState::init(PlanState& planState) {
+TryCatchIteratorState::init(PlanState& planState) 
+{
   PlanIteratorState::init(planState);
 }
 
+
 void
-TryCatchIteratorState::reset(PlanState& planState) {
+TryCatchIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
   if ( theTargetSequence )
     theTargetSequence->purge(); // release the target sequence

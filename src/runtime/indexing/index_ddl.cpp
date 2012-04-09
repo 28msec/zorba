@@ -47,34 +47,24 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
 
 
 /*******************************************************************************

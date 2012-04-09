@@ -36,15 +36,9 @@
 namespace zorba {
 
 // <FunctionNameIterator>
-const char* FunctionNameIterator::class_name_str = "FunctionNameIterator";
 FunctionNameIterator::class_factory<FunctionNameIterator>
 FunctionNameIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FunctionNameIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FunctionNameIterator::class_versions_count =
-sizeof(FunctionNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FunctionNameIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -64,15 +58,9 @@ FunctionNameIterator::~FunctionNameIterator() {}
 
 
 // <FunctionArityIterator>
-const char* FunctionArityIterator::class_name_str = "FunctionArityIterator";
 FunctionArityIterator::class_factory<FunctionArityIterator>
 FunctionArityIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FunctionArityIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FunctionArityIterator::class_versions_count =
-sizeof(FunctionArityIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FunctionArityIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -92,15 +80,9 @@ FunctionArityIterator::~FunctionArityIterator() {}
 
 
 // <PartialApplyIterator>
-const char* PartialApplyIterator::class_name_str = "PartialApplyIterator";
 PartialApplyIterator::class_factory<PartialApplyIterator>
 PartialApplyIterator::g_class_factory;
 
-const serialization::ClassVersion 
-PartialApplyIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int PartialApplyIterator::class_versions_count =
-sizeof(PartialApplyIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void PartialApplyIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

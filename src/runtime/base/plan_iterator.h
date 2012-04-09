@@ -473,10 +473,6 @@ public:
 };
 
 
-extern const ::zorba::serialization::ClassVersion g_Batcher_class_versions[];
-extern const int g_Batcher_class_versions_count;
-
-
 /*******************************************************************************
   Class to implement batching
 ********************************************************************************/

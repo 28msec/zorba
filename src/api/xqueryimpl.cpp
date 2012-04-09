@@ -103,16 +103,16 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
-END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
-END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
-XQueryImpl::XQueryImpl(::zorba::serialization::Archiver &ar)
-  : ::zorba::serialization::SerializeBaseClass(),
-    theCollMgr(0)
+XQueryImpl::XQueryImpl(::zorba::serialization::Archiver& ar)
+  :
+  ::zorba::serialization::SerializeBaseClass(),
+  theCollMgr(0)
 {
 }
+
 
 /*******************************************************************************
 
@@ -211,7 +211,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theIsClosed = false;
 
     theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
-
   }
 
 #ifdef ZORBA_WITH_DEBUGGER

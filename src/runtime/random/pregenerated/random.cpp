@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <SeededRandomIterator>
-const char* SeededRandomIterator::class_name_str = "SeededRandomIterator";
 SeededRandomIterator::class_factory<SeededRandomIterator>
 SeededRandomIterator::g_class_factory;
 
-const serialization::ClassVersion 
-SeededRandomIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int SeededRandomIterator::class_versions_count =
-sizeof(SeededRandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void SeededRandomIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -73,15 +67,9 @@ void SeededRandomIteratorState::reset(PlanState& planState) {
 
 
 // <RandomIterator>
-const char* RandomIterator::class_name_str = "RandomIterator";
 RandomIterator::class_factory<RandomIterator>
 RandomIterator::g_class_factory;
 
-const serialization::ClassVersion 
-RandomIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int RandomIterator::class_versions_count =
-sizeof(RandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void RandomIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -113,15 +101,9 @@ void RandomIteratorState::reset(PlanState& planState) {
 
 
 // <UuidIterator>
-const char* UuidIterator::class_name_str = "UuidIterator";
 UuidIterator::class_factory<UuidIterator>
 UuidIterator::g_class_factory;
 
-const serialization::ClassVersion 
-UuidIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int UuidIterator::class_versions_count =
-sizeof(UuidIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void UuidIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

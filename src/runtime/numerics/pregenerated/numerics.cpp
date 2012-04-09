@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <AbsIterator>
-const char* AbsIterator::class_name_str = "AbsIterator";
 AbsIterator::class_factory<AbsIterator>
 AbsIterator::g_class_factory;
 
-const serialization::ClassVersion 
-AbsIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int AbsIterator::class_versions_count =
-sizeof(AbsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void AbsIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ AbsIterator::~AbsIterator() {}
 
 
 // <CeilingIterator>
-const char* CeilingIterator::class_name_str = "CeilingIterator";
 CeilingIterator::class_factory<CeilingIterator>
 CeilingIterator::g_class_factory;
 
-const serialization::ClassVersion 
-CeilingIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int CeilingIterator::class_versions_count =
-sizeof(CeilingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void CeilingIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -89,15 +77,9 @@ CeilingIterator::~CeilingIterator() {}
 
 
 // <FloorIterator>
-const char* FloorIterator::class_name_str = "FloorIterator";
 FloorIterator::class_factory<FloorIterator>
 FloorIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FloorIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FloorIterator::class_versions_count =
-sizeof(FloorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FloorIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -117,15 +99,9 @@ FloorIterator::~FloorIterator() {}
 
 
 // <RoundIterator>
-const char* RoundIterator::class_name_str = "RoundIterator";
 RoundIterator::class_factory<RoundIterator>
 RoundIterator::g_class_factory;
 
-const serialization::ClassVersion 
-RoundIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int RoundIterator::class_versions_count =
-sizeof(RoundIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void RoundIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -145,15 +121,9 @@ RoundIterator::~RoundIterator() {}
 
 
 // <RoundHalfToEvenIterator>
-const char* RoundHalfToEvenIterator::class_name_str = "RoundHalfToEvenIterator";
 RoundHalfToEvenIterator::class_factory<RoundHalfToEvenIterator>
 RoundHalfToEvenIterator::g_class_factory;
 
-const serialization::ClassVersion 
-RoundHalfToEvenIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int RoundHalfToEvenIterator::class_versions_count =
-sizeof(RoundHalfToEvenIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void RoundHalfToEvenIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -173,15 +143,9 @@ RoundHalfToEvenIterator::~RoundHalfToEvenIterator() {}
 
 
 // <FormatNumberIterator>
-const char* FormatNumberIterator::class_name_str = "FormatNumberIterator";
 FormatNumberIterator::class_factory<FormatNumberIterator>
 FormatNumberIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FormatNumberIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FormatNumberIterator::class_versions_count =
-sizeof(FormatNumberIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FormatNumberIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -201,15 +165,9 @@ FormatNumberIterator::~FormatNumberIterator() {}
 
 
 // <FormatIntegerIterator>
-const char* FormatIntegerIterator::class_name_str = "FormatIntegerIterator";
 FormatIntegerIterator::class_factory<FormatIntegerIterator>
 FormatIntegerIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FormatIntegerIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FormatIntegerIterator::class_versions_count =
-sizeof(FormatIntegerIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FormatIntegerIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

@@ -326,7 +326,6 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(
 
 
 SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
 
 NARY_ACCEPT(CountCollectionIterator);
