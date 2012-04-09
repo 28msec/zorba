@@ -1572,7 +1572,7 @@ public:
 class FnUnparsedTextLinesIteratorState : public PlanIteratorState
 {
 public:
-  std::istream* theStream; //the current iterator
+  std::unique_ptr<std::istream, StreamReleaser>* theStream; //the current stream
    internal::StreamResource* theStreamResource; //the current iterator
 
   FnUnparsedTextLinesIteratorState();

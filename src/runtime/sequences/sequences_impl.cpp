@@ -1998,8 +1998,6 @@ static void readDocument(
   //Normalize input to handle filesystem paths, etc.
   zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
 
-  store::LoadProperties lLoadProperties;
-
   //Resolve URI to stream
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
@@ -2010,7 +2008,7 @@ static void readDocument(
     
   if (lStreamResource == NULL)
   {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
   }
 
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamResource->getStreamReleaser());
@@ -2022,7 +2020,7 @@ static void readDocument(
   {
     if (!transcode::is_supported(aEncoding.c_str()))
     {
-      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri), ERROR_LOC(loc));
     }
     transcode::attach(*lStream.get(), aEncoding.c_str());
   }
@@ -2129,7 +2127,6 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring uriString;
   zstring encodingString("UTF-8");
   zstring lNormUri;
-  store::LoadProperties lLoadProperties;
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource;
 
@@ -2159,32 +2156,24 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     dynamic_cast<internal::StreamResource*>(lResource.get());
 
   if (state->theStreamResource == NULL)
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
-  
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
+
+  state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), state->theStreamResource->getStreamReleaser());
   state->theStreamResource->setStreamReleaser(nullptr);
-  state->theStream = state->theStreamResource->getStream();
 
   //check if encoding is needed
   if (transcode::is_necessary(encodingString.c_str()))
   {
     if (!transcode::is_supported(encodingString.c_str()))
     {
-      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(uriString, lErrorMessage), ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(uriString), ERROR_LOC(loc));
     }
-    transcode::attach(*state->theStream, encodingString.c_str());
+    transcode::attach(*state->theStream->get(), encodingString.c_str());
   }
-
-  //if file is empty return an empty sequence
-  if(getline(*state->theStream, streamLine))
+  while (getline(*state->theStream->get(), streamLine))
   {
-    do
-    {
-      STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
-    } 
-    while (getline(*state->theStream, streamLine));
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
   }
-  else 
-    STACK_PUSH(false, state);
 
   STACK_END(state);
 }

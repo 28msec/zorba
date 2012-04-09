@@ -1302,8 +1302,8 @@
     
     <zorba:state generateInit="false" generateReset="false"
                  generateDestructor="false">
-      <zorba:member type="std::istream*" name="theStream"
-                    brief="the current iterator"/>
+      <zorba:member type="std::unique_ptr&lt;std::istream, StreamReleaser&gt;*" name="theStream"
+                    brief="the current stream"/>
       <zorba:member type=" internal::StreamResource*" name="theStreamResource"
                   brief="the current iterator"/>
     </zorba:state> 
