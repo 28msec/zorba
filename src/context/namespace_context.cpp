@@ -24,7 +24,6 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(namespace_context)
-END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 
 
 

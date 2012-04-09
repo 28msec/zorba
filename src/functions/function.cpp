@@ -33,7 +33,6 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(function)
-END_SERIALIZABLE_CLASS_VERSIONS(function)
 
 
 /*******************************************************************************

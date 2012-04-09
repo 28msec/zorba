@@ -115,9 +115,7 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
     write_string("type=\"");
     write_string(current_field->theTypeName);
     write_string("\" ");
-    write_string("version=\"");
-    sprintf(strtemp, "%d", current_field->theClassVersion);
-    write_string(strtemp);
+    write_string("version=\"1");
     write_string("\" ");
     write_string("field_treat=\"");
     write_string(get_field_treat_string(current_field->theKind));
@@ -200,7 +198,6 @@ bool XmlArchiver::read_next_field_impl(
     char **type, 
     std::string *value,
     int *id, 
-    int *version, 
     bool *is_simple, 
     bool *is_class,
     enum ArchiveFieldKind *field_treat,
@@ -213,7 +210,6 @@ bool XmlArchiver::read_next_field_impl(
 
   *type = NULL;
   *id = -1; 
-  *version = -1; 
   *is_simple = false; 
   *is_class = false,
   *field_treat = (enum ArchiveFieldKind)-1;
@@ -303,7 +299,6 @@ process_attr:
       if(!strcmp(attrib_name, "version"))
       {
         read_attrib_value(attrib_value);
-        *version = atoi(attrib_value);
         attr_index++;
         break;
       }

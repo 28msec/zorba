@@ -27,7 +27,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
-END_SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
 
 QueryLoc QueryLoc::null;
 

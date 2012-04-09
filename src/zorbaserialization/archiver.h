@@ -135,10 +135,6 @@ struct fwd_ref
   considered as "compound", so if theIsClass is true, theIsSimple is false. 
   However, the reverse is not true: a non-class obj may be simple or compound.
 
-  theClassVersion:
-  ----------------
-  If this field represents a class obj, the class version of that obj.
-
   theKind:
   --------
   The kind of the field. See ArchiveFieldKind enum above.
@@ -216,7 +212,6 @@ public:
 
   bool                         theIsSimple;
   bool                         theIsClass;
-  unsigned int                 theClassVersion;
 
   enum ArchiveFieldKind        theKind;
 
@@ -260,7 +255,6 @@ public:
       bool is_class, 
       const void* value,
       const void* assoc_ptr,
-      int version, 
       enum ArchiveFieldKind kind,
       archive_field* refered,
       int only_for_eval,
@@ -411,7 +405,6 @@ public:
 
   bool add_compound_field( 
       const char* type,
-      int version,
       bool is_class,
       const void* info,
       const void* ptr,//for classes, pointer to SerializeBaseClass
@@ -425,7 +418,6 @@ public:
       char** type, 
       std::string* value,
       int* id, 
-      int* version, 
       bool* is_simple, 
       bool* is_class,
       enum ArchiveFieldKind* field_treat,
@@ -437,7 +429,6 @@ public:
       char** type, 
       std::string* value,
       int* id, 
-      int* version, 
       bool* is_simple, 
       bool* is_class,
       enum ArchiveFieldKind* field_treat,
@@ -549,10 +540,6 @@ public:
       bool to_add_ref);
 
   void register_item(store::Item* i);
-
-  int get_class_version();
-
-  void set_class_version(int new_class_version);
 
   //to help check class name at runtime
   void  set_serialize_base_class(bool s)

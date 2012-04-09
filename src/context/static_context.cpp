@@ -89,19 +89,14 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
-END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
 /**************************************************************************//**

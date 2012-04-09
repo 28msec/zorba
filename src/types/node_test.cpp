@@ -23,7 +23,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(NodeNameTest)
-END_SERIALIZABLE_CLASS_VERSIONS(NodeNameTest)
 
 
 

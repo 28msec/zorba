@@ -28,7 +28,7 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
+
 
 DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
@@ -79,7 +79,7 @@ expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
 
 ********************************************************************************/
 SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
+
 
 DEF_EXPR_ACCEPT (function_item_expr)
 

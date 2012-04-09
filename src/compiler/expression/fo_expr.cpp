@@ -34,7 +34,7 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(fo_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(fo_expr)
+
 
 void fo_expr::accept(expr_visitor& v)
 {
@@ -130,11 +130,11 @@ fo_expr::fo_expr(
 }
 
 
-void fo_expr::serialize(::zorba::serialization::Archiver &ar)
+void fo_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theArgs;
-  SERIALIZE_FUNCTION((function*&)theFunction);
+  ar & ((function*&)theFunction);
 }
 
 

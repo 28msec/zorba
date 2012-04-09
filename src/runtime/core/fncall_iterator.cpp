@@ -82,10 +82,8 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
 
 
