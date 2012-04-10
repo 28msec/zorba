@@ -17,9 +17,11 @@
 
 #include "zorbaserialization/class_serializer.h"
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
+namespace serialization
+{
 
-const unsigned long g_zorba_classes_version = 21;
+
 
 }}/* vim:set et sw=2 ts=2: */

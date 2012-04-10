@@ -89,19 +89,14 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
-END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
 /**************************************************************************//**
@@ -183,7 +178,7 @@ void PrologOption::serialize(::zorba::serialization::Archiver& ar)
 *******************************************************************************/
 void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     // serialize out: the uri of the module that is used in this plan
 

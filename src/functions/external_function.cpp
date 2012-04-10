@@ -27,7 +27,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(external_function)
-END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 
 /*******************************************************************************

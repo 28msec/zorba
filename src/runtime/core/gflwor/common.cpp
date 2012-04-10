@@ -28,10 +28,8 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
 
 SERIALIZABLE_CLASS_VERSIONS(NonGroupingSpec)
-END_SERIALIZABLE_CLASS_VERSIONS(NonGroupingSpec)
 
 
 /////////////////////////////////////////////////////////////////////////////////

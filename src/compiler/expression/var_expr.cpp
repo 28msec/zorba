@@ -33,10 +33,8 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
-END_SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
 
 
 /*******************************************************************************
