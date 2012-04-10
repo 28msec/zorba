@@ -781,6 +781,12 @@ static bool safe_to_fold_single_use(
         referencingExpr= (start_var_count == 1) ? start_expr : stop_expr;
         break;
       }
+
+      // If X is referenced inside a windowing loop with more than 1 iteration,
+      // then we can't replace the variable, since it would be calculated more
+      // than once.
+      if (TypeOps::type_max_cnt(tm, *domain_expr->get_return_type()) >= 2)
+        return false;
     }
     else if (kind == flwor_clause::materialize_clause)
     {
