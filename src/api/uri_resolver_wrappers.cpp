@@ -15,12 +15,14 @@
  */
 #include "stdafx.h"
 
+#include <zorba/thesaurus.h>
+
+#include "runtime/full_text/thesaurus.h"
+
+#include "thesaurus_wrappers.h"
+#include "unmarshaller.h"
 #include "uri_resolver_wrappers.h"
 #include "uriresolverimpl.h"
-#include "unmarshaller.h"
-#include <zorba/thesaurus.h>
-#include <runtime/full_text/thesaurus.h>
-#include <context/thesaurus_wrappers.h>
 
 namespace zorba
 {
