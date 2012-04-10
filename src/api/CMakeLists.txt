@@ -62,7 +62,7 @@ SET(API_SRCS
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS
     stemmer.cpp
-    stemmer_wrapper.cpp
+    stemmer_wrappers.cpp
     thesaurus.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
