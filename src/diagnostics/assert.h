@@ -29,9 +29,13 @@ namespace zorba {
  * @param condition The string representation of the condition that failed.
  * @param file The C++ source-code file name where the assertion failed.
  * @param line The C++ source-code line number where the assertion failed.
+ * @param msg An optional message that is output if the assertion fails.
  * @throws ZXQP0002_ASSERT_FAILED
  */
-void assertion_failed( char const *condition, char const *file, int line );
+void assertion_failed( char const *condition,
+                       char const *file, 
+                       int line, 
+                       char const *msg = 0);
 
 /**
  * Zorba version of the standard assert(3) macro.
@@ -42,6 +46,19 @@ void assertion_failed( char const *condition, char const *file, int line );
       zorba::assertion_failed( #COND, __FILE__, __LINE__ ); \
       throw 0; /* never gets here but suppresses warning */ \
     }                                                       \
+  } while (0)
+
+/**
+ * Zorba version of the standard assert(3) macro.
+ */
+#define ZORBA_ASSERT_MSG(COND,MSG)                                     \
+  do {                                                                 \
+    if ( !(COND) ) {                                                   \
+      std::ostringstream oss;                                          \
+      oss << MSG;                                                      \
+      zorba::assertion_failed( #COND, __FILE__, __LINE__, oss.str() ); \
+      throw 0; /* never gets here but suppresses warning */            \
+    }                                                                  \
   } while (0)
 
 } // namespace zorba
