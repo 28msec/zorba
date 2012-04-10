@@ -27,7 +27,8 @@
 #include "floatimpl.h"
 #include "integer.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define TEMPLATE_DECL(T) /* nothing */

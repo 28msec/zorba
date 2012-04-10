@@ -26,8 +26,10 @@
 
 #include "system/properties.h"
 
-#include "zorbaserialization/serialization_engine.h"
 #include "functions/udf.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 namespace zorba 

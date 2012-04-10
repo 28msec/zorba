@@ -19,10 +19,14 @@
 #include <exception>
 
 #include <zorbatypes/timezone.h>
+
 #include "zorbatypes/datetime/parse.h"
+
 #include "zorbautils/hashfun.h"
+
 #include "util/ascii_util.h"
-#include "zorbaserialization/template_serializer.h"
+
+#include "zorbaserialization/serialize_template_types.h"
 
 
 namespace zorba

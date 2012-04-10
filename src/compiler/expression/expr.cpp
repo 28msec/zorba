@@ -43,6 +43,9 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
@@ -531,6 +534,13 @@ promote_expr::promote_expr(
   cast_base_expr(sctx, loc, promote_expr_kind, input, type),
   theFnQName(fnQName)
 {
+}
+
+
+void promote_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_base_expr*)this);
+  ar & theFnQName;
 }
 
 
