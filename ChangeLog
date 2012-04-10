@@ -20,7 +20,6 @@ Bug Fixes/Other Changes:
   * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
 
 
->>>>>>> MERGE-SOURCE
 version 2.2
 
 New Features:
