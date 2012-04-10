@@ -190,17 +190,10 @@ public class XQExpression implements javax.xml.xquery.XQExpression {
         if (implicitTimeZone!=null) {
             return implicitTimeZone;
         }
-        // dummy query
-//        boolean queryIsNull = (query==null);
-//        if (queryIsNull) {
         XQuery query =  ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance().compileQuery("1");
-//        }
         DynamicContext dc = query.getDynamicContext();
         Integer timeZone = (dc.getImplicitTimezone()/60); // in minutes
         TimeZone result = TimeZone.getTimeZone("GMT"+timeZone.toString());
-//        if (queryIsNull) {
-//            query = null;
-//        }
         return result;
     }
 
