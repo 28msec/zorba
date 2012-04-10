@@ -64,16 +64,12 @@ void assertion_failed( char const *condition,
                        int line,
                        char const *msg) {
   print_stack_trace( cerr );
-  if (msg) {
-    throw make_zorba_exception(
-      file, line, zerr::ZXQP0002_ASSERT_FAILED, ERROR_PARAMS( condition, msg )
-    );
-  }
-  else {
-    throw make_zorba_exception(
-      file, line, zerr::ZXQP0002_ASSERT_FAILED, ERROR_PARAMS( condition )
-    );
-  }
+  throw make_zorba_exception(
+    file, 
+    line, 
+    zerr::ZXQP0002_ASSERT_FAILED, 
+    ( msg ? ERROR_PARAMS( condition, msg ) : ERROR_PARAMS( condition ))
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
