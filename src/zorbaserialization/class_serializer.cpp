@@ -56,13 +56,13 @@ public:
 
 ********************************************************************************/
 class ClassFactoriesMap : public zorba::HashMap<const char*,
-                                                class_deserializer*,
+                                                ClassDeserializer*,
                                                 ClassFactoriesCompare>
 {
 public:
   ClassFactoriesMap(ulong sz = 1024) 
     :
-    zorba::HashMap<const char*, class_deserializer*, ClassFactoriesCompare>(sz, false)
+    zorba::HashMap<const char*, ClassDeserializer*, ClassFactoriesCompare>(sz, false)
   {
   }
 };
@@ -78,16 +78,12 @@ const unsigned long ClassSerializer::g_zorba_classes_version = 25;
 
 ********************************************************************************/
 ClassSerializer::ClassSerializer() 
-  :
-  class_names(1000),
-  class_names_count(0)
 {
-  class_factories = NULL;
+  theClassFactories = new ClassFactoriesMap;
 
   t0 = clock();
 
-  harcoded_objects_archive = NULL;
-  harcoded_objects_archive = new MemArchiver(true, true);//simulate serialize out
+  harcoded_objects_archive = new MemArchiver(true, true);
 }
 
 
@@ -96,7 +92,7 @@ ClassSerializer::ClassSerializer()
 ********************************************************************************/
 ClassSerializer::~ClassSerializer()
 {
-  delete class_factories;
+  delete theClassFactories;
   delete harcoded_objects_archive;
 }
 
@@ -116,16 +112,9 @@ ClassSerializer* ClassSerializer::getInstance()
 ********************************************************************************/
 void ClassSerializer::register_class_factory(
     const char* class_name,
-    class_deserializer* class_factory)
+    ClassDeserializer* class_factory)
 {
-  if (class_factories)
-  {
-    class_factories->insert(class_name, class_factory);
-  }
-  else
-  {
-    class_names[class_names_count++] = std::pair<const char *, class_deserializer*>(class_name, class_factory);
-  }
+  theClassFactories->insert(class_name, class_factory);
 
   t1 = clock();
 }
@@ -134,24 +123,11 @@ void ClassSerializer::register_class_factory(
 /*******************************************************************************
 
 ********************************************************************************/
-class_deserializer* ClassSerializer::get_class_factory(const char* classname)
+ClassDeserializer* ClassSerializer::get_class_factory(const char* classname)
 {
-  if (class_factories == NULL)
-  {
-    class_factories = new ClassFactoriesMap;
-
-    int i;
-    std::vector<std::pair<const char*, class_deserializer*> >::iterator cls_it = class_names.begin();
-
-    for (i = 0; i < class_names_count; i++, cls_it++)
-    {
-      class_factories->insert((*cls_it).first, (*cls_it).second);
-    }
-  }
-
-  class_deserializer* cls_factory = NULL;
-  class_factories->get(classname, cls_factory);
-  return cls_factory;
+  ClassDeserializer* factory = NULL;
+  theClassFactories->get(classname, factory);
+  return factory;
 }
 
 

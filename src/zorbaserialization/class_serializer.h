@@ -43,6 +43,7 @@ class SerializeBaseClass;
 class Archiver;
 class MemArchiver;
 class ClassFactoriesMap;
+class ClassDeserializer;
 
 
 /*******************************************************************************
@@ -53,7 +54,58 @@ class ClassFactoriesMap;
 
 
 /*******************************************************************************
-  A base class for other c++ classes that need to be serialized.
+  There is only one global instance of this class.
+
+  theClassFactories:
+  ------------------
+  This map associates the name of a class C with a pointer to the ClassDeserializer
+  obj associated with C (if any such obj actually exists). The map is populated
+  "automatically", during the instantiation of each ClassDeserializer obj; the 
+  constructor of each such obj places an entry into the map.  
+
+  harcoded_objects_archive:
+  -------------------------
+
+********************************************************************************/
+class ClassSerializer
+{
+  friend class Archiver;
+
+public:
+  static const unsigned long g_zorba_classes_version;
+
+private:
+  ClassFactoriesMap   * theClassFactories;
+
+  MemArchiver         * harcoded_objects_archive;
+
+public:
+  clock_t   t0;
+  clock_t   t1;
+
+public:
+  static ClassSerializer* getInstance();
+
+public:
+  ClassSerializer();
+
+  ~ClassSerializer();
+
+  void register_class_factory(const char* className, ClassDeserializer* d);
+
+  ClassDeserializer* get_class_factory(const char* classname);
+
+  Archiver* getArchiverForHardcodedObjects();
+
+  void destroyArchiverForHardcodedObjects();
+
+  clock_t get_registration_time() { return t1 - t0; }
+};
+
+
+/*******************************************************************************
+  A class that may be used as the base for other c++ classes that need to be 
+  serialized.
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC SerializeBaseClass
 {
@@ -66,16 +118,15 @@ public:
 
 /*******************************************************************************
   Every serializable class C has a nested member class D that is a subclass of
-  class_deserializer. Furthermore, every serializable class has a static data
+  ClassDeserializer. Furthermore, every serializable class has a static data
   member of type D, whose initilization (via its default constructor) causes
   class C to be registered in the global ClassSerializer instance.
 ********************************************************************************/
-class class_deserializer
+class ClassDeserializer
 {
 public:
-  virtual ~class_deserializer()
+  virtual ~ClassDeserializer()
   {
-  //  std::cout << "~class_deserializer" << std::endl;
   }
 
   virtual SerializeBaseClass* create_new(Archiver& ar) = 0;
@@ -89,7 +140,7 @@ public:
 ********************************************************************************/
 #define SERIALIZABLE_CLASS_FACTORY_DECL(class_name, creator)            \
 template<class T_serialized_class>                                      \
-class class_factory : public ::zorba::serialization::class_deserializer \
+class class_factory : public ::zorba::serialization::ClassDeserializer  \
 {                                                                       \
 public:                                                                 \
   class_factory()                                                       \
@@ -111,72 +162,13 @@ public:                                                                 \
 
 
 /*******************************************************************************
-  stateless class, multithreading safe
-
-  class_names:
-  ------------
-  For each serializable class C, this vector stores the name of C and a pointer
-  to the static class_deserializer obj associated with C. The vector is populated
-  "automatically", during the instantiation of each static class_deserializer obj
-  associated with each serializable class. The constructor of each such obj places 
-  an entry into the vector.  
-
-  class_names_count:
-  ------------------
-
-  class_factories:
-  ----------------
-
-  harcoded_objects_archive:
-  -------------------------
-
-********************************************************************************/
-class ClassSerializer
-{
-  friend class Archiver;
-
-public:
-  static const unsigned long g_zorba_classes_version;
-
-private:
-  std::vector<std::pair<const char*, class_deserializer*> >  class_names;
-  int                                                        class_names_count;
-  ClassFactoriesMap                                        * class_factories;
-
-  MemArchiver              * harcoded_objects_archive;
-
-public:
-  clock_t   t0;
-  clock_t   t1;
-
-public:
-  static ClassSerializer* getInstance();
-
-public:
-  ClassSerializer();
-
-  ~ClassSerializer();
-
-  void register_class_factory(const char* className, class_deserializer* d);
-
-  class_deserializer* get_class_factory(const char* classname);
-
-  Archiver* getArchiverForHardcodedObjects();
-
-  void destroyArchiverForHardcodedObjects();
-
-  clock_t get_registration_time() { return t1-t0;}
-};
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 #define SERIALIZABLE_CLASS_NO_FACTORY(class_name)                       \
 virtual void serialize_internal(::zorba::serialization::Archiver& ar)   \
 {                                                                       \
   /*CHECK_CLASS_NAME(class_name)*/                                      \
-  if(ar.is_serialize_base_class())                                      \
+  if (ar.is_serialize_base_class())                                     \
     ar.set_serialize_base_class(false);                                 \
                                                                         \
   class_name::serialize(ar);                                            \
@@ -193,13 +185,13 @@ static const char* get_class_name_str_static() { return #class_name; }
 #define SERIALIZABLE_CLASS(class_name)                                    \
 SERIALIZABLE_CLASS_PREFIX(class_name)                                     \
 SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))           \
-static class_factory<class_name>   g_class_factory;
+static class_factory<class_name>  g_class_factory;
 
 
 #define SERIALIZABLE_ABSTRACT_CLASS(class_name)                           \
 SERIALIZABLE_CLASS_PREFIX(class_name)                                     \
 SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                         \
-static class_factory<class_name>   g_class_factory;
+static class_factory<class_name>  g_class_factory;
 
 
 #define SERIALIZABLE_CLASS_PREFIX(class_name)                             \
@@ -251,11 +243,6 @@ virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
 virtual const char* get_class_name_str() const { return class_name_str; } \
                                                                           \
 static const char* get_class_name_str_static() { return class_name_str; }
-
-
-/*******************************************************************************
-  Init the serialization-related static members of a serializable class.
-********************************************************************************/
 
 
 //

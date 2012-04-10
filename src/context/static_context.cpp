@@ -23,7 +23,6 @@
 #include <zorba/serialization_callback.h>
 
 #include "functions/udf.h"
-#include "zorbaserialization/serialization_engine.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "util/string_util.h"
@@ -71,6 +70,9 @@
 #include "functions/signature.h"
 
 #include "compiler/translator/module_version.h"
+
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"

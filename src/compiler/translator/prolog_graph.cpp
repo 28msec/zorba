@@ -20,7 +20,10 @@
 #include "context/static_context.h"
 
 #include "util/string_util.h"
+
 #include "zorbatypes/zstring.h"
+
+#include "diagnostics/xquery_exception.h"
 
 namespace zorba 
 {
