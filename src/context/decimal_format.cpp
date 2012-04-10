@@ -24,7 +24,7 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
-END_SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
+
 
 DecimalFormat::DecimalFormat(
     bool isDefault,

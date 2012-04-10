@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <IsSameNodeIterator>
-const char* IsSameNodeIterator::class_name_str = "IsSameNodeIterator";
 IsSameNodeIterator::class_factory<IsSameNodeIterator>
 IsSameNodeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IsSameNodeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsSameNodeIterator::class_versions_count =
-sizeof(IsSameNodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IsSameNodeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ IsSameNodeIterator::~IsSameNodeIterator() {}
 
 
 // <NodeBeforeIterator>
-const char* NodeBeforeIterator::class_name_str = "NodeBeforeIterator";
 NodeBeforeIterator::class_factory<NodeBeforeIterator>
 NodeBeforeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-NodeBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NodeBeforeIterator::class_versions_count =
-sizeof(NodeBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void NodeBeforeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -89,15 +77,9 @@ NodeBeforeIterator::~NodeBeforeIterator() {}
 
 
 // <NodeAfterIterator>
-const char* NodeAfterIterator::class_name_str = "NodeAfterIterator";
 NodeAfterIterator::class_factory<NodeAfterIterator>
 NodeAfterIterator::g_class_factory;
 
-const serialization::ClassVersion 
-NodeAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NodeAfterIterator::class_versions_count =
-sizeof(NodeAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void NodeAfterIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

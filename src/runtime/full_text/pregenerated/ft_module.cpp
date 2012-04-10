@@ -34,15 +34,9 @@
 namespace zorba {
 
 // <CurrentLangIterator>
-const char* CurrentLangIterator::class_name_str = "CurrentLangIterator";
 CurrentLangIterator::class_factory<CurrentLangIterator>
 CurrentLangIterator::g_class_factory;
 
-const serialization::ClassVersion 
-CurrentLangIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int CurrentLangIterator::class_versions_count =
-sizeof(CurrentLangIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void CurrentLangIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -62,15 +56,9 @@ CurrentLangIterator::~CurrentLangIterator() {}
 
 
 // <HostLangIterator>
-const char* HostLangIterator::class_name_str = "HostLangIterator";
 HostLangIterator::class_factory<HostLangIterator>
 HostLangIterator::g_class_factory;
 
-const serialization::ClassVersion 
-HostLangIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int HostLangIterator::class_versions_count =
-sizeof(HostLangIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void HostLangIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -90,15 +78,9 @@ HostLangIterator::~HostLangIterator() {}
 
 
 // <IsStemLangSupportedIterator>
-const char* IsStemLangSupportedIterator::class_name_str = "IsStemLangSupportedIterator";
 IsStemLangSupportedIterator::class_factory<IsStemLangSupportedIterator>
 IsStemLangSupportedIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IsStemLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsStemLangSupportedIterator::class_versions_count =
-sizeof(IsStemLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IsStemLangSupportedIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -118,15 +100,9 @@ IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
 
 
 // <IsStopWordLangSupportedIterator>
-const char* IsStopWordLangSupportedIterator::class_name_str = "IsStopWordLangSupportedIterator";
 IsStopWordLangSupportedIterator::class_factory<IsStopWordLangSupportedIterator>
 IsStopWordLangSupportedIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IsStopWordLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsStopWordLangSupportedIterator::class_versions_count =
-sizeof(IsStopWordLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IsStopWordLangSupportedIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -146,15 +122,9 @@ IsStopWordLangSupportedIterator::~IsStopWordLangSupportedIterator() {}
 
 
 // <IsThesaurusLangSupportedIterator>
-const char* IsThesaurusLangSupportedIterator::class_name_str = "IsThesaurusLangSupportedIterator";
 IsThesaurusLangSupportedIterator::class_factory<IsThesaurusLangSupportedIterator>
 IsThesaurusLangSupportedIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IsThesaurusLangSupportedIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsThesaurusLangSupportedIterator::class_versions_count =
-sizeof(IsThesaurusLangSupportedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IsThesaurusLangSupportedIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -174,15 +144,9 @@ IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
 
 
 // <IsStopWordIterator>
-const char* IsStopWordIterator::class_name_str = "IsStopWordIterator";
 IsStopWordIterator::class_factory<IsStopWordIterator>
 IsStopWordIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IsStopWordIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsStopWordIterator::class_versions_count =
-sizeof(IsStopWordIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IsStopWordIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -202,15 +166,9 @@ IsStopWordIterator::~IsStopWordIterator() {}
 
 
 // <StemIterator>
-const char* StemIterator::class_name_str = "StemIterator";
 StemIterator::class_factory<StemIterator>
 StemIterator::g_class_factory;
 
-const serialization::ClassVersion 
-StemIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int StemIterator::class_versions_count =
-sizeof(StemIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void StemIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -230,15 +188,9 @@ StemIterator::~StemIterator() {}
 
 
 // <StripDiacriticsIterator>
-const char* StripDiacriticsIterator::class_name_str = "StripDiacriticsIterator";
 StripDiacriticsIterator::class_factory<StripDiacriticsIterator>
 StripDiacriticsIterator::g_class_factory;
 
-const serialization::ClassVersion 
-StripDiacriticsIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int StripDiacriticsIterator::class_versions_count =
-sizeof(StripDiacriticsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void StripDiacriticsIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -258,15 +210,9 @@ StripDiacriticsIterator::~StripDiacriticsIterator() {}
 
 
 // <ThesaurusLookupIterator>
-const char* ThesaurusLookupIterator::class_name_str = "ThesaurusLookupIterator";
 ThesaurusLookupIterator::class_factory<ThesaurusLookupIterator>
 ThesaurusLookupIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ThesaurusLookupIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ThesaurusLookupIterator::class_versions_count =
-sizeof(ThesaurusLookupIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ThesaurusLookupIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -294,15 +240,9 @@ void ThesaurusLookupIteratorState::reset(PlanState& planState) {
 
 
 // <TokenizeIterator>
-const char* TokenizeIterator::class_name_str = "TokenizeIterator";
 TokenizeIterator::class_factory<TokenizeIterator>
 TokenizeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-TokenizeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int TokenizeIterator::class_versions_count =
-sizeof(TokenizeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void TokenizeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -330,15 +270,9 @@ void TokenizeIteratorState::reset(PlanState& planState) {
 
 
 // <TokenizerPropertiesIterator>
-const char* TokenizerPropertiesIterator::class_name_str = "TokenizerPropertiesIterator";
 TokenizerPropertiesIterator::class_factory<TokenizerPropertiesIterator>
 TokenizerPropertiesIterator::g_class_factory;
 
-const serialization::ClassVersion 
-TokenizerPropertiesIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int TokenizerPropertiesIterator::class_versions_count =
-sizeof(TokenizerPropertiesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void TokenizerPropertiesIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -358,15 +292,9 @@ TokenizerPropertiesIterator::~TokenizerPropertiesIterator() {}
 
 
 // <TokenizeStringIterator>
-const char* TokenizeStringIterator::class_name_str = "TokenizeStringIterator";
 TokenizeStringIterator::class_factory<TokenizeStringIterator>
 TokenizeStringIterator::g_class_factory;
 
-const serialization::ClassVersion 
-TokenizeStringIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int TokenizeStringIterator::class_versions_count =
-sizeof(TokenizeStringIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void TokenizeStringIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

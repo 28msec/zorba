@@ -422,9 +422,6 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 
       if(current_field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
-#ifndef NDEBUG
-        write_int(current_field->theClassVersion);
-#endif
         if(!current_field->theValuePosInPool)
           write_int_exp2(current_field->theValuePosInPool);
         else
@@ -602,22 +599,6 @@ void BinArchiver::write_int_exp2(unsigned int intval)
 ********************************************************************************/
 void BinArchiver::read_string(std::string &str)
 {
-  //char c;
-  //while(1)
-  //{
-  //  is->read(&c, 1);
-  //  if(is->gcount() < 1)
-  //  {
-  //    throw ZORBA_EXCEPTION(
-  //      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
-  //    );
-  //  }
-  //  
-  //  if(c)
-  //    str += c;
-  //  else
-  //    break;
-  //}
   str = (char*)in_current;
   while(*in_current) in_current++;
   in_current++;
@@ -629,21 +610,6 @@ void BinArchiver::read_string(std::string &str)
 ********************************************************************************/
 void BinArchiver::read_string(char* str)
 {
-  //char c;
-  //while(1)
-  //{
-  //  is->read(&c, 1);
-  //  if(is->gcount() < 1)
-  //  {
-  //    throw ZORBA_EXCEPTION(
-  //      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
-  //    );
-  //  }
-  //  *str = c;
-  //  if(!c)
-  //    break;
-  //  str++;
-  //}
   while(*in_current)
   {
     *str = *in_current;
@@ -807,7 +773,6 @@ bool BinArchiver::read_next_field_impl(
     char** type, 
     std::string* value,
     int* id, 
-    int* version, 
     bool* is_simple, 
     bool* is_class,
     enum ArchiveFieldKind* field_treat,
@@ -820,7 +785,6 @@ bool BinArchiver::read_next_field_impl(
 
   *type = NULL;
   *id = -1; 
-  *version = -1; 
 #ifndef NDEBUG 
   *is_simple = false; 
   *is_class = false;
@@ -869,9 +833,6 @@ bool BinArchiver::read_next_field_impl(
     this->last_id = *id;
     if(*field_treat != ARCHIVE_FIELD_REFERENCING)
     {
-#ifndef NDEBUG
-      *version = read_int();
-#endif
       unsigned int value_pos;
       value_pos = read_int_exp2();
       if(value_pos)

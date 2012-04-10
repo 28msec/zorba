@@ -45,25 +45,15 @@ class MemArchiver;
 class ClassFactoriesMap;
 
 
-#define   BACKWARD_COMPATIBLE     true
-#define   ZORBA_VERSION_1_5_0     0x010500
-
-extern const unsigned long g_zorba_classes_version;
-
-
 /*******************************************************************************
-
+  The classes and macros defined in this file provide a generic infrastructure
+  for making an arbitrary c++ class serializable. This infrastructure is provided
+  for convenience; not every c++ type has to adopt this inftrasture.
 ********************************************************************************/
-struct ClassVersion
-{
-  int             class_version;
-  unsigned long   zorba_version;
-  bool            is_backward_compatible;
-};
 
 
 /*******************************************************************************
-  Derive all classes that need to be serialized from this base class
+  A base class for other c++ classes that need to be serialized.
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC SerializeBaseClass
 {
@@ -71,10 +61,6 @@ public:
   virtual ~SerializeBaseClass() {}
 
   virtual void serialize_internal(Archiver& ar) = 0;
-
-  virtual const ClassVersion& get_classversion(int v) const = 0;
-
-  virtual int get_version_count() const = 0;
 };
 
 
@@ -97,6 +83,31 @@ public:
   virtual void cast_ptr(SerializeBaseClass* ptr, void** class_ptr) = 0;
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
+#define SERIALIZABLE_CLASS_FACTORY_DECL(class_name, creator)            \
+template<class T_serialized_class>                                      \
+class class_factory : public ::zorba::serialization::class_deserializer \
+{                                                                       \
+public:                                                                 \
+  class_factory()                                                       \
+  {                                                                     \
+    serialization::ClassSerializer::getInstance()->                     \
+    register_class_factory(T_serialized_class::get_class_name_str_static(), this); \
+  }                                                                     \
+                                                                        \
+  virtual serialization::SerializeBaseClass* create_new(serialization::Archiver& ar) \
+  {                                                                     \
+    return creator;                                                     \
+  }                                                                     \
+                                                                        \
+  virtual void cast_ptr(serialization::SerializeBaseClass* ptr, void** class_ptr)\
+  {                                                                     \
+    *class_ptr = (void*)dynamic_cast<T_serialized_class*>(ptr);         \
+  }                                                                     \
+};
 
 
 /*******************************************************************************
@@ -124,6 +135,9 @@ class ClassSerializer
 {
   friend class Archiver;
 
+public:
+  static const unsigned long g_zorba_classes_version;
+
 private:
   std::vector<std::pair<const char*, class_deserializer*> >  class_names;
   int                                                        class_names_count;
@@ -143,107 +157,15 @@ public:
 
   ~ClassSerializer();
 
-  void register_class_factory(const char *, class_deserializer *);
+  void register_class_factory(const char* className, class_deserializer* d);
 
-  class_deserializer* get_class_factory(const char *classname);
+  class_deserializer* get_class_factory(const char* classname);
 
   Archiver* getArchiverForHardcodedObjects();
 
-  void destroyArchiverForHardcodedObjects();//called at shutdown
+  void destroyArchiverForHardcodedObjects();
 
   clock_t get_registration_time() { return t1-t0;}
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-#define SERIALIZABLE_CLASS(class_name)                                  \
-SERIALIZABLE_CLASS_PREFIX(class_name)                                   \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))         \
-static const char                             * class_name_str;         \
-static const int                                class_versions_count;   \
-static const struct serialization::ClassVersion class_versions[];       \
-static class_factory<class_name>                g_class_factory;
-
-
-#define SERIALIZABLE_ABSTRACT_CLASS(class_name)                         \
-SERIALIZABLE_CLASS_PREFIX(class_name)                                   \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                       \
-static const char  * class_name_str;                                    \
-static const int     class_versions_count;                              \
-static const struct  serialization::ClassVersion class_versions[];      \
-static class_factory<class_name> g_class_factory;
-
-
-#define SERIALIZABLE_TEMPLATE_CLASS(class_name)                         \
-SERIALIZABLE_CLASS_PREFIX(class_name)                                   \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))         \
-static const char                               * class_name_str;       \
-static const int                                  class_versions_count; \
-static const struct serialization::ClassVersion * class_versions;
-
-
-#define SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name)                \
-SERIALIZABLE_CLASS_PREFIX(class_name)                                   \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                       \
-static const char                               * class_name_str;       \
-static const int                                  class_versions_count; \
-static const struct serialization::ClassVersion * class_versions;
-
-
-/*******************************************************************************
-
-********************************************************************************/
-#define SERIALIZABLE_CLASS_PREFIX(class_name)                             \
-virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
-{                                                                         \
-  CHECK_CLASS_NAME(class_name);                                           \
-                                                                          \
-  if (ar.is_serialize_base_class())                                       \
-    ar.set_serialize_base_class(false);                                   \
-  class_name::serialize(ar);                                              \
-}                                                                         \
-                                                                          \
-virtual const serialization::ClassVersion& get_classversion(int v) const  \
-{                                                                         \
-  return class_versions[v];                                               \
-}                                                                         \
-                                                                          \
-virtual int get_version_count() const                                     \
-{                                                                         \
-  return class_versions_count;                                            \
-}                                                                         \
-                                                                          \
-virtual const char* get_class_name_str() const { return class_name_str; } \
-                                                                          \
-static const char* get_class_name_str_static() { return class_name_str; }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-#define SERIALIZABLE_CLASS_FACTORY_DECL(class_name, creator)            \
-template<class T_serialized_class>                                      \
-class class_factory : public ::zorba::serialization::class_deserializer \
-{                                                                       \
-public:                                                                 \
-  class_factory()                                                       \
-  {                                                                     \
-    /*register this class into plan serializer*/                        \
-    serialization::ClassSerializer::getInstance()->                     \
-    register_class_factory(T_serialized_class::get_class_name_str_static(), this); \
-  }                                                                     \
-                                                                        \
-  virtual serialization::SerializeBaseClass* create_new(serialization::Archiver& ar) \
-  {                                                                     \
-    return creator;                                                     \
-  }                                                                     \
-                                                                        \
-  virtual void cast_ptr(serialization::SerializeBaseClass* ptr, void** class_ptr)\
-  {                                                                     \
-    *class_ptr = (void*)dynamic_cast<T_serialized_class*>(ptr);         \
-  }                                                                     \
 };
 
 
@@ -260,67 +182,88 @@ virtual void serialize_internal(::zorba::serialization::Archiver& ar)   \
   class_name::serialize(ar);                                            \
 }                                                                       \
                                                                         \
-virtual const serialization::ClassVersion& get_classversion(int v) const \
-{                                                                       \
-  return g_##class_name##_class_versions[v];                            \
-}                                                                       \
+virtual const char* get_class_name_str() const { return #class_name; }  \
                                                                         \
-virtual int get_version_count() const                                   \
-{                                                                       \
-  return g_##class_name##_class_versions_count;                         \
-}                                                                       \
-                                                                        \
-virtual const char* get_class_name_str() const {return #class_name;}    \
-                                                                        \
-static const char* get_class_name_str_static() {return #class_name;}
-
+static const char* get_class_name_str_static() { return #class_name; }
 
 
 /*******************************************************************************
-  Init the serialization-related static members of a non-template serializable
-  class.
+
+********************************************************************************/
+#define SERIALIZABLE_CLASS(class_name)                                    \
+SERIALIZABLE_CLASS_PREFIX(class_name)                                     \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))           \
+static class_factory<class_name>   g_class_factory;
+
+
+#define SERIALIZABLE_ABSTRACT_CLASS(class_name)                           \
+SERIALIZABLE_CLASS_PREFIX(class_name)                                     \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                         \
+static class_factory<class_name>   g_class_factory;
+
+
+#define SERIALIZABLE_CLASS_PREFIX(class_name)                             \
+virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
+{                                                                         \
+  CHECK_CLASS_NAME(class_name);                                           \
+                                                                          \
+  if (ar.is_serialize_base_class())                                       \
+    ar.set_serialize_base_class(false);                                   \
+                                                                          \
+  class_name::serialize(ar);                                              \
+}                                                                         \
+                                                                          \
+virtual const char* get_class_name_str() const { return #class_name; }    \
+                                                                          \
+static const char* get_class_name_str_static() { return #class_name; }
+
+
+#define SERIALIZABLE_CLASS_VERSIONS(class_name)                           \
+class_name::class_factory<class_name> class_name::g_class_factory;
+
+
+/*******************************************************************************
+
+********************************************************************************/
+#define SERIALIZABLE_TEMPLATE_CLASS(class_name)                         \
+SERIALIZABLE_TEMPLATE_CLASS_PREFIX(class_name)                          \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))         \
+static const char                * class_name_str;
+
+
+#define SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name)                \
+SERIALIZABLE_TEMPLATE_CLASS_PREFIX(class_name)                          \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                       \
+static const char                * class_name_str;
+
+
+#define SERIALIZABLE_TEMPLATE_CLASS_PREFIX(class_name)                    \
+virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
+{                                                                         \
+  CHECK_CLASS_NAME(class_name);                                           \
+                                                                          \
+  if (ar.is_serialize_base_class())                                       \
+    ar.set_serialize_base_class(false);                                   \
+                                                                          \
+  class_name::serialize(ar);                                              \
+}                                                                         \
+                                                                          \
+virtual const char* get_class_name_str() const { return class_name_str; } \
+                                                                          \
+static const char* get_class_name_str_static() { return class_name_str; }
+
+
+/*******************************************************************************
+  Init the serialization-related static members of a serializable class.
 ********************************************************************************/
 
-//
-// Static members of non-template classes
-//
-#define SERIALIZABLE_CLASS_VERSIONS(class_name)                         \
-                                                                        \
-const char* class_name::class_name_str = #class_name;                   \
-                                                                        \
-class_name::class_factory<class_name> class_name::g_class_factory;      \
-                                                                        \
-const serialization::ClassVersion class_name::class_versions[] =        \
-{{ 1, ZORBA_VERSION_1_5_0, !BACKWARD_COMPATIBLE}
-
-
-#define CLASS_VERSION(class_version, zorba_version, compatibility, description) \
-  ,{class_version, zorba_version, compatibility}
-
-
-#define END_SERIALIZABLE_CLASS_VERSIONS(class_name)                     \
-  };                                                                    \
-  const int class_name::class_versions_count =                          \
-  sizeof(class_name::class_versions)/sizeof(struct serialization::ClassVersion);
-
 
 //
-// Define the "versions" and "versions count" static data members of the template class 
+// Static members of template classes with one template param.
 //
-#define SERIALIZABLE_TEMPLATE_VERSIONS(template_name)                   \
-extern const ::zorba::serialization::ClassVersion g_##template_name##_class_versions[] = \
-{{ 1, ZORBA_VERSION_1_5_0, !BACKWARD_COMPATIBLE}
-
-//add CLASS_VERSION here
-
-#define END_SERIALIZABLE_TEMPLATE_VERSIONS(template_name)   \
-};                                                          \
-extern const int g_##template_name##_class_versions_count = \
-sizeof(g_##template_name##_class_versions)/sizeof(struct ::zorba::serialization::ClassVersion);
-
-
+// The "index" param of the macro is used as a unique id for each specific
+// instantiation of the template class.
 //
-// Define the versions dependency from template instance to template versions
 // Example:
 //
 // SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(
@@ -328,16 +271,10 @@ sizeof(g_##template_name##_class_versions)/sizeof(struct ::zorba::serialization:
 //     serializable_ItemPointerHashMap<StaticallyKnownCollection_t>,
 //     1)
 //
-#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(template_name, instance_name, index)    \
-                                                                                        \
-instance_name::class_factory<instance_name>  g_class_factory_##template_name##_##index; \
-                                                                                        \
-template<> const ::zorba::serialization::ClassVersion* instance_name::class_versions =  \
-g_##template_name##_class_versions;                                                     \
-                                                                                        \
-template<> const int instance_name::class_versions_count =                              \
-g_##template_name##_class_versions_count;                                               \
-                                                                                        \
+#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(template_name, instance_name, index)   \
+                                                                                       \
+instance_name::class_factory<instance_name> g_class_factory_##template_name##_##index; \
+                                                                                       \
 template<> const char* instance_name::class_name_str = #instance_name;
 
 //
@@ -345,6 +282,7 @@ template<> const char* instance_name::class_name_str = #instance_name;
 //  then we need this macro because we cannot pass Foo<T1, T2> as the instance_name
 //  param of the SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS macro. This is because
 //  the "," inside Foo<T1, T2> will make it appear as two params.
+//
 //  Example:
 //
 // SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(
@@ -354,27 +292,23 @@ template<> const char* instance_name::class_name_str = #instance_name;
 //     1)
 //
 #define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(template_name, instance_name, second_T, index) \
-instance_name,second_T::class_factory<instance_name,second_T> g_class_factory_##template_name##_##index; \
-\
-template<> const ::zorba::serialization::ClassVersion *instance_name, second_T::class_versions = g_##template_name##_class_versions; \
-\
-template<> const int instance_name,second_T::class_versions_count = \
-g_##template_name##_class_versions_count; \
-\
-template<> const char *instance_name,second_T::class_name_str = #instance_name "," #second_T;
+instance_name, second_T::class_factory<instance_name,second_T>   \
+g_class_factory_##template_name##_##index;                       \
+                                                                 \
+template<> const char* instance_name, second_T::class_name_str = \
+#instance_name "," #second_T;
 
 
 #define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(template_name, instance_name, second_T, third_T, index) \
-  instance_name,second_T,third_T::class_factory<instance_name,second_T,third_T>   g_class_factory_##template_name##_##index;\
-  template<> const ::zorba::serialization::ClassVersion *instance_name,second_T,third_T::class_versions = g_##template_name##_class_versions;\
-  template<> const int instance_name,second_T,third_T::class_versions_count = g_##template_name##_class_versions_count;\
-  template<> const char *instance_name,second_T,third_T::class_name_str = #instance_name "," #second_T "," #third_T;
-
-//no need to add CLASS_VERSION and END_SERIALIZABLE_CLASS_VERSIONS
+instance_name, second_T, third_T::class_factory<instance_name,second_T,third_T> \
+g_class_factory_##template_name##_##index;                                      \
+                                                                                \
+template<> const char* instance_name, second_T, third_T::class_name_str =       \
+#instance_name "," #second_T "," #third_T;
 
 
 /*******************************************************************************
-
+  Constructors to be used during deserialization
 ********************************************************************************/
 
 #define SERIALIZABLE_CLASS_CONSTRUCTOR(class_name) \
@@ -419,43 +353,53 @@ class_name(::zorba::serialization::Archiver& ar)                \
 }
 
 #define SERIALIZABLE_CLASS_CONSTRUCTOR3(class_name, base_class1, base_class2) \
-class_name(::zorba::serialization::Archiver& ar)                      \
-  :                                                                   \
-  base_class1(ar),                                                    \
-  base_class2(ar)                                                     \
-{                                                                     \
+class_name(::zorba::serialization::Archiver& ar)                              \
+  :                                                                           \
+  base_class1(ar),                                                            \
+  base_class2(ar)                                                             \
+{                                                                             \
 }
 
+//
+// Example:
+//
+// SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequentialIterator,
+// NaryBaseIterator<SequentialIterator, PlanIteratorState>);
+//
 #define SERIALIZABLE_CLASS_CONSTRUCTOR2T(class_name, base_class, templ2) \
-class_name(::zorba::serialization::Archiver& ar)                      \
-  :                                                                   \
-  base_class , templ2(ar)                                             \
-{                                                                     \
+class_name(::zorba::serialization::Archiver& ar)                         \
+  :                                                                      \
+  base_class , templ2(ar)                                                \
+{                                                                        \
 }
 
+
+//
+// Example:
+//
+// SERIALIZABLE_CLASS_CONSTRUCTOR3T(SpecificNumArithIterator,
+// BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>);
+//
 #define SERIALIZABLE_CLASS_CONSTRUCTOR3T(class_name, base_class, templ2, templ3) \
-class_name(::zorba::serialization::Archiver& ar)                      \
-  :                                                                   \
-  base_class ,                                                        \
-  templ2,                                                             \
-  templ3(ar)                                                          \
-{                                                                     \
+class_name(::zorba::serialization::Archiver& ar)                                 \
+  :                                                                              \
+  base_class , templ2, templ3(ar)                                                \
+{                                                                                \
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 #ifndef NDEBUG
 #define CHECK_CLASS_NAME(class_name)\
-if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
+if (ar.is_serializing_out() && !ar.is_serialize_base_class())   \
 {                                                               \
   assert(strstr(typeid(*this).name(), #class_name));            \
 }
 #else
 #define CHECK_CLASS_NAME(class_name)
 #endif
-
-
-#define  SERIALIZE_FUNCTION(f)    ar & f;
 
 
 } // namespace serialization

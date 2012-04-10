@@ -22,7 +22,6 @@ SET(ZORBASERIALIZATION_SRCS
   serialize_basic_types.cpp
   base64impl.cpp
   class_serializer.cpp
-  zorba_classes_version.cpp
   zorba_class_serializer.cpp
   zorba_class_versions.cpp
   )  
