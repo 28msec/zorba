@@ -8,6 +8,7 @@ New Features:
 Bug Fixes/Other Changes:
   * Fixed bug in window iterator
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+  * Fixed bug #966706 (key uniqueness of value equality index not enforced)
 
 
 version 2.2
