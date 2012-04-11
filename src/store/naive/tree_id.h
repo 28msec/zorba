@@ -1,25 +1,41 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "stdafx.h"
+#ifndef ZORBA_TREE_ID_H
+#define ZORBA_TREE_ID_H
 
-#include "zorbaserialization/class_serializer.h"
+#include "store/naive/shared_types.h"
+#include "store/naive/store_defs.h"
+#include "zorbatypes/zstring.h"
 
-namespace zorba{
-  namespace serialization{
+namespace zorba {
 
-const unsigned long g_zorba_classes_version = 21;
+namespace simplestore {
 
-}}/* vim:set et sw=2 ts=2: */
+/*
+This file (typedef, traits) can be changed to implement a different kind of tree ID.
+
+TreeIDs must support:
+- Comparison operators ==, !=, <, >
+- Streaming operators << (to an std::ostream), >> (to an std::istream)
+
+*/
+
+typedef ulong TreeId;
+
+} // simplestore
+} // zorba
+
+#endif /* ZORBA_TREE_ID_H */

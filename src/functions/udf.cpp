@@ -33,6 +33,9 @@
 
 #include "types/typeops.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/index.h" // needed for destruction of the cache
 
 
@@ -40,7 +43,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(user_function)
-END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
 
 /*******************************************************************************
@@ -242,6 +244,19 @@ void user_function::addMutuallyRecursiveUDFs(
   theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
                                   cycle,
                                   udfs.end());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void user_function::addRecursiveCall(expr* call)
+{
+  if (std::find(theRecursiveCalls.begin(), theRecursiveCalls.end(), call) ==
+      theRecursiveCalls.end())
+  {
+    theRecursiveCalls.push_back(call);
+  }
 }
 
 

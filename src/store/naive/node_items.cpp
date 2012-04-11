@@ -19,6 +19,7 @@
 #include <stack>
 
 #include <zorba/config.h>
+#include <zorba/item.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -82,7 +83,7 @@ XmlTree::XmlTree()
 }
 
 
-XmlTree::XmlTree(XmlNode* root, ulong id)
+XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   :
   theRefCount(0),
   theId(id),
@@ -3759,6 +3760,14 @@ zstring AttributeNode::show() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t AttributeNode::getChildren() const
+{
+  return NULL;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class TextNode                                                             //
@@ -4458,6 +4467,14 @@ store::Item_t TextNode::leastCommonAncestor(const store::Item_t& aOther) const
 #endif // ! TEXT_ORDPATH
 
 
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t TextNode::getChildren() const
+{
+  return NULL;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class PiNode                                                               //
@@ -4594,6 +4611,14 @@ zstring PiNode::show() const
   return "<?" + theTarget + " " + theContent + "?>";
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t PiNode::getChildren() const
+{
+  return NULL;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -4717,6 +4742,15 @@ zstring CommentNode::show() const
 {
   return "<!--" + theContent + "-->";
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t CommentNode::getChildren() const
+{
+  return NULL;
+}
+
 
 #ifndef ZORBA_NO_FULL_TEXT
 

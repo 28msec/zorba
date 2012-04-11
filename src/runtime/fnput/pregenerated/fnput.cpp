@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <FnPutIterator>
-const char* FnPutIterator::class_name_str = "FnPutIterator";
 FnPutIterator::class_factory<FnPutIterator>
 FnPutIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FnPutIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnPutIterator::class_versions_count =
-sizeof(FnPutIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FnPutIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

@@ -40,10 +40,11 @@ template <class T, class V, class C> class HashMap;
 namespace serialization
 {
 
-#define   FIELD_IS_SIMPLE      true
-#define   FIELD_IS_CLASS       true
+#define FIELD_IS_SIMPLE   true
+#define FIELD_IS_CLASS    true
 
-/*
+/*******************************************************************************
+
   Archiver is working with fields. One archive contains a sequence of fields.
   They can be simple fields or combo fields.
 
@@ -54,28 +55,30 @@ namespace serialization
 
   Special field is a field that points to a previous field. This is to resolve
   serialization of pointers to the same object.
-*/
+
+********************************************************************************/
+
 
 class ClassSerializer;
 
 
 /*******************************************************************************
 
-  ARCHIVE_FIELD_IS_REFERENCING :
+  ARCHIVE_FIELD_REFERENCING :
   ------------------------------
   A field A that references another field B, where both A and B represent the
   "same" object.
 
-  ARCHIVE_FIELD_IS_BASECLASS :
+  ARCHIVE_FIELD_BASECLASS :
   ----------------------------
   A field representing a "partial" class object: If an obj O belong to a class C
   and C is a subclass of a base class B, then a field of ARCHIVE_FIELD_IS_BASECLASS
   kind is created to represent the serialization of the data members of B.
 
-  ARCHIVE_FIELD_IS_PTR :
+  ARCHIVE_FIELD_PTR :
   ----------------------
 
-  ARCHIVE_FIELD_IS_NULL :
+  ARCHIVE_FIELD_NULL :
   -----------------------
   A field representing a NULL pointer.
 
@@ -86,10 +89,10 @@ class ClassSerializer;
 enum ArchiveFieldKind
 {
   ARCHIVE_FIELD_NORMAL,
-  ARCHIVE_FIELD_IS_PTR,
-  ARCHIVE_FIELD_IS_NULL,
-  ARCHIVE_FIELD_IS_BASECLASS,
-  ARCHIVE_FIELD_IS_REFERENCING
+  ARCHIVE_FIELD_PTR,
+  ARCHIVE_FIELD_NULL,
+  ARCHIVE_FIELD_BASECLASS,
+  ARCHIVE_FIELD_REFERENCING
 };
 
 
@@ -109,12 +112,11 @@ enum ENUM_ALLOW_DELAY
 ********************************************************************************/
 struct fwd_ref
 {
-  int referencing;
-  void **ptr;
-  bool is_class;
-  //bool add_ref_to_rcobject;
-  char *class_name;
-  bool to_add_ref;
+  int      referencing;
+  void  ** ptr;
+  bool     is_class;
+  char   * class_name;
+  bool     to_add_ref;
 };
 
 
@@ -132,10 +134,6 @@ struct fwd_ref
   Whether this field represents a class obj or not. Class objs are always 
   considered as "compound", so if theIsClass is true, theIsSimple is false. 
   However, the reverse is not true: a non-class obj may be simple or compound.
-
-  theClassVersion:
-  ----------------
-  If this field represents a class obj, the class version of that obj.
 
   theKind:
   --------
@@ -214,7 +212,6 @@ public:
 
   bool                         theIsSimple;
   bool                         theIsClass;
-  unsigned int                 theClassVersion;
 
   enum ArchiveFieldKind        theKind;
 
@@ -258,8 +255,7 @@ public:
       bool is_class, 
       const void* value,
       const void* assoc_ptr,
-      int version, 
-      enum ArchiveFieldKind  field_treat,
+      enum ArchiveFieldKind kind,
       archive_field* refered,
       int only_for_eval,
       ENUM_ALLOW_DELAY allow_delay,
@@ -356,7 +352,7 @@ protected:
 
   archive_field               * current_compound_field;
 
-  SimpleFieldMap              * simple_hashout_fields;//for simple types
+  SimpleFieldMap              * theSimpleFieldsMap;
 
   hash64map<archive_field*>   * hash_out_fields;//key is ptr, value is archive_field*, for non-simple types
   std::vector<archive_field*>   orphan_fields;
@@ -409,7 +405,6 @@ public:
 
   bool add_compound_field( 
       const char* type,
-      int version,
       bool is_class,
       const void* info,
       const void* ptr,//for classes, pointer to SerializeBaseClass
@@ -423,7 +418,6 @@ public:
       char** type, 
       std::string* value,
       int* id, 
-      int* version, 
       bool* is_simple, 
       bool* is_class,
       enum ArchiveFieldKind* field_treat,
@@ -435,7 +429,6 @@ public:
       char** type, 
       std::string* value,
       int* id, 
-      int* version, 
       bool* is_simple, 
       bool* is_class,
       enum ArchiveFieldKind* field_treat,
@@ -548,10 +541,6 @@ public:
 
   void register_item(store::Item* i);
 
-  int get_class_version();
-
-  void set_class_version(int new_class_version);
-
   //to help check class name at runtime
   void  set_serialize_base_class(bool s)
   {
@@ -615,8 +604,8 @@ public:
 
       while (temp_field && (temp_field->theLevel >= lastlevel))
       {
-        if (temp_field->theKind == ARCHIVE_FIELD_IS_PTR ||
-            temp_field->theKind == ARCHIVE_FIELD_IS_REFERENCING)
+        if (temp_field->theKind == ARCHIVE_FIELD_PTR ||
+            temp_field->theKind == ARCHIVE_FIELD_REFERENCING)
            return false;
 
         temp_field = temp_field->theParent;
