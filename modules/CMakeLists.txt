@@ -141,7 +141,11 @@ MACRO (VISIT mod_name)
   ELSE (is_visited EQUAL -1)
   ENDIF (is_visited EQUAL -1)
 ENDMACRO (VISIT)
-LIST (REMOVE_DUPLICATES dep_module_projects)
+# Annoying - LIST(REMOVE_DUPLICATES) dies if the list is empty.
+LIST (LENGTH dep_module_projects num_deps)
+IF (num_deps GREATER 0)
+  LIST (REMOVE_DUPLICATES dep_module_projects)
+ENDIF (num_deps GREATER 0)
 FOREACH (module_project ${module_projects})
   # Only initially visit those modules projects that do NOT have any
   # module projects depending on them; that is, only visit those module
