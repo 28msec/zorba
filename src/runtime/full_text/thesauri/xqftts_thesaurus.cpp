@@ -364,6 +364,27 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool provider::getThesaurus( iso639_1::type lang,
+                             internal::Thesaurus::ptr *t ) const {
+  zstring PATH;                         // CEEJ: where does this come from?
+  switch ( lang ) {
+    case iso639_1::unknown:
+    case iso639_1::en:
+      if ( t ) {
+#ifdef ZORBA_WITH_FILE_ACCESS
+        t->reset( new thesaurus( PATH, lang ) );
+#else
+        t->reset();
+#endif /* ZORBA_WITH_FILE_ACCESS */
+      }
+      return true;
+    default:
+      return false;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace xqftts
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

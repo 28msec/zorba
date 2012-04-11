@@ -58,19 +58,6 @@ private:
   };
 };
 
-TestThesaurus::thesaurus_t const& TestThesaurus::get_thesaurus() {
-  static thesaurus_t thesaurus;
-  if ( thesaurus.empty() ) {
-    static synonyms_t synonyms;
-    synonyms.push_back( "foo" );
-    synonyms.push_back( "foobar" );
-
-    thesaurus[ "foo"    ] = &synonyms;
-    thesaurus[ "foobar" ] = &synonyms;
-  }
-  return thesaurus;
-}
-
 void TestThesaurus::destroy() const {
   destroy_called = true;
 }
@@ -90,6 +77,19 @@ void TestThesaurus::iterator::destroy() const {
   delete this;
 }
 
+TestThesaurus::thesaurus_t const& TestThesaurus::get_thesaurus() {
+  static thesaurus_t thesaurus;
+  if ( thesaurus.empty() ) {
+    static synonyms_t synonyms;
+    synonyms.push_back( "foo" );
+    synonyms.push_back( "foobar" );
+
+    thesaurus[ "foo"    ] = &synonyms;
+    thesaurus[ "foobar" ] = &synonyms;
+  }
+  return thesaurus;
+}
+
 bool TestThesaurus::iterator::next( String *synonym ) {
   if ( i_ != synonyms_.end() ) {
     *synonym = *i_;
@@ -101,6 +101,22 @@ bool TestThesaurus::iterator::next( String *synonym ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+class TestThesaurusProvider : public ThesaurusProvider {
+public:
+  bool getThesaurus( iso639_1::type lang, Thesaurus::ptr* = 0 ) const;
+};
+
+bool TestThesaurusProvider::getThesaurus( iso639_1::type lang,
+                                          Thesaurus::ptr *result ) const {
+  static TestThesaurus thesaurus;
+  if ( result )
+    result->reset( &thesaurus );
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+#if 0 /* CEEJ */
 class TestThesaurusResolver : public URLResolver {
 public:
   TestThesaurusResolver( String const &uri ) : uri_( uri ) { }
@@ -116,6 +132,7 @@ TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
   static TestThesaurus thesaurus;
   return uri == uri_ ? &thesaurus : 0;
 }
+#endif /* CEEJ */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -137,8 +154,10 @@ int test_thesaurus( int argc, char *argv[] ) {
       "  using thesaurus at \"http://test\" \n";
 
     StaticContext_t sctx = zorba->createStaticContext();
+#if 0 /* CEEJ */
     TestThesaurusResolver resolver( "http://test" );
     sctx->registerURLResolver( &resolver );
+#endif /* CEEJ */
     XQuery_t xquery = zorba->compileQuery( query_src, sctx );
 
     Zorba_SerializerOptions ser_options;

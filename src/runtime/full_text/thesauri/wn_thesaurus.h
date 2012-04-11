@@ -34,7 +34,7 @@ namespace wordnet {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %wordnet::thesaurus is an ft_thesaurus for Wordnet.
+ * A %wordnet::thesaurus is a Thesaurus for Wordnet.
  * See: http://wordnet.princeton.edu/
  */
 class thesaurus : public internal::Thesaurus {
@@ -121,6 +121,18 @@ private:
   };
 
   friend class iterator;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %wordnet::provider is a ThesaurusProvider for Wordnet.
+ */
+class provider : public internal::ThesaurusProvider {
+public:
+  // inherited
+  bool getThesaurus( locale::iso639_1::type,
+                     internal::Thesaurus::ptr* = nullptr ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

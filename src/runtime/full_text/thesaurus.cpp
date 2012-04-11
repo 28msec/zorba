@@ -112,6 +112,7 @@ Thesaurus::~Thesaurus() {
 
 Resource*
 ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
+#if 0 /* CEEJ */
   if ( data->getKind() != internal::EntityData::THESAURUS )
     return nullptr;
 
@@ -131,12 +132,6 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   thesaurus_impl::type t_impl;
   zstring mapped_url;
   parse_mapping( url, &t_impl, &mapped_url );
-
-#if 0
-  cout << "url=" << url << endl;
-  cout << "mapped_url=" << mapped_url << endl;
-  cout << "t_impl=" << t_impl << endl;
-#endif
 
   zstring t_path;
   switch ( uri::get_scheme( mapped_url ) ) {
@@ -161,6 +156,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
     default:
       throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );
   }
+#endif /* CEEJ */
   return nullptr;
 }
 

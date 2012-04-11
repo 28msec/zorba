@@ -48,7 +48,7 @@ public:
 /**
  * A %Thesaurus is-a Resource for thesaurus implementations.
  */
-class ZORBA_DLL_PUBLIC Thesaurus : public Resource {
+class ZORBA_DLL_PUBLIC Thesaurus {
 public:
   typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
           ptr;
@@ -115,6 +115,27 @@ public:
 
 protected:
   virtual ~Thesaurus();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %ThesaurusProvider TODO
+ */
+class ZORBA_DLL_PUBLIC ThesaurusProvider : public Resource {
+public:
+  virtual ~ThesaurusProvider();
+
+  /**
+   * Gets a Thesaurus for the given language.
+   *
+   * @param lang The desired language of the thesaurus.
+   * @param t If not \c null, set to point to a Thesaurus for \a lang.
+   * @return Returns \c true only if this provider can provide a thesaurus for
+   * \a lang.
+   */
+  virtual bool getThesaurus( locale::iso639_1::type lang,
+                             Thesaurus::ptr *t = 0 ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

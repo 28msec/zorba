@@ -169,6 +169,7 @@ namespace zorba
                                            lUserStream->getStreamReleaser());
         lUserStream->setStreamReleaser(nullptr);
       }
+#if 0 /* CEEJ */
 #ifndef ZORBA_NO_FULL_TEXT
       else {
         Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
@@ -184,6 +185,7 @@ namespace zorba
         }
       }
 #endif /* ZORBA_NO_FULL_TEXT */
+#endif /* CEEJ */
     }
     return lRetval;
   }
