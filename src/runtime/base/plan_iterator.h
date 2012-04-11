@@ -27,7 +27,9 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 #if ZORBA_BATCHING_TYPE == 1

@@ -170,6 +170,8 @@ private:
   store::Item_t theQName;
   bool          theIsId;
   bool          theIsRoot;
+  bool          theRaiseXQDY0074;
+  bool          theRaiseXQDY0044;
 
 public:
   SERIALIZABLE_CLASS(AttributeIterator);

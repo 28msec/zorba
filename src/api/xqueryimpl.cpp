@@ -71,6 +71,7 @@
 #include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_server.h"

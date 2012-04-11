@@ -49,6 +49,17 @@ NOARY_ACCEPT(EmptyIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+void SingletonIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator,
+                                             PlanIteratorState>*)this);
+  ar & theValue;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
@@ -81,7 +92,19 @@ IfThenElseIterator::IfThenElseIterator(
   theElseIter(aElseIter),
   theIsUpdating(aIsUpdating),
   theIsBooleanIter(aIsBooleanIter)
-{ }
+{ 
+}
+
+
+void IfThenElseIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Batcher<IfThenElseIterator>*)this);
+  ar & theCondIter;
+  ar & theThenIter;
+  ar & theElseIter;
+  ar & theIsUpdating;
+  ar & theIsBooleanIter;
+}
 
 
 void IfThenElseIterator::accept(PlanIterVisitor& v) const 
