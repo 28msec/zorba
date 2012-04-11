@@ -1746,6 +1746,16 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
       CollectionPul* pul = collIte->second;
       applyList(pul->theDeleteCollectionList);
     }
+
+    // Need to do this here because refreshIndices can raise an error (e.g. if
+    // the unique constraint of an index is violated)
+    for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
+    {
+      CollectionPul* pul = collIte->second;
+      // Refresh each incrementally maintained index using its before and after
+      // deltas. 
+      pul->refreshIndices();
+    }
   }
   catch (...)
   {
@@ -2228,10 +2238,6 @@ void CollectionPul::finalizeUpdates()
 {
   try
   {
-    // Refresh each incrementally maintained index using its before and after
-    // deltas. 
-    refreshIndices();
-
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {

@@ -1,12 +1,27 @@
-import module namespace auto = "http://www.zorba-xquery.com/test/indexes/automatic" at "auto.xqlib";
+import module namespace u = "http://www.zorba-xquery.com/unique-index" at "unique.xqlib";
 
-import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-cddl:create(xs:QName("auto:coll"));
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
-cdml:insert-nodes(xs:QName("auto:coll"), <node id="1">blub</node>);
-cdml:insert-nodes(xs:QName("auto:coll"), <node id="1">blub</node>);
+u:create-db();
 
-for $x in cdml:collection(xs:QName("auto:coll"))
-return <a>{ $x/@id }</a>
+try
+{{
+  (dml:insert-nodes($u:auctions1, <person id="1"/>),
+  dml:insert-nodes($u:auctions1, <person id="1"/>));
+  ()
+}} catch * {
+  $err:code, dml:collection($u:auctions1)
+},
+
+try
+{{
+  (dml:insert-nodes($u:auctions2, <person id="1"/>),
+  dml:insert-nodes($u:auctions2, <person id="1"/>));
+  ()
+}} catch * {
+  $err:code, dml:collection($u:auctions2)
+}
