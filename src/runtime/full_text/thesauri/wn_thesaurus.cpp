@@ -561,9 +561,8 @@ bool provider::getThesaurus( iso639_1::type lang,
   sctx.get_lib_path( lib_path );
   bool found = false;
   FOR_EACH( std::vector<zstring>, i, lib_path ) {
-    // PAUL: as above, better way to do this?
     zstring cand_path( *i );
-    cand_path.append( filepath );
+    fs::append( cand_path, filepath );
     if ( fs::get_type( cand_path ) == fs::file ) {
       found = true;
       break;
