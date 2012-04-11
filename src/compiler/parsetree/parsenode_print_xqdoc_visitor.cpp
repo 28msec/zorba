@@ -177,8 +177,11 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
 {
   map<zstring, zstring>::iterator ite = theNamespaceSchemaMap.find(aPrefix);
-  return ((ite != theNamespaceSchemaMap.end()) ||
-          (ite->second ==  aNamespace));
+  if(ite != theNamespaceSchemaMap.end())
+  {
+    return (ite->second == aNamespace);
+  }
+  return false;
 }
 
 void print_namespaces()

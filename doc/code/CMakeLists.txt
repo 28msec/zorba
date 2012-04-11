@@ -33,20 +33,20 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/headers_svg/)
 
   # Add the headers_svg command for which a working zorba cmd is required.
-  ADD_CUSTOM_TARGET(headers_svg
-    ${ZORBA_EXE}
-      --omit-xml-declaration
-      -f
-      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/headers_svg/generate-headers-dependencies-svg.xq\""
-      -e "\"doxygenCodePath:=${CMAKE_CURRENT_BINARY_DIR}/html\""
-      -o "\"${CMAKE_CURRENT_BINARY_DIR}/headers_svg/headers.svg\""
-      COMMENT "Building header dependencies SVG..."
-  )
-  SET_TARGET_PROPERTIES (headers_svg PROPERTIES
-    EXCLUDE_FROM_DEFAULT_BUILD 1
-    FOLDER "Docs"
-  )
+#  ADD_CUSTOM_TARGET(headers_svg
+#    ${ZORBA_EXE}
+#      --omit-xml-declaration
+#      -f
+#      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/headers_svg/generate-headers-dependencies-svg.xq\""
+#      -e "\"doxygenCodePath:=${CMAKE_CURRENT_BINARY_DIR}/html\""
+#      -o "\"${CMAKE_CURRENT_BINARY_DIR}/headers_svg/headers.svg\""
+#      COMMENT "Building header dependencies SVG..."
+#  )
+#  SET_TARGET_PROPERTIES (headers_svg PROPERTIES
+#    EXCLUDE_FROM_DEFAULT_BUILD 1
+#    FOLDER "Docs"
+#  )
   
-  ADD_DEPENDENCIES(headers_svg "codedocs")
+#  ADD_DEPENDENCIES(headers_svg "codedocs")
   
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
