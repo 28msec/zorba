@@ -17,37 +17,346 @@ xquery version "3.0";
 :)
 
 (:~
- : OAuth Client Module
  : This module provides the functions necessary to acquire access to the personal
  : resources of a user through the open standard called
  : <a href="http://oauth.net/" target="_blank">OAuth</a>.
  : The application/mashup creator does not need to know the
  : specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
  : @author Stephanie Russell
- : @see <a href="http://oauth.net/" target="_blank">OAuth</a>
+ : @author <a href="mailto:william.candillon@28msec.com">William Candillon</a>
+ : @see <a href="http://oauth.net/" target="_blank">OAuth Website</a>
  : @project OAuth
  :
  :)
+module namespace oauth = "http://www.zorba-xquery.com/modules/oauth/client";
 
-module namespace oauth = 'http://www.zorba-xquery.com/modules/oauth/client';
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac";
 import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
 import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
 
+import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
+
 (:~
  : Use err module functions for throwing errors.
  :)
-import module namespace oerr="http://www.zorba-xquery.com/modules/oauth/error";
+import module namespace oerr = "http://www.zorba-xquery.com/modules/oauth/error";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+import schema namespace sp = "http://www.zorba-xquery.com/schemas/oauth/service-provider";
+import schema namespace p = "http://www.zorba-xquery.com/schemas/oauth/parameters";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare option op:disable "f:trace";
+
 declare option ver:module-version "1.0";
+
+(:~
+ : Utility function to build a service provider object.
+ : This object contains the information required by the 
+ : OAuth client to interact with an OAuth service provider.
+ : For instance the following expression:
+ : <pre class="ace-static" ace-mode="xquery">
+ : let $consumer-key     := "#"
+ : let $consumer-secret  := "#"
+ : let $signature-method := "HMAC-SHA1"
+ : let $realm            := "twitter.com"
+ : let $authorize-url    := "http://api.twitter.com/oauth/authorize"
+ : let $request-token-method := "POST"
+ : let $request-token-url := "https://twitter.com/oauth/request_token"
+ : let $request-token-callback-url := "https://twitter.com/oauth/request_token"
+ : let $access-token-method := "POST"
+ : let $access-token-url := "https://api.twitter.com/oauth/access_token"
+ : return oauth:service-provider(
+ :   $consumer-key, $consumer-secret, $signature-method,
+ :   $realm, $authorize-url, $request-token-method,
+ :   $request-token-url, $request-token-callback-url,
+ :   $access-token-method, $access-token-url
+ : )
+ : </pre>
+ : Will return the following XML schema instance:
+ : <pre class="ace-static" ace-mode="xml">
+ : <sp:service-provider xmlns:sp="http://www.zorba-xquery.com/schemas/oauth/service-provider"
+ :     consumer-key="#" consumer-secret="#" signature-method="HMAC-SHA1"
+ :     realm="twitter.com" authorize-url="http://api.twitter.com/oauth/authorize">
+ :   <sp:request-token
+ :       method="POST"
+ :       href="https://twitter.com/oauth/request_token"
+ :       callback-url="https://twitter.com/oauth/request_token"/>
+ :   <sp:access-token
+ :       method="POST"
+ :       href="https://api.twitter.com/oauth/access_token"/>
+ : </sp:service-provider>
+ : </pre>
+ : @return instance of the OAuth service provider XML schema.
+:)
+declare function oauth:service-provider(
+  $consumer-key as xs:string, $consumer-secret as xs:string, $signature-method as xs:string,
+  $realm as xs:string, $authorize-url as xs:string, $request-token-method as xs:string,
+  $request-token-url as xs:string, $request-token-callback-url as xs:string,
+  $access-token-method as xs:string, $access-token-url as xs:string
+)
+as schema-element(sp:service-provider)
+{
+validate {
+  element sp:service-provider {
+    attribute consumer-key    { $consumer-key },
+    attribute consumer-secret { $consumer-secret },
+    attribute signature-method { $signature-method },
+    attribute realm { $realm },
+    attribute authorize-url { $authorize-url },
+    element sp:request-token {
+      attribute method { $request-token-method },
+      attribute href { $request-token-url },
+      attribute callback-url { $request-token-callback-url }
+    },
+    element sp:access-token {
+      attribute method { $access-token-method },
+      attribute href { $access-token-url }
+    }
+  }
+}
+};
+
+(:~
+ : Create an OAuth Parameters instance.
+ : Instances of OAuth parameters are used to 
+ : contain value/pair data such as <em>oauth_token</em>
+ : and <em>oauth_token_secret</em>.
+ : For instance the following code snippet:
+ : <pre class="ace-static" ace-mode="xquery">
+ :  oauth:parameters("oauth_token", "#")
+ : </pre>
+ : Returns the following XML schema instance:
+ : <pre class="ace-static" ace-mode="xml">
+ : <p:parameters xmlns:p="http://www.zorba-xquery.com/schemas/oauth/parameters">
+ :   <p:parameter name="oauth_token" value="#" />
+ : </p:parameters>
+ : </pre>
+ : @return instance of the OAuth parameters XML schema.
+ :)
+declare function oauth:parameters($name as xs:string, $value as xs:string)
+as element(p:parameters)
+{
+  validate {
+    <p:parameters>
+      <p:parameter name="{$name}" value="{$value}" />
+    </p:parameters>
+  }
+};
+
+(:~
+ : Adds an OAuth parameter to an OAuth Parameters instance.
+ : Instances of OAuth parameters are used to 
+ : contain value/pair data such as <em>oauth_token</em>
+ : and <em>oauth_token_secret</em>.
+ : For instance the following code snippet:
+ : <pre class="ace-static" ace-mode="xquery">
+ :  let $params := oauth:parameters("oauth_token", "#")
+ :  let $params := oauth:add-parameter($params, "oauth_token_secret", "#")
+ :  return $params
+ : </pre>
+ : Returns the following XML schema instance:
+ : <pre class="ace-static" ace-mode="xquery">
+ : <p:parameters xmlns:p="http://www.zorba-xquery.com/schemas/oauth/parameters">
+ :   <p:parameter name="oauth_token" value="#" />
+ :   <p:parameter name="oauth_token_secret" value="#" />
+ : </p:parameters>
+ : </pre>
+ : @return instance of the OAuth parameters XML schema.
+ :)
+declare function oauth:add-parameter($parameters as schema-element(p:parameters)?, $name as xs:string, $value as xs:string)
+as schema-element(p:parameters)
+{
+  validate {
+    <p:parameters>
+      {
+        if($name != "") then
+          <p:parameter name="{$name}" value="{$value}" />
+        else (),
+        $parameters/p:parameter
+      }
+    </p:parameters>
+  }
+};
+
+(:~
+ : This function returns the string value of the parameters whose key matches a $string input.
+ : @param $params element parameters
+ : @param $string string as the "key" name
+ : @return string value of the parameter with key $string
+ :
+ : <pre class="ace-static" ace-mode="xquery">
+ : let $params := oauth:parameters("oauth_token", "token")
+ : let $params := oauth:add-parameter($params, "oauth_token_secret", "secret")
+ : let $token-secret := oauth:parameter($params, "oauth_token_secret")
+ : return $token-secret
+ : </pre>
+ :)
+declare function oauth:parameter($params as schema-element(p:parameters), $string as xs:string) as xs:string
+{
+  let $value := 
+    for $param in $params/p:parameter
+    let $key := $param/@name/string(.)
+    let $value := $param/@value/string(.)
+    where $key = $string
+    return $value
+  return
+    if(empty($value)) then
+      error($oerr:OC005, concat("Parameter not found: ", $string))
+    else
+      xs:string($value)
+      
+};
+
+(:~
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ : This function is provided for convenience for <a href="#request-token-2">request-token#2</a>.
+ : Invoking this function is equivalent to:
+ : <pre class="ace-static" ace-mode="xquery">
+ : oauth:request-token($service-provider, ())
+ : </pre>
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-2.1
+ : @param $service-provider Information about the service provider
+ : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
+declare %ann:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider))
+as schema-element(p:parameters)
+{
+  oauth:request-token($service-provider, ())
+};
+
+(:~
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-2.1
+ : @param $service-provider Information about the service provider
+ : @param $parameters Additionnal parameters to the request
+ : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :
+ : <pre class="ace-static" ace-mode="xquery">
+ : let $twitter-config := oauth:service-provider(...)
+ : let $additional-parameter := oauth:parameters("foo", "bar")
+ : let $tokens := oauth:request-token($twitter-config, $additional-parameter)
+ : let $token := oauth:parameter($tokens, "oauth_token")
+ : let $token-secret := oauth:parameter($tokens, "oauth_token_secret")
+ : ...
+ : </pre>
+ :)
+declare %ann:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters)?)
+as schema-element(p:parameters)
+{
+  let $consumer-key     as xs:string := $service-provider/@consumer-key/string(.)
+  let $consumer-secret  as xs:string := $service-provider/@consumer-secret/string(.)
+  let $signature-method as xs:string := $service-provider/@signature-method/string(.)
+  let $realm            as xs:string := $service-provider/@realm/string(.)
+  let $callback-url     as xs:string := $service-provider/sp:request-token/@callback-url/string(.)
+  let $method           as xs:string := $service-provider/sp:request-token/@method/string(.)
+  let $temporary-credential-request as xs:string := $service-provider/sp:request-token/@href/string(.)
+  let $additional-parameters := oauth:additional-parameters($parameters)
+  return oauth:request-token(
+    $consumer-key,
+    $consumer-secret,
+    $signature-method,
+    $method,
+    $realm,
+    $temporary-credential-request,
+    $callback-url,
+    $additional-parameters
+    )
+};
+
+(:~
+ : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-2.3
+ : @param $service-provider Contains service provider information
+ : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :
+ : <pre class="ace-static" ace-mode="xquery">
+ : let $service-provider := oauth:service-provider(...)
+ : let $parameters := oauth:parameters("oauth_token", "#")
+ : let $parameters := oauth:add-parameter($parameters, "oauth_token_secret", "#")
+ : let $tokens := oauth:access-token($service-provider, $parameters)
+ : ...
+ : </pre>
+ :)
+declare %ann:sequential function oauth:access-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters))
+as schema-element(p:parameters)
+{
+  let $consumer-key       as xs:string := $service-provider/@consumer-key/string(.)
+  let $consumer-secret    as xs:string := $service-provider/@consumer-secret/string(.)
+  let $signature-method   as xs:string := $service-provider/@signature-method/string(.)
+  let $realm              as xs:string := $service-provider/@realm/string(.) 
+  let $method             as xs:string := $service-provider/sp:access-token/@method/string(.)
+  let $token-request-uri  as xs:string := $service-provider/sp:access-token/@href/string(.)
+  let $oauth-token        as xs:string := oauth:parameter($parameters,"oauth_token")
+  let $oauth-token-secret as xs:string := oauth:parameter($parameters,"oauth_token_secret")
+  let $additional-parameters := oauth:additional-parameters($parameters)
+  return 
+    oauth:access-token(
+    $consumer-key,
+    $consumer-secret,
+    $signature-method,
+    $realm,
+    $oauth-token,
+    $oauth-token-secret,
+    $method,
+    $token-request-uri,
+    $additional-parameters
+    )
+};
+
+
+(:~
+ : This function allows the client access to the protected resources of the user.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-3
+ : @param $protected-resource (Not schema-validated) http:request element with http method and href.
+ : @param $request request element containing the client's request
+ : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
+ :
+ : <pre class="ace-static" ace-mode="xquery">
+ : let $tokens := oauth:parameters("oauth_token", "#")
+ : let $tokens := oauth:add-parameter($tokens, "oauth_token_secret", "#")
+ : let $service-provider := oauth:service-provider(...)
+ : let $request := validate {
+ :   <request xmlns="http://expath.org/ns/http-client"
+ :            href="http://twitter.com/account/verify_credentials.xml"
+ :            method="GET" />
+ : }
+ : return oauth:protected-resource($request, $service-provider, $tokens)                           
+ : </pre>
+ :)
+declare %ann:sequential function oauth:protected-resource(
+  $protected-resource as schema-element(http:request),
+  $service-provider as schema-element(sp:service-provider),
+  $parameters as schema-element(p:parameters)
+)
+as item()*
+{
+  let $consumer-key        as xs:string := $service-provider/@consumer-key/string(.)
+  let $consumer-secret     as xs:string := $service-provider/@consumer-secret/string(.)
+  let $signature-method    as xs:string := $service-provider/@signature-method/string(.)
+  let $realm               as xs:string := $service-provider/@realm/string(.) 
+  let $oauth-token         as xs:string := oauth:parameter($parameters,"oauth_token")
+  let $oauth-token-secret  as xs:string := oauth:parameter($parameters,"oauth_token_secret")
+  let $additional-parameters := oauth:additional-parameters($parameters)
+  return 
+  oauth:protected-resource(
+    $consumer-key,
+    $consumer-secret,
+    $signature-method,
+    $oauth-token,
+    $oauth-token-secret,
+    $realm,
+    $protected-resource,
+    $additional-parameters)
+};
 
 (:~
  : The timestamp is expressed in the number of seconds since January 1, 1970 00:00:00 GMT.
@@ -55,7 +364,7 @@ declare option ver:module-version "1.0";
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return integer time in seconds since Unix epoch
  :)
-declare %ann:nondeterministic function oauth:timestamp() as xs:decimal
+declare %private %ann:nondeterministic function oauth:timestamp() as xs:decimal
 {
   let $current-dateTime := fn:adjust-dateTime-to-timezone(date:current-dateTime(), xs:dayTimeDuration('PT0H'))
   let $duration := $current-dateTime - xs:dateTime("1970-01-01T00:00:00Z")
@@ -70,7 +379,7 @@ declare %ann:nondeterministic function oauth:timestamp() as xs:decimal
  : @param $oauth-token-secret Temporary credential referred to as the "oauth token secret"
  : @return String signing key
  :)
-declare function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-secret as xs:string?) as xs:string
+declare %private function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-secret as xs:string?) as xs:string
 {
   concat($oauth-consumer-secret, "&amp;", 
     if(empty($oauth-token-secret)) 
@@ -84,7 +393,7 @@ declare function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-sec
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return random string
  :)
-declare %ann:nondeterministic function oauth:nonce() as xs:string
+declare %private %ann:nondeterministic function oauth:nonce() as xs:string
 {
   ra:uuid()
 };
@@ -99,14 +408,17 @@ declare %ann:nondeterministic function oauth:nonce() as xs:string
  : @param $comma String, typically a comma (,) in the authorization header
  : @return string formatted specifically for the authorization header, or for parameterization
  :)
-declare function oauth:normalization($params as element()+, $divide as xs:string, $option as xs:string?,$comma as xs:string) as xs:string
+declare %private function oauth:normalization($params as schema-element(p:parameters), $divide as xs:string, $option as xs:string?, $comma as xs:string) as xs:string
 {
   fn:string-join(
-          for $param in $params//param
-          let $k := $param/@key/data(.)
-          let $v := $param/@value/data(.)
-          order by $param/@key
-          return concat(fn:encode-for-uri($k), $divide,encode-for-uri($v), $option),$comma)
+    for $param in $params/p:parameter
+    let $k := $param/@name/string(.)
+    let $v := $param/@value/string(.)
+    order by $param/@name
+    where $param/@name != ""
+    return concat($k, $divide, $v, $option),
+    $comma
+  )
 };
 
 (:~
@@ -118,13 +430,17 @@ declare function oauth:normalization($params as element()+, $divide as xs:string
  : @param $signature string signed signature
  : @return string authorization header
  :)
-declare function oauth:authorization-header($params as element()+, $realm as xs:string, $signature as xs:string) as xs:string
+declare %private function oauth:authorization-header($params as element(p:parameters), $realm as xs:string, $signature as xs:string) as xs:string
 {
   concat('OAuth ', 
-             string-join(
-               (concat('realm="', $realm, '"'),oauth:normalization($params,'="','"',", "),
-               concat('oauth_signature="', $signature, '"')
-               ), ", "))
+    string-join(
+      (
+        concat('realm="', $realm, '"'),
+        oauth:normalization($params,'="','"',", "),
+        concat('oauth_signature="', $signature, '"')
+      ),
+      ", ")
+  )
 };
 
 (:~
@@ -135,15 +451,23 @@ declare function oauth:authorization-header($params as element()+, $realm as xs:
  : @param $params Element containing OAuth specific parameters
  : @return signature base string formatted to create the signature
  :)
-declare function oauth:signature-base-string($http-method as xs:string, $base-uri as xs:string, $params as element()+) as xs:string
+declare %private function oauth:signature-base-string($http-method as xs:string, $base-uri as xs:string, $params as element(p:parameters)) as xs:string
 {
-  let $base-string := concat($http-method, "&amp;", fn:encode-for-uri($base-uri), "&amp;",
+  let $params := validate {
+    <p:parameters>{
+      for $param in $params/p:parameter
+      let $k := $param/@name/string(.)
+      let $v := $param/@value/string(.)
+      return <p:parameter name="{encode-for-uri($k)}" value="{encode-for-uri($v)}" />
+    }</p:parameters>
+  }        
+  let $base-string := concat($http-method, "&amp;", encode-for-uri($base-uri), "&amp;",
         oauth:normalization($params, "%3D", "%26",""))
   return
-    if (matches($base-string, "%26"))
-    then replace($base-string,
+    if (true() and matches($base-string, "%26"))
+    then trace(replace(trace($base-string, "before"),
            concat('^(.*)', "%26",'.*'),
-         '$1')
+         '$1'), "after")
     else ''
 };
 
@@ -155,7 +479,7 @@ declare function oauth:signature-base-string($http-method as xs:string, $base-ur
  : @param $key string signing key
  : @return signature base string formatted to create the signature
  :)
-declare function oauth:signature($base-string as xs:string, $oauth-signature-method as xs:string, $key as xs:string) as xs:string
+declare %private function oauth:signature($base-string as xs:string, $oauth-signature-method as xs:string, $key as xs:string) as xs:string
 {
   (:
    : HMAC-SHA1
@@ -184,28 +508,15 @@ declare function oauth:signature($base-string as xs:string, $oauth-signature-met
  : @param $input string of parameters to be parsed into element parameters
  : @return element parameters
  :)
-declare function oauth:parse-parameters($input as xs:string) as element()+
+declare %private function oauth:parse-parameters($input as xs:string) as element(p:parameters)
 {
-  <parameters>{
+validate {
+ <p:parameters>{
   for $param in fn:tokenize(replace($input, "&#xA;",""), "&amp;")
   let $key-value := fn:tokenize($param, "=")
-  return <param key="{$key-value[1]}" value="{$key-value[2]}" />
-  }</parameters>
-};
-
-(:~
- : This function returns the string value of the parameters whose key matches a $string input.
- : @param $params element parameters
- : @param $string string as the "key" name
- : @return string value of the parameter with key $string
- :)
-declare function oauth:parameters($params as element()+,$string as xs:string) as xs:string
-{
-  for $param in $params//param
-  let $key := $param/@key/data(.)
-  let $value := $param/@value/data(.)
-  where $key = $string
-  return xs:string($value)
+  return <p:parameter name="{$key-value[1]}" value="{$key-value[2]}" />
+  }</p:parameters>
+}
 };
 
 (:~
@@ -219,27 +530,29 @@ declare function oauth:parameters($params as element()+,$string as xs:string) as
  : @param $realm Realm that defines the protection space
  : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
  : @param $url Target URL
- : @return -
+ : @return HTTP response.
  :)
-declare %ann:sequential function oauth:http-request(
+declare %private %ann:sequential function oauth:http-request(
     $consumer-secret as xs:string,
-    $method as xs:string,
+    $protected-resource as element(http:request),
     $oauth-token-secret as xs:string?,
-    $params as element()+,
+    $params as element(p:parameters),
     $realm as xs:string?,
-    $signature-method as xs:string,
-    $url as xs:string
-) (:as element(http:response):)
+    $signature-method as xs:string
+)
+as item()*
 {
+  let $url    := $protected-resource/@href/string(.)
+  let $method := $protected-resource/@method/string(.)
   let $base-url         := trace(tokenize($url, "\?")[1], "base-url")
   let $base-signature   := trace(oauth:signature-base-string($method, $base-url, $params),"base-sign")
   let $key    := trace(oauth:key($consumer-secret, $oauth-token-secret),"sign-key")
-  let $signature   := trace(fn:encode-for-uri(oauth:signature($base-signature, $signature-method, $key)),"signature")
+  let $signature   := trace(encode-for-uri(oauth:signature($base-signature, $signature-method, $key)),"signature")
   let $authorization-header   := trace(oauth:authorization-header($params,$realm,$signature),"authorization-header")
+  let $authorization-header   := <http:header name="Authorization" value="{$authorization-header}" />
+  let $request := copy $request := $protected-resource modify (insert node $authorization-header into $request) return $request
   return http-client:send-request(
-    <http:request href="{$url}" method="{$method}" >
-      <http:header name="Authorization" value="{$authorization-header}" />
-    </http:request>
+    $request
   )
 };
 
@@ -260,51 +573,60 @@ declare %ann:sequential function oauth:http-request(
  : @error XQP0021(oerr:OC003) if we receive http 401 error from the server.
  : @error XQP0021(oerr:OC004) if we receive http 500 error from the server.
  :)
-declare %private %ann:sequential %ann:nondeterministic function oauth:format-request(
+declare %private %ann:sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
-    $method as xs:string,
+    $protected-resource as element(http:request),
     $oauth-token as xs:string?,
     $oauth-token-secret as xs:string?,
     $realm as xs:string?,
     $signature-method as xs:string,
-    $url as xs:string,
-    $additional-parameters as xs:string,
-    $format-params as xs:boolean) (:as element()+:)
+    $additional-parameters as element(p:parameters)?,
+    $format-params as xs:boolean)
+as item()*
 {
   let $version := "1.0"
   let $base-params := concat("&amp;oauth_consumer_key=",$consumer-key,"&amp;oauth_nonce=",trace(oauth:nonce(),"nonce"),
 "&amp;oauth_signature_method=",$signature-method,"&amp;oauth_timestamp=",oauth:timestamp(),"&amp;oauth_version=",$version)
-  let $params := oauth:parse-parameters(concat($additional-parameters,$base-params))
-  let $response := trace(oauth:http-request($consumer-secret,$method,$oauth-token-secret,$params,$realm,$signature-method,$url), "response")
+  let $params := oauth:parse-parameters($base-params)
+  let $params := validate { 
+    <p:parameters>
+    {$params/p:parameter}
+    {$additional-parameters/p:parameter}
+    </p:parameters>
+  }
+  let $response := oauth:http-request($consumer-secret, $protected-resource, $oauth-token-secret, $params, $realm, $signature-method)
+  let $head := $response[1]
+  let $body := if($response[2] instance of xs:base64Binary) then base64:decode($response[2]) else $response[2]
   return 
-    if($response[1]/@status = 200)
+    if($head/@status = 200)
     then 
       if ($format-params) then
-        oauth:parse-parameters($response[2])
+        oauth:parse-parameters($body)
       else 
-        $response[2]
-    (:originally, this next line was it.:)
-    (:else $response[2]:)
-    else if ($response[1]/@status = 401)
-    then error(xs:QName("oerr:OC003"), concat("Authorization header unauthorized: ", $response[2]//error/data(.)))
-    else if ($response[1]/@status = 500)
-    then error($oerr:OC004, concat("Internal server error", $response[2]))
-    else $response[2]
+        $response
+    else if ($head/@status = 401) then 
+      error(
+        xs:QName("oerr:OC003"),
+        concat("Authorization header unauthorized: ", $body)
+      )
+    else
+      error($oerr:OC004, concat("Service Provider Error: ", $body))
+
 };
 
-declare %private %ann:sequential %ann:nondeterministic function oauth:format-request(
+declare %private %ann:sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
-    $method as xs:string,
+    $protected-resource as element(http:request),
     $oauth-token as xs:string?,
     $oauth-token-secret as xs:string?,
     $realm as xs:string?,
     $signature-method as xs:string,
-    $url as xs:string,
-    $additional-parameters as xs:string) (:as element()+:)
+    $additional-parameters as element(p:parameters)?)
+as item()*
 {
-  oauth:format-request($consumer-key, $consumer-secret, $method, $oauth-token, $oauth-token-secret, $realm, $signature-method, $url, $additional-parameters, true())
+  oauth:format-request($consumer-key, $consumer-secret, $protected-resource, $oauth-token, $oauth-token-secret, $realm, $signature-method, $additional-parameters, true())
 };
 
 (:~
@@ -313,12 +635,13 @@ declare %private %ann:sequential %ann:nondeterministic function oauth:format-req
  : @param $request element containing the client's request
  : @return may return parsed parameters or empty sequence if there were no server specific parameters
  :)
-declare function oauth:additional-parameters($request as element()+) as element()?
+declare %private function oauth:additional-parameters($parameters as element(p:parameters)?) as element(p:parameters)?
 {
-  let $additional-parameters := 
-    for $param in $request//param
-    let $key := $param/@key/data(.)
-    let $value := $param/@value/data(.)
+  let $additional-parameters := validate {
+    <p:parameters>{
+    for $param in $parameters/p:parameter
+    let $key := $param/@name/string(.)
+    let $value := $param/@value/string(.)
     where (($key != "oauth_callback")         and 
            ($key != "oauth_consumer_key")     and 
            ($key != "oauth_consumer_secret")  and 
@@ -330,121 +653,13 @@ declare function oauth:additional-parameters($request as element()+) as element(
            ($key != "oauth_token_secret")     and
            ($key != "oauth_verifier"))
     return $param
+    }</p:parameters>
+  }
   let $parameters :=
-    if(empty($additional-parameters))
+    if(empty($additional-parameters/p:parameter))
     then (:"":) ()
-    else oauth:parse-parameters(concat("&amp;", oauth:normalization($additional-parameters,'=',(),"&amp;")))
+    else $additional-parameters(:oauth:parse-parameters(concat("&amp;", oauth:normalization($additional-parameters,'=',(),"&amp;"))):)
   return $parameters
-};
-
-(:~
- : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
- : This function is provided for convenience.
- : @see http://tools.ietf.org/html/rfc5849#section-2.1
- : @param $request request element containing the client's request
- : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
- :)
-declare %ann:sequential %ann:nondeterministic function oauth:request-token($request as element(request)+) as element()+
-{
-  let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
-  let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
-  let $signature-method := 
-    if(oauth:parameters($request,"oauth_signature_method") = "")
-    then "HMAC-SHA1"
-    else oauth:parameters($request,"oauth_signature_method")
-  let $callback-url := oauth:parameters($request,"oauth_callback")
-  let $realm := oauth:parameters($request,"realm")
-  let $method := 
-    if(oauth:parameters($request,"method") = "")
-    then "GET"
-    else oauth:parameters($request,"method")
-  let $temporary-credential-request := oauth:parameters($request,"url")
-  let $parameters := oauth:additional-parameters($request)
-  return oauth:request-token(
-    $consumer-key,
-    $consumer-secret,
-    $signature-method,
-    $method,
-    $realm,
-    $temporary-credential-request,
-    $callback-url,
-    $parameters)
-};
-
-(:~
- : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
- : This function is provided for convenience.
- : @see http://tools.ietf.org/html/rfc5849#section-2.3
- : @param $request request element containing the client's request
- : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
- :)
-declare %ann:sequential %ann:nondeterministic function oauth:access-token($request as element(request)+) as element()+
-{
-  let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
-  let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
-  let $signature-method := 
-    if(oauth:parameters($request,"oauth_signature_method") = "")
-    then "HMAC-SHA1"
-    else oauth:parameters($request,"oauth_signature_method")
-  let $callback-url := oauth:parameters($request,"oauth_callback")
-  let $realm := oauth:parameters($request,"realm")
-  let $method := 
-    if(oauth:parameters($request,"method") = "")
-    then "GET"
-    else oauth:parameters($request,"method")
-  let $token-request-uri := oauth:parameters($request,"url")
-  let $oauth-token := oauth:parameters($request,"oauth_token")
-  let $oauth-token-secret := oauth:parameters($request,"oauth_token_secret")
-  let $oauth-verifier := oauth:parameters($request,"oauth_verifier")
-  let $parameters := oauth:additional-parameters($request)
-  return 
-    oauth:access-token(
-    $consumer-key,
-    $consumer-secret,
-    $signature-method,
-    $realm,
-    $oauth-token,
-    $oauth-token-secret,
-    $oauth-verifier,
-    $method,
-    $token-request-uri,
-    $parameters)
-};
-
-(:~
- : This function allows the client access to the protected resources of the user.
- : This function is provided for convenience.
- : @see http://tools.ietf.org/html/rfc5849#section-3
- : @param $protected-resource (Not schema-validated) http:request element with http method and href.
- : @param $request request element containing the client's request
- : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
- :)
-declare %ann:sequential %ann:nondeterministic function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
-{
-  let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
-  let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
-  let $signature-method := 
-    if(oauth:parameters($request,"oauth_signature_method") = "")
-    then "HMAC-SHA1"
-    else oauth:parameters($request,"oauth_signature_method")
-  let $callback-url := oauth:parameters($request,"oauth_callback")
-  let $realm := oauth:parameters($request,"realm")
-  let $oauth-token := oauth:parameters($request,"oauth_token")
-  let $oauth-token-secret := oauth:parameters($request,"oauth_token_secret")
-  let $url := $protected-resource/@href/data(.)
-  let $method := $protected-resource/@method/data(.)
-  let $parameters := oauth:additional-parameters($request)
-  return 
-    oauth:protected-resource(
-    $consumer-key,
-    $consumer-secret,
-    $signature-method,
-    $oauth-token,
-    $oauth-token-secret,
-    $realm,
-    $method,
-    $url,
-    $parameters)
 };
 
 (:~
@@ -461,7 +676,7 @@ declare %ann:sequential %ann:nondeterministic function oauth:protected-resource(
  : @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential %ann:nondeterministic function oauth:request-token(
+declare %private %ann:sequential %ann:nondeterministic function oauth:request-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -469,10 +684,13 @@ declare %ann:sequential %ann:nondeterministic function oauth:request-token(
     $realm as xs:string,
     $temporary-credential-request as xs:string,
     $callback-url as xs:string,
-    $additional-parameters as xs:string?) as element()+
+    $additional-parameters as element(p:parameters)?) as element(p:parameters)
 {
-  let $add := concat("oauth_callback=",fn:encode-for-uri($callback-url),$additional-parameters)
-  return oauth:format-request($consumer-key,$consumer-secret,$method,(),(),$realm,$signature-method,$temporary-credential-request,$add)
+  let $protected-resource := validate {
+    <http:request href="{$temporary-credential-request}" method="{$method}" />
+  }
+  let $add := oauth:add-parameter($additional-parameters, "oauth_callback", encode-for-uri($callback-url))
+  return oauth:format-request($consumer-key,$consumer-secret, $protected-resource,(),(),$realm,$signature-method,$add)
 };
 
 (:~
@@ -487,24 +705,27 @@ declare %ann:sequential %ann:nondeterministic function oauth:request-token(
  : @param $token-request-uri Target uri for token credentials request
  : @param $oauth-token The temporary credentials identifier
  : @param $oauth-token-secret the temporary credentials shared-secret
- : @param $oauth-verifier The verification code
  : @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential %ann:nondeterministic function oauth:access-token(
+declare %private %ann:sequential %ann:nondeterministic function oauth:access-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
     $realm as xs:string,
     $oauth-token as xs:string,
     $oauth-token-secret as xs:string,
-    $oauth-verifier as xs:string?,
     $method as xs:string,
     $token-request-uri as xs:string,
-    $additional-parameters as xs:string?) as element()+
+    $additional-parameters as element(p:parameters)?)
+as element(p:parameters)
 {
-  let $add := concat("oauth_token=",$oauth-token,"&amp;oauth_verifier=",$oauth-verifier, $additional-parameters)
-  return oauth:format-request($consumer-key,$consumer-secret,$method,$oauth-token,$oauth-token-secret,$realm,$signature-method,$token-request-uri,$add)
+  let $protected-resource := validate {
+    <http:request href="{$token-request-uri}" method="{$method}" />
+  }
+  let $additional-parameters := oauth:add-parameter($additional-parameters, "oauth_token", $oauth-token)
+  return
+  oauth:format-request($consumer-key,$consumer-secret,$protected-resource,$oauth-token,$oauth-token-secret,$realm,$signature-method, $additional-parameters)
 };
 
 (:~
@@ -522,21 +743,17 @@ declare %ann:sequential %ann:nondeterministic function oauth:access-token(
  : @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential %ann:nondeterministic function oauth:protected-resource(
+declare %private %ann:sequential %ann:nondeterministic function oauth:protected-resource(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
     $oauth-token as xs:string,
     $oauth-token-secret as xs:string,
     $realm as xs:string,
-    $method as xs:string,
-    $url as xs:string,
-    $additional-parameters as xs:string?) (:as element()+:)
+    $protected-resource as schema-element(http:request),
+    $additional-parameters as element(p:parameters)?)
+as item()*
 {
-  let $addition := concat("&amp;",tokenize($url, "\?")[2])
-  let $add := 
-    if ($addition eq "&amp;")
-    then concat("oauth_token=",$oauth-token,$additional-parameters)
-    else concat("oauth_token=",$oauth-token,$additional-parameters, $addition)
-  return oauth:format-request($consumer-key,$consumer-secret,$method,$oauth-token,$oauth-token-secret,$realm,$signature-method,$url,$add, false())
+  let $parameters := oauth:add-parameter($additional-parameters, "oauth_token", $oauth-token)
+  return oauth:format-request($consumer-key,$consumer-secret, $protected-resource, $oauth-token,$oauth-token-secret,$realm,$signature-method,$parameters, false())
 };

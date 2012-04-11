@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.zorba-xquery.com/schemas/oauth/service-provider" xmlns:oauth="http://www.zorba-xquery.com/schemas/oauth/service-provider">
+  <xs:element name="service-provider">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="oauth:request-token"/>
+        <xs:element ref="oauth:access-token"/>
+      </xs:sequence>
+      <xs:attribute name="consumer-key" use="required" type="xs:string"/>
+      <xs:attribute name="consumer-secret" use="required" type="xs:string"/>
+      <xs:attribute name="signature-method" use="required" type="xs:string"/>
+      <xs:attribute name="realm" use="required" type="xs:string"/>
+      <xs:attribute name="authorize-url" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="request-token">
+    <xs:complexType>
+      <xs:attribute name="method" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="POST"/>
+            <xs:enumeration value="GET"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="href" use="required" type="xs:anyURI"/>
+      <xs:attribute name="callback-url" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="access-token">
+    <xs:complexType>
+      <xs:attribute name="method" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="POST"/>
+            <xs:enumeration value="GET"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="href" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
