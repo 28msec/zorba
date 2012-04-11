@@ -364,8 +364,7 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-provider::provider(zstring path) {
-  this->path = path;
+provider::provider( zstring const &path ) : path_( path ) {
 }
 
 bool provider::getThesaurus( iso639_1::type lang,
@@ -375,7 +374,7 @@ bool provider::getThesaurus( iso639_1::type lang,
     case iso639_1::en:
       if ( t ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
-        t->reset( new thesaurus( path, lang ) );
+        t->reset( new thesaurus( path_, lang ) );
 #else
         t->reset();
 #endif /* ZORBA_WITH_FILE_ACCESS */

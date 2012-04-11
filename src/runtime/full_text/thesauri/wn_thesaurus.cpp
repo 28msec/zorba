@@ -528,21 +528,30 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-provider::provider(zstring path) {
-  this->path = path;
+provider::provider( zstring const &path ) : path_( path ) {
+  //
   // We assume "path" is a relative path to a directory with no trailing slash.
   // Here we append the first part of the filename which is the same for all
-  // languages. PAUL: better way to do this, ideally with good cross-platform
-  // compat?
-  this->path.append( "/wordnet-" );
+  // languages.
+  //
+  fs::append( path_, "wordnet-" );
 }
 
 bool provider::getThesaurus( iso639_1::type lang,
                              internal::Thesaurus::ptr *t ) const {
-  // Form up the final relative path, including the language. PAUL: How do you
-  // get the two-character code from an iso639_1::type ? I hardcode "en" here.
-  zstring filepath( path );
-  filepath.append( "en.zth" );
+  zstring filepath( path_ );
+
+  switch ( lang ) {
+    case iso639_1::unknown:
+      lang = iso639_1::en;
+      // no break;
+    case iso639_1::en:
+      filepath.append( iso639_1::string_of[ lang ] );
+      filepath.append( ".zth" );
+      break;
+    default:
+      return false;
+  }
 
   // We want to look for the Wordnet thesaurus file on the library path.
   // Unfortunately every static_context can have its own library path, and we
@@ -552,12 +561,10 @@ bool provider::getThesaurus( iso639_1::type lang,
   static_context& sctx = GENV.getRootStaticContext();
   std::vector<zstring> lib_path;
   sctx.get_lib_path( lib_path );
-  std::vector<zstring>::iterator i = lib_path.begin();
-  zstring cand_path;
   bool found = false;
-  for ( ; i != lib_path.end(); i++ ) {
+  FOR_EACH( std::vector<zstring>, i, lib_path ) {
     // PAUL: as above, better way to do this?
-    cand_path = *i;
+    zstring cand_path( *i );
     cand_path.append( filepath );
     if ( fs::get_type( cand_path ) == fs::file ) {
       found = true;
@@ -567,7 +574,7 @@ bool provider::getThesaurus( iso639_1::type lang,
 
   if ( found ) {
     if ( t )
-      t->reset( new thesaurus( path, lang ) );
+      t->reset( new thesaurus( path_, lang ) );
     return true;
   }
 #else /* ZORBA_WITH_FILE_ACCESS */
