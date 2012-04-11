@@ -130,6 +130,18 @@ static bool test_put( test const *t ) {
   return ext_str == expected_ext_str;
 }
 
+static bool test_attach( test const *t ) {
+  ostringstream oss;
+  transcode::auto_attach<ostringstream> const raii( oss, t->ext_charset );
+
+  for ( char const *c = t->utf8_str; *c; ++c )
+    oss.put( *c );
+  string const ext_str( oss.str() );
+
+  string const expected_ext_str( make_ext_str( t ) );
+  return ext_str == expected_ext_str;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace zorba {
@@ -142,6 +154,7 @@ int test_icu_streambuf( int, char*[] ) {
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_read( t ) );
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_insertion( t ) );
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_put( t ) );
+    ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_attach( t ) );
   }
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;

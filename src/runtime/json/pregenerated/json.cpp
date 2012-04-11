@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <JSONParseInternal>
-const char* JSONParseInternal::class_name_str = "JSONParseInternal";
 JSONParseInternal::class_factory<JSONParseInternal>
 JSONParseInternal::g_class_factory;
 
-const serialization::ClassVersion 
-JSONParseInternal::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONParseInternal::class_versions_count =
-sizeof(JSONParseInternal::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void JSONParseInternal::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ JSONParseInternal::~JSONParseInternal() {}
 
 
 // <JSONSerializeInternal>
-const char* JSONSerializeInternal::class_name_str = "JSONSerializeInternal";
 JSONSerializeInternal::class_factory<JSONSerializeInternal>
 JSONSerializeInternal::g_class_factory;
 
-const serialization::ClassVersion 
-JSONSerializeInternal::class_versions[] ={{ 1, 0x000905, false}};
-
-const int JSONSerializeInternal::class_versions_count =
-sizeof(JSONSerializeInternal::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void JSONSerializeInternal::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

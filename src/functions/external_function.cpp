@@ -22,12 +22,14 @@
 
 #include "diagnostics/util_macros.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(external_function)
-END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 
 /*******************************************************************************

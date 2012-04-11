@@ -45,7 +45,6 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 
 
 /****************************************************************************//**

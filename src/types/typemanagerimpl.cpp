@@ -39,7 +39,11 @@
 #include "compiler/parser/query_loc.h"
 
 #include "functions/signature.h"
+
 #include "util/string_util.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
@@ -52,10 +56,17 @@ XERCES_CPP_NAMESPACE_USE
 #endif
 
 SERIALIZABLE_CLASS_VERSIONS(TypeManager)
-END_SERIALIZABLE_CLASS_VERSIONS(TypeManager)
 
 SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
-END_SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void TypeManager::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & m_level;
+}
 
 
 /***************************************************************************//**

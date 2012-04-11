@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <Base64DecodeIterator>
-const char* Base64DecodeIterator::class_name_str = "Base64DecodeIterator";
 Base64DecodeIterator::class_factory<Base64DecodeIterator>
 Base64DecodeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-Base64DecodeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int Base64DecodeIterator::class_versions_count =
-sizeof(Base64DecodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void Base64DecodeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ Base64DecodeIterator::~Base64DecodeIterator() {}
 
 
 // <Base64EncodeIterator>
-const char* Base64EncodeIterator::class_name_str = "Base64EncodeIterator";
 Base64EncodeIterator::class_factory<Base64EncodeIterator>
 Base64EncodeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-Base64EncodeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int Base64EncodeIterator::class_versions_count =
-sizeof(Base64EncodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void Base64EncodeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

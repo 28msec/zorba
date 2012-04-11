@@ -41,13 +41,13 @@ namespace simplestore
   class CommentNode;
 
 
-/** 
- * This class implements the Abstract Factory Pattern and is responsible for
- * creating node items of the SimpleStore. Having a factory for node items
- * allows other stores to derive from the node items of the SimpleStore without
- * modifying a lot of code (e.g. of the loader). The class can only be
- * instantiated by the SimpleStore.
- */
+/*******************************************************************************
+  This class implements the Abstract Factory Pattern and is responsible for
+  creating node items of the SimpleStore. Having a factory for node items
+  allows other stores to derive from the node items of the SimpleStore without
+  modifying a lot of code (e.g. of the loader). The class can only be
+  instantiated by the SimpleStore.
+********************************************************************************/
 class NodeFactory 
 {
  protected:

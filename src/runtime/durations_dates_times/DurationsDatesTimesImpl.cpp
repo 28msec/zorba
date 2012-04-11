@@ -42,17 +42,12 @@
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(FnDateTimeConstructorIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnDateTimeConstructorIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FnFormatDateTimeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnFormatDateTimeIterator)
-
 
 SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_1)
-END_SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_1)
 
 SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_2)
-END_SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_2)
 
 
 BINARY_ACCEPT(FnDateTimeConstructorIterator);

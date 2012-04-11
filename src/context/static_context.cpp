@@ -23,7 +23,6 @@
 #include <zorba/serialization_callback.h>
 
 #include "functions/udf.h"
-#include "zorbaserialization/serialization_engine.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "util/string_util.h"
@@ -72,6 +71,9 @@
 
 #include "compiler/translator/module_version.h"
 
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
@@ -89,19 +91,14 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
-END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
 /**************************************************************************//**
@@ -183,7 +180,7 @@ void PrologOption::serialize(::zorba::serialization::Archiver& ar)
 *******************************************************************************/
 void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     // serialize out: the uri of the module that is used in this plan
 
