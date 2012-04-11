@@ -530,9 +530,7 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
 
 provider::provider( zstring const &path ) : path_( path ) {
   //
-  // We assume "path" is a relative path to a directory with no trailing slash.
-  // Here we append the first part of the filename which is the same for all
-  // languages.
+  // Append the first part of the filename that's the same for all languages.
   //
   fs::append( path_, "wordnet-" );
 }
