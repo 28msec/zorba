@@ -45,8 +45,7 @@ void checkNodeType(
     const store::Item_t& node,
     const StaticallyKnownCollection* collectionDecl,
     const QueryLoc& loc,
-    bool isDynamic,
-    bool isJSONIQ);
+    bool isDynamic);
 
 
 void getCopyMode(store::CopyMode& copyMode, const static_context* sctx);
@@ -60,7 +59,6 @@ class ZorbaCollectionIteratorHelper : public NaryBaseIterator<Iter, State>
 {
 protected:
   bool theIsDynamic;
-  bool theIsJSONIQ;
 
 protected:
 
@@ -113,8 +111,7 @@ protected:
                     node,
                     collectionDecl,
                     this->loc,
-                    theIsDynamic,
-                    theIsJSONIQ);
+                    theIsDynamic);
 
       copyNode = node->copy(NULL, lCopyMode);
       nodes.push_back(copyNode);
@@ -144,12 +141,10 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool isDynamic,
-      bool isJSONIQ)
+      bool isDynamic)
     :
     NaryBaseIterator<Iter, State>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {
   }
 
@@ -159,7 +154,6 @@ public:
   {
     serialize_baseclass(ar, (NaryBaseIterator<Iter, State>*)this);
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 };
 

@@ -99,7 +99,7 @@ public:
    * @param node XDM node
    * @return the identifier as an item of type xs:anyURI
    */
-  virtual bool getNodeReference(Item_t& result, Item* node) = 0;
+  virtual bool getNodeReference(Item_t& result, const Item* node) = 0;
 
   /**
    * Returns whether a reference has already been generated for the given node.
@@ -252,15 +252,12 @@ public:
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(
-      const Item* name,
-      bool isDynamic,
-      bool isJSONIQ) = 0;
+  virtual Collection_t getCollection(const Item* name, bool isDynamic) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionNames(bool dynamic, bool jsoniq) = 0;
+  virtual Iterator_t listCollectionNames(bool dynamic) = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/

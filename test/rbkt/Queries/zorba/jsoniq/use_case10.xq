@@ -1,10 +1,10 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 import module namespace j = "http://www.jsoniq.org/functions";
 
 ddl:create(xs:QName("users"));
 
-dml:insert-nodes-last(xs:QName("users"),
+dml:insert-last(xs:QName("users"),
   (
     {
       "name" : "Deadbeat Jim",

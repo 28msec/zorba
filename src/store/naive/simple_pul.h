@@ -186,6 +186,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theTruncateCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
   // Validate in place primitives
@@ -197,6 +198,7 @@ protected:
   std::vector<XmlNode*>              theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
+  std::vector<IndexImpl*>            theTruncatedIndices;
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
@@ -423,59 +425,56 @@ public:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addDeleteCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addInsertIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addInsertFirstIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addInsertLastIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addInsertBeforeIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addInsertAfterIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
 
   void addDeleteFromCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
+
+  void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool isDynamic);
 
   // Index primitives
   void addCreateIndex(
@@ -595,12 +594,18 @@ public:
   // utils
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
-  void getIndicesToRefresh(std::vector<store::Index*>& indices);
+  void getIndicesToRefresh(
+      std::vector<store::Index*>& indices,
+      std::vector<store::Index*>& truncate_indices);
 
   void addIndexEntryCreator(
         const store::Item* collectionName,
         store::Index* idx,
         store::IndexEntryCreator* creator);
+
+  void addIndexTruncator(
+      const store::Item* collectionName,
+      store::Index* idx);
 
   void setValidator(store::SchemaValidator* validator);
 
@@ -638,10 +643,7 @@ protected:
 
   CollectionPul* getCollectionPul(const store::Item* target);
 
-  CollectionPul* getCollectionPulByName(
-        const store::Item* name,
-        bool isDynamic,
-        bool isJSONIQ);
+  CollectionPul* getCollectionPulByName(const store::Item* name, bool isDynamic);
 
   void undoUpdates();
 };

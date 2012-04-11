@@ -44,14 +44,13 @@ public:
   get(
       const store::Item* name,
       store::Collection_t& collection,
-      bool isDynamic,
-      bool isJSONIQ) = 0;
+      bool isDynamic) = 0;
     
   virtual bool
-  remove(const store::Item* name, bool isDynamic, bool isJSONIQ) = 0;
+  remove(const store::Item* name, bool isDynamic) = 0;
   
   virtual store::Iterator_t
-  names(bool dynamic, bool jsoniq) = 0;
+  names(bool dynamic) = 0;
     
   virtual CollectionSetIterator_t
   collections(bool dynamic) = 0;

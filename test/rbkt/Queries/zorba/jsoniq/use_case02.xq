@@ -1,10 +1,10 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 import module namespace j = "http://www.jsoniq.org/functions";
 
 ddl:create(xs:QName("sales"));
 
-dml:insert-nodes-last(xs:QName("sales"),
+dml:insert-last(xs:QName("sales"),
   (
     { "product" : "broiler", "store number" : 1, "quantity" : 20  },
     { "product" : "toaster", "store number" : 2, "quantity" : 100 },

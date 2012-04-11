@@ -86,20 +86,29 @@ namespace zorba {
     void beginVisit( const NodeAfterIterator& );
     void endVisit  ( const NodeAfterIterator& );
 
+    void beginVisit( const ZorbaCreateCollectionIterator& );
+    void endVisit  ( const ZorbaCreateCollectionIterator& );
+
+    void beginVisit( const ZorbaDeleteCollectionIterator& );
+    void endVisit  ( const ZorbaDeleteCollectionIterator& );
+
+    void beginVisit( const IsAvailableCollectionIterator& );
+    void endVisit  ( const IsAvailableCollectionIterator& );
+
+    void beginVisit( const AvailableCollectionsIterator& );
+    void endVisit  ( const AvailableCollectionsIterator& );
+
     void beginVisit( const FnCollectionIterator& );
     void endVisit  ( const FnCollectionIterator& );
 
     void beginVisit( const ZorbaCollectionIterator& );
     void endVisit  ( const ZorbaCollectionIterator& );
 
+    void beginVisit( const ZorbaCollectionNameIterator& );
+    void endVisit  ( const ZorbaCollectionNameIterator& );
+
     void beginVisit( const ZorbaIndexOfIterator& );
     void endVisit  ( const ZorbaIndexOfIterator& );
-
-    void beginVisit( const ZorbaCreateCollectionIterator& );
-    void endVisit  ( const ZorbaCreateCollectionIterator& );
-
-    void beginVisit( const ZorbaDeleteCollectionIterator& );
-    void endVisit  ( const ZorbaDeleteCollectionIterator& );
 
     void beginVisit( const ZorbaInsertNodesIterator& );
     void endVisit  ( const ZorbaInsertNodesIterator& );
@@ -140,14 +149,8 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
-    void beginVisit( const ZorbaCollectionNameIterator& );
-    void endVisit  ( const ZorbaCollectionNameIterator& );
-
-    void beginVisit( const IsAvailableCollectionIterator& );
-    void endVisit  ( const IsAvailableCollectionIterator& );
-
-    void beginVisit( const AvailableCollectionsIterator& );
-    void endVisit  ( const AvailableCollectionsIterator& );
+    void beginVisit( const ZorbaTruncateCollectionIterator& );
+    void endVisit  ( const ZorbaTruncateCollectionIterator& );
 
     void beginVisit( const IsAvailableIndexIterator& );
     void endVisit  ( const IsAvailableIndexIterator& );

@@ -57,14 +57,13 @@ public:
   get(
       const zorba::store::Item* aName,
       store::Collection_t& aCollection,
-      bool isDynamic,
-      bool isJSONIQ);
+      bool isDynamic);
   
   virtual bool
-  remove(const store::Item* name, bool isDynamic, bool isJSONIQ);
+  remove(const store::Item* name, bool isDynamic);
     
   virtual zorba::store::Iterator_t
-  names(bool isDynamic, bool isJSONIQ);
+  names(bool isDynamic);
     
   // needs to be virtual to allow implementation of additional stores
   virtual CollectionSetIterator_t

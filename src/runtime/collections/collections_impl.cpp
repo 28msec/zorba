@@ -31,6 +31,7 @@
 #include "context/uri_resolver.h"
 #include "context/static_context_consts.h"
 
+#include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
@@ -62,7 +63,6 @@ const StaticallyKnownCollection* getCollection(
     const store::Item_t& name,
     const QueryLoc& loc,
     bool dynamic,
-    bool jsoniq,
     store::Collection_t& coll)
 {
   const StaticallyKnownCollection* collectionDecl = sctx->lookup_collection(name);
@@ -73,7 +73,7 @@ const StaticallyKnownCollection* getCollection(
     ERROR_PARAMS(name->getStringValue()));
   }
 
-  coll = GENV_STORE.getCollection(name, dynamic, jsoniq);
+  coll = GENV_STORE.getCollection(name, dynamic);
 
   if (coll == NULL)
   {
@@ -204,12 +204,10 @@ CountCollectionIterator::CountCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    CollectionType collectionType,
-    bool isJSONIQ)
+    CollectionType collectionType)
   :
   NaryBaseIterator<CountCollectionIterator, PlanIteratorState>(sctx, loc, children),
-  theCollectionType(collectionType),
-  theIsJSONIQ(isJSONIQ)
+  theCollectionType(collectionType)
 {
 }
 
@@ -225,7 +223,6 @@ void CountCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
   (NaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
 
   SERIALIZE_ENUM(enum CollectionType, theCollectionType);
-  ar & theIsJSONIQ;
 }
 
 
@@ -241,7 +238,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     ZORBA_ASSERT(consumeNext(name, theChildren[0].getp(), planState));
 
-    (void)getCollection(theSctx, name, loc, isDynamic(), theIsJSONIQ, coll);
+    (void)getCollection(theSctx, name, loc, isDynamic(), coll);
   }
   else
   {
@@ -370,7 +367,7 @@ bool ZorbaCollectionIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), planState);
 
-  (void)getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
+  (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
   // return the nodes of the collection
   state->theIterator = collection->getIterator();
@@ -474,14 +471,14 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes);
     lAnnotations.push_back(lAnn);
 
-    pul->addCreateCollection(&loc, name, lAnnotations, NULL, true, theIsJSONIQ);
+    pul->addCreateCollection(&loc, name, lAnnotations, NULL, true);
   }
   else
   {
     std::vector<store::Annotation_t> lAnnotations;
     AnnotationList* lDeclaredAnnotations = collectionDecl->getAnnotations();
 
-    for (size_t i = 0; i < lDeclaredAnnotations->size(); ++i)
+    for (csize i = 0; i < lDeclaredAnnotations->size(); ++i)
     {
       store::Annotation_t lAnn = new store::Annotation();
       AnnotationInternal* lTmp = lDeclaredAnnotations->get(i);
@@ -497,7 +494,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     lNodeType = collectionDecl->getNodeType()->get_qname();
 
-    pul->addCreateCollection(&loc, name, lAnnotations, lNodeType, false, theIsJSONIQ);
+    pul->addCreateCollection(&loc, name, lAnnotations, lNodeType, false);
   }
 
   // also add some optional nodes to the collection
@@ -510,7 +507,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
     while (consumeNext(node, theChildren[1].getp(), aPlanState))
     {
-      checkNodeType(theSctx, node, collectionDecl, loc, theIsDynamic, theIsJSONIQ);
+      checkNodeType(theSctx, node, collectionDecl, loc, theIsDynamic);
 
       copyNode = node->copy(NULL, copymode);
 
@@ -518,7 +515,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       nodes[numNodes++].transfer(copyNode);
     }
 
-    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
+    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
   result = pul.release();
@@ -540,7 +537,7 @@ ZorbaCreateCollectionIterator::getCollection(
     ERROR_PARAMS(name->getStringValue()));
   }
 
-  coll = GENV_STORE.getCollection(name, theIsDynamic, theIsJSONIQ);
+  coll = GENV_STORE.getCollection(name, theIsDynamic);
 
   if (coll != NULL)
   {
@@ -570,11 +567,11 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), aPlanState);
 
-  (void)getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
+  (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteCollection(&loc, name, theIsDynamic, theIsJSONIQ);
+  pul->addDeleteCollection(&loc, name, theIsDynamic);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -606,7 +603,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   if (nodes.size() > 0)
-    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
+    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -621,7 +618,7 @@ ZorbaInsertNodesIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl =
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -677,7 +674,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertFirstIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
+  pul->addInsertFirstIntoCollection(&loc, name, nodes, theIsDynamic);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -688,13 +685,14 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
   STACK_END(state);
 }
 
+
 const StaticallyKnownCollection*
 ZorbaInsertNodesFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl =
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -762,7 +760,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertLastIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
+  pul->addInsertLastIntoCollection(&loc, name, nodes, theIsDynamic);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -780,7 +778,7 @@ ZorbaInsertNodesLastIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl =
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -843,8 +841,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
                                      name, 
                                      targetNode,
                                      nodes,
-                                     theIsDynamic,
-                                     theIsJSONIQ);
+                                     theIsDynamic);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -863,7 +860,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl =
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -934,8 +931,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
                                     name,
                                     targetNode,
                                     nodes, 
-                                    theIsDynamic,
-                                    theIsJSONIQ);
+                                    theIsDynamic);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -954,7 +950,7 @@ ZorbaInsertNodesAfterIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl =
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -1038,11 +1034,8 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
     // hence, we also store them in a separate vector in the state
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertIntoCollection(&loc,
-                                 name,
-                                 nodes, 
-                                 theIsDynamic,
-                                 theIsJSONIQ);
+
+    pul->addInsertIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
   if (pul.get()) 
@@ -1075,7 +1068,7 @@ ZorbaApplyInsertNodesIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
-  return zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
 
@@ -1125,11 +1118,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
 
-    pul->addInsertFirstIntoCollection(&loc,
-                                      name,
-                                      nodes,
-                                      theIsDynamic,
-                                      theIsJSONIQ);
+    pul->addInsertFirstIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
   if (pul.get()) 
@@ -1162,7 +1151,7 @@ ZorbaApplyInsertNodesFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
-  return zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
 
@@ -1213,7 +1202,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
 
-    pul->addInsertLastIntoCollection(&loc, name, nodes, theIsDynamic, theIsJSONIQ);
+    pul->addInsertLastIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
   if (pul.get()) 
@@ -1246,7 +1235,7 @@ ZorbaApplyInsertNodesLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
-  return zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
 
@@ -1302,8 +1291,7 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
                                        name,
                                        targetNode,
                                        nodes,
-                                       theIsDynamic,
-                                       theIsJSONIQ);
+                                       theIsDynamic);
   }
 
   if (pul.get()) 
@@ -1336,7 +1324,7 @@ ZorbaApplyInsertNodesBeforeIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
-  return zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
 
@@ -1392,8 +1380,7 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
                                       name,
                                       targetNode,
                                       nodes,
-                                      theIsDynamic,
-                                      theIsJSONIQ);
+                                      theIsDynamic);
   }
 
   if (pul.get()) 
@@ -1427,7 +1414,7 @@ ZorbaApplyInsertNodesAfterIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
-  return zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
 
@@ -1482,8 +1469,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
                                  name,
                                  nodes,
                                  false,
-                                 theIsDynamic,
-                                 theIsJSONIQ);
+                                 theIsDynamic);
 
     // this should not be necessary. we reset everything in the sequential iterator
     theChildren[theChildren.size()-1]->reset(planState);
@@ -1502,7 +1488,7 @@ ZorbaDeleteNodesIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl = 
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -1575,7 +1561,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   for (xs_integer i = 0; i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
-  pul->addDeleteFromCollection(&loc, name, nodes, false, theIsDynamic, theIsJSONIQ);
+  pul->addDeleteFromCollection(&loc, name, nodes, false, theIsDynamic);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -1590,7 +1576,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl = 
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -1633,7 +1619,6 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
-  const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    name;
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes = 1;
@@ -1645,7 +1630,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), planState);
 
-  collectionDecl = getCollection(name, collection);
+  (void)getCollection(name, collection);
 
   if (theChildren.size() > 1)
   {
@@ -1667,7 +1652,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   for (xs_integer i = numNodes; i > xs_integer(0); --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
-  pul->addDeleteFromCollection(&loc, name, nodes, true, theIsDynamic, theIsJSONIQ);
+  pul->addDeleteFromCollection(&loc, name, nodes, true, theIsDynamic);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -1685,7 +1670,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
     store::Collection_t& coll) const
 {
   const StaticallyKnownCollection* collectionDecl = 
-  zorba::getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, coll);
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 
   if (!theIsDynamic) 
   {
@@ -1718,6 +1703,70 @@ ZorbaDeleteNodesLastIterator::getCollection(
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete"));
   }
+
+  return collectionDecl;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ZorbaTruncateCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(collectionName, theChildren[0].getp(), planState);
+
+  (void)getCollection(collectionName, collection);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addTruncateCollection(&loc, collectionName, theIsDynamic);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaTruncateCollectionIterator::getCollection(
+    const store::Item_t& name,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = 
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
+
+  if (!theIsDynamic)
+  {
+    // checking collection update mode
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        RAISE_ERROR(zerr::ZDDY0004_COLLECTION_CONST_UPDATE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_append_only:
+        RAISE_ERROR(zerr::ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      default:
+        break;
+    }
+  }
+
   return collectionDecl;
 }
 
@@ -1771,7 +1820,7 @@ IsAvailableCollectionIterator::nextImpl(
 
   try
   {
-    (void)getCollection(theSctx, name, loc, theIsDynamic, theIsJSONIQ, collection);
+    (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
   }
   catch (ZorbaException const& e)
   {
@@ -1833,7 +1882,7 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   if (theIsDynamic)
   {
-    state->nameItState = GENV_STORE.listCollectionNames(theIsDynamic, theIsJSONIQ);
+    state->nameItState = GENV_STORE.listCollectionNames(theIsDynamic);
 
     state->nameItState->open();
     while (state->nameItState->next(nameItem))
@@ -1848,7 +1897,7 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
     for ((state->nameItState = theSctx->collection_names())->open();
          state->nameItState->next(nameItem);)
     {
-      if (!GENV_STORE.getCollection(nameItem.getp(), false, theIsJSONIQ))
+      if (!GENV_STORE.getCollection(nameItem.getp(), false))
       {
         continue;
       }
@@ -2181,19 +2230,20 @@ bool IsDeclaredIndexIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t      lName;
+  zorba::IndexDecl*  lDecl;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_index(lName.getp()) == 0)
+  if ((lDecl = theSctx->lookup_index(lName.getp())) && !lDecl->isTemp())
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
 
   STACK_END(lState);
@@ -2236,6 +2286,10 @@ bool DeclaredIndexesIterator::nextImpl(
   for ((lState->nameItState = theSctx->index_names())->open();
        lState->nameItState->next(lName); )
   {
+    if (theSctx->lookup_index(lName.getp())->isTemp()) 
+    {
+      continue;
+    }
     aResult = lName;
     STACK_PUSH(true, lState);
   }

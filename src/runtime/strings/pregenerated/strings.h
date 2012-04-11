@@ -83,6 +83,7 @@ public:
   xs_unsignedInt theIterator; //the current iterator
   checked_vector<xs_unsignedInt> theResult; //the resulting vector
   std::istream* theStream; //
+  store::Item_t theStreamItem; //
 
   StringToCodepointsIteratorState();
 

@@ -45,7 +45,6 @@ public:
 
 protected:
   CollectionType theCollectionType;
-  bool           theIsJSONIQ;
 
 public:
   SERIALIZABLE_CLASS(CountCollectionIterator);
@@ -60,16 +59,13 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      CollectionType collectionType,
-      bool isJSONIQ);
+      CollectionType collectionType);
 
   ~CountCollectionIterator();
 
   bool isZorbaCollection() const { return W3C != theCollectionType; }
 
   bool isDynamic() const { return ZORBADYNAMIC == theCollectionType; }
-
-  bool isJSONIQ() const { return theIsJSONIQ; }
 
   void accept(PlanIterVisitor& v) const;
 

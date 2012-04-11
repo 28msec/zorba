@@ -38,6 +38,82 @@ void populate_context_collections(static_context* sctx);
 
 
 
+//static-collections-ddl:create
+class static_collections_ddl_create : public function
+{
+public:
+  static_collections_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:delete
+class static_collections_ddl_delete : public function
+{
+public:
+  static_collections_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:is-available-collection
+class static_collections_ddl_is_available_collection : public function
+{
+public:
+  static_collections_ddl_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:available-collections
+class static_collections_ddl_available_collections : public function
+{
+public:
+  static_collections_ddl_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:collection
 class fn_collection : public function
 {
@@ -86,11 +162,11 @@ public:
 };
 
 
-//static-collections-dml:index-of
-class static_collections_dml_index_of : public function
+//static-collections-dml:collection-name
+class static_collections_dml_collection_name : public function
 {
 public:
-  static_collections_dml_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -105,39 +181,16 @@ public:
 };
 
 
-//static-collections-ddl:create
-class static_collections_ddl_create : public function
+//static-collections-dml:index-of
+class static_collections_dml_index_of : public function
 {
 public:
-  static_collections_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-ddl:delete
-class static_collections_ddl_delete : public function
-{
-public:
-  static_collections_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -434,52 +487,18 @@ public:
 };
 
 
-//static-collections-dml:collection-name
-class static_collections_dml_collection_name : public function
+//static-collections-dml:truncate
+class static_collections_dml_truncate : public function
 {
 public:
-  static_collections_dml_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_truncate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-ddl:is-available-collection
-class static_collections_ddl_is_available_collection : public function
-{
-public:
-  static_collections_ddl_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-ddl:available-collections
-class static_collections_ddl_available_collections : public function
-{
-public:
-  static_collections_ddl_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

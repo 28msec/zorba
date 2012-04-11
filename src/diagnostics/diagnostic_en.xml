@@ -1775,7 +1775,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQD0003" name="INCONSISTENT_PARSE_FRAGMENT_OPTIONS">
-      <value>inconsistent options to the parse-xml-fragment() function: $1</value>
+      <value>inconsistent options to the parse-xml() function: $1</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0004" name="INVALID_PARAMETER">
@@ -2049,6 +2049,10 @@
 
     <diagnostic code="ZDDY0018" name="NODES_NOT_IN_SAME_COLLECTION">
       <value>all nodes must be in same collection</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
+      <value>"$1": collection $2 cannot be undone</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
@@ -2362,6 +2366,10 @@
 
     <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
       <value>out of range: $1</value>
+    </diagnostic>
+
+    <diagnostic code="ZSTR0065" name="STRINGS_IN_POOL">
+      <value>Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.</value>
     </diagnostic>
 
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
@@ -2804,6 +2812,10 @@
 
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
+    </entry>
+    
+    <entry key="BadXMLNoOpeningTag">
+      <value>closing tag without matching opening tag</value>
     </entry>
 
     <entry key="BadXMLForXQDoc_3">
@@ -3686,12 +3698,12 @@
       <value>xqueryx content is empty</value>
     </entry>
 
-    <entry key="ParseFragmentOptionDSLNotAllowed">
-      <value>if the e option is specified, none of the options d, s, or l may be enabled</value>
-    </entry>
-
     <entry key="ParseFragmentOptionCombinationNotAllowed">
-      <value>specifying both $2 and $3 is an error</value>
+      <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
+    </entry>
+    
+    <entry key="ParseFragmentInvalidOptions">
+      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
     </entry>
 
     <entry key="JSON_ILLEGAL_CHARACTER">

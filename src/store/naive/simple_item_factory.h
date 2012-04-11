@@ -25,6 +25,7 @@
 
 #include "zorbatypes/schema_types.h"
 
+#include "tree_id.h"
 
 namespace zorba
 {
@@ -94,7 +95,7 @@ public:
   bool createStructuralAnyURI(
       store::Item_t& result,
       ulong collectionId,
-      ulong treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 

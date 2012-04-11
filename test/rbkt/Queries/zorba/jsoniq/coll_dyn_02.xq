@@ -1,7 +1,7 @@
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 

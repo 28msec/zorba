@@ -76,22 +76,6 @@
       uri="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map"
       prefix="zorba-store-data-structure-unordered-map"/>
 
-    <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl"
-      prefix="jsoniq-dynamic-collections-ddl"/>
-
-    <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml"
-      prefix="jsoniq-dynamic-collections-dml"/>
-
-    <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/jsoniq/static/collections/ddl"
-      prefix="jsoniq-static-collections-ddl"/>
-
-    <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/jsoniq/static/collections/dml"
-      prefix="jsoniq-static-collections-dml"/>
-
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>
@@ -211,7 +195,6 @@
     <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
-    <zorba:type zorbaType="JSON_PAIR">pair()</zorba:type>
     <zorba:type zorbaType="JDM_NULL">jdm:null</zorba:type>
   </zorba:types>
 

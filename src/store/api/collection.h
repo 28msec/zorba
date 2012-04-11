@@ -82,11 +82,6 @@ public:
   virtual bool isDynamic() const = 0;
 
   /**
-   * Returns true if the collection is a JSONIQ one
-   */
-  virtual bool isJSONIQ() const = 0;
-
-  /**
    * Returns all annotations of the given collection
    */
   virtual void getAnnotations(std::vector<store::Annotation_t>&) const = 0;

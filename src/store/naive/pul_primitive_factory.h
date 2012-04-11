@@ -54,6 +54,7 @@ namespace zorba { namespace simplestore {
   class UpdInsertBeforeIntoCollection;
   class UpdInsertAfterIntoCollection;
   class UpdDeleteNodesFromCollection;
+  class UpdTruncateCollection;
   class UpdCreateIndex;
   class UpdDeleteIndex;
   class UpdRefreshIndex;
@@ -215,16 +216,14 @@ public:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
     
   virtual UpdDeleteCollection*
   createUpdDeleteCollection(
         CollectionPul* pul,
         const QueryLoc*,
         store::Item_t& name,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
     
   virtual UpdInsertIntoCollection*
   createUpdInsertIntoCollection(
@@ -232,8 +231,7 @@ public:
         const QueryLoc*,
         store::Item_t& name, 
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
   
   virtual UpdInsertFirstIntoCollection*
   createUpdInsertFirstIntoCollection(
@@ -241,8 +239,7 @@ public:
       const QueryLoc*,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes,
-      bool isDynamic,
-      bool isJSONIQ);
+      bool isDynamic);
     
   virtual UpdInsertLastIntoCollection*
   createUpdInsertLastIntoCollection(
@@ -250,8 +247,7 @@ public:
         const QueryLoc*,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
     
   virtual UpdInsertBeforeIntoCollection*
   createUpdInsertBeforeIntoCollection(
@@ -260,8 +256,7 @@ public:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
     
   virtual UpdInsertAfterIntoCollection*
   createUpdInsertAfterIntoCollection(
@@ -270,8 +265,7 @@ public:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
   
   virtual UpdDeleteNodesFromCollection*
   createUpdDeleteNodesFromCollection(
@@ -280,8 +274,14 @@ public:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool isDynamic,
-        bool isJSONIQ);
+        bool isDynamic);
+
+  virtual UpdTruncateCollection*
+  createUpdTruncateCollection(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& name,
+        bool isDynamic);
     
   virtual UpdCreateIndex*
   createUpdCreateIndex(

@@ -36,6 +36,189 @@ namespace zorba {
 class StaticallyKnownCollection;
 /**
  * 
+ *      zorba:create
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+public:
+  SERIALIZABLE_CLASS(ZorbaCreateCollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCreateCollectionIterator,
+    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+  }
+
+  ZorbaCreateCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic)
+    : 
+    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
+  {}
+
+  virtual ~ZorbaCreateCollectionIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      zorba:delete
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaDeleteCollectionIterator : public NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+public:
+  SERIALIZABLE_CLASS(ZorbaDeleteCollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
+    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+  }
+
+  ZorbaDeleteCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic)
+    : 
+    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
+  {}
+
+  virtual ~ZorbaDeleteCollectionIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      dc:is-available-collection
+ *    
+ * Author: Zorba Team
+ */
+class IsAvailableCollectionIterator : public NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+public:
+  SERIALIZABLE_CLASS(IsAvailableCollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableCollectionIterator,
+    NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+  }
+
+  IsAvailableCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic)
+    : 
+    NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
+  {}
+
+  virtual ~IsAvailableCollectionIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      dc:available-collections
+ *    
+ * Author: Zorba Team
+ */
+class AvailableCollectionsIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //
+
+  AvailableCollectionsIteratorState();
+
+  ~AvailableCollectionsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class AvailableCollectionsIterator : public NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+public:
+  SERIALIZABLE_CLASS(AvailableCollectionsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableCollectionsIterator,
+    NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
+
+    ar & theIsDynamic;
+  }
+
+  AvailableCollectionsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic)
+    : 
+    NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
+  {}
+
+  virtual ~AvailableCollectionsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      fn:collection
  *    
  * Author: Zorba Team
@@ -108,7 +291,6 @@ class ZorbaCollectionIterator : public NaryBaseIterator<ZorbaCollectionIterator,
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaCollectionIterator);
 
@@ -121,26 +303,57 @@ public:
     (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaCollectionIterator();
 
   bool isDynamic() const { return theIsDynamic; }
 
-  bool isJSONIQ() const { return theIsJSONIQ; }
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      zorba:collection-name
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaCollectionNameIterator : public NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaCollectionNameIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionNameIterator,
+    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaCollectionNameIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ZorbaCollectionNameIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -158,7 +371,6 @@ class ZorbaIndexOfIterator : public NaryBaseIterator<ZorbaIndexOfIterator, PlanI
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaIndexOfIterator);
 
@@ -171,116 +383,19 @@ public:
     (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaIndexOfIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaIndexOfIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      zorba:create
- *    
- * Author: Zorba Team
- */
-class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
-{ 
-protected:
-  bool theIsDynamic; //
-  bool theIsJSONIQ; //
-public:
-  SERIALIZABLE_CLASS(ZorbaCreateCollectionIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCreateCollectionIterator,
-    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theIsDynamic;
-    ar & theIsJSONIQ;
-  }
-
-  ZorbaCreateCollectionIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
-    : 
-    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
-  {}
-
-  virtual ~ZorbaCreateCollectionIterator();
-
-public:
-  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      zorba:delete
- *    
- * Author: Zorba Team
- */
-class ZorbaDeleteCollectionIterator : public NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>
-{ 
-protected:
-  bool theIsDynamic; //
-  bool theIsJSONIQ; //
-public:
-  SERIALIZABLE_CLASS(ZorbaDeleteCollectionIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
-    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theIsDynamic;
-    ar & theIsJSONIQ;
-  }
-
-  ZorbaDeleteCollectionIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
-    : 
-    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
-  {}
-
-  virtual ~ZorbaDeleteCollectionIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -312,10 +427,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaInsertNodesIterator();
@@ -352,10 +466,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaInsertNodesFirstIterator();
@@ -392,10 +505,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaInsertNodesLastIterator();
@@ -432,10 +544,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaInsertNodesBeforeIterator();
@@ -458,7 +569,6 @@ class ZorbaInsertNodesAfterIterator : public ZorbaCollectionIteratorHelper<Zorba
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesAfterIterator);
 
@@ -471,19 +581,16 @@ public:
     (ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaInsertNodesAfterIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic, isJSONIQ),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic),
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaInsertNodesAfterIterator();
@@ -534,10 +641,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaApplyInsertNodesIterator();
@@ -588,10 +694,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaApplyInsertNodesFirstIterator();
@@ -642,10 +747,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaApplyInsertNodesLastIterator();
@@ -696,10 +800,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaApplyInsertNodesBeforeIterator();
@@ -750,10 +853,9 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, isDynamic, isJSONIQ)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, isDynamic)
   {}
 
   virtual ~ZorbaApplyInsertNodesAfterIterator();
@@ -776,7 +878,6 @@ class ZorbaDeleteNodesIterator : public NaryBaseIterator<ZorbaDeleteNodesIterato
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaDeleteNodesIterator);
 
@@ -789,19 +890,16 @@ public:
     (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaDeleteNodesIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaDeleteNodesIterator();
@@ -824,7 +922,6 @@ class ZorbaDeleteNodesFirstIterator : public NaryBaseIterator<ZorbaDeleteNodesFi
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaDeleteNodesFirstIterator);
 
@@ -837,19 +934,16 @@ public:
     (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaDeleteNodesFirstIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaDeleteNodesFirstIterator();
@@ -872,7 +966,6 @@ class ZorbaDeleteNodesLastIterator : public NaryBaseIterator<ZorbaDeleteNodesLas
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
   SERIALIZABLE_CLASS(ZorbaDeleteNodesLastIterator);
 
@@ -885,19 +978,16 @@ public:
     (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
   ZorbaDeleteNodesLastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaDeleteNodesLastIterator();
@@ -912,139 +1002,42 @@ public:
 
 /**
  * 
- *      zorba:collection-name
+ *      zorba:truncate
  *    
  * Author: Zorba Team
  */
-class ZorbaCollectionNameIterator : public NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaCollectionNameIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionNameIterator,
-    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
-  }
-
-  ZorbaCollectionNameIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~ZorbaCollectionNameIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      dc:is-available-collection
- *    
- * Author: Zorba Team
- */
-class IsAvailableCollectionIterator : public NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>
+class ZorbaTruncateCollectionIterator : public NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
-  bool theIsJSONIQ; //
 public:
-  SERIALIZABLE_CLASS(IsAvailableCollectionIterator);
+  SERIALIZABLE_CLASS(ZorbaTruncateCollectionIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableCollectionIterator,
-    NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTruncateCollectionIterator,
+    NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theIsJSONIQ;
   }
 
-  IsAvailableCollectionIterator(
+  ZorbaTruncateCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
     : 
-    NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
+    NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
   {}
 
-  virtual ~IsAvailableCollectionIterator();
+  virtual ~ZorbaTruncateCollectionIterator();
 
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      dc:available-collections
- *    
- * Author: Zorba Team
- */
-class AvailableCollectionsIteratorState : public PlanIteratorState
-{
 public:
-  store::Iterator_t nameItState; //
-
-  AvailableCollectionsIteratorState();
-
-  ~AvailableCollectionsIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class AvailableCollectionsIterator : public NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>
-{ 
-protected:
-  bool theIsDynamic; //
-  bool theIsJSONIQ; //
-public:
-  SERIALIZABLE_CLASS(AvailableCollectionsIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableCollectionsIterator,
-    NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
-
-    ar & theIsDynamic;
-    ar & theIsJSONIQ;
-  }
-
-  AvailableCollectionsIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isJSONIQ)
-    : 
-    NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theIsJSONIQ(isJSONIQ)
-  {}
-
-  virtual ~AvailableCollectionsIterator();
-
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

@@ -28,6 +28,8 @@
   - \ref ft_intro
   - \ref errors_warnings
   - \ref impl_dep_features
+  - \ref memory_management
+  - \ref memory_leaks
 
 \section xqlib XQuery Modules
  - <a href="../xqdoc/xhtml/index.html">XQuery Module Library</a>

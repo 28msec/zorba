@@ -69,6 +69,8 @@ public:
 
   virtual KeyIterator_t keys() const = 0;
 
+  virtual void clear() = 0;
+
   store::IndexCondition_t createCondition(store::IndexCondition::Kind k);
 
   //

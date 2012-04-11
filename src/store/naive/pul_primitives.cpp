@@ -801,7 +801,7 @@ void UpdReplaceCommentValue::undo()
 ********************************************************************************/
 void UpdPut::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring targetUri;
   theTargetUri->getStringValue2(targetUri);
@@ -855,7 +855,7 @@ void UpdPut::apply()
 
 void UpdPut::undo()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->deleteDocument(theTargetUri->getStringValue());
 
@@ -878,12 +878,10 @@ UpdCollection::UpdCollection(
     const QueryLoc* aLoc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
   :
   UpdatePrimitive(pul, aLoc),
-  theIsDynamic(isDynamic),
-  theIsJSONIQ(isJSONIQ)
+  theIsDynamic(isDynamic)
 {
   theName.transfer(name);
 
@@ -903,12 +901,10 @@ UpdCollection::UpdCollection(
     store::Item_t& target,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
   :
   UpdatePrimitive(pul, aLoc, target),
-  theIsDynamic(isDynamic),
-  theIsJSONIQ(isJSONIQ)
+  theIsDynamic(isDynamic)
 {
   theName.transfer(name);
 
@@ -931,8 +927,7 @@ void UpdCreateCollection::apply()
   GET_STORE().createCollection(theName,
                                theAnnotations,
                                theNodeType,
-                               theIsDynamic,
-                               theIsJSONIQ);
+                               theIsDynamic);
   theIsApplied = true;
 }
 
@@ -941,7 +936,7 @@ void UpdCreateCollection::undo()
 {
   try
   {
-    GET_STORE().deleteCollection(theName, theIsDynamic, theIsJSONIQ);
+    GET_STORE().deleteCollection(theName, theIsDynamic);
   }
   catch (...)
   {
@@ -957,7 +952,7 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  theCollection = GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ);
+  theCollection = GET_STORE().getCollection(theName, theIsDynamic);
   if (theCollection == NULL)
     return;//If two delete collection are issued in the same snapshot is a noop
 
@@ -1004,7 +999,7 @@ void UpdDeleteCollection::apply()
     }
   }
 
-  GET_STORE().deleteCollection(theName, theIsDynamic, theIsJSONIQ);
+  GET_STORE().deleteCollection(theName, theIsDynamic);
   theIsApplied = true;
 }
 
@@ -1021,7 +1016,7 @@ void UpdDeleteCollection::undo()
 void UpdInsertIntoCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>(
-  GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1039,7 +1034,7 @@ void UpdInsertIntoCollection::apply()
 void UpdInsertIntoCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1048,7 +1043,7 @@ void UpdInsertIntoCollection::undo()
   {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   }
-  catch (std::range_error& e) 
+  catch (std::range_error& e)
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
     ERROR_PARAMS(BUILD_STRING("collection too big ("
@@ -1071,7 +1066,7 @@ void UpdInsertIntoCollection::undo()
 void UpdInsertFirstIntoCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1091,7 +1086,7 @@ void UpdInsertFirstIntoCollection::apply()
 void UpdInsertFirstIntoCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1110,7 +1105,7 @@ void UpdInsertFirstIntoCollection::undo()
 void UpdInsertLastIntoCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1127,7 +1122,7 @@ void UpdInsertLastIntoCollection::apply()
 void UpdInsertLastIntoCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1138,13 +1133,9 @@ void UpdInsertLastIntoCollection::undo()
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("collection too big ("
-            << e.what() << "; " << theName << ")")
-        )
-      );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("collection too big ("
+                              << e.what() << "; " << theName << ")")));
   }
 
   for (long i = theNumApplied-1; i >= 0; --i)
@@ -1162,7 +1153,7 @@ void UpdInsertLastIntoCollection::undo()
 void UpdInsertBeforeIntoCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1179,7 +1170,7 @@ void UpdInsertBeforeIntoCollection::apply()
 void UpdInsertBeforeIntoCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
@@ -1194,7 +1185,7 @@ void UpdInsertBeforeIntoCollection::undo()
 void UpdInsertAfterIntoCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1212,7 +1203,7 @@ void UpdInsertAfterIntoCollection::apply()
 void UpdInsertAfterIntoCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
@@ -1227,7 +1218,7 @@ void UpdInsertAfterIntoCollection::undo()
 void UpdDeleteNodesFromCollection::apply()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1240,13 +1231,9 @@ void UpdDeleteNodesFromCollection::apply()
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZSTR0060_RANGE_EXCEPTION,
-        ERROR_PARAMS(
-          BUILD_STRING("collection too big ("
-            << e.what() << "; " << theName << ")")
-        )
-      );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("collection too big ("
+                              << e.what() << "; " << theName << ")")));
   }
 
   std::size_t numNodes = theNodes.size();
@@ -1283,7 +1270,7 @@ void UpdDeleteNodesFromCollection::apply()
 void UpdDeleteNodesFromCollection::undo()
 {
   Collection* lColl = static_cast<Collection*>
-  (GET_STORE().getCollection(theName, theIsDynamic, theIsJSONIQ).getp());
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
 
@@ -1296,6 +1283,29 @@ void UpdDeleteNodesFromCollection::undo()
   }
 }
 
+
+/*******************************************************************************
+  UpdTruncateCollection
+********************************************************************************/
+void UpdTruncateCollection::apply()
+{
+  Collection* lColl = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(lColl);
+  
+  lColl->removeAll();
+  theIsApplied = true;
+}
+
+
+void UpdTruncateCollection::undo()
+{
+  if (!theIsApplied) return;
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0019_UNDO_NOT_POSSIBLE,
+  ERROR_PARAMS(theName->getStringValue(), "truncation" ));
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1325,7 +1335,7 @@ UpdCreateIndex::UpdCreateIndex(
 
 void UpdCreateIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   try
   {
@@ -1351,7 +1361,7 @@ void UpdCreateIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteIndex(theQName);
   }
@@ -1361,7 +1371,10 @@ void UpdCreateIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::Item_t& qname)
+UpdDeleteIndex::UpdDeleteIndex(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    const store::Item_t& qname)
   :
   UpdatePrimitive(pul, aLoc),
   theQName(qname)
@@ -1371,14 +1384,12 @@ UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::
 
 void UpdDeleteIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
   store->deleteIndex(theQName);
@@ -1391,7 +1402,7 @@ void UpdDeleteIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->addIndex(theIndex);
   }
@@ -1421,14 +1432,12 @@ UpdRefreshIndex::~UpdRefreshIndex()
 
 void UpdRefreshIndex::apply()
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
   store.refreshIndex(theQName, theIndex->getSpecification(), theSourceIter);
@@ -1441,7 +1450,7 @@ void UpdRefreshIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->deleteIndex(theQName);
     store->addIndex(theIndex);
   }
@@ -1471,7 +1480,7 @@ UpdActivateIC::~UpdActivateIC()
 
 void UpdActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateIC(theQName, theCollectionName,theIsApplied);
 }
 
@@ -1480,7 +1489,7 @@ void UpdActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1513,7 +1522,7 @@ UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
 
 void UpdActivateForeignKeyIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName,theIsApplied);
 }
 
@@ -1522,7 +1531,7 @@ void UpdActivateForeignKeyIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1551,7 +1560,7 @@ UpdDeActivateIC::~UpdDeActivateIC()
 
 void UpdDeActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store::IC_t ic = store->deactivateIC(theQName,theIsApplied);
   if (theIsApplied)
   {
@@ -1575,9 +1584,10 @@ void UpdDeActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
-    switch (theICKind) {
+    switch (theICKind) 
+    {
       case store::IC::ic_collection:
         store->activateIC(theQName, theFromCollectionName,isApplied);
         break;
@@ -1613,7 +1623,7 @@ UpdCreateDocument::UpdCreateDocument(
 
 void UpdCreateDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->addNode(theUri->getStringValue(), theDoc);
 
@@ -1625,7 +1635,7 @@ void UpdCreateDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteDocument(theUri->getStringValue());
     theIsApplied = false;
@@ -1649,7 +1659,7 @@ UpdDeleteDocument::UpdDeleteDocument(
 
 void UpdDeleteDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring lUri = theUri->getStringValue();
 
@@ -1667,7 +1677,7 @@ void UpdDeleteDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->addNode(theUri->getStringValue(), theDoc);
     theIsApplied = false;
   }

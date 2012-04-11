@@ -1,7 +1,7 @@
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
@@ -20,8 +20,8 @@ dml:collection($coll1)[. instance of object()]
 ["
 XXX-02"]
 ,
-xqsx:apply((dml:insert-nodes-first($coll1, { "p1":3, "p2":4 }),
-            dml:insert-nodes-last($coll1, (<b/>, { "p1" : 5 }))))
+xqsx:apply((dml:insert-first($coll1, { "p1":3, "p2":4 }),
+            dml:insert-last($coll1, (<b/>, { "p1" : 5 }))))
 ,
 (: { "p1":3, "p2":4 }, <a/>, { "p1":1, "p2":2 }, { }, [1, 2, 3], <b/>, { "p1" : 5 } :)
 ["
@@ -45,8 +45,8 @@ XXX-05"]
 ,
 xqsx:apply(
 let $n := dml:collection($coll1)[. instance of node()][2]
-return (dml:insert-nodes-before($coll1, $n, { "p1":6 }),
-        dml:insert-nodes-after($coll1, $n, []))
+return (dml:insert-before($coll1, $n, { "p1":6 }),
+        dml:insert-after($coll1, $n, []))
 )
 (: { "p1":3, "p2":4 }, <a/>, { "p1":1, "p2":2 }, { }, [1, 2, 3], { "p1":6 }, <b/>, [], { "p1" : 5 } :)
 ,
@@ -60,7 +60,7 @@ dml:collection($coll1)[. instance of json-item()]
 XXX-07"],
 {
 variable $items := subsequence(dml:collection($coll1), 2, 2);
-dml:delete-nodes($items);
+dml:delete($items);
 ()
 }
 ,

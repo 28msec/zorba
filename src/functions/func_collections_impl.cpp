@@ -34,7 +34,6 @@ PlanIter_t static_collections_dml_collection::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -42,15 +41,8 @@ PlanIter_t static_collections_dml_collection::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaCollectionIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaCollectionIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -58,14 +50,13 @@ PlanIter_t static_collections_dml_collection::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_index_of::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -73,15 +64,8 @@ PlanIter_t static_collections_dml_index_of::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaIndexOfIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaIndexOfIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -89,14 +73,13 @@ PlanIter_t static_collections_dml_index_of::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_ddl_create::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -104,15 +87,8 @@ PlanIter_t static_collections_ddl_create::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaCreateCollectionIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaCreateCollectionIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -120,14 +96,13 @@ PlanIter_t static_collections_ddl_create::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_ddl_delete::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -135,15 +110,8 @@ PlanIter_t static_collections_ddl_delete::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaDeleteCollectionIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaDeleteCollectionIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -151,14 +119,13 @@ PlanIter_t static_collections_ddl_delete::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_insert_nodes::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -166,15 +133,8 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaInsertNodesIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaInsertNodesIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -182,14 +142,13 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_insert_nodes_first::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -197,15 +156,8 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaInsertNodesFirstIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaInsertNodesFirstIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -213,14 +165,13 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_insert_nodes_last::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -228,15 +179,8 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaInsertNodesLastIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaInsertNodesLastIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -244,14 +188,13 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_insert_nodes_before::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -259,15 +202,8 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -275,14 +211,13 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_insert_nodes_after::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -290,15 +225,8 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaInsertNodesAfterIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaInsertNodesAfterIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -306,14 +234,13 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -321,15 +248,8 @@ PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaApplyInsertNodesIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaApplyInsertNodesIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -345,14 +265,13 @@ bool static_collections_dml_apply_insert_nodes::propagatesInputNodes(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -360,15 +279,8 @@ PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -384,11 +296,11 @@ bool static_collections_dml_apply_insert_nodes_first::propagatesInputNodes(
 
 ********************************************************************************/
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
 {
   bool dynamic = false;
   bool jsoniq = false;
@@ -399,15 +311,8 @@ PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -430,7 +335,6 @@ PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -438,15 +342,8 @@ PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -470,7 +367,6 @@ PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -478,15 +374,8 @@ PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -510,7 +399,6 @@ PlanIter_t static_collections_dml_delete_nodes::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -518,15 +406,8 @@ PlanIter_t static_collections_dml_delete_nodes::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaDeleteNodesIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaDeleteNodesIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -541,7 +422,6 @@ PlanIter_t static_collections_dml_delete_node_first::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -549,15 +429,8 @@ PlanIter_t static_collections_dml_delete_node_first::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -572,7 +445,6 @@ PlanIter_t static_collections_dml_delete_node_last::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -580,15 +452,8 @@ PlanIter_t static_collections_dml_delete_node_last::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DML_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new ZorbaDeleteNodesLastIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new ZorbaDeleteNodesLastIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -614,6 +479,29 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t static_collections_dml_truncate::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  bool dynamic = false;
+
+  const zstring& ns = getName()->getNamespace();
+
+  if (ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS)
+  {
+    dynamic = true;
+  }
+
+  return new ZorbaTruncateCollectionIterator(sctx, loc, argv, dynamic);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t static_collections_ddl_is_available_collection::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -622,7 +510,6 @@ PlanIter_t static_collections_ddl_is_available_collection::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -630,15 +517,8 @@ PlanIter_t static_collections_ddl_is_available_collection::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new IsAvailableCollectionIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new IsAvailableCollectionIterator(sctx, loc, argv, dynamic);
 }
 
 
@@ -653,7 +533,6 @@ PlanIter_t static_collections_ddl_available_collections::codegen(
   expr& ann) const
 {
   bool dynamic = false;
-  bool jsoniq = false;
 
   const zstring& ns = getName()->getNamespace();
 
@@ -661,15 +540,8 @@ PlanIter_t static_collections_ddl_available_collections::codegen(
   {
     dynamic = true;
   }
-#ifdef ZORBA_WITH_JSON
-  else if (ns == static_context::ZORBA_STORE_JSONIQ_DYNAMIC_COLLECTIONS_DDL_FN_NS)
-  {
-    dynamic = true;
-    jsoniq = true;
-  }
-#endif
 
-  return new AvailableCollectionsIterator(sctx, loc, argv, dynamic, jsoniq);
+  return new AvailableCollectionsIterator(sctx, loc, argv, dynamic);
 }
 
 

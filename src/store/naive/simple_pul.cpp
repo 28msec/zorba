@@ -205,9 +205,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
     if (collName == theLastCollection)
       return theLastPul;
 
-    return getCollectionPulByName(collName, 
-                                  collection->isDynamic(),
-                                  collection->isJSONIQ());
+    return getCollectionPulByName(collName, collection->isDynamic());
   }
   else if (theNoCollectionPul != NULL)
   {
@@ -229,8 +227,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
 CollectionPul* PULImpl::getCollectionPulByName(
     const store::Item* name,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
   const QNameItem* collName = static_cast<const QNameItem*>(name)->getNormalized();
 
@@ -251,7 +248,7 @@ CollectionPul* PULImpl::getCollectionPulByName(
   else
   {
     Collection* collection = static_cast<Collection*>
-      (GET_STORE().getCollection(collName, isDynamic, isJSONIQ).getp());
+    (GET_STORE().getCollection(collName, isDynamic).getp());
 
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
@@ -842,26 +839,24 @@ void PULImpl::addCreateCollection(
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
     const store::Item_t& nodeType,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic, isJSONIQ));
+  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic));
 }
 
 
 void PULImpl::addDeleteCollection(
     const QueryLoc* loc,
     store::Item_t& name,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theDeleteCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdDeleteCollection(pul, loc, name, isDynamic, isJSONIQ));
+  createUpdDeleteCollection(pul, loc, name, isDynamic));
 }
 
 
@@ -869,13 +864,12 @@ void PULImpl::addInsertIntoCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdInsertIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
+  createUpdInsertIntoCollection(pul, loc, name, nodes, isDynamic));
 } 
 
 
@@ -883,13 +877,12 @@ void PULImpl::addInsertFirstIntoCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdInsertFirstIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
+  createUpdInsertFirstIntoCollection(pul, loc, name, nodes, isDynamic));
 }
 
 
@@ -897,13 +890,12 @@ void PULImpl::addInsertLastIntoCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdInsertLastIntoCollection(pul, loc, name, nodes, isDynamic, isJSONIQ));
+  createUpdInsertLastIntoCollection(pul, loc, name, nodes, isDynamic));
 }
 
 
@@ -912,13 +904,12 @@ void PULImpl::addInsertBeforeIntoCollection(
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdInsertBeforeIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
+  createUpdInsertBeforeIntoCollection(pul, loc, name, target, nodes, isDynamic));
 }
 
 
@@ -927,13 +918,12 @@ void PULImpl::addInsertAfterIntoCollection(
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdInsertAfterIntoCollection(pul, loc, name, target, nodes, isDynamic, isJSONIQ));
+  createUpdInsertAfterIntoCollection(pul, loc, name, target, nodes, isDynamic));
 }
 
 
@@ -942,13 +932,24 @@ void PULImpl::addDeleteFromCollection(
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
     bool isLast,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic, isJSONIQ);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theDeleteFromCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdDeleteNodesFromCollection(pul, loc, name, nodes, isLast, isDynamic, isJSONIQ));
+  createUpdDeleteNodesFromCollection(pul, loc, name, nodes, isLast, isDynamic));
+}
+
+
+void PULImpl::addTruncateCollection(
+    const QueryLoc* aQueryLoc,
+    store::Item_t& name,
+    bool isDynamic)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
+
+  pul->theTruncateCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdTruncateCollection(pul, aQueryLoc, name, isDynamic));
 }
 
 
@@ -1646,6 +1647,10 @@ void PULImpl::mergeUpdates(store::Item* other)
                                  otherPul->theDeleteFromCollectionList);
 
       mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theTruncateCollectionList,
+                                 otherPul->theTruncateCollectionList);
+
+      mergeCollectionUpdateLists(thisPul,
                                  thisPul->theDeleteCollectionList,
                                  otherPul->theDeleteCollectionList);
 
@@ -2198,9 +2203,11 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   This method is invoked by the ApplyIterator before any of the pul primitives
   is applied.
 ********************************************************************************/
-void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
+void PULImpl::getIndicesToRefresh(
+    std::vector<store::Index*>& indices,
+    std::vector<store::Index*>& truncate_indices)
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if (store->getIndices().empty())
     return;
@@ -2209,13 +2216,14 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
   // modified/inserted/deleted collection docs, because they will be need later
   // to maintain indices.
   std::set<store::Collection*> collections;
+  std::set<store::Collection*> truncated_collections;
 
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::iterator collEnd = theCollectionPuls.end();
 
   for (; collIte != collEnd; ++collIte)
   {
-    store::Collection* collection = store->getCollection(collIte->first, false, false);
+    store::Collection* collection = store->getCollection(collIte->first, false);
 
     // The collection may not be created yet.
     if (collection == NULL)
@@ -2224,6 +2232,12 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
     collections.insert(collection);
 
     CollectionPul* pul = collIte->second;
+
+    if (pul->theTruncateCollectionList.size() > 0)
+    {
+      truncated_collections.insert(collection);
+      continue;
+    }
 
     NodeToUpdatesMap::iterator ite = pul->theNodeToUpdatesMap.begin();
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
@@ -2291,6 +2305,21 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       if (colIte != colEnd)
         break;
     }
+
+    for (csize i = 0; i < numIndexSources; ++i)
+    {
+      std::set<store::Collection*>::const_iterator colIte = truncated_collections.begin();
+      std::set<store::Collection*>::const_iterator colEnd = truncated_collections.end();
+
+      for (; colIte != colEnd; ++colIte)
+      {
+        if (indexSources[i]->equals((*colIte)->getName()))
+        {
+          truncate_indices.push_back(index);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -2303,10 +2332,22 @@ void PULImpl::addIndexEntryCreator(
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {
-  CollectionPul* pul = getCollectionPulByName(collectionName, false, false);
+  CollectionPul* pul = getCollectionPulByName(collectionName, false);
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addIndexTruncator(
+    const store::Item* collectionName,
+    store::Index* idx)
+{
+  CollectionPul* pul = getCollectionPulByName(collectionName, false);
+  pul->theTruncatedIndices.push_back(static_cast<IndexImpl*>(idx));
 }
 
 
@@ -2492,6 +2533,7 @@ CollectionPul::~CollectionPul()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
+  cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
 #ifdef ZORBA_WITH_JSON
@@ -2538,6 +2580,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
+  switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
 }
 
@@ -2662,7 +2705,14 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  csize numIncrementalIndices = theIncrementalIndices.size();
+  csize numIncrementalIndices = theTruncatedIndices.size();
+  for (csize idx = 0; idx < numIncrementalIndices; ++idx)
+  {
+    ValueIndex* index = static_cast<ValueIndex*>(theTruncatedIndices[idx]);
+    index->clear();
+  }
+
+  numIncrementalIndices = theIncrementalIndices.size();
 
   for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
@@ -2881,6 +2931,7 @@ void CollectionPul::applyUpdates()
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
+    applyList(theTruncateCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
@@ -3013,6 +3064,7 @@ void CollectionPul::undoUpdates()
 
   try
   {
+    undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);

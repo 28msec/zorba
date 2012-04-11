@@ -81,6 +81,7 @@ public:
     UP_INSERT_AT_INTO_COLLECTION,
     UP_REMOVE_FROM_COLLECTION,
     UP_REMOVE_AT_FROM_COLLECTION,
+    UP_TRUNCATE_COLLECTION,
 
     // index primitives
     UP_CREATE_INDEX,
@@ -187,6 +188,8 @@ static std::string toString(UpdPrimKind k)
       return "insertAtIntoCollection";
     case UP_REMOVE_FROM_COLLECTION:
       return "removeFromCollection";
+    case UP_TRUNCATE_COLLECTION:
+      return "truncateCollection";
     case UP_REMOVE_AT_FROM_COLLECTION:
       return "removeAtFromCollection";
     case UP_CREATE_INDEX:

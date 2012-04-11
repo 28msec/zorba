@@ -623,8 +623,9 @@ public:
         zstring& content) = 0;
 
   /**
-   * Create a new text node N to store the typed value of an element node P.
-   * In this case, N can be the only child of P. 
+   * Create a new text node N to store the typed value of an element node P, and
+   * place N as the last child of P. Notice that in this case, P cannot have any
+   * subelements. 
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may NOT be NULL.

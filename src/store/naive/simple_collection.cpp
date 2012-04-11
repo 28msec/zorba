@@ -41,17 +41,15 @@ SimpleCollection::SimpleCollection(
     const store::Item_t& aName,
     const std::vector<store::Annotation_t>& aAnnotations,
     const store::Item_t& aNodeType,
-    bool isDynamic,
-    bool isJSONIQ)
+    bool isDynamic)
   : 
   theName(aName),
   theIsDynamic(isDynamic),
-  theIsJSONIQ(isJSONIQ),
-  theTreeCounter(1),
   theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
 
 
@@ -62,17 +60,18 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theIsJSONIQ(false),
-  theTreeCounter(1),
   theNodeType(NULL)
 {
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
+  delete theTreeIdGenerator;
 }
 
 
@@ -99,51 +98,39 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
 #ifdef ZORBA_WITH_JSON
   json::SimpleJSONArray* array = NULL;
   json::SimpleJSONObject* object = NULL;
-
-  if (theIsJSONIQ)
-  {
-    if (item->isNode())
-    {
-      node = static_cast<XmlNode*>(item);
-
-      if (node->getParent() != NULL)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
-        ERROR_PARAMS(getName()->getStringValue()));
-      }
-    }
-    else if (item->isJSONObject())
-    {
-      object = static_cast<json::SimpleJSONObject*>(item);
-    }
-    else if (item->isJSONArray())
-    {
-      array = static_cast<json::SimpleJSONArray*>(item);
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-  }
-  else
 #endif
+
+  if (item->isNode())
   {
-    if (!item->isNode())
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-
     node = static_cast<XmlNode*>(item);
-
+    
     if (node->getParent() != NULL)
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
       ERROR_PARAMS(getName()->getStringValue()));
     }
   }
-
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONObject())
+  {
+    object = static_cast<json::SimpleJSONObject*>(item);
+  }
+  else if (item->isJSONArray())
+  {
+    array = static_cast<json::SimpleJSONArray*>(item);
+  }
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#else
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#endif
   if (item->getCollection() != NULL)
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
@@ -217,73 +204,55 @@ xs_integer SimpleCollection::addNodes(
 #ifdef ZORBA_WITH_JSON
     json::SimpleJSONArray* array = NULL;
     json::SimpleJSONObject* object = NULL;
-
-    if (theIsJSONIQ)
-    {
-      if (item->isNode())
-      {
-        node = static_cast<XmlNode*>(item);
-
-        if (node->getParent() != NULL)
-        {
-          throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
-          ERROR_PARAMS(getName()->getStringValue()));
-        }
-      }
-      else if (item->isJSONObject())
-      {
-        object = static_cast<json::SimpleJSONObject*>(item);
-      }
-      else if (item->isJSONArray())
-      {
-        array = static_cast<json::SimpleJSONArray*>(item);
-      }
-      else
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-        ERROR_PARAMS(getName()->getStringValue()));
-      }
-
-      if (item->getCollection() != NULL)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
-        ERROR_PARAMS(getName()->getStringValue(),
-                     node->getCollection()->getName()->getStringValue()));
-      }
-
-      if (object)
-        object->setCollection(this, targetPos + i);
-      else if (array)
-        array->setCollection(this, targetPos + i);
-      else
-        node->setCollection(this, targetPos + i);
-    }
-    else
 #endif
+
+    if (item->isNode())
     {
-      if (!item->isNode())
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-        ERROR_PARAMS(getName()->getStringValue()));
-      }
-
       node = static_cast<XmlNode*>(item);
-
-      if (node->getCollection() != NULL)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
-        ERROR_PARAMS(getName()->getStringValue(),
-                     node->getCollection()->getName()->getStringValue()));
-      }
-
+      
       if (node->getParent() != NULL)
       {
         throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
         ERROR_PARAMS(getName()->getStringValue()));
       }
-    
-      node->setCollection(this, targetPos + i);
     }
+#ifdef ZORBA_WITH_JSON
+    else if (item->isJSONObject())
+    {
+      object = static_cast<json::SimpleJSONObject*>(item);
+    }
+    else if (item->isJSONArray())
+    {
+      array = static_cast<json::SimpleJSONArray*>(item);
+    }
+    else
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+      ERROR_PARAMS(getName()->getStringValue()));
+    }
+#else
+    else
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS(getName()->getStringValue()));
+    }
+#endif
+
+    if (item->getCollection() != NULL)
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
+      ERROR_PARAMS(getName()->getStringValue(),
+                   node->getCollection()->getName()->getStringValue()));
+    }
+
+#ifdef ZORBA_WITH_JSON
+    if (object)
+      object->setCollection(this, targetPos + i);
+    else if (array)
+      array->setCollection(this, targetPos + i);
+    else
+#endif
+      node->setCollection(this, targetPos + i);
   } // for each new node
 
   theXmlTrees.resize(numNodes + numNewNodes);
@@ -320,38 +289,33 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 #ifdef ZORBA_WITH_JSON
   json::SimpleJSONArray* array = NULL;
   json::SimpleJSONObject* object = NULL;
-
-  if (theIsJSONIQ)
-  {
-    if (item->isNode())
-    {
-      node = static_cast<XmlNode*>(item);
-    }
-    else if (item->isJSONObject())
-    {
-      object = static_cast<json::SimpleJSONObject*>(item);
-    }
-    else if (item->isJSONArray())
-    {
-      array = static_cast<json::SimpleJSONArray*>(item);
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-  }
-  else
 #endif
-  {
-    if (!item->isNode())
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
 
+  if (item->isNode())
+  {
     node = static_cast<XmlNode*>(item);
   }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONObject())
+  {
+    object = static_cast<json::SimpleJSONObject*>(item);
+  }
+  else if (item->isJSONArray())
+  {
+    array = static_cast<json::SimpleJSONArray*>(item);
+  }
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#else
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#endif
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
@@ -402,35 +366,26 @@ bool SimpleCollection::removeNode(xs_integer position)
 
     ZORBA_ASSERT(item->getCollection() == this);
 
-#ifdef ZORBA_WITH_JSON
-    if (theIsJSONIQ)
+    if (item->isNode())
     {
-      if (item->isNode())
-      {
-        XmlNode* node = static_cast<XmlNode*>(item);
-        node->setCollection(NULL, 0);
-      }
-      else if (item->isJSONObject())
-      {
-        json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-        object->setCollection(NULL, 0);
-      }
-      else if (item->isJSONArray())
-      {
-        json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-        array->setCollection(NULL, 0);
-      }
-      else
-      {
-        ZORBA_ASSERT(false);
-      }
-    }
-    else
-#endif
-    {
-      assert(item->isNode());
       XmlNode* node = static_cast<XmlNode*>(item);
       node->setCollection(NULL, 0);
+    }
+#ifdef ZORBA_WITH_JSON
+    else if (item->isJSONObject())
+    {
+      json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
+      object->setCollection(NULL, 0);
+    }
+    else if (item->isJSONArray())
+    {
+      json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
+      array->setCollection(NULL, 0);
+    }
+#endif
+    else
+    {
+      ZORBA_ASSERT(false);
     }
 
     theXmlTrees.erase(theXmlTrees.begin() + pos);
@@ -470,35 +425,26 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
       ZORBA_ASSERT(item->getCollection() == this);
 
-#ifdef ZORBA_WITH_JSON
-      if (theIsJSONIQ)
+      if (item->isNode())
       {
-        if (item->isNode())
-        {
-          XmlNode* node = static_cast<XmlNode*>(item);
-          node->setCollection(NULL, 0);
-        }
-        else if (item->isJSONObject())
-        {
-          json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-          object->setCollection(NULL, 0);
-        }
-        else if (item->isJSONArray())
-        {
-          json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-          array->setCollection(NULL, 0);
-        }
-        else
-        {
-          ZORBA_ASSERT(false);
-        }
-      }
-      else
-#endif
-      {
-        assert(item->isNode());
         XmlNode* node = static_cast<XmlNode*>(item);
         node->setCollection(NULL, 0);
+      }
+#ifdef ZORBA_WITH_JSON
+      else if (item->isJSONObject())
+      {
+        json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
+        object->setCollection(NULL, 0);
+      }
+      else if (item->isJSONArray())
+      {
+        json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
+        array->setCollection(NULL, 0);
+      }
+#endif
+      else
+      {
+        ZORBA_ASSERT(false);
       }
 
       theXmlTrees.erase(theXmlTrees.begin() + pos);
@@ -506,6 +452,17 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
     return last - pos;
   }
+}
+
+
+/*******************************************************************************
+ * Remove all the nodes from the collection
+********************************************************************************/
+void SimpleCollection::removeAll()
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  theXmlTrees.clear();
 }
 
 
@@ -534,48 +491,35 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
 {
   const XmlNode* node = NULL;
 
-#ifdef ZORBA_WITH_JSON
-  if (theIsJSONIQ)
+  if (item->isNode())
   {
-    if (item->isNode())
-    {
-      node = static_cast<const XmlNode*>(item);
-
-      if (node->getParent() != NULL)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
-        ERROR_PARAMS(getName()->getStringValue()));
-      }
-    }
-    else if (item->isJSONObject())
-    {
-    }
-    else if (item->isJSONArray())
-    {
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-  }
-  else
-#endif
-  {
-    if (!item->isNode())
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-                            ERROR_PARAMS(getName()->getStringValue()));
-    }
-
     node = static_cast<const XmlNode*>(item);
-
+    
     if (node->getParent() != NULL)
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
       ERROR_PARAMS(getName()->getStringValue()));
     }
   }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONObject())
+  {
+  }
+  else if (item->isJSONArray())
+  {
+  }
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#else
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#endif
 
   if (theXmlTrees.empty())
     return false;
@@ -646,8 +590,16 @@ void SimpleCollection::adjustTreePositions()
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::CollectionIter::CollectionIter(
-    SimpleCollection* collection)
+TreeId SimpleCollection::createTreeId()
+{
+  return theTreeIdGenerator->create();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleCollection::CollectionIter::CollectionIter(SimpleCollection* collection)
   :
   theCollection(collection),
   theHaveLock(false)

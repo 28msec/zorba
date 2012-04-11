@@ -127,13 +127,11 @@ bool SimpleCollectionSet::insert(
 bool SimpleCollectionSet::get(
     const store::Item* name,
     store::Collection_t& collection,
-    bool isDynamic,
-    bool isJSONIQ) 
+    bool isDynamic) 
 {
   if (theCollections.get(const_cast<store::Item*>(name), collection)) 
   {
-    return (collection->isDynamic() == isDynamic &&
-            collection->isJSONIQ() == isJSONIQ);
+    return (collection->isDynamic() == isDynamic);
   }
   else 
   {
@@ -144,11 +142,10 @@ bool SimpleCollectionSet::get(
 
 bool SimpleCollectionSet::remove(
     const store::Item* name,
-    bool isDynamic,
-    bool isJSONIQ) 
+    bool isDynamic) 
 {
   store::Collection_t lColl;
-  if (!get(name, lColl, isDynamic, isJSONIQ))
+  if (!get(name, lColl, isDynamic))
   {
     return false;
   }
@@ -159,9 +156,9 @@ bool SimpleCollectionSet::remove(
 }
 
 
-store::Iterator_t SimpleCollectionSet::names(bool dynamic, bool jsoniq)
+store::Iterator_t SimpleCollectionSet::names(bool dynamic)
 {
-  return new NameIterator<Set>(theCollections, dynamic, jsoniq);
+  return new NameIterator<Set>(theCollections, dynamic);
 }
 
 
@@ -179,11 +176,6 @@ NameIterator<SimpleCollectionSet::Set>::next(zorba::store::Item_t& aResult)
   while (theIterator != theItems.end())
   {
     if ((*theIterator).second->isDynamic() != theDynamicCollections)
-    {
-      ++theIterator;
-      continue;
-    } 
-    else if ((*theIterator).second->isJSONIQ() != theJSONIQCollections)
     {
       ++theIterator;
       continue;

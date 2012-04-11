@@ -56,15 +56,21 @@ namespace zorba{
 
     class NodeAfterIterator;
 
+    class ZorbaCreateCollectionIterator;
+
+    class ZorbaDeleteCollectionIterator;
+
+    class IsAvailableCollectionIterator;
+
+    class AvailableCollectionsIterator;
+
     class FnCollectionIterator;
 
     class ZorbaCollectionIterator;
 
+    class ZorbaCollectionNameIterator;
+
     class ZorbaIndexOfIterator;
-
-    class ZorbaCreateCollectionIterator;
-
-    class ZorbaDeleteCollectionIterator;
 
     class ZorbaInsertNodesIterator;
 
@@ -92,11 +98,7 @@ namespace zorba{
 
     class ZorbaDeleteNodesLastIterator;
 
-    class ZorbaCollectionNameIterator;
-
-    class IsAvailableCollectionIterator;
-
-    class AvailableCollectionsIterator;
+    class ZorbaTruncateCollectionIterator;
 
     class IsAvailableIndexIterator;
 
@@ -688,20 +690,29 @@ public:
     virtual void beginVisit ( const NodeAfterIterator& ) = 0;
     virtual void endVisit   ( const NodeAfterIterator& ) = 0;
 
+    virtual void beginVisit ( const ZorbaCreateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaCreateCollectionIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaDeleteCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteCollectionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableCollectionsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableCollectionsIterator& ) = 0;
+
     virtual void beginVisit ( const FnCollectionIterator& ) = 0;
     virtual void endVisit   ( const FnCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaCollectionIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCollectionIterator& ) = 0;
 
+    virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
+
     virtual void beginVisit ( const ZorbaIndexOfIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIndexOfIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaCreateCollectionIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaCreateCollectionIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaDeleteCollectionIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaInsertNodesIterator& ) = 0;
     virtual void endVisit   ( const ZorbaInsertNodesIterator& ) = 0;
@@ -742,14 +753,8 @@ public:
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
-
-    virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
-    virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;
-
-    virtual void beginVisit ( const AvailableCollectionsIterator& ) = 0;
-    virtual void endVisit   ( const AvailableCollectionsIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const IsAvailableIndexIterator& ) = 0;
     virtual void endVisit   ( const IsAvailableIndexIterator& ) = 0;

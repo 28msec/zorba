@@ -33,15 +33,13 @@ private:
   typename T::iterator theIterator;
   bool                 theOpened;
   bool                 theDynamicCollections;
-  bool                 theJSONIQCollections;
   
 public:
-  NameIterator(T& aItems, bool dynamic, bool jsoniq)
+  NameIterator(T& aItems, bool dynamic)
     :
     theItems(aItems),
     theOpened(false),
-    theDynamicCollections(dynamic),
-    theJSONIQCollections(jsoniq)
+    theDynamicCollections(dynamic)
   {
   }
     

@@ -21,6 +21,9 @@
 #include "collection.h"
 
 #include "store/api/iterator.h"
+#include "store/api/collection.h"
+#include "tree_id.h"
+#include "tree_id_generator.h"
 
 #include "zorbautils/latch.h"
 #include "zorbautils/checked_vector.h"
@@ -41,6 +44,7 @@ namespace zorba { namespace simplestore {
 class SimpleCollection : public Collection
 {
   friend class CollectionIter;
+  friend class UpdTruncateCollection;
 
 public:
   class CollectionIter : public store::Iterator
@@ -68,15 +72,17 @@ protected:
   store::Item_t                          theName;
   checked_vector<store::Item_t>          theXmlTrees;
   bool                                   theIsDynamic;
-  bool                                   theIsJSONIQ;
 
-  ulong                                  theTreeCounter;
+  TreeIdGenerator                      * theTreeIdGenerator;
 
   const std::vector<store::Annotation_t> theAnnotations;
+
   store::Item_t                          theNodeType;
 
   SYNC_CODE(Latch                        theLatch;)
 
+  // default constructor added in order to allow subclasses to instantiate
+  // a collection without name
   SimpleCollection();
 
 public:
@@ -84,13 +90,14 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool isDynamic = false,
-      bool isJSONIQ = false);
+      bool isDynamic = false);
 
   virtual ~SimpleCollection();
   
   /********************** All these methods implement the **********************
   ***************** zorba::simplestore::Collection interface ******************/
+
+  ulong getId() const { return theId; }
 
   const store::Item* getName() const { return theName.getp(); }
 
@@ -98,38 +105,32 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
-  bool isJSONIQ() const { return theIsJSONIQ; }
-
   void getAnnotations(std::vector<store::Annotation_t>& annotations) const;
+
+  TreeId createTreeId();
 
   store::Iterator_t getIterator();
 
   void addNode(store::Item* node, xs_integer position = -1);
 
+  xs_integer addNodes(
+      std::vector<store::Item_t>& nodes,
+      const store::Item* targetNode,
+      bool before);
+
+  bool removeNode(store::Item* node, xs_integer& pos);
+
+  bool removeNode(xs_integer position);
+
+  void removeAll();
+
+  xs_integer removeNodes(xs_integer position, xs_integer num);
+
   bool findNode(const store::Item* node, xs_integer& position) const;
 
   store::Item_t nodeAt(xs_integer position);
 
-  //
-  // The following methods are virtual to allow extension by subclasses
-  //
-
-  virtual ulong getId() const { return theId; }
-
-  virtual ulong createTreeId() { return theTreeCounter++; }
-
-  virtual xs_integer addNodes(
-        std::vector<store::Item_t>& nodes,
-        const store::Item* targetNode,
-        bool before);
-
-  virtual bool removeNode(store::Item* node, xs_integer& pos);
-
-  virtual bool removeNode(xs_integer position);
-
-  virtual xs_integer removeNodes(xs_integer position, xs_integer num);
-
-  virtual void adjustTreePositions();
+  void adjustTreePositions();
 };
 
 } // namespace store

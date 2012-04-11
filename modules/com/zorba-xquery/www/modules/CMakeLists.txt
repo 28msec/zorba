@@ -63,6 +63,8 @@ DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/schema")
 DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
   URI "http://www.zorba-xquery.com/modules/string")
+DECLARE_ZORBA_SCHEMA(FILE xml-options.xsd 
+  URI "http://www.zorba-xquery.com/modules/xml-options") 
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/uri")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
@@ -108,11 +110,6 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
-
-DECLARE_ZORBA_MODULE(FILE store/jsoniq/dynamic/collections/ddl.xq VERSION 1.0
-  URI "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl")
-DECLARE_ZORBA_MODULE(FILE store/jsoniq/dynamic/collections/dml.xq VERSION 1.0
-  URI "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml")
 
 # debugger client DBGP message handler module
 IF (ZORBA_WITH_DEBUGGER)

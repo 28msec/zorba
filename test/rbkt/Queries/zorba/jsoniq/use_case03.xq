@@ -1,12 +1,12 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/jsoniq/dynamic/collections/dml";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 import module namespace j = "http://www.jsoniq.org/functions";
 
 ddl:create(xs:QName("sales"));
 ddl:create(xs:QName("products"));
 ddl:create(xs:QName("stores"));
 
-dml:insert-nodes-last(xs:QName("sales"),
+dml:insert-last(xs:QName("sales"),
   (
     { "product" : "broiler", "store number" : 1, "quantity" : 20  },
     { "product" : "toaster", "store number" : 2, "quantity" : 100 },
@@ -19,7 +19,8 @@ dml:insert-nodes-last(xs:QName("sales"),
     { "product" : "shirt", "store number" : 3, "quantity" : 10 }
   )
 );
-dml:insert-nodes-last(xs:QName("products"),
+
+dml:insert-last(xs:QName("products"),
   (
     { "name" : "broiler", "category" : "kitchen", "price" : 100, "cost" : 70 },
     { "name" : "toaster", "category" : "kitchen", "price" : 30, "cost" : 10 },
@@ -28,7 +29,8 @@ dml:insert-nodes-last(xs:QName("products"),
     { "name" : "shirt", "category" : "clothes", "price" : 10, "cost" : 3 }
   )
 );
-dml:insert-nodes-last(xs:QName("stores"),
+
+dml:insert-last(xs:QName("stores"),
   (
     { "store number" : 1, "state" : "CA" },
     { "store number" : 2, "state" : "CA" },
