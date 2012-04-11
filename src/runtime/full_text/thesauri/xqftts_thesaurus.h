@@ -162,9 +162,14 @@ private:
  */
 class provider : public internal::ThesaurusProvider {
 public:
+  provider( zstring path );
+
   // inherited
   bool getThesaurus( locale::iso639_1::type,
                      internal::Thesaurus::ptr* = nullptr ) const;
+
+private:
+  zstring path;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
