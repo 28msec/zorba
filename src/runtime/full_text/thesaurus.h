@@ -100,7 +100,8 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %ThesaurusProvider TODO
+ * A %ThesaurusProvider is-a Resource for providing thesauri for a given
+ * language.
  */
 class ThesaurusProvider : public internal::Resource {
 public:

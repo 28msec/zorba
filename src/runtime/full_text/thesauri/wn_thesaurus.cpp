@@ -566,20 +566,15 @@ bool provider::getThesaurus( iso639_1::type lang,
   }
 
   if ( found ) {
-    if ( t ) {
+    if ( t )
       t->reset( new thesaurus( path, lang ) );
-    }
     return true;
   }
-  else {
-    return false;
-  }
 #else /* ZORBA_WITH_FILE_ACCESS */
-  if ( t ) {
+  if ( t )
     t->reset();
-  }
-  return false;
 #endif /* ZORBA_WITH_FILE_ACCESS */
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

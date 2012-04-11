@@ -100,8 +100,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   thesaurus_impl::type t_impl = thesaurus_impl::find( t_scheme );
 
   switch ( t_impl ) {
-    case thesaurus_impl::xqftts:
-    {
+    case thesaurus_impl::xqftts: {
       // Currently, at least, we presume that an xqftts: URL should be used
       // exactly like a file: URL. PAUL: Less hacky way to do this?
       zstring f_url( "file" );
@@ -110,8 +109,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       return new xqftts::provider( t_path );
     }
 #   ifdef ZORBA_WITH_FILE_ACCESS
-    case thesaurus_impl::wordnet:
-    {
+    case thesaurus_impl::wordnet: {
       // Wordnet, on the other hand, needs to find its data file in Zorba's
       // library path using the mangled form of the original URI. So, mangle
       // here for convenience.

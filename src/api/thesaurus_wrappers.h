@@ -56,7 +56,7 @@ private:
 
 class ThesaurusProviderWrapper : public ThesaurusProvider {
 public:
-  ThesaurusProviderWrapper( zorba::ThesaurusProvider const *p );
+  ThesaurusProviderWrapper( zorba::ThesaurusProvider const* );
 
   // inherited
   bool getThesaurus( locale::iso639_1::type, Thesaurus::ptr* ) const;

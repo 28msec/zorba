@@ -104,7 +104,14 @@ bool TestThesaurus::iterator::next( String *synonym ) {
 class TestThesaurusProvider : public ThesaurusProvider {
 public:
   bool getThesaurus( iso639_1::type lang, Thesaurus::ptr* = 0 ) const;
+
+  // inherited
+  void destroy() const;
 };
+
+void TestThesaurusProvider::destroy() const {
+  // do nothing
+}
 
 bool TestThesaurusProvider::getThesaurus( iso639_1::type lang,
                                           Thesaurus::ptr *result ) const {
@@ -116,7 +123,6 @@ bool TestThesaurusProvider::getThesaurus( iso639_1::type lang,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if 0 /* CEEJ */
 class TestThesaurusResolver : public URLResolver {
 public:
   TestThesaurusResolver( String const &uri ) : uri_( uri ) { }
@@ -128,11 +134,10 @@ private:
 };
 
 Resource*
-TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
-  static TestThesaurus thesaurus;
-  return uri == uri_ ? &thesaurus : 0;
+TestThesaurusResolver::resolveURL( String const &uri, EntityData const* ) {
+  static TestThesaurusProvider provider;
+  return uri == uri_ ? &provider : 0;
 }
-#endif /* CEEJ */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -154,10 +159,8 @@ int test_thesaurus( int argc, char *argv[] ) {
       "  using thesaurus at \"http://test\" \n";
 
     StaticContext_t sctx = zorba->createStaticContext();
-#if 0 /* CEEJ */
     TestThesaurusResolver resolver( "http://test" );
     sctx->registerURLResolver( &resolver );
-#endif /* CEEJ */
     XQuery_t xquery = zorba->compileQuery( query_src, sctx );
 
     Zorba_SerializerOptions ser_options;

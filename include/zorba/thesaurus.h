@@ -74,11 +74,11 @@ public:
    * Destroys this %Thesaurus.
    * This function is called by Zorba when the %Thesaurus is no longer needed.
    *
-   * If your URLResolver dynamically allocates %Thesaurus objects, then the
+   * If your implementation dynamically allocates %Thesaurus objects, then your
    * implementation can simply be (and usually is) <code>delete this</code>.
    *
-   * If your URLResolver returns a pointer to a static %Thesaurus object, then
-   * the implementation should do nothing.
+   * If your implementation returns a pointer to a static %Thesaurus object,
+   * then your implementation should do nothing.
    */
   virtual void destroy() const = 0;
 
@@ -106,7 +106,8 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %ThesaurusProvider TODO
+ * A %ThesaurusProvider is-a Resource for providing thesauri for a given
+ * language.
  */
 class ZORBA_DLL_PUBLIC ThesaurusProvider : public Resource {
 public:
