@@ -326,7 +326,6 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(
 
 
 SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
 
 NARY_ACCEPT(CountCollectionIterator);
@@ -1644,6 +1643,9 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
 
+  /* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
+
   if (theChildren.size() > 1)
   {
     if (!consumeNext(numNodesItem, theChildren[1].getp(), planState))
@@ -1763,6 +1765,9 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
+
+	/* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
