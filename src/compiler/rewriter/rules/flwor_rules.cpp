@@ -696,14 +696,14 @@ static bool safe_to_fold_single_use(
 
       const orderby_clause& ord_clause = *static_cast<const orderby_clause*>(&c);
 
-      for (std::vector<expr_t>::const_iterator expr = ord_clause.begin();
-          expr != ord_clause.end();
-          ++expr)
+      for (std::vector<expr_t>::const_iterator ite = ord_clause.begin();
+          ite != ord_clause.end();
+          ++ite)
       {
-        int var_uses = expr_tools::count_variable_uses(*expr, var, NULL, 1);
+        int var_uses = expr_tools::count_variable_uses(*ite, var, NULL, 1);
         if (var_uses == 1)
         {
-          referencingExpr = *expr;
+          referencingExpr = *ite;
           break;
         }
       }
