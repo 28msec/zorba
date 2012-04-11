@@ -285,7 +285,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (pvar != NULL)
       {
-        if(fc->is_allowing_empty() && domainCount == 0)
+        if (fc->is_allowing_empty() && domainCount == 0)
         {
           MODIFY(subst_vars(rCtx,
                             node,
@@ -508,14 +508,14 @@ static void collect_flw_vars(
     {
       const group_clause* gc = static_cast<const group_clause *>(&c);
 
-      for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginGroupVars();
+      for (flwor_clause::rebind_list_t::const_iterator iter = gc->beginGroupVars();
           iter != gc->endGroupVars();
           ++iter)
       {
         vars.insert((*iter).second);
       }
 
-      for(flwor_clause::rebind_list_t::const_iterator iter = gc->beginNonGroupVars();
+      for (flwor_clause::rebind_list_t::const_iterator iter = gc->beginNonGroupVars();
           iter != gc->endNonGroupVars();
           ++iter)
       {
@@ -691,61 +691,46 @@ static bool safe_to_fold_single_use(
     }
     else if (kind == flwor_clause::order_clause)
     {
-      if (varQuant != TypeConstants::QUANT_ONE)
+      if (!declared || varQuant != TypeConstants::QUANT_ONE)
         continue;
 
-      bool already_found = false;
       const orderby_clause& ord_clause = *static_cast<const orderby_clause*>(&c);
 
-      for(std::vector<expr_t>::const_iterator ite = ord_clause.begin();
-          ite != ord_clause.end();
-          ++ite)
+      for (std::vector<expr_t>::const_iterator expr = ord_clause.begin();
+          expr != ord_clause.end();
+          ++expr)
       {
-        int var_uses = expr_tools::count_variable_uses(*ite, var, NULL, 1);
-        if (var_uses > 0)
+        int var_uses = expr_tools::count_variable_uses(*expr, var, NULL, 1);
+        if (var_uses == 1)
         {
-          if (already_found)
-          {
-            return false;
-          }
-
-          if (var_uses == 1)
-          {
-            already_found = true;
-            referencingExpr = *ite;
-          }
-          else
-          {
-            continue;
-          }
+          referencingExpr = *expr;
+          break;
         }
       }
     }
     else if (kind == flwor_clause::group_clause)
     {
-      if(varQuant != TypeConstants::QUANT_ONE)
+      if (!declared || varQuant != TypeConstants::QUANT_ONE)
         continue;
 
-      bool already_found = false;
       const group_clause& grp_clause = *static_cast<const group_clause*>(&c);
 
       for (flwor_clause::rebind_list_t::const_iterator group_var=
-            grp_clause.beginGroupVars();
+           grp_clause.beginGroupVars();
            group_var != grp_clause.endGroupVars();
            group_var++)
       {
         expr* group_var_expr = (*group_var).first.getp();
-        if(expr_tools::count_variable_uses(group_var_expr, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(group_var_expr, var, NULL, 1) == 1)
         {
-          if(already_found) return false;
-          already_found = true;
           referencingExpr = group_var_expr;
+          break;
         }
       }
     }
     else if (kind == flwor_clause::window_clause)
     {
-      if(varQuant != TypeConstants::QUANT_ONE)
+      if (!declared || varQuant != TypeConstants::QUANT_ONE)
         continue;
 
       const window_clause& win_clause = *static_cast<const window_clause*>(&c);
@@ -763,20 +748,20 @@ static bool safe_to_fold_single_use(
       int stop_var_count =
         expr_tools::count_variable_uses(stop_expr, var, NULL, 1);
 
-      if(domain_var_count + start_var_count + stop_var_count > 1)
+      if (domain_var_count + start_var_count + stop_var_count > 1)
         return false;
 
       //Since count_variable_uses(..) only returns a positive integer
       //We can assume that all the var_counts are either 0 or 1, and only
       //one of them at most can be 1.
 
-      if(domain_var_count == 1)
+      if (domain_var_count == 1)
       {
         referencingExpr = domain_expr;
         break;
       }
 
-      if(start_var_count == 1 || stop_var_count == 1)
+      if (start_var_count == 1 || stop_var_count == 1)
       {
         referencingExpr= (start_var_count == 1) ? start_expr : stop_expr;
         break;
