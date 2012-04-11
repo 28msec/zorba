@@ -172,8 +172,8 @@ class ZORBA_DLL_PUBLIC URLResolver
    * object itself will be discarded.
    *
    * In any case, if they create a Resource, Zorba will take memory
-   * ownership of the Resource and delete it when it is no longer
-   * needed.
+   * ownership of the Resource and delete it (by calling destroy() on it)
+   * when it is no longer needed.
    */
   virtual Resource* resolveURL(const zorba::String& aUrl,
     EntityData const* aEntityData) = 0;

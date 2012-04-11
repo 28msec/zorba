@@ -32,20 +32,6 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Contains additional data for URIMappers and URLResolvers
- * when mapping/resolving a Thesaurus URI.
- */
-class ZORBA_DLL_PUBLIC ThesaurusEntityData : public EntityData {
-public:
-  /**
-   * Gets the language for which a thesaurus is being requested.
-   *
-   * @return said language.
-   */
-  virtual locale::iso639_1::type getLanguage() const = 0;
-};
-
-/**
  * A %Thesaurus is-a Resource for thesaurus implementations.
  */
 class ZORBA_DLL_PUBLIC Thesaurus {

@@ -241,7 +241,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
 
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
-      comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
+      comp_uris.front(), internal::EntityData::THESAURUS, error_msg
     );
 #if 0
     if ( !error_msg.empty() )
@@ -379,7 +379,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
     );
 
   rsrc = sctx->resolve_uri(
-    comp_uris.front(), internal::ThesaurusEntityData( lang ), error_msg
+    comp_uris.front(), internal::EntityData::THESAURUS, error_msg
   );
   state->thesaurus_.reset(
     dynamic_cast<internal::Thesaurus*>( rsrc.release() )

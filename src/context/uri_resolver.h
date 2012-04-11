@@ -193,25 +193,6 @@ private:
   Kind const theKind;
 };
 
-#ifndef ZORBA_NO_FULL_TEXT
-/**
- * @brief The class containing additional data for URIMappers and URLResolvers
- * when mapping/resolving a Thesaurus URI.
- */
-class ThesaurusEntityData : public EntityData
-{
-public:
-  ThesaurusEntityData(locale::iso639_1::type aLang);
-  /**
-   * @brief Return the language for which a thesaurus is being requested.
-   */
-  virtual locale::iso639_1::type getLanguage() const;
-
-private:
-  locale::iso639_1::type const theLang;
-};
-#endif /* ZORBA_NO_FULL_TEXT */
-
 /**
  * @brief Interface for URL resolving.
  *

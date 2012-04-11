@@ -1214,7 +1214,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   zstring error_msg;
   auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
-    uri, internal::ThesaurusEntityData( qt0.lang() ), error_msg
+    uri, internal::EntityData::THESAURUS, error_msg
   );
   if ( !rsrc.get() )
     throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
