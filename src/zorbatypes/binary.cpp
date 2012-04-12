@@ -21,10 +21,13 @@
 #include <string>
 
 #include "zorbatypes/binary.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
-#include "zorbaserialization/template_serializer.h"
+
+#include "zorbaserialization/serialize_template_types.h"
 
 using namespace std;
 
