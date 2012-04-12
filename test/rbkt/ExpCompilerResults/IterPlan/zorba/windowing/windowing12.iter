@@ -1,3 +1,6 @@
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)"/>
+
 Iterator tree for main query:
 <FunctionTraceIterator>
   <flwor::TupleStreamIterator>
@@ -28,3 +31,4 @@ Iterator tree for main query:
     </ElementIterator>
   </flwor::TupleStreamIterator>
 </FunctionTraceIterator>
+

@@ -94,7 +94,7 @@ Iterator tree for main query:
             <GroupVariable/>
           </Spec>
           <Spec>
-            <LetVarIterator varname="w"/>
+            <ForVarIterator varname="e"/>
             <NonGroupVariable/>
           </Spec>
           <Spec>
@@ -102,11 +102,11 @@ Iterator tree for main query:
             <NonGroupVariable/>
           </Spec>
           <Spec>
-            <ForVarIterator varname="e"/>
+            <LetVarIterator varname="workingTime"/>
             <NonGroupVariable/>
           </Spec>
           <Spec>
-            <LetVarIterator varname="workingTime"/>
+            <LetVarIterator varname="w"/>
             <NonGroupVariable/>
           </Spec>
         </flwor::GroupByIterator>
@@ -130,3 +130,4 @@ Iterator tree for main query:
     </EnclosedIterator>
   </ElementIterator>
 </SequentialIterator>
+

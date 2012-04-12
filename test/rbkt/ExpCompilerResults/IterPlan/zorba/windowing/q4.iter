@@ -1,3 +1,6 @@
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:integer(2)"/>
+
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="2" varname="timesequence">
@@ -76,3 +79,4 @@ Iterator tree for main query:
     </FnAvgIterator>
   </flwor::TupleStreamIterator>
 </SequentialIterator>
+
