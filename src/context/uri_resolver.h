@@ -55,21 +55,21 @@ public:
   /**
    * @brief Return the URL used to load this Resource.
    */
-  zstring getUrl() { return theUrl; }
+  zstring const& getUrl() const { return theUrl; }
 
   virtual ~Resource() = 0;
 
-  protected:
+protected:
 
   Resource();
 
-  private:
+private:
 
   /**
    * Used by static_context to populate the URL.
    */
-  friend class zorba::static_context;
   void setUrl(zstring aUrl) { theUrl = aUrl; }
+  friend class zorba::static_context;
 
   zstring theUrl;
 };
