@@ -33,7 +33,7 @@ import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zm = "http://www.zorba-xquery.com/manifest";
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
@@ -58,7 +58,7 @@ declare variable $pxqdoc:serParamXml :=
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %ann:sequential function pxqdoc:delete-XML-dir(
+declare %an:sequential function pxqdoc:delete-XML-dir(
   $xqdocPath as xs:string)
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
@@ -70,7 +70,7 @@ declare %ann:sequential function pxqdoc:delete-XML-dir(
   else ();
 };
 
-declare %private %ann:nondeterministic function pxqdoc:load-manifest(
+declare %private %an:nondeterministic function pxqdoc:load-manifest(
   $zorbaManifestPath as xs:string)
 {
   try 
@@ -90,7 +90,7 @@ declare %private %ann:nondeterministic function pxqdoc:load-manifest(
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
+declare %an:sequential function pxqdoc:generate-xqdoc-XML(
   $zorbaManifestPath as xs:string,
   $xqdocPath as xs:string)
 {
