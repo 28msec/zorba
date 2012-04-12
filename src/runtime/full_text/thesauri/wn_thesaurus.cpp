@@ -58,6 +58,18 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
 ////////// Helper functions ///////////////////////////////////////////////////
 
 /**
+ * Appends the name of the file Zorba uses for a WordNet thesaurus files.
+ *
+ * @param path The path to append to.
+ * @param lang The language of the thesaurus file.
+ */
+static void append_wordnet_file( zstring &path, iso639_1::type lang ) {
+  fs::append( path, "wordnet-" );
+  path += iso639_1::string_of[ lang ];
+  path += ".zth";
+}
+
+/**
  * "Fixes" the "at most" parameter.  The Full Text specification section 3.4.3
  * says in part:
  *
@@ -195,9 +207,7 @@ static zstring get_wordnet_path( zstring path ) {
   for ( bool loop = true; loop; ) {
     switch ( fs::get_type( path ) ) {
       case fs::directory:
-        fs::append( path, "wordnet-" );
-        path += iso639_1::string_of[ iso639_1::en ];
-        path += ".zth";
+        append_wordnet_file( path, iso639_1::en );
         break;
       case fs::file:
         loop = false;
@@ -220,7 +230,7 @@ static zstring get_wordnet_path( zstring path ) {
  *
  * @param relationship The XQuery thesaurus relationship.
  * @param lang The language of the relationship.
- * @return Returns the corresponding Wordnet pointer type.
+ * @return Returns the corresponding WordNet pointer type.
  */
 static pointer::type map_xquery_rel( zstring const &relationship,
                                      iso639_1::type lang ) {
@@ -529,6 +539,7 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
 ///////////////////////////////////////////////////////////////////////////////
 
 provider::provider( zstring const &path ) : path_( path ) {
+  ZORBA_ASSERT( !path.empty() );
 }
 
 bool provider::getThesaurus( iso639_1::type lang,
@@ -542,32 +553,29 @@ bool provider::getThesaurus( iso639_1::type lang,
       // no break;
     case iso639_1::en:
       file_path = path_;
-      fs::append( file_path, "wordnet-" );
-      file_path.append( iso639_1::string_of[ lang ] );
-      file_path.append( ".zth" );
+      append_wordnet_file( file_path, lang );
       break;
     default:
       return false;
   }
 
   //
-  // We want to look for the Wordnet thesaurus file on the library path.
+  // We want to look for the WordNet thesaurus file on the library path.
   // Unfortunately every static_context can have its own library path and we
   // don't have direct access to the query's static_context here.  So, for now
   // we only look on the root static_context's library path.
   //
   static_context &sctx = GENV.getRootStaticContext();
   std::vector<zstring> lib_path_components;
-  sctx.get_lib_path( lib_path_components );
+  sctx.get_full_lib_path( lib_path_components );
   MUTATE_EACH( std::vector<zstring>, path, lib_path_components ) {
     fs::append( *path, file_path );
     if ( fs::get_type( *path ) == fs::file ) {
       if ( t )
-        t->reset( new thesaurus( path_, lang ) );
+        t->reset( new thesaurus( *path, lang ) );
       return true;
     }
   }
-
   return false;
 #else
   switch ( lang ) {

@@ -149,23 +149,21 @@ namespace zorba
                                            lUserStream->getStreamReleaser());
         lUserStream->setStreamReleaser(nullptr);
       }
-#if 0 /* CEEJ */
 #ifndef ZORBA_NO_FULL_TEXT
       else {
-        Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
-        if (lUserThesaurus != NULL) {
-          // Here we pass memory ownership of the actual Thesaurus to the
-          // internal ThesaurusWrapper.
-          lRetval = new internal::ThesaurusWrapper
-              (Thesaurus::ptr(lUserThesaurus));
-          lUserPtr.release();
+        ThesaurusProvider* lUserThesaurusProvider =
+          dynamic_cast<ThesaurusProvider*>(lUserPtr.get());
+        if (lUserThesaurusProvider) {
+          // Here we pass memory ownership of the actual ThesaurusProvider to
+          // the internal ThesaurusWrapper.
+          lRetval = new internal::ThesaurusProviderWrapper
+              (lUserThesaurusProvider);
         }
         else {
           assert(false);
         }
       }
 #endif /* ZORBA_NO_FULL_TEXT */
-#endif /* CEEJ */
     }
     return lRetval;
   }

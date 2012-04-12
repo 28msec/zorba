@@ -96,11 +96,11 @@ ThesaurusProviderWrapper( zorba::ThesaurusProvider const *p ) :
 
 bool ThesaurusProviderWrapper::getThesaurus( iso639_1::type lang,
                                              Thesaurus::ptr *result ) const {
-  zorba::Thesaurus::ptr api_thesaurus;
-  zorba::Thesaurus::ptr *const api_ptr = result ? &api_thesaurus : nullptr;
-  if ( api_thesaurus_provider_->getThesaurus( lang, api_ptr ) ) {
+  zorba::Thesaurus::ptr api_ptr;
+  zorba::Thesaurus::ptr *const api_ptr_ptr = result ? &api_ptr : nullptr;
+  if ( api_thesaurus_provider_->getThesaurus( lang, api_ptr_ptr ) ) {
     if ( result )
-      result->reset( new ThesaurusWrapper( std::move( api_thesaurus ) ) );
+      result->reset( new ThesaurusWrapper( std::move( api_ptr ) ) );
     return true;
   }
   return false;

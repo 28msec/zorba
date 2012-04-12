@@ -22,6 +22,8 @@
 #ifndef ZORBA_NO_FULL_TEXT
 
 #include <zorba/thesaurus.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "runtime/full_text/thesaurus.h"
 
 namespace zorba {
@@ -61,7 +63,7 @@ public:
   // inherited
   bool getThesaurus( locale::iso639_1::type, Thesaurus::ptr* ) const;
 private:
-  zorba::ThesaurusProvider const *const api_thesaurus_provider_;
+  std::unique_ptr<zorba::ThesaurusProvider const> const api_thesaurus_provider_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
