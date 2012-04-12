@@ -263,6 +263,12 @@ public:
   virtual void
   getExternalVariables(Iterator_t& aVarsIter) const;  
 
+  virtual Item
+  fetch(const String& aURI) const;
+
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const;
+
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
 

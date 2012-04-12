@@ -629,6 +629,38 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual void
 	getExternalVariables(Iterator_t& aVarsIter) const = 0;
 
+  /** \brief Fetches an resource refered to by the given URI.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * The default EntityKind for resources fetched by this function
+   * is "SOME_CONTENT".
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetch(const String& aURI) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @param aEntityKind the kind of the entity to fetch (i.e.
+   *   SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const = 0;
+
   /**
    * @brief Set the URI lookup path (list of filesystem directories) for this
    * static context.
