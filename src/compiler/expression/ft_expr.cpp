@@ -25,7 +25,7 @@ using namespace std;
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(ftcontains_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcontains_expr)
+
 
 #define EV_ACCEPT( EXPR, V )                  \
     if ( !(EXPR) ) ; else (EXPR)->accept( V )

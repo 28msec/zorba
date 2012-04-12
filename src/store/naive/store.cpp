@@ -33,7 +33,7 @@
 
 #include "properties.h"
 #include "string_pool.h"
-#include "store.h"
+#include "simple_store.h"
 #include "simple_temp_seq.h"
 #include "simple_lazy_temp_seq.h"
 #include "collection.h"

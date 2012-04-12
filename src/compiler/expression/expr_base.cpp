@@ -36,8 +36,9 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
+#include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {

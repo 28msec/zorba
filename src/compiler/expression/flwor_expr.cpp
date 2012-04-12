@@ -32,49 +32,38 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(for_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(for_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(let_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(let_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(window_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(window_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(group_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(group_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(count_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(count_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(where_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(where_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
 
 
 DEF_EXPR_ACCEPT (flwor_expr)

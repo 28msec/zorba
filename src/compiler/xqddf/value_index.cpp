@@ -43,7 +43,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
-END_SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
 
 
 /*******************************************************************************

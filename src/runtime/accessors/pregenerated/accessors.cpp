@@ -34,15 +34,9 @@
 namespace zorba {
 
 // <NodeNameIterator>
-const char* NodeNameIterator::class_name_str = "NodeNameIterator";
 NodeNameIterator::class_factory<NodeNameIterator>
 NodeNameIterator::g_class_factory;
 
-const serialization::ClassVersion 
-NodeNameIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NodeNameIterator::class_versions_count =
-sizeof(NodeNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void NodeNameIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -62,15 +56,9 @@ NodeNameIterator::~NodeNameIterator() {}
 
 
 // <NilledIterator>
-const char* NilledIterator::class_name_str = "NilledIterator";
 NilledIterator::class_factory<NilledIterator>
 NilledIterator::g_class_factory;
 
-const serialization::ClassVersion 
-NilledIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NilledIterator::class_versions_count =
-sizeof(NilledIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void NilledIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -90,15 +78,9 @@ NilledIterator::~NilledIterator() {}
 
 
 // <FnStringIterator>
-const char* FnStringIterator::class_name_str = "FnStringIterator";
 FnStringIterator::class_factory<FnStringIterator>
 FnStringIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FnStringIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnStringIterator::class_versions_count =
-sizeof(FnStringIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FnStringIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -132,15 +114,9 @@ void FnStringIteratorState::reset(PlanState& planState) {
 
 
 // <FnDataIterator>
-const char* FnDataIterator::class_name_str = "FnDataIterator";
 FnDataIterator::class_factory<FnDataIterator>
 FnDataIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FnDataIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnDataIterator::class_versions_count =
-sizeof(FnDataIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FnDataIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -174,15 +150,9 @@ void FnDataIteratorState::reset(PlanState& planState) {
 
 
 // <BaseUriIterator>
-const char* BaseUriIterator::class_name_str = "BaseUriIterator";
 BaseUriIterator::class_factory<BaseUriIterator>
 BaseUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
-BaseUriIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int BaseUriIterator::class_versions_count =
-sizeof(BaseUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void BaseUriIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -202,15 +172,9 @@ BaseUriIterator::~BaseUriIterator() {}
 
 
 // <DocumentUriIterator>
-const char* DocumentUriIterator::class_name_str = "DocumentUriIterator";
 DocumentUriIterator::class_factory<DocumentUriIterator>
 DocumentUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
-DocumentUriIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DocumentUriIterator::class_versions_count =
-sizeof(DocumentUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void DocumentUriIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -230,15 +194,9 @@ DocumentUriIterator::~DocumentUriIterator() {}
 
 
 // <RootIterator>
-const char* RootIterator::class_name_str = "RootIterator";
 RootIterator::class_factory<RootIterator>
 RootIterator::g_class_factory;
 
-const serialization::ClassVersion 
-RootIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int RootIterator::class_versions_count =
-sizeof(RootIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void RootIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

@@ -23,6 +23,15 @@
 namespace zorba
 {
 
+namespace internal 
+{
+namespace diagnostic 
+{
+  class location;
+}
+}
+
+
 namespace simplestore
 {
 
@@ -32,14 +41,13 @@ namespace json
 class JSONLoader
 {
 protected:
-  std::istream& in;
-  internal::diagnostic::location* theRelativeLoc;
-public:
+  std::istream                   & in;
+  internal::diagnostic::location * theRelativeLoc;
 
+public:
   JSONLoader(
     std::istream& s,
-    internal::diagnostic::location* relative_error_loc
-  );
+    internal::diagnostic::location* relative_error_loc);
 
   ~JSONLoader();
 

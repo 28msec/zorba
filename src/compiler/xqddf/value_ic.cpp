@@ -33,7 +33,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ValueIC)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 
 
 /*******************************************************************************

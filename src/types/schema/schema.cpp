@@ -54,12 +54,13 @@
 #endif /* ZORBA_NO_XMLSCHEMA */
 
 
-//using namespace std;
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(Schema)
-END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 //#define DO_TRACE
 //#define DO_PRINT_SCHEMA_INFO
@@ -90,6 +91,7 @@ static void transcode(const XMLCh* const str, zstring& res)
   XMLString::release(&trStr);
 }
 
+
 /**
  * A Xerces BinInputStream that returns bytes from a std::istream.
  */
@@ -97,7 +99,8 @@ class IstreamBinInputStream : public XERCES_CPP_NAMESPACE::BinInputStream
 {
 public:
   IstreamBinInputStream(std::istream* aStream)
-    : theStream(aStream)
+    : 
+    theStream(aStream)
   {
   }
 
@@ -126,6 +129,7 @@ private:
   std::istream* theStream;
 };
 
+
 /**
  * A Xerces InputSource that returns a IstreamBinInputStream.
  */
@@ -140,7 +144,8 @@ public:
 
   ~IstreamInputSource()
   {
-    if (theStreamReleaser) {
+    if (theStreamReleaser) 
+    {
       theStreamReleaser(theStream);
     }
   }
@@ -154,6 +159,7 @@ private:
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
 };
+
 
 /**
  * A Xerces EntityResolver that looks for a specific URL and returns

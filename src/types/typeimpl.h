@@ -30,7 +30,7 @@
 
 #include "system/globalenv.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba
 {
@@ -364,21 +364,7 @@ protected:
       const TypeManager* manager,
       TypeKind type_kind,
       TypeConstants::quantifier_t quantifier,
-      bool builtin)
-    :
-    theManager(const_cast<TypeManager*>(manager)),
-    theKind(type_kind),
-    theQuantifier(quantifier),
-    theIsBuiltin(builtin)
-  {
-    if (theIsBuiltin)
-    {
-      // register this hardcoded object to help plan serialization
-      XQType* this_ptr = this;
-      *::zorba::serialization::ClassSerializer::getInstance()->
-      getArchiverForHardcodedObjects() & this_ptr;
-    }
-  }
+      bool builtin);
 };
 
 
@@ -457,16 +443,16 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-   AtomicXQType(
-        const TypeManager* manager,
-        store::SchemaTypeCode type_code,
-        TypeConstants::quantifier_t quantifier,
-        bool builtin = false)
-     :
-     XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
-     m_type_code(type_code)
-   {
-   }
+  AtomicXQType(
+      const TypeManager* manager,
+      store::SchemaTypeCode type_code,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin = false)
+    :
+    XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
+    m_type_code(type_code)
+  {
+  }
 
   store::SchemaTypeCode get_type_code() const { return m_type_code; }
 
@@ -478,7 +464,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /******************************************************************************
   Class StructuredItemXQType represents sequence types structured-item(), 
   structured-item()?, structured-item()*, or structured-item()+
@@ -498,6 +483,7 @@ public:
 };
 
 
+#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Class JSONXQType represents all the sequence types whose ItemType is a
   JSONTest.
@@ -556,8 +542,8 @@ public:
       bool builtin = false);
 
   NodeXQType(
-        const NodeXQType& source,
-        TypeConstants::quantifier_t quantifier);
+      const NodeXQType& source,
+      TypeConstants::quantifier_t quantifier);
 
   store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
 
@@ -613,10 +599,7 @@ public:
  public:
   SERIALIZABLE_CLASS(AnyFunctionXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyFunctionXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -784,13 +767,11 @@ public:
   }
 
   store::Item_t get_qname() const;
+
  public:
   SERIALIZABLE_CLASS(AnyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -809,13 +790,11 @@ public:
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
   store::Item_t get_qname() const;
- public:
+
+public:
   SERIALIZABLE_CLASS(AnySimpleXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -836,10 +815,7 @@ public:
  public:
   SERIALIZABLE_CLASS(UntypedXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 

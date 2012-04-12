@@ -22,9 +22,6 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(ZorbaCollectionIteratorHelper)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(ZorbaCollectionIteratorHelper)
-
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>, 1)
 

@@ -17,19 +17,19 @@
 #include "compiler/expression/json_exprs.h"
 #include "compiler/expression/expr_visitor.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #ifdef ZORBA_WITH_JSON
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(json_array_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(json_array_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(json_object_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(json_object_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(json_direct_object_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(json_direct_object_expr)
 
 DEF_EXPR_ACCEPT(json_array_expr)
 DEF_EXPR_ACCEPT(json_object_expr)

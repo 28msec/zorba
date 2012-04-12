@@ -44,19 +44,12 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OrIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AndIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
@@ -65,7 +58,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCom
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 
 
 /*******************************************************************************

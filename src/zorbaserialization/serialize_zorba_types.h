@@ -101,19 +101,22 @@ void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj);
     ar & type_mgr;                                                  \
   }
 
+
 template<class T>
-void operator&(Archiver &ar, checked_vector<T> &obj)
+void operator&(Archiver& ar, checked_vector<T>& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     char  strtemp[20];
     sprintf(strtemp, "%d", (int)obj.size());
+
     bool is_ref;
-    is_ref = ar.add_compound_field("checked_vector<T>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+    is_ref = ar.add_compound_field("checked_vector<T>", !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+
+    if (!is_ref)
     {
       typename checked_vector<T>::iterator  it;
-      for(it=obj.begin(); it != obj.end(); it++)
+      for(it = obj.begin(); it != obj.end(); ++it)
       {
         ar & (*it);
       }
@@ -122,43 +125,47 @@ void operator&(Archiver &ar, checked_vector<T> &obj)
   }
   else
   {
-    char  *type;
+    char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = false;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
+
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class, &field_treat, &referencing);
+
+    if (!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "checked_vector<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar.check_nonclass_field(retval, type, "checked_vector<T>",
+                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
     ar.register_reference(id, field_treat, &obj);
 
     int size;
     sscanf(value.c_str(), "%d", &size);
     obj.resize(size);
     typename checked_vector<T>::iterator  it;
-    for(it=obj.begin(); it != obj.end(); it++)
+    for(it = obj.begin(); it != obj.end(); ++it)
     {
       ar & (*it);
     }
     ar.read_end_current_level();
-
   }
 }
 
 
 template<class T>
-void operator&(Archiver &ar, store::ItemHandle<T>& obj)
+void operator&(Archiver& ar, store::ItemHandle<T>& obj)
 { 
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
     ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
-    is_ref = ar.add_compound_field("ItemHandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    is_ref = ar.add_compound_field("ItemHandle<T>", !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       T *p = obj.getp();
@@ -187,13 +194,12 @@ void operator&(Archiver &ar, store::ItemHandle<T>& obj)
     char  *type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = false;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    retval = ar.read_next_field(&type, &value, &id, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "ItemHandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -234,7 +240,7 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
   {
     bool is_ref;
     ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
-    is_ref = ar.add_compound_field("rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    is_ref = ar.add_compound_field("rchandle<T>", !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     assert(!is_ref);
     ZORBA_ASSERT(!is_ref);
     {
@@ -260,13 +266,12 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
     char  *type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = false;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    retval = ar.read_next_field(&type, &value, &id, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "rchandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -299,20 +304,29 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
   }
 }
 
+
 template<class T>
-void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
+void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
     ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
-    is_ref = ar.add_compound_field("const_rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+
+    is_ref = ar.add_compound_field("const_rchandle<T>",
+                                   !FIELD_IS_CLASS,
+                                   "",
+                                   &obj,
+                                   ARCHIVE_FIELD_NORMAL);
+    if (!is_ref)
     {
       T *p = (T*)obj.getp();
+
       if(allow_delay != ALLOW_DELAY)
         ar.dont_allow_delay(allow_delay);
+
       bool is_temp = false;
+
       if(ar.get_is_temp_field_one_level())
       {
         is_temp = true;
@@ -335,29 +349,36 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
     char  *type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = false;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
+
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class, &field_treat, &referencing);
+
+    if (!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "const_rchandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    //ar.register_reference(id, field_treat, &obj);
+
+    ar.check_nonclass_field(retval, type, "const_rchandle<T>",
+                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     bool is_temp = false;
-    if(ar.get_is_temp_field_one_level())
+
+    if (ar.get_is_temp_field_one_level())
     {
       is_temp = true;
       ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
     }
+
     T *p;
     ar & p;
     obj = p;
+
     if(is_temp)
       ar.set_is_temp_field_one_level(false);
+
     if(p == NULL)
     {
       //workaround for the strict_aliasing warning in gcc
@@ -370,19 +391,22 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
       ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
     }
     ar.read_end_current_level();
-
   }
 }
 
 
 template<typename StringType>
-void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
+void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
-    is_ref = ar.add_compound_field("VariableQName<StringType>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+    is_ref = ar.add_compound_field("VariableQName<StringType>",
+                                   !FIELD_IS_CLASS,
+                                   "",
+                                   &obj,
+                                   ARCHIVE_FIELD_NORMAL);
+    if (!is_ref)
     {
       ar & obj.ns_;
       ar & obj.prefix_;
@@ -396,19 +420,23 @@ void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
   }
   else
   {
-    char  *type;
+    char* type;
     std::string value;
     int   id;
-    int   version;
     bool  is_simple = false;
     bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
+
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class, &field_treat, &referencing);
+
+    if (!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "VariableQName<StringType>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar.check_nonclass_field(retval, type, "VariableQName<StringType>",
+                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.ns_;
     ar & obj.prefix_;
@@ -417,8 +445,9 @@ void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
   }
 }
 
+
 template<typename FloatType>
-void operator&(Archiver &ar, FloatImpl<FloatType> &obj)
+void operator&(Archiver& ar, FloatImpl<FloatType>& obj)
 {
   ar & obj.value_;
   ar & obj.precision_;

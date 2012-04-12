@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <FetchContentIterator>
-const char* FetchContentIterator::class_name_str = "FetchContentIterator";
 FetchContentIterator::class_factory<FetchContentIterator>
 FetchContentIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FetchContentIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FetchContentIterator::class_versions_count =
-sizeof(FetchContentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FetchContentIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ FetchContentIterator::~FetchContentIterator() {}
 
 
 // <FetchContentTypeIterator>
-const char* FetchContentTypeIterator::class_name_str = "FetchContentTypeIterator";
 FetchContentTypeIterator::class_factory<FetchContentTypeIterator>
 FetchContentTypeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FetchContentTypeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FetchContentTypeIterator::class_versions_count =
-sizeof(FetchContentTypeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FetchContentTypeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

@@ -53,6 +53,9 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/dict.h"
 
 
 namespace zorba {

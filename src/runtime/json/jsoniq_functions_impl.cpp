@@ -583,7 +583,6 @@ bool JSONObjectInsertIterator::nextImpl(
 NARY_ACCEPT(JSONObjectInsertIterator);
 
 SERIALIZABLE_CLASS_VERSIONS(JSONObjectInsertIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(JSONObjectInsertIterator)
 
 
 /*******************************************************************************

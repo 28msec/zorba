@@ -19,6 +19,7 @@
 #include "common/shared_types.h"
 
 #include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "store/api/update_consts.h"
 #include "store/api/index.h"

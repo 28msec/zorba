@@ -305,7 +305,6 @@ store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planSta
 
 
 SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
 
 NARY_ACCEPT(CountCollectionIterator);

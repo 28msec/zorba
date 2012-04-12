@@ -50,28 +50,20 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PiIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PiIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TextIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TextIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
 
 /*******************************************************************************
 
@@ -552,20 +544,22 @@ AttributeIterator::AttributeIterator(
   BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, qnameIte, valueIte),
   theQName(qname),
   theIsId(false),
-  theIsRoot(isRoot)
+  theIsRoot(isRoot),
+  theRaiseXQDY0074(false),
+  theRaiseXQDY0044(false)
 {
-  if (theQName != NULL)
+  if (theQName)
   {
     if (theQName->getLocalName().empty())
     {
-      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      theRaiseXQDY0074 = true;
     }
 
     if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
+      theRaiseXQDY0044 = true;
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -574,7 +568,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
+      theRaiseXQDY0044 = true;
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
@@ -583,7 +577,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xmlns") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
-      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
+      theRaiseXQDY0044 = true;
     }
 
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
@@ -601,6 +595,8 @@ void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theIsId;
   ar & theIsRoot;
+  ar & theRaiseXQDY0074;
+  ar & theRaiseXQDY0044;
 }
 
 
@@ -617,6 +613,24 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (theQName != NULL)
+  {
+    // need to raise those errors here and not in the constructor
+    // because they are dynamic errors and might be caught by try-catch
+    // (bug 955135)
+    if (theRaiseXQDY0074)
+    {
+      RAISE_ERROR(err::XQDY0074, loc,
+      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+    }
+
+    if (theRaiseXQDY0044)
+    {
+      RAISE_ERROR(err::XQDY0044, loc,
+      ERROR_PARAMS(theQName->getStringValue()));
+    }
+  }
 
   if (theChild0 != NULL)
   {

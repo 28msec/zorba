@@ -15,13 +15,13 @@
 SET(ZORBA_PLAN_SERIALIZER_STATISTICS OFF CACHE BOOL "Set to ON to get some statistics on saved plan")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorbaserialization/plan_settings.h.in ${CMAKE_CURRENT_BINARY_DIR}/zorbaserialization/plan_settings.h)
 SET(ZORBASERIALIZATION_SRCS 
-  archiver.cpp
-  base64impl.cpp
   class_serializer.cpp
-  zorba_classes_version.cpp
+  archiver.cpp
   mem_archiver.cpp
   xml_archiver.cpp
   bin_archiver.cpp
-  zorba_class_serializer.cpp
+  serialize_basic_types.cpp
+  serialize_zorba_types.cpp
+  base64impl.cpp
   zorba_class_versions.cpp
   )  
