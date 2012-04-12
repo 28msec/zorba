@@ -184,7 +184,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   if (numClauses == 1 &&
       flwor.get_clause(0)->get_kind() != flwor_clause::window_clause &&
       ! (flwor.get_clause(0)->get_kind() == flwor_clause::for_clause &&
-         static_cast<for_clause*>(flwor.get_clause(0))->is_allowing_empty()) &&
+         static_cast<for_clause*>(flwor.get_clause(0))->is_allowing_empty()
+      ) &&
       myVars.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
@@ -1040,7 +1041,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
     if (!condExpr->is_sequential() &&
         (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
-        !elseExpr->isNonDiscardable() &&
+        !elseExpr->isNonDiscardable() && ! thenExpr->is_sequential() &&
         TypeOps::is_empty(tm, *elseExpr->get_return_type()))
     {
       if (flwor->is_general())
