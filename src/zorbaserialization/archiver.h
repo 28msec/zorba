@@ -397,6 +397,10 @@ public:
 
   void setUserCallback(SerializationCallback* cb) { theUserCallback = cb; }
 
+  //
+  // Methods used during serialization only
+  //
+
   bool add_simple_field( 
       const char* type, 
       const char* value,
@@ -407,13 +411,14 @@ public:
       const char* type,
       bool is_class,
       const void* info,
-      const void* ptr,//for classes, pointer to SerializeBaseClass
+      const void* ptr,
       enum ArchiveFieldKind field_treat);
 
   void add_end_compound_field();
 
-  void set_class_type(const char* class_name);
-
+  //
+  // Methods used during de-serialization only
+  //
   bool read_next_field( 
       char** type, 
       std::string* value,
@@ -436,13 +441,21 @@ public:
 
   virtual void read_end_current_level_impl() = 0;
 
-
 protected:
+
+  //
+  // Methods used during serialization only
+  //
+
   archive_field* lookup_nonclass_field(const char* type, const void* ptr);
 
   archive_field* lookup_class_field(const SerializeBaseClass* ptr);
 
   virtual void serialize_out() = 0;
+
+  //
+  // Methods used during de-serialization only
+  //
 
   virtual void read_archive_description(
       std::string* archive_name,
@@ -456,6 +469,9 @@ protected:
     *nr_ids = this->nr_ids;
   }
 
+  //
+  //
+  //
   void replace_field(archive_field* new_field, archive_field* ref_field);
 
   void exchange_fields(archive_field* new_field, archive_field* ref_field);
@@ -542,9 +558,9 @@ public:
   void register_item(store::Item* i);
 
   //to help check class name at runtime
-  void  set_serialize_base_class(bool s)
+  void set_serialize_base_class(bool s)
   {
-    if(s)
+    if (s)
       serialize_base_class++;
     else
       serialize_base_class--;

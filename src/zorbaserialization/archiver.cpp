@@ -242,6 +242,32 @@ archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr
 
 
 /*******************************************************************************
+  Check whether there exists already a field for the class object at the given
+  memory address.
+********************************************************************************/
+archive_field* Archiver::lookup_class_field(const SerializeBaseClass* ptr)
+{
+  if (!ptr)
+    return NULL;
+
+  archive_field* duplicate_field = NULL;
+
+  hash_out_fields->get((uint64_t)ptr, duplicate_field);
+
+  if (!duplicate_field)
+  {
+    Archiver* har = ::zorba::serialization::ClassSerializer::getInstance()->
+    getArchiverForHardcodedObjects();
+
+    if (har != this)
+      duplicate_field = har->lookup_class_field(ptr);
+  }
+
+  return duplicate_field;
+}
+
+
+/*******************************************************************************
   Create a "simple" field (ARCHIVE_FIELD_PTR, or ARCHIVE_FIELD_NUL, or
   ARCHIVE_FIELD_NORMAL).
 
@@ -550,41 +576,6 @@ void Archiver::add_end_compound_field()
 /*******************************************************************************
 
 ********************************************************************************/
-void Archiver::set_class_type(const char* class_name)
-{
-  free(current_compound_field->theTypeName);
-  current_compound_field->theTypeName = strdup(class_name);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-archive_field* Archiver::lookup_class_field(const SerializeBaseClass* ptr)
-{
-  if (!ptr)
-    return NULL;
-
-  archive_field* duplicate_field = NULL;
-
-  hash_out_fields->get((uint64_t)ptr, duplicate_field);
-
-  if (!duplicate_field)
-  {
-    Archiver* har = ::zorba::serialization::ClassSerializer::getInstance()->
-    getArchiverForHardcodedObjects();
-
-    if (har != this)
-      duplicate_field = har->lookup_class_field(ptr);
-  }
-
-  return duplicate_field;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool Archiver::read_next_field(
     char** type,
     std::string* value,
@@ -766,7 +757,7 @@ void Archiver::register_reference(
 ********************************************************************************/
 void Archiver::register_item(store::Item* i)
 {
-  if(i)
+  if (i)
     registered_items.push_back(i);
 }
 
@@ -780,16 +771,17 @@ void Archiver::register_delay_reference(
     const char* class_name,
     int referencing)
 {
-  struct fwd_ref    fid;
+  struct fwd_ref fid;
   fid.referencing = referencing;
   fid.is_class = is_class;
   fid.ptr = ptr;
   *ptr = NULL;
-  //fid.add_ref_to_rcobject = true;
+
   if(class_name)
     fid.class_name = strdup(class_name);
   else
     fid.class_name = NULL;
+
   fid.to_add_ref = false;
   fwd_reference_list.push_back(fid);
 }
@@ -803,12 +795,11 @@ void Archiver::reconf_last_delayed_rcobject(
     void** new_last_obj,
     bool to_add_ref)
 {
-  if(fwd_reference_list.size() > 0)
+  if (fwd_reference_list.size() > 0)
   {
-    struct fwd_ref    &fid = fwd_reference_list.back();
-    if(fid.ptr == last_obj)
+    struct fwd_ref& fid = fwd_reference_list.back();
+    if (fid.ptr == last_obj)
     {
-      //fid.add_ref_to_rcobject = false;
       fid.ptr = new_last_obj;
       fid.to_add_ref = to_add_ref;
     }
@@ -871,13 +862,12 @@ void Archiver::finalize_input_serialization()
     ptr = get_reference_value((*it).referencing);
     if(!ptr)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
-        ERROR_PARAMS( it->referencing )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
+      ERROR_PARAMS(it->referencing));
     }
+
     //search the list for the pointer
-    if(!(*it).is_class)
+    if (!(*it).is_class)
     {
       *((*it).ptr) = ptr;
     }
