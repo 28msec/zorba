@@ -16,7 +16,7 @@
 # of the corresponding .xq file
 MESSAGE(STATUS "Add com")
 DECLARE_ZORBA_SCHEMA (URI "http://www.zorba-xquery.com/schemas/oauth/parameters" FILE "parameters.xsd")
-DECLARE_ZORBA_SCHEMA (URI "http://www.zorba-xquery.com/schames/oauth/service-provider" FILE "service-provider.xsd")
+DECLARE_ZORBA_SCHEMA (URI "http://www.zorba-xquery.com/schemas/oauth/service-provider" FILE "service-provider.xsd")
 
 ADD_SUBDIRECTORY(com)
 MESSAGE(STATUS "End modules")
