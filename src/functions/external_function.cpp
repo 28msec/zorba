@@ -22,6 +22,9 @@
 
 #include "diagnostics/util_macros.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba 
 {

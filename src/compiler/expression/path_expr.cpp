@@ -20,15 +20,13 @@
 
 #include "system/globalenv.h"
 
-//#include "types/root_typemanager.h"
-
 #include "context/static_context.h"
 
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba 
 {

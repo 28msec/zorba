@@ -514,12 +514,15 @@ bool Archiver::add_compound_field(
     new_field->theParent = current_compound_field;
     new_field->theId = ++nr_ids;
     new_field->theOrder = new_field->theId;
-    if(current_compound_field->theLastChild)
+
+    if (current_compound_field->theLastChild)
       current_compound_field->theLastChild->theNextSibling = new_field;
     else
       current_compound_field->theFirstChild = new_field;
+
     current_compound_field->theLastChild = new_field;
-    if(!ref_field && ptr)
+
+    if (!ref_field && ptr)
       current_compound_field = new_field;
   }
   else
@@ -559,14 +562,14 @@ void Archiver::set_class_type(const char* class_name)
 ********************************************************************************/
 archive_field* Archiver::lookup_class_field(const SerializeBaseClass* ptr)
 {
-  if(!ptr)
+  if (!ptr)
     return NULL;
 
   archive_field* duplicate_field = NULL;
 
   hash_out_fields->get((uint64_t)ptr, duplicate_field);
 
-  if(!duplicate_field)
+  if (!duplicate_field)
   {
     Archiver* har = ::zorba::serialization::ClassSerializer::getInstance()->
     getArchiverForHardcodedObjects();
@@ -747,14 +750,14 @@ void Archiver::register_reference(
     enum ArchiveFieldKind field_treat,
     const void* ptr)
 {
-  if(get_is_temp_field())// && (field_treat != ARCHIVE_FIELD_PTR))
-    return;
-  if(get_is_temp_field_one_level() && ((field_treat != ARCHIVE_FIELD_PTR) || get_is_temp_field_also_for_ptr()))
+  if (get_is_temp_field())// && (field_treat != ARCHIVE_FIELD_PTR))
     return;
 
-//  all_reference_list->put((uint32_t)id, (void*)ptr);
+  if (get_is_temp_field_one_level() &&
+      ((field_treat != ARCHIVE_FIELD_PTR) || get_is_temp_field_also_for_ptr()))
+    return;
+
   all_reference_list[id] = (void*)ptr;
-
 }
 
 
@@ -880,26 +883,25 @@ void Archiver::finalize_input_serialization()
     }
     else
     {
-      class_deserializer  *cls_factory;
+      ClassDeserializer* cls_factory;
+
       cls_factory = ClassSerializer::getInstance()->get_class_factory((*it).class_name);
-      if(cls_factory == NULL)
+
+      if (cls_factory == NULL)
       {
-         throw ZORBA_EXCEPTION(
-          zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD,
-          ERROR_PARAMS( it->class_name )
-        );
+         throw ZORBA_EXCEPTION(zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD,
+         ERROR_PARAMS(it->class_name));
       }
+
       cls_factory->cast_ptr((SerializeBaseClass*)ptr, (*it).ptr);
 
       SimpleRCObject* rcobj1;
       store::Item* rcobj2;
-      //zStringStore* rcobj3;
 
-
-      if(!(*it).to_add_ref)
+      if (!(*it).to_add_ref)
       {
       }
-      else if((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
+      else if ((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
       {
         RCHelper::addReference(rcobj1); //this can lead to memory leaks
       }

@@ -51,6 +51,231 @@ namespace serialization
 /*******************************************************************************
 
 ********************************************************************************/
+template<class T>
+void operator&(Archiver& ar, T& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    bool is_ref;
+    
+    is_ref = ar.add_compound_field(obj.get_class_name_str(),
+                                   FIELD_IS_CLASS,
+                                   "0",//strtemp, 
+                                   (SerializeBaseClass*)&obj, 
+                                   ARCHIVE_FIELD_NORMAL);
+    if (!is_ref)
+    {
+      obj.serialize_internal(ar);
+
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char* type;
+    std::string value;
+    int   id;
+    bool  is_simple = false;
+    bool  is_class = true;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+
+    bool  retval = ar.read_next_field(&type, &value, &id,
+                                      &is_simple, &is_class, &field_treat,
+                                      &referencing);
+
+    if (!retval && ar.get_read_optional_field())
+      return;
+
+    ar.check_class_field(retval, type, obj.get_class_name_str(),
+                         is_simple, is_class, field_treat, 
+                         ARCHIVE_FIELD_NORMAL, 
+                         id);
+
+    ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
+
+    obj.serialize_internal(ar);
+
+    ar.read_end_current_level();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template<class T>
+void operator&(Archiver& ar, T*& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    if (obj == NULL)
+    {
+      ar.add_compound_field("NULL", 
+                            FIELD_IS_CLASS,
+                            "NULL", 
+                            NULL,
+                            ARCHIVE_FIELD_NULL);
+      return;
+    }
+
+    bool is_ref = ar.add_compound_field((ar.is_serialize_base_class() ?
+                                         obj->T::get_class_name_str() :
+                                         obj->get_class_name_str()), 
+                                        FIELD_IS_CLASS,
+                                        "0",
+                                        (SerializeBaseClass*)obj, 
+                                        (ar.is_serialize_base_class() ?
+                                         ARCHIVE_FIELD_BASECLASS :
+                                         ARCHIVE_FIELD_PTR));
+    if (!is_ref)
+    {
+      if (!ar.is_serialize_base_class())
+      {
+        obj->serialize_internal(ar);
+      }
+      else
+      {
+        obj->T::serialize_internal(ar);
+      }
+
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char* type;
+    std::string value;
+    int   id;
+    bool  is_simple = false;
+    bool  is_class = true;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    int   referencing;
+
+    bool  retval = ar.read_next_field(&type, &value, &id,
+                                      &is_simple, &is_class, &field_treat,
+                                      &referencing);
+
+    if (!retval && ar.get_read_optional_field())
+      return;
+
+    ar.check_class_field(retval, "", "",
+                         is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
+
+    if (field_treat == ARCHIVE_FIELD_NULL)
+    {
+      assert(!ar.is_serialize_base_class());
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+
+    if (ar.is_serialize_base_class())
+    {
+#ifndef NDEBUG
+      if (strcmp(type, T::get_class_name_str_static()))
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+      }
+#endif
+      if (field_treat != ARCHIVE_FIELD_BASECLASS)
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+      }
+    }
+    else
+    {
+      if (field_treat != ARCHIVE_FIELD_PTR && field_treat != ARCHIVE_FIELD_REFERENCING)
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+      }
+    }
+
+    SerializeBaseClass* new_obj = NULL;
+
+    if (field_treat == ARCHIVE_FIELD_PTR)
+    {
+      ClassDeserializer* cls_factory;
+      cls_factory = ClassSerializer::getInstance()->get_class_factory(type);
+
+      if (cls_factory == NULL)
+      {
+         throw ZORBA_EXCEPTION(zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, 
+         ERROR_PARAMS(type));
+      }
+
+      new_obj = cls_factory->create_new(ar);
+
+      obj = dynamic_cast<T*>(new_obj);
+
+      if (!obj)
+      {
+        delete new_obj;obj=NULL;
+
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
+        ERROR_PARAMS(id, type, typeid(T).name()));
+      }
+
+      ar.register_reference(id, field_treat, new_obj);
+      try
+      {
+        new_obj->serialize_internal(ar);
+      }
+      catch(...)
+      {
+        delete new_obj;obj=NULL;
+        throw;
+      }
+      ar.read_end_current_level();
+    }
+    else if (field_treat == ARCHIVE_FIELD_BASECLASS)
+    {
+      obj->T::serialize_internal(ar);
+      ar.read_end_current_level();
+    }
+    else if ((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
+    {
+      try
+      {
+        obj = dynamic_cast<T*>(new_obj);
+      }
+      catch(...)
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
+        ERROR_PARAMS(id));
+      }
+
+      if (!obj)
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+      }
+    }
+    else
+    {
+      ar.register_delay_reference((void**)&obj,
+                                  FIELD_IS_CLASS,
+                                  obj->T::get_class_name_str(),
+                                  referencing);
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template<class T>
+void serialize_baseclass(Archiver& ar, T* obj)
+{
+  ar.set_serialize_base_class(true);
+
+  ar & obj;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 template<class RepType>
 void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
 {
@@ -683,213 +908,6 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
     ar.set_is_temp_field_one_level(false);
     ar.read_end_current_level();
   }
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-template<class T>
-void operator&(Archiver& ar, T& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    bool is_ref;
-    
-    is_ref = ar.add_compound_field(obj.get_class_name_str(),//typeid(obj).name()+6, 
-                                   FIELD_IS_CLASS,
-                                   "0",//strtemp, 
-                                   (SerializeBaseClass*)&obj, 
-                                   ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      obj.serialize_internal(ar);
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = true;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_class_field(retval, type, obj.get_class_name_str(), is_simple, is_class, field_treat, 
-                          ARCHIVE_FIELD_NORMAL, 
-                          id);
-    ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
-
-    obj.serialize_internal(ar);
-
-    ar.read_end_current_level();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-template<class T>
-void operator&(Archiver& ar, T*& obj)
-{
-  if(ar.is_serializing_out())
-  {
-    if(obj == NULL)
-    {
-      ar.add_compound_field("NULL", 
-                            FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_NULL);
-      return;
-    }
-    bool is_ref;
-    
-    is_ref = ar.add_compound_field((ar.is_serialize_base_class() ?
-                                    obj->T::get_class_name_str() :
-                                    obj->get_class_name_str()), 
-                                   FIELD_IS_CLASS,
-                                   "0",//strtemp, 
-                                   (SerializeBaseClass*)obj, 
-                                   ar.is_serialize_base_class() ? ARCHIVE_FIELD_BASECLASS : ARCHIVE_FIELD_PTR);
-    if(!is_ref)
-    {
-      if(!ar.is_serialize_base_class())
-      {
-        obj->serialize_internal(ar);
-      }
-      else
-      {
-        obj->T::serialize_internal(ar);
-      }
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char  *type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = true;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
-    if(field_treat == ARCHIVE_FIELD_NULL)
-    {
-      assert(!ar.is_serialize_base_class());
-      obj = NULL;
-      ar.read_end_current_level();
-      return;
-    }
-
-    if (ar.is_serialize_base_class())
-    {
-#ifndef NDEBUG
-      if(strcmp(type, T::get_class_name_str_static()))
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-#endif
-      if(field_treat != ARCHIVE_FIELD_BASECLASS)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-    }
-    else
-    {
-      if((field_treat != ARCHIVE_FIELD_PTR) && (field_treat != ARCHIVE_FIELD_REFERENCING))
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
-        );
-      }
-    }
-
-    SerializeBaseClass* new_obj = NULL;
-    if(field_treat == ARCHIVE_FIELD_PTR)
-    {
-      class_deserializer* cls_factory;
-      cls_factory = ClassSerializer::getInstance()->get_class_factory(type);
-      if(cls_factory == NULL)
-      {
-         throw ZORBA_EXCEPTION(
-          zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, ERROR_PARAMS( type )
-        );
-      }
-      new_obj = cls_factory->create_new(ar);
-      obj = dynamic_cast<T*>(new_obj);
-      if(!obj)
-      {
-        delete new_obj;obj=NULL;
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
-          ERROR_PARAMS( id, type, typeid(T).name() )
-        );
-      }
-
-      ar.register_reference(id, field_treat, new_obj);
-      try
-      {
-        new_obj->serialize_internal(ar);
-      }
-      catch(...)
-      {
-        delete new_obj;obj=NULL;
-        throw;
-      }
-      ar.read_end_current_level();
-    }
-    else if(field_treat == ARCHIVE_FIELD_BASECLASS)
-    {
-      obj->T::serialize_internal(ar);
-      ar.read_end_current_level();
-    }
-    else if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
-    {
-      try
-      {
-        obj = dynamic_cast<T*>(new_obj);
-      }
-      catch(...)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
-                              ERROR_PARAMS(id));
-      }
-      if(!obj)
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
-        );
-      }
-    }
-    else
-    {
-      ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, obj->T::get_class_name_str(), referencing);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-template<class T>
-void serialize_baseclass(Archiver& ar, T* obj)
-{
-  ar.set_serialize_base_class(true);
-
-  ar & obj;
-
-  //ar.set_serialize_base_class(false);
 }
 
 

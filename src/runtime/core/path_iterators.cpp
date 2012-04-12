@@ -347,6 +347,12 @@ doctest2:
 /*******************************************************************************
 
 ********************************************************************************/
+void SelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
+}
+
+
 bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   SelfAxisState* state;
@@ -393,6 +399,13 @@ void AttributeAxisState::reset(PlanState& planState)
   AxisState::reset(planState);
   if (theAttributes != NULL)
     theAttributes->reset();
+}
+
+
+void AttributeAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator,
+                           AttributeAxisState>*)this);
 }
 
 
@@ -452,6 +465,12 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 /*******************************************************************************
 
 ********************************************************************************/
+void ParentAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
+}
+
+
 bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ParentAxisState* state;
@@ -485,6 +504,13 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
   Returns the ancestors in document order (top-down)
 ********************************************************************************/
+void AncestorAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+}
+
+
 bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item* ancestor;
@@ -534,6 +560,13 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
   Returns the ancestors in reverse document order (bottom-up)
 ********************************************************************************/
+void AncestorReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
+}
+
+
 bool AncestorReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -594,6 +627,13 @@ bool AncestorReverseAxisIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+void AncestorSelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
+}
+
+
 bool AncestorSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const

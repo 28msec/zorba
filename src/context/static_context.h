@@ -26,6 +26,8 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/function.h>
+#include <zorba/error.h>
+#include <zorba/diagnostic_list.h>
 
 #ifdef WIN32
 #include "store/api/item.h"

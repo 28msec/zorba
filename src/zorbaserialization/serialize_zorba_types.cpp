@@ -21,7 +21,8 @@
 #include <zorba/item.h>
 #include <zorba/user_exception.h>
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
@@ -49,14 +50,16 @@
 
 #include <zorba/store_consts.h>
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
+namespace serialization
+{
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class store_item_class_factory : public ::zorba::serialization::class_deserializer
+class store_item_class_factory : public ::zorba::serialization::ClassDeserializer
 { 
 public:
   store_item_class_factory()
@@ -85,7 +88,7 @@ store_item_class_factory g_store_item_class_factory;
 /*******************************************************************************
 
 ********************************************************************************/
-class xqpcollator_class_factory : public ::zorba::serialization::class_deserializer
+class xqpcollator_class_factory : public ::zorba::serialization::ClassDeserializer
 { 
 public:
   xqpcollator_class_factory()
@@ -894,30 +897,42 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
   enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
   int   referencing;
   bool is_ref;
-  if(ar.is_serializing_out())
+
+  if (ar.is_serializing_out())
   {
-    if(obj == NULL)
+    if (obj == NULL)
     {
       ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS, "NULL", 
+                            !FIELD_IS_CLASS,
+                            "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
                             ARCHIVE_FIELD_NULL);
+
       ar.set_is_temp_field(true);
       return;
     }
-    is_ref = ar.add_compound_field("store::Item*", FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_PTR);
+
+    is_ref = ar.add_compound_field("store::Item*",
+                                   FIELD_IS_CLASS,
+                                   "", 
+                                   obj, 
+                                   ARCHIVE_FIELD_PTR);
   }
   else
   {
-    char  *type;
+    char* type;
     std::string value;
     bool  is_simple = false;
     bool  is_class = true;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
+
+    bool  retval = ar.read_next_field(&type, &value, &id,
+                                      &is_simple, &is_class, &field_treat,
+                                      &referencing);
+
+    if (!retval && ar.get_read_optional_field())
       return;
-    if(field_treat == ARCHIVE_FIELD_NULL)
+
+    if (field_treat == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
