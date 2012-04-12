@@ -22,7 +22,8 @@
 #include "common/common.h"
 #include "util/ascii_util.h"
 #include "util/string_util.h"
-#include "zorbaserialization/zorba_class_serializer.h"
+
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include "decimal.h"
 #include "integer.h"

@@ -24,7 +24,7 @@
 
 #include "types/typeconstants.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba 
 {

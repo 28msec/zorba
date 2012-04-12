@@ -16,8 +16,13 @@
 #include "stdafx.h"
 
 #include "signature.h"
+
 #include "store/api/item.h"
+
 #include "types/typeops.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include <iterator>
 

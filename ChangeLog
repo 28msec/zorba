@@ -5,7 +5,11 @@ version 2.5
 New Features:
   * Extended API for Python, Java, PHP and Ruby.
 
+Optimization:
+
 Bug Fixes/Other Changes:
+  * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
+  * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)

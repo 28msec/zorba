@@ -33,6 +33,9 @@
 
 #include "types/typeops.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/index.h" // needed for destruction of the cache
 
 

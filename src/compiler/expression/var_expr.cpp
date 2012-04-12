@@ -24,7 +24,8 @@
 
 #include "types/typeops.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include "diagnostics/assert.h"
 

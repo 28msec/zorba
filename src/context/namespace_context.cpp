@@ -21,7 +21,12 @@
 #include "compiler/parser/query_loc.h"
 
 
-namespace zorba {
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
+
+namespace zorba 
+{
 
 SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 
@@ -48,7 +53,6 @@ namespace_context::namespace_context(
 ********************************************************************************/
 void namespace_context::serialize(::zorba::serialization::Archiver& ar)
 {
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
   ar & m_sctx;
   ar & m_parent;
   ar & m_bindings;
