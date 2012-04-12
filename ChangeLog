@@ -4,6 +4,7 @@ version 2.5
 
 New Features:
   * Extended API for Python, Java, PHP and Ruby.
+  * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
 
 Optimization:
 
@@ -19,6 +20,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #906494 (default compile with D_FILE_OFFSET_BITS=64)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
   * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
+  * Fixed Bug #933490: Error ItemFactoryImpl::createBase64Binary with istream
 
 
 version 2.2
