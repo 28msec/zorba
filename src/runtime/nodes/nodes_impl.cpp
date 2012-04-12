@@ -640,6 +640,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring zNamespace;
   zstring zLocalName;
   zstring zPosition;
+  bool rootIsDocument = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -654,12 +655,13 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           temp = path;
           path = "/";
           path += temp;
+          rootIsDocument = true;
           break;
         case store::StoreConsts::elementNode:
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
-          zPosition = to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(inNode->getRefCount());
           temp = path;
           path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
           path += temp;
@@ -682,13 +684,13 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           }
           break;
         case store::StoreConsts::textNode:
-          zPosition = to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(inNode->getRefCount());
           temp = path;
           path = "text()["+zPosition+"]";
           path += temp;
           break;
         case store::StoreConsts::commentNode:
-          zPosition = to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(inNode->getRefCount());
           temp = path;
           path = "comment()["+zPosition+"]";
           path += temp;
@@ -698,7 +700,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           {
             nodeName = inNode->getNodeName();
             zLocalName = nodeName->getLocalName();
-            zPosition = to_string(inNode->getRefCount());
+            zPosition = ztd::to_string(inNode->getRefCount());
             temp = path;
             path = "processing-instruction("+zLocalName+")["+zPosition+"]";
             path += temp;
@@ -715,7 +717,11 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
 
     } while (inNode);
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+
+    if(rootIsDocument)
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+    else
+      throw XQUERY_EXCEPTION(err::FODC0001, ERROR_PARAMS("fn:path"), ERROR_LOC(loc));
   }
 
   STACK_END (state);
