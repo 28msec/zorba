@@ -25,9 +25,6 @@
 namespace zorba
 {
 
-extern const ::zorba::serialization::ClassVersion g_UnaryBaseIterator_class_versions[];
-extern const int g_UnaryBaseIterator_class_versions_count;
-
 
 /*******************************************************************************
   Superclass for all iterators which have one child iterator and no additional

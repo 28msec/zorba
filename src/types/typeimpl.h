@@ -30,7 +30,7 @@
 
 #include "system/globalenv.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba
 {
@@ -290,14 +290,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
-    SERIALIZE_ENUM(type_kind_t, m_type_kind)
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, m_quantifier);
-    ar & theIsBuiltin;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   virtual ~XQType() { }
@@ -332,23 +325,10 @@ public:
 
 protected:
   XQType(
-        const TypeManager* manager,
-         type_kind_t type_kind,
-         TypeConstants::quantifier_t quantifier,
-         bool builtin)
-    :
-    m_manager((TypeManager*)manager),
-    m_type_kind(type_kind),
-    m_quantifier(quantifier),
-    theIsBuiltin(builtin)
-  {
-    if (theIsBuiltin)
-    {
-      // register this hardcoded object to help plan serialization
-      XQType* this_ptr = this;
-      *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
-    }
-  }
+      const TypeManager* manager,
+      type_kind_t type_kind,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin);
 };
 
 
@@ -365,13 +345,11 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+
  public:
   SERIALIZABLE_CLASS(NoneXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -388,13 +366,11 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+
  public:
   SERIALIZABLE_CLASS(EmptyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -412,13 +388,11 @@ public:
     XQType(manager, ITEM_KIND, quantifier, builtin)
   {
   }
+
  public:
   SERIALIZABLE_CLASS(ItemXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ItemXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -435,13 +409,11 @@ public:
   }
 
   store::Item_t get_qname() const;
+
  public:
   SERIALIZABLE_CLASS(AnyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -460,13 +432,11 @@ public:
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
   store::Item_t get_qname() const;
+
  public:
   SERIALIZABLE_CLASS(AnySimpleXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -485,11 +455,7 @@ private:
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-    SERIALIZE_ENUM(store::SchemaTypeCode, m_type_code);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
    AtomicXQType(
@@ -593,10 +559,7 @@ public:
  public:
   SERIALIZABLE_CLASS(UntypedXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -624,10 +587,7 @@ public:
  public:
   SERIALIZABLE_CLASS(AnyFunctionXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyFunctionXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 

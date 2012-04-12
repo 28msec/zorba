@@ -22,20 +22,19 @@
 
 #include "compiler/expression/expr.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
 
 
 std::vector<store::Item_t> 
