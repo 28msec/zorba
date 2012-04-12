@@ -371,6 +371,8 @@ bool provider::getThesaurus( iso639_1::type lang,
                              internal::Thesaurus::ptr *t ) const {
   switch ( lang ) {
     case iso639_1::unknown:
+      lang = iso639_1::en;
+      // no break;
     case iso639_1::en:
       if ( t ) {
 #ifdef ZORBA_WITH_FILE_ACCESS

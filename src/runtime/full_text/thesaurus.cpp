@@ -58,7 +58,7 @@ namespace thesaurus_impl {
   type const DEFAULT = wordnet;
 
   /**
-   * Given a thesaurus implementation name (as identified by the URL scheme),
+   * Given a thesaurus implementation name (as identified by the URI scheme),
    * finds its corresponding type.
    *
    * @param name The thesaurus implementation's name.
@@ -95,30 +95,33 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   if ( data->getKind() != internal::EntityData::THESAURUS )
     return nullptr;
 
-  zstring t_scheme;
-  uri::get_scheme( url, &t_scheme );
-  thesaurus_impl::type t_impl = thesaurus_impl::find( t_scheme );
+  zstring scheme_name;
+  if ( !uri::get_scheme( url, &scheme_name ) )
+    return nullptr;
 
-  switch ( t_impl ) {
+  switch ( thesaurus_impl::find( scheme_name ) ) {
     case thesaurus_impl::xqftts: {
-      // Currently, at least, we presume that an xqftts: URL should be used
-      // exactly like a file: URL. PAUL: Less hacky way to do this?
-      zstring f_url( "file" );
-      f_url.append( url + 6 );
-      zstring t_path = fs::get_normalized_path( f_url );
+      //
+      // Currently, we presume that an "xqftts:" URL should be used exactly
+      // like a "file:" URL.
+      //
+      zstring t_uri( url );
+      t_uri.replace( 0, 6, "file" );    // xqftts -> file
+      zstring const t_path( fs::get_normalized_path( t_uri ) );
       return new xqftts::provider( t_path );
     }
 #   ifdef ZORBA_WITH_FILE_ACCESS
     case thesaurus_impl::wordnet: {
+      //
       // Wordnet, on the other hand, needs to find its data file in Zorba's
-      // library path using the mangled form of the original URI. So, mangle
+      // library path using the mangled form of the original URI.  So, mangle
       // here for convenience.
-      URI t_uri(url);
-      zstring t_path = t_uri.toPathNotation();
+      //
+      URI const t_uri( url );
+      zstring const t_path( t_uri.toPathNotation() );
       return new wordnet::provider( t_path );
     }
 #   endif /* ZORBA_WITH_FILE_ACCESS */
-      // Otherwise fall through to default
     default:
       throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );
   }

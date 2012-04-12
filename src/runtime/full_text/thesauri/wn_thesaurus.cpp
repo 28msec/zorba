@@ -529,56 +529,59 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
 ///////////////////////////////////////////////////////////////////////////////
 
 provider::provider( zstring const &path ) : path_( path ) {
-  //
-  // Append the first part of the filename that's the same for all languages.
-  //
-  fs::append( path_, "wordnet-" );
 }
 
 bool provider::getThesaurus( iso639_1::type lang,
                              internal::Thesaurus::ptr *t ) const {
-  zstring filepath( path_ );
+#ifdef ZORBA_WITH_FILE_ACCESS
+  zstring file_path;
 
   switch ( lang ) {
     case iso639_1::unknown:
       lang = iso639_1::en;
       // no break;
     case iso639_1::en:
-      filepath.append( iso639_1::string_of[ lang ] );
-      filepath.append( ".zth" );
+      file_path = path_;
+      fs::append( file_path, "wordnet-" );
+      file_path.append( iso639_1::string_of[ lang ] );
+      file_path.append( ".zth" );
       break;
     default:
       return false;
   }
 
+  //
   // We want to look for the Wordnet thesaurus file on the library path.
-  // Unfortunately every static_context can have its own library path, and we
-  // don't have direct access to the query's static_context here. So, for now
+  // Unfortunately every static_context can have its own library path and we
+  // don't have direct access to the query's static_context here.  So, for now
   // we only look on the root static_context's library path.
-#ifdef ZORBA_WITH_FILE_ACCESS
-  static_context& sctx = GENV.getRootStaticContext();
-  std::vector<zstring> lib_path;
-  sctx.get_lib_path( lib_path );
-  bool found = false;
-  FOR_EACH( std::vector<zstring>, i, lib_path ) {
-    zstring cand_path( *i );
-    fs::append( cand_path, filepath );
-    if ( fs::get_type( cand_path ) == fs::file ) {
-      found = true;
-      break;
+  //
+  static_context &sctx = GENV.getRootStaticContext();
+  std::vector<zstring> lib_path_components;
+  sctx.get_lib_path( lib_path_components );
+  MUTATE_EACH( std::vector<zstring>, path, lib_path_components ) {
+    fs::append( *path, file_path );
+    if ( fs::get_type( *path ) == fs::file ) {
+      if ( t )
+        t->reset( new thesaurus( path_, lang ) );
+      return true;
     }
   }
 
-  if ( found ) {
-    if ( t )
-      t->reset( new thesaurus( path_, lang ) );
-    return true;
-  }
-#else /* ZORBA_WITH_FILE_ACCESS */
-  if ( t )
-    t->reset();
-#endif /* ZORBA_WITH_FILE_ACCESS */
   return false;
+#else
+  switch ( lang ) {
+    case iso639_1::unknown:
+      lang = iso639_1::en;
+      // no break;
+    case iso639_1::en:
+      if ( t )
+        t->reset();
+      return true;
+    default:
+      return false;
+  }
+#endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

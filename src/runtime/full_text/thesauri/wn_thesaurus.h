@@ -130,6 +130,12 @@ private:
  */
 class provider : public internal::ThesaurusProvider {
 public:
+  /**
+   * Constructs a %provider.
+   *
+   * @param path The relative path of where the wordnet-LL.zth file is located
+   * (where LL is the ISO 639-1 language code of the language).
+   */
   provider( zstring const &path );
 
   // inherited
@@ -137,7 +143,7 @@ public:
                      internal::Thesaurus::ptr* = nullptr ) const;
 
 private:
-  zstring path_;
+  zstring const path_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

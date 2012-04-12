@@ -162,6 +162,11 @@ private:
  */
 class provider : public internal::ThesaurusProvider {
 public:
+  /**
+   * Constructs a %provider.
+   *
+   * @param path The absolute path of the thesaurus XML file.
+   */
   provider( zstring const &path );
 
   // inherited
