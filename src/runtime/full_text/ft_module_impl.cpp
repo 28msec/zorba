@@ -222,7 +222,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   }
 
   try {
-    iso639_1::type lang = get_lang_from( item, loc );
+    iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
 
     vector<zstring> comp_uris;
@@ -234,26 +234,25 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
         err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
       );
 
-#if 0
-    cout << "uri=" << uri << endl;
-    cout << "comp_uri=" << comp_uris.front() << endl;
-#endif
-
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       comp_uris.front(), internal::EntityData::THESAURUS, error_msg
     );
+    if ( !rsrc.get() )
+      throw XQUERY_EXCEPTION(
+        err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+      );
 #if 0
     if ( !error_msg.empty() )
       cerr << "error_msg=" << error_msg << endl;
 #endif
-    internal::Thesaurus::ptr thesaurus(
-      dynamic_cast<internal::Thesaurus*>( rsrc.release() )
-    );
-    is_supported = thesaurus;
+    internal::ThesaurusProvider const *const t_provider =
+      dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
+    ZORBA_ASSERT( t_provider );
+    is_supported = t_provider->getThesaurus( lang );
   }
   catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported by Zorba */ )
       throw;
     is_supported = false;
   }
@@ -336,6 +335,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   zstring uri = "##default";
   static_context const *sctx;
   zstring synonym;
+  internal::ThesaurusProvider const *t_provider;
 
   ThesaurusLookupIteratorState *state;
   DEFAULT_STACK_INIT( ThesaurusLookupIteratorState, state, plan_state );
@@ -381,10 +381,14 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   rsrc = sctx->resolve_uri(
     comp_uris.front(), internal::EntityData::THESAURUS, error_msg
   );
-  state->thesaurus_.reset(
-    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
-  );
-  if ( !state->thesaurus_.get() )
+  if ( !rsrc.get() )
+    throw XQUERY_EXCEPTION(
+      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+    );
+
+  t_provider = dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
+  ZORBA_ASSERT( t_provider );
+  if ( !t_provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
       zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
       ERROR_PARAMS( lang ),
