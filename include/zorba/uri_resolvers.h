@@ -50,7 +50,13 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Resource
 {
 public:
-  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> > ptr;
+  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> >
+          ptr;
+
+  typedef std::unique_ptr<
+            Resource const,internal::ztd::destroy_delete<Resource const>
+          >
+          const_ptr;
 
   virtual ~Resource() = 0;
 

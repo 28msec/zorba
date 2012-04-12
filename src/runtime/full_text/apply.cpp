@@ -1227,14 +1227,13 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   if ( !rsrc.get() )
     throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
 
-  internal::ThesaurusProvider const *const thesaurus_provider =
+  internal::ThesaurusProvider const *const t_provider =
     dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
-  rsrc.release();                       // TEMPORARY HACK
-  if ( !thesaurus_provider )
+  if ( !t_provider )
     throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
 
   internal::Thesaurus::ptr thesaurus;
-  if ( !thesaurus_provider->getThesaurus( qt0.lang(), &thesaurus ) )
+  if ( !t_provider->getThesaurus( qt0.lang(), &thesaurus ) )
     throw XQUERY_EXCEPTION(
       zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
       ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ] )

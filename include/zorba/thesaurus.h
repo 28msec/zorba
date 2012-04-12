@@ -32,7 +32,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %Thesaurus is-a Resource for thesaurus implementations.
+ * A %Thesaurus provides a way to look up related phrases for a given phrase.
  */
 class ZORBA_DLL_PUBLIC Thesaurus {
 public:
@@ -111,7 +111,17 @@ protected:
  */
 class ZORBA_DLL_PUBLIC ThesaurusProvider : public Resource {
 public:
-  virtual ~ThesaurusProvider();
+  typedef std::unique_ptr<
+            ThesaurusProvider,
+            internal::ztd::destroy_delete<ThesaurusProvider>
+          >
+          ptr;
+
+  typedef std::unique_ptr<
+            ThesaurusProvider const,
+            internal::ztd::destroy_delete<ThesaurusProvider const>
+          >
+          const_ptr;
 
   /**
    * Gets a Thesaurus for the given language.

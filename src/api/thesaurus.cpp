@@ -31,10 +31,6 @@ Thesaurus::iterator::~iterator() {
 }
 #endif
 
-ThesaurusProvider::~ThesaurusProvider() {
-  // out-of-line since it's virtual
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
