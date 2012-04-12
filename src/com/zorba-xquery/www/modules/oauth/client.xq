@@ -46,6 +46,7 @@ import module namespace oerr = "http://www.zorba-xquery.com/modules/oauth/error"
 import schema namespace sp = "http://www.zorba-xquery.com/schemas/oauth/service-provider";
 import schema namespace p = "http://www.zorba-xquery.com/schemas/oauth/parameters";
 
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
@@ -224,7 +225,7 @@ declare function oauth:parameter($params as schema-element(p:parameters), $strin
  : @param $service-provider Information about the service provider
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider))
+declare %an:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider))
 as schema-element(p:parameters)
 {
   oauth:request-token($service-provider, ())
@@ -247,7 +248,7 @@ as schema-element(p:parameters)
  : ...
  : </pre>
  :)
-declare %ann:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters)?)
+declare %an:sequential function oauth:request-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters)?)
 as schema-element(p:parameters)
 {
   let $consumer-key     as xs:string := $service-provider/@consumer-key/string(.)
@@ -285,7 +286,7 @@ as schema-element(p:parameters)
  : ...
  : </pre>
  :)
-declare %ann:sequential function oauth:access-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters))
+declare %an:sequential function oauth:access-token($service-provider as schema-element(sp:service-provider), $parameters as schema-element(p:parameters))
 as schema-element(p:parameters)
 {
   let $consumer-key       as xs:string := $service-provider/@consumer-key/string(.)
@@ -332,7 +333,7 @@ as schema-element(p:parameters)
  : return oauth:protected-resource($request, $service-provider, $tokens)                           
  : </pre>
  :)
-declare %ann:sequential function oauth:protected-resource(
+declare %an:sequential function oauth:protected-resource(
   $protected-resource as schema-element(http:request),
   $service-provider as schema-element(sp:service-provider),
   $parameters as schema-element(p:parameters)
@@ -364,7 +365,7 @@ as item()*
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return integer time in seconds since Unix epoch
  :)
-declare %private %ann:nondeterministic function oauth:timestamp() as xs:decimal
+declare %private %an:nondeterministic function oauth:timestamp() as xs:decimal
 {
   let $current-dateTime := fn:adjust-dateTime-to-timezone(date:current-dateTime(), xs:dayTimeDuration('PT0H'))
   let $duration := $current-dateTime - xs:dateTime("1970-01-01T00:00:00Z")
@@ -393,7 +394,7 @@ declare %private function oauth:key($oauth-consumer-secret as xs:string, $oauth-
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return random string
  :)
-declare %private %ann:nondeterministic function oauth:nonce() as xs:string
+declare %private %an:nondeterministic function oauth:nonce() as xs:string
 {
   ra:uuid()
 };
@@ -532,7 +533,7 @@ validate {
  : @param $url Target URL
  : @return HTTP response.
  :)
-declare %private %ann:sequential function oauth:http-request(
+declare %private %an:sequential function oauth:http-request(
     $consumer-secret as xs:string,
     $protected-resource as element(http:request),
     $oauth-token-secret as xs:string?,
@@ -573,7 +574,7 @@ as item()*
  : @error XQP0021(oerr:OC003) if we receive http 401 error from the server.
  : @error XQP0021(oerr:OC004) if we receive http 500 error from the server.
  :)
-declare %private %ann:sequential function oauth:format-request(
+declare %private %an:sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $protected-resource as element(http:request),
@@ -615,7 +616,7 @@ as item()*
 
 };
 
-declare %private %ann:sequential function oauth:format-request(
+declare %private %an:sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $protected-resource as element(http:request),
@@ -676,7 +677,7 @@ declare %private function oauth:additional-parameters($parameters as element(p:p
  : @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %private %ann:sequential %ann:nondeterministic function oauth:request-token(
+declare %private %an:sequential %an:nondeterministic function oauth:request-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -708,7 +709,7 @@ declare %private %ann:sequential %ann:nondeterministic function oauth:request-to
  : @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %private %ann:sequential %ann:nondeterministic function oauth:access-token(
+declare %private %an:sequential %an:nondeterministic function oauth:access-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -743,7 +744,7 @@ as element(p:parameters)
  : @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %private %ann:sequential %ann:nondeterministic function oauth:protected-resource(
+declare %private %an:sequential %an:nondeterministic function oauth:protected-resource(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
