@@ -36,7 +36,9 @@ namespace zorba {
  */
 class ZORBA_DLL_PUBLIC Thesaurus {
 public:
-  typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
+  typedef std::unique_ptr<
+            Thesaurus const,internal::ztd::destroy_delete<Thesaurus const>
+          >
           ptr;
 
   /**
@@ -112,16 +114,10 @@ protected:
 class ZORBA_DLL_PUBLIC ThesaurusProvider : public Resource {
 public:
   typedef std::unique_ptr<
-            ThesaurusProvider,
-            internal::ztd::destroy_delete<ThesaurusProvider>
-          >
-          ptr;
-
-  typedef std::unique_ptr<
             ThesaurusProvider const,
             internal::ztd::destroy_delete<ThesaurusProvider const>
           >
-          const_ptr;
+          ptr;
 
   /**
    * Gets a Thesaurus for the given language.

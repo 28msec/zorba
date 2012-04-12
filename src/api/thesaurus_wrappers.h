@@ -61,8 +61,9 @@ public:
 
   // inherited
   bool getThesaurus( locale::iso639_1::type, Thesaurus::ptr* ) const;
+
 private:
-  zorba::ThesaurusProvider::const_ptr const api_thesaurus_provider_;
+  zorba::ThesaurusProvider::ptr const api_thesaurus_provider_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
