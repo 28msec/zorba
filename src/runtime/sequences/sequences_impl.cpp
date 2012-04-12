@@ -2010,8 +2010,8 @@ static void readDocument(
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
   }
-
-  std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamResource->getStreamReleaser());
+  StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
+  std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
 
   lStreamResource->setStreamReleaser(nullptr);  
 
@@ -2129,6 +2129,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring lNormUri;
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource;
+  StreamReleaser lStreamReleaser;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
@@ -2157,8 +2158,9 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (state->theStreamResource == NULL)
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
-
-  state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), state->theStreamResource->getStreamReleaser());
+  
+  lStreamReleaser = state->theStreamResource->getStreamReleaser();
+  state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);
 
   //check if encoding is needed
