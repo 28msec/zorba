@@ -1229,8 +1229,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
 
   internal::ThesaurusProvider const *const t_provider =
     dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
-  if ( !t_provider )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+  ZORBA_ASSERT( t_provider );
 
   internal::Thesaurus::ptr thesaurus;
   if ( !t_provider->getThesaurus( qt0.lang(), &thesaurus ) )
