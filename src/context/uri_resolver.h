@@ -68,7 +68,7 @@ private:
   /**
    * Used by static_context to populate the URL.
    */
-  void setUrl(zstring aUrl) { theUrl = aUrl; }
+  void setUrl(zstring const &aUrl) { theUrl = aUrl; }
   friend class zorba::static_context;
 
   zstring theUrl;
