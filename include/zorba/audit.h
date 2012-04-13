@@ -80,6 +80,8 @@ namespace audit {
     virtual const Property* getDynamicProperty(const String&) const = 0;
 
     virtual std::ostream& write(std::ostream&) const = 0;
+    
+    virtual ~Configuration() {}
   };
 
   class ZORBA_DLL_PUBLIC Record {
@@ -109,6 +111,8 @@ namespace audit {
     virtual const Record* at(size_t) const = 0;
 
     virtual std::ostream& write(std::ostream&) const = 0;
+    
+    virtual ~Event() {}
   };
 
   class ZORBA_DLL_PUBLIC Provider {
