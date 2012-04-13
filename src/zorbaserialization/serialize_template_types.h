@@ -72,7 +72,7 @@ void operator&(Archiver& ar, T& obj)
     
     is_ref = ar.add_compound_field(obj.get_class_name_str(),
                                    FIELD_IS_CLASS,
-                                   "0",//strtemp, 
+                                   "0",
                                    (SerializeBaseClass*)&obj, 
                                    ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
@@ -172,7 +172,8 @@ void operator&(Archiver& ar, T*& obj)
       return;
 
     ar.check_class_field(retval, "", "",
-                         is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
+                         is_simple, is_class,
+                         field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -246,6 +247,7 @@ void operator&(Archiver& ar, T*& obj)
     else if (field_treat == ARCHIVE_FIELD_BASECLASS)
     {
       obj->T::serialize_internal(ar);
+
       ar.read_end_current_level();
     }
     // ARCHIVE_FIELD_REFERENCING
@@ -421,7 +423,8 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
     if (obj == NULL)
     {
       ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS, "NULL", 
+                            !FIELD_IS_CLASS,
+                            "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
                             ARCHIVE_FIELD_NULL);
       return;
@@ -720,8 +723,9 @@ void operator&(Archiver& ar, std::pair<T1, T2>*& obj)
     if (obj == NULL)
     {
       ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            !FIELD_IS_CLASS,
+                            "NULL", 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
       return;
     }

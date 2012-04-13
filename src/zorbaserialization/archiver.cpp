@@ -119,7 +119,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   all_reference_list(0),
   theArchiveVersion(ClassSerializer::g_zorba_classes_version),
   theRootField(0),
-  current_compound_field(0),
+  theCurrentCompoundField(0),
   theSimpleFieldsMap(0),
   hash_out_fields(0),
   nr_ids(0),
@@ -149,7 +149,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
                                      ALLOW_DELAY,
                                      0);    // level
 
-    current_compound_field = theRootField;
+    theCurrentCompoundField = theRootField;
 
     theSimpleFieldsMap = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*,
                                         SimpleHashoutFieldCompare>(1000, false);
@@ -312,12 +312,14 @@ bool Archiver::add_simple_field(
 
   if (ref_field)
   {
+    assert(ref_field->theKind == ARCHIVE_FIELD_PTR ||
+           ref_field->theKind == ARCHIVE_FIELD_NORMAL);
+
     // If we are trying to register the actual obj (i.e. fieldKind == FIELD_NORMAL)
     // and there is already a field for the same obj, then the pre-existing field
     // must be a PTR or REFERENCING field.
     assert(fieldKind != ARCHIVE_FIELD_NORMAL ||
-           ref_field->theKind == ARCHIVE_FIELD_PTR ||
-           ref_field->theKind == ARCHIVE_FIELD_REFERENCING);
+           ref_field->theKind == ARCHIVE_FIELD_PTR);
 
     if (get_is_temp_field_one_level() &&
         fieldKind == ARCHIVE_FIELD_PTR &&
@@ -328,8 +330,8 @@ bool Archiver::add_simple_field(
 
     if (fieldKind == ARCHIVE_FIELD_NORMAL)
     {
-      // special case: we registered a pointer to the obj before the obj itself
-      // and now we try to register the obj itself.
+      // special case: we have registered already a pointer to the obj (before
+      // the obj itself) and now we try to register the obj itself.
       exch_fields = true;
     }
 
@@ -368,14 +370,14 @@ bool Archiver::add_simple_field(
     new_field->theId = ++nr_ids;
     new_field->theOrder = new_field->theId;
 
-    new_field->theParent = current_compound_field;
+    new_field->theParent = theCurrentCompoundField;
 
-    if (current_compound_field->theLastChild)
-      current_compound_field->theLastChild->theNextSibling = new_field;
+    if (theCurrentCompoundField->theLastChild)
+      theCurrentCompoundField->theLastChild->theNextSibling = new_field;
     else
-      current_compound_field->theFirstChild = new_field;
+      theCurrentCompoundField->theFirstChild = new_field;
 
-    current_compound_field->theLastChild = new_field;
+    theCurrentCompoundField->theLastChild = new_field;
   }
   else
   {
@@ -427,22 +429,21 @@ void Archiver::exchange_fields(archive_field* new_field, archive_field* ref_fiel
 {
   ref_field->theKind = ARCHIVE_FIELD_NORMAL;
 
-  new_field->theKind = ARCHIVE_FIELD_REFERENCING;
+  assert(new_field->theKind == ARCHIVE_FIELD_REFERENCING);
   new_field->theId = ++nr_ids;
-  new_field->referencing = ref_field->theId;
   new_field->theAllowDelay2 = ref_field->theAllowDelay2;
 
   replace_field(new_field, ref_field);
 
-  ref_field->theParent = current_compound_field;
+  ref_field->theParent = theCurrentCompoundField;
 
-  if(current_compound_field->theLastChild)
-    current_compound_field->theLastChild->theNextSibling = ref_field;
+  if(theCurrentCompoundField->theLastChild)
+    theCurrentCompoundField->theLastChild->theNextSibling = ref_field;
   else
-    current_compound_field->theFirstChild = ref_field;
+    theCurrentCompoundField->theFirstChild = ref_field;
 
   ref_field->theNextSibling = NULL;
-  current_compound_field->theLastChild = ref_field;
+  theCurrentCompoundField->theLastChild = ref_field;
 
   ref_field->theOrder = nr_ids;
 }
@@ -455,7 +456,7 @@ bool Archiver::add_compound_field(
     const char* type,
     bool is_class,
     const void* info,
-    const void* ptr,//for classes, pointer to SerializeBaseClass
+    const void* ptr,
     enum ArchiveFieldKind fieldKind)
 {
   archive_field* new_field;
@@ -483,6 +484,9 @@ bool Archiver::add_compound_field(
 
   if (ref_field)
   {
+    assert(ref_field->theKind == ARCHIVE_FIELD_PTR ||
+           ref_field->theKind == ARCHIVE_FIELD_NORMAL);
+
     assert(fieldKind != ARCHIVE_FIELD_NORMAL ||
            ref_field->theKind != ARCHIVE_FIELD_NORMAL);
 
@@ -495,8 +499,6 @@ bool Archiver::add_compound_field(
 
     if (fieldKind == ARCHIVE_FIELD_NORMAL)
     {
-      //special case
-      //move the prev field into this one
       exch_fields = true;
     }
 
@@ -537,19 +539,19 @@ bool Archiver::add_compound_field(
 
   if (!exch_fields)
   {
-    new_field->theParent = current_compound_field;
+    new_field->theParent = theCurrentCompoundField;
     new_field->theId = ++nr_ids;
     new_field->theOrder = new_field->theId;
 
-    if (current_compound_field->theLastChild)
-      current_compound_field->theLastChild->theNextSibling = new_field;
+    if (theCurrentCompoundField->theLastChild)
+      theCurrentCompoundField->theLastChild->theNextSibling = new_field;
     else
-      current_compound_field->theFirstChild = new_field;
+      theCurrentCompoundField->theFirstChild = new_field;
 
-    current_compound_field->theLastChild = new_field;
+    theCurrentCompoundField->theLastChild = new_field;
 
     if (!ref_field && ptr)
-      current_compound_field = new_field;
+      theCurrentCompoundField = new_field;
   }
   else
   {
@@ -568,7 +570,7 @@ bool Archiver::add_compound_field(
 ********************************************************************************/
 void Archiver::add_end_compound_field()
 {
-  current_compound_field = current_compound_field->theParent;
+  theCurrentCompoundField = theCurrentCompoundField->theParent;
   theCurrentLevel--;
 }
 
@@ -857,10 +859,12 @@ void Archiver::finalize_input_serialization()
 {
   std::list<fwd_ref>::iterator it;
   void* ptr;
+
   for (it = fwd_reference_list.begin(); it != fwd_reference_list.end(); it++)
   {
     ptr = get_reference_value((*it).referencing);
-    if(!ptr)
+
+    if (!ptr)
     {
       throw ZORBA_EXCEPTION(zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
       ERROR_PARAMS(it->referencing));
@@ -899,10 +903,6 @@ void Archiver::finalize_input_serialization()
       {
         rcobj2->addReference(); //this can lead to memory leaks
       }
-      //else if ((rcobj3 = dynamic_cast<zStringStore*>((SerializeBaseClass*)ptr)) != NULL)
-      //{
-      //  RCHelper::addReference(rcobj3); //this can lead to memory leaks
-      //}
       else
       {
         ZORBA_FATAL(0, (*it).class_name);
@@ -912,8 +912,9 @@ void Archiver::finalize_input_serialization()
 
   //decrement RC on Items
   std::vector<store::Item*>::iterator item_it;
-  int j=0;
-  for(item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
+  int j = 0;
+
+  for (item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
   {
     j++;
     if((*item_it)->isNode())

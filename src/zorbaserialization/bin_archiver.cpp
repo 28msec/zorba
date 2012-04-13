@@ -272,26 +272,34 @@ void BinArchiver::serialize_out()
 /*******************************************************************************
 
 ********************************************************************************/
-int BinArchiver::add_to_string_pool(const char *str)
+int BinArchiver::add_to_string_pool(const char* str)
 {
-  if(!str)
+  if (!str)
     return 0;
-  int   str_pos = 0;
-  if(string_pool.get(str, str_pos))
+
+  int str_pos = 0;
+
+  if (string_pool.get(str, str_pos))
   {
-    STRING_POS &str_struct = strings.at(str_pos-1);
+    STRING_POS& str_struct = strings.at(str_pos-1);
     str_struct.count++;
     return str_pos;
   }
+
   STRING_POS  str_struct;
   str_struct.str = str;
   str_struct.count = 1;
   str_struct.final_pos = (unsigned int)strings.size()+1;
+
   strings.push_back(str_struct);
+
   str_pos = (int)strings.size();
   strings_pos.push_back(str_pos-1);
-  const char *str_dup = strdup(str);
+
+  const char* str_dup = strdup(str);
+
   string_pool.insert(str_dup, str_pos);
+
   return str_pos;
 }
 
@@ -304,21 +312,21 @@ void BinArchiver::collect_strings(archive_field* parent_field)
   archive_field* current_field = parent_field->theFirstChild;
   while (current_field)
   {
-    if(current_field->theKind != ARCHIVE_FIELD_NULL)
+    if (current_field->theKind != ARCHIVE_FIELD_NULL)
     {
 #ifdef NDEBUG
-      if(current_field->theIsClass && (current_field->theKind == ARCHIVE_FIELD_PTR))
+      if (current_field->theIsClass && current_field->theKind == ARCHIVE_FIELD_PTR)
 #endif
         current_field->theTypeNamePosInPool = add_to_string_pool(current_field->theTypeName);
-      if(current_field->theKind != ARCHIVE_FIELD_REFERENCING)
+      if (current_field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
         current_field->theValuePosInPool = add_to_string_pool(current_field->theValue);
       }
     }
 
-    if(!current_field->theIsSimple)
+    if (!current_field->theIsSimple)
     {
-      if(current_field->theKind != ARCHIVE_FIELD_REFERENCING)
+      if (current_field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
         collect_strings(current_field);
       }
@@ -353,7 +361,8 @@ void BinArchiver::serialize_out_string_pool()
   }
 
   write_int((unsigned int)strings.size());
-  if(bitfill)
+
+  if (bitfill)
   {
     current_byte <<= (8-bitfill);
     os->write((char*)&current_byte, 1);
@@ -363,8 +372,11 @@ void BinArchiver::serialize_out_string_pool()
     bytes_saved++;
 #endif
   }
+
   std::vector<unsigned int>::iterator  strings_pos_it;
-  for(strings_pos_it = strings_pos.begin(); strings_pos_it != strings_pos.end(); strings_pos_it++)
+  for (strings_pos_it = strings_pos.begin();
+       strings_pos_it != strings_pos.end();
+       strings_pos_it++)
   {
     write_string(strings.at(*strings_pos_it).str.c_str());
   }
@@ -374,7 +386,7 @@ void BinArchiver::serialize_out_string_pool()
 /*******************************************************************************
 
 ********************************************************************************/
-void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
+void BinArchiver::serialize_compound_fields(archive_field* parent_field)
 {
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   unsigned int    bytes_saved1 = bytes_saved;
@@ -404,7 +416,7 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
     write_bits(small_treat, 2);
 #endif
 
-    if(current_field->theKind != ARCHIVE_FIELD_NULL)
+    if (current_field->theKind != ARCHIVE_FIELD_NULL)
     {
 #ifdef NDEBUG
       if (current_field->theIsClass && (current_field->theKind == ARCHIVE_FIELD_PTR))
@@ -420,10 +432,10 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 
       last_id = current_field->theId;
 
-      if(current_field->theKind != ARCHIVE_FIELD_REFERENCING)
+      if (current_field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
-        if(!current_field->theValuePosInPool)
-          write_int_exp2(current_field->theValuePosInPool);
+        if (!current_field->theValuePosInPool)
+          write_int_exp2(0);
         else
           write_int_exp2(strings.at(current_field->theValuePosInPool-1).final_pos);
       }
@@ -439,7 +451,7 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 
     if (!current_field->theIsSimple)
     {
-      if(current_field->theKind != ARCHIVE_FIELD_REFERENCING)
+      if (current_field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
         serialize_compound_fields(current_field);
 #ifndef NDEBUG

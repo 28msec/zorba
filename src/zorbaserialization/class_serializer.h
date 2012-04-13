@@ -163,9 +163,7 @@ if (ar.is_serializing_out() && !ar.is_serialize_base_class())   \
 class ClassDeserializer
 {
 public:
-  virtual ~ClassDeserializer()
-  {
-  }
+  virtual ~ClassDeserializer() { }
 
   virtual SerializeBaseClass* create_new(Archiver& ar) = 0;
 
@@ -199,17 +197,6 @@ public:                                                                 \
 /*******************************************************************************
 
 ********************************************************************************/
-#define SERIALIZABLE_CLASS_NO_FACTORY(class_name)                      \
-SERIALIZE_INTERNAL_METHOD(class_name)                                  \
-                                                                       \
-virtual const char* get_class_name_str() const { return #class_name; } \
-                                                                       \
-static const char* get_class_name_str_static() { return #class_name; }
-
-
-/*******************************************************************************
-
-********************************************************************************/
 #define SERIALIZABLE_CLASS(class_name)                                 \
 SERIALIZE_INTERNAL_METHOD(class_name)                                  \
                                                                        \
@@ -226,10 +213,7 @@ SERIALIZE_INTERNAL_METHOD(class_name)                                  \
                                                                        \
 virtual const char* get_class_name_str() const { return #class_name; } \
                                                                        \
-static const char* get_class_name_str_static() { return #class_name; } \
-                                                                       \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)                      \
-static class_factory<class_name>  g_class_factory;
+static const char* get_class_name_str_static() { return #class_name; } 
 
 
 #define SERIALIZABLE_CLASS_VERSIONS(class_name)                        \
@@ -258,9 +242,7 @@ static const char * class_name_str;                                       \
                                                                           \
 virtual const char* get_class_name_str() const { return class_name_str; } \
                                                                           \
-static const char* get_class_name_str_static() { return class_name_str; } \
-                                                                          \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)
+static const char* get_class_name_str_static() { return class_name_str; }
 
 
 //
