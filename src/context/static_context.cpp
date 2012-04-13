@@ -1696,43 +1696,6 @@ void static_context::get_full_lib_path(std::vector<zstring>& path) const
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//  JVM Classpath                                                             //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::set_jvm_class_path(const std::vector<zstring>& path)
-{
-  theJVMClassPath = path;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::get_jvm_class_path(std::vector<zstring>& path) const
-{
-  path.insert(path.end(), theJVMClassPath.begin(), theJVMClassPath.end());
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::get_full_jvm_class_path(std::vector<zstring>& path) const
-{
-  if (theParent != NULL)
-  {
-    theParent->get_full_jvm_class_path(path);
-  }
-
-  get_jvm_class_path(path);
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Validating Items                                                           //
