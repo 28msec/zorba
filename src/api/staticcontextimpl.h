@@ -263,12 +263,6 @@ public:
   virtual void
   getExternalVariables(Iterator_t& aVarsIter) const;  
 
-  virtual Item
-  fetch(const String& aURI) const;
-
-  virtual Item
-  fetch(const String& aURI, const String& aEntityKind) const;
-
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
 
@@ -286,6 +280,12 @@ public:
 
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
+
+  virtual Item
+  fetch(const String& aURI) const;
+
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const;
 
 protected:
   String
