@@ -2172,8 +2172,10 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     }
     transcode::attach(*state->theStream->get(), encodingString.c_str());
   }
-  while (getline(*state->theStream->get(), streamLine))
+
+  while (state->theStream->get()->good())
   {
+    getline(*state->theStream->get(), streamLine);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
   }
 
