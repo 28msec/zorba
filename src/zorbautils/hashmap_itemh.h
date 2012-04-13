@@ -91,6 +91,16 @@ public:
     }
     HashMap<store::Item*, V, ItemHandleHashMapCmp>::clear();
   }
+  
+  void eraseEntry(
+      HashEntry<store::Item*, V>* entry,
+      HashEntry<store::Item*, V>* preventry)
+  {
+    entry->theItem->removeReference();
+    HashMap<store::Item*, V, ItemHandleHashMapCmp>::eraseEntry(
+        entry,
+        preventry);
+  }
 
   iterator find(const store::Item_t& item)
   {
