@@ -392,7 +392,7 @@ extern entry const dict_en[] = {
   { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
-  { "ZXQP0002", "\"$1\": assertion failed" },
+  { "ZXQP0002", "\"$1\": assertion failed.${ The following information might help: 2}" },
   { "ZXQP0003", "internal error${: 1}" },
   { "ZXQP0004", "not yet implemented: $1" },
   { "ZXQP0005", "\"$1\": feature not enabled" },
