@@ -37,7 +37,11 @@ namespace internal {
 class Thesaurus {
 public:
   typedef ft_int level_type;
-  typedef std::unique_ptr<Thesaurus,ztd::destroy_delete<Thesaurus> > ptr;
+
+  typedef std::unique_ptr<
+            Thesaurus const,ztd::destroy_delete<Thesaurus const>
+          >
+          ptr;
 
   /**
    * An %iterator is used to iterate over lookup results.
