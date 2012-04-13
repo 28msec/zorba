@@ -95,8 +95,12 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
   if ( data->getKind() != internal::EntityData::THESAURUS )
     return nullptr;
 
+  zstring const url_copy(
+    url == "##default" ? "wordnet://wordnet.princeton.edu/": url
+  );
+
   zstring scheme_name;
-  if ( !uri::get_scheme( url, &scheme_name ) )
+  if ( !uri::get_scheme( url_copy, &scheme_name ) )
     return nullptr;
 
   switch ( thesaurus_impl::find( scheme_name ) ) {
@@ -105,7 +109,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       // Currently, we presume that an "xqftts:" URL should be used exactly
       // like a "file:" URL.
       //
-      zstring t_uri( url );
+      zstring t_uri( url_copy );
       t_uri.replace( 0, 6, "file" );    // xqftts -> file
       zstring const t_path( fs::get_normalized_path( t_uri ) );
       return new xqftts::provider( t_path );
@@ -117,7 +121,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       // library path using the mangled form of the original URI.  So, mangle
       // here for convenience.
       //
-      URI const t_uri( url );
+      URI const t_uri( url_copy );
       zstring const t_path( t_uri.toPathNotation() );
       return new wordnet::provider( t_path );
     }
