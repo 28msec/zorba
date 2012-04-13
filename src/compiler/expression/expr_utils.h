@@ -33,7 +33,7 @@ public:
   bool         theEmptyLeast;
   std::string  theCollation;
 
-  SERIALIZABLE_ABSTRACT_CLASS(OrderModifier)
+  SERIALIZABLE_CLASS(OrderModifier)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderModifier, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar)
   {
