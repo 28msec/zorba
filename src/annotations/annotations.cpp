@@ -209,12 +209,6 @@ void AnnotationInternal::createBuiltIn()
 void AnnotationInternal::destroyBuiltIn()
 {
   theAnnotId2NameMap.clear();
-  ItemHandleHashMap<AnnotationId>::iterator ite = theAnnotName2IdMap.begin();
-  ItemHandleHashMap<AnnotationId>::iterator end = theAnnotName2IdMap.end();
-  for (; ite != end; ++ite)
-  {
-    (*ite).first->removeReference();
-  }
   theAnnotName2IdMap.clear();
 }
 

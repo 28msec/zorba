@@ -80,6 +80,17 @@ public:
             sync)
   {
   }
+  
+  void clear()
+  {
+    iterator ite = this->begin();
+    iterator end = this->end();
+    for (; ite != end; ++ite)
+    {
+      (*ite).first->removeReference();
+    }
+    HashMap<store::Item*, V, ItemHandleHashMapCmp>::clear();
+  }
 
   iterator find(const store::Item_t& item)
   {
