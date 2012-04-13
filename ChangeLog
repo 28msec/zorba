@@ -3,6 +3,11 @@ Zorba - The XQuery Processor
 version 2.5
 
 New Features:
+  * fn:available-environment-variables
+  * fn:environment-variables
+  * fn:uri-collection
+  * fn:unparsed-text
+  * fn:unparsed-text-available
   * Extended API for Python, Java, PHP and Ruby.
 
 Optimization:
