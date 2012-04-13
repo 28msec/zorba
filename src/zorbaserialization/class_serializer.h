@@ -380,9 +380,9 @@ class_name(::zorba::serialization::Archiver& ar)                                
 ********************************************************************************/
 #ifndef NDEBUG
 #define CHECK_CLASS_NAME(class_name)\
-if (ar.is_serializing_out() && !ar.is_serialize_base_class())   \
-{                                                               \
-  assert(strstr(typeid(*this).name(), #class_name));            \
+if (ar.is_serializing_out() && !ar.is_serialize_base_class())             \
+{                                                                         \
+  assert(::strcmp(typeid(*this).name(), typeid(class_name).name()) == 0); \
 }
 #else
 #define CHECK_CLASS_NAME(class_name)
