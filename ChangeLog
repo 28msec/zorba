@@ -11,11 +11,13 @@ Bug Fixes/Other Changes:
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
+  * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed bug #967428 (do not hoist index creation outside a try-catch)
   * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
+  * Fixed bug #906494 (default compile with D_FILE_OFFSET_BITS=64)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
   * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
 

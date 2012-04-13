@@ -25,6 +25,7 @@
 #include <zorba/typeident.h>
 #include <zorba/util/path.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/singleton_item_sequence.h>
 
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
@@ -1536,6 +1537,51 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
   aVarsIter = vIter; 
   ZORBA_CATCH
+}
+
+Item
+StaticContextImpl::fetch(const String& aURI) const
+{
+  return fetch(aURI, "SOME_CONTENT");
+}
+
+Item
+StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind) const
+{
+  ZORBA_TRY
+  {
+    Zorba* lZorba = Zorba::getInstance(0);
+    ItemFactory* lFactory = lZorba->getItemFactory();
+
+    Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
+                                          "content");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(lFactory->createString(aURI)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEntityKind)));
+
+    StaticContext_t lCtx = createChildContext();
+
+    Zorba_CompilerHints_t lHints;
+    std::ostringstream lProlog;
+    lProlog
+      << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';";
+
+    lCtx->loadProlog(lProlog.str(), lHints);
+
+    ItemSequence_t lSeq = lCtx->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_CATCH
+  return 0;
 }
 
 } /* namespace zorba */
