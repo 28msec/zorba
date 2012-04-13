@@ -31,7 +31,8 @@
 #include "zorbautils/mutex.h"
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_basic_types.h"
 #endif
 
 namespace zorba

@@ -23,6 +23,8 @@
 #include "functions/udf.h"
 #include "functions/signature.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba {
 
@@ -45,6 +47,14 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
 {
   assert(anExpr != 0);
   compute_scripting_kind();
+}
+
+
+void dynamic_function_invocation_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+  ar & theArgs;
 }
 
 

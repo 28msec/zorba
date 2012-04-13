@@ -22,6 +22,9 @@
 
 #include "types/typeimpl.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)

@@ -19,6 +19,7 @@
 #include <stack>
 
 #include <zorba/config.h>
+#include <zorba/item.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"

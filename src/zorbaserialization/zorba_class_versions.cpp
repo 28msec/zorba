@@ -37,7 +37,7 @@
 #include "zorbautils/hashmap_itemp.h"
 #undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 #include "zorbatypes/rchandle.h"
 
