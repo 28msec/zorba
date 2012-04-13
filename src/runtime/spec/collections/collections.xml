@@ -1332,11 +1332,11 @@
 
     <zorba:function>
 
-      <zorba:signature localname="uri-collection" prefix="fn">
+      <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
         <zorba:output>xs:anyURI*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="uri-collection" prefix="fn">
+      <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
         <zorba:param>xs:string?</zorba:param>
         <zorba:output>xs:anyURI*</zorba:output>
       </zorba:signature>

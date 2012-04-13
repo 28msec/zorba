@@ -665,14 +665,14 @@ public:
 
 
 //fn:uri-collection
-class fn_uri_collection : public function
+class fn_uri_collection_3_0 : public function
 {
 public:
-  fn_uri_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_uri_collection_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

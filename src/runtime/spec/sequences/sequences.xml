@@ -1161,7 +1161,7 @@
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="available-environment-variables" prefix="fn">
+    <zorba:signature localname="available-environment-variables" prefix="fn" version="3.0">
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
 
@@ -1193,7 +1193,7 @@
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="environment-variable" prefix="fn">
+    <zorba:signature localname="environment-variable" prefix="fn" version="3.0">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
@@ -1219,12 +1219,12 @@
 
   <zorba:function>
 
-    <zorba:signature localname="unparsed-text" prefix="fn">
+    <zorba:signature localname="unparsed-text" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="unparsed-text" prefix="fn">
+    <zorba:signature localname="unparsed-text" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
@@ -1253,12 +1253,12 @@
 
   <zorba:function>
 
-    <zorba:signature localname="unparsed-text-available" prefix="fn">
+    <zorba:signature localname="unparsed-text-available" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="unparsed-text-available" prefix="fn">
+    <zorba:signature localname="unparsed-text-available" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
@@ -1287,12 +1287,12 @@
 
     <zorba:function>
 
-      <zorba:signature localname="unparsed-text-lines" prefix="fn">
+      <zorba:signature localname="unparsed-text-lines" prefix="fn" version="3.0">
         <zorba:param>xs:string?</zorba:param>
         <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="unparsed-text-lines" prefix="fn">
+      <zorba:signature localname="unparsed-text-lines" prefix="fn" version="3.0">
         <zorba:param>xs:string?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:string*</zorba:output>

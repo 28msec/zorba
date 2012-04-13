@@ -623,14 +623,14 @@ public:
 
 
 //fn:available-environment-variables
-class fn_available_environment_variables : public function
+class fn_available_environment_variables_3_0 : public function
 {
 public:
-  fn_available_environment_variables(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_available_environment_variables_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -638,14 +638,14 @@ public:
 
 
 //fn:environment-variable
-class fn_environment_variable : public function
+class fn_environment_variable_3_0 : public function
 {
 public:
-  fn_environment_variable(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_environment_variable_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -653,14 +653,14 @@ public:
 
 
 //fn:unparsed-text
-class fn_unparsed_text : public function
+class fn_unparsed_text_3_0 : public function
 {
 public:
-  fn_unparsed_text(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_unparsed_text_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -668,14 +668,14 @@ public:
 
 
 //fn:unparsed-text-available
-class fn_unparsed_text_available : public function
+class fn_unparsed_text_available_3_0 : public function
 {
 public:
-  fn_unparsed_text_available(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_unparsed_text_available_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -683,14 +683,14 @@ public:
 
 
 //fn:unparsed-text-lines
-class fn_unparsed_text_lines : public function
+class fn_unparsed_text_lines_3_0 : public function
 {
 public:
-  fn_unparsed_text_lines(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_unparsed_text_lines_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
