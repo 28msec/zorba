@@ -47,7 +47,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
                 result = TypeIdentifier.createEmptyType();
                 break;
             case XQITEMKIND_ATTRIBUTE:
-                // TODO: fix uriWildcard, localNameWildcard
                 result = TypeIdentifier.createAttributeType(schemaURI.toString(), true, nodeName.getLocalPart(), true, TypeIdentifier.createAnyNodeType());
                 break;
             case XQITEMKIND_COMMENT:
@@ -59,7 +58,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
                 result = TypeIdentifier.createDocumentType(TypeIdentifier.createAnyNodeType());
                 break;
             case XQITEMKIND_ELEMENT:
-                // TODO: fix uriWildcard, localNameWildcard
                 result = TypeIdentifier.createElementType(schemaURI.toString(), true, nodeName.getLocalPart(), true, TypeIdentifier.createAnyNodeType());
                 break;
             case XQITEMKIND_ITEM:
@@ -111,6 +109,9 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
                 break;
             case Kind.TEXT_TYPE:
                 itemKind = XQITEMKIND_TEXT;
+                break;
+            default:
+                itemKind = XQITEMKIND_NODE;
                 break;
         }
         
@@ -245,6 +246,10 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
                 case ZORBA_XQITEMKIND_TEXT:
                     itemKind = XQITEMKIND_TEXT;
                     break;
+                default:
+                    itemKind = XQITEMKIND_ELEMENT;
+                    break;
+                  
             }
         } else if (zorbaItem.isAtomic()) {
             itemKind = XQITEMKIND_ATOMIC;

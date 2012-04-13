@@ -257,6 +257,8 @@ class XQItem implements javax.xml.xquery.XQItem {
                 case XQItemType.XQITEMKIND_TEXT:
                     result = doc.createTextNode(item.getStringValue());
                     break;
+                default:
+                    throw new XQException("Error getting the node for this Item Kind.");
             }
         } catch (Exception ex) {
             throw new XQException("Error converting Item to Node" + ex.getLocalizedMessage());
@@ -276,7 +278,7 @@ class XQItem implements javax.xml.xquery.XQItem {
         try {
             namespace = item.getNamespace();
         } catch (Exception ex) {
-            //throw new XQException("Error getting Node URI: " + ex.getLocalizedMessage());
+            throw new XQException("Error getting Node URI: " + ex.getLocalizedMessage());
         }
         try {
             result = new URI(namespace);
@@ -299,18 +301,9 @@ class XQItem implements javax.xml.xquery.XQItem {
                 (itemType.getItemKind()==XQItemType.XQITEMKIND_TEXT) ) {
                 result = this.getNode();
             } else if (itemType.getItemKind()==XQItemType.XQITEMKIND_ATOMIC) {
-                //result = this.getNode();
+
                 DatatypeFactory factory = DatatypeFactory.newInstance();
                 switch (itemType.getBaseType()) {
-                    /*
-                    case XQItemType.XQBASETYPE_ANYATOMICTYPE:
-                        break;
-                    case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
-                        break;
-                    case XQItemType.XQBASETYPE_ANYTYPE:
-                        break;
-                     *
-                     */
                     case XQItemType.XQBASETYPE_ANYURI:
                         result = item.getStringValue();
                         break;
@@ -430,6 +423,8 @@ class XQItem implements javax.xml.xquery.XQItem {
                     case XQItemType.XQBASETYPE_UNTYPEDATOMIC:
                         result = item.getStringValue();
                         break;
+                    default:
+                        throw new XQException("Error getting object for this ItemType");
                 }
 
             }
