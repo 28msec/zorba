@@ -32,8 +32,8 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-StemmerWrapper::StemmerWrapper( zorba::Stemmer::ptr p ) :
-  api_stemmer_( std::move( p ) )
+StemmerWrapper::StemmerWrapper( zorba::Stemmer::ptr api_stemmer ) :
+  api_stemmer_( std::move( api_stemmer ) )
 {
   ZORBA_ASSERT( api_stemmer_.get() );
 }
@@ -42,10 +42,10 @@ void StemmerWrapper::destroy() const {
   api_stemmer_.release()->destroy();
 }
 
-void StemmerWrapper::properties( Properties *p ) const {
-  zorba::Stemmer::Properties api_p;
-  api_stemmer_->properties( &api_p );
-  p->uri = api_p.uri;
+void StemmerWrapper::properties( Properties *props ) const {
+  zorba::Stemmer::Properties api_props;
+  api_stemmer_->properties( &api_props );
+  props->uri = api_props.uri;
 }
 
 void StemmerWrapper::stem( zstring const &word, iso639_1::type lang,
@@ -58,18 +58,18 @@ void StemmerWrapper::stem( zstring const &word, iso639_1::type lang,
 ///////////////////////////////////////////////////////////////////////////////
 
 StemmerProviderWrapper::
-StemmerProviderWrapper( zorba::StemmerProvider const *p ) :
-  api_stemmer_provider_( p )
+StemmerProviderWrapper( zorba::StemmerProvider const *api_stemmer_provider ) :
+  api_stemmer_provider_( api_stemmer_provider )
 {
   ZORBA_ASSERT( api_stemmer_provider_ );
 }
 
 Stemmer::ptr
 StemmerProviderWrapper::get_stemmer( iso639_1::type lang ) const {
-  zorba::Stemmer::ptr p( api_stemmer_provider_->getStemmer( lang ) );
+  zorba::Stemmer::ptr api_stemmer( api_stemmer_provider_->getStemmer( lang ) );
   Stemmer::ptr result;
-  if ( p.get() )
-    result.reset( new StemmerWrapper( std::move( p ) ) );
+  if ( api_stemmer.get() )
+    result.reset( new StemmerWrapper( std::move( api_stemmer ) ) );
   return std::move( result );
 }
 
