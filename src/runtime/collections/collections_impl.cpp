@@ -1520,9 +1520,17 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) 
+    if (! node->getCollection())
     {
       throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
+    }
+    if (node->getParent())
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZDDY0036_NON_ROOT_NODE_DELETION,
+        ERROR_PARAMS(node->getCollection()->getName()->getStringValue()),
+        ERROR_LOC( loc )
+      );
     }
     if (collection && collection != node->getCollection()) 
     {

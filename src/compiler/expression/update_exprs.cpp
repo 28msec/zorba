@@ -27,8 +27,6 @@
 namespace zorba 
 {
 
-SERIALIZABLE_CLASS_VERSIONS(update_expr_base)
-
 SERIALIZABLE_CLASS_VERSIONS(insert_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(delete_expr)

@@ -1,0 +1,1 @@
+fn:analyze-string("aaaac", "((a)(a))+c")

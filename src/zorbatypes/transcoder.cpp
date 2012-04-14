@@ -25,17 +25,19 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 transcoder::transcoder( std::ostream& output_stream, bool in_utf16 ) :
   os( output_stream ),
   utf16( in_utf16 )
 {
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   utf8_buf_len_ = 0;
   utf8_char_len_ = 1;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 void transcoder::write_utf16( char const *s, std::streamsize len ) {
   unicode::char_type *u_s;
@@ -76,7 +78,9 @@ void transcoder::write_utf16_char( char ch ) {
   }
 }
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

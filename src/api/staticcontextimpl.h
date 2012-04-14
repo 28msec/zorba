@@ -281,6 +281,11 @@ public:
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
 
+  virtual Item
+  fetch(const String& aURI) const;
+
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const;
 
 protected:
   String

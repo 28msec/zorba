@@ -38,7 +38,7 @@ protected:
   PlanIter_t theChild1;
 
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(BinaryBaseIterator)
+  SERIALIZABLE_ABSTRACT_CLASS(BinaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(BinaryBaseIterator, Batcher<IterType>)
   void serialize(::zorba::serialization::Archiver& ar)
   {

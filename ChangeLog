@@ -5,6 +5,7 @@ version 2.5
 New Features:
   * Extended API for Python, Java, PHP and Ruby.
   * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
+  * Added support for NO_ICU (to not use ICU for unicode processing)
 
 Optimization:
 
@@ -12,8 +13,10 @@ Bug Fixes/Other Changes:
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
+  * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)
+  * Fixed bug #867253 (cdml:delete-nodes should only remove root nodes)
   * Fixed bug #967428 (do not hoist index creation outside a try-catch)
   * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
@@ -155,7 +158,9 @@ Bug Fixes/Other Changes:
   * Fixed bug when parsing a document with a base-uri attribute.
   * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
+  * Implemented the probe-index-range-value for general indexes
   * Removed ZSTR0005 and ZSTR0006 error codes
+  * Fixed bug #867662 ("nullptr" warning)
   * Fixed bug #868258 (Assertion failure with two delete collection)
   * Fixed bug #871623 and #871629 (assertion failures with insertions in dynamic collections)
   * Fixed bug #867262 (allow reuse of iterator over ExtFuncArgItemSequence)
@@ -164,6 +169,8 @@ Bug Fixes/Other Changes:
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
+  * General index cannot be declared as unique if the type of its key is
+    xs:anyAtomicType or xs:untypedAtomic.
   * Added undo for node revalidation
   * Optimization for count(collection()) expressions
   * Fixed bug #872796  (validate-in-place can interfere with other update primitives)
@@ -182,6 +189,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #855715 (Invalid escaped characters in regex not caught)
   * Fixed bug #862089 (Split binary/xq install directories for modules) by
   splitting "module path" into separate URI and Library paths
+  * New node-position module. This module allows to obtain a representation of a node position, which
+    can be used to assess structural relationships with other nodes.   
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
   * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)
