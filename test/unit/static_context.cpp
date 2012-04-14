@@ -26,7 +26,9 @@
 
 using namespace std;
 using namespace zorba;
+#ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 bool
 sctx_test_1(Zorba* const zorba)
