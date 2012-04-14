@@ -24,12 +24,19 @@
 #include <compiler/parsetree/parsenode_visitor.h>
 
 #include <compiler/parser/xqdoc_comment.h>
+
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/dict.h"
+
 #include "types/root_typemanager.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
+
 #include "system/globalenv.h"
 
 using namespace std;
@@ -170,8 +177,11 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
 {
   map<zstring, zstring>::iterator ite = theNamespaceSchemaMap.find(aPrefix);
-  return ((ite != theNamespaceSchemaMap.end()) ||
-          (ite->second ==  aNamespace));
+  if(ite != theNamespaceSchemaMap.end())
+  {
+    return (ite->second == aNamespace);
+  }
+  return false;
 }
 
 void print_namespaces()

@@ -27,7 +27,9 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 #if ZORBA_BATCHING_TYPE == 1
@@ -480,7 +482,7 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(Batcher)
+  SERIALIZABLE_ABSTRACT_CLASS(Batcher)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar)
   {

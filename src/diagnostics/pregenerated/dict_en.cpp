@@ -392,7 +392,7 @@ extern entry const dict_en[] = {
   { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
-  { "ZXQP0002", "\"$1\": assertion failed" },
+  { "ZXQP0002", "\"$1\": assertion failed.${ The following information might help: 2}" },
   { "ZXQP0003", "internal error${: 1}" },
   { "ZXQP0004", "not yet implemented: $1" },
   { "ZXQP0005", "\"$1\": feature not enabled" },
@@ -437,8 +437,12 @@ extern entry const dict_en[] = {
   { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
+#if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
+#endif
   { "~BadAnyURI", "invalid xs:anyURI" },
   { "~BadArgTypeForFn_2o34o", "${\"2\": }invalid argument type for function $3()${: 4}" },
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
@@ -451,7 +455,9 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
@@ -567,10 +573,14 @@ extern entry const dict_en[] = {
   { "~NoUntypedKeyNodeValue_2", "node with untyped key value found during probe on index \"$2\"" },
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+#endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+#endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotDefInDynamicCtx", "not defined in dynamic context" },
@@ -589,6 +599,69 @@ extern entry const dict_en[] = {
   { "~ParserNoCreateTree", "XML tree creation failed" },
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_ATOM_CHAR", "'$3': invalid character for an atom; forbidden characters are: [{}?*+|^]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISSING_CLOSE_BRACKET", "missing ']' in character group" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MULTICHAR_IN_CHAR_RANGE", "multichars or char categories cannot be part of a char range" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category; supported categories: M, Mn, Mc, Me" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category; supported categories: N, Nd, Nl, No" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
+#endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaAttributeName", "schema-attribute name" },
@@ -610,68 +683,73 @@ extern entry const dict_en[] = {
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_BACK_REF", "backreference to a non-existent capture group" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_FLAG", "invalid value for match mode flags" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_RANGE", "in character range [x-y], x is greater than y" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_STATE", "RegexMatcher in invalid state for requested operation" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_LOOK_BEHIND_LIMIT", "look-behind pattern matches must have a bounded maximum length" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISSING_CLOSE_BRACKET", "missing ']'" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_NUMBER_TOO_BIG", "decimal number is too large" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_RULE_SYNTAX", "syntax error" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_SET_CONTAINS_STRING", "can not have UnicodeSets containing strings" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
+#if !defined(ZORBA_NO_ICU)
   { "~UnbalancedChar_3", "missing '$3'" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~UnescapedChar_3", "character '$3' must be escaped here" },
+#endif
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~Variable", "variable" },

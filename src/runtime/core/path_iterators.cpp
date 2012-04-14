@@ -43,22 +43,69 @@
 namespace zorba
 {
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AttributeAxisIterator, AttributeAxisState>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ParentAxisIterator, ParentAxisState>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIterator, AncestorAxisState>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>, 6)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>, 7)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIterator, SiblingAxisState>, 8)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIterator, SiblingAxisState>, 9)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>, 10)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>, 11)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>, 12)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>, 13)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>, 14)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>, 15)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>, 16)
+template<> const char* 
+AxisIterator<SelfAxisIterator, SelfAxisState>::class_name_str =
+"AxisIterator<SelfAxisIterator, SelfAxisState>";
+
+template<> const char* 
+AxisIterator<AttributeAxisIterator, AttributeAxisState>::class_name_str =
+"AxisIterator<AttributeAxisIterator, AttributeAxisState>";
+
+template<> const char* 
+AxisIterator<ParentAxisIterator, ParentAxisState>::class_name_str =
+"AxisIterator<ParentAxisIterator, ParentAxisState>";
+
+template<> const char* 
+AxisIterator<AncestorAxisIterator, AncestorAxisState>::class_name_str =
+"AxisIterator<AncestorAxisIterator, AncestorAxisState>";
+
+template<> const char* 
+AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>::class_name_str =
+"AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>";
+
+template<> const char* 
+AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>::class_name_str =
+"AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>";
+
+template<> const char* 
+AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>::class_name_str =
+"AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>";
+
+template<> const char* 
+AxisIterator<RSiblingAxisIterator, SiblingAxisState>::class_name_str =
+"AxisIterator<RSiblingAxisIterator, SiblingAxisStat>";
+
+template<> const char* 
+AxisIterator<LSiblingAxisIterator, SiblingAxisState>::class_name_str =
+"AxisIterator<LSiblingAxisIterator, SiblingAxisState>";
+
+template<> const char* 
+AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>::class_name_str =
+"AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>";
+
+template<> const char* 
+AxisIterator<ChildAxisIterator, ChildAxisState>::class_name_str =
+"AxisIterator<ChildAxisIterator, ChildAxisState>";
+
+template<> const char* 
+AxisIterator<DescendantAxisIterator,DescendantAxisState>::class_name_str =
+"AxisIterator<DescendantAxisIterator,DescendantAxisState>";
+
+template<> const char* 
+AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>::class_name_str =
+"AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>";
+
+template<> const char* 
+AxisIterator<PrecedingAxisIterator, PrecedingAxisState>::class_name_str =
+"AxisIterator<PrecedingAxisIterator, PrecedingAxisState>";
+
+template<> const char* 
+AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>::class_name_str =
+"AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>";
+
+template<> const char* 
+AxisIterator<FollowingAxisIterator, FollowingAxisState>::class_name_str =
+"AxisIterator<FollowingAxisIterator, FollowingAxisState>";
 
 SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
 
@@ -347,6 +394,12 @@ doctest2:
 /*******************************************************************************
 
 ********************************************************************************/
+void SelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
+}
+
+
 bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   SelfAxisState* state;
@@ -393,6 +446,13 @@ void AttributeAxisState::reset(PlanState& planState)
   AxisState::reset(planState);
   if (theAttributes != NULL)
     theAttributes->reset();
+}
+
+
+void AttributeAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator,
+                           AttributeAxisState>*)this);
 }
 
 
@@ -452,6 +512,12 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 /*******************************************************************************
 
 ********************************************************************************/
+void ParentAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
+}
+
+
 bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ParentAxisState* state;
@@ -485,6 +551,13 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
   Returns the ancestors in document order (top-down)
 ********************************************************************************/
+void AncestorAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+}
+
+
 bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item* ancestor;
@@ -534,6 +607,13 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
   Returns the ancestors in reverse document order (bottom-up)
 ********************************************************************************/
+void AncestorReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
+}
+
+
 bool AncestorReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -594,6 +674,13 @@ bool AncestorReverseAxisIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+void AncestorSelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
+}
+
+
 bool AncestorSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const

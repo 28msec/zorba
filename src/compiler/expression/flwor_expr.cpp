@@ -32,14 +32,12 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(for_clause)
 

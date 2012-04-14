@@ -43,13 +43,14 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(expr)
 
 SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 
@@ -65,15 +66,7 @@ SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(promote_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
 
@@ -531,6 +524,13 @@ promote_expr::promote_expr(
   cast_base_expr(sctx, loc, promote_expr_kind, input, type),
   theFnQName(fnQName)
 {
+}
+
+
+void promote_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_base_expr*)this);
+  ar & theFnQName;
 }
 
 

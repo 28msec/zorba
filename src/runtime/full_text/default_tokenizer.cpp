@@ -19,22 +19,22 @@
 #include <zorba/config.h>
 
 #include "default_tokenizer.h"
-#ifdef ZORBA_NO_UNICODE
+#ifdef ZORBA_NO_ICU
 # include "latin_tokenizer.h"
 #else
 # include "icu_tokenizer.h"
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
 TokenizerProvider const& default_tokenizer_provider() {
-#ifdef ZORBA_NO_UNICODE
+#ifdef ZORBA_NO_ICU
   static LatinTokenizerProvider const instance;
 #else
   static ICU_TokenizerProvider const instance;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
   return instance;
 };
 

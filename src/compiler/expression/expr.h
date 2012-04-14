@@ -35,6 +35,8 @@
 
 #include "types/node_test.h"
 
+#include "zorbaserialization/class_serializer.h"
+
 #include "store/api/item.h"
 
 namespace zorba 
@@ -385,11 +387,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-    ar & theFnQName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   promote_expr(

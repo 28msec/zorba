@@ -37,7 +37,7 @@
 #include "zorbautils/hashmap_itemp.h"
 #undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 #include "zorbatypes/rchandle.h"
 
@@ -45,12 +45,6 @@
 
 
 namespace zorba{
-
-SERIALIZABLE_CLASS_VERSIONS(RCObject)
-
-SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
-
-SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 
 // QQQ should be zstring?
 typedef serializable_hashmap<std::string,xqtref_t> SER_HASHMAP_T;
