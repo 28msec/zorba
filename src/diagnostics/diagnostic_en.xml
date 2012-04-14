@@ -2069,14 +2069,6 @@
       <value>"$1": index range-general probe not allowed</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
-      <value>"$1": index range-value probe has search keys with incompatible types</value>
-    </diagnostic>
-
-    <diagnostic code="ZDDY0035" name="INDEX_GENERAL_INSERT">
-      <value>"$1": index inserting more than one key not allowed for general index</value>
-    </diagnostic>
-
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
       <value>"$1": integrity constraint is not declared</value>
     </diagnostic>
@@ -2089,6 +2081,17 @@
       <value>"$1": integrity constraint not met for collection "$2"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
+      <value>"$1": index range-value probe has search keys with incompatible types</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0035" name="INDEX_GENERAL_INSERT">
+      <value>"$1": index inserting more than one key not allowed for general index</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0036" name="NON_ROOT_NODE_DELETION">
+      <value>attempt to delete non-root node from collection "$1"</value>
+    </diagnostic>
 
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
