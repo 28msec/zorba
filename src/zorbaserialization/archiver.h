@@ -43,47 +43,66 @@ namespace serialization
 #define FIELD_IS_SIMPLE   true
 #define FIELD_IS_CLASS    true
 
-/*******************************************************************************
-
-  Archiver is working with fields. One archive contains a sequence of fields.
-  They can be simple fields or combo fields.
-
-  Simple fields: have values of simple types.
-  Combo fields: contain a sequence of fields. Are like list, vector, class etc.
-  
-  Each field has a unique id.
-
-  Special field is a field that points to a previous field. This is to resolve
-  serialization of pointers to the same object.
-
-********************************************************************************/
-
-
 class ClassSerializer;
 
 
 /*******************************************************************************
 
+  Archiver is working with fields. During serialization, an intermediate tree of
+  fields is constructed in memory to represent all the objects that need to be 
+  serialized. Then, the fields are written to disk in depth-first order, creating 
+  an archive. During deserialization, the fields in the archive are read and the
+  associated objects recreated directly in memory, without going through the
+  intermediate representation of the fields-tree.
+
+  Notice that in the context of the serializer, an "object" is defined as any 
+  address in memory that contains information to be serialized. For example,
+  it can be a C++ class object, an std::vector<> or a C++ integer. The object
+  can be heap-allocated, or on the stack.
+
+  Fileds can be "simple" or "compound". Simple fields represent values of simple
+  types; they always appear as leaves in the fields-tree. Compound fields represent
+  C++-class objects and other structured types like vectors, maps, etc. They
+  typically contain subtrees of other fields.
+  
+  Each field has a unique id.
+
+********************************************************************************/
+
+
+/*******************************************************************************
+
+  ARCHIVE_FIELD_NORMAL:
+  ---------------------
+  A field of kind NORMAL or PTR acts as the root of a tree of fields representing
+  the serialization of a concrete obj. If the kind is PTR, then the obj was 
+  serialized when a pointer to it was encountered. In this case, during 
+  deserialization, the archiver will allocate the obj on the heap and fill-in
+  its data members. If the kind is NORMAL, then the obj was serialized when the 
+  objitself was encountered (e.g., the object was an embedded data member of 
+  another obj, or was residing on the program stack). In this case, during 
+  deserialization, the object exists already (in an uninitialized state) and a
+  reference to it is given to the archiver, which will fill-in the obj's data.
+
+  ARCHIVE_FIELD_PTR:
+  ------------------
+  See comment for ARCHIVE_FIELD_NORMAL.
+
   ARCHIVE_FIELD_REFERENCING :
   ------------------------------
-  A field A that references another field B, where both A and B represent the
-  "same" object.
+  A field A that references another field B (of kind NORMAL or PTR), where both
+  A and B represent the "same" object. 
 
   ARCHIVE_FIELD_BASECLASS :
   ----------------------------
-  A field representing a "partial" class object: If an obj O belong to a class C
-  and C is a subclass of a base class B, then a field of ARCHIVE_FIELD_IS_BASECLASS
-  kind is created to represent the serialization of the data members of B.
-
-  ARCHIVE_FIELD_PTR :
-  ----------------------
+  A field representing a "partial" class object: If an obj Os belong to a class C
+  and C is a subclass of a base class B, then a field of IS_BASECLASS kind is 
+  created to represent the serialization of the data members of B. This field
+  is placed as a child of the NORMAL or PTR field 
 
   ARCHIVE_FIELD_NULL :
   -----------------------
   A field representing a NULL pointer.
-
-  ARCHIVE_FIELD_NORMAL :
-  ----------------------
 
 ********************************************************************************/
 enum ArchiveFieldKind
@@ -134,6 +153,7 @@ struct fwd_ref
   Whether this field represents a class obj or not. Class objs are always 
   considered as "compound", so if theIsClass is true, theIsSimple is false. 
   However, the reverse is not true: a non-class obj may be simple or compound.
+  For example, an std::vector<> is a compound, non-class obj.
 
   theKind:
   --------
@@ -144,19 +164,25 @@ struct fwd_ref
 
   theTypeNamePosInPool:
   ---------------------
+  The position of theTypeName string within the string pool. The string pool
+  is created after the fields tree has been fully built and just before we
+  start actually writting stuff out to "disk". theTypeName string is copied
+  into the string pool only if theKind is PTR and theIsClass is true.
 
   theValue:
   ---------
-  For simple fields
 
   theValuePosInPool:
   ------------------
-  Not initialized by constructor.
+  The position of theValue string within the string pool. The string pool
+  is created after the fields tree has been fully built and just before we
+  start actually writting stuff out to "disk". theValue string is copied
+  into the string pool only if theKind is PTR or NORMAL.
 
   thePtr :
   --------
-  Pointer to the obj represented by this field. NULL if this field is referencing
-  another field that represents the same obj.
+  Pointer to the obj represented by this field. NULL for FIELD_REFERENCING and
+  FIELD_NULL fields.
 
   theReferredField:
   -----------------
@@ -170,20 +196,24 @@ struct fwd_ref
 
   theLevel:
   ---------
-  The level of this field, i.e., the nuber of fields in the paths from this
+  The level of this field, i.e., the nuber of fields in the path from this
   field to the root. The root is at level 0.
 
   theNextSibling:
   ---------------
+  The right sibling of this field (if any).
 
   theFirstChild:
   --------------
+  The 1st child of this field (if any).
 
   theLastChild:
   -------------
+  The last child of this field (if any).
 
   theParent:
   ----------
+  The parent field in the fields tree.
 
   theOnlyForEval:
   ---------------
@@ -199,8 +229,8 @@ struct fwd_ref
 
   The following data members are serialized:
 
-  1. theTypeName  : only if theKind is PTR
-  2. theValue     : except if theKind is REFERENCING
+  1. theTypeName  : only if theKind is PTR and theIsClass is true.
+  2. theValue     : except if theKind is REFERENCING or NULL
   3. theReferedId : only if theKind is REFERENCING
   4. theKind
   5. theId
@@ -284,6 +314,10 @@ public:
   --------------
   The root of the fields tree.
 
+  theCurrentCompoundField:
+  ------------------------
+  The compound field under which the next field to be created will be placed. 
+
   theCurrentLevel:
   ----------------
   The tree level of the most recently added field
@@ -350,7 +384,7 @@ protected:
 
   archive_field               * theRootField;
 
-  archive_field               * current_compound_field;
+  archive_field               * theCurrentCompoundField;
 
   SimpleFieldMap              * theSimpleFieldsMap;
 
@@ -397,6 +431,10 @@ public:
 
   void setUserCallback(SerializationCallback* cb) { theUserCallback = cb; }
 
+  //
+  // Methods used during serialization only
+  //
+
   bool add_simple_field( 
       const char* type, 
       const char* value,
@@ -407,13 +445,14 @@ public:
       const char* type,
       bool is_class,
       const void* info,
-      const void* ptr,//for classes, pointer to SerializeBaseClass
+      const void* ptr,
       enum ArchiveFieldKind field_treat);
 
   void add_end_compound_field();
 
-  void set_class_type(const char* class_name);
-
+  //
+  // Methods used during de-serialization only
+  //
   bool read_next_field( 
       char** type, 
       std::string* value,
@@ -436,13 +475,21 @@ public:
 
   virtual void read_end_current_level_impl() = 0;
 
-
 protected:
+
+  //
+  // Methods used during serialization only
+  //
+
   archive_field* lookup_nonclass_field(const char* type, const void* ptr);
 
   archive_field* lookup_class_field(const SerializeBaseClass* ptr);
 
   virtual void serialize_out() = 0;
+
+  //
+  // Methods used during de-serialization only
+  //
 
   virtual void read_archive_description(
       std::string* archive_name,
@@ -456,6 +503,9 @@ protected:
     *nr_ids = this->nr_ids;
   }
 
+  //
+  //
+  //
   void replace_field(archive_field* new_field, archive_field* ref_field);
 
   void exchange_fields(archive_field* new_field, archive_field* ref_field);
@@ -542,9 +592,9 @@ public:
   void register_item(store::Item* i);
 
   //to help check class name at runtime
-  void  set_serialize_base_class(bool s)
+  void set_serialize_base_class(bool s)
   {
-    if(s)
+    if (s)
       serialize_base_class++;
     else
       serialize_base_class--;
@@ -600,7 +650,7 @@ public:
     else
     {
       unsigned int lastlevel = limit_temp_level_stack.top().first;
-      archive_field* temp_field = current_compound_field;
+      archive_field* temp_field = theCurrentCompoundField;
 
       while (temp_field && (temp_field->theLevel >= lastlevel))
       {
