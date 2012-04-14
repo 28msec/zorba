@@ -15,6 +15,7 @@
  */
 
 #include <limits>
+#include <typeinfo>
 
 #include <zorba/diagnostic_list.h>
 
@@ -246,6 +247,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     if ( !error_msg.empty() )
       cerr << "error_msg=" << error_msg << endl;
 #endif
+    cout << typeid(*rsrc.get()).name() << endl;
     internal::ThesaurusProvider const *const t_provider =
       dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
     ZORBA_ASSERT( t_provider );
