@@ -881,7 +881,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             utf8_result += (*valueit);
           }
           else
-            utf8_result += (0x2080 + *valueit - '0');
+            utf8_result += (unicode::code_point)(0x2080 + *valueit - '0');
         }
       }
       else if((c0 == 0x2460) || //CIRCLED DIGIT ONE  (1-20)

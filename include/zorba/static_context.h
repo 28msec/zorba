@@ -26,9 +26,13 @@
 #include <zorba/function.h>
 #include <zorba/annotation.h>
 #include <zorba/smart_ptr.h>
+#include <zorba/smart_ptr.h>
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/thesaurus.h>
 #endif /* ZORBA_NO_FULL_TEXT */
+#include <zorba/zorba.h>
+#include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 namespace zorba {
 

@@ -18,8 +18,9 @@
 #include <functional>
 
 #include <zorba/diagnostic_list.h>
-#include <zorba/xquery_exception.h>
-#include <zorba/zorba.h>
+
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_exception.h"
 
 #include "latin_tokenizer.h"
 

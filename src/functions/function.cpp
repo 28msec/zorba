@@ -34,8 +34,6 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(function)
-
 
 /*******************************************************************************
 

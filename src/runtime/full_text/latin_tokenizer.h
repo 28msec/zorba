@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_WESTERN_TOKENIZER_H
-#define ZORBA_WESTERN_TOKENIZER_H
+#ifndef ZORBA_LATIN_TOKENIZER_H
+#define ZORBA_LATIN_TOKENIZER_H
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_NO_FULL_TEXT
+#ifdef ZORBA_NO_ICU
 
 #include <zorba/tokenizer.h>
 #include "zorbatypes/zstring.h"
@@ -66,13 +66,14 @@ private:
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( iso639_1::type, Tokenizer::Numbers& ) const;
+  Tokenizer::ptr getTokenizer( locale::iso639_1::type,
+                               Tokenizer::Numbers& ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 
-#endif /* ZORBA_NO_FULL_TEXT */
-#endif /* ZORBA_WESTERN_TOKENIZER_H */
+#endif /* ZORBA_NO_ICU */
+#endif /* ZORBA_LATIN_TOKENIZER_H */
 /* vim:set et sw=2 ts=2: */

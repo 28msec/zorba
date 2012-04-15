@@ -1,0 +1,1 @@
+fn:replace("acabacab", "(a)(b)", "$2$1")
