@@ -462,7 +462,7 @@ public:
     minus( "-" )
   {
     utf8_string<zstring> u_per_mille( per_mille );
-    u_per_mille = 0x2030;
+    u_per_mille = (unicode::code_point)0x2030;
   }
 
   void readFormat(const DecimalFormat_t& df_t)

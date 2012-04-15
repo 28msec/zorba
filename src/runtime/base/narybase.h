@@ -40,7 +40,7 @@ protected:
   std::vector<PlanIter_t> theChildren;
 
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(NaryBaseIterator)
+  SERIALIZABLE_ABSTRACT_CLASS(NaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NaryBaseIterator, Batcher<IterType>)
   void serialize(::zorba::serialization::Archiver& ar)
   {
@@ -50,9 +50,9 @@ public:
 
 public:
   NaryBaseIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args);
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& args);
 
   virtual ~NaryBaseIterator(){}
 

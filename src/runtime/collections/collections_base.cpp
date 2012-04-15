@@ -22,35 +22,47 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>, 2)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>, 3)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>, 4)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>, 5)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>, 6)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>, 7)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>, 8)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>, 9)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>, 10)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>";
+
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>";
+
 
 void checkNodeType(
     const static_context* sctx,
