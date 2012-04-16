@@ -451,6 +451,15 @@ void clear()
 {
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
+  clearNoSync();  
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void clearNoSync()
+{
   theNumEntries = 0;
   numCollisions = 0;
 
