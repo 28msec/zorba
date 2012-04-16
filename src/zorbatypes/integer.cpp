@@ -230,13 +230,13 @@ Double INTEGER_IMPL(T)::pow( INTEGER_IMPL(T) const &power ) const {
 
 TEMPLATE_DECL(T)
 INTEGER_IMPL(T) INTEGER_IMPL(T)::round( IntegerImpl const &precision ) const {
-  return IntegerImpl( Decimal::round( itod(), precision.itod() ) );
+  return IntegerImpl( Decimal::round2( itod(), precision.itod() ) );
 }
 
 TEMPLATE_DECL(T)
 INTEGER_IMPL(T)
 INTEGER_IMPL(T)::roundHalfToEven( IntegerImpl const &precision ) const {
-  return IntegerImpl( Decimal::roundHalfToEven( itod(), precision.itod() ) );
+  return IntegerImpl( Decimal::roundHalfToEven2( itod(), precision.itod() ) );
 }
 
 ////////// miscellaneous //////////////////////////////////////////////////////

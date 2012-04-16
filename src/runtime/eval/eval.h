@@ -37,6 +37,8 @@ public:
   EvalIteratorState();
 
   ~EvalIteratorState();
+
+  void reset(PlanState&);
 };
 
 
