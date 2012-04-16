@@ -35,11 +35,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(HoistIterator)
 SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
 
+
 void HoistIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theDone = false;
 }
+
 
 void HoistIteratorState::reset(PlanState& planState)
 {
@@ -47,14 +49,16 @@ void HoistIteratorState::reset(PlanState& planState)
   theDone = false;
 }
 
+
 bool
 HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool error = false;
-  HoistIteratorState *state;
+
+  HoistIteratorState* state;
   DEFAULT_STACK_INIT(HoistIteratorState, state, planState);
 
-  while(!state->theDone) 
+  while (!state->theDone) 
   {
     try 
     {
@@ -68,8 +72,10 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       GENV_ITEMFACTORY->createError(result, ze.release());
     }
+
     STACK_PUSH(error || !state->theDone, state);
   }
+
   STACK_END(state);
 }
 

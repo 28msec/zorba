@@ -7,6 +7,7 @@ New Features:
 
 Bug Fixes/Other Changes:
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
+  * Fixed buf #891650 (context size var not always declared within path expr)
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed bug #967428 (do not hoist index creation outside a try-catch)
