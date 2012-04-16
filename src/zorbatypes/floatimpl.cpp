@@ -27,7 +27,8 @@
 #include "floatimpl.h"
 #include "integer.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define TEMPLATE_DECL(T) /* nothing */
@@ -168,22 +169,54 @@ template FloatImpl<double>::FloatImpl( INTEGER_IMPL_LL const& );
 template FloatImpl<double>::FloatImpl( INTEGER_IMPL_ULL const& );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
+////////// assignment operators ///////////////////////////////////////////////
+
+template<typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::operator=( Decimal const &d ) {
+  zstring const temp( d.toString() );
+  parse( temp.c_str() );
+  return *this;
+}
+
+template<typename FloatType>
+TEMPLATE_DECL(IntType)
+FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( INTEGER_IMPL(IntType) const &i ) {
+  zstring const temp( i.toString() );
+  parse( temp.c_str() );
+  return *this;
+}
+
+#ifndef ZORBA_WITH_BIG_INTEGER
+template
+FloatImpl<float>& FloatImpl<float>::operator=( INTEGER_IMPL_LL const& );
+
+template
+FloatImpl<float>& FloatImpl<float>::operator=( INTEGER_IMPL_ULL const& );
+
+template
+FloatImpl<double>& FloatImpl<double>::operator=( INTEGER_IMPL_LL const& );
+
+template
+FloatImpl<double>& FloatImpl<double>::operator=( INTEGER_IMPL_ULL const& );
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 ////////// math functions /////////////////////////////////////////////////////
 
 template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::acos() const {
   if ( *this < neg_one() || *this > one() )
     return nan();
-  if ( !isNegZero() )
-    return std::acos( value_ );
-  return -std::acos( value_ );
+  return FloatImpl<FloatType>(
+    isNegZero() ? -std::acos( value_ ): std::acos( value_ )
+  );
 }
 
 template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::asin() const {
   if ( *this < neg_one() || *this > one() )
     return nan();
-  return std::asin( value_ );
+  return FloatImpl<FloatType>( std::asin( value_ ) );
 }
 
 template<typename FloatType>
@@ -219,8 +252,13 @@ template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::round( Integer const &precision ) const {
   FloatImpl result;
   if ( isFinite() && !isZero() ) {
-    MAPM m = Decimal::round( value_, precision.itod() );
-    if ( value_ < 0 && m == 0 )
+    MAPM m(
+      Decimal::round2(
+        Decimal::value_type( value_ ),
+        Decimal::value_type( precision.itod() )
+      )
+    );
+    if ( value_ < 0 && m.sign() == 0 )
       result = neg_zero();
     else {
       char buf[200];
@@ -233,12 +271,17 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round( Integer const &precision ) con
   return result;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven( Integer const &precision) const {
+template<typename FloatType> FloatImpl<FloatType>
+FloatImpl<FloatType>::roundHalfToEven( Integer const &precision) const {
   FloatImpl result;
   if ( isFinite() && !isZero() ) {
-    MAPM m = Decimal::roundHalfToEven( value_, precision.itod() );
-    if ( value_ < 0 && m == 0 )
+    MAPM m(
+      Decimal::roundHalfToEven2(
+        Decimal::value_type( value_ ),
+        Decimal::value_type( precision.itod() )
+      )
+    );
+    if ( value_ < 0 && m.sign() == 0 )
       result = neg_zero();
     else {
       char buf[200];
@@ -352,8 +395,8 @@ zstring FloatImpl<FloatType>::toString( bool no_scientific_format ) const {
 #if 1
     // This is the "spec" implementation, i.e., it is an exact application of
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
-    MAPM decimal_mapm = value_;
-    decimal_mapm = decimal_mapm.round(precision_);
+    MAPM decimal_mapm( value_ );
+    decimal_mapm = decimal_mapm.round( precision_ );
     return Decimal::toString(decimal_mapm, max_precision());
 #else
     std::stringstream stream;

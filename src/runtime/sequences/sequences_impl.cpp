@@ -322,12 +322,12 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  }
 
  state->thePosition = lPositionItem->getIntegerValue();
- if (state->thePosition < xs_integer::one())
-   state->thePosition = xs_integer::one();
+ if (state->thePosition < 1)
+   state->thePosition = 1;
 
  while (consumeNext(result, theChildren[0].getp(), planState))
  {
-    if ( state->theCurrentPos == state->thePosition-xs_integer::one() ) // position found => insert sequence
+    if ( state->theCurrentPos == state->thePosition-1 ) // position found => insert sequence
     {
       state->theTargetItem = result;
       while ( consumeNext(result, theChildren[2].getp(), planState))

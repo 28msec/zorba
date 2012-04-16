@@ -28,9 +28,6 @@ namespace zorba
 
 class PlanIterVisitor;
 
-extern const ::zorba::serialization::ClassVersion g_NaryBaseIterator_class_versions[];
-extern const int g_NaryBaseIterator_class_versions_count;
-
 
 /*******************************************************************************
   Superclass for all iterators which have N child iterators and no additional
@@ -43,7 +40,7 @@ protected:
   std::vector<PlanIter_t> theChildren;
 
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(NaryBaseIterator)
+  SERIALIZABLE_ABSTRACT_CLASS(NaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NaryBaseIterator, Batcher<IterType>)
   void serialize(::zorba::serialization::Archiver& ar)
   {
@@ -53,9 +50,9 @@ public:
 
 public:
   NaryBaseIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args);
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& args);
 
   virtual ~NaryBaseIterator(){}
 

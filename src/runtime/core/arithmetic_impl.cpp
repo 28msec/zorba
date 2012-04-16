@@ -43,8 +43,6 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<AddOperation>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<SubtractOperation>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<MultiplyOperation>, 3)

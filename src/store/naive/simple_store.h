@@ -16,7 +16,11 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store.h"
+#include "store/naive/store.h"
+
+#include "store/naive/node_factory.h"
+#include "store/naive/pul_primitive_factory.h"
+#include "store/naive/tree_id_generator.h"
 
 namespace zorba {
 namespace simplestore {
@@ -29,9 +33,6 @@ namespace simplestore {
   Incremented every time a new collection is created. The current value of the  
   counter is then assigned as the id of the new collection.
 
-  theTreeCounter:
-  ---------------
-
   theReferencesToNodeMap:
   -----------------------
   A hashmap that maps node references to the referenced nodes
@@ -39,7 +40,7 @@ namespace simplestore {
   theNodeToReferencesMap:
   -----------------------
   A hashmap that maps nodes into their references
-
+  
 ********************************************************************************/
 class SimpleStore : public Store
 {
@@ -52,15 +53,10 @@ private:
   ulong                         theCollectionCounter;
   SYNC_CODE(Mutex               theCollectionCounterMutex;)
 
-  ulong                         theTreeCounter;
-  SYNC_CODE(Mutex               theTreeCounterMutex;)
-
   RefNodeMap                    theReferencesToNodeMap;
   NodeRefMap                    theNodeToReferencesMap;
 
 public:
-  ulong createTreeId();
-  
   ulong createCollectionId();
 
   store::Collection_t createCollection(
@@ -80,7 +76,7 @@ protected:
 
   NodeFactory* createNodeFactory() const;
 
-  void destroyNodeFactory(NodeFactory*) const;
+  void destroyNodeFactory(zorba::simplestore::NodeFactory*) const;
 
   store::ItemFactory* createItemFactory() const;
 
@@ -92,12 +88,16 @@ protected:
 
   PULPrimitiveFactory* createPULFactory() const;
 
-  void destroyPULFactory(PULPrimitiveFactory*) const;
+  void destroyPULFactory(zorba::simplestore::PULPrimitiveFactory*) const;
 
   CollectionSet* createCollectionSet() const;
 
   void destroyCollectionSet(CollectionSet*) const;
       
+  TreeIdGeneratorFactory* createTreeIdGeneratorFactory() const;
+
+  void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const;
+
   bool unregisterNode(XmlNode* node);
 
   //

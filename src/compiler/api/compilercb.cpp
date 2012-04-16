@@ -26,18 +26,18 @@
 
 #include "system/properties.h"
 
-#include "zorbaserialization/serialization_engine.h"
 #include "functions/udf.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \

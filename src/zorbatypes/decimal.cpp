@@ -22,7 +22,8 @@
 #include "common/common.h"
 #include "util/ascii_util.h"
 #include "util/string_util.h"
-#include "zorbaserialization/zorba_class_serializer.h"
+
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include "decimal.h"
 #include "integer.h"
@@ -41,7 +42,7 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
-END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -333,15 +334,15 @@ Decimal Decimal::round() const {
 
 TEMPLATE_DECL(T)
 Decimal Decimal::round( INTEGER_IMPL(T) const &precision ) const {
-  return round( value_, precision.itod() );
+  return round2( value_, precision.itod() );
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
 template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-Decimal::value_type Decimal::round( value_type const &v,
-                                    value_type const &precision ) {
+Decimal::value_type Decimal::round2( value_type const &v,
+                                     value_type const &precision ) {
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   result += MAPM::get0_5();
@@ -352,22 +353,22 @@ Decimal::value_type Decimal::round( value_type const &v,
 
 TEMPLATE_DECL(T)
 Decimal Decimal::roundHalfToEven( INTEGER_IMPL(T) const &precision ) const {
-  return roundHalfToEven( value_, precision.itod() );
+  return roundHalfToEven2( value_, precision.itod() );
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
 template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-Decimal::value_type Decimal::roundHalfToEven( value_type const &v,
-                                              value_type const &precision ) {
+Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
+                                               value_type const &precision ) {
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   bool const aHalfVal = (result - MAPM::get0_5()) == result.floor();
   result += MAPM::get0_5();
   result = result.floor();
   if ( aHalfVal && result.is_odd() )
-    result -= 1;
+    --result;
   result /= exp;
   return result;
 }

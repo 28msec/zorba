@@ -18,6 +18,10 @@
 
 #include <iostream>
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 #ifdef ZORBA_HAVE_PTHREAD_H
 # include <cassert>
 #endif

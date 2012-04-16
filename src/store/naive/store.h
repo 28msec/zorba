@@ -16,9 +16,18 @@
 #ifndef ZORBA_SIMPLESTORE_STORE_H
 #define ZORBA_SIMPLESTORE_STORE_H
 
+#include "store/api/store.h"
+
 #include "shared_types.h"
 #include "store_defs.h"
 #include "hashmap_nodep.h"
+#include "tree_id.h"
+#include "store/util/hashmap_stringbuf.h"
+#include "zorbautils/mutex.h"
+#include "zorbautils/lock.h"
+#include "zorbautils/hashmap.h"
+#include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/hashmap_zstring_nonserializable.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "node_items.h"
@@ -27,14 +36,7 @@
 #include "store/api/ic.h"
 #endif
 
-#include "store/api/store.h"
-
-#include "store/util/hashmap_stringbuf.h"
-
-#include "zorbautils/mutex.h"
-#include "zorbautils/lock.h"
-#include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/hashmap_zstring_nonserializable.h"
+using namespace zorba;
 
 namespace zorba
 {
@@ -59,10 +61,12 @@ class Index;
 class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
+class TreeIdGeneratorFactory;
+class TreeIdGenerator;
 
-typedef zorba::HashMapZString<XmlNode_t> DocumentSet;
-typedef ItemPointerHashMap<store::Index_t> IndexSet;
-typedef ItemPointerHashMap<store::IC_t> ICSet;
+typedef HashMapZString<XmlNode_t> DocumentSet;
+typedef zorba::ItemPointerHashMap<store::Index_t> IndexSet;
+typedef zorba::ItemPointerHashMap<store::IC_t> ICSet;
 
 
 
@@ -74,6 +78,9 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
   theSchemaTypeCodes:
   -------------------
+
+  theNumUsers:
+  ------------
 
   theNamespacePool:
   -----------------
@@ -92,6 +99,15 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theNodeFactory:
   ---------------
   Factory to create node items.
+
+  theTreeIdGeneratorFactory:
+  --------------------------
+  Factory to create ID generators (Each collection can have its own ID generator in
+  addition to the default one).
+
+  theTreeIdGenerator:
+  -------------------
+  The tree-id generator used by the store for trees that are not in collections.
 
   theDocuments:
   -------------
@@ -150,6 +166,9 @@ protected:
   store::IteratorFactory      * theIteratorFactory;
   NodeFactory                 * theNodeFactory;
   PULPrimitiveFactory         * thePULFactory;
+  TreeIdGeneratorFactory      * theTreeIdGeneratorFactory;
+  
+  TreeIdGenerator             * theTreeIdGenerator;
 
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
@@ -200,10 +219,15 @@ public:
 
   PULPrimitiveFactory& getPULFactory() const { return *thePULFactory; }
 
+  TreeIdGeneratorFactory& getTreeIdGeneratorFactory() const
+  {
+    return *theTreeIdGeneratorFactory;
+  }
+
   StringPool& getNamespacePool() const { return *theNamespacePool; }
 
   QNamePool& getQNamePool() const { return *theQNamePool; }
-  
+
 protected:
   // Functions to create/destory the node and item factories. These functions
   // are called from init and shutdown, respectively. Having this functionality
@@ -230,11 +254,15 @@ protected:
 
   virtual void destroyCollectionSet(CollectionSet*) const = 0;
 
+  virtual TreeIdGeneratorFactory* createTreeIdGeneratorFactory() const = 0;
+
+  virtual void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory*) const = 0;
+
 /*---------------------------- Collections -----------------------------------*/
 public:
   virtual ulong createCollectionId() = 0;
 
-  virtual ulong createTreeId() = 0;
+  virtual TreeId createTreeId();
 
   virtual store::Collection_t createCollection(
       const store::Item_t& aName,

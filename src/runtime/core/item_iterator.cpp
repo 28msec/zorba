@@ -24,17 +24,14 @@
 #include "store/api/item.h"
 
 
-using namespace std;
+
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 
 
 /*******************************************************************************
@@ -52,10 +49,21 @@ NOARY_ACCEPT(EmptyIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+void SingletonIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator,
+                                             PlanIteratorState>*)this);
+  ar & theValue;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   result = theValue;
   STACK_PUSH ( result != NULL, state );
@@ -84,7 +92,19 @@ IfThenElseIterator::IfThenElseIterator(
   theElseIter(aElseIter),
   theIsUpdating(aIsUpdating),
   theIsBooleanIter(aIsBooleanIter)
-{ }
+{ 
+}
+
+
+void IfThenElseIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Batcher<IfThenElseIterator>*)this);
+  ar & theCondIter;
+  ar & theThenIter;
+  ar & theElseIter;
+  ar & theIsUpdating;
+  ar & theIsBooleanIter;
+}
 
 
 void IfThenElseIterator::accept(PlanIterVisitor& v) const 
