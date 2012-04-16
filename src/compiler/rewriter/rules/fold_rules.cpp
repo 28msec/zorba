@@ -928,19 +928,19 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   {
     xs_integer ival = val->getIntegerValue();
 
-    if (ival < xs_integer::zero())
+    if (ival < 0)
     {
       if (!count_expr->isNonDiscardable())
         return new const_expr(val_expr->get_sctx(), LOC(val_expr), false);
     }
-    else if (ival == xs_integer::zero())
+    else if (ival == 0)
     {
       return expr_tools::fix_annotations(
              new fo_expr(fo.get_sctx(), fo.get_loc(),
                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                          count_expr->get_arg(0)));
     }
-    else if (ival == xs_integer::one())
+    else if (ival == 1)
     {
       return expr_tools::fix_annotations(
              new fo_expr(fo.get_sctx(),

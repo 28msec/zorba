@@ -1295,7 +1295,7 @@ store::Item_t OrdPathNode::getLevel() const
     lCurrent = lCurrent->getParent();
   }
   store::Item_t lRes;
-  GET_FACTORY().createInteger(lRes, lNumLevels);
+  GET_FACTORY().createInteger(lRes, xs_integer(lNumLevels));
   return lRes;
 }
 

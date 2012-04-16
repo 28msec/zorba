@@ -238,7 +238,7 @@ void SimpleLazyTempSeq::matNextItem()
 xs_integer SimpleLazyTempSeq::getSize() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return xs_integer(0);
 }
 
 
@@ -250,7 +250,7 @@ xs_integer SimpleLazyTempSeq::getSize() const
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator() const
 {
-  return new SimpleLazyTempSeqIter(this, 1, std::numeric_limits<long>::max());
+  return new SimpleLazyTempSeqIter(this, xs_integer(1), xs_integer(std::numeric_limits<long>::max()));
 }
 
 
@@ -307,9 +307,9 @@ void SimpleLazyTempSeqIter::open()
 
 bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 {
-  if (theCurPos < theEndPos && theTempSeq->containsItem(theCurPos+1))
+  if (theCurPos < theEndPos && theTempSeq->containsItem(xs_integer(theCurPos+1)))
   {
-    theTempSeq->getItem(++theCurPos, result);
+    theTempSeq->getItem(xs_integer(++theCurPos), result);
     return true;
   }
   else
