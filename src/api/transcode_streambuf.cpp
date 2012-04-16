@@ -99,5 +99,53 @@ bool is_supported( char const *charset ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace transcode
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace internal {
+
+// Both new & delete are done here inside Zorba rather than in the header to
+// guarantee that they're cross-DLL-boundary safe on Windows.
+
+zorba::transcode::streambuf*
+alloc_streambuf( char const *charset, std::streambuf *orig ) {
+  return new zorba::transcode::streambuf( charset, orig );
+}
+
+void dealloc_streambuf( zorba::transcode::streambuf *buf ) {
+  delete buf;
+}
+
+int get_streambuf_index() {
+  //
+  // This function is out-of-line because it has a static constant within it.
+  // It has a static constant within it to guarantee (1) initialization before
+  // use and (2) initialization happens exactly once.
+  //
+  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
+  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
+  // 3.3.1.1: "Initializing and Maintaining the iword/pword Index."
+  //
+  // See: "The C++ Programming Language," Bjarne Stroustrup, Addison-Wesley,
+  // 2000, section 10.4.8: "Local Static Store."
+  //
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
+void stream_callback( ios_base::event e, ios_base &ios, int index ) {
+  //
+  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
+  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
+  // 3.3.1.4: "Using Stream Callbacks for Memory Management."
+  //
+  if ( e == ios_base::erase_event )
+    delete static_cast<streambuf*>( ios.pword( index ) );
+}
+
+} // namespace internal
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

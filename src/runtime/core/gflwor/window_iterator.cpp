@@ -32,16 +32,12 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(StartClause)
-END_SERIALIZABLE_CLASS_VERSIONS(StartClause)
 
 SERIALIZABLE_CLASS_VERSIONS(EndClause)
-END_SERIALIZABLE_CLASS_VERSIONS(EndClause)
 
 SERIALIZABLE_CLASS_VERSIONS(WindowIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(WindowIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(WindowVars)
-END_SERIALIZABLE_CLASS_VERSIONS(WindowVars)
 
 
 /////////////////////////////////////////////////////////////////////////////////

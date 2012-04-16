@@ -25,8 +25,6 @@
 
 #include "common/common.h"
 #include "util/stl_util.h"
-#include "zorbaserialization/archiver.h"
-#include "zorbaserialization/zorba_class_serializer.h"
 
 #include "m_apm.h"
 #include "schema_types_base.h"
@@ -51,6 +49,7 @@ TEMPLATE_DECL(I)
 class IntegerImpl;
 
 namespace serialization {
+  class Archiver;
   TEMPLATE_DECL(I) void operator&( Archiver&, INTEGER_IMPL(I)& );
 }
 

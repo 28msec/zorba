@@ -9044,16 +9044,25 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         case ParseConstants::wild_all:
           cc->add_nametest_h(new NodeNameTest(zstring(), zstring()));
           break;
-        case ParseConstants::wild_elem: {
+        case ParseConstants::wild_elem:
+        {
           // bugfix #3138633; expand the qname and use the namespace instead of the prefix
           zstring localname(":wildcard");
-          store::Item_t qnItem;
-          theSctx->expand_qname(qnItem,
-                                theSctx->default_elem_type_ns(),
-                                wildcard->getNsOrPrefix(),
-                                localname,
-                                wildcard->get_location());
-          cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+
+          if (wildcard->isEQnameMatch())
+          {
+            cc->add_nametest_h(new NodeNameTest(wildcard->getNsOrPrefix(), zstring()));
+          }
+          else
+          {
+            store::Item_t qnItem;
+            theSctx->expand_qname(qnItem,
+                                  theSctx->default_elem_type_ns(),
+                                  wildcard->getNsOrPrefix(),
+                                  localname,
+                                  wildcard->get_location());
+            cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+          }
           break;
         }
         case ParseConstants::wild_prefix:

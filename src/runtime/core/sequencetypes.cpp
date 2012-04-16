@@ -33,27 +33,21 @@
 #include "store/api/item_factory.h"
 
 
-using namespace std;
-
 namespace zorba
 {
+
 SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
+
 
 /*******************************************************************************
 

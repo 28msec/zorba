@@ -115,9 +115,7 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
     write_string("type=\"");
     write_string(current_field->theTypeName);
     write_string("\" ");
-    write_string("version=\"");
-    sprintf(strtemp, "%d", current_field->theClassVersion);
-    write_string(strtemp);
+    write_string("version=\"1");
     write_string("\" ");
     write_string("field_treat=\"");
     write_string(get_field_treat_string(current_field->theKind));
@@ -138,7 +136,7 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
     write_string("\" ");
 
     if(current_field->theIsSimple || 
-      (current_field->theKind == ARCHIVE_FIELD_IS_REFERENCING) ||
+      (current_field->theKind == ARCHIVE_FIELD_REFERENCING) ||
       (current_field->theFirstChild == NULL))
     {
       write_string("/>\n");
@@ -185,10 +183,10 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_trea
   switch(field_treat)
   {
   case ARCHIVE_FIELD_NORMAL : return "ARCHIVE_FIELD_NORMAL"; break;
-  case ARCHIVE_FIELD_IS_PTR : return "ARCHIVE_FIELD_IS_PTR"; break;
-  case ARCHIVE_FIELD_IS_NULL : return "ARCHIVE_FIELD_IS_NULL"; break;
-  case ARCHIVE_FIELD_IS_BASECLASS : return "ARCHIVE_FIELD_IS_BASECLASS"; break;
-  case ARCHIVE_FIELD_IS_REFERENCING : return "ARCHIVE_FIELD_IS_REFERENCING"; break;
+  case ARCHIVE_FIELD_PTR : return "ARCHIVE_FIELD_IS_PTR"; break;
+  case ARCHIVE_FIELD_NULL : return "ARCHIVE_FIELD_IS_NULL"; break;
+  case ARCHIVE_FIELD_BASECLASS : return "ARCHIVE_FIELD_IS_BASECLASS"; break;
+  case ARCHIVE_FIELD_REFERENCING : return "ARCHIVE_FIELD_IS_REFERENCING"; break;
   }
   return NULL;
 }
@@ -200,7 +198,6 @@ bool XmlArchiver::read_next_field_impl(
     char **type, 
     std::string *value,
     int *id, 
-    int *version, 
     bool *is_simple, 
     bool *is_class,
     enum ArchiveFieldKind *field_treat,
@@ -213,7 +210,6 @@ bool XmlArchiver::read_next_field_impl(
 
   *type = NULL;
   *id = -1; 
-  *version = -1; 
   *is_simple = false; 
   *is_class = false,
   *field_treat = (enum ArchiveFieldKind)-1;
@@ -303,7 +299,6 @@ process_attr:
       if(!strcmp(attrib_name, "version"))
       {
         read_attrib_value(attrib_value);
-        *version = atoi(attrib_value);
         attr_index++;
         break;
       }
@@ -314,13 +309,13 @@ process_attr:
         if(!strcmp(attrib_value, "ARCHIVE_FIELD_NORMAL"))
           *field_treat = ARCHIVE_FIELD_NORMAL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_PTR"))
-          *field_treat = ARCHIVE_FIELD_IS_PTR;
+          *field_treat = ARCHIVE_FIELD_PTR;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_NULL"))
-          *field_treat = ARCHIVE_FIELD_IS_NULL;
+          *field_treat = ARCHIVE_FIELD_NULL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_BASECLASS"))
-          *field_treat = ARCHIVE_FIELD_IS_BASECLASS;
+          *field_treat = ARCHIVE_FIELD_BASECLASS;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_REFERENCING"))
-          *field_treat = ARCHIVE_FIELD_IS_REFERENCING;
+          *field_treat = ARCHIVE_FIELD_REFERENCING;
         else
         {
           return false;
@@ -380,7 +375,7 @@ process_attr:
   is_compound_field_without_children = false;
   if(!strcmp(attrib_name, "/"))//empty tag
   {
-    if(!*is_simple && (*field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    if(!*is_simple && (*field_treat != ARCHIVE_FIELD_REFERENCING))
       is_compound_field_without_children = true;
   }
   else

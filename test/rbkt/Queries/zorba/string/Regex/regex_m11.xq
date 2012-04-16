@@ -1,0 +1,1 @@
+fn:matches("ba", "[a-z-[ab]]")

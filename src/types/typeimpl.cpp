@@ -25,6 +25,10 @@
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
 
+#include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
@@ -40,41 +44,27 @@ namespace zorba
 #endif
 
 
-SERIALIZABLE_CLASS_VERSIONS(XQType)
-END_SERIALIZABLE_CLASS_VERSIONS(XQType)
-
 SERIALIZABLE_CLASS_VERSIONS(AtomicXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(AtomicXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(AnyXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(AnyXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(AnyFunctionXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(AnyFunctionXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(EmptyXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(EmptyXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
-END_SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
@@ -167,6 +157,42 @@ std::string XQType::contentKindStr(content_kind_t contentKind)
 /*******************************************************************************
 
 ********************************************************************************/
+XQType::XQType(
+    const TypeManager* manager,
+    type_kind_t type_kind,
+    TypeConstants::quantifier_t quantifier,
+    bool builtin)
+  :
+  m_manager((TypeManager*)manager),
+  m_type_kind(type_kind),
+  m_quantifier(quantifier),
+  theIsBuiltin(builtin)
+{
+  if (theIsBuiltin)
+  {
+    // register this hardcoded object to help plan serialization
+    XQType* this_ptr = this;
+    *::zorba::serialization::ClassSerializer::getInstance()->
+    getArchiverForHardcodedObjects() & this_ptr;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
+  SERIALIZE_ENUM(type_kind_t, m_type_kind);
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, m_quantifier);
+  ar & theIsBuiltin;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 std::string XQType::toString() const
 {
   std::ostringstream os;
@@ -250,9 +276,54 @@ store::Item_t AtomicXQType::get_qname() const
 /*******************************************************************************
 
 ********************************************************************************/
+void NoneXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void EmptyXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ItemXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnyXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t AnyXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnySimpleXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
 }
 
 
@@ -268,9 +339,28 @@ store::Item_t AnySimpleXQType::get_qname() const
 /*******************************************************************************
 
 ********************************************************************************/
+void UntypedXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t UntypedXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AtomicXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  SERIALIZE_ENUM(store::SchemaTypeCode, m_type_code);
 }
 
 
@@ -542,6 +632,15 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   }
 
   return os << "]";
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnyFunctionXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
 }
 
 
