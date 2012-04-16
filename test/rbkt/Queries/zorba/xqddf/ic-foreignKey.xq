@@ -54,9 +54,17 @@ dml:insert-nodes($m:trnc,
   );
 
 
-<emps>{ fn:data(dml:collection($m:empc)/id ) }</emps>
+<emps>{ 
+  for $n in dml:collection($m:empc) 
+  order by $n/id
+  return fn:data($n/id)
+}</emps>
 ,
-<sales>{ fn:data(dml:collection($m:trnc)/empid ) }</sales>
+<sales>{ 
+  for $n in dml:collection($m:trnc)
+  order by $n/empid
+  return fn:data($n/empid)
+}</sales>
 ,
 every $x in dml:collection($m:trnc) 
        satisfies
