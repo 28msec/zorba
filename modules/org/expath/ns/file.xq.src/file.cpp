@@ -314,10 +314,16 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes)
 
   std::string lStr;
   getline(*theStream, lStr);
-
-  aRes = theFunc->theModule->getItemFactory()->createString(lStr);
-
-  return true;
+  
+  if (theStream->bad())
+  {
+    return false;
+  }
+  else
+  {
+    aRes = theFunc->theModule->getItemFactory()->createString(lStr);
+    return true;
+  }
 }
 
 void
