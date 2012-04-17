@@ -32,10 +32,10 @@
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(T)  IntegerImpl
+# define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(T) template<typename T>
-# define INTEGER_IMPL(T)  IntegerImpl<T>
+# define TEMPLATE_DECL(T) template<typename T> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
