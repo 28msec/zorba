@@ -62,6 +62,20 @@ EvalIteratorState::~EvalIteratorState()
 {
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+void
+EvalIteratorState::reset(PlanState& aPlanState) 
+{
+  PlanIteratorState::reset(aPlanState);
+  // When an exception is thrown during an EvalIterator::nextImpl invocation
+  // or when the EvalIterator doesn't return all resulting items of an other reason,
+  // the PlanWrapper is not properly destroyed. Therefore, we destroy it in the reset
+  // to prevent troubles the next time the EvalIterator is used.
+  thePlanWrapper = 0;
+}
+
 
 /****************************************************************************//**
 
@@ -173,6 +187,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // Copy the values of outer vars into the evalDctx
     ulong maxOuterVarId;
     copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
+
+    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // before reseting the state->thePlan. Otherwise, the current state->thePlan
+    // will be destroyed first, and then we will attempt to close it when 
+    // state->thePlanWrapper is reset later. 
+    state->thePlanWrapper = NULL;
 
     // Compile
     state->thePlan = compile(evalCCB,
