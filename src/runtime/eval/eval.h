@@ -34,11 +34,10 @@ public:
   std::auto_ptr<CompilerCB>      ccb;
   std::auto_ptr<dynamic_context> dctx;
 
+public:
   EvalIteratorState();
 
   ~EvalIteratorState();
-
-  void reset(PlanState&);
 };
 
 
