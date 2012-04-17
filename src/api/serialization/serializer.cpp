@@ -2741,8 +2741,11 @@ serializer::serialize(
     // the "JSONIQ" method is consider "XML-based", although you will certainly
     // get errors if you attempt to serialize JDM this way.
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML &&
-        method != PARAMETER_VALUE_JSONIQ) {
+        method != PARAMETER_VALUE_XHTML
+#ifdef ZORBA_WITH_JSON
+        && method != PARAMETER_VALUE_JSONIQ
+#endif
+      ) {
       throw ZORBA_EXCEPTION(
         zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
         ERROR_PARAMS( method )

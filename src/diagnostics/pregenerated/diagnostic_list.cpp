@@ -1176,6 +1176,7 @@ ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 
 namespace jerr {
 
+#if defined(ZORBA_WITH_JSON)
 JSONiqErrorCode JNSE0012( "JNSE0012" );
 
 
@@ -1185,7 +1186,6 @@ JSONiqErrorCode JNSE0013( "JNSE0013" );
 JSONiqErrorCode JNSE0014( "JNSE0014" );
 
 
-#if defined(ZORBA_WITH_JSON)
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 

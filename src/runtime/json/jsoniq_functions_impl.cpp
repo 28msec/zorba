@@ -523,7 +523,7 @@ void JSONObjectInsertIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, 
   (NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>*)this);
 
-  //ar & theCopyInputs; // TODO
+  SERIALIZE_BOOL_VEC(theCopyInputs);
 }
 
 

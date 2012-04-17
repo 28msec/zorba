@@ -20,6 +20,7 @@
 #include <zorba/internal/qname.h>
 #include <zorba/item.h>
 #include <zorba/user_exception.h>
+#include <zorba/store_consts.h>
 
 #include "zorbaserialization/serialize_zorba_types.h"
 #include "zorbaserialization/serialize_template_types.h"
@@ -33,6 +34,7 @@
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 //#include "store/api/tuples.h"
 
 #include "zorbatypes/datetime.h"
@@ -264,6 +266,9 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &item
 }
 
 void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree);
+#ifdef ZORBA_WITH_JSON
+void serialize_json_tree(Archiver &ar, store::Item *&obj);
+#endif
 
 
 /*******************************************************************************
@@ -367,6 +372,7 @@ void operator&(Archiver& ar, store::Item*& obj)
   int  is_pul = 0;
   int  is_error = 0;
   int  is_function = 0;
+  int  is_json = 0;
   
   int   id;
   enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
@@ -389,13 +395,16 @@ void operator&(Archiver& ar, store::Item*& obj)
     is_pul = obj->isPul();
     is_error = obj->isError();
     is_function = obj->isFunction();
+#ifdef ZORBA_WITH_JSON
+    is_json = obj->isJSONItem();
+#endif
 
-    assert(is_node || is_atomic || is_pul || is_error || is_function);
+    assert(is_node || is_atomic || is_pul || is_error || is_function || is_json);
 
-    sprintf(strtemp, "n%da%dp%de%df%d",
-                    is_node, is_atomic, is_pul, is_error, is_function);
+    sprintf(strtemp, "n%da%dp%de%df%dj%d",
+                    is_node, is_atomic, is_pul, is_error, is_function, is_json);
 
-    if (is_node || is_function)
+    if (is_node || is_function || is_json)
       ar.set_is_temp_field(true);
 
     is_ref = ar.add_compound_field("store::Item*",
@@ -404,7 +413,7 @@ void operator&(Archiver& ar, store::Item*& obj)
                                    obj,
                                    ARCHIVE_FIELD_PTR);
 
-    if (is_node || is_function)
+    if (is_node || is_function || is_json)
       ar.set_is_temp_field(false);
   }
   else
@@ -440,8 +449,8 @@ void operator&(Archiver& ar, store::Item*& obj)
 
     if (!is_ref)
     {
-      sscanf(value.c_str(), "n%da%dp%de%df%d",
-                    &is_node, &is_atomic, &is_pul, &is_error, &is_function);
+      sscanf(value.c_str(), "n%da%dp%de%df%dj%d",
+                    &is_node, &is_atomic, &is_pul, &is_error, &is_function, &is_json);
     }
   }
 
@@ -771,6 +780,18 @@ void operator&(Archiver& ar, store::Item*& obj)
         SERIALIZE_FIELD(bool, value, getBooleanValue());
         FINALIZE_SERIALIZE(createBoolean, (result, value));
       }
+#ifdef ZORBA_WITH_JSON
+      else if(name_of_type == "null")
+      {
+        if (!ar.is_serializing_out())
+        {
+          store::Item_t lRes;
+          GENV_ITEMFACTORY->createJSONNull(lRes);
+          obj = lRes.getp();
+          obj->addReference();
+        }
+      }
+#endif
       else
       {
         throw ZORBA_EXCEPTION(
@@ -784,6 +805,12 @@ EndAtomicItem:;
     {
       serialize_node_tree(ar, obj, true);
     }
+#ifdef ZORBA_WITH_JSON
+    else if(is_json)
+    {
+      serialize_json_tree(ar, obj);
+    }
+#endif
     else if(is_pul)
     {
       throw ZORBA_EXCEPTION(
@@ -1088,6 +1115,126 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
 }
 
 
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_object(Archiver &ar, store::Item *&obj)
+{
+  xs_integer lSize = 0;
+  if (ar.is_serializing_out())
+  {
+    lSize = obj->getSize();
+  }
+  ar & lSize;
+
+  if (ar.is_serializing_out())
+  {
+    store::Iterator_t lIter = obj->getPairs();
+    lIter->open();
+    store::Item_t lPair;
+    while (lIter->next(lPair))
+    {
+      store::Item* lName = lPair->getName();
+      store::Item* lValue = lPair->getValue();
+      ar & lName;
+      ar & lValue;
+    }
+    lIter->close();
+  }
+  else
+  {
+    csize num = to_xs_unsignedInt(lSize);
+    std::vector<store::Item_t> lNames, lValues;
+    lNames.reserve(num);
+    lValues.reserve(num);
+
+    store::Item* lName, *lValue;
+    for (csize i = 0; i < num; ++i)
+    {
+      ar & lName;
+      ar & lValue;
+      lNames.push_back(lName);
+      lValues.push_back(lValue);
+    }
+    store::Item_t lRes;
+    GENV_ITEMFACTORY->createJSONObject(lRes, lNames, lValues); 
+    obj = lRes.getp();
+    obj->addReference();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_array(Archiver &ar, store::Item *&obj)
+{
+  xs_integer lSize = 0;
+  if (ar.is_serializing_out())
+  {
+    lSize = obj->getSize();
+  }
+  ar & lSize;
+
+  if (ar.is_serializing_out())
+  {
+    store::Iterator_t lIter = obj->getMembers();
+    lIter->open();
+    store::Item_t lMember;
+    while (lIter->next(lMember))
+    {
+      store::Item* lTmp = lMember.getp();
+      ar & lTmp;
+    }
+    lIter->close();
+  }
+  else
+  {
+    csize num = to_xs_unsignedInt(lSize);
+    std::vector<store::Item_t> lValues;
+    lValues.reserve(num);
+
+    store::Item* lValue;
+    for (csize i = 0; i < num; ++i)
+    {
+      ar & lValue;
+      lValues.push_back(lValue);
+    }
+    store::Item_t lRes;
+    GENV_ITEMFACTORY->createJSONArray(lRes, lValues); 
+    obj = lRes.getp();
+    obj->addReference();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_tree(Archiver &ar, store::Item *&obj)
+{
+  store::StoreConsts::JSONItemKind lKind = store::StoreConsts::jsonItem;
+  if (ar.is_serializing_out())
+  {
+    lKind = obj->getJSONItemKind();
+  }
+  SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, lKind);
+
+  switch (lKind)
+  {
+  case store::StoreConsts::jsonObject:
+    serialize_json_object(ar, obj);
+    break;
+  case store::StoreConsts::jsonArray:
+    serialize_json_array(ar, obj);
+    break;
+  default: assert(false);
+  }
+}
+#endif // ZORBA_WITH_JSON
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1120,11 +1267,22 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
     UserError *user_err = dynamic_cast<UserError*>(diagnostic);
     XQueryErrorCode *xquery_err = dynamic_cast<XQueryErrorCode*>(diagnostic);
     ZorbaErrorCode *zorba_err = dynamic_cast<ZorbaErrorCode*>(diagnostic);
+#ifdef ZORBA_WITH_JSON
+    JSONiqErrorCode* jsoniq_err = dynamic_cast<JSONiqErrorCode*>(diagnostic);
+#endif
     char err_type[20];
+#ifdef ZORBA_WITH_JSON
+    sprintf(err_type, "u%dx%dz%dj%d", 
+            user_err != NULL ? 1 : 0,
+            xquery_err != NULL ? 1 : 0,
+            zorba_err != NULL ? 1 : 0,
+            jsoniq_err != NULL ? 1 : 0);
+#else
     sprintf(err_type, "u%dx%dz%d", 
             user_err != NULL ? 1 : 0,
             xquery_err != NULL ? 1 : 0,
             zorba_err != NULL ? 1 : 0);
+#endif
     is_ref = ar.add_compound_field("Diagnostic*", 
                                    !FIELD_IS_CLASS, err_type, 
                                    obj, 
@@ -1171,14 +1329,23 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
     if(field_treat == ARCHIVE_FIELD_PTR)
     {
       int is_user, is_xquery, is_zorba;
+#ifdef ZORBA_WITH_JSON
+      int is_jsoniq;
+      sscanf(value.c_str(), "u%dx%dz%dj%d", &is_user, &is_xquery, &is_zorba, &is_jsoniq);
+#else
       sscanf(value.c_str(), "u%dx%dz%d", &is_user, &is_xquery, &is_zorba);
+#endif
       if(is_user)
       {
         UserError *user_error = new UserError(ar);
         ar & user_error->qname_;
         obj = user_error;
       }
-      else if(is_xquery || is_zorba)
+      else if(is_xquery || is_zorba
+#ifdef ZORBA_WITH_JSON
+          || is_jsoniq
+#endif
+      )
       {
         ar.set_is_temp_field(true);
         char*   local;
