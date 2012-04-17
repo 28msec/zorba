@@ -8600,7 +8600,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   else
   {
     expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
-    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, (axisStep == NULL));
     push_nodestack(flworExpr.getp());
   }
 }
