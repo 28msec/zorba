@@ -1165,8 +1165,8 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
 #ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
+  case json_direct_object_expr_kind:
   case json_array_expr_kind:
-    //case json_pair_expr_kind:
   {
     break;
   }
