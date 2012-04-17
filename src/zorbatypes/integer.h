@@ -33,12 +33,12 @@
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define TEMPLATE_DECL(I)     /* nothing */
-# define TEMPLATE_DECL2(I,A)  template<typename A>
+# define TEMPLATE_DECL2(I,A)  template<typename A> /* spacer */
 # define INTEGER_IMPL(I)      IntegerImpl
 #else
-# define TEMPLATE_DECL(I)     template<typename I>
-# define TEMPLATE_DECL2(I,A)  template<typename I,typename A>
-# define INTEGER_IMPL(I)      IntegerImpl<I>
+# define TEMPLATE_DECL(I)     template<typename I> /* spacer */
+# define TEMPLATE_DECL2(I,A)  template<typename I,typename A> /* spacer */
+# define INTEGER_IMPL(I)      IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
@@ -127,22 +127,19 @@ public:
   TEMPLATE_DECL(IntType2)
   IntegerImpl& operator=( INTEGER_IMPL(IntType2) const &i );
 
-  /**
-   * For every built-in arithmetic type A, assign to this %IntegerImpl.
-   *
-   * @tparam A The built-in arithmetic type.
-   * @param n The arithmetic value to assign.
-   * @return Returns \c *this.
-   */
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          IntegerImpl&>::type
-  operator=( A n );
-
-  // These arithmetic types have to be special-cased.
-  IntegerImpl& operator=( long long );
-  IntegerImpl& operator=( unsigned long );
-  IntegerImpl& operator=( unsigned long long );
+  IntegerImpl& operator=( char c );
+  IntegerImpl& operator=( signed char c );
+  IntegerImpl& operator=( short n );
+  IntegerImpl& operator=( int n );
+  IntegerImpl& operator=( long n );
+  IntegerImpl& operator=( long long n );
+  IntegerImpl& operator=( unsigned char c );
+  IntegerImpl& operator=( unsigned short n );
+  IntegerImpl& operator=( unsigned int n );
+  IntegerImpl& operator=( unsigned long n );
+  IntegerImpl& operator=( unsigned long long n );
+  IntegerImpl& operator=( float n );
+  IntegerImpl& operator=( double n );
 
   IntegerImpl& operator=( char const *s );
   IntegerImpl& operator=( Decimal const &d );
@@ -169,22 +166,78 @@ public:
   ZORBA_INTEGER_OP(%);
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP)                                      \
-  TEMPLATE_DECL2(I,A) friend                                      \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          INTEGER_IMPL(I)>::type                  \
-  operator OP( INTEGER_IMPL(I) const&, A );                       \
-                                                                  \
-  TEMPLATE_DECL2(I,A) friend                                      \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          INTEGER_IMPL(I)>::type                  \
-  operator OP( A, INTEGER_IMPL(I) const& )
+#define ZORBA_INTEGER_OP(OP,T)                              \
+  TEMPLATE_DECL(I) friend                                   \
+  INTEGER_IMPL(I) operator OP( INTEGER_IMPL(I) const&, T ); \
+                                                            \
+  TEMPLATE_DECL(I) friend                                   \
+  INTEGER_IMPL(I) operator OP( T, INTEGER_IMPL(I) const& )
 
-  ZORBA_INTEGER_OP(+);
-  ZORBA_INTEGER_OP(-);
-  ZORBA_INTEGER_OP(*);
-  ZORBA_INTEGER_OP(/);
-  ZORBA_INTEGER_OP(%);
+  ZORBA_INTEGER_OP(+,char);
+  ZORBA_INTEGER_OP(-,char);
+  ZORBA_INTEGER_OP(*,char);
+  ZORBA_INTEGER_OP(/,char);
+  ZORBA_INTEGER_OP(%,char);
+  ZORBA_INTEGER_OP(+,signed char);
+  ZORBA_INTEGER_OP(-,signed char);
+  ZORBA_INTEGER_OP(*,signed char);
+  ZORBA_INTEGER_OP(/,signed char);
+  ZORBA_INTEGER_OP(%,signed char);
+  ZORBA_INTEGER_OP(+,short);
+  ZORBA_INTEGER_OP(-,short);
+  ZORBA_INTEGER_OP(*,short);
+  ZORBA_INTEGER_OP(/,short);
+  ZORBA_INTEGER_OP(%,short);
+  ZORBA_INTEGER_OP(+,int);
+  ZORBA_INTEGER_OP(-,int);
+  ZORBA_INTEGER_OP(*,int);
+  ZORBA_INTEGER_OP(/,int);
+  ZORBA_INTEGER_OP(%,int);
+  ZORBA_INTEGER_OP(+,long);
+  ZORBA_INTEGER_OP(-,long);
+  ZORBA_INTEGER_OP(*,long);
+  ZORBA_INTEGER_OP(/,long);
+  ZORBA_INTEGER_OP(%,long);
+  ZORBA_INTEGER_OP(+,long long);
+  ZORBA_INTEGER_OP(-,long long);
+  ZORBA_INTEGER_OP(*,long long);
+  ZORBA_INTEGER_OP(/,long long);
+  ZORBA_INTEGER_OP(%,long long);
+  ZORBA_INTEGER_OP(+,unsigned char);
+  ZORBA_INTEGER_OP(-,unsigned char);
+  ZORBA_INTEGER_OP(*,unsigned char);
+  ZORBA_INTEGER_OP(/,unsigned char);
+  ZORBA_INTEGER_OP(%,unsigned char);
+  ZORBA_INTEGER_OP(+,unsigned short);
+  ZORBA_INTEGER_OP(-,unsigned short);
+  ZORBA_INTEGER_OP(*,unsigned short);
+  ZORBA_INTEGER_OP(/,unsigned short);
+  ZORBA_INTEGER_OP(%,unsigned short);
+  ZORBA_INTEGER_OP(+,unsigned int);
+  ZORBA_INTEGER_OP(-,unsigned int);
+  ZORBA_INTEGER_OP(*,unsigned int);
+  ZORBA_INTEGER_OP(/,unsigned int);
+  ZORBA_INTEGER_OP(%,unsigned int);
+  ZORBA_INTEGER_OP(+,unsigned long);
+  ZORBA_INTEGER_OP(-,unsigned long);
+  ZORBA_INTEGER_OP(*,unsigned long);
+  ZORBA_INTEGER_OP(/,unsigned long);
+  ZORBA_INTEGER_OP(%,unsigned long);
+  ZORBA_INTEGER_OP(+,unsigned long long);
+  ZORBA_INTEGER_OP(-,unsigned long long);
+  ZORBA_INTEGER_OP(*,unsigned long long);
+  ZORBA_INTEGER_OP(/,unsigned long long);
+  ZORBA_INTEGER_OP(%,unsigned long long);
+  ZORBA_INTEGER_OP(+,float);
+  ZORBA_INTEGER_OP(-,float);
+  ZORBA_INTEGER_OP(*,float);
+  ZORBA_INTEGER_OP(/,float);
+  ZORBA_INTEGER_OP(%,float);
+  ZORBA_INTEGER_OP(+,double);
+  ZORBA_INTEGER_OP(-,double);
+  ZORBA_INTEGER_OP(*,double);
+  ZORBA_INTEGER_OP(/,double);
+  ZORBA_INTEGER_OP(%,double);
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP,TYPE) \
@@ -197,17 +250,74 @@ public:
   ZORBA_INTEGER_OP(%=,IntegerImpl const&);
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP)                                      \
-  template<typename A>                                            \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          IntegerImpl&>::type                     \
-  operator OP( A )
+#define ZORBA_INTEGER_OP(OP,T) \
+  IntegerImpl& operator OP( T )
 
-  ZORBA_INTEGER_OP(+=);
-  ZORBA_INTEGER_OP(-=);
-  ZORBA_INTEGER_OP(*=);
-  ZORBA_INTEGER_OP(/=);
-  ZORBA_INTEGER_OP(%=);
+  ZORBA_INTEGER_OP(+=,char);
+  ZORBA_INTEGER_OP(-=,char);
+  ZORBA_INTEGER_OP(*=,char);
+  ZORBA_INTEGER_OP(/=,char);
+  ZORBA_INTEGER_OP(%=,char);
+  ZORBA_INTEGER_OP(+=,signed char);
+  ZORBA_INTEGER_OP(-=,signed char);
+  ZORBA_INTEGER_OP(*=,signed char);
+  ZORBA_INTEGER_OP(/=,signed char);
+  ZORBA_INTEGER_OP(%=,signed char);
+  ZORBA_INTEGER_OP(+=,short);
+  ZORBA_INTEGER_OP(-=,short);
+  ZORBA_INTEGER_OP(*=,short);
+  ZORBA_INTEGER_OP(/=,short);
+  ZORBA_INTEGER_OP(%=,short);
+  ZORBA_INTEGER_OP(+=,int);
+  ZORBA_INTEGER_OP(-=,int);
+  ZORBA_INTEGER_OP(*=,int);
+  ZORBA_INTEGER_OP(/=,int);
+  ZORBA_INTEGER_OP(%=,int);
+  ZORBA_INTEGER_OP(+=,long);
+  ZORBA_INTEGER_OP(-=,long);
+  ZORBA_INTEGER_OP(*=,long);
+  ZORBA_INTEGER_OP(/=,long);
+  ZORBA_INTEGER_OP(%=,long);
+  ZORBA_INTEGER_OP(+=,long long);
+  ZORBA_INTEGER_OP(-=,long long);
+  ZORBA_INTEGER_OP(*=,long long);
+  ZORBA_INTEGER_OP(/=,long long);
+  ZORBA_INTEGER_OP(%=,long long);
+  ZORBA_INTEGER_OP(+=,unsigned char);
+  ZORBA_INTEGER_OP(-=,unsigned char);
+  ZORBA_INTEGER_OP(*=,unsigned char);
+  ZORBA_INTEGER_OP(/=,unsigned char);
+  ZORBA_INTEGER_OP(%=,unsigned char);
+  ZORBA_INTEGER_OP(+=,unsigned short);
+  ZORBA_INTEGER_OP(-=,unsigned short);
+  ZORBA_INTEGER_OP(*=,unsigned short);
+  ZORBA_INTEGER_OP(/=,unsigned short);
+  ZORBA_INTEGER_OP(%=,unsigned short);
+  ZORBA_INTEGER_OP(+=,unsigned int);
+  ZORBA_INTEGER_OP(-=,unsigned int);
+  ZORBA_INTEGER_OP(*=,unsigned int);
+  ZORBA_INTEGER_OP(/=,unsigned int);
+  ZORBA_INTEGER_OP(%=,unsigned int);
+  ZORBA_INTEGER_OP(+=,unsigned long);
+  ZORBA_INTEGER_OP(-=,unsigned long);
+  ZORBA_INTEGER_OP(*=,unsigned long);
+  ZORBA_INTEGER_OP(/=,unsigned long);
+  ZORBA_INTEGER_OP(%=,unsigned long);
+  ZORBA_INTEGER_OP(+=,unsigned long long);
+  ZORBA_INTEGER_OP(-=,unsigned long long);
+  ZORBA_INTEGER_OP(*=,unsigned long long);
+  ZORBA_INTEGER_OP(/=,unsigned long long);
+  ZORBA_INTEGER_OP(%=,unsigned long long);
+  ZORBA_INTEGER_OP(+=,float);
+  ZORBA_INTEGER_OP(-=,float);
+  ZORBA_INTEGER_OP(*=,float);
+  ZORBA_INTEGER_OP(/=,float);
+  ZORBA_INTEGER_OP(%=,float);
+  ZORBA_INTEGER_OP(+=,double);
+  ZORBA_INTEGER_OP(-=,double);
+  ZORBA_INTEGER_OP(*=,double);
+  ZORBA_INTEGER_OP(/=,double);
+  ZORBA_INTEGER_OP(%=,double);
 #undef ZORBA_INTEGER_OP
 
   IntegerImpl operator-() const;
@@ -274,8 +384,10 @@ public:
 private:
 #ifdef ZORBA_WITH_BIG_INTEGER
   typedef MAPM value_type;
+  typedef long int_cast_type;
 #else
   typedef IntType value_type;
+  typedef IntType int_cast_type;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
   value_type value_;
@@ -289,11 +401,6 @@ private:
   }
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-  template<typename T>
-  static value_type cast( T n ) {
-    return value_type( static_cast<long>( n ) );
-  }
-
   static value_type ftoi( MAPM const &d ) {
     return d.sign() >= 0 ? d.floor() : d.ceil();
   }
@@ -301,12 +408,12 @@ private:
   MAPM const& itod() const {
     return value_;                      // intentional no-op
   }
-#else
-  template<typename T>
-  static value_type cast( T n ) {
-    return static_cast<value_type>( n );
-  }
 
+  template<typename T>
+  static value_type make_value_type( T n ) {
+    return value_type( static_cast<int_cast_type>( n ) );
+  }
+#else
   bool is_long() const;
 
   static value_type ftoi( value_type v ) {
@@ -316,6 +423,11 @@ private:
   static value_type ftoi( MAPM const &d );
 
   MAPM itod() const;
+
+  template<typename T>
+  static value_type make_value_type( T n ) {
+    return static_cast<value_type>( n );
+  }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
   void parse( char const *s );
@@ -445,33 +557,29 @@ inline INTEGER_IMPL(I)::IntegerImpl( INTEGER_IMPL(J) const &i ) :
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-TEMPLATE_DECL(I) template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        INTEGER_IMPL(I)&>::type
-INTEGER_IMPL(I)::operator=( A n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
+#define ZORBA_ASSIGN_OP(T)                              \
+  TEMPLATE_DECL(I) inline                               \
+  INTEGER_IMPL(I)& INTEGER_IMPL(I)::operator=( T n ) {  \
+    value_ = static_cast<int_cast_type>( n );           \
+    return *this;                                       \
+  }
 
+ZORBA_ASSIGN_OP(char)
+ZORBA_ASSIGN_OP(signed char)
+ZORBA_ASSIGN_OP(short)
+ZORBA_ASSIGN_OP(int)
+ZORBA_ASSIGN_OP(long)
+ZORBA_ASSIGN_OP(unsigned char)
+ZORBA_ASSIGN_OP(unsigned short)
+ZORBA_ASSIGN_OP(unsigned int)
+ZORBA_ASSIGN_OP(float)
+ZORBA_ASSIGN_OP(double)
 #ifndef ZORBA_WITH_BIG_INTEGER
-template<typename I>
-inline IntegerImpl<I>& IntegerImpl<I>::operator=( long long n ) {
-  value_ = n;
-  return *this;
-}
-
-template<typename I>
-inline IntegerImpl<I>& IntegerImpl<I>::operator=( unsigned long n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
-
-template<typename I>
-inline IntegerImpl<I>& IntegerImpl<I>::operator=( unsigned long long n ) {
-  value_ = n;
-  return *this;
-}
+ZORBA_ASSIGN_OP(long long)
+ZORBA_ASSIGN_OP(unsigned long)
+ZORBA_ASSIGN_OP(unsigned long long)
 #endif /* ZORBA_WITH_BIG_INTEGER */
+#undef ZORBA_ASSIGN_OP
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)& INTEGER_IMPL(I)::operator=( char const *s ) {
@@ -506,44 +614,96 @@ INTEGER_IMPL(I) operator/( INTEGER_IMPL(I) const &i,
   return INTEGER_IMPL(I)( INTEGER_IMPL(I)::ftoi( i.value_ / j.value_ ) );
 }
 
-#define ZORBA_INTEGER_OP(OP)                                          \
-  TEMPLATE_DECL2(I,A) inline                                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,      \
-                          INTEGER_IMPL(I)>::type                      \
-  operator OP( INTEGER_IMPL(I) const& i, A n ) {                      \
-    return INTEGER_IMPL(I)( i.value_ OP INTEGER_IMPL(I)::cast( n ) ); \
-  }                                                                   \
-                                                                      \
-  TEMPLATE_DECL2(I,A) inline                                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,      \
-                          INTEGER_IMPL(I)>::type                      \
-  operator OP( A n, INTEGER_IMPL(I) const &i ) {                      \
-    return INTEGER_IMPL(I)( INTEGER_IMPL(I)::cast( n ) OP i.value_ ); \
+#define ZORBA_INTEGER_OP(OP,T)                                    \
+  TEMPLATE_DECL(I) inline                                         \
+  INTEGER_IMPL(I) operator OP( INTEGER_IMPL(I) const& i, T n ) {  \
+    return INTEGER_IMPL(I)( i.value_ OP INTEGER_IMPL(I)::make_value_type( n ) ); \
+  }                                                               \
+                                                                  \
+  TEMPLATE_DECL(I) inline                                         \
+  INTEGER_IMPL(I) operator OP( T n, INTEGER_IMPL(I) const &i ) {  \
+    return INTEGER_IMPL(I)( INTEGER_IMPL(I)::make_value_type( n ) OP i.value_ ); \
   }
 
-ZORBA_INTEGER_OP(+)
-ZORBA_INTEGER_OP(-)
-ZORBA_INTEGER_OP(*)
-ZORBA_INTEGER_OP(%)
+ZORBA_INTEGER_OP(+,char)
+ZORBA_INTEGER_OP(-,char)
+ZORBA_INTEGER_OP(*,char)
+ZORBA_INTEGER_OP(%,char)
+ZORBA_INTEGER_OP(+,signed char)
+ZORBA_INTEGER_OP(-,signed char)
+ZORBA_INTEGER_OP(*,signed char)
+ZORBA_INTEGER_OP(%,signed char)
+ZORBA_INTEGER_OP(+,short)
+ZORBA_INTEGER_OP(-,short)
+ZORBA_INTEGER_OP(*,short)
+ZORBA_INTEGER_OP(%,short)
+ZORBA_INTEGER_OP(+,int)
+ZORBA_INTEGER_OP(-,int)
+ZORBA_INTEGER_OP(*,int)
+ZORBA_INTEGER_OP(%,int)
+ZORBA_INTEGER_OP(+,long)
+ZORBA_INTEGER_OP(-,long)
+ZORBA_INTEGER_OP(*,long)
+ZORBA_INTEGER_OP(%,long)
+ZORBA_INTEGER_OP(+,long long)
+ZORBA_INTEGER_OP(-,long long)
+ZORBA_INTEGER_OP(*,long long)
+ZORBA_INTEGER_OP(%,long long)
+ZORBA_INTEGER_OP(+,unsigned char)
+ZORBA_INTEGER_OP(-,unsigned char)
+ZORBA_INTEGER_OP(*,unsigned char)
+ZORBA_INTEGER_OP(%,unsigned char)
+ZORBA_INTEGER_OP(+,unsigned short)
+ZORBA_INTEGER_OP(-,unsigned short)
+ZORBA_INTEGER_OP(*,unsigned short)
+ZORBA_INTEGER_OP(%,unsigned short)
+ZORBA_INTEGER_OP(+,unsigned int)
+ZORBA_INTEGER_OP(-,unsigned int)
+ZORBA_INTEGER_OP(*,unsigned int)
+ZORBA_INTEGER_OP(%,unsigned int)
+ZORBA_INTEGER_OP(+,unsigned long)
+ZORBA_INTEGER_OP(-,unsigned long)
+ZORBA_INTEGER_OP(*,unsigned long)
+ZORBA_INTEGER_OP(%,unsigned long)
+ZORBA_INTEGER_OP(+,unsigned long long)
+ZORBA_INTEGER_OP(-,unsigned long long)
+ZORBA_INTEGER_OP(*,unsigned long long)
+ZORBA_INTEGER_OP(%,unsigned long long)
+ZORBA_INTEGER_OP(+,float)
+ZORBA_INTEGER_OP(-,float)
+ZORBA_INTEGER_OP(*,float)
+ZORBA_INTEGER_OP(%,float)
+ZORBA_INTEGER_OP(+,double)
+ZORBA_INTEGER_OP(-,double)
+ZORBA_INTEGER_OP(*,double)
+ZORBA_INTEGER_OP(%,double)
 #undef ZORBA_INTEGER_OP
 
-TEMPLATE_DECL2(I,A) inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        INTEGER_IMPL(I)>::type
-operator/( INTEGER_IMPL(I) const &i, A n ) {
-  return INTEGER_IMPL(I)(
-    INTEGER_IMPL(I)::ftoi( i.value_ / INTEGER_IMPL(I)::cast( n ) )
-  );
-}
+#define ZORBA_INTEGER_OP(T)                                     \
+  TEMPLATE_DECL(I) inline                                       \
+  INTEGER_IMPL(I) operator/( INTEGER_IMPL(I) const &i, T n ) {  \
+    return INTEGER_IMPL(I)( INTEGER_IMPL(I)::ftoi( i.value_ / INTEGER_IMPL(I)::make_value_type( n ) ) ); \
+  }                                                             \
+                                                                \
+  TEMPLATE_DECL(I) inline                                       \
+  INTEGER_IMPL(I) operator/( T n, INTEGER_IMPL(I) const &i ) {  \
+    return INTEGER_IMPL(I)( INTEGER_IMPL(I)::ftoi( INTEGER_IMPL(I)::make_value_type( n ) / i.value_ ) ); \
+  }
 
-TEMPLATE_DECL2(I,A) inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        INTEGER_IMPL(I)>::type
-operator/( A n, INTEGER_IMPL(I) const &i ) {
-  return INTEGER_IMPL(I)(
-    INTEGER_IMPL(I)::ftoi( INTEGER_IMPL(I)::cast( n ) / i.value_ )
-  );
-}
+ZORBA_INTEGER_OP(signed char)
+ZORBA_INTEGER_OP(char)
+ZORBA_INTEGER_OP(short)
+ZORBA_INTEGER_OP(int)
+ZORBA_INTEGER_OP(long)
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned char)
+ZORBA_INTEGER_OP(unsigned short)
+ZORBA_INTEGER_OP(unsigned int)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+ZORBA_INTEGER_OP(float)
+ZORBA_INTEGER_OP(double)
+#undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                              \
   TEMPLATE_DECL(I) inline                                                 \
@@ -564,28 +724,88 @@ inline INTEGER_IMPL(I)& INTEGER_IMPL(I)::operator/=( IntegerImpl const &i ) {
   return *this;
 }
 
-#define ZORBA_INTEGER_OP(OP)                                      \
-  TEMPLATE_DECL(I) template<typename A> inline                    \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          INTEGER_IMPL(I)&>::type                 \
-  INTEGER_IMPL(I)::operator OP( A n ) {                           \
-    value_ OP cast( n );                                          \
-    return *this;                                                 \
+#define ZORBA_INTEGER_OP(OP,T)                            \
+  TEMPLATE_DECL(I) inline                                 \
+  INTEGER_IMPL(I)& INTEGER_IMPL(I)::operator OP( T n ) {  \
+    value_ OP make_value_type( n );                       \
+    return *this;                                         \
   }
 
-ZORBA_INTEGER_OP(+=)
-ZORBA_INTEGER_OP(-=)
-ZORBA_INTEGER_OP(*=)
-ZORBA_INTEGER_OP(%=)
+ZORBA_INTEGER_OP(+=,char)
+ZORBA_INTEGER_OP(-=,char)
+ZORBA_INTEGER_OP(*=,char)
+ZORBA_INTEGER_OP(%=,char)
+ZORBA_INTEGER_OP(+=,signed char)
+ZORBA_INTEGER_OP(-=,signed char)
+ZORBA_INTEGER_OP(*=,signed char)
+ZORBA_INTEGER_OP(%=,signed char)
+ZORBA_INTEGER_OP(+=,short)
+ZORBA_INTEGER_OP(-=,short)
+ZORBA_INTEGER_OP(*=,short)
+ZORBA_INTEGER_OP(%=,short)
+ZORBA_INTEGER_OP(+=,int)
+ZORBA_INTEGER_OP(-=,int)
+ZORBA_INTEGER_OP(*=,int)
+ZORBA_INTEGER_OP(%=,int)
+ZORBA_INTEGER_OP(+=,long)
+ZORBA_INTEGER_OP(-=,long)
+ZORBA_INTEGER_OP(*=,long)
+ZORBA_INTEGER_OP(%=,long)
+ZORBA_INTEGER_OP(+=,long long)
+ZORBA_INTEGER_OP(-=,long long)
+ZORBA_INTEGER_OP(*=,long long)
+ZORBA_INTEGER_OP(%=,long long)
+ZORBA_INTEGER_OP(+=,unsigned char)
+ZORBA_INTEGER_OP(-=,unsigned char)
+ZORBA_INTEGER_OP(*=,unsigned char)
+ZORBA_INTEGER_OP(%=,unsigned char)
+ZORBA_INTEGER_OP(+=,unsigned short)
+ZORBA_INTEGER_OP(-=,unsigned short)
+ZORBA_INTEGER_OP(*=,unsigned short)
+ZORBA_INTEGER_OP(%=,unsigned short)
+ZORBA_INTEGER_OP(+=,unsigned int)
+ZORBA_INTEGER_OP(-=,unsigned int)
+ZORBA_INTEGER_OP(*=,unsigned int)
+ZORBA_INTEGER_OP(%=,unsigned int)
+ZORBA_INTEGER_OP(+=,unsigned long)
+ZORBA_INTEGER_OP(-=,unsigned long)
+ZORBA_INTEGER_OP(*=,unsigned long)
+ZORBA_INTEGER_OP(%=,unsigned long)
+ZORBA_INTEGER_OP(+=,unsigned long long)
+ZORBA_INTEGER_OP(-=,unsigned long long)
+ZORBA_INTEGER_OP(*=,unsigned long long)
+ZORBA_INTEGER_OP(%=,unsigned long long)
+ZORBA_INTEGER_OP(+=,float)
+ZORBA_INTEGER_OP(-=,float)
+ZORBA_INTEGER_OP(*=,float)
+ZORBA_INTEGER_OP(%=,float)
+ZORBA_INTEGER_OP(+=,double)
+ZORBA_INTEGER_OP(-=,double)
+ZORBA_INTEGER_OP(*=,double)
+ZORBA_INTEGER_OP(%=,double)
 #undef ZORBA_INTEGER_OP
 
-TEMPLATE_DECL(I) template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        INTEGER_IMPL(I)&>::type
-INTEGER_IMPL(I)::operator/=( A n ) {
-  value_ = ftoi( value_ / cast( n ) );
-  return *this;
-}
+#define ZORBA_INTEGER_OP(T)                             \
+  TEMPLATE_DECL(I) inline                               \
+  INTEGER_IMPL(I)& INTEGER_IMPL(I)::operator/=( T n ) { \
+    value_ = ftoi( value_ / make_value_type( n ) );     \
+    return *this;                                       \
+  }
+
+ZORBA_INTEGER_OP(char)
+ZORBA_INTEGER_OP(signed char)
+ZORBA_INTEGER_OP(short)
+ZORBA_INTEGER_OP(int)
+ZORBA_INTEGER_OP(long)
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned char)
+ZORBA_INTEGER_OP(unsigned short)
+ZORBA_INTEGER_OP(unsigned int)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+ZORBA_INTEGER_OP(float)
+ZORBA_INTEGER_OP(double)
+#undef ZORBA_INTEGER_OP
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I) INTEGER_IMPL(I)::operator-() const {
@@ -638,13 +858,13 @@ ZORBA_INTEGER_OP(>=)
   TEMPLATE_DECL2(I,A) inline                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( INTEGER_IMPL(I) const &i, A n ) {                            \
-    return i.value_ OP INTEGER_IMPL(I)::cast( n );                          \
+    return i.value_ OP INTEGER_IMPL(I)::make_value_type( n );               \
   }                                                                         \
                                                                             \
   TEMPLATE_DECL2(I,A) inline                                                \
   typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
   operator OP( A n, INTEGER_IMPL(I) const &i ) {                            \
-    return INTEGER_IMPL(I)::cast( n ) OP i.value_;                          \
+    return INTEGER_IMPL(I)::make_value_type( n ) OP i.value_;               \
   }                                                                         \
 
   ZORBA_INTEGER_OP(==)
