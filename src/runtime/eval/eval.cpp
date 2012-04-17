@@ -188,6 +188,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ulong maxOuterVarId;
     copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
 
+    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // before reseting the state->thePlan. Otherwise, the current state->thePlan
+    // will be destroyed first, and then we will attempt to close it when 
+    // state->thePlanWrapper is reset later. 
+    state->thePlanWrapper = NULL;
+
     // Compile
     state->thePlan = compile(evalCCB,
                              item->getStringValue(),
