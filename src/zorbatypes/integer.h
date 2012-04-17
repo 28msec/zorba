@@ -32,16 +32,14 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I)     /* nothing */
-# define TEMPLATE_DECL2(I,A)  template<typename A> /* spacer */
-# define INTEGER_IMPL(I)      IntegerImpl
+# define TEMPLATE_DECL(I) /* nothing */
+# define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(I)     template<typename I> /* spacer */
-# define TEMPLATE_DECL2(I,A)  template<typename I,typename A> /* spacer */
-# define INTEGER_IMPL(I)      IntegerImpl<I> /* spacer */
+# define TEMPLATE_DECL(I) template<typename I> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
+#define INTEGER_IMPL_LL   INTEGER_IMPL(long long)
+#define INTEGER_IMPL_ULL  INTEGER_IMPL(unsigned long long)
 
 namespace zorba {
 
@@ -347,21 +345,88 @@ public:
   ZORBA_INTEGER_OP(>=);
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP)                                                \
-  TEMPLATE_DECL2(I,A) friend                                                \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
-  operator OP( INTEGER_IMPL(I) const&, A );                                 \
-                                                                            \
-  TEMPLATE_DECL2(I,A) friend                                                \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
-  operator OP( A, INTEGER_IMPL(I) const& )
+#define ZORBA_INTEGER_OP(OP,T)                                            \
+  TEMPLATE_DECL(I) friend bool operator OP( INTEGER_IMPL(I) const&, T );  \
+  TEMPLATE_DECL(I) friend bool operator OP( T, INTEGER_IMPL(I) const& )
 
-  ZORBA_INTEGER_OP(==);
-  ZORBA_INTEGER_OP(!=);
-  ZORBA_INTEGER_OP(< );
-  ZORBA_INTEGER_OP(<=);
-  ZORBA_INTEGER_OP(> );
-  ZORBA_INTEGER_OP(>=);
+  ZORBA_INTEGER_OP(==,char);
+  ZORBA_INTEGER_OP(!=,char);
+  ZORBA_INTEGER_OP(< ,char);
+  ZORBA_INTEGER_OP(<=,char);
+  ZORBA_INTEGER_OP(> ,char);
+  ZORBA_INTEGER_OP(>=,char);
+  ZORBA_INTEGER_OP(==,signed char);
+  ZORBA_INTEGER_OP(!=,signed char);
+  ZORBA_INTEGER_OP(< ,signed char);
+  ZORBA_INTEGER_OP(<=,signed char);
+  ZORBA_INTEGER_OP(> ,signed char);
+  ZORBA_INTEGER_OP(>=,signed char);
+  ZORBA_INTEGER_OP(==,short);
+  ZORBA_INTEGER_OP(!=,short);
+  ZORBA_INTEGER_OP(< ,short);
+  ZORBA_INTEGER_OP(<=,short);
+  ZORBA_INTEGER_OP(> ,short);
+  ZORBA_INTEGER_OP(>=,short);
+  ZORBA_INTEGER_OP(==,int);
+  ZORBA_INTEGER_OP(!=,int);
+  ZORBA_INTEGER_OP(< ,int);
+  ZORBA_INTEGER_OP(<=,int);
+  ZORBA_INTEGER_OP(> ,int);
+  ZORBA_INTEGER_OP(>=,int);
+  ZORBA_INTEGER_OP(==,long);
+  ZORBA_INTEGER_OP(!=,long);
+  ZORBA_INTEGER_OP(< ,long);
+  ZORBA_INTEGER_OP(<=,long);
+  ZORBA_INTEGER_OP(> ,long);
+  ZORBA_INTEGER_OP(>=,long);
+  ZORBA_INTEGER_OP(==,long long);
+  ZORBA_INTEGER_OP(!=,long long);
+  ZORBA_INTEGER_OP(< ,long long);
+  ZORBA_INTEGER_OP(<=,long long);
+  ZORBA_INTEGER_OP(> ,long long);
+  ZORBA_INTEGER_OP(>=,long long);
+  ZORBA_INTEGER_OP(==,unsigned char);
+  ZORBA_INTEGER_OP(!=,unsigned char);
+  ZORBA_INTEGER_OP(< ,unsigned char);
+  ZORBA_INTEGER_OP(<=,unsigned char);
+  ZORBA_INTEGER_OP(> ,unsigned char);
+  ZORBA_INTEGER_OP(>=,unsigned char);
+  ZORBA_INTEGER_OP(==,unsigned short);
+  ZORBA_INTEGER_OP(!=,unsigned short);
+  ZORBA_INTEGER_OP(< ,unsigned short);
+  ZORBA_INTEGER_OP(<=,unsigned short);
+  ZORBA_INTEGER_OP(> ,unsigned short);
+  ZORBA_INTEGER_OP(>=,unsigned short);
+  ZORBA_INTEGER_OP(==,unsigned int);
+  ZORBA_INTEGER_OP(!=,unsigned int);
+  ZORBA_INTEGER_OP(< ,unsigned int);
+  ZORBA_INTEGER_OP(<=,unsigned int);
+  ZORBA_INTEGER_OP(> ,unsigned int);
+  ZORBA_INTEGER_OP(>=,unsigned int);
+  ZORBA_INTEGER_OP(==,unsigned long);
+  ZORBA_INTEGER_OP(!=,unsigned long);
+  ZORBA_INTEGER_OP(< ,unsigned long);
+  ZORBA_INTEGER_OP(<=,unsigned long);
+  ZORBA_INTEGER_OP(> ,unsigned long);
+  ZORBA_INTEGER_OP(>=,unsigned long);
+  ZORBA_INTEGER_OP(==,unsigned long long);
+  ZORBA_INTEGER_OP(!=,unsigned long long);
+  ZORBA_INTEGER_OP(< ,unsigned long long);
+  ZORBA_INTEGER_OP(<=,unsigned long long);
+  ZORBA_INTEGER_OP(> ,unsigned long long);
+  ZORBA_INTEGER_OP(>=,unsigned long long);
+  ZORBA_INTEGER_OP(==,float);
+  ZORBA_INTEGER_OP(!=,float);
+  ZORBA_INTEGER_OP(< ,float);
+  ZORBA_INTEGER_OP(<=,float);
+  ZORBA_INTEGER_OP(> ,float);
+  ZORBA_INTEGER_OP(>=,float);
+  ZORBA_INTEGER_OP(==,double);
+  ZORBA_INTEGER_OP(!=,double);
+  ZORBA_INTEGER_OP(< ,double);
+  ZORBA_INTEGER_OP(<=,double);
+  ZORBA_INTEGER_OP(> ,double);
+  ZORBA_INTEGER_OP(>=,double);
 #undef ZORBA_INTEGER_OP
 
   ////////// math functions ///////////////////////////////////////////////////
@@ -413,7 +478,7 @@ private:
   static value_type make_value_type( T n ) {
     return value_type( static_cast<int_cast_type>( n ) );
   }
-#else
+#else /* ZORBA_WITH_BIG_INTEGER */
   bool is_long() const;
 
   static value_type ftoi( value_type v ) {
@@ -616,7 +681,7 @@ INTEGER_IMPL(I) operator/( INTEGER_IMPL(I) const &i,
 
 #define ZORBA_INTEGER_OP(OP,T)                                    \
   TEMPLATE_DECL(I) inline                                         \
-  INTEGER_IMPL(I) operator OP( INTEGER_IMPL(I) const& i, T n ) {  \
+  INTEGER_IMPL(I) operator OP( INTEGER_IMPL(I) const &i, T n ) {  \
     return INTEGER_IMPL(I)( i.value_ OP INTEGER_IMPL(I)::make_value_type( n ) ); \
   }                                                               \
                                                                   \
@@ -645,10 +710,6 @@ ZORBA_INTEGER_OP(+,long)
 ZORBA_INTEGER_OP(-,long)
 ZORBA_INTEGER_OP(*,long)
 ZORBA_INTEGER_OP(%,long)
-ZORBA_INTEGER_OP(+,long long)
-ZORBA_INTEGER_OP(-,long long)
-ZORBA_INTEGER_OP(*,long long)
-ZORBA_INTEGER_OP(%,long long)
 ZORBA_INTEGER_OP(+,unsigned char)
 ZORBA_INTEGER_OP(-,unsigned char)
 ZORBA_INTEGER_OP(*,unsigned char)
@@ -661,14 +722,6 @@ ZORBA_INTEGER_OP(+,unsigned int)
 ZORBA_INTEGER_OP(-,unsigned int)
 ZORBA_INTEGER_OP(*,unsigned int)
 ZORBA_INTEGER_OP(%,unsigned int)
-ZORBA_INTEGER_OP(+,unsigned long)
-ZORBA_INTEGER_OP(-,unsigned long)
-ZORBA_INTEGER_OP(*,unsigned long)
-ZORBA_INTEGER_OP(%,unsigned long)
-ZORBA_INTEGER_OP(+,unsigned long long)
-ZORBA_INTEGER_OP(-,unsigned long long)
-ZORBA_INTEGER_OP(*,unsigned long long)
-ZORBA_INTEGER_OP(%,unsigned long long)
 ZORBA_INTEGER_OP(+,float)
 ZORBA_INTEGER_OP(-,float)
 ZORBA_INTEGER_OP(*,float)
@@ -677,6 +730,20 @@ ZORBA_INTEGER_OP(+,double)
 ZORBA_INTEGER_OP(-,double)
 ZORBA_INTEGER_OP(*,double)
 ZORBA_INTEGER_OP(%,double)
+#ifndef ZORBA_WITH_BIG_INTEGER
+ZORBA_INTEGER_OP(+,long long)
+ZORBA_INTEGER_OP(-,long long)
+ZORBA_INTEGER_OP(*,long long)
+ZORBA_INTEGER_OP(%,long long)
+ZORBA_INTEGER_OP(+,unsigned long)
+ZORBA_INTEGER_OP(-,unsigned long)
+ZORBA_INTEGER_OP(*,unsigned long)
+ZORBA_INTEGER_OP(%,unsigned long)
+ZORBA_INTEGER_OP(+,unsigned long long)
+ZORBA_INTEGER_OP(-,unsigned long long)
+ZORBA_INTEGER_OP(*,unsigned long long)
+ZORBA_INTEGER_OP(%,unsigned long long)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(T)                                     \
@@ -695,14 +762,16 @@ ZORBA_INTEGER_OP(char)
 ZORBA_INTEGER_OP(short)
 ZORBA_INTEGER_OP(int)
 ZORBA_INTEGER_OP(long)
-ZORBA_INTEGER_OP(long long)
 ZORBA_INTEGER_OP(unsigned char)
 ZORBA_INTEGER_OP(unsigned short)
 ZORBA_INTEGER_OP(unsigned int)
-ZORBA_INTEGER_OP(unsigned long)
-ZORBA_INTEGER_OP(unsigned long long)
 ZORBA_INTEGER_OP(float)
 ZORBA_INTEGER_OP(double)
+#ifndef ZORBA_WITH_BIG_INTEGER
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(OP)                                              \
@@ -751,10 +820,6 @@ ZORBA_INTEGER_OP(+=,long)
 ZORBA_INTEGER_OP(-=,long)
 ZORBA_INTEGER_OP(*=,long)
 ZORBA_INTEGER_OP(%=,long)
-ZORBA_INTEGER_OP(+=,long long)
-ZORBA_INTEGER_OP(-=,long long)
-ZORBA_INTEGER_OP(*=,long long)
-ZORBA_INTEGER_OP(%=,long long)
 ZORBA_INTEGER_OP(+=,unsigned char)
 ZORBA_INTEGER_OP(-=,unsigned char)
 ZORBA_INTEGER_OP(*=,unsigned char)
@@ -767,14 +832,6 @@ ZORBA_INTEGER_OP(+=,unsigned int)
 ZORBA_INTEGER_OP(-=,unsigned int)
 ZORBA_INTEGER_OP(*=,unsigned int)
 ZORBA_INTEGER_OP(%=,unsigned int)
-ZORBA_INTEGER_OP(+=,unsigned long)
-ZORBA_INTEGER_OP(-=,unsigned long)
-ZORBA_INTEGER_OP(*=,unsigned long)
-ZORBA_INTEGER_OP(%=,unsigned long)
-ZORBA_INTEGER_OP(+=,unsigned long long)
-ZORBA_INTEGER_OP(-=,unsigned long long)
-ZORBA_INTEGER_OP(*=,unsigned long long)
-ZORBA_INTEGER_OP(%=,unsigned long long)
 ZORBA_INTEGER_OP(+=,float)
 ZORBA_INTEGER_OP(-=,float)
 ZORBA_INTEGER_OP(*=,float)
@@ -783,6 +840,20 @@ ZORBA_INTEGER_OP(+=,double)
 ZORBA_INTEGER_OP(-=,double)
 ZORBA_INTEGER_OP(*=,double)
 ZORBA_INTEGER_OP(%=,double)
+#ifndef ZORBA_WITH_BIG_INTEGER
+ZORBA_INTEGER_OP(+=,long long)
+ZORBA_INTEGER_OP(-=,long long)
+ZORBA_INTEGER_OP(*=,long long)
+ZORBA_INTEGER_OP(%=,long long)
+ZORBA_INTEGER_OP(+=,unsigned long)
+ZORBA_INTEGER_OP(-=,unsigned long)
+ZORBA_INTEGER_OP(*=,unsigned long)
+ZORBA_INTEGER_OP(%=,unsigned long)
+ZORBA_INTEGER_OP(+=,unsigned long long)
+ZORBA_INTEGER_OP(-=,unsigned long long)
+ZORBA_INTEGER_OP(*=,unsigned long long)
+ZORBA_INTEGER_OP(%=,unsigned long long)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(T)                             \
@@ -797,14 +868,16 @@ ZORBA_INTEGER_OP(signed char)
 ZORBA_INTEGER_OP(short)
 ZORBA_INTEGER_OP(int)
 ZORBA_INTEGER_OP(long)
-ZORBA_INTEGER_OP(long long)
 ZORBA_INTEGER_OP(unsigned char)
 ZORBA_INTEGER_OP(unsigned short)
 ZORBA_INTEGER_OP(unsigned int)
-ZORBA_INTEGER_OP(unsigned long)
-ZORBA_INTEGER_OP(unsigned long long)
 ZORBA_INTEGER_OP(float)
 ZORBA_INTEGER_OP(double)
+#ifndef ZORBA_WITH_BIG_INTEGER
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
 TEMPLATE_DECL(I)
@@ -854,25 +927,97 @@ ZORBA_INTEGER_OP(> )
 ZORBA_INTEGER_OP(>=)
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP)                                                \
-  TEMPLATE_DECL2(I,A) inline                                                \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
-  operator OP( INTEGER_IMPL(I) const &i, A n ) {                            \
-    return i.value_ OP INTEGER_IMPL(I)::make_value_type( n );               \
-  }                                                                         \
-                                                                            \
-  TEMPLATE_DECL2(I,A) inline                                                \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,bool>::type \
-  operator OP( A n, INTEGER_IMPL(I) const &i ) {                            \
-    return INTEGER_IMPL(I)::make_value_type( n ) OP i.value_;               \
-  }                                                                         \
+#define ZORBA_INTEGER_OP(OP,T)                                \
+  TEMPLATE_DECL(I) inline                                     \
+  bool operator OP( INTEGER_IMPL(I) const &i, T n ) {         \
+    return i.value_ OP INTEGER_IMPL(I)::make_value_type( n ); \
+  }                                                           \
+                                                              \
+  TEMPLATE_DECL(I) inline                                     \
+  bool operator OP( T n, INTEGER_IMPL(I) const &i ) {         \
+    return INTEGER_IMPL(I)::make_value_type( n ) OP i.value_; \
+  }
 
-  ZORBA_INTEGER_OP(==)
-  ZORBA_INTEGER_OP(!=)
-  ZORBA_INTEGER_OP(< )
-  ZORBA_INTEGER_OP(<=)
-  ZORBA_INTEGER_OP(> )
-  ZORBA_INTEGER_OP(>=)
+ZORBA_INTEGER_OP(==,char)
+ZORBA_INTEGER_OP(!=,char)
+ZORBA_INTEGER_OP(< ,char)
+ZORBA_INTEGER_OP(<=,char)
+ZORBA_INTEGER_OP(> ,char)
+ZORBA_INTEGER_OP(>=,char)
+ZORBA_INTEGER_OP(==,signed char)
+ZORBA_INTEGER_OP(!=,signed char)
+ZORBA_INTEGER_OP(< ,signed char)
+ZORBA_INTEGER_OP(<=,signed char)
+ZORBA_INTEGER_OP(> ,signed char)
+ZORBA_INTEGER_OP(>=,signed char)
+ZORBA_INTEGER_OP(==,short)
+ZORBA_INTEGER_OP(!=,short)
+ZORBA_INTEGER_OP(< ,short)
+ZORBA_INTEGER_OP(<=,short)
+ZORBA_INTEGER_OP(> ,short)
+ZORBA_INTEGER_OP(>=,short)
+ZORBA_INTEGER_OP(==,int)
+ZORBA_INTEGER_OP(!=,int)
+ZORBA_INTEGER_OP(< ,int)
+ZORBA_INTEGER_OP(<=,int)
+ZORBA_INTEGER_OP(> ,int)
+ZORBA_INTEGER_OP(>=,int)
+ZORBA_INTEGER_OP(==,long)
+ZORBA_INTEGER_OP(!=,long)
+ZORBA_INTEGER_OP(< ,long)
+ZORBA_INTEGER_OP(<=,long)
+ZORBA_INTEGER_OP(> ,long)
+ZORBA_INTEGER_OP(>=,long)
+ZORBA_INTEGER_OP(==,unsigned char)
+ZORBA_INTEGER_OP(!=,unsigned char)
+ZORBA_INTEGER_OP(< ,unsigned char)
+ZORBA_INTEGER_OP(<=,unsigned char)
+ZORBA_INTEGER_OP(> ,unsigned char)
+ZORBA_INTEGER_OP(>=,unsigned char)
+ZORBA_INTEGER_OP(==,unsigned short)
+ZORBA_INTEGER_OP(!=,unsigned short)
+ZORBA_INTEGER_OP(< ,unsigned short)
+ZORBA_INTEGER_OP(<=,unsigned short)
+ZORBA_INTEGER_OP(> ,unsigned short)
+ZORBA_INTEGER_OP(>=,unsigned short)
+ZORBA_INTEGER_OP(==,unsigned int)
+ZORBA_INTEGER_OP(!=,unsigned int)
+ZORBA_INTEGER_OP(< ,unsigned int)
+ZORBA_INTEGER_OP(<=,unsigned int)
+ZORBA_INTEGER_OP(> ,unsigned int)
+ZORBA_INTEGER_OP(>=,unsigned int)
+ZORBA_INTEGER_OP(==,float)
+ZORBA_INTEGER_OP(!=,float)
+ZORBA_INTEGER_OP(< ,float)
+ZORBA_INTEGER_OP(<=,float)
+ZORBA_INTEGER_OP(> ,float)
+ZORBA_INTEGER_OP(>=,float)
+ZORBA_INTEGER_OP(==,double)
+ZORBA_INTEGER_OP(!=,double)
+ZORBA_INTEGER_OP(< ,double)
+ZORBA_INTEGER_OP(<=,double)
+ZORBA_INTEGER_OP(> ,double)
+ZORBA_INTEGER_OP(>=,double)
+#ifndef ZORBA_WITH_BIG_INTEGER
+ZORBA_INTEGER_OP(==,long long)
+ZORBA_INTEGER_OP(!=,long long)
+ZORBA_INTEGER_OP(< ,long long)
+ZORBA_INTEGER_OP(<=,long long)
+ZORBA_INTEGER_OP(> ,long long)
+ZORBA_INTEGER_OP(>=,long long)
+ZORBA_INTEGER_OP(==,unsigned long)
+ZORBA_INTEGER_OP(!=,unsigned long)
+ZORBA_INTEGER_OP(< ,unsigned long)
+ZORBA_INTEGER_OP(<=,unsigned long)
+ZORBA_INTEGER_OP(> ,unsigned long)
+ZORBA_INTEGER_OP(>=,unsigned long)
+ZORBA_INTEGER_OP(==,unsigned long long)
+ZORBA_INTEGER_OP(!=,unsigned long long)
+ZORBA_INTEGER_OP(< ,unsigned long long)
+ZORBA_INTEGER_OP(<=,unsigned long long)
+ZORBA_INTEGER_OP(> ,unsigned long long)
+ZORBA_INTEGER_OP(>=,unsigned long long)
+#endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
 ////////// miscellaneous //////////////////////////////////////////////////////
