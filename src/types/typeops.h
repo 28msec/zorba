@@ -25,7 +25,6 @@
 
 #include "compiler/parser/query_loc.h"
 
-//#include "store/api/xs_type_codes.h"
 #include <zorba/store_consts.h>
 #include "store/api/item.h"
 

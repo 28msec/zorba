@@ -51,7 +51,6 @@
 # include <xercesc/util/XercesDefs.hpp>
 # include <xercesc/util/BinInputStream.hpp>
 # include <zorbatypes/xerces_xmlcharray.h>
-# include <xercesc/framework/psvi/XSAnnotation.hpp>
 #endif /* ZORBA_NO_XMLSCHEMA */
 
 
@@ -432,8 +431,6 @@ void Schema::registerXSD(const char* xsdURL,
     parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);
     // skip DTDs
     parser->setFeature(XMLUni::fgXercesLoadExternalDTD, false);
-    // OpenCSX - generates syntethic annotations
-    parser->setFeature(XMLUni::fgXercesGenerateSyntheticAnnotations, true);
 
     parser->setProperty(XMLUni::fgXercesScannerName,
                         (void *)XMLUni::fgSGXMLScanner);
@@ -748,15 +745,6 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
 
   if (decl)
   {
-    //XSAnnotation* xsa = NULL;
-    //xsa = decl->getAnnotation();
-    //if(xsa == NULL){
-    //  TRACE("Error!! xsa is NULL --- " << xsa << "\n");
-    //} else {
-    //  TRACE( "DEBUG>> decl->getAnnotation()->getAnnotationString(): " 
-    //    << StrX(xsa->getAnnotationString()) << "\n");
-    //}
-
     typeDef = decl->getTypeDefinition();
 
     // this works only on the element that is a substitution,

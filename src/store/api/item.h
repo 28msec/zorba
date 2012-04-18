@@ -26,7 +26,6 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
-//#include "store/api/xs_type_codes.h"
 #include <zorba/store_consts.h>
 #include "store/api/shared_types.h"
 
