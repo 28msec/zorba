@@ -1037,7 +1037,7 @@ inline int IntegerImpl::compare( IntegerImpl const &i ) const {
   return value_.compare( i.value_ );
 }
 
-inline bool Decimal::is_xs_int() const {
+inline bool IntegerImpl::is_xs_int() const {
   return value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
 }
 
@@ -1049,7 +1049,7 @@ inline int IntegerImpl::sign() const {
   return value_.sign();
 }
 
-#else
+#else /* ZORBA_WITH_BIG_INTEGER */
 
 template<typename I>
 inline int IntegerImpl<I>::compare( IntegerImpl const &i ) const {
