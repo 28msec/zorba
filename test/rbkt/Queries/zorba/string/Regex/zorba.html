@@ -1,0 +1,242 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="copyright" content="The FLWOR Foundation"/>
+    <link rel="shortcut icon" href="../favicon.ico"/>
+    <link type="text/css" href="../css/reset.css" rel="stylesheet"/>
+    <link type="text/css" href="../css/style.css" rel="stylesheet"/>
+    <link type="text/css" href="../css/cute_profiles31.css" rel="stylesheet"/>
+    <script language="javascript" type="text/javascript" src="../js/jquery-1.6.1.min.js"></script>
+
+    <script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script>
+
+    <title>Zorba: The XQuery Processor</title>
+    <script src="http://www.google.com/js/gweb/analytics/autotrack.js" type="text/javascript"></script>
+    <script type="text/javascript"> //
+    new gweb.analytics.AutoTrack({profile: 'UA-4281090-1'});
+    // </script>
+</head>
+<body>
+<div id="header">
+    <div class="innerheader text-left">
+        <div id="logo_container"><a href="index.html"><img
+                src="../images/zorba_logo.png"
+                alt="Zorba C++ XQuery Processor"/></a>
+
+            <h1><a href="index.html">Zorba</a></h1>
+
+            <p><a href="index.html">The XQuery Processor</a></p></div>
+        <div id="innermenu" class="box">
+            <ul>
+                <li style="width:102px !important;"><a
+                        href="../doc/latest/zorba/html/index.html" class="documentation">Documentation</a>
+                </li>
+                <li><a href="http://try.zorba-xquery.com" target="_blank" class="tryzorba">Live Demo</a></li>
+                <li><a href="modules.html" class="modules">Modules</a></li>
+                <li><a href="downloads.html" class="download">Download</a></li>
+                <li><a href="tools.html" class="tools">Tools</a></li>
+                <li><a href="blog.html" class="blog">Blog</a></li>
+                <li><a href="code.html" class="open">Code</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="cute_profiles_sprite" style="position: absolute; z-index:100;"><a title="Facebook"
+       class="cute_profiles_facebook"
+       href="http://www.facebook.com/groups/237538576264791"
+       target="_blank"/><a title="Twitter"
+                           class="cute_profiles_twitter"
+                           href="http://twitter.com/ZorbaXQuery"
+                           target="_blank"/><a
+        title="Youtube" class="cute_profiles_youtube" href="http://www.youtube.com/user/xqueryxpath" target="_blank"/><a
+        title="Slideshare" class="cute_profiles_slideshare"
+        href="http://www.slideshare.net/search/slideshow?type=presentations&amp;q=zorba+xquery&amp;searchfrom=basic"
+        target="_blank" style="text-decoration:none;"> </a></div>
+<div id="main">
+    <link rel="stylesheet" href="../css/slides.css" type="text/css"/>
+    <script src="../js/slides.min.jquery.js" type="text/javascript"></script>
+    <script type="text/javascript"> //
+    $(function()
+    {
+        $('#teaser').slides({
+            preload: true,
+            preloadImage: '../images/slides/loading.gif',
+            play: 10000,
+            pause: 2500,
+            slideSpeed: 600,
+            hoverPause: true,
+            generatePagination: false
+        });
+    });
+    // </script>
+    <div id="teaser">
+        <div class="slides_container">
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a href="fun.html">XQuery: Less code, less time, better apps.</a>
+                </p>
+                <a href="fun.html"><img src="../images/ideas_cloud.png" alt="ideas_cloud.png"/></a>
+            </div>
+            <!--div class="center">
+                <p class="center" style="margin: 20px;"><a href="fun.html">XQuery: Less code, less time, better apps.</a>
+                </p>
+                <a href="fun.html"><img src="../images/ideas_flwors.png" alt="ideas_flwors.png" style=""/></a>
+            </div-->
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a href="../doc/latest/zorba/html/data_converters.html">Process the Web's structured and unstructured information</a>
+                </p>
+                <a href="../doc/latest/zorba/html/data_converters.html"><img src="../images/data3.png" alt="hm"/></a>
+            </div>
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a href="../doc/latest/zorba/html/schema_lifecycle.html">Understand the Web's vocabularies</a>
+                </p>
+                <a href="../doc/latest/zorba/html/schema_lifecycle.html"><img style="" src="../images/schemastag.png" alt="schemas cloud tag"/></a>
+            </div>
+            <!--div class="center">
+                <p class="center" style="margin: 20px;"><a href="fun.html">XQuery: stitching together the data from the Web</a>
+                </p>
+                <a href="fun.html"><img style="height: 345px" src="../images/puzzle.png" alt="puzzle image"/></a>
+            </div-->
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a href="../doc/latest/zorba/html/overview.html">Zorba: The most complete XQuery processor</a>
+                </p>
+                <img src="../images/zorba-arch.png" width="540" height="343" border="0" usemap="#map"  alt="modules cloud tag"/>
+
+                <map name="map" id="overview_map">
+                    <area shape="rect" coords="17,14,75,58" href="../doc/latest/cxx/html/index.html" alt="C++"/>
+                    <area shape="rect" coords="80,14,209,56" href="../doc/latest/zorba/html/commandline.html"  alt="CLI"/>
+                    <area shape="rect" coords="214,14,274,56" href="http://xqdt.org/" alt="XQDT"/>
+                    <area shape="rect" coords="279,14,343,56" href="../doc/latest/python/html/index.html" alt="Python" />
+                    <area shape="rect" coords="348,12,409,57" href="../doc/latest/ruby/html/index.html" alt="Ruby" />
+                    <area shape="rect" coords="411,14,470,56" href="../doc/latest/java/html/index.html" alt="Java" />
+                    <area shape="rect" coords="475,14,524,57" href="../doc/latest/php/html/index.html" alt="PHP" />
+                    <area shape="rect" coords="191,218,353,246" href="../doc/latest/zorba/xqdoc/xhtml/index.html" alt="Mdules" />
+                    <area shape="rect" coords="136,250,221,277" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html" alt="Json" />
+                    <area shape="rect" coords="40,250,126,277" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html" alt="Http" />
+                    <area shape="rect" coords="231,251,316,278" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_oauth_client.html" alt="OAuth" />
+                    <area shape="rect" coords="326,250,412,277" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_reflection.html" alt="Reflection" />
+                    <area shape="rect" coords="420,250,505,277" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_image_basic.html" alt="Image" />
+                    <area shape="rect" coords="40,286,126,313" href="../doc/latest/zorba/xqdoc/xhtml/expath.org_ns_file.html" alt="EXPath" />
+                    <area shape="rect" coords="136,287,221,314" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_xsl-fo.html" alt="Xsl-fo" />
+                    <area shape="rect" coords="231,286,316,313" href="../doc/latest/zorba/xqdoc/xhtml/expath.org_ns_geo.html" alt="Geo" />
+                    <area shape="rect" coords="326,286,412,313" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_cryptography_hmac.html" alt="Hmac" />
+                    <area shape="rect" coords="420,286,505,313" href="../doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_xqdoc.html" alt="Xqdoc" />
+                    <area shape="rect" coords="322,68,520,199" href="../doc/latest/zorba/html/data_lifecycle.html#dl_zorba_store" alt="Store" />
+                    <area shape="rect" coords="17,67,216,198" href="../doc/latest/zorba/html/index.html" alt="Zorba" />
+                </map>
+            </div>
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a href="modules.html">An ecosystem of XQuery modules</a>
+                </p>
+                <a href="modules.html"><img style="margin: 50px 0px 0px 0px;" src="../images/modulestag.png" alt="modules cloud tag"/></a>
+            </div>
+            <!--div style="background-color:white;">
+                <p class="center" style="margin: 20px;"><a href="http://try.zorba-xquery.com">&lt;fun&gt;</a>
+                </p>
+                <br>
+                <a href="http://try.zorba-xquery.com" style="text-decoration:none;">
+                    <div style="float: left; width:40%">
+                        <img style="width:350px; height:300px; margin:0px 15px 30px 15px;" src="../images/pdash.png" alt="PDash">
+                    </div>
+                   <div style="float: left; width:60% !important;height: 150px !important;">
+                       <pre class="brush: xquery;toolbar: false;">
+        declare variable $seq := fn:parse-xml("RFID.xml");
+
+        for sliding window $w in $seq/stream/event
+            start  $s_curr when fn:true()
+            only end next $next
+            when $next/@time > $s_curr/@time + 3
+        return
+            let $avg := fn:avg($w/@temp)
+            where $avg * 2 lt xs:double($next/@temp) or
+                  $avg div 2 gt xs:double($next/@temp)
+            return &lt;alarm&gt;Outlier detected.
+                   Event id:{data($next/@time)}&lt;/alarm&gt;
+                       </pre>                       
+                   </div>
+
+                </a>
+
+            </div-->
+            <div class="center">
+                <p class="center" style="margin: 20px;"><a style="font-size:250%;" href="fun.html"> &lt;productivity&gt;</a>
+                </p>
+                <a href="fun.html"><img src="../images/zorba-slide-fun.png" alt="Zorba fun"/></a>
+            </div>
+         </div>
+        <a href="index.html#" class="prev"><img src="../images/slides/arrow_prev.png" width="24" height="43"
+                                                alt="Arrow Prev"></a><a href="index.html#" class="next"/><img
+            src="../images/slides/arrow_next.png" width="24" height="43" alt="Arrow Next"/></a></div>
+    <div class="box content">
+        <div>
+            
+            <table id="table-index">
+                <tr>
+                    <td>
+                        <a href="../doc/latest/zorba/html/overview.html" class="noDecor">
+                            <div class="flavors">All Flavors Available</div>
+                        </a>
+                        <p>General purpose XQuery processor - written in C++.</p>
+
+                        <p>Complete family of W3C familly of specifications: XPath, XQuery, Update, Scripting,
+                            Full-Text, XSLT, XQueryX, and more.</p></td>
+                    <td>
+                        <a href="modules.html" class="noDecor">
+                            <div class="richmodules">Rich Module Library</div>
+                        </a>
+
+                        <p>Web mashups, cryptography, image processing, geo projections, emails, data cleaning...
+                            there is a module for that.</p></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="../doc/latest/zorba/html/index.html" class="noDecor">
+                            <div class="store">Pluggable Store</div>
+                        </a>
+
+                        <p>Seamlessly process XML data stored in different places.</p>
+
+                        <p>Main memory, mobile devices, browsers, disk-based, or cloud-based stores.</p></td>
+                    <td>
+                        <a href="../doc/latest/zorba/html/index.html" class="noDecor">
+                            <div class="api">Runs Everywhere</div>
+                        </a>
+
+                        <p>Available on Windows, Linux, and Mac OS.</p>
+
+                        <p>Bindings available for 6 Programming Languages: C++, C, PHP, Ruby, Java and Python.</p></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="tools.html" class="noDecor">
+                            <div class="tooling">Developer Friendly Tools</div>
+                        </a>
+
+                        <p>Benefit from a rich ecosystem of tools.</p>
+
+                        <p>Eclipse plugins, command-line interface, and debugger.</p></td>
+                    <td>
+                        <a href="fun.html" class="noDecor">
+                            <div class="fun">Fun &amp; Productive</div>
+                        </a>
+
+                        <p>XQuery unifies development for all tiers; database, content management, application logic,
+                            and presentation.</p>
+
+                        <p>Check out <a href="fun.html">examples and demos</a>.</p></td>
+                </tr>
+            </table>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+<div> </div>
+<div id="footer">
+    <div id="innerfooter"><p>Zorba is supported by the <a href="http://flworfound.org/" target="_blank">FLWOR
+        Foundation</a> and distributed under
+        <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache Licence, Version 2.0</a>.</p>
+    </div>
+</div>
+</body>
+</html>

@@ -39,10 +39,6 @@
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
-
 SERIALIZABLE_CLASS_VERSIONS(for_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(let_clause)

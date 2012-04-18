@@ -33,7 +33,7 @@ xquery version "3.0";
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
@@ -49,7 +49,7 @@ declare option ver:module-version "2.0";
  : URI Resolvers</a>. Therefore, it queries all URI mappers
  : and resolvers with kind <tt>EntityData::SOME_CONTENT</tt>.</p>
  :
- : <p>The function is annotated with the <tt>ann:streamable</tt>
+ : <p>The function is annotated with the <tt>an:streamable</tt>
  : annotation, that is it returns a streamable string. A streamable
  : string can only be consumed once. Please see section "Streamable Strings"
  : in the <a href="../../html/options_and_annotations.html">
@@ -65,7 +65,7 @@ declare option ver:module-version "2.0";
  : @see <a href="../../html/uriresolvers.html">URI Resolvers</a>.
  : @see <a href="../../html/options_and_annotations.html">Documentation of Zorba's annotations</a>.
  :)
-declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
+declare %an:streamable function fetch:content($uri as xs:string) as xs:string
 {
   fetch:content($uri, "SOME_CONTENT")
 };
@@ -79,7 +79,7 @@ declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
  : URI Resolvers</a>. Therefore, it queries all URI mappers
  : and resolvers with the specified entity kind.</p>
  :
- : <p>The function is annotated with the <tt>ann:streamable</tt>
+ : <p>The function is annotated with the <tt>an:streamable</tt>
  : annotation, that is it returns a streamable string. A streamable
  : string can only be consumed once. Please see section "Streamable Strings"
  : in the <a href="../../html/options_and_annotations.html">
@@ -97,4 +97,4 @@ declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
  : @see <a href="../../html/options_and_annotations.html">Documentation of Zorba's annotations</a>.
  :)
 
-declare %ann:streamable function fetch:content($uri as xs:string, $entityKind as xs:string) as xs:string external;
+declare %an:streamable function fetch:content($uri as xs:string, $entityKind as xs:string) as xs:string external;

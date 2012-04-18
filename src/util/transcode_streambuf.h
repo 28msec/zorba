@@ -21,21 +21,21 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_NO_UNICODE
+#ifdef ZORBA_NO_ICU
 # include "passthru_streambuf.h"
 #else
 # include "icu_streambuf.h"
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 namespace internal {
 namespace transcode {
 
-#ifdef ZORBA_NO_UNICODE
-typedef passthru_streambuf streambuf;
+#ifdef ZORBA_NO_ICU
+typedef zorba::passthru_streambuf streambuf;
 #else
 typedef icu_streambuf streambuf;
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 } // namespace transcode
 } // namespace internal

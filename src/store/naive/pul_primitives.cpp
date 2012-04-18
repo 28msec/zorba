@@ -986,7 +986,7 @@ void UpdDeleteCollection::apply()
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
+    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(xs_integer(i)).getp());
     XmlTree* tree = root->getTree();
     if (tree->getRefCount() > 1)
       throw XQUERY_EXCEPTION(
@@ -1021,7 +1021,7 @@ void UpdInsertIntoCollection::apply()
   std::size_t numNodes = theNodes.size();
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], -1);
+    lColl->addNode(theNodes[i], xs_integer(-1));
     ++theNumApplied;
   }
 }
@@ -1051,9 +1051,10 @@ void UpdInsertIntoCollection::undo()
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
+    xs_integer xs_lastPos( lastPos );
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(xs_lastPos));
 
-    lColl->removeNode(lastPos);
+    lColl->removeNode(xs_lastPos);
     --lastPos;
   }
 }
@@ -1075,7 +1076,7 @@ void UpdInsertFirstIntoCollection::apply()
   std::size_t numNodes = theNodes.size();
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], i);
+    lColl->addNode(theNodes[i], xs_integer(i));
     ++theNumApplied;
   }
 }
@@ -1087,11 +1088,12 @@ void UpdInsertFirstIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
+  xs_integer const zero( xs_integer::zero() );
   for (std::size_t i = 0; i < theNumApplied; ++i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(zero));
 
-    lColl->removeNode((uint64_t)0);
+    lColl->removeNode(zero);
   }
 }
 
@@ -1108,9 +1110,10 @@ void UpdInsertLastIntoCollection::apply()
   theIsApplied = true;
 
   std::size_t numNodes = theNodes.size();
+  xs_integer const neg_1( -1 );
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], -1);
+    lColl->addNode(theNodes[i], neg_1);
   }
 }
 
@@ -1135,11 +1138,12 @@ void UpdInsertLastIntoCollection::undo()
       );
   }
 
+  xs_integer const xs_lastPos( lastPos );
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(xs_lastPos));
 
-    lColl->removeNode(lastPos);
+    lColl->removeNode(xs_lastPos);
   }
 }
 
@@ -1170,7 +1174,7 @@ void UpdInsertBeforeIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
+  lColl->removeNodes(theFirstPos, xs_integer(theNodes.size()));
 }
 
 
@@ -1201,7 +1205,7 @@ void UpdInsertAfterIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
+  lColl->removeNodes(theFirstPos, xs_integer(theNodes.size()));
 }
 
 
@@ -1240,7 +1244,7 @@ void UpdDeleteNodesFromCollection::apply()
   {
     for (std::size_t i = numNodes; i > 0; --i)
     {
-      if (theNodes[i-1] != lColl->nodeAt(size - i))
+      if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
       {
         isLast = false;
         break;
