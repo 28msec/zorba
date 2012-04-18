@@ -364,9 +364,9 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
         if ( theChildren.size() > 4 ) {
           ZORBA_ASSERT( theChildren.size() == 6 );
           consumeNext( item, theChildren[4], plan_state );
-          state->at_least_ = item->getUnsignedIntValue();
+          state->at_least_ = to_ft_int( item->getIntegerValue() );
           consumeNext( item, theChildren[5], plan_state );
-          state->at_most_ = item->getUnsignedIntValue();
+          state->at_most_ = to_ft_int( item->getIntegerValue() );
         }
       }
     }
