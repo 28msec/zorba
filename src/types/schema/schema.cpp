@@ -255,15 +255,17 @@ public:
         else
           return NULL;          
       }
-// avoiding the warning that e is not used
-#ifdef DO_TRACE
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-#else
-      catch (ZorbaException const& ) {
-#endif
-        //don't throw let Xerces resolve it
-        return NULL;
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        {
+          throw;
+        }
+        else
+        {
+          //don't throw let Xerces resolve it
+          return NULL;
+        }
       }
     }
   }
