@@ -3287,6 +3287,7 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
+#ifndef ZORBA_NO_FULL_TEXT
         if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
             (qnameItem->getLocalName() == "tokenizer-properties" ||
              qnameItem->getLocalName() == "tokenize"))
@@ -3319,6 +3320,7 @@ void* begin_visit(const VFO_DeclList& v)
           f->setStaticContext(theRootSctx);
           bind_fn(f, numParams, loc);
         }
+#endif /* ZORBA_NO_FULL_TEXT */
 
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
