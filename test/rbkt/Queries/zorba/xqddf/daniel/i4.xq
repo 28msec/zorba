@@ -18,4 +18,4 @@ index_dml:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
 index_dml:probe-index-range-value($xqddf-test:index2,
-                              1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]
+                              1, 3, fn:true(), fn:true(), fn:true(), fn:false())[@id="item2"]

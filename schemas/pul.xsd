@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ************************************************************
+  28msec schema for representing a Pending Update List as XML.
+  ************************************************************
+-->
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.zorba-xquery.com/schemas/pul"
+    xmlns:pul="http://www.zorba-xquery.com/schemas/pul"
+    xmlns:xdm="http://www.zorba-xquery.com/schemas/xdm"
+    xmlns:xqx="http://www.w3.org/2005/XQueryX"
+    elementFormDefault="qualified">
+
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/xdm" schemaLocation="xdm.xsd"/>
+  <xs:import namespace="http://www.w3.org/2005/XQueryX" schemaLocation="../../../../org/w3/www/2005/XQueryX.xsd"/>
+  
+    <!--
+    ****************
+    The root element
+    ****************
+  -->
+  <xs:element name="pending-update-list">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="insertBefore" type="pul:insert-type"/>
+        <xs:element name="insertAfter" type="pul:insert-type"/>
+        <xs:element name="insertInto" type="pul:insert-type"/>
+        <xs:element name="insertIntoAsFirst" type="pul:insert-type"/>
+        <xs:element name="insertIntoAsLast" type="pul:insert-type"/>
+        <xs:element name="insertAttributes" type="pul:insertAttributes-type"/>
+        <xs:element name="delete" type="pul:delete-type"/>
+        <xs:element name="replaceNode" type="pul:replaceNode-type"/>
+        <xs:element name="replaceValue" type="pul:replaceValue-type"/>
+        <xs:element name="replaceElementContent" type="pul:replaceElementContent-type"/>
+        <xs:element name="rename" type="pul:rename-type"/>
+        <xs:element name="put" type="pul:put-type"/>
+        <xs:element name="createCollection" type="pul:createCollection-type"/>
+        <xs:element name="insertAfterIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertBeforeIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertAsFirstIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertAsLastIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertIntoCollection" type="pul:insertNodes-type"/>
+        <xs:element name="deleteNodesFromCollection" type="pul:deleteNodes-type"/>
+        <xs:element name="deleteCollection" type="pul:deleteCollection-type"/>
+        <xs:element name="createDocument" type="pul:createDocument-type"/>
+        <xs:element name="deleteDocument" type="pul:deleteDocument-type"/>
+        <xs:element name="activateIntegrityConstraint" type="pul:activateIntegrityConstraint-type"/>
+        <xs:element name="deActivateIntegrityConstraint" type="pul:deActivateIntegrityConstraint-type"/>
+        <xs:element name="createIndex" type="pul:createIndex-type"/>
+        <xs:element name="deleteIndex" type="pul:deleteIndex-type"/>
+        <xs:element name="refreshIndex" type="pul:refreshIndex-type"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <!--
+    *****************************************************
+    Definition of a PUL and the 11 XQUF update primitives
+    *****************************************************
+  -->
+  <xs:complexType name="insert-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="content" type="xdm:children-sequence-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertAttributes-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="content" type="xdm:attributes-sequence-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="delete-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+    <!-- Must check upon delivery that:
+      o if target is an attribute node, all nodes in content are attributes.
+      o if target is a text/PI/comment/element node, all nodes in content are text/PI/comment/element nodes.
+      The definition of pul:children-or-attributes-only-type already makes sure that one of these two cases is met.
+      But one still needs to make sure that it is the right one of the two depending on the target.
+    -->
+  <xs:complexType name="replaceNode-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="replacement" type="xdm:children-or-attributes-sequence-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="replaceValue-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="string-value" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="replaceElementContent-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="text" type="xdm:zero-or-one-text-node-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="rename-type">
+    <xs:sequence>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="newName" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="put-type">
+    <xs:sequence>
+      <xs:element name="node" type="xdm:one-document-or-element-node-type"/>
+      <xs:element name="uri" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+<!--
+  ******************************************************
+  Definition of proprietary collection update primitives
+  ******************************************************
+-->
+  <xs:complexType name="createCollection-type">
+    <xs:sequence>
+      <xs:element name="name" type="xs:QName"/>
+      <xs:element name="type" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:sequenceType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="annotation" type="xqx:annotation" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertNodesRelative-type">
+    <xs:sequence>
+      <xs:element name="collection" type="xs:QName"/>
+      <xs:element name="target" type="xs:anyURI"/>
+      <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertNodesAbsolute-type">
+    <xs:sequence>
+      <xs:element name="collection" type="xs:QName"/>
+      <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertNodes-type">
+    <xs:sequence>
+      <xs:element name="collection" type="xs:QName"/>
+      <xs:element name="nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteNodes-type">
+    <xs:sequence>
+      <xs:element name="collection" type="xs:QName"/>
+      <xs:element name="target" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteCollection-type">
+    <xs:sequence>
+      <xs:element name="collection" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--
+  ******************************************************
+  Definition of proprietary document primitives
+  ******************************************************
+-->
+  <xs:complexType name="createDocument-type">
+    <xs:sequence>
+      <xs:element name="uri" type="xs:anyURI"/>
+      <xs:element name="node-reference" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteDocument-type">
+    <xs:sequence>
+      <xs:element name="uri" type="xs:anyURI"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--
+  ****************************************************************
+  Definition of proprietary integrity constraint update primitives
+  ****************************************************************
+-->
+  <xs:complexType name="activateIntegrityConstraint-type">
+    <xs:sequence>
+      <xs:element name="identity-constraint-name" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deActivateIntegrityConstraint-type">
+    <xs:sequence>
+      <xs:element name="identity-constraint-name" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+    
+<!--
+  *************************************************
+  Definition of proprietary index update primitives
+  *************************************************
+-->
+  <xs:complexType name="createIndex-type">
+    <xs:sequence>
+      <xs:element name="index-name" type="xs:QName"/>
+      <xs:element name="domain-expression">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:expr"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="key-expressions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xqx:expr" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="annotation" type="xqx:annotation" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteIndex-type">
+    <xs:sequence>
+      <xs:element name="index-name" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="refreshIndex-type">
+    <xs:sequence>
+      <xs:element name="index-name" type="xs:QName"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

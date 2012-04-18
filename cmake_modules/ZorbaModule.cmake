@@ -629,41 +629,101 @@ MACRO(expected_failure testname bugid)
 
 ENDMACRO(expected_failure)
 
-# Convenience macro for adding tests in a standard format.
+# Convenience macro for adding tests in a standard format. All test
+# cases (.xq files) in "Queries" subdirectory of the named directory
+# will be automatically added for CTest. Each test will be named
+# ${PROJECT_NAME}/<filename>, where <filename> is the path relative to
+# the Queries/ subdirectory.
+# 
+# The optional second argument exists for Windows. Normally,
+# EXPECTED_FAILURE() can be used even for tests that crash
+# (segfault). However, on Windows, when a test crashes, it pops up a
+# dialog box. This prevents tests running unattended.  Since it is not
+# possible with CMake to remove a test once added,
+# ADD_TEST_DIRECTORY() needs to be told not to add the test at all on
+# Windows platforms. Therefore, after the directory name, you may
+# additional arguments in the form (testname bugnumber testname
+# bugnumber ...) to ADD_TEST_DIRECTORY().  On Windows, the named tests
+# will be skipped entirely. On other platforms, they will be passed to
+# EXPECTED_FAILURE() with the corresponding bug number.
+#
+# This second argument should only be used for test cases that are 
+# currently *crashing* on Windows. If the test is simply failing, then
+# you should use EXPECTED_FAILURE() after calling ADD_TEST_DIRECTORY().
+#
 # Parameters:
 #   TEST_DIR - all the .xq files in this directory will be added as tests
-#   ARGV1    - if this is present, it will be interpreted as a list of
-#              exceptions. The list items will be removed from the list of
-#              files found in TEST_DIR.
+#   (additional args)  - expected crashing tests, as discussed above.
 MACRO (ADD_TEST_DIRECTORY TEST_DIR)
   # QQQ error-check: Queries directory exists, some tests found...
   FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
     RELATIVE "${TEST_DIR}/Queries" "${TEST_DIR}/Queries/*.xq")
 
-  FOREACH (EXCEPTION ${ARGV1})
-    LIST (REMOVE_ITEM TESTFILES ${EXCEPTION})
-  ENDFOREACH (EXCEPTION)
+  # Convert extra arguments to two lists: test names and bug IDs
+  SET (crash_tests)
+  SET (crash_bugids)
+  SET (known_crashes ${ARGN})
+  LIST (LENGTH known_crashes num_crashes)
+  WHILE (num_crashes GREATER 0)
+    LIST (GET known_crashes 0 _testcase)
+    LIST (APPEND crash_tests ${_testcase})
+    LIST (GET known_crashes 1 _bugid)
+    LIST (APPEND crash_bugids ${_bugid})
+    LIST (REMOVE_AT known_crashes 0 1)
+    MATH (EXPR num_crashes "${num_crashes} - 2")
+  ENDWHILE (num_crashes GREATER 0)
 
+  IF(WIN32)
+    SET(PATH_SEP ",")
+  ELSE(WIN32)
+    SET(PATH_SEP ":")
+  ENDIF(WIN32)
   SET(TESTCOUNTER 0)
   FOREACH(TESTFILE ${TESTFILES})
     SET(TESTNAME "${PROJECT_NAME}/${TESTFILE}")
 
-    IF(WIN32)
-      SET(PATH_SEP ",")
-    ELSE(WIN32)
-      SET(PATH_SEP ":")
-    ENDIF(WIN32)
-    ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
-      "--rbkt-src" "${TEST_DIR}"
-      "--module-path" "${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${CMAKE_BINARY_DIR}/TEST_URI_PATH${PATHSEP}${SECONDARY_MODULE_PATHS}"
-      "${TESTFILE}")
+    # See if this test is in the known-crashing list
+    SET (_crash_bugid)
+    LIST (FIND crash_tests ${TESTNAME} _crash_idx)
+    IF (${_crash_idx} GREATER -1)
+      # Get corresponding bug ID
+      LIST (GET crash_bugids ${_crash_idx} _crash_bugid)
+      # Remove from known-crashing list
+      LIST (REMOVE_AT crash_tests ${_crash_idx})
+    ENDIF (${_crash_idx} GREATER -1)
 
-    MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
-    MATH(EXPR TESTMOD "${TESTCOUNTER}%100")
-    IF (${TESTMOD} EQUAL 0)
-      MESSAGE(STATUS "Adding another 100 Tests")
-    ENDIF (${TESTMOD} EQUAL 0)
+    # On Windows, skip calling ADD_TEST() for any known crashing tests
+    IF (WIN32 AND (${_crash_idx} GREATER -1) )
+      MESSAGE (STATUS "WARNING: Skipping test case ${TESTNAME} which is expected to crash - bug ${_crash_bugid}")
+    ELSE (WIN32 AND (${_crash_idx} GREATER -1) )
+      ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
+	"--rbkt-src" "${TEST_DIR}"
+	"--module-path"
+	"${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
+	"${TESTFILE}")
+
+      # On non-Windows, call EXPECTED_FAILURE() for known crashes
+      IF (${_crash_idx} GREATER -1)
+	MESSAGE (STATUS "Marking test case ${TESTNAME} as expected to crash - bug ${bugid}")
+	EXPECTED_FAILURE (${TESTNAME} ${_bugid})
+      ENDIF (${_crash_idx} GREATER -1)
+
+      MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
+      MATH(EXPR TESTMOD "${TESTCOUNTER}%100")
+      IF (${TESTMOD} EQUAL 0)
+	MESSAGE(STATUS "Adding another 100 Tests")
+      ENDIF (${TESTMOD} EQUAL 0)
+
+    ENDIF (WIN32 AND (${_crash_idx} GREATER -1) )
+
   ENDFOREACH(TESTFILE)
+
+  # Ensure that known-crashes list is empty - otherwise some tests were
+  # named that didn't exist
+  IF (NOT "${crash_tests}" STREQUAL "")
+    MESSAGE (FATAL_ERROR "The following non-existing test cases were passed to ADD_TEST_DIRECTORY(): ${crash_tests}")
+  ENDIF (NOT "${crash_tests}" STREQUAL "")
+
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
 ENDMACRO (ADD_TEST_DIRECTORY)
 

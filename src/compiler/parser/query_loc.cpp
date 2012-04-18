@@ -20,14 +20,13 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/template_serializer.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
-END_SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
 
 QueryLoc QueryLoc::null;
 

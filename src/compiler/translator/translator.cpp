@@ -8600,7 +8600,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   else
   {
     expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
-    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, (axisStep == NULL));
     push_nodestack(flworExpr.getp());
   }
 }
@@ -9044,16 +9044,25 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         case ParseConstants::wild_all:
           cc->add_nametest_h(new NodeNameTest(zstring(), zstring()));
           break;
-        case ParseConstants::wild_elem: {
+        case ParseConstants::wild_elem:
+        {
           // bugfix #3138633; expand the qname and use the namespace instead of the prefix
           zstring localname(":wildcard");
-          store::Item_t qnItem;
-          theSctx->expand_qname(qnItem,
-                                theSctx->default_elem_type_ns(),
-                                wildcard->getNsOrPrefix(),
-                                localname,
-                                wildcard->get_location());
-          cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+
+          if (wildcard->isEQnameMatch())
+          {
+            cc->add_nametest_h(new NodeNameTest(wildcard->getNsOrPrefix(), zstring()));
+          }
+          else
+          {
+            store::Item_t qnItem;
+            theSctx->expand_qname(qnItem,
+                                  theSctx->default_elem_type_ns(),
+                                  wildcard->getNsOrPrefix(),
+                                  localname,
+                                  wildcard->get_location());
+            cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+          }
           break;
         }
         case ParseConstants::wild_prefix:
@@ -9745,8 +9754,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer::one()));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer::one()));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);

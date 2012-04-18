@@ -123,9 +123,13 @@ CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32)
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
 CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_CXX_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES ("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES ("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
+CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
+SET(CMAKE_EXTRA_INCLUDE_FILES)
 CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_CXX_UNIQUE_PTR)
+
+CHECK_CXX_SOURCE_COMPILES("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
 
 ################################################################################
 # Various cmake macros
@@ -237,11 +241,21 @@ ENDIF(ZORBA_WITH_CPU_PROFILE)
 MESSAGE(STATUS "Looking for LibXml2")
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
-  MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
-    
-  INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-  SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
-  SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  # Now check LibXml2's version
+  FILE(STRINGS ${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h LIBXML2_VERSION_TMP REGEX 
+       "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\".*\"")
+  STRING(REGEX REPLACE "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\"(.*)\"" "\\1" 
+         LIBXML2_VERSION ${LIBXML2_VERSION_TMP})
+         
+  IF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  ELSE(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(FATAL_ERROR "The libxml2 library version 2.7.0 or higher is required in order to build Zorba.")
+  ENDIF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+
 ELSE(LIBXML2_FOUND)
   MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
@@ -417,7 +431,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "1")
+SET(ZORBA_MINOR_NUMBER "2")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")

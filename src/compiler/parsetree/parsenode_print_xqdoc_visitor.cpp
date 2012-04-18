@@ -24,12 +24,19 @@
 #include <compiler/parsetree/parsenode_visitor.h>
 
 #include <compiler/parser/xqdoc_comment.h>
+
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/dict.h"
+
 #include "types/root_typemanager.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
+
 #include "system/globalenv.h"
 
 using namespace std;
@@ -167,11 +174,21 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
   }
 }
 
+bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
+{
+  map<zstring, zstring>::iterator ite = theNamespaceSchemaMap.find(aPrefix);
+  if(ite != theNamespaceSchemaMap.end())
+  {
+    return (ite->second == aNamespace);
+  }
+  return false;
+}
+
 void print_namespaces()
 {
   store::Item_t lTypeName; 
   store::Item_t lNamespaceQName, lCustomElem;
-  store::Item_t lPrefixQName, lURIQName;
+  store::Item_t lPrefixQName, lURIQName, lIsSchemaQName;
   store::Item_t lNamespace, lAttrValue;
   bool lFirst = true;
 
@@ -214,6 +231,9 @@ void print_namespaces()
         lPrefixQName, "", "", "prefix");
     theFactory->createQName(
         lURIQName, "", "", "uri");
+    theFactory->createQName(
+        lIsSchemaQName, "", "", "isSchema");
+
 
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
@@ -232,6 +252,12 @@ void print_namespaces()
     theFactory->createAttributeNode(
       lURIQName, lNamespace, lURIQName, lTypeName, lAttrValue);
 
+    bool lIsSchema = is_namespace_schema(lIter->first, lIter->second);
+    lTmp = lIsSchema?"true":"false";
+    theFactory->createString(lAttrValue, lTmp);
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createAttributeNode(
+      lIsSchemaQName, lNamespace, lIsSchemaQName, lTypeName, lAttrValue);
   }
 }
 
@@ -433,6 +459,9 @@ protected:
 
   // prefix -> uri
   map<zstring, zstring> theNamespaceMap;
+
+  // prefix -> uri for the schema imports
+  map<zstring, zstring> theNamespaceSchemaMap;
 
   const char*          theXQDocNS;
   const char*          theXQDocPrefix;
@@ -1034,6 +1063,7 @@ void end_visit(const SchemaImport& n, void*)
     lPrefix = n.get_prefix()->get_prefix();
   }
   theNamespaceMap[lPrefix] = n.get_uri();
+  theNamespaceSchemaMap[lPrefix] = n.get_uri();
 }
 
 XQDOC_NO_BEGIN_TAG (NamespaceDecl)

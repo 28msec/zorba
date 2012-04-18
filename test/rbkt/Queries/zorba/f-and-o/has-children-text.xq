@@ -1,0 +1,1 @@
+has-children(text {"text"})

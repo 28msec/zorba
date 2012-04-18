@@ -1,0 +1,1 @@
+fn:matches("cabana", "((a|c)(a|a)(a|b)|(a|c)(a|a)(a|b)(a|a))na")

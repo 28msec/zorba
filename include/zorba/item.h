@@ -308,7 +308,7 @@ public:
     * @param aBindings An STL list to receive the namespace bindings of this node (each
     * represented as a std::pair<zorba::String,zorba::String> where the
     * first string is the namespace prefix and the second is the namespace URI).
-    * @param aScope An instance of NsScoping to declare which bindings to return:
+    * @param aNsScoping An instance of NsScoping to declare which bindings to return:
     * those local to the element; those local to all parent elements; or all bindings
     * (the default).
     * @throw ZorbaException if an error occured, e.g. the Item is not of type element.

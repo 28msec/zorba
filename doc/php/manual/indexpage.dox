@@ -2,15 +2,11 @@
 
   Zorba ships with a PHP language binding that provides some basic features in order to prepare and execute queries
   with Zorba.
+  
+  The <a href="http://www.zorba-xquery.com/html/entry/2011/12/27/PHP_Meets_XQuery">following tutorial</a> provides an overview on how to leverage Zorba into PHP applications. 
+  We also provide the following <a class="en" href="examples.html">set of examples</a> that show how the Zorba PHP API can be used.
 
-  For the moment, we provide a <a class="en" href="examples.html">set of examples</a> that show how this language binding can be used.
-
-  \section note Note for garbage collected languages
-  Zorba requires that objects must be deleted in a certain order, which Garbage Collectors are not aware of. For that reason,
-  the Iterators created with XQuery.iterator() must be explicitly destroyed with iterator.destroy() before the XQuery object
-  is destroyed.
-
-  \example simple.php
+  \example test.php
    This is a simple example that demonstrate how to use the Zorba XQuery Engine to
    create, compile, and execute queries.
  */

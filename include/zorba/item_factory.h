@@ -660,8 +660,8 @@ namespace zorba {
        * parent node. If no parent is given, N becomes the root (and single node)
        * of a new XML tree.
        *
-       * @param parent  The parent P of the new node; may be NULL.
-       * @param content The content of the new node.
+       * @param aParent  The parent P of the new node; may be NULL.
+       * @param aContent The content of the new node.
        * @return        The new node N created by this method
        */
       virtual Item createCommentNode (

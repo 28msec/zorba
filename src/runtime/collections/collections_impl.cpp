@@ -326,7 +326,6 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(
 
 
 SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
 
 NARY_ACCEPT(CountCollectionIterator);
@@ -452,7 +451,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  xs_integer pos = 1;
+  xs_integer pos( 1 );
   bool found;
 
   PlanIteratorState* state;
@@ -467,8 +466,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
   STACK_END (state);
@@ -1521,9 +1519,17 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) 
+    if (! node->getCollection())
     {
       throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
+    }
+    if (node->getParent())
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZDDY0036_NON_ROOT_NODE_DELETION,
+        ERROR_PARAMS(node->getCollection()->getName()->getStringValue()),
+        ERROR_LOC( loc )
+      );
     }
     if (collection && collection != node->getCollection()) 
     {
@@ -1631,7 +1637,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1643,6 +1649,9 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
+
+  /* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
@@ -1664,7 +1673,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = 0; i < numNodes; ++i)
+  for (xs_integer i( 0 ); i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
@@ -1752,7 +1761,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1763,6 +1772,9 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
+
+	/* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
@@ -1783,7 +1795,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+  for (xs_integer i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);

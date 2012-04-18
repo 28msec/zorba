@@ -26,9 +26,13 @@
 #include <zorba/function.h>
 #include <zorba/annotation.h>
 #include <zorba/smart_ptr.h>
+#include <zorba/smart_ptr.h>
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/thesaurus.h>
 #endif /* ZORBA_NO_FULL_TEXT */
+#include <zorba/zorba.h>
+#include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 namespace zorba {
 
@@ -424,8 +428,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    *
    * @param aFnNameUri the namespace for the functions to return
    * @param arity the arity for the functions to return
-   *
-   * @return aFunctions all of the said functions
+   * @param aFunctions all of the said functions
    */
   virtual void
   getFunctions(
@@ -477,9 +480,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /**
    * @brief Set the URI and library lookup paths (lists of filesystem
    * directories) for this static context. Note that calling this method
-   * will override any values previously passed to \link setURIPath()
-   * and \link setLibPath().
-   * @deprecated Use \link setURIPath() and \link setLibPath().
+   * will override any values previously passed to StaticContext::setURIPath()
+   * and StaticContext::setLibPath().
+   * @deprecated Use StaticContext::setURIPath() and StaticContext::setLibPath().
    *
    * Convenience method which adds the listed directories to both the
    * URI path and Library path for this static context.
@@ -489,11 +492,11 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
 
   /**
    * @brief Return the union of the URI and library lookup paths (lists of
-   * filesystem directories) for this static context. @deprecated Use \link
-   * getURIPath() and \link getLibPath().
-   * @deprecated Use \link getURIPath() and \link getLibPath().
+   * filesystem directories) for this static context. @deprecated Use 
+   * StaticContext::getURIPath() and StaticContext::getLibPath().
+   * @deprecated Use StaticContext::getURIPath() and StaticContext::getLibPath().
    *
-   * Returns any values set by \link setLibPath() and/or \link setURIPath()
+   * Returns any values set by StaticContext::setLibPath() and/or StaticContext::setURIPath()
    * on this static context.
    */
   virtual void
@@ -502,7 +505,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /**
    * @brief Return the union of the URI and library lookup paths (lists of
    * filesystem directories) for this static context and all its parents.
-   * @deprecated Use \link getFullURIPath() and \link getFullLibPath().
+   * @deprecated Use StaticContext::getFullURIPath() and StaticContext::getFullLibPath().
    */
   virtual void
   getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
@@ -644,9 +647,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @brief Return the URI lookup path (list of filesystem directories) for
    * this static context.
    *
-   * Returns any values set by \link setURIPath() on this static context.
+   * Returns any values set by StaticContext::setURIPath() on this static context.
    * To return the full URI lookup path for this static context and
-   * all its parents (usually most useful), call \link getFullURIPath().
+   * all its parents (usually most useful), call StaticContext::getFullURIPath().
    */
   virtual void
   getURIPath(std::vector<String>& aURIPath) const = 0;
@@ -673,9 +676,9 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @brief Return the URI lookup path (list of filesystem directories) for
    * this static context.
    *
-   * Returns any values set by \link setLibPath() on this static context.
+   * Returns any values set by StaticContext::setLibPath() on this static context.
    * To return the full library lookup path for this static context and
-   * all its parents (usually most useful), call \link getFullLibPath().
+   * all its parents (usually most useful), call StaticContext::getFullLibPath().
    */
   virtual void
   getLibPath(std::vector<String>& aLibPath) const = 0;
@@ -686,6 +689,38 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * The default EntityKind for resources fetched by this function
+   * is "SOME_CONTENT".
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetch(const String& aURI) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @param aEntityKind the kind of the entity to fetch (i.e.
+   *   SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const = 0;
 };
 
 } /* namespace zorba */

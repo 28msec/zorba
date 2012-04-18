@@ -793,7 +793,7 @@ void UpdReplaceCommentValue::undo()
 ********************************************************************************/
 void UpdPut::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring targetUri;
   theTargetUri->getStringValue2(targetUri);
@@ -847,7 +847,7 @@ void UpdPut::apply()
 
 void UpdPut::undo()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->deleteDocument(theTargetUri->getStringValue());
 
@@ -986,7 +986,7 @@ void UpdDeleteCollection::apply()
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
+    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(xs_integer(i)).getp());
     XmlTree* tree = root->getTree();
     if (tree->getRefCount() > 1)
       throw XQUERY_EXCEPTION(
@@ -1021,7 +1021,7 @@ void UpdInsertIntoCollection::apply()
   std::size_t numNodes = theNodes.size();
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], -1);
+    lColl->addNode(theNodes[i], xs_integer(-1));
     ++theNumApplied;
   }
 }
@@ -1034,9 +1034,12 @@ void UpdInsertIntoCollection::undo()
   assert(lColl);
 
   uint64_t lastPos;
-  try {
+  try 
+  {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
-  } catch (std::range_error& e) {
+  }
+  catch (std::range_error& e)
+  {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
         ERROR_PARAMS(
@@ -1048,9 +1051,10 @@ void UpdInsertIntoCollection::undo()
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
+    xs_integer xs_lastPos( lastPos );
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(xs_lastPos));
 
-    lColl->removeNode(lastPos);
+    lColl->removeNode(xs_lastPos);
     --lastPos;
   }
 }
@@ -1072,7 +1076,7 @@ void UpdInsertFirstIntoCollection::apply()
   std::size_t numNodes = theNodes.size();
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], i);
+    lColl->addNode(theNodes[i], xs_integer(i));
     ++theNumApplied;
   }
 }
@@ -1084,11 +1088,12 @@ void UpdInsertFirstIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
+  xs_integer const zero( xs_integer::zero() );
   for (std::size_t i = 0; i < theNumApplied; ++i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(zero));
 
-    lColl->removeNode((uint64_t)0);
+    lColl->removeNode(zero);
   }
 }
 
@@ -1105,9 +1110,10 @@ void UpdInsertLastIntoCollection::apply()
   theIsApplied = true;
 
   std::size_t numNodes = theNodes.size();
+  xs_integer const neg_1( -1 );
   for (std::size_t i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], -1);
+    lColl->addNode(theNodes[i], neg_1);
   }
 }
 
@@ -1132,11 +1138,12 @@ void UpdInsertLastIntoCollection::undo()
       );
   }
 
+  xs_integer const xs_lastPos( lastPos );
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(xs_lastPos));
 
-    lColl->removeNode(lastPos);
+    lColl->removeNode(xs_lastPos);
   }
 }
 
@@ -1167,7 +1174,7 @@ void UpdInsertBeforeIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
+  lColl->removeNodes(theFirstPos, xs_integer(theNodes.size()));
 }
 
 
@@ -1198,7 +1205,7 @@ void UpdInsertAfterIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
+  lColl->removeNodes(theFirstPos, xs_integer(theNodes.size()));
 }
 
 
@@ -1237,7 +1244,7 @@ void UpdDeleteNodesFromCollection::apply()
   {
     for (std::size_t i = numNodes; i > 0; --i)
     {
-      if (theNodes[i-1] != lColl->nodeAt(size - i))
+      if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
       {
         isLast = false;
         break;
@@ -1329,7 +1336,7 @@ UpdCreateIndex::UpdCreateIndex(
 
 void UpdCreateIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   try
   {
@@ -1355,7 +1362,7 @@ void UpdCreateIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteIndex(theQName);
   }
@@ -1375,7 +1382,7 @@ UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::
 
 void UpdDeleteIndex::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
@@ -1395,7 +1402,7 @@ void UpdDeleteIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->addIndex(theIndex);
   }
@@ -1425,7 +1432,7 @@ UpdRefreshIndex::~UpdRefreshIndex()
 
 void UpdRefreshIndex::apply()
 {
-  SimpleStore& store = GET_STORE();
+  Store& store = GET_STORE();
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
@@ -1445,7 +1452,7 @@ void UpdRefreshIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->deleteIndex(theQName);
     store->addIndex(theIndex);
   }
@@ -1475,7 +1482,7 @@ UpdActivateIC::~UpdActivateIC()
 
 void UpdActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateIC(theQName, theCollectionName,theIsApplied);
 }
 
@@ -1484,7 +1491,7 @@ void UpdActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1517,7 +1524,7 @@ UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
 
 void UpdActivateForeignKeyIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName,theIsApplied);
 }
 
@@ -1526,7 +1533,7 @@ void UpdActivateForeignKeyIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
     theIsApplied=false;
@@ -1555,7 +1562,7 @@ UpdDeActivateIC::~UpdDeActivateIC()
 
 void UpdDeActivateIC::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
   store::IC_t ic = store->deactivateIC(theQName,theIsApplied);
   if (theIsApplied)
   {
@@ -1579,9 +1586,10 @@ void UpdDeActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     bool isApplied;
-    switch (theICKind) {
+    switch (theICKind) 
+    {
       case store::IC::ic_collection:
         store->activateIC(theQName, theFromCollectionName,isApplied);
         break;
@@ -1617,7 +1625,7 @@ UpdCreateDocument::UpdCreateDocument(
 
 void UpdCreateDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   store->addNode(theUri->getStringValue(), theDoc);
 
@@ -1629,7 +1637,7 @@ void UpdCreateDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
 
     store->deleteDocument(theUri->getStringValue());
     theIsApplied = false;
@@ -1653,7 +1661,7 @@ UpdDeleteDocument::UpdDeleteDocument(
 
 void UpdDeleteDocument::apply()
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   zstring lUri = theUri->getStringValue();
 
@@ -1671,7 +1679,7 @@ void UpdDeleteDocument::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = &GET_STORE();
+    Store* store = &GET_STORE();
     store->addNode(theUri->getStringValue(), theDoc);
     theIsApplied = false;
   }
