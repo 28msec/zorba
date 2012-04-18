@@ -840,6 +840,7 @@ EndAtomicItem:;
     {
       if(!is_node)
         ar.register_item(obj);
+
       ar.read_end_current_level();
     }
     else
@@ -855,8 +856,10 @@ EndAtomicItem:;
           );
         }
       }
-      else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
-        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
+      else if (!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
+      {
+        ZORBA_ASSERT(false);
+      }
       else
         obj = NULL;
     }
@@ -1081,7 +1084,9 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
         }
       }
       else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
-        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
+      {
+        ZORBA_ASSERT(false);
+      }
       else
         obj = NULL;
     }
@@ -1204,7 +1209,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "Diagnostic*", referencing);
+      ZORBA_ASSERT(false);
     }
   }
 
@@ -1284,13 +1289,15 @@ void operator&(Archiver& ar, ZorbaException*& obj)
       ar.read_end_current_level();
       return;
     }
-    if(field_treat == ARCHIVE_FIELD_PTR)
+
+    if (field_treat == ARCHIVE_FIELD_PTR)
     {
       int is_user, is_xquery;
       sscanf(value.c_str(), "u%dx%d", &is_user, &is_xquery);
-      UserException *user_ex = NULL;
-      XQueryException *xquery_ex = NULL;
-      if(is_user)
+      UserException* user_ex = NULL;
+      XQueryException* xquery_ex = NULL;
+
+      if (is_user)
       {
         user_ex = new UserException(ar);
         xquery_ex = user_ex;
@@ -1327,7 +1334,7 @@ void operator&(Archiver& ar, ZorbaException*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "ZorbaException*", referencing);
+      ZORBA_ASSERT(false);
     }
   }
 
@@ -1337,7 +1344,7 @@ void operator&(Archiver& ar, ZorbaException*& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
+void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
 {
   if(ar.is_serializing_out())
   {
@@ -1385,7 +1392,7 @@ void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, zorba::Item &obj)
+void operator&(Archiver& ar, zorba::Item& obj)
 {
   if(ar.is_serializing_out())
   {

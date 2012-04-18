@@ -78,7 +78,7 @@ BinArchiver::BinArchiver(std::istream* is)
   read_string(theArchiveName);
   read_string(theArchiveInfo);
   theArchiveVersion = read_int();
-  nr_ids = read_int();
+  theFieldCounter = read_int();
   unsigned int is_release = read_int();
 #ifndef NDEBUG
   if(is_release)
@@ -223,7 +223,7 @@ void BinArchiver::serialize_out()
   os->write(theArchiveInfo.c_str(), (std::streamsize)theArchiveInfo.length()+1);
   write_int(theArchiveVersion);
 
-  write_int(nr_ids);
+  write_int(theFieldCounter);
 
 #ifndef NDEBUG
   write_int(0);//for debug

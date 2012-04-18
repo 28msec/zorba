@@ -166,8 +166,6 @@ public:
   virtual ~ClassDeserializer() { }
 
   virtual SerializeBaseClass* create_new(Archiver& ar) = 0;
-
-  virtual void cast_ptr(SerializeBaseClass* ptr, void** class_ptr) = 0;
 };
 
 
@@ -185,11 +183,6 @@ public:                                                                 \
   virtual serialization::SerializeBaseClass* create_new(serialization::Archiver& ar) \
   {                                                                     \
     return creator;                                                     \
-  }                                                                     \
-                                                                        \
-  virtual void cast_ptr(serialization::SerializeBaseClass* ptr, void** class_ptr)\
-  {                                                                     \
-    *class_ptr = (void*)dynamic_cast<T_serialized_class*>(ptr);         \
   }                                                                     \
 };
 
