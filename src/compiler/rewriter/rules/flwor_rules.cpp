@@ -422,7 +422,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
       for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
       {
-        subst_vars(rCtx, flworp, ngVarsIte->second.getp(), ngVarsIte->first.getp());
+        subst_vars(rCtx,
+            flworp,
+            ngVarsIte->second.getp(),
+            ngVarsIte->first.getp());
       }
     }
 
@@ -619,7 +622,8 @@ static bool safe_to_fold_single_use(
         return false;
 
       // If X is referenced in the current FOR clause .....
-      if (expr_tools::count_variable_uses(fr_clause.get_expr(), var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(fr_clause.get_expr(), var,
+            NULL, 1) == 1)
       {
         if (varQuant != TypeConstants::QUANT_ONE)
         {
@@ -653,7 +657,8 @@ static bool safe_to_fold_single_use(
       // If X is referenced inside a for loop with more than 1 iterations,
       // then we don't replace the var with its domain expr because the domain
       // expr will be computed once per iteration instead of just once.
-      if (TypeOps::type_max_cnt(tm, *fr_clause.get_expr()->get_return_type()) >= 2)
+      if (TypeOps::type_max_cnt(tm,
+            *fr_clause.get_expr()->get_return_type()) >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
@@ -675,7 +680,8 @@ static bool safe_to_fold_single_use(
       if (forlet_clause.get_expr()->is_sequential())
         return false;
 
-      if (expr_tools::count_variable_uses(forlet_clause.get_expr(), var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(
+            forlet_clause.get_expr(), var, NULL, 1) == 1)
       {
         if (varQuant != TypeConstants::QUANT_ONE)
         {
@@ -808,7 +814,8 @@ static bool safe_to_fold_single_use(
 
   if (referencingExpr == NULL &&
       !flwor.get_return_expr()->is_sequential() &&
-      expr_tools::count_variable_uses(flwor.get_return_expr(), var, NULL, 1) == 1)
+      expr_tools::count_variable_uses(
+        flwor.get_return_expr(), var, NULL, 1) == 1)
   {
     if (varQuant != TypeConstants::QUANT_ONE)
     {
@@ -1140,7 +1147,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
       expr* whereExpr = clause->get_expr();
 
-      if (is_subseq_pred(rCtx, flwor, whereClausePos, whereExpr, posVar, posExpr) &&
+      if (is_subseq_pred(rCtx, flwor, whereClausePos,
+            whereExpr, posVar, posExpr) &&
           expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
       {
         function* seq_point =
@@ -1261,7 +1269,8 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->get_return_type();
 
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, posLoc))
+        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION,
+              posLoc))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;
