@@ -33,8 +33,8 @@
 # define TEMPLATE_DECL(I) /* nothing */
 # define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(I) template<typename I>
-# define INTEGER_IMPL(I)  IntegerImpl<I>
+# define TEMPLATE_DECL(I) template<typename I> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
@@ -109,17 +109,19 @@ public:
   template<typename FloatType2>
   FloatImpl& operator=( FloatImpl<FloatType2> const &f );
 
-  /**
-   * For every built-in arithmetic type A, assign to this %FloatImpl.
-   *
-   * @tparam A The built-in arithmetic type.
-   * @param n The arithmetic value to assign.
-   * @return Returns \c *this.
-   */
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator=( A n );
+  FloatImpl& operator=( char c );
+  FloatImpl& operator=( signed char c );
+  FloatImpl& operator=( short n );
+  FloatImpl& operator=( int n );
+  FloatImpl& operator=( long n );
+  FloatImpl& operator=( long long n );
+  FloatImpl& operator=( unsigned char c );
+  FloatImpl& operator=( unsigned short n );
+  FloatImpl& operator=( unsigned int n );
+  FloatImpl& operator=( unsigned long n );
+  FloatImpl& operator=( unsigned long long n );
+  FloatImpl& operator=( float n );
+  FloatImpl& operator=( double n );
 
   FloatImpl& operator=( char const *s );
   FloatImpl& operator=( Decimal const &d );
@@ -129,17 +131,74 @@ public:
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
-#define ZORBA_FLOAT_OP(OP)                                        \
-  template<typename A>                                            \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl&>::type                       \
-  operator OP( A n )
+#define ZORBA_FLOAT_OP(OP,T)    \
+  FloatImpl& operator OP( T n )
 
-  ZORBA_FLOAT_OP(+=);
-  ZORBA_FLOAT_OP(-=);
-  ZORBA_FLOAT_OP(*=);
-  ZORBA_FLOAT_OP(/=);
-  ZORBA_FLOAT_OP(%=);
+  ZORBA_FLOAT_OP(+=,char);
+  ZORBA_FLOAT_OP(-=,char);
+  ZORBA_FLOAT_OP(*=,char);
+  ZORBA_FLOAT_OP(/=,char);
+  ZORBA_FLOAT_OP(%=,char);
+  ZORBA_FLOAT_OP(+=,signed char);
+  ZORBA_FLOAT_OP(-=,signed char);
+  ZORBA_FLOAT_OP(*=,signed char);
+  ZORBA_FLOAT_OP(/=,signed char);
+  ZORBA_FLOAT_OP(%=,signed char);
+  ZORBA_FLOAT_OP(+=,short);
+  ZORBA_FLOAT_OP(-=,short);
+  ZORBA_FLOAT_OP(*=,short);
+  ZORBA_FLOAT_OP(/=,short);
+  ZORBA_FLOAT_OP(%=,short);
+  ZORBA_FLOAT_OP(+=,int);
+  ZORBA_FLOAT_OP(-=,int);
+  ZORBA_FLOAT_OP(*=,int);
+  ZORBA_FLOAT_OP(/=,int);
+  ZORBA_FLOAT_OP(%=,int);
+  ZORBA_FLOAT_OP(+=,long);
+  ZORBA_FLOAT_OP(-=,long);
+  ZORBA_FLOAT_OP(*=,long);
+  ZORBA_FLOAT_OP(/=,long);
+  ZORBA_FLOAT_OP(%=,long);
+  ZORBA_FLOAT_OP(+=,long long);
+  ZORBA_FLOAT_OP(-=,long long);
+  ZORBA_FLOAT_OP(*=,long long);
+  ZORBA_FLOAT_OP(/=,long long);
+  ZORBA_FLOAT_OP(%=,long long);
+  ZORBA_FLOAT_OP(+=,unsigned char);
+  ZORBA_FLOAT_OP(-=,unsigned char);
+  ZORBA_FLOAT_OP(*=,unsigned char);
+  ZORBA_FLOAT_OP(/=,unsigned char);
+  ZORBA_FLOAT_OP(%=,unsigned char);
+  ZORBA_FLOAT_OP(+=,unsigned short);
+  ZORBA_FLOAT_OP(-=,unsigned short);
+  ZORBA_FLOAT_OP(*=,unsigned short);
+  ZORBA_FLOAT_OP(/=,unsigned short);
+  ZORBA_FLOAT_OP(%=,unsigned short);
+  ZORBA_FLOAT_OP(+=,unsigned int);
+  ZORBA_FLOAT_OP(-=,unsigned int);
+  ZORBA_FLOAT_OP(*=,unsigned int);
+  ZORBA_FLOAT_OP(/=,unsigned int);
+  ZORBA_FLOAT_OP(%=,unsigned int);
+  ZORBA_FLOAT_OP(+=,unsigned long);
+  ZORBA_FLOAT_OP(-=,unsigned long);
+  ZORBA_FLOAT_OP(*=,unsigned long);
+  ZORBA_FLOAT_OP(/=,unsigned long);
+  ZORBA_FLOAT_OP(%=,unsigned long);
+  ZORBA_FLOAT_OP(+=,unsigned long long);
+  ZORBA_FLOAT_OP(-=,unsigned long long);
+  ZORBA_FLOAT_OP(*=,unsigned long long);
+  ZORBA_FLOAT_OP(/=,unsigned long long);
+  ZORBA_FLOAT_OP(%=,unsigned long long);
+  ZORBA_FLOAT_OP(+=,float);
+  ZORBA_FLOAT_OP(-=,float);
+  ZORBA_FLOAT_OP(*=,float);
+  ZORBA_FLOAT_OP(/=,float);
+  ZORBA_FLOAT_OP(%=,float);
+  ZORBA_FLOAT_OP(+=,double);
+  ZORBA_FLOAT_OP(-=,double);
+  ZORBA_FLOAT_OP(*=,double);
+  ZORBA_FLOAT_OP(/=,double);
+  ZORBA_FLOAT_OP(%=,double);
 #undef ZORBA_FLOAT_OP
 
 #define ZORBA_FLOAT_OP(OP)                                \
@@ -371,14 +430,28 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   return *this;
 }
 
-template<typename F> template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<F>&>::type
-FloatImpl<F>::operator=( A n ) {
-  value_ = static_cast<F>( n );
-  precision_ = max_precision();
-  return *this;
-}
+#define ZORBA_FLOAT_OP(T)                               \
+  template<typename F>                                  \
+  inline FloatImpl<F>& FloatImpl<F>::operator=( T n ) { \
+    value_ = static_cast<F>( n );                       \
+    precision_ = max_precision();                       \
+    return *this;                                       \
+  }
+
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
+#undef ZORBA_FLOAT_OP
 
 template<typename F>
 inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
@@ -388,40 +461,96 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#define ZORBA_FLOAT_OP(OP)                                        \
-  template<typename F,typename A> inline                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<F> >::type                    \
-  operator OP( FloatImpl<F> const &f, A n ) {                     \
+#define ZORBA_FLOAT_OP(OP,T)                                      \
+  template<typename F>                                            \
+  inline FloatImpl<F> operator OP( FloatImpl<F> const &f, T n ) { \
     return FloatImpl<F>( f.getNumber() OP static_cast<F>( n ) );  \
   }                                                               \
                                                                   \
-  template<typename F,typename A> inline                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<F> >::type                    \
-  operator OP( A n, FloatImpl<F> const &f ) {                     \
+  template<typename F>                                            \
+  inline FloatImpl<F> operator OP( T n, FloatImpl<F> const &f ) { \
     return FloatImpl<F>( static_cast<F>( n ) OP f.getNumber() );  \
   }
 
-ZORBA_FLOAT_OP(+)
-ZORBA_FLOAT_OP(-)
-ZORBA_FLOAT_OP(*)
-ZORBA_FLOAT_OP(/)
+ZORBA_FLOAT_OP(+,char)
+ZORBA_FLOAT_OP(-,char)
+ZORBA_FLOAT_OP(*,char)
+ZORBA_FLOAT_OP(/,char)
+ZORBA_FLOAT_OP(+,signed char)
+ZORBA_FLOAT_OP(-,signed char)
+ZORBA_FLOAT_OP(*,signed char)
+ZORBA_FLOAT_OP(/,signed char)
+ZORBA_FLOAT_OP(+,short)
+ZORBA_FLOAT_OP(-,short)
+ZORBA_FLOAT_OP(*,short)
+ZORBA_FLOAT_OP(/,short)
+ZORBA_FLOAT_OP(+,int)
+ZORBA_FLOAT_OP(-,int)
+ZORBA_FLOAT_OP(*,int)
+ZORBA_FLOAT_OP(/,int)
+ZORBA_FLOAT_OP(+,long)
+ZORBA_FLOAT_OP(-,long)
+ZORBA_FLOAT_OP(*,long)
+ZORBA_FLOAT_OP(/,long)
+ZORBA_FLOAT_OP(+,long long)
+ZORBA_FLOAT_OP(-,long long)
+ZORBA_FLOAT_OP(*,long long)
+ZORBA_FLOAT_OP(/,long long)
+ZORBA_FLOAT_OP(+,unsigned char)
+ZORBA_FLOAT_OP(-,unsigned char)
+ZORBA_FLOAT_OP(*,unsigned char)
+ZORBA_FLOAT_OP(/,unsigned char)
+ZORBA_FLOAT_OP(+,unsigned short)
+ZORBA_FLOAT_OP(-,unsigned short)
+ZORBA_FLOAT_OP(*,unsigned short)
+ZORBA_FLOAT_OP(/,unsigned short)
+ZORBA_FLOAT_OP(+,unsigned int)
+ZORBA_FLOAT_OP(-,unsigned int)
+ZORBA_FLOAT_OP(*,unsigned int)
+ZORBA_FLOAT_OP(/,unsigned int)
+ZORBA_FLOAT_OP(+,unsigned long)
+ZORBA_FLOAT_OP(-,unsigned long)
+ZORBA_FLOAT_OP(*,unsigned long)
+ZORBA_FLOAT_OP(/,unsigned long)
+ZORBA_FLOAT_OP(+,unsigned long long)
+ZORBA_FLOAT_OP(-,unsigned long long)
+ZORBA_FLOAT_OP(*,unsigned long long)
+ZORBA_FLOAT_OP(/,unsigned long long)
+ZORBA_FLOAT_OP(+,float)
+ZORBA_FLOAT_OP(-,float)
+ZORBA_FLOAT_OP(*,float)
+ZORBA_FLOAT_OP(/,float)
+ZORBA_FLOAT_OP(+,double)
+ZORBA_FLOAT_OP(-,double)
+ZORBA_FLOAT_OP(*,double)
+ZORBA_FLOAT_OP(/,double)
 #undef ZORBA_FLOAT_OP
 
-template<typename F,typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<F> >::type
-operator%( FloatImpl<F> const &f, A n ) {
-  return FloatImpl<F>( std::fmod( f.getNumber(), static_cast<F>( n ) ) );
-}
+#define ZORBA_FLOAT_OP(T)                                                   \
+  template<typename F>                                                      \
+  inline FloatImpl<F> operator%( FloatImpl<F> const &f, T n ) {             \
+    return FloatImpl<F>( std::fmod( f.getNumber(), static_cast<F>( n ) ) ); \
+  }                                                                         \
+                                                                            \
+  template<typename F>                                                      \
+  inline FloatImpl<F> operator%( T n, FloatImpl<F> const &f ) {             \
+    return FloatImpl<F>( std::fmod( static_cast<F>( n ), f.getNumber() ) ); \
+  }
 
-template<typename F,typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<F> >::type
-operator%( A n, FloatImpl<F> const &f ) {
-  return FloatImpl<F>( std::fmod( static_cast<F>( n ), f.getNumber() ) );
-}
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
+#undef ZORBA_FLOAT_OP
 
 #define ZORBA_FLOAT_OP(OP)                                                    \
   template<typename F> inline                                                 \
@@ -440,20 +569,87 @@ inline FloatImpl<F> operator%( FloatImpl<F> const &f, FloatImpl<F> const &g ) {
   return FloatImpl<F>( std::fmod( f.getNumber(), g.getNumber() ) );
 }
 
-#define ZORBA_FLOAT_OP(OP)                                        \
-  template<typename F> template<typename A> inline                \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<F>&>::type                    \
-  FloatImpl<F>::operator OP( A n ) {                              \
-    value_ OP static_cast<F>( n );                                \
-    return *this;                                                 \
+#define ZORBA_FLOAT_OP(OP,T)                              \
+  template<typename F>                                    \
+  inline FloatImpl<F>& FloatImpl<F>::operator OP( T n ) { \
+    value_ OP static_cast<F>( n );                        \
+    return *this;                                         \
   }
 
-ZORBA_FLOAT_OP(+=)
-ZORBA_FLOAT_OP(-=)
-ZORBA_FLOAT_OP(*=)
-ZORBA_FLOAT_OP(/=)
-ZORBA_FLOAT_OP(%=)
+ZORBA_FLOAT_OP(+=,char)
+ZORBA_FLOAT_OP(-=,char)
+ZORBA_FLOAT_OP(*=,char)
+ZORBA_FLOAT_OP(/=,char)
+ZORBA_FLOAT_OP(+=,signed char)
+ZORBA_FLOAT_OP(-=,signed char)
+ZORBA_FLOAT_OP(*=,signed char)
+ZORBA_FLOAT_OP(/=,signed char)
+ZORBA_FLOAT_OP(+=,short)
+ZORBA_FLOAT_OP(-=,short)
+ZORBA_FLOAT_OP(*=,short)
+ZORBA_FLOAT_OP(/=,short)
+ZORBA_FLOAT_OP(+=,int)
+ZORBA_FLOAT_OP(-=,int)
+ZORBA_FLOAT_OP(*=,int)
+ZORBA_FLOAT_OP(/=,int)
+ZORBA_FLOAT_OP(+=,long)
+ZORBA_FLOAT_OP(-=,long)
+ZORBA_FLOAT_OP(*=,long)
+ZORBA_FLOAT_OP(/=,long)
+ZORBA_FLOAT_OP(+=,long long)
+ZORBA_FLOAT_OP(-=,long long)
+ZORBA_FLOAT_OP(*=,long long)
+ZORBA_FLOAT_OP(/=,long long)
+ZORBA_FLOAT_OP(+=,unsigned char)
+ZORBA_FLOAT_OP(-=,unsigned char)
+ZORBA_FLOAT_OP(*=,unsigned char)
+ZORBA_FLOAT_OP(/=,unsigned char)
+ZORBA_FLOAT_OP(+=,unsigned short)
+ZORBA_FLOAT_OP(-=,unsigned short)
+ZORBA_FLOAT_OP(*=,unsigned short)
+ZORBA_FLOAT_OP(/=,unsigned short)
+ZORBA_FLOAT_OP(+=,unsigned int)
+ZORBA_FLOAT_OP(-=,unsigned int)
+ZORBA_FLOAT_OP(*=,unsigned int)
+ZORBA_FLOAT_OP(/=,unsigned int)
+ZORBA_FLOAT_OP(+=,unsigned long)
+ZORBA_FLOAT_OP(-=,unsigned long)
+ZORBA_FLOAT_OP(*=,unsigned long)
+ZORBA_FLOAT_OP(/=,unsigned long)
+ZORBA_FLOAT_OP(+=,unsigned long long)
+ZORBA_FLOAT_OP(-=,unsigned long long)
+ZORBA_FLOAT_OP(*=,unsigned long long)
+ZORBA_FLOAT_OP(/=,unsigned long long)
+ZORBA_FLOAT_OP(+=,float)
+ZORBA_FLOAT_OP(-=,float)
+ZORBA_FLOAT_OP(*=,float)
+ZORBA_FLOAT_OP(/=,float)
+ZORBA_FLOAT_OP(+=,double)
+ZORBA_FLOAT_OP(-=,double)
+ZORBA_FLOAT_OP(*=,double)
+ZORBA_FLOAT_OP(/=,double)
+#undef ZORBA_FLOAT_OP
+
+#define ZORBA_FLOAT_OP(T) \
+  template<typename F>                                      \
+  inline FloatImpl<F>& FloatImpl<F>::operator%=( T n ) {    \
+    value_ = std::fmod( getNumber(), static_cast<F>( n ) ); \
+    return *this;                                           \
+  }
+
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
 #undef ZORBA_FLOAT_OP
 
 #define ZORBA_FLOAT_OP(OP)                                                  \
