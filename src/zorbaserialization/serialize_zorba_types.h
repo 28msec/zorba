@@ -182,19 +182,6 @@ void operator&(Archiver& ar, store::ItemHandle<T>& obj)
 
     obj = p;
 
-    if (p == NULL)
-    {
-      //workaround for the strict_aliasing warning in gcc
-      union 
-      {
-        T **t;
-        void **v;
-      } u_p;
-
-      u_p.t = &p;
-      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
-    }
-
     ar.read_end_current_level();
   }
 }
@@ -267,24 +254,15 @@ void operator&(Archiver& ar, zorba::rchandle<T>& obj)
       is_temp = true;
       ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
     }
-    T *p;
+
+    T* p;
+
     ar & p;
-    if(is_temp)
+
+    if (is_temp)
       ar.set_is_temp_field_one_level(false);
+
     obj = p;
-    if(p == NULL)
-    {
-      //workaround for the strict_aliasing warning in gcc
-      union 
-      {
-        T **t;
-        void **v;
-      } u_p;
-
-      u_p.t = &p;
-
-      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
-    }
 
     ar.read_end_current_level();
   }
@@ -306,7 +284,7 @@ void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
                                    ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
     {
-      T *p = (T*)obj.getp();
+      T* p = (T*)obj.getp();
 
       if (allow_delay != ALLOW_DELAY)
         ar.dont_allow_delay(allow_delay);
@@ -360,23 +338,14 @@ void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
     }
 
     T* p;
+
     ar & p;
+
     obj = p;
 
     if (is_temp)
       ar.set_is_temp_field_one_level(false);
 
-    if (p == NULL)
-    {
-      //workaround for the strict_aliasing warning in gcc
-      union 
-      {
-        T **t;
-        void **v;
-      }u_p;
-      u_p.t = &p;
-      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
-    }
     ar.read_end_current_level();
   }
 }

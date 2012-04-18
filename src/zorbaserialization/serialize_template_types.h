@@ -28,6 +28,7 @@
 #include "util/string_util.h"
 #include "util/stl_util.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 #include "zorbatypes/zstring.h"
 
 #include "archiver.h"
@@ -270,15 +271,15 @@ void operator&(Archiver& ar, T*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj,
-                                  FIELD_IS_CLASS,
-                                  obj->T::get_class_name_str(),
-                                  referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 template<class T>
 void operator&(Archiver& ar, checked_vector<T>& obj)
 {
@@ -514,10 +515,7 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj,
-                                  !FIELD_IS_CLASS,
-                                  "std::vector<T>*",
-                                  referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
@@ -798,10 +796,7 @@ void operator&(Archiver& ar, std::pair<T1, T2>*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj,
-                                  !FIELD_IS_CLASS,
-                                  "std::pair<T1, T2>",
-                                  referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
@@ -925,10 +920,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj,
-                                  !FIELD_IS_CLASS,
-                                  "std::map<T1, T2>",
-                                  referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }

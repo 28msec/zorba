@@ -103,6 +103,7 @@ IF (JAVA_INCLUDE_PATH)
 		ENDIF(NOT WIN32)
   ENDIF ( APPLE )
 
+
 ELSE (JAVA_INCLUDE_PATH)
   MESSAGE ( STATUS "SWIG Java: not generating JAVA API because jni headers not found.")
 ENDIF (JAVA_INCLUDE_PATH)

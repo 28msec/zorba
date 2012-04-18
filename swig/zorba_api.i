@@ -104,6 +104,8 @@ namespace std {
 }
 #endif
 
+/* %include "various.i" required for mapping to Java byte[]*/
+
 //%include "ZorbaStreamProxy.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"

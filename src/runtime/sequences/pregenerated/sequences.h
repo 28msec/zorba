@@ -1394,6 +1394,225 @@ public:
 };
 
 
+/**
+ * 
+ *    Summary: returns a list of environment variable names that are suitable for
+ *    passing to fn:environment-variable, as a (possible empty) sequence of
+ *    strings.
+ *
+ *    The function returns a sequence of strings, being the names of the environment
+ *    variables in the dynamic context in some implementation-defined order.
+ *  
+ * Author: Zorba Team
+ */
+class FnAvailableEnvironmentVariablesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //the current iterator
+
+  FnAvailableEnvironmentVariablesIteratorState();
+
+  ~FnAvailableEnvironmentVariablesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnAvailableEnvironmentVariablesIterator : public NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnAvailableEnvironmentVariablesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvailableEnvironmentVariablesIterator,
+    NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>*)this);
+  }
+
+  FnAvailableEnvironmentVariablesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnAvailableEnvironmentVariablesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Summary: Returns the value of a system environment variable, if it exists.
+ *
+ *    If there is no environment variable with a matching name, the function returns
+ *    the empty sequence.
+ *  
+ * Author: Zorba Team
+ */
+class FnEnvironmentVariableIterator : public NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnEnvironmentVariableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnEnvironmentVariableIterator,
+    NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>*)this);
+  }
+
+  FnEnvironmentVariableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnEnvironmentVariableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Summary: The fn:unparsed-text function reads an external resource (for
+ *    example, a file) and returns its contents as a string.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextIterator : public NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextIterator,
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>*)this);
+  }
+
+  FnUnparsedTextIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Because errors in evaluating the fn:unparsed-text function are
+ *    non-recoverable, these two functions are provided to allow an application
+ *    to determine whether a call with particular arguments would succeed.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextAvailableIterator : public NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextAvailableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextAvailableIterator,
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>*)this);
+  }
+
+  FnUnparsedTextAvailableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextAvailableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      Reads an external resource and returns its contents as a sequence of strings,
+ *      separated at newline boundaries.
+ *    
+ * Author: Zorba Team
+ */
+class FnUnparsedTextLinesIteratorState : public PlanIteratorState
+{
+public:
+  std::unique_ptr<std::istream, StreamReleaser>* theStream; //the current stream
+   internal::StreamResource* theStreamResource; //the current iterator
+
+  FnUnparsedTextLinesIteratorState();
+
+  ~FnUnparsedTextLinesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnUnparsedTextLinesIterator : public NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextLinesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextLinesIterator,
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>*)this);
+  }
+
+  FnUnparsedTextLinesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextLinesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

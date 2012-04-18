@@ -12,12 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF(WIN32)
-  SET(PATH_SEP ",")
-ELSE(WIN32)
-  SET(PATH_SEP ":")
-ENDIF(WIN32)
+IF (WIN32)
+  SET (PATH_SEP ",")
+ELSE (WIN32)
+  SET (PATH_SEP ":")
+ENDIF (WIN32)
 
-# QQQ When all the module versioning and external-module work is
-# complete, this should contain ONLY MODULE_BINARY_DIR/modules.
-SET(SECONDARY_MODULE_PATHS "${SECONDARY_MODULE_PATHS}${PATH_SEP}@MODULE_SOURCE_DIR@/src/${PATH_SEP}@MODULE_BINARY_DIR@/src/${PATH_SEP}@MODULE_BINARY_DIR@/modules/")
+# Probably should have separate URI and LIB paths here someday; will
+# require testdriver to accept --uri-path and --lib-path args
+# Note that this path is meaningless if the module is installed; see
+# bug 966999.
+SET (DEPENDENCY_MODULE_PATH 
+  "${DEPENDENCY_MODULE_PATH}${PATH_SEP}@PROJECT_BINARY_DIR@/URI_PATH/${PATH_SEP}${DEPENDENCY_LIB_PATH}${PATH_SEP}@PROJECT_BINARY_DIR@/LIB_PATH/")
+
+# Dynamic libraries created by this project to link against
+SET (@PROJECT_NAME@_LIBRARIES @ZORBA_PROJECT_LIBRARIES@)
+
+# Include directories exported by this project
+SET (@PROJECT_NAME@_INCLUDE_DIRS @ZORBA_PROJECT_INCLUDE_DIRS@)
+
+# Offer a "use file" to the user of this module. For most module
+# packages, this is unnecessary. However it can be utilized by
+# advanced packages which wish to, for example, export a C++ header
+# file to dependent packages. As above, note that this currently is
+# non-functional if this module package is installed; this will only
+# work from a project build directory.
+SET (@PROJECT_NAME@_USE_FILE "@ZORBA_PROJECT_USE_FILE@")
