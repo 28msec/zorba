@@ -62,20 +62,6 @@ EvalIteratorState::~EvalIteratorState()
 {
 }
 
-/****************************************************************************//**
-
-********************************************************************************/
-void
-EvalIteratorState::reset(PlanState& aPlanState) 
-{
-  PlanIteratorState::reset(aPlanState);
-  // When an exception is thrown during an EvalIterator::nextImpl invocation
-  // or when the EvalIterator doesn't return all resulting items of an other reason,
-  // the PlanWrapper is not properly destroyed. Therefore, we destroy it in the reset
-  // to prevent troubles the next time the EvalIterator is used.
-  thePlanWrapper = 0;
-}
-
 
 /****************************************************************************//**
 
@@ -116,6 +102,7 @@ EvalIterator::~EvalIterator()
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   ar.set_serialize_everything();
+
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
