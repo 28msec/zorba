@@ -500,7 +500,7 @@ PiNumberIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  GENV_ITEMFACTORY->createDouble(result, 3.141592653589793e0);
+  GENV_ITEMFACTORY->createDouble(result, xs_double(3.141592653589793e0));
   STACK_PUSH (true, state);
 
   STACK_END (state);

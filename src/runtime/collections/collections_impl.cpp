@@ -451,7 +451,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  xs_integer pos = 1;
+  xs_integer pos( 1 );
   bool found;
 
   PlanIteratorState* state;
@@ -466,8 +466,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
   STACK_END (state);
@@ -1638,7 +1637,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1674,7 +1673,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = 0; i < numNodes; ++i)
+  for (xs_integer i( 0 ); i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
@@ -1762,7 +1761,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1796,7 +1795,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+  for (xs_integer i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);
