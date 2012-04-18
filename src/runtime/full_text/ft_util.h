@@ -88,6 +88,16 @@ inline bool get_wildcards_from( ftmatch_options const *options ) {
   return false;
 }
 
+/**
+ * Attempts to convert an \c xs:integer to an \c xs:unsignedInt.
+ *
+ * @param i The \c xs:integer to convert.
+ * @return Returns the value converted to an \c xs:unsignedInt.
+ * @throws \c err::FOCA0003 if the value can not be represented as an \c
+ * xs:unsignedInt.
+ */
+ft_int to_ft_int( xs_integer const &i );
+
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_UTIL_H */
 /* vim:set et sw=2 ts=2: */
