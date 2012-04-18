@@ -439,6 +439,15 @@ public:
 
   int compare( IntegerImpl const& ) const;
   uint32_t hash() const;
+  bool is_cxx_long() const;
+  bool is_xs_byte() const;
+  bool is_xs_int() const;
+  bool is_xs_long() const;
+  bool is_xs_short() const;
+  bool is_xs_unsignedByte() const;
+  bool is_xs_unsignedInt() const;
+  bool is_xs_unsignedLong() const;
+  bool is_xs_unsignedShort() const;
   int sign() const;
   zstring toString() const;
   static IntegerImpl const& one();
@@ -478,8 +487,8 @@ private:
   static value_type make_value_type( T n ) {
     return value_type( static_cast<int_cast_type>( n ) );
   }
+
 #else /* ZORBA_WITH_BIG_INTEGER */
-  bool is_long() const;
 
   static value_type ftoi( value_type v ) {
     return v;                           // intentional no-op
@@ -1028,6 +1037,14 @@ inline int IntegerImpl::compare( IntegerImpl const &i ) const {
   return value_.compare( i.value_ );
 }
 
+inline bool Decimal::is_xs_int() const {
+  return value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
+}
+
+inline bool IntegerImpl::is_xs_long() const {
+  return value_ >= MAPM::getMinInt64() && value_ <= MAPM::getMaxInt64();
+}
+
 inline int IntegerImpl::sign() const {
   return value_.sign();
 }
@@ -1045,9 +1062,48 @@ inline uint32_t IntegerImpl<I>::hash() const {
 }
 
 template<typename I>
-inline bool IntegerImpl<I>::is_long() const {
-  return  value_ >= std::numeric_limits<long>::min() &&
-          value_ <= std::numeric_limits<long>::max();
+inline bool IntegerImpl<I>::is_cxx_long() const {
+  return ZORBA_IN_RANGE( value_, long );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_byte() const {
+  return ZORBA_IN_RANGE( value_, xs_byte );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_int() const {
+  return ZORBA_IN_RANGE( value_, xs_int );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_long() const {
+  return ZORBA_IN_RANGE( value_, xs_long );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_short() const {
+  return ZORBA_IN_RANGE( value_, xs_short );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_unsignedByte() const {
+  return ZORBA_IN_RANGE( value_, xs_unsignedByte );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_unsignedInt() const {
+  return ZORBA_IN_RANGE( value_, xs_unsignedInt );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_unsignedLong() const {
+  return ZORBA_IN_RANGE( value_, xs_unsignedLong );
+}
+
+template<typename I>
+inline bool IntegerImpl<I>::is_xs_unsignedShort() const {
+  return ZORBA_IN_RANGE( value_, xs_unsignedShort );
 }
 
 template<typename I>
