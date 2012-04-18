@@ -3,6 +3,11 @@ Zorba - The XQuery Processor
 version 2.5
 
 New Features:
+  * fn:available-environment-variables
+  * fn:environment-variables
+  * fn:uri-collection
+  * fn:unparsed-text
+  * fn:unparsed-text-available
   * Extended API for Python, Java, PHP and Ruby.
   * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
   * Added support for NO_ICU (to not use ICU for unicode processing)

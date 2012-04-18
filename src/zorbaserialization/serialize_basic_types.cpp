@@ -26,6 +26,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba
@@ -489,7 +490,7 @@ void operator&(Archiver& ar, char*& obj)
     }
     else if ((obj = (char*)ar.get_reference_value(referencing)) == NULL)// ARCHIVE_FIELD_IS_REFERENCING
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
@@ -802,7 +803,7 @@ void operator&(Archiver& ar, std::string*& obj)
     }
     else if ((obj = (std::string*)ar.get_reference_value(referencing)) == NULL)
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
