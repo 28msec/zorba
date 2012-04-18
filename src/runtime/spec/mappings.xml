@@ -155,9 +155,9 @@
     <zorba:type zorbaType="ANY_NODE">node()</zorba:type>
     <zorba:type zorbaType="ELEMENT">element()</zorba:type>
 
-    
     <zorba:type zorbaType="ANY_ATOMIC">xs:anyAtomicType</zorba:type>
     <zorba:type zorbaType="UNTYPED_ATOMIC">xs:untypedAtomic</zorba:type>
+
     <zorba:type zorbaType="STRING">xs:string</zorba:type>
     <zorba:type zorbaType="NORMALIZED_STRING">xs:normalizedString</zorba:type>
     <zorba:type zorbaType="TOKEN">xs:token</zorba:type>
@@ -165,21 +165,25 @@
     <zorba:type zorbaType="NMTOKEN">xs:NMTOKEN</zorba:type>
     <zorba:type zorbaType="NAME">xs:Name</zorba:type>
     <zorba:type zorbaType="NCNAME">xs:NCName</zorba:type>
+
     <zorba:type zorbaType="ID">xs:ID</zorba:type>
     <zorba:type zorbaType="IDREF">xs:IDREF</zorba:type>
+
     <zorba:type zorbaType="ENTITY">xs:ENTITY</zorba:type>
+
     <zorba:type zorbaType="DATETIME">xs:dateTime</zorba:type>
     <zorba:type zorbaType="DATE">xs:date</zorba:type>
     <zorba:type zorbaType="TIME">xs:time</zorba:type>
     <zorba:type zorbaType="DURATION">xs:duration</zorba:type>
     <zorba:type zorbaType="DT_DURATION">xs:dayTimeDuration</zorba:type>
     <zorba:type zorbaType="YM_DURATION">xs:yearMonthDuration</zorba:type>
+
     <zorba:type zorbaType="FLOAT">xs:float</zorba:type>
     <zorba:type zorbaType="DOUBLE">xs:double</zorba:type>
     <zorba:type zorbaType="DECIMAL">xs:decimal</zorba:type>
     <zorba:type zorbaType="INTEGER">xs:integer</zorba:type>
     <zorba:type zorbaType="NON_POSITIVE_INTEGER">xs:nonPositiveInteger</zorba:type>
-    <zorba:type zorbaType="NEGATIVE_INTEGER">xs:nonNegativeInteger</zorba:type>
+    <zorba:type zorbaType="NEGATIVE_INTEGER">xs:negativeInteger</zorba:type>
     <zorba:type zorbaType="LONG">xs:long</zorba:type>
     <zorba:type zorbaType="INT">xs:int</zorba:type>
     <zorba:type zorbaType="SHORT">xs:short</zorba:type>
@@ -190,14 +194,17 @@
     <zorba:type zorbaType="UNSIGNED_SHORT">xs:unsignedShort</zorba:type>
     <zorba:type zorbaType="UNSIGNED_BYTE">xs:unsignedByte</zorba:type>
     <zorba:type zorbaType="POSITIVE_INTEGER">xs:positiveInteger</zorba:type>
+
     <zorba:type zorbaType="GYEAR_MONTH">xs:gYearMonth</zorba:type>
     <zorba:type zorbaType="GYEAR">xs:gYear</zorba:type>
     <zorba:type zorbaType="GMONTH_DAY">xs:gMonthDay</zorba:type>
     <zorba:type zorbaType="GDAY">xs:gDay</zorba:type>
     <zorba:type zorbaType="GMONTH">xs:gMonth</zorba:type>
+
     <zorba:type zorbaType="BOOLEAN">xs:boolean</zorba:type>
     <zorba:type zorbaType="BASE64BINARY">xs:base64Binary</zorba:type>
     <zorba:type zorbaType="HEXBINARY">xs:hexBinary</zorba:type>
+
     <zorba:type zorbaType="ANY_URI">xs:anyURI</zorba:type>
     <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
     <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
