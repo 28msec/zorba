@@ -21,13 +21,19 @@ ADD_SUBDIRECTORY(w3c)
 # named "zorba_modules" as a sibling to the main Zorba source
 # directory.
 
-# First, configure the moduleConfig.cmake file for each module
-# project. We must do this "manually" before doing any
-# ADD_SUBDIRECTORY()s, so that all the config files are built and
-# ready for other modules' FIND_PACKAGE() calls. We also add all
-# module build dirs to CMAKE_PREFIX_PATH for the same reason.
-SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt]")
-FILE (GLOB modules_dir_items RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/[a-zA-Z0-9]*")
+# This is complicated and more than a little hacky. We need to add all
+# the module subdirectories, but some may depend on others so we can't
+# simply add them alphabetically. Here we determine their project
+# names and dependencies by manually reading their CMakeLists.txt
+# files (as text files). We form a directed graph (which isn't easy in
+# CMake) then produce a topological sort to load the modules in
+# order. Note that this will not work if there are cyclical
+# dependencies between modules; if we ever need that ability, this
+# will get more complicated.
+
+FILE (GLOB modules_dir_items
+  RELATIVE "${ZORBA_MODULES_DIR}"
+  "${ZORBA_MODULES_DIR}/[a-zA-Z0-9]*")
 
 # Filter out non-directories
 SET (module_dirs)
@@ -37,19 +43,27 @@ FOREACH (module_dir ${modules_dir_items})
   ENDIF (IS_DIRECTORY "${ZORBA_MODULES_DIR}/${module_dir}")
 ENDFOREACH (module_dir)
 
+# First, form a simple list of all known module projects in the
+# variable "module_projects". Also, for each project, set a variable
+# named eg. "zorba-email-module_DIR" with the path to that project's
+# directory, relative to ZORBA_MODULES_DIR.
+SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt] *\\( *([^ )]*)")
+SET (module_projects)
 FOREACH (module_dir ${module_dirs})
-  # This is really kind of hacky, but I don't know a better solution without
-  # introducing some sort of inter-module dependency tracking and requiring
-  # consistent directory naming for external modules. What we do here is
-  # read the module's CMakeLists.txt (as a text file), searching for the
-  # PROJECT() declaration, so we can extract the name of the CMake project.
   SET (module_project)
-  SET (cmakelists)
-  FILE (STRINGS "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt" cmakelists
-    REGEX ${project_regex})
+  SET (cmakelists_file "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt")
+  FILE (STRINGS "${cmakelists_file}" cmakelists REGEX "${project_regex}")
   FOREACH (line ${cmakelists})
-    IF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
-      SET (module_project ${CMAKE_MATCH_1})
+
+    IF (line MATCHES "${project_regex}")
+      IF (NOT "${module_project}" STREQUAL "")
+	MESSAGE (FATAL_ERROR
+	  "${cmakelists_file} contains duplicate PROJECT() statements - "
+	  "cannot parse!")
+      ENDIF (NOT "${module_project}" STREQUAL "")
+      SET (module_project "${CMAKE_MATCH_1}")
+      LIST (APPEND module_projects "${module_project}")
+      SET ("${module_project}_DIR" "${module_dir}")
 
       # Print the found module name
       SET (status "Found module project ${module_project}")
@@ -63,8 +77,7 @@ FOREACH (module_dir ${module_dirs})
       MESSAGE (STATUS "${status}")
       MESSAGE (STATUS "${border}")
 
-      BREAK ()
-    ENDIF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
+    ENDIF (line MATCHES "${project_regex}")
   ENDFOREACH (line)
 
   IF (NOT module_project)
@@ -72,14 +85,77 @@ FOREACH (module_dir ${module_dirs})
       "does not contain a recognizable CMake project.")
   ENDIF (NOT module_project)
 
-  SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
-  FILE (MAKE_DIRECTORY "${module_builddir}")
-  CREATE_MODULE_CONFIG (${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
-    "${module_builddir}")
-  LIST (APPEND CMAKE_PREFIX_PATH "${module_builddir}")
-  #SET (ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} ${ZORBA_MODULES_DIR}/${module_dir}/src)
 ENDFOREACH (module_dir)
-#SET (ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} PARENT_SCOPE)
+
+# Next, form the DAG. This comprises one list containing only those
+# module projects that some other module project depends on
+# (dep_module_projects), and a series of CMake variables named
+# eg. "zorba-email-module_DEPS" containing the module projects that
+# the named project depends on. Doing this unfortunately requires us
+# to read through all CMakeLists.txt files again.
+SET (find_package_regex
+  "[Ff][Ii][Nn][Dd]_[Pp][Aa][Cc][Kk][Aa][Gg][Ee] *\\( *([^ )]*)")
+SET (dep_module_projects)
+FOREACH (module_dir ${module_dirs})
+  SET (module_project)
+  SET (cmakelists_file "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt")
+  FILE (STRINGS "${cmakelists_file}" cmakelists
+    REGEX "${project_regex}|${find_package_regex}")
+  FOREACH (line ${cmakelists})
+    IF (line MATCHES "${project_regex}")
+      # Don't have to do error checking here; was done in last pass.
+      SET (module_project "${CMAKE_MATCH_1}")
+    ELSEIF (line MATCHES "${find_package_regex}")
+      SET (dependee ${CMAKE_MATCH_1})
+      # Ensure this dependency is a known module project, and not some
+      # other dependency like "Zorba" - don't want those in the DAG.
+      LIST (FIND module_projects "${dependee}" is_known)
+      IF (is_known GREATER -1)
+	message (STATUS "${module_project} depends on ${dependee}")
+	# Save the dependency in a variable based on the current project
+	LIST (APPEND "${module_project}_DEPS" ${dependee})
+	# Also add this dependee to dep_module_projects
+	LIST (APPEND dep_module_projects ${dependee})
+      ENDIF (is_known GREATER -1)
+    ENDIF (line MATCHES "${project_regex}")
+  ENDFOREACH (line)
+
+ENDFOREACH (module_dir)
+
+
+# Now, transform the DAG into a dependency-ordered list. See
+# http://en.wikipedia.org/wiki/Topological_sorting .
+SET (no_deps)
+SET (visited)
+SET (ordered_modules)
+MACRO (VISIT mod_name)
+  LIST (FIND visited "${mod_name}" is_visited)
+  IF (is_visited EQUAL -1)
+    # Haven't seen this module before; iterate through modules that depend on it
+    LIST (APPEND visited "${mod_name}")
+    FOREACH (depender ${${mod_name}_DEPS})
+      VISIT ("${depender}")
+    ENDFOREACH (depender)
+    # Now that all modules that depend on it have been added, add this one
+    LIST (APPEND ordered_modules "${mod_name}")
+  ELSE (is_visited EQUAL -1)
+  ENDIF (is_visited EQUAL -1)
+ENDMACRO (VISIT)
+# Annoying - LIST(REMOVE_DUPLICATES) dies if the list is empty.
+LIST (LENGTH dep_module_projects num_deps)
+IF (num_deps GREATER 0)
+  LIST (REMOVE_DUPLICATES dep_module_projects)
+ENDIF (num_deps GREATER 0)
+FOREACH (module_project ${module_projects})
+  # Only initially visit those modules projects that do NOT have any
+  # module projects depending on them; that is, only visit those module
+  # projects that are NOT in dep_module_projects.
+  LIST (FIND dep_module_projects "${module_project}" is_dep)
+  IF (is_dep EQUAL -1)
+    VISIT (${module_project})
+  ENDIF (is_dep EQUAL -1)
+
+ENDFOREACH (module_project)
 
 # Each of these projects will also want to be able to
 # FIND_PACKAGE(Zorba), so add our own build dir to the CMake module
@@ -89,9 +165,16 @@ LIST (APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 # Now, iterate through all the module projects again and actually add
 # them to this Zorba project. Create a binary directory for them
 # inside our own.
-FOREACH (module_dir ${module_dirs})
+FOREACH (module_project ${ordered_modules})
+  # Create the module binary directory and add it to CMAKE_PREFIX_PATH
+  # so other modules can find it. Then, add the module project
+  # directory.
+  SET (module_dir "${${module_project}_DIR}")
+  SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
+  FILE (MAKE_DIRECTORY "${module_builddir}")
+  LIST (APPEND CMAKE_PREFIX_PATH "${module_builddir}")
   ADD_SUBDIRECTORY("${ZORBA_MODULES_DIR}/${module_dir}"
-    "${CMAKE_BINARY_DIR}/zorba_modules/zorba_${module_dir}_module")
-ENDFOREACH (module_dir)
+    "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
+ENDFOREACH (module_project)
 
 MESSAGE(STATUS "End modules")
