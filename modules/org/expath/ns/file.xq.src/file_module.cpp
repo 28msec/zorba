@@ -46,6 +46,8 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new ReadBinaryFunction(this);
     } else if (aLocalname == "read-text") {
       lFunc = new ReadTextFunction(this);
+    } else if (aLocalname == "read-text-lines") {
+      lFunc = new ReadTextLinesFunction(this);
     } else if (aLocalname == "exists") {
       lFunc = new ExistsFunction(this);
     } else if (aLocalname == "is-directory") {

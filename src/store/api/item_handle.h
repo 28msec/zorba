@@ -39,6 +39,7 @@ public:
     T** t;
     void** v;
   };
+
 public:
   ItemHandle() : p(0)
   {

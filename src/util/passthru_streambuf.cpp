@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "passthru_streambuf.h"
-
 using namespace std;
 
 namespace zorba {
@@ -47,7 +47,7 @@ bool passthru_streambuf::is_necessary( char const *cc_charset ) {
 }
 
 bool passthru_streambuf::is_supported( char const *cc_charset ) {
-  return !is_necessary( charset );
+  return !is_necessary( cc_charset );
 }
 
 passthru_streambuf::pos_type

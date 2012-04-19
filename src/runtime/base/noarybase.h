@@ -24,8 +24,6 @@
 
 namespace zorba
 {
-extern const ::zorba::serialization::ClassVersion g_NoaryBaseIterator_class_versions[];
-extern const int g_NoaryBaseIterator_class_versions_count;
 
 
 /*******************************************************************************
@@ -36,7 +34,7 @@ template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(NoaryBaseIterator);
+  SERIALIZABLE_ABSTRACT_CLASS(NoaryBaseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoaryBaseIterator, Batcher<IterType>);
 

@@ -223,6 +223,124 @@ ReadTextFunction::evaluate(
 
 //*****************************************************************************
 
+ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadTextLinesFunction::evaluate(
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = getFilePathString(aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+  String lEncoding("UTF-8");
+
+  // preconditions
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lFile->getFilePath());
+  }
+  if (lFile->isDirectory()) {
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
+  }
+
+  lEncoding = getEncodingArg(aArgs, 1);
+
+  return ItemSequence_t(new LinesItemSequence(lFile, lEncoding, this));
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesItemSequence(
+    const File_t& aFile,
+    const String& aEncoding,
+    const ReadTextLinesFunction* aFunc)
+  : theFile(aFile),
+    theEncoding(aEncoding),
+    theFunc(aFunc)
+{
+}
+
+Iterator_t
+ReadTextLinesFunction::LinesItemSequence::getIterator()
+{
+  return new ReadTextLinesFunction::LinesItemSequence::LinesIterator(
+      theFile, theEncoding, theFunc
+    );
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::LinesIterator(
+    const File_t& aFile,
+    const String& aEncoding,
+    const ReadTextLinesFunction* aFunc)
+  : theFile(aFile),
+    theEncoding(aEncoding),
+    theFunc(aFunc),
+    theStream(0)
+{
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::~LinesIterator()
+{
+  delete theStream;
+}
+
+void
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::open()
+{
+  if ( transcode::is_necessary( theEncoding.c_str() ) )
+  {
+    try
+    {
+      theStream = new transcode::stream<std::ifstream>(theEncoding.c_str());
+    }
+    catch (std::invalid_argument const& e)
+    {
+      theFunc->raiseFileError("FOFL0006", "Unsupported encoding", theEncoding.c_str());
+    }
+  }
+  else
+  {
+    theStream = new std::ifstream();
+  }
+  theFile->openInputStream(*theStream, false, true);
+}
+
+bool
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes)
+{
+  if (!theStream || !theStream->good())
+    return false;
+
+  std::string lStr;
+  getline(*theStream, lStr);
+  
+  if (theStream->bad())
+  {
+    return false;
+  }
+  else
+  {
+    aRes = theFunc->theModule->getItemFactory()->createString(lStr);
+    return true;
+  }
+}
+
+void
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::close()
+{
+  delete theStream;
+  theStream = 0;
+}
+
+bool
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::isOpen() const
+{
+  return theStream != 0;
+}
+
+//*****************************************************************************
+
 ExistsFunction::ExistsFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {

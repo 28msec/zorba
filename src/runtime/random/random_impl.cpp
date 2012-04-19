@@ -45,7 +45,7 @@ SeededRandomIterator::nextImpl(
 
   consumeNext(seed, theChildren[0].getp(), planState);
   consumeNext(num, theChildren[1].getp(), planState);
-  if ( num->getIntegerValue() < xs_integer( 0 ) ) 
+  if ( num->getIntegerValue() < 0 ) 
   {
     STACK_PUSH(false, state);
   }
@@ -110,7 +110,7 @@ RandomIterator::nextImpl(
   DEFAULT_STACK_INIT(RandomIteratorState, state, planState);
 
   consumeNext(num, theChildren[0].getp(), planState);
-  if ( num->getIntegerValue() < xs_integer( 0 ) ) 
+  if ( num->getIntegerValue() < 0 ) 
   {
     STACK_PUSH(false, state);
   }

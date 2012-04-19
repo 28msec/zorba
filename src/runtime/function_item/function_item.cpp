@@ -25,16 +25,18 @@
 #include "functions/signature.h"
 #include "functions/function.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) :
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) 
+  :
   store::Item(store::Item::FUNCTION)
 {
 }

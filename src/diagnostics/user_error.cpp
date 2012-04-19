@@ -16,7 +16,9 @@
 #include "stdafx.h"
 
 #include <zorba/error.h>
-#include "zorbaserialization/serialization_engine.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba {
 
