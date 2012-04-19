@@ -200,7 +200,9 @@ public:
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
-  bool is_integer() const;
+  bool is_xs_int() const;
+  bool is_xs_integer() const;
+  bool is_xs_long() const;
 
   uint32_t hash() const;
 
@@ -226,8 +228,6 @@ private:
   Decimal( value_type const &v ) : value_( v ) { }
 
   static uint32_t hash( value_type const& );
-
-  bool is_xs_long() const;
 
   enum parse_options {
     parse_integer,
@@ -387,13 +387,18 @@ inline uint32_t Decimal::hash() const {
   return hash( value_ );
 }
 
-inline bool Decimal::is_integer() const {
+inline bool Decimal::is_xs_int() const {
+  return value_.is_integer() &&
+         value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
+}
+
+inline bool Decimal::is_xs_integer() const {
   return value_.is_integer() != 0;
 }
 
 inline bool Decimal::is_xs_long() const {
   return value_.is_integer() &&
-         value_ > MAPM::getMinInt64() && value_ < MAPM::getMaxInt64();
+         value_ >= MAPM::getMinInt64() && value_ <= MAPM::getMaxInt64();
 }
 
 inline int Decimal::sign() const {

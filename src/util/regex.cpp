@@ -238,7 +238,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( !open_cap_subs )
+            if ( !open_cap_subs || cur_cap_sub == 0 )
               throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
             cap_sub[ --cur_cap_sub ] = false;
           }

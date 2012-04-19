@@ -57,8 +57,11 @@
 using namespace std;
 
 #ifdef UNIX
-//external variables
 extern char **environ;
+#  ifdef APPLE
+#    include <crt_externs.h>
+#    define environ (*_NSGetEnviron())
+#  endif
 #endif
 
 namespace zorba
