@@ -840,6 +840,122 @@ FnDocAvailableIterator::~FnDocAvailableIterator() {}
 // </FnDocAvailableIterator>
 
 
+// <FnAvailableEnvironmentVariablesIterator>
+FnAvailableEnvironmentVariablesIterator::class_factory<FnAvailableEnvironmentVariablesIterator>
+FnAvailableEnvironmentVariablesIterator::g_class_factory;
+
+
+void FnAvailableEnvironmentVariablesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnAvailableEnvironmentVariablesIterator::~FnAvailableEnvironmentVariablesIterator() {}
+
+FnAvailableEnvironmentVariablesIteratorState::FnAvailableEnvironmentVariablesIteratorState() {}
+
+FnAvailableEnvironmentVariablesIteratorState::~FnAvailableEnvironmentVariablesIteratorState() {}
+
+// </FnAvailableEnvironmentVariablesIterator>
+
+
+// <FnEnvironmentVariableIterator>
+FnEnvironmentVariableIterator::class_factory<FnEnvironmentVariableIterator>
+FnEnvironmentVariableIterator::g_class_factory;
+
+
+void FnEnvironmentVariableIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnEnvironmentVariableIterator::~FnEnvironmentVariableIterator() {}
+
+// </FnEnvironmentVariableIterator>
+
+
+// <FnUnparsedTextIterator>
+FnUnparsedTextIterator::class_factory<FnUnparsedTextIterator>
+FnUnparsedTextIterator::g_class_factory;
+
+
+void FnUnparsedTextIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnUnparsedTextIterator::~FnUnparsedTextIterator() {}
+
+// </FnUnparsedTextIterator>
+
+
+// <FnUnparsedTextAvailableIterator>
+FnUnparsedTextAvailableIterator::class_factory<FnUnparsedTextAvailableIterator>
+FnUnparsedTextAvailableIterator::g_class_factory;
+
+
+void FnUnparsedTextAvailableIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnUnparsedTextAvailableIterator::~FnUnparsedTextAvailableIterator() {}
+
+// </FnUnparsedTextAvailableIterator>
+
+
+// <FnUnparsedTextLinesIterator>
+FnUnparsedTextLinesIterator::class_factory<FnUnparsedTextLinesIterator>
+FnUnparsedTextLinesIterator::g_class_factory;
+
+
+void FnUnparsedTextLinesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnUnparsedTextLinesIterator::~FnUnparsedTextLinesIterator() {}
+
+FnUnparsedTextLinesIteratorState::FnUnparsedTextLinesIteratorState() {}
+
+// </FnUnparsedTextLinesIterator>
+
+
 
 }
 

@@ -74,6 +74,8 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
+  { "FOUT1170", "\"$1\": error retrieving resource containing text" },
+  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -755,7 +757,7 @@ extern entry const dict_en[] = {
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
 #if !defined(ZORBA_NO_ICU)
-  { "~UnbalancedChar_3", "missing '$3'" },
+  { "~UnbalancedChar_3", "unbalanced '$3'" },
 #endif
 #if !defined(ZORBA_NO_ICU)
   { "~UnescapedChar_3", "character '$3' must be escaped here" },

@@ -1142,7 +1142,23 @@
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
+    </diagnostic>  
+    
+    <diagnostic code="FOUT1170">
+      <comment>
+       Identifier cannot be used to retrive a resource containing text
+      </comment>
+      <value>"$1": error retrieving resource containing text</value>
     </diagnostic>
+    
+    <diagnostic code="FOUT1190">
+      <comment>
+       Retrieved resource contains octets that cannot be decoded into Unicode 
+       using the specified encoding, the resulting characters are not 
+       permitted XML characters or requested encoding not supported
+      </comment>
+      <value>"$1": Cannot decode resource retrieved</value>
+    </diagnostic>  
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
@@ -3381,7 +3397,7 @@
     </entry>
 
     <entry key="UnbalancedChar_3" if="!defined(ZORBA_NO_ICU)">
-      <value>missing '$3'</value>
+      <value>unbalanced '$3'</value>
     </entry>
 
     <entry key="UnescapedChar_3" if="!defined(ZORBA_NO_ICU)">
