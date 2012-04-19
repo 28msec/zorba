@@ -830,28 +830,31 @@ bool BinArchiver::read_next_field_impl(
   if(*field_treat != ARCHIVE_FIELD_NULL)
   {
 #ifdef NDEBUG
-    if(*is_class && (*field_treat == ARCHIVE_FIELD_PTR))
+    if (*is_class && (*field_treat == ARCHIVE_FIELD_PTR))
 #endif
     {
-      unsigned int field_type_pos;
-      //read_string(field_type);
-      field_type_pos = read_int_exp2();
-      if(field_type_pos)
+      unsigned int field_type_pos = read_int_exp2();
+
+      if (field_type_pos)
         *type = (char*)strings.at(field_type_pos-1).str.c_str();
       else
         *type = NULL;
     }
+
     *id = read_int_exp() + this->last_id;
     this->last_id = *id;
-    if(*field_treat != ARCHIVE_FIELD_REFERENCING)
+
+    if (*field_treat != ARCHIVE_FIELD_REFERENCING)
     {
       unsigned int value_pos;
       value_pos = read_int_exp2();
-      if(value_pos)
+      if (value_pos)
        *value = strings.at(value_pos-1).str;
     }
     else
+    {
      *referencing = read_int();
+    }
   }
 
   return true;
@@ -867,7 +870,7 @@ void BinArchiver::read_end_current_level_impl()
   unsigned char  tempbyte = 0;
 
   tempbyte = read_bits(8);
-  if(tempbyte != 0xFF)
+  if (tempbyte != 0xFF)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
   }
