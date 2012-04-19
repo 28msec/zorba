@@ -277,6 +277,30 @@ void mkdir( char const *path ) {
 #endif
 }
 
+void lsdir( char const *path, std::vector<std::string> &list )
+{
+  DIR *dir;
+  struct dirent *ent;
+
+  dir = opendir (path);
+  if (dir != NULL)
+  {
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL)
+    {
+      //printf ("%s\n", ent->d_name);
+      std::string item(ent->d_name);
+      list.push_back(item);
+    }
+    closedir (dir);
+  }
+  else
+  {
+    /* could not open directory */
+    throw fs::exception( "lsdir()", path );
+  }
+}
+
 bool remove( char const *path ) {
 #ifndef WIN32
   return ::remove( path ) == 0;

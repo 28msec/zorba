@@ -96,7 +96,7 @@ void XmlArchiver::serialize_out()
   encode_string(theArchiveInfo.c_str());
   write_string("\" ");
   *os << "archive_version=\"" << theArchiveVersion << "\" ";
-  *os << "nr_ids=\"" << nr_ids << "\" >" << std::endl;
+  *os << "nr_ids=\"" << theFieldCounter << "\" >" << std::endl;
   serialize_compound_fields(theRootField);
   write_string("</zorba_archive>\n");
 }
@@ -420,7 +420,7 @@ bool XmlArchiver::read_root_tag(char c)
     else if(!strcmp(attrib_name, "nr_ids"))
     {
       read_attrib_value(attrib_value);
-      nr_ids = atoi(attrib_value);
+      theFieldCounter = atoi(attrib_value);
     }
   }
   root_tag_is_read();

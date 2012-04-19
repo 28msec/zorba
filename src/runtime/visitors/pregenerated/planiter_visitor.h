@@ -120,6 +120,8 @@ namespace zorba{
 
     class DeclaredICsIterator;
 
+    class FnURICollectionIterator;
+
     class CurrentDateTimeIterator;
 
     class CurrentDateIterator;
@@ -530,6 +532,16 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
+    class FnAvailableEnvironmentVariablesIterator;
+
+    class FnEnvironmentVariableIterator;
+
+    class FnUnparsedTextIterator;
+
+    class FnUnparsedTextAvailableIterator;
+
+    class FnUnparsedTextLinesIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
@@ -764,6 +776,9 @@ public:
 
     virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
     virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
+
+    virtual void beginVisit ( const FnURICollectionIterator& ) = 0;
+    virtual void endVisit   ( const FnURICollectionIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
@@ -1378,6 +1393,21 @@ public:
 
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+    virtual void endVisit   ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+
+    virtual void beginVisit ( const FnEnvironmentVariableIterator& ) = 0;
+    virtual void endVisit   ( const FnEnvironmentVariableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextAvailableIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextLinesIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextLinesIterator& ) = 0;
 
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;

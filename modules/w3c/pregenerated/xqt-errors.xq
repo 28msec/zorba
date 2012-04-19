@@ -1240,6 +1240,24 @@ declare variable $err:FOTY0015 as xs:QName := fn:QName($err:NS, "err:FOTY0015");
 
 (:~
  :
+ : Identifier cannot be used to retrive a resource containing text
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
+
+(:~
+ :
+ : Retrieved resource contains octets that cannot be decoded into Unicode 
+ : using the specified encoding, the resulting characters are not 
+ : permitted XML characters or requested encoding not supported
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
+
+(:~
+ :
  : It is a static error if an updating expression is used in any position
  : other than one of the following:
  : - The topmost expression in the body of a query.
