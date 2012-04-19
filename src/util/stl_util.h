@@ -292,6 +292,80 @@ le0( IntType n ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+//
+// These functions are used to test whether a value of numeric type N1 is
+// within the range of another numeric type N2.  It correctly handles the
+// cases where the "signed-ness" of N1 and N2 differ such that the code is
+// warning-free.
+//
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= std::numeric_limits<N2>::min();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= 0;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= 0 || static_cast<N2>( n1 ) <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= static_cast<N1>( std::numeric_limits<N2>::max() );
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+#define ZORBA_GE_MIN(N,T) \
+  ::zorba::ztd::ge_min( N, static_cast<T>(0) )
+
+#define ZORBA_LE_MAX(N,T) \
+  ::zorba::ztd::le_max( N, static_cast<T>(0) )
+
+#define ZORBA_IN_RANGE(N,T) \
+  ( ZORBA_GE_MIN(N,T) && ZORBA_LE_MAX(N,T) )
+
+///////////////////////////////////////////////////////////////////////////////
+
 template<typename T> class stack_generator {
   std::stack<T> &stk;
 public:

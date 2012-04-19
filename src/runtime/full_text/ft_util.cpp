@@ -29,11 +29,9 @@ namespace zorba {
 
 ft_int to_ft_int( xs_integer const &i ) {
   try {
-    std::cout << "HERE: i = " << i.toString() << std::endl;
     return to_xs_unsignedInt( i );
   }
   catch ( std::range_error const& ) {
-    std::cerr << "THROWING EXCEPTION" << std::endl;
     throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
   }
 }
