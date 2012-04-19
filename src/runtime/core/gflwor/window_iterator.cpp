@@ -150,7 +150,7 @@ void WindowVars::bindIntern(
 
   if (!theCurVars.empty())
   {
-    aInputSeq->getItem(aPosition, lItem);
+    aInputSeq->getItem(xs_integer(aPosition), lItem);
     bindVariables(lItem, theCurVars, aPlanState);
   }
 
@@ -158,7 +158,7 @@ void WindowVars::bindIntern(
   {
     if (aPosition > 1)
     {
-      aInputSeq->getItem(aPosition - 1, lItem);
+      aInputSeq->getItem(xs_integer(aPosition - 1), lItem);
     }
     else
     {
@@ -170,9 +170,9 @@ void WindowVars::bindIntern(
 
   if (!theNextVars.empty())
   {
-    if (aInputSeq->containsItem(aPosition + 1))
+    if (aInputSeq->containsItem(xs_integer(aPosition + 1)))
     {
-      aInputSeq->getItem(aPosition + 1, lItem);
+      aInputSeq->getItem(xs_integer(aPosition + 1), lItem);
     }
     else
     {
@@ -185,7 +185,7 @@ void WindowVars::bindIntern(
   if (!thePosVars.empty())
   {
     store::Item_t lPosItem;
-    GENV_ITEMFACTORY->createInteger(lPosItem, Integer(aPosition));
+    GENV_ITEMFACTORY->createInteger(lPosItem, xs_integer(aPosition));
     bindVariables(lPosItem, thePosVars, aPlanState);
   }
 }
@@ -208,7 +208,7 @@ void WindowVars::bindExtern(
 
   if (!theCurOuterVars.empty())
   {
-    aInputSeq->getItem(aPosition, lItem);
+    aInputSeq->getItem(xs_integer(aPosition), lItem);
     bindVariables(lItem, theCurOuterVars, aPlanState);
   }
 
@@ -216,7 +216,7 @@ void WindowVars::bindExtern(
   {
     if (aPosition > 1)
     {
-      aInputSeq->getItem(aPosition - 1, lItem);
+      aInputSeq->getItem(xs_integer(aPosition - 1), lItem);
     }
     else
     {
@@ -228,9 +228,9 @@ void WindowVars::bindExtern(
 
   if (!theNextOuterVars.empty())
   {
-    if (aInputSeq->containsItem(aPosition + 1))
+    if (aInputSeq->containsItem(xs_integer(aPosition + 1)))
     {
-      aInputSeq->getItem(aPosition + 1, lItem);
+      aInputSeq->getItem(xs_integer(aPosition + 1), lItem);
     }
     else
     {
@@ -716,11 +716,14 @@ void WindowIterator::bindVariable(
     ulong aStartPos,
     ulong aEndPos) const
 {
+  xs_integer const lStartPos( aStartPos );
+  xs_integer const lEndPos( aEndPos );
+
   for (std::vector<LetVarIter_t>::const_iterator lVarIter = theVarRefs.begin();
        lVarIter != theVarRefs.end();
        ++lVarIter)
   {
-    (*lVarIter)->bind(aInputSeq, aPlanState, aStartPos, aEndPos);
+    (*lVarIter)->bind(aInputSeq, aPlanState, lStartPos, lEndPos);
   }
 }
 
@@ -736,13 +739,13 @@ void WindowIterator::doGarbageCollection(WindowState* lState) const
     if (lState->theOpenWindows.empty())
     {
       if (lState->theCurInputPos > theMaxNeededHistory)
-        lState->theDomainSeq->purgeUpTo(lState->theCurInputPos - theMaxNeededHistory);
+        lState->theDomainSeq->purgeUpTo(xs_integer(lState->theCurInputPos - theMaxNeededHistory));
     }
     else
     {
       int32_t lPurgeTo = lState->theOpenWindows.front().theStartPos - theMaxNeededHistory;
       if (lPurgeTo > 0)
-        lState->theDomainSeq->purgeUpTo(lPurgeTo);
+        lState->theDomainSeq->purgeUpTo(xs_integer(lPurgeTo));
     }
   }
 }
@@ -769,7 +772,8 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
     if (theWindowType == WindowIterator::SLIDING)
     {
       // Get the next item from the domain sequence
-      while (lState->theDomainSeq->containsItem(lState->theCurInputPos))
+      // TODO: can the xs_integer be hoisted?
+      while (lState->theDomainSeq->containsItem(xs_integer(lState->theCurInputPos)))
       {
         // If the current item satisfies the start condition, create a candidate
         // window starting at the current domain item.
@@ -857,7 +861,8 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       // Doing this switch now also avoids further overhad
       if (theEndClause.theHasEndClause)
       {
-        while (lState->theDomainSeq->containsItem(lState->theCurInputPos))
+        // TODO: can the xs_integer be hoisted?
+        while (lState->theDomainSeq->containsItem(xs_integer(lState->theCurInputPos)))
         {
           if (lState->theOpenWindows.empty() &&
               theStartClause.evaluate(aPlanState,
@@ -898,7 +903,8 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       }
       else
       {
-        while (lState->theDomainSeq->containsItem(lState->theCurInputPos))
+        // TODO: can the xs_integer be hoisted?
+        while (lState->theDomainSeq->containsItem(xs_integer(lState->theCurInputPos)))
         {
           if (theStartClause.evaluate(aPlanState,
                                       lState->theDomainSeq,

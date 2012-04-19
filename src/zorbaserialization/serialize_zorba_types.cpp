@@ -383,8 +383,9 @@ void operator&(Archiver& ar, store::Item*& obj)
     if (obj == NULL)
     {
       ar.add_compound_field("store::Item*", 
-                            FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            FIELD_IS_CLASS,
+                            "NULL", 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
       return;
     }
@@ -866,6 +867,7 @@ EndAtomicItem:;
     {
       if(!is_node)
         ar.register_item(obj);
+
       ar.read_end_current_level();
     }
     else
@@ -881,8 +883,10 @@ EndAtomicItem:;
           );
         }
       }
-      else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
-        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
+      else if (!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
+      {
+        ZORBA_ASSERT(false);
+      }
       else
         obj = NULL;
     }
@@ -894,7 +898,7 @@ EndAtomicItem:;
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
+void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
 {
   //only for node items
   //serialize first whole tree and then the item (will surely be a reference)
@@ -932,7 +936,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       ar.add_compound_field("NULL", 
                             !FIELD_IS_CLASS,
                             "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
 
       ar.set_is_temp_field(true);
@@ -1107,7 +1111,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
         }
       }
       else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
-        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
+      {
+        ZORBA_ASSERT(false);
+      }
       else
         obj = NULL;
     }
@@ -1121,7 +1127,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
 ********************************************************************************/
 void serialize_json_object(Archiver &ar, store::Item *&obj)
 {
-  xs_integer lSize = 0;
+  xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())
   {
     lSize = obj->getSize();
@@ -1170,7 +1176,7 @@ void serialize_json_object(Archiver &ar, store::Item *&obj)
 ********************************************************************************/
 void serialize_json_array(Archiver &ar, store::Item *&obj)
 {
-  xs_integer lSize = 0;
+  xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())
   {
     lSize = obj->getSize();
@@ -1238,29 +1244,30 @@ void serialize_json_tree(Archiver &ar, store::Item *&obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, zorba::store::TempSeq *obj)
+void operator&(Archiver& ar, zorba::store::TempSeq* obj)
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "TempSeq" )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+  ERROR_PARAMS("TempSeq"));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, const Diagnostic *&obj)
+void operator&(Archiver& ar, const Diagnostic*& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
-    if(obj == NULL)
+    if (obj == NULL)
     {
       ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            !FIELD_IS_CLASS,
+                            "NULL", 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
       return;
     }
+
     bool is_ref;
     assert(!ar.is_serialize_base_class());
     Diagnostic *diagnostic = const_cast<Diagnostic*>(obj);
@@ -1283,13 +1290,15 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
             xquery_err != NULL ? 1 : 0,
             zorba_err != NULL ? 1 : 0);
 #endif
+
     is_ref = ar.add_compound_field("Diagnostic*", 
-                                   !FIELD_IS_CLASS, err_type, 
+                                   !FIELD_IS_CLASS,
+                                   err_type, 
                                    obj, 
                                    ARCHIVE_FIELD_PTR);
-    if(!is_ref)
+    if (!is_ref)
     {
-      if(user_err)
+      if (user_err)
       {
         ar & user_err->qname_;
       }
@@ -1367,7 +1376,7 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "Diagnostic*", referencing);
+      ZORBA_ASSERT(false);
     }
   }
 
@@ -1377,43 +1386,48 @@ void operator&(Archiver &ar, const Diagnostic *&obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, ZorbaException *&obj)
+void operator&(Archiver& ar, ZorbaException*& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
-    if(obj == NULL)
+    if (obj == NULL)
     {
       ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            !FIELD_IS_CLASS,
+                            "NULL", 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
       return;
     }
-    bool is_ref;
+
     assert(!ar.is_serialize_base_class());
-    UserException *user_ex = dynamic_cast<UserException*>(obj);
-    XQueryException *xquery_ex = dynamic_cast<XQueryException*>(obj);
+
+    UserException* user_ex = dynamic_cast<UserException*>(obj);
+    XQueryException* xquery_ex = dynamic_cast<XQueryException*>(obj);
     char ex_type[20];
     sprintf(ex_type, "u%dx%d", 
             user_ex != NULL ? 1 : 0,
             xquery_ex != NULL ? 1 : 0);
-    is_ref = ar.add_compound_field("ZorbaException*", 
-                                   !FIELD_IS_CLASS, ex_type,
-                                   obj, 
-                                   ARCHIVE_FIELD_PTR);
-    if(!is_ref)
+
+    bool is_ref = ar.add_compound_field("ZorbaException*", 
+                                        !FIELD_IS_CLASS,
+                                        ex_type,
+                                        obj, 
+                                        ARCHIVE_FIELD_PTR);
+    if (!is_ref)
     {
       ar & obj->diagnostic_;
       ar & obj->raise_file_;
       ar & obj->raise_line_;
       ar & obj->message_;
 
-      if(xquery_ex)
+      if (xquery_ex)
       {
         ar & xquery_ex->source_loc_;
         ar & xquery_ex->query_trace_;
       }
-      if(user_ex)
+
+      if (user_ex)
       {
         ar & user_ex->error_object_;
       }
@@ -1442,13 +1456,15 @@ void operator&(Archiver &ar, ZorbaException *&obj)
       ar.read_end_current_level();
       return;
     }
-    if(field_treat == ARCHIVE_FIELD_PTR)
+
+    if (field_treat == ARCHIVE_FIELD_PTR)
     {
       int is_user, is_xquery;
       sscanf(value.c_str(), "u%dx%d", &is_user, &is_xquery);
-      UserException *user_ex = NULL;
-      XQueryException *xquery_ex = NULL;
-      if(is_user)
+      UserException* user_ex = NULL;
+      XQueryException* xquery_ex = NULL;
+
+      if (is_user)
       {
         user_ex = new UserException(ar);
         xquery_ex = user_ex;
@@ -1485,7 +1501,7 @@ void operator&(Archiver &ar, ZorbaException *&obj)
     }
     else
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "ZorbaException*", referencing);
+      ZORBA_ASSERT(false);
     }
   }
 
@@ -1495,7 +1511,7 @@ void operator&(Archiver &ar, ZorbaException *&obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
+void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
 {
   if(ar.is_serializing_out())
   {
@@ -1543,7 +1559,7 @@ void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver &ar, zorba::Item &obj)
+void operator&(Archiver& ar, zorba::Item& obj)
 {
   if(ar.is_serializing_out())
   {

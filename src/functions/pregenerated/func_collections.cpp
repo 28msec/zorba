@@ -171,6 +171,16 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_declared_integrity_const
   return new DeclaredICsIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_uri_collection_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnURICollectionIterator(sctx, loc, argv);
+}
+
 void populate_context_collections(static_context* sctx)
 {
 
@@ -1255,6 +1265,29 @@ void populate_context_collections(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","declared-integrity-constraints"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DECLARED_INTEGRITY_CONSTRAINTS_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_1);
 
   }
 

@@ -46,12 +46,6 @@
 
 namespace zorba{
 
-SERIALIZABLE_CLASS_VERSIONS(RCObject)
-
-SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
-
-SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
-
 // QQQ should be zstring?
 typedef serializable_hashmap<std::string,xqtref_t> SER_HASHMAP_T;
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, SER_HASHMAP_T, 3)

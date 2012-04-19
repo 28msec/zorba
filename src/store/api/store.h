@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
 
-#include <zorba/config.h>
+#include "zorba/config.h"
 #include "zorbatypes/schema_types.h"
 
 #include "store/api/shared_types.h"

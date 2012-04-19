@@ -1,0 +1,1 @@
+fn:matches("bbba", "((a)|(b))*\3")

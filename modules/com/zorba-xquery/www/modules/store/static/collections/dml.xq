@@ -42,7 +42,7 @@ xquery version "3.0";
  :)
 module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -326,7 +326,7 @@ cdml:insert-after($name as xs:QName, $target as node(), $content as item()*) ext
  : @see cdml:insert-nodes
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-nodes($name as xs:QName, $content as node()*) as node()* external;
 
 
@@ -350,9 +350,12 @@ cdml:apply-insert-nodes($name as xs:QName, $content as node()*) as node()* exter
  : @see cdml:insert
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert($name as xs:QName, $content as item()*) as item()* external;
 
+declare %an:sequential function cdml:apply-insert-nodes(
+  $name as xs:QName,
+  $content as node()*) as node()*  external;
 
 (:~
  : This function does the same as the insert-nodes-first function except
@@ -376,7 +379,7 @@ cdml:apply-insert($name as xs:QName, $content as item()*) as item()* external;
  : @see cdml:insert-nodes-first
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-nodes-first(
   $name as xs:QName, 
   $content as node()*) as node()* external;
@@ -404,9 +407,12 @@ cdml:apply-insert-nodes-first(
  : @see cdml:insert-first
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-first($name as xs:QName, $content as item()*) as item()* external;
 
+declare %an:sequential function cdml:apply-insert-nodes-first(
+  $name as xs:QName,
+  $content as node()*) as node()*  external;
 
 (:~
  : This function does the same as the insert-nodes-last function except
@@ -429,7 +435,7 @@ cdml:apply-insert-first($name as xs:QName, $content as item()*) as item()* exter
  : @see cdml:insert-nodes-last
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()*  external;
@@ -456,7 +462,7 @@ cdml:apply-insert-nodes-last(
  : @see cdml:insert-last
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-last($name as xs:QName, $content as item()*) as item()*  external;
 
 
@@ -486,7 +492,7 @@ cdml:apply-insert-last($name as xs:QName, $content as item()*) as item()*  exter
  : @see cdml:insert-nodes-before
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
@@ -519,7 +525,7 @@ cdml:apply-insert-nodes-before(
  : @see cdml:insert-before
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-before(
   $name as xs:QName,
   $target as item(),
@@ -552,7 +558,7 @@ cdml:apply-insert-before(
  : @see cdml:insert-nodes-after
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
@@ -585,7 +591,7 @@ cdml:apply-insert-nodes-after(
  : @see cdml:insert-after
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 cdml:apply-insert-after(
   $name as xs:QName,
   $pos as item(),
