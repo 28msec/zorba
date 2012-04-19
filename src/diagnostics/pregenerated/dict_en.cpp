@@ -748,7 +748,7 @@ extern entry const dict_en[] = {
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
 #if !defined(ZORBA_NO_ICU)
-  { "~UnbalancedChar_3", "missing '$3'" },
+  { "~UnbalancedChar_3", "unbalanced '$3'" },
 #endif
 #if !defined(ZORBA_NO_ICU)
   { "~UnescapedChar_3", "character '$3' must be escaped here" },
