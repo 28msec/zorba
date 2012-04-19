@@ -503,6 +503,7 @@ void rename( FromStringType const &from, ToStringType const &to ) {
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 zstring get_normalized_path( char const *path, char const *base = nullptr );
 
@@ -513,6 +514,7 @@ zstring get_normalized_path( char const *path, char const *base = nullptr );
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
 zstring get_normalized_path( PathStringType const &path,
@@ -527,6 +529,7 @@ zstring get_normalized_path( PathStringType const &path,
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
 void normalize_path( PathStringType &path, PathStringType const &base = "" ) {

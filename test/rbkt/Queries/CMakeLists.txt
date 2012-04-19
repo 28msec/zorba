@@ -109,10 +109,15 @@ SET(FOUND_XQFTTS 0)
 # depend on module features into the modules themselves.
 
 
-# Check if WordNet thesaurus is installed in the location tests expect
-IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+# Check if WordNet thesaurus is installed
+SET(WORDNET_THESAURUS_FILE 
+  "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth")
+IF(EXISTS "${WORDNET_THESAURUS_FILE}")
   SET(ZORBA_WORDNET_FOUND 1)
-ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+  # Kind of a weird place to put this directive, but convenient
+  INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
+    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet")
+ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
 
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")

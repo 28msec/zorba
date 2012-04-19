@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(FULLTEXT_SRCS
+    ft_util.cpp
     ft_match.cpp
     ft_query_item.cpp
     ft_single_token_iterator.cpp

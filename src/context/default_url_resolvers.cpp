@@ -41,7 +41,8 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == EntityData::COLLECTION)
+  if (aEntityData->getKind() == EntityData::COLLECTION ||
+      aEntityData->getKind() == EntityData::THESAURUS)
     return NULL;
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
@@ -82,7 +83,8 @@ Resource*
 FileURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == EntityData::COLLECTION)
+  if (aEntityData->getKind() == EntityData::COLLECTION ||
+      aEntityData->getKind() == EntityData::THESAURUS)
     return NULL;
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
@@ -109,7 +111,8 @@ Resource*
 ZorbaCollectionURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() != EntityData::COLLECTION)
+  if (aEntityData->getKind() != EntityData::COLLECTION ||
+      aEntityData->getKind() == EntityData::THESAURUS)
     return NULL;
 
   store::Item_t lName;

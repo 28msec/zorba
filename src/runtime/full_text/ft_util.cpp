@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "stdafx.h"
 
-#include <zorba/thesaurus.h>
+#include <stdexcept>
+
+#include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/numconversions.h"
+
+#include "ft_util.h"
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Thesaurus::~Thesaurus() {
-  // out-of-line since it's virtual
+ft_int to_ft_int( xs_integer const &i ) {
+  try {
+    return to_xs_unsignedInt( i );
+  }
+  catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
+  }
 }
-
-#if 0
-Thesaurus::iterator::~iterator() {
-  // out-of-line since it's virtual
-}
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

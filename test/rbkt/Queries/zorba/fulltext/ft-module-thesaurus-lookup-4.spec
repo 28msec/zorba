@@ -1,3 +1,3 @@
 Args: 
 --thesaurus 
-http://wordnet.princeton.edu:=$RBKT_BINARY_DIR/thesauri/wordnet-en.zth
+http://wordnet.princeton.edu:=wordnet://wordnet.princeton.edu

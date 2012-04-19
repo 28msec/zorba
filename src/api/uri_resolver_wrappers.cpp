@@ -27,14 +27,8 @@
 namespace zorba
 {
   // "Convenience" class for passing an internal EntityData object to
-  // external mappers/resolvers. This can serve as a plain EntityData or
-  // a ThesaurusEntityData. However, when there's another EntityData subclass
-  // in future, this won't work as EntityData becomes an ambiguous base class...
-#ifndef ZORBA_NO_FULL_TEXT
-  class EntityDataWrapper : public ThesaurusEntityData
-#else
+  // external mappers/resolvers.
   class EntityDataWrapper : public EntityData
-#endif /* ZORBA_NO_FULL_TEXT */
   {
   public:
     static EntityDataWrapper const* create(internal::EntityData const* aData) {
@@ -47,12 +41,7 @@ namespace zorba
         return new EntityDataWrapper(EntityData::SCHEMA);
 #ifndef ZORBA_NO_FULL_TEXT
       case internal::EntityData::THESAURUS:
-      {
-        EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
-        retval->theThesaurusLang =
-          dynamic_cast<const internal::ThesaurusEntityData*>(aData)->getLanguage();
-        return retval;
-      }
+        return new EntityDataWrapper(EntityData::THESAURUS);
       case internal::EntityData::STOP_WORDS:
         return new EntityDataWrapper(EntityData::STOP_WORDS);
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -69,21 +58,12 @@ namespace zorba
       return theKind;
     }
 
-#ifndef ZORBA_NO_FULL_TEXT
-    virtual zorba::locale::iso639_1::type getLanguage() const {
-      return theThesaurusLang;
-    }
-#endif /* ZORBA_NO_FULL_TEXT */
-
   private:
     EntityDataWrapper(EntityData::Kind aKind)
       : theKind(aKind)
     {}
 
     EntityData::Kind const theKind;
-#ifndef ZORBA_NO_FULL_TEXT
-    zorba::locale::iso639_1::type theThesaurusLang;
-#endif /* ZORBA_NO_FULL_TEXT */
   };
 
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)
@@ -171,13 +151,13 @@ namespace zorba
       }
 #ifndef ZORBA_NO_FULL_TEXT
       else {
-        Thesaurus* lUserThesaurus = dynamic_cast<Thesaurus*>(lUserPtr.get());
-        if (lUserThesaurus != NULL) {
-          // Here we pass memory ownership of the actual Thesaurus to the
-          // internal ThesaurusWrapper.
-          lRetval = new internal::ThesaurusWrapper
-              (Thesaurus::ptr(lUserThesaurus));
-          lUserPtr.release();
+        ThesaurusProvider* lUserThesaurusProvider =
+          dynamic_cast<ThesaurusProvider*>(lUserPtr.get());
+        if (lUserThesaurusProvider) {
+          // Here we pass memory ownership of the actual ThesaurusProvider to
+          // the internal ThesaurusWrapper.
+          lRetval = new internal::ThesaurusProviderWrapper
+              (lUserThesaurusProvider);
         }
         else {
           assert(false);

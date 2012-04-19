@@ -157,6 +157,28 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %xqftts::provider is a ThesaurusProvider for XQFTTS.
+ */
+class provider : public internal::ThesaurusProvider {
+public:
+  /**
+   * Constructs a %provider.
+   *
+   * @param path The absolute path of the thesaurus XML file.
+   */
+  provider( zstring const &path );
+
+  // inherited
+  bool getThesaurus( locale::iso639_1::type,
+                     internal::Thesaurus::ptr* = nullptr ) const;
+
+private:
+  zstring const path_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace xqftts
 } // namespace zorba
 
