@@ -72,6 +72,20 @@
   std::string Item::getNamespace () const
   { return std::string(theItem.getNamespace().c_str()); }
 
+  std::vector< std::pair< std::string, std::string > > Item::getNamespaceBindings () {
+    std::vector< std::pair< zorba::String, zorba::String > > items;
+    std::vector< std::pair< std::string, std::string > > result;
+    theItem->getNamespaceBindings(items);
+    std::vector< std::pair< zorba::String, zorba::String > >::iterator iter;
+    for(iter = items.begin(); iter != items.end(); iter++) {
+      std::pair< std::string, std::string > pair;
+      pair.first = (*iter).first.c_str();
+      pair.second = (*iter).second.c_str();
+      result.push_back(pair);
+    }
+    return result;
+  }
+
   bool Item::getNodeName (Item &aNodeName) const
   { return theItem.getNodeName( aNodeName.theItem ); }
 

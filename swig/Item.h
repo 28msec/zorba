@@ -49,6 +49,9 @@ public:
   long long getLongValue () const;
   std::string getLocalName () const;
   std::string getNamespace () const;
+
+  std::vector< std::pair< std::string, std::string > > getNamespaceBindings ();
+  
   bool getNodeName (Item &aNodeName) const;
   Item 	getParent () const;
   std::string getPrefix () const;
