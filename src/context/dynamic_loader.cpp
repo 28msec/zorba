@@ -180,7 +180,7 @@ DynamicLoader::createModule(handle_t handle, const zstring& aFile) const
   ExternalModule* (*createModuleFunction)() = NULL;
 
 #ifdef WIN32
-  createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
+  createModuleFunction = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
   if (createModuleFunction == NULL)
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,

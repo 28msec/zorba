@@ -75,7 +75,7 @@
   std::vector< std::pair< std::string, std::string > > Item::getNamespaceBindings () {
     std::vector< std::pair< zorba::String, zorba::String > > items;
     std::vector< std::pair< std::string, std::string > > result;
-    theItem->getNamespaceBindings(items);
+    theItem.getNamespaceBindings(items);
     std::vector< std::pair< zorba::String, zorba::String > >::iterator iter;
     for(iter = items.begin(); iter != items.end(); iter++) {
       std::pair< std::string, std::string > pair;

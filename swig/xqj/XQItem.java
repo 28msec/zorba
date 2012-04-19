@@ -23,6 +23,8 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -46,6 +48,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.Iterator;
 import org.zorbaxquery.api.SerializationOptions;
+import org.zorbaxquery.api.StringPair;
+import org.zorbaxquery.api.StringPairVector;
 
 class XQItem implements javax.xml.xquery.XQItem {
 
@@ -257,8 +261,6 @@ class XQItem implements javax.xml.xquery.XQItem {
                 case XQItemType.XQITEMKIND_TEXT:
                     result = doc.createTextNode(item.getStringValue());
                     break;
-                default:
-                    throw new XQException("Error getting the node for this Item Kind.");
             }
         } catch (Exception ex) {
             throw new XQException("Error converting Item to Node" + ex.getLocalizedMessage());
@@ -276,7 +278,18 @@ class XQItem implements javax.xml.xquery.XQItem {
         URI result;
         String namespace = "";
         try {
-            namespace = item.getNamespace();
+            Item type = new Item();
+            type = item.getType();
+            if (type.getStringValue().equalsIgnoreCase("xs:qname")) {
+                namespace = item.getNamespace();
+            } else {
+                StringPairVector bindings = item.getNamespaceBindings();
+                // Not using the full set, only the first binding
+                if (bindings.size()>0) {
+                    StringPair pair = bindings.get(0);
+                    namespace = pair.getFirst();
+                }
+            }
         } catch (Exception ex) {
             throw new XQException("Error getting Node URI: " + ex.getLocalizedMessage());
         }
@@ -301,9 +314,18 @@ class XQItem implements javax.xml.xquery.XQItem {
                 (itemType.getItemKind()==XQItemType.XQITEMKIND_TEXT) ) {
                 result = this.getNode();
             } else if (itemType.getItemKind()==XQItemType.XQITEMKIND_ATOMIC) {
-
+                //result = this.getNode();
                 DatatypeFactory factory = DatatypeFactory.newInstance();
                 switch (itemType.getBaseType()) {
+                    /*
+                    case XQItemType.XQBASETYPE_ANYATOMICTYPE:
+                        break;
+                    case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
+                        break;
+                    case XQItemType.XQBASETYPE_ANYTYPE:
+                        break;
+                     *
+                     */
                     case XQItemType.XQBASETYPE_ANYURI:
                         result = item.getStringValue();
                         break;
@@ -423,8 +445,6 @@ class XQItem implements javax.xml.xquery.XQItem {
                     case XQItemType.XQBASETYPE_UNTYPEDATOMIC:
                         result = item.getStringValue();
                         break;
-                    default:
-                        throw new XQException("Error getting object for this ItemType");
                 }
 
             }
