@@ -3382,7 +3382,7 @@
     </entry>
 
     <entry key="UnbalancedChar_3" if="!defined(ZORBA_NO_ICU)">
-      <value>missing '$3'</value>
+      <value>unbalanced '$3'</value>
     </entry>
 
     <entry key="UnescapedChar_3" if="!defined(ZORBA_NO_ICU)">
