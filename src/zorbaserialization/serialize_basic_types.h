@@ -68,7 +68,7 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len);
 
 #define  SERIALIZE_ENUM(enum_type, obj)           \
   {                                               \
-    ar.set_is_temp_field_one_level(true);         \
+    ar.set_is_temp_field(true);                   \
                                                   \
     int int_enum = (int)obj;                      \
     ar & int_enum;                                \
@@ -76,7 +76,7 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len);
     if (!ar.is_serializing_out())                 \
       obj = (enum_type)int_enum;                  \
                                                   \
-    ar.set_is_temp_field_one_level(false);        \
+    ar.set_is_temp_field(false);                  \
   }
 
 

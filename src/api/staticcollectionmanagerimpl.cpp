@@ -104,6 +104,7 @@ StaticCollectionManagerImpl::initStaticContext(StaticContext_t& aCtx)
 {
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
+  lProlog << "xquery version '3.0';";
   lProlog << "import module namespace d = '" << theColDDLNamespace << "';";
   lProlog << "import module namespace iddl = '" << theIdxDDLNamespace << "';";
   aCtx->loadProlog(lProlog.str(), lHints);
