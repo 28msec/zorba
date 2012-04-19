@@ -11,6 +11,7 @@ New Features:
   * Extended API for Python, Java, PHP and Ruby.
   * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
   * Added support for NO_ICU (to not use ICU for unicode processing)
+  * Added XQJ support.
 
 Optimization:
 
