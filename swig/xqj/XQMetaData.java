@@ -87,7 +87,7 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     @Override
     public boolean isXQueryXSupported() throws XQException {
         isClosedXQException();
-        return true;
+        return zorba.isXQueryXSupported();
     }
 
     @Override

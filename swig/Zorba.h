@@ -44,6 +44,7 @@ class Zorba
   int getMajorVersion();
   int getMinorVersion();
   int getPatchVersion();
+  bool isXQueryXSupported();
 
 }; // class Zorba
 
