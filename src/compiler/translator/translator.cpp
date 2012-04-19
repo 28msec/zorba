@@ -1651,7 +1651,7 @@ void normalize_fo(fo_expr* foExpr)
 
   const signature& sign = foExpr->get_signature();
 
-  ulong n = foExpr->num_args();
+  csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
 
@@ -1675,7 +1675,7 @@ void normalize_fo(fo_expr* foExpr)
     }
   }
 
-  for (ulong i = 0; i < n; ++i)
+  for (csize i = 0; i < n; ++i)
   {
     expr::expr_t argExpr = foExpr->get_arg(i);
 
