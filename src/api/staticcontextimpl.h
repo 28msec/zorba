@@ -52,7 +52,7 @@ class StaticContextImpl : public StaticContext
 protected:
   static_context_t                    theCtx;
 
-  std::map<short, static_context_t>   theSctxMap;
+  std::map<int, static_context_t>     theSctxMap;
 
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
