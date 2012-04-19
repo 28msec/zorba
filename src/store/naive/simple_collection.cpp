@@ -327,7 +327,7 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
   {
     ZORBA_ASSERT(item->getCollection() == this);
 
-    xs_integer zero = xs_integer(0);
+    xs_integer const &zero = xs_integer::zero();
 
 #ifdef ZORBA_WITH_JSON
     if (object)
@@ -370,7 +370,7 @@ bool SimpleCollection::removeNode(xs_integer position)
 
     ZORBA_ASSERT(item->getCollection() == this);
 
-    xs_integer zero = xs_integer(0);
+    xs_integer const &zero = xs_integer::zero();
 
     if (item->isNode())
     {
@@ -415,7 +415,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
   if (num == 0 || pos >= theXmlTrees.size())
   {
-    return xs_integer(0);
+    return xs_integer::zero();
   }
   else
   {
@@ -425,7 +425,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       last = theXmlTrees.size();
     }
 
-    xs_integer zero = xs_integer(0);
+    xs_integer const &zero = xs_integer::zero();
 
     for (csize i = pos; i < last; ++i)
     { 
