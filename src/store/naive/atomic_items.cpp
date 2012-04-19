@@ -40,13 +40,14 @@
 #include "node_items.h"
 #include "atomic_items.h"
 #include "ordpath.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
 #define CREATE_XS_TYPE(aType) \
-  GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
+  GET_STORE().getItemFactory()->createQName(Store::XS_URI, "xs", aType);
 
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
@@ -602,6 +603,7 @@ QNameItem::QNameItem(
     const char* aPrefix,
     const char* aLocalName)
   :
+  theNormalizedQName(NULL),
   theIsInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
@@ -613,6 +615,7 @@ QNameItem::QNameItem(
     const zstring& aPrefix,
     const zstring& aLocalName)
   :
+  theNormalizedQName(NULL),
   theIsInPool(false)
 {
   initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
@@ -735,7 +738,7 @@ bool QNameItem::isIdQName() const
   if (ZSTREQ(getLocalName(), "id"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(theNamespace, Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -748,7 +751,7 @@ bool QNameItem::isBaseUri() const
   if (ZSTREQ(getLocalName(), "base"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(getNamespace(), Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -1081,7 +1084,7 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 StructuralAnyUriItem::StructuralAnyUriItem(
     zstring& encoded,
     ulong collectionId,
-    ulong treeId, 
+    const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
@@ -1098,68 +1101,71 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   theValue.take(value);
 
+  std::istringstream input(theValue.str());
+
   ulong prefixlen = (ulong)strlen("zorba:");
 
-  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
+  input.width(prefixlen);
+
+  std::string prefix;
+  input >> prefix;
+
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  const char* start;
-
-  errno = 0;
-
-  //
-  // Decode collection id
-  //
-  start = theValue.c_str() + prefixlen;
-
-  char* next = const_cast<char*>(start);
-
-  theCollectionId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  if (prefix != "zorba:")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
+  input >> theCollectionId;
 
-  if (*start != '.')
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  char period;
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+
+  input >> theTreeId;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Decode tree id
-  //
-  theTreeId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  int lNodeKind;
+  input >> lNodeKind;
+  theNodeKind = static_cast<store::StoreConsts::NodeKind>(lNodeKind);
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (lNodeKind <= 0 || lNodeKind > 6)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
-
-  if (*start != '.')
+  input >> period;
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+  input >> prefix;
+  if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Parse the node kind
-  //
-  if (*start > '0' && *start <='6')
-    theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
-  else
+  try 
+  {
+    theOrdPath.deserialize(prefix);
+  }
+  catch(...) 
+  {
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  //
-  // Decode OrdPath
-  //
-  theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
+  }
+  // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
 
@@ -1429,8 +1435,11 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId > other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId > other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath > other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId < theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath > other->theOrdPath));
   }
 }
 
@@ -1451,8 +1460,11 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId < other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId < other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath < other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        theTreeId < other->theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath < other->theOrdPath));
   }
 }
 
@@ -1460,7 +1472,7 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
 store::Item_t StructuralAnyUriItem::getLevel() const
 {
   store::Item_t lResult;
-  GET_FACTORY().createInteger(lResult, theOrdPath.getLevel());
+  GET_FACTORY().createInteger(lResult, xs_integer(theOrdPath.getLevel()));
   return lResult;
 }
 
@@ -1550,7 +1562,7 @@ bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
   {
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return (theCollectionId == other->theCollectionId &&
-            theTreeId == other->theTreeId);
+            other->theTreeId == theTreeId);
   }
 }
 
@@ -2735,7 +2747,7 @@ xs_integer LongItem::getIntegerValue() const
 }
 
 xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
-  return theValue >= 0 ? theValue : -theValue;
+  return xs_nonNegativeInteger( theValue >= 0 ? theValue : -theValue );
 }
 
 store::Item* LongItem::getType() const

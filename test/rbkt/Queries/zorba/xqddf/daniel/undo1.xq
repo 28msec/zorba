@@ -33,7 +33,7 @@ return
   {
     {
       dml:insert-nodes($xqddf-test:blue-collection, <newnode/>);
-      dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[1]);
+      dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[@id="item0"]);
       ()
     }
   }
@@ -46,12 +46,16 @@ cannot delete first item in blue collection"
 </newline>
 },
 {
-dml:collection($xqddf-test:white-collection)/name
+for $x in dml:collection($xqddf-test:white-collection)
+order by number(substring-after($x/@id, "item"))
+return $x/name
 },
 {
 <newline> a
 </newline>
 },
 {
-dml:collection($xqddf-test:blue-collection)/name
+for $x in dml:collection($xqddf-test:blue-collection)
+order by number(substring-after($x/@id, "item"))
+return $x/name
 }

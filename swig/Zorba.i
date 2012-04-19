@@ -1,42 +1,47 @@
+/*
+ * Copyright 2006-2012 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 %{  // start Implementation
 
-class Zorba 
-{
-private:
-  zorba::Zorba* theZorba;
-  Zorba(zorba::Zorba* aZorba) : theZorba(aZorba) {}
-
-public:
-  Zorba():theZorba(0){}
-  Zorba(const Zorba& aZorba) : theZorba(aZorba.theZorba) {}
-  
-  static Zorba getInstance(const Store& aStore)
+  Zorba Zorba::getInstance(const Store& aStore)
   {
     return Zorba(zorba::Zorba::getInstance(aStore.getStore()));
   }
   
-  ItemFactory getItemFactory()
+  ItemFactory Zorba::getItemFactory()
   {
     return ItemFactory(theZorba->getItemFactory());
   }
-
-  StaticContext createStaticContext()
+  
+  StaticContext Zorba::createStaticContext()
   {
     return StaticContext(theZorba->createStaticContext());
   }
   
-  XQuery compileQuery(const std::string& aStr) 
-  {
-    return XQuery(theZorba->compileQuery(aStr));
-  }
-
-  XQuery createQuery() 
+  XQuery Zorba::createQuery() 
   {
     return XQuery(theZorba->createQuery());
   }
 
-  XQuery compileQuery(
+  XQuery Zorba::compileQuery(const std::string& aStr) 
+  {
+    return XQuery(theZorba->compileQuery(aStr));
+  }
+
+  XQuery Zorba::compileQuery(
     const std::string& aStr,
     StaticContext &aStaticContext )
   { 
@@ -48,16 +53,29 @@ public:
     );
   }
 
-  /*
-  //--->> DiagnosticHandler implementations are postponed
-  XQuery compileQuery(
+  // XQuery Zorba::compileQuery(const ZIStreamHelper& aZorbaStream)
+  // {
+    // zorbabuffer *buffer = new zorbabuffer(&const_cast<ZIStreamHelper &> (aZorbaStream));
+    // std::istream stream = std::istream(buffer);
+    // zistream stream = zistream(buffer);
+    // return XQuery(theZorba->compileQuery(stream));
+  // }
+
+  // XQuery Zorba::compileQuery(const ZIStreamHelper& aZorbaStream, StaticContext &aStaticContext )
+  // { 
+    // zorbabuffer *buffer = new zorbabuffer(&const_cast<ZIStreamHelper &> (aZorbaStream));
+    // std::istream stream = std::istream(buffer);
+    // return XQuery(theZorba->compileQuery(stream, aStaticContext.theStaticContext));
+  // }
+  
+  XQuery Zorba::compileQuery(
     const std::string& aStr,
     DiagnosticHandler* aDiagnosticHandler
   )
   {
     return XQuery(theZorba->compileQuery(aStr, aDiagnosticHandler));
   }
-  XQuery compileQuery(
+  XQuery Zorba::compileQuery(
     const std::string& aStr,
     StaticContext &aStaticContext, 
     DiagnosticHandler* aDiagnosticHandler)
@@ -71,7 +89,7 @@ public:
     );
   }
 
-  XQuery compileQuery(
+  XQuery Zorba::compileQuery(
     const std::string& aStr,
     CompilerHints& aCompilerHints,
     DiagnosticHandler* aDiagnosticHandler)
@@ -84,43 +102,29 @@ public:
       )
     );
   }
-*/
 
-  XmlDataManager getXmlDataManager()
+  XmlDataManager Zorba::getXmlDataManager()
   {
     return XmlDataManager(theZorba->getXmlDataManager());
   }
 
-  void shutdown() 
+  void Zorba::shutdown() 
   {
     theZorba->shutdown();
   }
-
-}; // class Zorba
-
+  std::string Zorba::getVersion() {
+    return zorba::Zorba::version().getVersion();
+  }
+  int Zorba::getMajorVersion() {
+    return zorba::Zorba::version().getMajorVersion();
+  }
+  int Zorba::getMinorVersion() {
+    return zorba::Zorba::version().getMinorVersion();
+  }
+  int Zorba::getPatchVersion() {
+    return zorba::Zorba::version().getPatchVersion();
+  }
 
 %}  // end Implementation
 
-// Interface
-
-class Zorba 
-{
- public:
-  static Zorba getInstance(const Store&);
-  StaticContext createStaticContext();
-  XQuery createQuery();
-  XQuery compileQuery(const std::string& aStr);
-  XQuery compileQuery(const std::string& aStr, StaticContext &aStaticContext );
-  ItemFactory getItemFactory();
-  
-  /*
-  XQuery compileQuery(const std::string& aStr, DiagnosticHandler* aDiagnosticHandler);
-  XQuery compileQuery(const std::string& aStr, StaticContext &aStaticContext, 
-                      DiagnosticHandler* aDiagnosticHandler);
-  XQuery compileQuery(const std::string& aStr, CompilerHints &aCompilerHints, 
-                      DiagnosticHandler* aDiagnosticHandler);
-  */
-  XmlDataManager getXmlDataManager();
-  void shutdown();
-
-}; // class Zorba
+%include "Zorba.h"

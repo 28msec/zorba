@@ -15,13 +15,6 @@
  */
 /* vim:set et sw=2 ts=2: */
 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .txt FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include <string>
 #include <sstream>
 #include <zorba/config.h>
@@ -30,13 +23,29 @@
 
 #ifndef ZORBACMD_ZORBACMDPROPERTIESBASE
 #define ZORBACMD_ZORBACMDPROPERTIESBASE
-namespace zorbacmd { 
-class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
+namespace zorbacmd
+{
+
+class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase
+{
 protected:
-  const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", "--compile-plan", "--execute-plan", NULL };
+  const char **get_all_options () const
+  {
+    static const char *result [] = {
+      "--timing", "--output-file", "--serialization-parameter",
+      "--serialize-html", "--serialize-text", "--indent", "--print-query",
+      "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
+      "--base-uri", "--boundary-space", "--default-collation",
+      "--construction-mode", "--ordering-mode", "--multiple", "--query",
+      "--as-files", "--external-variable", "--context-item",
+      "--optimization-level", "--lib-module", "--parse-only", "--compile-only",
+      "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo",
+      "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath",
+      "--option", "--trailing-nl", "--stop-words", "--thesaurus",
+      "--compile-plan", "--execute-plan", NULL };
     return result;
   }
+
   bool theTiming;
   std::string theOutputFile;
   std::vector<std::string> theSerializationParameter;
@@ -70,6 +79,7 @@ protected:
   std::string theUriPath;
   std::string theLibPath;
   std::string theModulePath;
+  std::string theClasspath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
@@ -136,6 +146,7 @@ public:
   const std::string &uriPath () const { return theUriPath; }
   const std::string &libPath () const { return theLibPath; }
   const std::string &modulePath () const { return theModulePath; }
+  const std::string &classpath () const { return theClasspath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
@@ -170,7 +181,9 @@ public:
       {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --serialization-parameter option"; break; }        init_val (*argv, theSerializationParameter, d);
+        if (*argv == NULL) { result = "No value given for --serialization-parameter option"; break; }
+
+        init_val (*argv, theSerializationParameter, d);
       }
       else if (strcmp (*argv, "--serialize-html") == 0) 
       {
@@ -225,12 +238,16 @@ public:
       {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --construction-mode option"; break; }        init_val (*argv, theConstructionMode, d);
+        if (*argv == NULL) { result = "No value given for --construction-mode option"; break; }
+
+        init_val (*argv, theConstructionMode, d);
       }
       else if (strcmp (*argv, "--ordering-mode") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --ordering-mode option"; break; }        init_val (*argv, theOrderingMode, d);
+        if (*argv == NULL) { result = "No value given for --ordering-mode option"; break; }
+
+        init_val (*argv, theOrderingMode, d);
       }
       else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) 
       {
@@ -276,7 +293,8 @@ public:
         }
         init_val (*argv, theContextItem, d);
       }
-      else if (strcmp (*argv, "--optimization-level") == 0) {
+      else if (strcmp (*argv, "--optimization-level") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL)
@@ -357,6 +375,14 @@ public:
         if (*argv == NULL) { result = "No value given for --module-path option"; break; }
         init_val (*argv, theModulePath, d);
       }
+      else if (strcmp (*argv, "--classpath") == 0) 
+      {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --classpath option"; break; }
+
+        init_val (*argv, theClasspath, d);
+      }
       else if (strcmp (*argv, "--option") == 0) 
       {
         int d = 2;
@@ -405,51 +431,53 @@ public:
     return result;
   }
 
-  const char *get_help_msg () const {
+  const char *get_help_msg () const 
+  {
     return
-"--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
-"--output-file, -o\nWrite the result to the given file.\n\n"
-"--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
-"--serialize-html\nSerialize the result as HTML.\n\n"
-"--serialize-text\nSerialize the result as Text.\n\n"
-"--indent, -i\nIndent output.\n\n"
-"--print-query\nPrint the queries.\n\n"
-"--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
-"--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
-"--omit-xml-declaration, -r\nOmit the XML declaration from the result.\n\n"
-"--base-uri\nSet the base URI property of the static context.\n\n"
-"--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
-"--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
-"--construction-mode\nSet the construction mode ('strip' or 'preserve') in the static context.\n\n"
-"--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
-"--multiple, -m\nExecute the given queries multiple times.\n\n"
-"--query, -q\nQuery test or file URI (file://...)\n\n"
-"--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
-"--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
-"--context-item\nSet the context item to the XML document in a given file.\n\n"
-"--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
-"--lib-module, -l\nQuery compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
-"--parse-only\nStop after parsing the query.\n\n"
-"--compile-only\nOnly compile (don't execute)\n\n"
-"--no-serializer\nDo not serialize (discard) result.\n\n"
-"--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
-"--debug-host, -h\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
-"--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
-"--no-logo\nPrint no logo when starting.\n\n"
-"--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
-"--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
-"--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
-"--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
-"--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
-"--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
-"--stop-words\nMapping specifying a stop-words URI to another.\n\n"
-"--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
-"--compile-plan, -c\nOutput the query plan as binary.\n\n"
-"--execute-plan\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
-;
+        "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
+        "--output-file, -o\nWrite the result to the given file.\n\n"
+        "--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
+        "--serialize-html\nSerialize the result as HTML.\n\n"
+        "--serialize-text\nSerialize the result as Text.\n\n"
+        "--indent, -i\nIndent output.\n\n"
+        "--print-query\nPrint the queries.\n\n"
+        "--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
+        "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
+        "--omit-xml-declaration, -r\nOmit the XML declaration from the result.\n\n"
+        "--base-uri\nSet the base URI property of the static context.\n\n"
+        "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
+        "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
+        "--construction-mode\nSet the construction mode ('strip' or 'preserve') in the static context.\n\n"
+        "--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
+        "--multiple, -m\nExecute the given queries multiple times.\n\n"
+        "--query, -q\nQuery test or file URI (file://...)\n\n"
+        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
+        "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
+        "--context-item\nSet the context item to the XML document in a given file.\n\n"
+        "--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
+        "--lib-module, -l\nQuery compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
+        "--parse-only\nStop after parsing the query.\n\n"
+        "--compile-only\nOnly compile (don't execute)\n\n"
+        "--no-serializer\nDo not serialize (discard) result.\n\n"
+        "--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
+        "--debug-host, -h\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
+        "--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
+        "--no-logo\nPrint no logo when starting.\n\n"
+        "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
+        "--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
+        "--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
+        "--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
+        "--classpath\nJVM classpath to be used by modules using Java implementations\n\n"
+        "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
+        "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
+        "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
+        "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
+        "--serialize-plan, -cs\nSerialize and then load the query execution plan.\n\n"
+        ;
   }
 
-  static const ZorbaCMDPropertiesBase *instance () {
+  static const ZorbaCMDPropertiesBase *instance () 
+  {
     static ZorbaCMDPropertiesBase result;
     return &result;
   }

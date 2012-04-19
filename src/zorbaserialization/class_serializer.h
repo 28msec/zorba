@@ -142,17 +142,15 @@ virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
   class_name::serialize(ar);                                              \
 }
 
-
 #ifndef NDEBUG
 #define CHECK_CLASS_NAME(class_name)\
-if (ar.is_serializing_out() && !ar.is_serialize_base_class())   \
-{                                                               \
-  assert(strstr(typeid(*this).name(), #class_name));            \
+if (ar.is_serializing_out() && !ar.is_serialize_base_class())             \
+{                                                                         \
+  assert(::strcmp(typeid(*this).name(), typeid(class_name).name()) == 0); \
 }
 #else
 #define CHECK_CLASS_NAME(class_name)
 #endif
-
 
 /*******************************************************************************
   Every serializable class C has a nested member class D that is a subclass of
@@ -366,8 +364,6 @@ class_name(::zorba::serialization::Archiver& ar)                                
   base_class , templ2, templ3(ar)                                                \
 {                                                                                \
 }
-
-
 
 } // namespace serialization
 } // namespace zorba

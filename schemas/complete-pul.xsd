@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ************************************************************************
+  Zorba schema for representing a complete Pending Update List as XML
+  A complete PUL contains the necessary information for reverting changes.
+  ************************************************************************
+--><xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.zorba-xquery.com/schemas/complete-pul"
+    xmlns:pul="http://www.zorba-xquery.com/schemas/pul"
+    xmlns:cpul="http://www.zorba-xquery.com/schemas/complete-pul"
+    xmlns:xdm="http://www.zorba-xquery.com/schemas/xdm"
+    elementFormDefault="qualified">
+
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/xdm" schemaLocation="xdm.xsd"/>
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/pul" schemaLocation="pul.xsd"/>
+
+    <!--
+    ****************
+    The root element
+    ****************
+  -->
+  <xs:element name="complete-pending-update-list">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="insertBefore" type="pul:insert-type"/>
+        <xs:element name="insertAfter" type="pul:insert-type"/>
+        <xs:element name="insertInto" type="pul:insert-type"/>
+        <xs:element name="insertIntoAsFirst" type="pul:insert-type"/>
+        <xs:element name="insertIntoAsLast" type="pul:insert-type"/>
+        <xs:element name="insertAttributes" type="pul:insertAttributes-type"/>
+        <xs:element name="complete-delete" type="cpul:complete-delete-type"/>
+        <xs:element name="complete-replaceNode" type="cpul:complete-replaceNode-type"/>
+        <xs:element name="complete-replaceValue" type="cpul:complete-replaceValue-type"/>
+        <xs:element name="complete-replaceElementContent" type="cpul:complete-replaceElementContent-type"/>
+        <xs:element name="complete-rename" type="cpul:complete-rename-type"/>
+        <xs:element name="put" type="pul:put-type"/>
+        <xs:element name="createCollection" type="pul:createCollection-type"/>
+        <xs:element name="insertAfterIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertBeforeIntoCollection" type="pul:insertNodesRelative-type"/>
+        <xs:element name="insertAsFirstIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertAsLastIntoCollection" type="pul:insertNodesAbsolute-type"/>
+        <xs:element name="insertIntoCollection" type="pul:insertNodes-type"/>
+        <xs:element name="deleteNodesFromCollection" type="pul:deleteNodes-type"/>
+        <xs:element name="createDocument" type="pul:createDocument-type"/>
+        <xs:element name="complete-deleteDocument" type="cpul:complete-deleteDocument-type"/>
+        <xs:element name="complete-deleteCollection" type="cpul:complete-deleteCollection-type"/>
+        <xs:element name="activateIntegrityConstraint" type="pul:activateIntegrityConstraint-type"/>
+        <xs:element name="deActivateIntegrityConstraint" type="pul:deActivateIntegrityConstraint-type"/>
+        <xs:element name="createIndex" type="pul:createIndex-type"/>
+        <xs:element name="deleteIndex" type="pul:deleteIndex-type"/>
+        <xs:element name="refreshIndex" type="pul:refreshIndex-type"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <!--
+    *****************************************************
+    Definition of completed update primitives
+    *****************************************************
+  -->
+   <xs:complexType name="complete-delete-type">
+     <xs:complexContent>
+        <xs:extension base="pul:delete-type">
+          <xs:sequence>
+            <xs:element name="parent" type="xs:anyURI"/>      
+            <xs:element name="left-sibling" type="xs:anyURI" minOccurs="0"/>
+            <xs:element name="deleted-node" type="xdm:one-node-no-namespace-type"/>          
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+  <xs:complexType name="complete-replaceNode-type">
+    <xs:complexContent>
+      <xs:extension base="pul:replaceNode-type">
+        <xs:sequence>
+          <xs:element name="parent" type="xs:anyURI"/>      
+          <xs:element name="left-sibling" type="xs:anyURI" minOccurs="0"/>
+          <xs:element name="replaced-node" type="xdm:one-node-no-namespace-type"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="complete-replaceValue-type">
+    <xs:complexContent>
+      <xs:extension base="pul:replaceValue-type">
+        <xs:sequence>
+          <xs:element name="old-string-value" type="xs:string"/>      
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="complete-replaceElementContent-type">
+    <xs:complexContent>
+      <xs:extension base="pul:replaceElementContent-type">
+        <xs:sequence>
+          <xs:element name="replaced-nodes" type="xdm:children-sequence-type"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="complete-rename-type">
+    <xs:complexContent>
+      <xs:extension base="pul:rename-type">
+        <xs:sequence>
+          <xs:element name="oldName" type="xs:QName"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="complete-deleteCollection-type">
+    <xs:complexContent>
+      <xs:extension base="pul:deleteCollection-type">
+        <xs:sequence>
+          <xs:element name="deleted-nodes" type="xdm:nodes-sequence-no-namespaces-type"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="complete-deleteDocument-type">
+    <xs:complexContent>
+      <xs:extension base="pul:deleteDocument-type">
+        <xs:sequence>
+          <xs:element name="deleted-node-reference" type="xs:anyURI"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+</xs:schema>

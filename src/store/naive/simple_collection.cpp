@@ -41,12 +41,13 @@ SimpleCollection::SimpleCollection(
   : 
   theName(aName),
   theIsDynamic(aDynamicCollection),
-  theTreeCounter(1),
   theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
@@ -54,16 +55,18 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theTreeCounter(1),
   theNodeType(NULL)
 {
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
+  delete theTreeIdGenerator;
 }
 
 
@@ -121,16 +124,16 @@ void SimpleCollection::addNode(
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (lPosition < 0 || to_xs_unsignedLong(lPosition) >= theXmlTrees.size())
+  if (lPosition < 0 || lPosition >= theXmlTrees.size())
   {
     theXmlTrees.push_back(nodeItem);
-    node->setCollection(this, (uint64_t)theXmlTrees.size() - 1);
+    node->setCollection(this, xs_integer(theXmlTrees.size() - 1));
   }
   else
   {
 
     theXmlTrees.insert(theXmlTrees.begin() + (std::size_t)lPosition, nodeItem);
-    node->setCollection(this, to_xs_unsignedInt(lPosition));
+    node->setCollection(this, xs_integer(lPosition));
   }
 }
 
@@ -200,7 +203,7 @@ xs_integer SimpleCollection::addNodes(
       );
     }
     
-    node->setCollection(this, lTargetPos + i);
+    node->setCollection(this, xs_integer(lTargetPos + i));
   }
 
   theXmlTrees.resize(numNodes + numNewNodes);
@@ -229,7 +232,7 @@ xs_integer SimpleCollection::addNodes(
     theXmlTrees[lTargetPos + i].transfer(nodes[i]);
   }
 
-  return lTargetPos;
+  return xs_integer( lTargetPos );
 }
 
 
@@ -258,7 +261,7 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, xs_integer& position)
   {
     ZORBA_ASSERT(node->getCollection() == this);
 
-    node->setCollection(NULL, 0);
+    node->setCollection(NULL, xs_integer(0));
     std::size_t lPosition = to_xs_unsignedInt(position);
     theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     return true;
@@ -289,7 +292,7 @@ bool SimpleCollection::removeNode(xs_integer position)
     XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
     ZORBA_ASSERT(node->getCollection() == this);
 
-    node->setCollection(NULL, 0);
+    node->setCollection(NULL, xs_integer(0));
     theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     return true;
   }
@@ -311,7 +314,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 
   if (lNum == 0 || lPosition >= theXmlTrees.size())
   {
-    return 0;
+    return xs_integer(0);
   }
   else
   {
@@ -325,12 +328,12 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
     { 
       XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
       ZORBA_ASSERT(node->getCollection() == this);
-      node->setCollection(NULL, 0);
+      node->setCollection(NULL, xs_integer(0));
 
       theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     }
 
-    return last-lPosition;
+    return xs_integer(last-lPosition);
   }
 }
 
@@ -411,14 +414,16 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   return false;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void SimpleCollection::getAnnotations(
-    std::vector<store::Annotation_t>& annotations
-) const
+    std::vector<store::Annotation_t>& annotations) const
 {
   annotations = theAnnotations;
 }
+
 
 /*******************************************************************************
   For each tree in the collection, set its current position within the collection.
@@ -429,9 +434,19 @@ void SimpleCollection::adjustTreePositions()
 
   for (std::size_t i = 0; i < numTrees; ++i)
   {
-    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
+    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(xs_integer(i));
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TreeId SimpleCollection::createTreeId()
+{
+  return theTreeIdGenerator->create();
+}
+
 
 /*******************************************************************************
 

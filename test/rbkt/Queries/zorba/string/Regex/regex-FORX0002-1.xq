@@ -1,0 +1,1 @@
+matches( 'qwerty', '(a))' )
