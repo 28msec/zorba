@@ -54,11 +54,6 @@ public:
     :
     theInline(false),
     theComparisonMethod("Fragment"),
-#ifdef ZORBA_WITH_JSON
-    theSerializationMethod("JSONiq"),
-#else
-    theSerializationMethod("XML"),
-#endif
     theEnableDtd(false),
     theEnableUriTestResolver(false)
 #ifndef ZORBA_NO_FULL_TEXT
@@ -83,9 +78,6 @@ private:
   std::string              theInputQueryFile;
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
-                           // "XML" (default), "TXT"(for CSV testing),
-                           // "JSONiq" (if JSONiq is supported)
-  std::string              theSerializationMethod;
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
@@ -427,10 +419,33 @@ public:
           for(++lIter; lIter != tokens.end(); ++lIter)
           {
             trim(*lIter);
-            if (lIter->find('=') == std::string::npos) { return false; }
-            // Re-use existing setVarName/Value stuff
-            setVarName(lIter->begin(), lIter->begin() + lIter->find('='));
-            setVarValue(lIter->begin() + lIter->find('=') + 1, lIter->end());
+            std::string opt(*lIter);
+            // Have to translate "old-style" --indent and --method options, because
+            // some non-core module tests use them. Deprecated.
+            if (opt == "--indent") {
+              opt = "indent=yes";
+              // Fall through to new-style code below
+            } else if(*lIter == "--method") {
+              // Have to handle this one manually
+              opt = "method";
+              setVarName(opt.begin(), opt.end());
+              opt = *(++lIter);
+
+              if (opt == "TXT") {
+                theComparisonMethod = "Text";
+                setVarValue(theComparisonMethod.begin(), theComparisonMethod.end());
+              }
+              else {
+                setVarValue(opt.begin(), opt.end());
+              }
+              continue;
+            } else if (lIter->find('=') == std::string::npos) {
+              return false;
+            }
+            // Now, handle the "new-style" opt=value options. Re-use existing
+            // setVarName/Value stuff.
+            setVarName(opt.begin(), opt.begin() + opt.find('='));
+            setVarValue(opt.begin() + opt.find('=') + 1, opt.end());
             addSerializerOption();
           }
           break;
