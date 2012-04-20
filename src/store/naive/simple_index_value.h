@@ -92,7 +92,7 @@ public:
 
   virtual bool remove(
         const store::IndexKey* key,
-        store::Item_t& item,
+        const store::Item_t& item,
         bool all = false) = 0;
 };
 
@@ -150,7 +150,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 
@@ -235,7 +235,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all = false);
 };
 
 

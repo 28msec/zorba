@@ -8,20 +8,43 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 u:create-db();
 
-try
-{{
-  (dml:insert-nodes($u:auctions1, <person id="1"/>),
-  dml:insert-nodes($u:auctions1, <person id="1"/>));
-  ()
-}} catch * {
-  $err:code, dml:collection($u:auctions1)
-},
+dml:insert-nodes($u:auctions1, <person id="5"/>);
 
 try
 {{
-  (dml:insert-nodes($u:auctions2, <person id="1"/>),
-  dml:insert-nodes($u:auctions2, <person id="1"/>));
+  (dml:insert-nodes($u:auctions1, <person id="1"/>),
+   dml:insert-nodes($u:auctions1, <person id="1"/>));
   ()
-}} catch * {
-  $err:code, dml:collection($u:auctions2)
+}}
+catch * 
+{
+  $err:code
 }
+,
+
+try
+{{
+  (
+   dml:insert-nodes($u:auctions1, <person id="1"/>),
+   dml:insert-nodes($u:auctions1, <person id="3"/>),
+   dml:delete-nodes-first($u:auctions1, 1),
+
+   dml:insert-nodes($u:auctions2, <person id="1"/>),
+   dml:insert-nodes($u:auctions2, <person id="1"/>));
+  ()
+}}
+catch * 
+{
+  $err:code
+}
+,
+
+dml:collection($u:auctions1)
+,
+idml:probe-index-point-value($u:PersonId1, "1")
+,
+idml:probe-index-point-value($u:PersonId1, "3")
+,
+idml:probe-index-point-value($u:PersonId1, "5")
+,
+dml:collection($u:auctions2)
