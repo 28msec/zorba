@@ -299,6 +299,8 @@ le0( IntType n ) {
 // cases where the "signed-ness" of N1 and N2 differ such that the code is
 // warning-free.
 //
+// Note: the use of "!!" is to work around a compiler problem on Windows;
+// see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
 
 template<typename N1,typename N2> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
@@ -307,7 +309,6 @@ ge_min( N1 n1, N2 ) {
   return n1 >= std::numeric_limits<N2>::min();
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
                      && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
@@ -315,7 +316,6 @@ ge_min( N1 n1, N2 ) {
   return n1 >= 0;
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
                      && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
@@ -323,7 +323,6 @@ ge_min( N1, N2 ) {
   return true;
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
                      && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
@@ -338,7 +337,6 @@ le_max( N1 n1, N2 ) {
   return n1 <= std::numeric_limits<N2>::max();
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
                      && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
@@ -346,7 +344,6 @@ le_max( N1 n1, N2 ) {
   return n1 <= 0 || static_cast<N2>( n1 ) <= std::numeric_limits<N2>::max();
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
                      && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
@@ -354,7 +351,6 @@ le_max( N1 n1, N2 ) {
   return n1 <= static_cast<N1>( std::numeric_limits<N2>::max() );
 }
 
-// Do not remove the !! Windows compiler has an ridiculous fault there
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
                      && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
