@@ -1246,7 +1246,7 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
 }
 // </FnPutIterator>
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 void PrinterVisitor::beginVisit ( const CurrentLangIterator& a) {
   thePrinter.startBeginVisit("CurrentLangIterator", ++theId);
@@ -1260,7 +1260,8 @@ void PrinterVisitor::endVisit ( const CurrentLangIterator& ) {
 }
 // </CurrentLangIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <HostLangIterator>
 void PrinterVisitor::beginVisit ( const HostLangIterator& a) {
   thePrinter.startBeginVisit("HostLangIterator", ++theId);
@@ -1274,7 +1275,8 @@ void PrinterVisitor::endVisit ( const HostLangIterator& ) {
 }
 // </HostLangIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStemLangSupportedIterator>
 void PrinterVisitor::beginVisit ( const IsStemLangSupportedIterator& a) {
   thePrinter.startBeginVisit("IsStemLangSupportedIterator", ++theId);
@@ -1288,7 +1290,8 @@ void PrinterVisitor::endVisit ( const IsStemLangSupportedIterator& ) {
 }
 // </IsStemLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordIterator>
 void PrinterVisitor::beginVisit ( const IsStopWordIterator& a) {
   thePrinter.startBeginVisit("IsStopWordIterator", ++theId);
@@ -1302,7 +1305,8 @@ void PrinterVisitor::endVisit ( const IsStopWordIterator& ) {
 }
 // </IsStopWordIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordLangSupportedIterator>
 void PrinterVisitor::beginVisit ( const IsStopWordLangSupportedIterator& a) {
   thePrinter.startBeginVisit("IsStopWordLangSupportedIterator", ++theId);
@@ -1316,7 +1320,8 @@ void PrinterVisitor::endVisit ( const IsStopWordLangSupportedIterator& ) {
 }
 // </IsStopWordLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsThesaurusLangSupportedIterator>
 void PrinterVisitor::beginVisit ( const IsThesaurusLangSupportedIterator& a) {
   thePrinter.startBeginVisit("IsThesaurusLangSupportedIterator", ++theId);
@@ -1330,7 +1335,8 @@ void PrinterVisitor::endVisit ( const IsThesaurusLangSupportedIterator& ) {
 }
 // </IsThesaurusLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsTokenizerLangSupportedIterator>
 void PrinterVisitor::beginVisit ( const IsTokenizerLangSupportedIterator& a) {
   thePrinter.startBeginVisit("IsTokenizerLangSupportedIterator", ++theId);
@@ -1344,7 +1350,8 @@ void PrinterVisitor::endVisit ( const IsTokenizerLangSupportedIterator& ) {
 }
 // </IsTokenizerLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <StemIterator>
 void PrinterVisitor::beginVisit ( const StemIterator& a) {
   thePrinter.startBeginVisit("StemIterator", ++theId);
@@ -1358,7 +1365,8 @@ void PrinterVisitor::endVisit ( const StemIterator& ) {
 }
 // </StemIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <StripDiacriticsIterator>
 void PrinterVisitor::beginVisit ( const StripDiacriticsIterator& a) {
   thePrinter.startBeginVisit("StripDiacriticsIterator", ++theId);
@@ -1372,7 +1380,8 @@ void PrinterVisitor::endVisit ( const StripDiacriticsIterator& ) {
 }
 // </StripDiacriticsIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <ThesaurusLookupIterator>
 void PrinterVisitor::beginVisit ( const ThesaurusLookupIterator& a) {
   thePrinter.startBeginVisit("ThesaurusLookupIterator", ++theId);
@@ -1386,7 +1395,8 @@ void PrinterVisitor::endVisit ( const ThesaurusLookupIterator& ) {
 }
 // </ThesaurusLookupIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeIterator>
 void PrinterVisitor::beginVisit ( const TokenizeIterator& a) {
   thePrinter.startBeginVisit("TokenizeIterator", ++theId);
@@ -1400,7 +1410,8 @@ void PrinterVisitor::endVisit ( const TokenizeIterator& ) {
 }
 // </TokenizeIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
 void PrinterVisitor::beginVisit ( const TokenizerPropertiesIterator& a) {
   thePrinter.startBeginVisit("TokenizerPropertiesIterator", ++theId);
@@ -1414,7 +1425,8 @@ void PrinterVisitor::endVisit ( const TokenizerPropertiesIterator& ) {
 }
 // </TokenizerPropertiesIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeStringIterator>
 void PrinterVisitor::beginVisit ( const TokenizeStringIterator& a) {
   thePrinter.startBeginVisit("TokenizeStringIterator", ++theId);
@@ -1428,6 +1440,7 @@ void PrinterVisitor::endVisit ( const TokenizeStringIterator& ) {
 }
 // </TokenizeStringIterator>
 
+#endif
 
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {

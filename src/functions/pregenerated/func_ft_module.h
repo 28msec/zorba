@@ -36,7 +36,7 @@ namespace zorba {
 void populate_context_ft_module(static_context* sctx);
 
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:current-lang
 class full_text_current_lang : public function
@@ -51,7 +51,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:host-lang
 class full_text_host_lang : public function
@@ -66,7 +67,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:is-stem-lang-supported
 class full_text_is_stem_lang_supported : public function
@@ -81,7 +83,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:is-stop-word
 class full_text_is_stop_word : public function
@@ -96,7 +99,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:is-stop-word-lang-supported
 class full_text_is_stop_word_lang_supported : public function
@@ -111,7 +115,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:is-thesaurus-lang-supported
 class full_text_is_thesaurus_lang_supported : public function
@@ -126,7 +131,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:is-tokenizer-lang-supported
 class full_text_is_tokenizer_lang_supported : public function
@@ -141,7 +147,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:stem
 class full_text_stem : public function
@@ -156,7 +163,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:strip-diacritics
 class full_text_strip_diacritics : public function
@@ -171,7 +179,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:thesaurus-lookup
 class full_text_thesaurus_lookup : public function
@@ -186,7 +195,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:tokenize
 class full_text_tokenize : public function
@@ -201,7 +211,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:tokenizer-properties
 class full_text_tokenizer_properties : public function
@@ -218,7 +229,8 @@ public:
 
   CODEGEN_DECL();
 };
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
 //full-text:tokenize-string
 class full_text_tokenize_string : public function
@@ -233,6 +245,7 @@ public:
 
   CODEGEN_DECL();
 };
+#endif
 
 
 } //namespace zorba

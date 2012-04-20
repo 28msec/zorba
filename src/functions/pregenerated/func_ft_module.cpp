@@ -30,7 +30,7 @@
 namespace zorba{
 
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_current_lang::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -41,6 +41,8 @@ PlanIter_t full_text_current_lang::codegen(
   return new CurrentLangIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_host_lang::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -51,6 +53,8 @@ PlanIter_t full_text_host_lang::codegen(
   return new HostLangIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_is_stem_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -61,6 +65,8 @@ PlanIter_t full_text_is_stem_lang_supported::codegen(
   return new IsStemLangSupportedIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_is_stop_word::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -71,6 +77,8 @@ PlanIter_t full_text_is_stop_word::codegen(
   return new IsStopWordIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_is_stop_word_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -81,6 +89,8 @@ PlanIter_t full_text_is_stop_word_lang_supported::codegen(
   return new IsStopWordLangSupportedIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_is_thesaurus_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -91,6 +101,8 @@ PlanIter_t full_text_is_thesaurus_lang_supported::codegen(
   return new IsThesaurusLangSupportedIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_is_tokenizer_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -101,6 +113,8 @@ PlanIter_t full_text_is_tokenizer_lang_supported::codegen(
   return new IsTokenizerLangSupportedIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_stem::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -111,6 +125,8 @@ PlanIter_t full_text_stem::codegen(
   return new StemIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_strip_diacritics::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -121,6 +137,8 @@ PlanIter_t full_text_strip_diacritics::codegen(
   return new StripDiacriticsIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_thesaurus_lookup::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -131,8 +149,14 @@ PlanIter_t full_text_thesaurus_lookup::codegen(
   return new ThesaurusLookupIterator(sctx, loc, argv);
 }
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_tokenize_string::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -143,8 +167,12 @@ PlanIter_t full_text_tokenize_string::codegen(
   return new TokenizeStringIterator(sctx, loc, argv);
 }
 
+#endif
+
 void populate_context_ft_module(static_context* sctx)
 {
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -156,6 +184,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -167,6 +199,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -179,6 +215,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -191,6 +231,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -204,6 +248,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -216,6 +264,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -228,6 +280,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -241,6 +297,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -253,6 +313,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -265,6 +329,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -278,6 +346,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -290,6 +362,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -302,6 +378,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -315,6 +395,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -329,6 +413,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -344,6 +432,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -361,6 +453,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -373,6 +469,10 @@ void populate_context_ft_module(static_context* sctx)
   }
 
 
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
   {
     
 
@@ -385,6 +485,8 @@ void populate_context_ft_module(static_context* sctx)
 
   }
 
+
+#endif
 }
 
 

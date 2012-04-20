@@ -35,6 +35,7 @@
 
 namespace zorba {
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -68,7 +69,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -102,7 +105,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -136,7 +141,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -170,7 +177,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -204,7 +213,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -238,7 +249,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -272,7 +285,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -306,7 +321,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -340,7 +357,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -393,7 +412,9 @@ public:
   void resetImpl(PlanState&) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -443,7 +464,9 @@ public:
   void resetImpl(PlanState&) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -477,7 +500,9 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * 
  * Author: 
@@ -525,6 +550,7 @@ public:
   void resetImpl(PlanState&) const;
 };
 
+#endif
 
 }
 #endif

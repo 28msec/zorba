@@ -33,6 +33,7 @@
 
 namespace zorba {
 
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 CurrentLangIterator::class_factory<CurrentLangIterator>
 CurrentLangIterator::g_class_factory;
@@ -54,7 +55,8 @@ CurrentLangIterator::~CurrentLangIterator() {}
 
 // </CurrentLangIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <HostLangIterator>
 HostLangIterator::class_factory<HostLangIterator>
 HostLangIterator::g_class_factory;
@@ -76,7 +78,8 @@ HostLangIterator::~HostLangIterator() {}
 
 // </HostLangIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStemLangSupportedIterator>
 IsStemLangSupportedIterator::class_factory<IsStemLangSupportedIterator>
 IsStemLangSupportedIterator::g_class_factory;
@@ -98,7 +101,8 @@ IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
 
 // </IsStemLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordIterator>
 IsStopWordIterator::class_factory<IsStopWordIterator>
 IsStopWordIterator::g_class_factory;
@@ -120,7 +124,8 @@ IsStopWordIterator::~IsStopWordIterator() {}
 
 // </IsStopWordIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordLangSupportedIterator>
 IsStopWordLangSupportedIterator::class_factory<IsStopWordLangSupportedIterator>
 IsStopWordLangSupportedIterator::g_class_factory;
@@ -142,7 +147,8 @@ IsStopWordLangSupportedIterator::~IsStopWordLangSupportedIterator() {}
 
 // </IsStopWordLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsThesaurusLangSupportedIterator>
 IsThesaurusLangSupportedIterator::class_factory<IsThesaurusLangSupportedIterator>
 IsThesaurusLangSupportedIterator::g_class_factory;
@@ -164,7 +170,8 @@ IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
 
 // </IsThesaurusLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <IsTokenizerLangSupportedIterator>
 IsTokenizerLangSupportedIterator::class_factory<IsTokenizerLangSupportedIterator>
 IsTokenizerLangSupportedIterator::g_class_factory;
@@ -186,7 +193,8 @@ IsTokenizerLangSupportedIterator::~IsTokenizerLangSupportedIterator() {}
 
 // </IsTokenizerLangSupportedIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <StemIterator>
 StemIterator::class_factory<StemIterator>
 StemIterator::g_class_factory;
@@ -208,7 +216,8 @@ StemIterator::~StemIterator() {}
 
 // </StemIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <StripDiacriticsIterator>
 StripDiacriticsIterator::class_factory<StripDiacriticsIterator>
 StripDiacriticsIterator::g_class_factory;
@@ -230,7 +239,8 @@ StripDiacriticsIterator::~StripDiacriticsIterator() {}
 
 // </StripDiacriticsIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <ThesaurusLookupIterator>
 ThesaurusLookupIterator::class_factory<ThesaurusLookupIterator>
 ThesaurusLookupIterator::g_class_factory;
@@ -260,7 +270,8 @@ void ThesaurusLookupIteratorState::reset(PlanState& planState) {
 }
 // </ThesaurusLookupIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeIterator>
 TokenizeIterator::class_factory<TokenizeIterator>
 TokenizeIterator::g_class_factory;
@@ -290,7 +301,8 @@ void TokenizeIteratorState::reset(PlanState& planState) {
 }
 // </TokenizeIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
 TokenizerPropertiesIterator::class_factory<TokenizerPropertiesIterator>
 TokenizerPropertiesIterator::g_class_factory;
@@ -312,7 +324,8 @@ TokenizerPropertiesIterator::~TokenizerPropertiesIterator() {}
 
 // </TokenizerPropertiesIterator>
 
-
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeStringIterator>
 TokenizeStringIterator::class_factory<TokenizeStringIterator>
 TokenizeStringIterator::g_class_factory;
@@ -342,7 +355,7 @@ void TokenizeStringIteratorState::reset(PlanState& planState) {
 }
 // </TokenizeStringIterator>
 
-
+#endif
 
 }
 
