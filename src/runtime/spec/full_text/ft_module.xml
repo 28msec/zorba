@@ -14,7 +14,8 @@
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
-<zorba:iterator name="CurrentLangIterator">
+<zorba:iterator name="CurrentLangIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="current-lang" prefix="full-text">
       <zorba:output>xs:language</zorba:output>
@@ -22,7 +23,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="HostLangIterator">
+<zorba:iterator name="HostLangIterator"
+                      preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="host-lang" prefix="full-text">
       <zorba:output>xs:language</zorba:output>
@@ -30,7 +32,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsStemLangSupportedIterator">
+<zorba:iterator name="IsStemLangSupportedIterator"
+                      preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="is-stem-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
@@ -39,7 +42,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsStopWordIterator">
+<zorba:iterator name="IsStopWordIterator"
+                      preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="is-stop-word" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
@@ -53,7 +57,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsStopWordLangSupportedIterator">
+<zorba:iterator name="IsStopWordLangSupportedIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="is-stop-word-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
@@ -62,7 +67,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsThesaurusLangSupportedIterator">
+<zorba:iterator name="IsThesaurusLangSupportedIterator"
+                      preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="is-thesaurus-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
@@ -76,7 +82,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsTokenizerLangSupportedIterator">
+<zorba:iterator name="IsTokenizerLangSupportedIterator"
+                      preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="is-tokenizer-lang-supported" prefix="full-text">
       <zorba:param>xs:language</zorba:param>
@@ -85,7 +92,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="StemIterator">
+<zorba:iterator name="StemIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="stem" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- word -->
@@ -99,7 +107,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="StripDiacriticsIterator">
+<zorba:iterator name="StripDiacriticsIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="strip-diacritics" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
@@ -109,7 +118,8 @@
 </zorba:iterator>
 
 <zorba:iterator name="ThesaurusLookupIterator"
-                generateResetImpl="true">
+                generateResetImpl="true"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
@@ -154,7 +164,8 @@
 </zorba:iterator>
 
 <zorba:iterator name="TokenizeIterator"
-                generateResetImpl="true">
+                generateResetImpl="true"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 
   <zorba:function generateCodegen="false" generateDECL="false">
 
@@ -179,7 +190,8 @@
 
 </zorba:iterator>
 
-<zorba:iterator name="TokenizerPropertiesIterator">
+<zorba:iterator name="TokenizerPropertiesIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 
   <zorba:function generateCodegen="false" generateDECL="false">
 
@@ -207,7 +219,8 @@
 </zorba:iterator>
 
 <zorba:iterator name="TokenizeStringIterator"
-                generateResetImpl="true">
+                generateResetImpl="true"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 
   <zorba:function>
 

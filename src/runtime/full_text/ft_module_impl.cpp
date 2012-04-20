@@ -14,40 +14,41 @@
  * limitations under the License.
  */
 
-#include <limits>
-#include <typeinfo>
+#include <zorba/config.h>
 
-#include <zorba/diagnostic_list.h>
+#ifndef ZORBA_NO_FULL_TEXT
 
-#include "api/unmarshaller.h"
+# include <limits>
+# include <typeinfo>
 
-#include "diagnostics/assert.h"
-#include "diagnostics/xquery_diagnostics.h"
+# include <zorba/diagnostic_list.h>
 
-#include "context/static_context.h"
-#include "context/namespace_context.h"
+# include "api/unmarshaller.h"
+# include "context/namespace_context.h"
+# include "context/static_context.h"
+# include "diagnostics/assert.h"
+# include "diagnostics/xquery_diagnostics.h"
+# include "store/api/index.h"
+# include "store/api/item.h"
+# include "store/api/item_factory.h"
+# include "store/api/iterator.h"
+# include "store/api/store.h"
+# include "system/globalenv.h"
+# include "types/casting.h"
+# include "types/typeimpl.h"
+# include "types/typeops.h"
+# include "util/utf8_util.h"
+# include "zorbatypes/URI.h"
+# include "zorbautils/locale.h"
 
-#include "store/api/index.h"
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/iterator.h"
-#include "store/api/store.h"
+# include "ft_stop_words_set.h"
+# include "ft_token_seq_iterator.h"
+# include "ft_util.h"
+# include "thesaurus.h"
 
-#include "system/globalenv.h"
-
-#include "types/typeimpl.h"
-#include "types/typeops.h"
-#include "types/casting.h"
-
-#include "util/utf8_util.h"
-#include "zorbatypes/URI.h"
-#include "zorbautils/locale.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "runtime/full_text/ft_module.h"
-#include "ft_stop_words_set.h"
-#include "ft_token_seq_iterator.h"
-#include "ft_util.h"
-#include "thesaurus.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -56,6 +57,7 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_FULL_TEXT
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
   return lang ? lang : get_host_lang();
@@ -80,11 +82,15 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
     err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
   );
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool CurrentLangIterator::nextImpl( store::Item_t &result,
                                     PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   iso639_1::type const lang = get_lang_from( getStaticContext() );
   zstring lang_string( iso639_1::string_of[ lang ] );
 
@@ -95,12 +101,16 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   iso639_1::type const lang = get_host_lang();
   zstring lang_string = iso639_1::string_of[ lang ];
 
@@ -111,12 +121,16 @@ bool HostLangIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   bool is_supported;
   store::Item_t item;
 
@@ -139,12 +153,16 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t item;
   iso639_1::type lang;
   ft_stop_words_set::ptr stop_words;
@@ -174,12 +192,16 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
                                                 PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   bool is_supported;
   store::Item_t item;
 
@@ -200,12 +222,16 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
                                                  PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   bool is_supported;
   store::Item_t item;
   zstring uri;
@@ -261,12 +287,16 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
                                                  PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   bool is_supported;
   store::Item_t item;
 
@@ -288,12 +318,16 @@ bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool StemIterator::nextImpl( store::Item_t &result,
                              PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t item;
   iso639_1::type lang;
   internal::StemmerProvider const *provider;
@@ -330,12 +364,16 @@ bool StemIterator::nextImpl( store::Item_t &result,
   }
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t item;
   zstring phrase, stripped_phrase;
 
@@ -349,12 +387,16 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
   STACK_PUSH( true, state );
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   vector<zstring> comp_uris;
   zstring error_msg;
   store::Item_t item;
@@ -436,9 +478,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   }
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
+#ifndef ZORBA_NO_FULL_TEXT
   NaryBaseIterator<ThesaurusLookupIterator,ThesaurusLookupIteratorState>::
     resetImpl( plan_state );
   ThesaurusLookupIteratorState *const state =
@@ -451,12 +495,16 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
     )
   );
   ZORBA_ASSERT( state->tresult_.get() );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t attr_name, attr_node;
   zstring base_uri;
   store::Item_t item;
@@ -558,9 +606,11 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   }
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
+#ifndef ZORBA_NO_FULL_TEXT
   NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::
     resetImpl( plan_state );
   TokenizeIteratorState *const state =
@@ -568,12 +618,16 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
       plan_state, this->theStateOffset
     );
   state->doc_tokens_->reset();
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t element, item, junk, name;
   zstring base_uri;
   iso639_1::type lang;
@@ -690,10 +744,12 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   STACK_PUSH( true, state );
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_FULL_TEXT
 struct TokenizeStringIteratorCallback : Tokenizer::Callback {
   void token( char const*, size_type, iso639_1::type, size_type, size_type,
               size_type, Item const* );
@@ -713,9 +769,13 @@ token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
   );
   tokens_.push_back( token );
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 bool TokenizeStringIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
+#ifdef ZORBA_NO_FULL_TEXT
+  return false;
+#else
   store::Item_t item;
   iso639_1::type lang;
   zstring value_string;
@@ -762,9 +822,11 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
   }
 
   STACK_END( state );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
+#ifndef ZORBA_NO_FULL_TEXT
   NaryBaseIterator<TokenizeStringIterator,TokenizeStringIteratorState>::
     resetImpl( plan_state );
   TokenizeStringIteratorState *const state =
@@ -772,6 +834,7 @@ void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
       plan_state, this->theStateOffset
     );
   state->string_tokens_.reset();
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
