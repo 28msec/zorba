@@ -301,6 +301,7 @@ le0( IntType n ) {
 //
 // Note: the use of "!!" is to work around a compiler problem on Windows;
 // see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
+//
 
 template<typename N1,typename N2> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
