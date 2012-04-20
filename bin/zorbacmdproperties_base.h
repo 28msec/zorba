@@ -84,10 +84,10 @@ protected:
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
-  bool theCompilePlan;
-  bool theExecutePlan;
+  bool theSerializePlan;
 
-  void initialize () {
+  void initialize () 
+  {
     theTiming = false;
     theSerializeHtml = false;
     theSerializeText = false;
@@ -109,9 +109,9 @@ protected:
     theNoLogo = false;
     theTimeout = -1;
     theTrailingNl = false;
-    theCompilePlan = false;
-    theExecutePlan = false;
+    theSerializePlan = false;
   }
+
 public:
   const bool &timing () const { return theTiming; }
   const std::string &outputFile () const { return theOutputFile; }
@@ -151,78 +151,91 @@ public:
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
-  const bool &compilePlan () const { return theCompilePlan; }
-  const bool &executePlan () const { return theExecutePlan; }
+  const bool& serializePlan () const { return theSerializePlan; }
 
-  std::string load_argv (int argc, const char **argv) {
+  std::string load_argv (int argc, const char **argv) 
+  {
     if (argv == NULL) return "";
 
     std::string result;
-    for (++argv; *argv != NULL; ++argv) {
+    for (++argv; *argv != NULL; ++argv) 
+    {
       if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
         return "!HELP";
+
       else if (strcmp (*argv, "--version") == 0)
         return "!VER";
-      else if (strcmp (*argv, "--timing") == 0 || strncmp (*argv, "-t", 2) == 0) {
+
+      else if (strcmp (*argv, "--timing") == 0 || strncmp (*argv, "-t", 2) == 0) 
+      {
         theTiming = true;
       }
-      else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
+      else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --output-file option"; break; }
-
         init_val (*argv, theOutputFile, d);
       }
-      else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {
+      else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --serialization-parameter option"; break; }
 
         init_val (*argv, theSerializationParameter, d);
       }
-      else if (strcmp (*argv, "--serialize-html") == 0) {
+      else if (strcmp (*argv, "--serialize-html") == 0) 
+      {
         theSerializeHtml = true;
       }
-      else if (strcmp (*argv, "--serialize-text") == 0) {
+      else if (strcmp (*argv, "--serialize-text") == 0) 
+      {
         theSerializeText = true;
       }
-      else if (strcmp (*argv, "--indent") == 0 || strncmp (*argv, "-i", 2) == 0) {
+      else if (strcmp (*argv, "--indent") == 0 || strncmp (*argv, "-i", 2) == 0) 
+      {
         theIndent = true;
       }
-      else if (strcmp (*argv, "--print-query") == 0) {
+      else if (strcmp (*argv, "--print-query") == 0) 
+      {
         thePrintQuery = true;
       }
-      else if (strcmp (*argv, "--print-errors-as-xml") == 0 || strncmp (*argv, "-x", 2) == 0) {
+      else if (strcmp (*argv, "--print-errors-as-xml") == 0 || strncmp (*argv, "-x", 2) == 0)
+      {
         thePrintErrorsAsXml = true;
       }
-      else if (strcmp (*argv, "--byte-order-mark") == 0) {
+      else if (strcmp (*argv, "--byte-order-mark") == 0) 
+      {
         theByteOrderMark = true;
       }
-      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-r", 2) == 0) {
+      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-r", 2) == 0) 
+      {
         theOmitXmlDeclaration = true;
       }
-      else if (strcmp (*argv, "--base-uri") == 0) {
+      else if (strcmp (*argv, "--base-uri") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --base-uri option"; break; }
-
         init_val (*argv, theBaseUri, d);
       }
-      else if (strcmp (*argv, "--boundary-space") == 0) {
+      else if (strcmp (*argv, "--boundary-space") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --boundary-space option"; break; }
-
         init_val (*argv, theBoundarySpace, d);
       }
-      else if (strcmp (*argv, "--default-collation") == 0) {
+      else if (strcmp (*argv, "--default-collation") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --default-collation option"; break; }
-
         init_val (*argv, theDefaultCollation, d);
       }
-      else if (strcmp (*argv, "--construction-mode") == 0) {
+      else if (strcmp (*argv, "--construction-mode") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --construction-mode option"; break; }
@@ -236,147 +249,180 @@ public:
 
         init_val (*argv, theOrderingMode, d);
       }
-      else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) {
+      else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --multiple option"; break; }
-
-        init_val (*argv, theMultiple, d);
+        if (*argv == NULL)
+        {
+          result = "No value given for --multiple option"; break;
+        }
+        init_val(*argv, theMultiple, d);
       }
-      else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) {
+      else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --query option"; break; }
-
+        if (*argv == NULL)
+        {
+          result = "No value given for --query option"; break;
+        }
         init_val (*argv, theQueriesOrFiles, d);
       }
-      else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) {
+      else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) 
+      {
         theAsFiles = true;
       }
-      else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) {
+      else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --external-variable option"; break; }
-
-        init_val (*argv, theExternalVariable, d);
+        if (*argv == NULL) 
+        {
+          result = "No value given for --external-variable option"; break;
+        }
+        init_val(*argv, theExternalVariable, d);
       }
-      else if (strcmp (*argv, "--context-item") == 0) {
+      else if (strcmp (*argv, "--context-item") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --context-item option"; break; }
-
+        if (*argv == NULL) 
+        {
+          result = "No value given for --context-item option"; break;
+        }
         init_val (*argv, theContextItem, d);
       }
-      else if (strcmp (*argv, "--optimization-level") == 0) {
+      else if (strcmp (*argv, "--optimization-level") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --optimization-level option"; break; }
-
-        init_val (*argv, theOptimizationLevel, d);
+        if (*argv == NULL)
+        {
+          result = "No value given for --optimization-level option"; break;
+        }
+        init_val(*argv, theOptimizationLevel, d);
       }
-      else if (strcmp (*argv, "--lib-module") == 0 || strncmp (*argv, "-l", 2) == 0) {
+      else if (strcmp (*argv, "--lib-module") == 0 || strncmp (*argv, "-l", 2) == 0) 
+      {
         theLibModule = true;
       }
-      else if (strcmp (*argv, "--parse-only") == 0) {
+      else if (strcmp (*argv, "--parse-only") == 0) 
+      {
         theParseOnly = true;
       }
-      else if (strcmp (*argv, "--compile-only") == 0) {
+      else if (strcmp (*argv, "--compile-only") == 0) 
+      {
         theCompileOnly = true;
       }
-      else if (strcmp (*argv, "--no-serializer") == 0) {
+      else if (strcmp (*argv, "--no-serializer") == 0) 
+      {
         theNoSerializer = true;
       }
-      else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) {
+      else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) 
+      {
         theDebug = true;
       }
-      else if (strcmp (*argv, "--debug-host") == 0 || strncmp (*argv, "-h", 2) == 0) {
+      else if (strcmp (*argv, "--debug-host") == 0 || strncmp (*argv, "-h", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-host option"; break; }
-
+        if (*argv == NULL) 
+        {
+          result = "No value given for --debug-host option"; break;
+        }
         init_val (*argv, theDebugHost, d);
       }
-      else if (strcmp (*argv, "--debug-port") == 0 || strncmp (*argv, "-p", 2) == 0) {
+      else if (strcmp (*argv, "--debug-port") == 0 || strncmp (*argv, "-p", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-port option"; break; }
-
+        if (*argv == NULL) 
+        {
+          result = "No value given for --debug-port option"; break;
+        }
         init_val (*argv, theDebugPort, d);
       }
-      else if (strcmp (*argv, "--no-logo") == 0) {
+      else if (strcmp (*argv, "--no-logo") == 0) 
+      {
         theNoLogo = true;
       }
-      else if (strcmp (*argv, "--timeout") == 0) {
+      else if (strcmp (*argv, "--timeout") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --timeout option"; break; }
-
         init_val (*argv, theTimeout, d);
       }
-      else if (strcmp (*argv, "--uri-path") == 0) {
+      else if (strcmp (*argv, "--uri-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --uri-path option"; break; }
-
         init_val (*argv, theUriPath, d);
       }
-      else if (strcmp (*argv, "--lib-path") == 0) {
+      else if (strcmp (*argv, "--lib-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --lib-path option"; break; }
-
         init_val (*argv, theLibPath, d);
       }
-      else if (strcmp (*argv, "--module-path") == 0) {
+      else if (strcmp (*argv, "--module-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --module-path option"; break; }
-
         init_val (*argv, theModulePath, d);
       }
-      else if (strcmp (*argv, "--classpath") == 0) {
+      else if (strcmp (*argv, "--classpath") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --classpath option"; break; }
 
         init_val (*argv, theClasspath, d);
       }
-      else if (strcmp (*argv, "--option") == 0) {
+      else if (strcmp (*argv, "--option") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --option option"; break; }
-
         init_val (*argv, theOption, d);
       }
-      else if (strcmp (*argv, "--trailing-nl") == 0) {
+      else if (strcmp (*argv, "--trailing-nl") == 0) 
+      {
         theTrailingNl = true;
       }
-      else if (strcmp (*argv, "--stop-words") == 0) {
+      else if (strcmp (*argv, "--stop-words") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --stop-words option"; break; }
-
         init_val (*argv, theStopWords, d);
       }
-      else if (strcmp (*argv, "--thesaurus") == 0) {
+      else if (strcmp (*argv, "--thesaurus") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }
-
         init_val (*argv, theThesaurus, d);
       }
-      else if (strcmp (*argv, "--compile-plan") == 0 || strncmp (*argv, "-c", 2) == 0) {
-        theCompilePlan = true;
+      else if (strcmp (*argv, "--serialize-plan") == 0 || strncmp (*argv, "-s", 2) == 0)
+      {
+        theSerializePlan = true;
       }
-      else if (strcmp (*argv, "--execute-plan") == 0) {
-        theExecutePlan = true;
-      }
-      else if (strcmp (*argv, "--") == 0) {
+      else if (strcmp (*argv, "--") == 0)
+      {
         copy_args (++argv);
         break;
-      } else if ((*argv) [0] == '-') {
+      }
+      else if ((*argv) [0] == '-')
+      {
         result = "unknown command line option "; result += *argv; break; 
-      } else {
+      }
+      else
+      {
         copy_args (argv);
         break;
       }
@@ -385,7 +431,8 @@ public:
     return result;
   }
 
-  const char *get_help_msg () const {
+  const char *get_help_msg () const 
+  {
     return
         "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
         "--output-file, -o\nWrite the result to the given file.\n\n"
@@ -425,12 +472,12 @@ public:
         "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
         "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
         "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
-        "--compile-plan, -c\nOutput the query plan as binary.\n\n"
-        "--execute-plan\nTake a query plan as binary and execute it. Binary query plans can be generated using the --compile-plan option.\n\n"
+        "--serialize-plan, -cs\nSerialize and then load the query execution plan.\n\n"
         ;
   }
 
-  static const ZorbaCMDPropertiesBase *instance () {
+  static const ZorbaCMDPropertiesBase *instance () 
+  {
     static ZorbaCMDPropertiesBase result;
     return &result;
   }

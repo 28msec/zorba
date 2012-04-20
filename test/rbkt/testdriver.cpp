@@ -390,10 +390,14 @@ main(int argc, char** argv)
         std::cout << "cannot open plan " << binary_path << std::endl;
         return 15;
       }
+
       bool load_ret;
-      zorba::TestSerializationCallback  serl_callback
-          (driverContext.theURIMappers, driverContext.theURLResolvers);
+
+      zorba::TestSerializationCallback serl_callback(driverContext.theURIMappers,
+                                                     driverContext.theURLResolvers);
+
       load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);
+
       if(!load_ret)
       {
         std::cout << "cannot load plan " << binary_path << std::endl;

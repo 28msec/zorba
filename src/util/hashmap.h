@@ -138,30 +138,33 @@ private:
 public:
 #ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
   SERIALIZABLE_TEMPLATE_CLASS(serializable_hashmap)
-  serializable_hashmap(::zorba::serialization::Archiver &ar) : ::zorba::serialization::SerializeBaseClass()
+  serializable_hashmap(::zorba::serialization::Archiver& ar) : ::zorba::serialization::SerializeBaseClass()
   {
   }
-  void serialize(::zorba::serialization::Archiver &ar)
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & sz;
     ar & tsz;
     ar & ld;
     ar & minsz;
     ar & v;
-    //ar & tab;
+
     //compress tab
     int tab_size = (int)tab.size();
-    ar.set_is_temp_field_one_level(true);
+
+    ar.set_is_temp_field(true);
     ar & tab_size;
-    if(ar.is_serializing_out())
+
+    if (ar.is_serializing_out())
     {
-      typename checked_vector<int>::iterator tab_it;
-      tab_it = tab.begin();
+      checked_vector<int>::iterator tab_it = tab.begin();
       int last_val = *tab_it;
       int nr_dupl = 1;
-      for(tab_it++; tab_it != tab.end(); tab_it++)
+
+      for (tab_it++; tab_it != tab.end(); ++tab_it)
       {
-        if((*tab_it) != last_val)
+        if ((*tab_it) != last_val)
         {
           ar & nr_dupl;
           ar & last_val;
@@ -169,8 +172,11 @@ public:
           nr_dupl = 1;
         }
         else
+        {
           nr_dupl++;
+        }
       }
+
       ar & nr_dupl;
       ar & last_val;
       nr_dupl = 0;
@@ -181,16 +187,19 @@ public:
       tab.resize(tab_size);
       int last_val;
       int nr_dupl, i;
-      typename checked_vector<int>::iterator  tab_it = tab.begin();
+      checked_vector<int>::iterator  tab_it = tab.begin();
+
       while(1)
       {
         ar & nr_dupl;
-        if(!nr_dupl)
+
+        if (!nr_dupl)
           break;
+
         ar & last_val;
-        for(i=0;i<nr_dupl;i++)
+
+        for (i = 0; i < nr_dupl; i++)
         {
-          //tab.push_back(last_val);
           *tab_it = last_val;
           tab_it++;
         }
@@ -198,7 +207,8 @@ public:
 
       assert((int)tab.size() == (int)tab_size);
     }
-    ar.set_is_temp_field_one_level(false);
+
+    ar.set_is_temp_field(false);
   }
 #endif
 public:

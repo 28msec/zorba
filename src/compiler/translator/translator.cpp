@@ -118,7 +118,7 @@ static expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -560,7 +560,7 @@ protected:
 
   std::set<std::string>                  theImportedSchemas;
 
-  short                                  theCurrSctxId;
+  int                                    theCurrSctxId;
 
   static_context                       * theRootSctx;
 
@@ -568,7 +568,7 @@ protected:
 
   std::vector<static_context_t>          theSctxList;
 
-  std::stack<short>                      theSctxIdStack;
+  std::stack<int>                        theSctxIdStack;
 
   static_context                       * export_sctx;
 
@@ -645,7 +645,7 @@ public:
 TranslatorImpl(
     TranslatorImpl* rootTranslator,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -920,7 +920,7 @@ inline bool inUDFBody()
 /******************************************************************************
 
 *******************************************************************************/
-inline short sctxid()
+inline int sctxid()
 {
   return theCurrSctxId;
 }
@@ -942,7 +942,7 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
+    theCurrSctxId = (int)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
@@ -2971,7 +2971,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      short moduleRootSctxId = (short)theCCB->theSctxMap.size() + 1;
+      int moduleRootSctxId = (int)theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register
@@ -13333,7 +13333,7 @@ expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -13376,7 +13376,7 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   return translate_aux(NULL,
                        root,
                        ccb->theRootSctx,
-                       (short)ccb->theSctxMap.size(),
+                       (int)ccb->theSctxMap.size(),
                        &minfo,
                        modulesStack,
                        false);

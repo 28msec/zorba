@@ -797,7 +797,9 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  size_t lNumURIMappers, lNumURLResolvers;
+  csize lNumURIMappers;
+  csize lNumURLResolvers;
+
   if (ar.is_serializing_out())
   {
     lNumURIMappers = theURIMappers.size();
@@ -823,33 +825,36 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     // callback required but not available
     if ((lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+      ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) {
-      for (size_t i = 0; i < lNumURIMappers; ++i) {
+    if (lNumURIMappers) 
+    {
+      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURIMapper) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_uri_mapper(new URIMapperWrapper(*lURIMapper));
       }
     }
-    if (lNumURLResolvers) {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) {
+
+    if (lNumURLResolvers) 
+    {
+      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURLResolver) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
