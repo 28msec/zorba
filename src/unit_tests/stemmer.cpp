@@ -46,7 +46,7 @@ void TestStemmer::destroy() const {
 }
 
 void TestStemmer::properties( Properties *p ) const {
-  p->uri = "http://www.zorba-xquery.com/full-text/stemmer/unit-test";
+  p->uri = "http://www.zorba-xquery.com/full-text/unit-tests/stemmer";
 }
 
 void TestStemmer::stem( String const &word, iso639_1::type lang,
@@ -61,21 +61,20 @@ void TestStemmer::stem( String const &word, iso639_1::type lang,
 
 class TestStemmerProvider : public StemmerProvider {
 public:
-  Stemmer::ptr getStemmer( iso639_1::type lang ) const;
+  bool getStemmer( iso639_1::type lang, Stemmer::ptr* = 0 ) const;
 };
 
-Stemmer::ptr TestStemmerProvider::getStemmer( iso639_1::type lang ) const {
+bool TestStemmerProvider::getStemmer( iso639_1::type lang,
+                                      Stemmer::ptr *result ) const {
   static TestStemmer stemmer;
-  Stemmer::ptr result;
   switch ( lang ) {
     case iso639_1::en:
     case iso639_1::unknown:
-      result.reset( &stemmer );
-      break;
+      result->reset( &stemmer );
+      return true;
     default:
-      break;
+      return false;
   }
-  return std::move( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
