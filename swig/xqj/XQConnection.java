@@ -79,12 +79,12 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     private Collection<XQPreparedExpression> cPreparedExpression;
     private Collection<XQMetaData> cMetadata;
     private XQStaticContext lStaticContext;
+    private XQXmlDataManager lXmlDataManager;
     private Properties properties;
     private StringVector uriPaths;
     private StringVector libPaths;
     private StringVector modulePaths;
     
-    //TODO: Rodolfo ALL CASES should return an exception("Not implemented yet")
     protected Zorba getZorbaInstance() throws XQException {
         if (zorba!=null) {
             return zorba;
@@ -162,9 +162,19 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (lStaticContext != null ) {
             ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
         }
+        if (lXmlDataManager != null) {
+            lXmlDataManager.close();
+        }
         zorba.shutdown();
         InMemoryStore.shutdown ( store );
         closed = true;
+    }
+    
+    public XQXmlDataManager getXmlDataManager() {
+        if (lXmlDataManager==null) {
+            lXmlDataManager = new XQXmlDataManager(zorba);
+        }
+        return lXmlDataManager;
     }
 
     @Override
@@ -183,18 +193,6 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     public void commit() throws XQException {
         isClosedXQException();
         throw new UnsupportedOperationException("Zorba does not support transactions... yet...");
-        /*
-        if (!autocommit) {
-            try {
-                query.execute();
-            } catch (Exception e) {
-                throw new XQException("Error executing query");
-            }
-        } else {
-            throw new XQException("Autocommit was specified");
-        }
-         
-         */
     }
 
     @Override
