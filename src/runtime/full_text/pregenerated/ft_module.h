@@ -141,6 +141,40 @@ public:
  * 
  * Author: 
  */
+class IsStopWordIterator : public NaryBaseIterator<IsStopWordIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsStopWordIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordIterator,
+    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStopWordIterator, PlanIteratorState>*)this);
+  }
+
+  IsStopWordIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsStopWordIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class IsStopWordLangSupportedIterator : public NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>
 { 
 public:
@@ -209,29 +243,29 @@ public:
  * 
  * Author: 
  */
-class IsStopWordIterator : public NaryBaseIterator<IsStopWordIterator, PlanIteratorState>
+class IsTokenizerLangSupportedIterator : public NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(IsStopWordIterator);
+  SERIALIZABLE_CLASS(IsTokenizerLangSupportedIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordIterator,
-    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsTokenizerLangSupportedIterator,
+    NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IsStopWordIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>*)this);
   }
 
-  IsStopWordIterator(
+  IsTokenizerLangSupportedIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~IsStopWordIterator();
+  virtual ~IsTokenizerLangSupportedIterator();
 
   void accept(PlanIterVisitor& v) const;
 

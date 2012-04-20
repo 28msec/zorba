@@ -83,6 +83,21 @@ public:
 };
 
 
+//full-text:is-stop-word
+class full_text_is_stop_word : public function
+{
+public:
+  full_text_is_stop_word(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //full-text:is-stop-word-lang-supported
 class full_text_is_stop_word_lang_supported : public function
 {
@@ -113,11 +128,11 @@ public:
 };
 
 
-//full-text:is-stop-word
-class full_text_is_stop_word : public function
+//full-text:is-tokenizer-lang-supported
+class full_text_is_tokenizer_lang_supported : public function
 {
 public:
-  full_text_is_stop_word(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_is_tokenizer_lang_supported(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

@@ -4830,10 +4830,11 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
     XmlNodeTokenizerCallback callback( att_tokens );
 
     zorba::Item const api_attr( this );
-    Tokenizer::ptr tokenizer( provider.getTokenizer( lang, numbers ) );
-    tokenizer->tokenize_node( api_attr, lang, callback );
-
-    token_store.putAttr( this, att_tokens );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) ) {
+      tokenizer->tokenize_node( api_attr, lang, callback );
+      token_store.putAttr( this, att_tokens );
+    }
   }
 }
 
@@ -4909,8 +4910,9 @@ XmlNode::getTokens( TokenizerProvider const &provider,
   {
     zorba::Item const api_root( getRoot() );
     XmlNodeTokenizerCallback callback( token_store );
-    Tokenizer::ptr tokenizer( provider.getTokenizer( lang, numbers ) );
-    tokenizer->tokenize_node( api_root, lang, callback );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+      tokenizer->tokenize_node( api_root, lang, callback );
   }
 
   FTTokenStore::range_type const &r = token_store.getRange( this );

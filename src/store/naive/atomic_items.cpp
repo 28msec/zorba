@@ -1659,10 +1659,11 @@ FTTokenIterator_t StringItem::getTokens(
   unique_ptr<tokens_t> tokens( new tokens_t );
   AtomicItemTokenizerCallback callback( *tokens );
 
-  Tokenizer::ptr tokenizer( provider.getTokenizer( lang, numbers ) );
-  tokenizer->tokenize_string(
-    theValue.data(), theValue.size(), lang, wildcards, callback
-  );
+  Tokenizer::ptr tokenizer;
+  if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+    tokenizer->tokenize_string(
+      theValue.data(), theValue.size(), lang, wildcards, callback
+    );
 
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }

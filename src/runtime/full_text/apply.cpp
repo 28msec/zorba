@@ -1249,10 +1249,15 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );
 
-  Tokenizer::Numbers tno;
-  Tokenizer::ptr tokenizer(
-    GENV_STORE.getTokenizerProvider()->getTokenizer( qt0.lang(), tno )
-  );
+  Tokenizer::Numbers t_num;
+  TokenizerProvider const *const provider = GENV_STORE.getTokenizerProvider();
+  ZORBA_ASSERT( provider );
+  Tokenizer::ptr tokenizer;
+  if ( !provider->getTokenizer( qt0.lang(), &t_num, &tokenizer ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
+      ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ] )
+    );
 
   for ( zstring synonym; t_synonyms->next( &synonym ); ) {
     synonyms.clear();

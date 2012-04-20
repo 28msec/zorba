@@ -427,10 +427,18 @@ next:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::ptr
-ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
-                                     Tokenizer::Numbers &no ) const {
-  return Tokenizer::ptr( new ICU_Tokenizer( lang, no ) );
+bool ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
+                                          Tokenizer::Numbers *num,
+                                          Tokenizer::ptr *t ) const {
+  for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
+    if ( char const *const icu_locale = ubrk_getAvailable( i ) )
+      if ( lang == find_lang( icu_locale ) ) {
+        if ( num && t )
+          t->reset( new ICU_Tokenizer( lang, *num ) );
+        return true;
+      }
+  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

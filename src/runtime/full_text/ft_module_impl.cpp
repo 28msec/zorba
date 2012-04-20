@@ -265,6 +265,33 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
+                                                 PlanState &plan_state ) const {
+  bool is_supported;
+  store::Item_t item;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( item, theChildren[0], plan_state );
+  try {
+    TokenizerProvider const *const p = GENV_STORE.getTokenizerProvider();
+    is_supported = p && p->getTokenizer( get_lang_from( item, loc ) );
+  }
+  catch ( XQueryException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 )
+      throw;
+    is_supported = false;
+  }
+
+  GENV_ITEMFACTORY->createBoolean( result, is_supported );
+  STACK_PUSH( true, state );
+
+  STACK_END( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool StemIterator::nextImpl( store::Item_t &result,
                              PlanState &plan_state ) const {
   store::Item_t item;
@@ -571,7 +598,12 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   }
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
-  tokenizer = tokenizer_provider->getTokenizer( lang, no );
+  ZORBA_ASSERT( tokenizer_provider );
+  if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
+      ERROR_PARAMS( iso639_1::string_of[ lang ] )
+    );
   tokenizer->properties( &props );
 
   GENV_ITEMFACTORY->createQName(
@@ -703,8 +735,15 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     { // local scope
     TokenizerProvider const *const tokenizer_provider =
       GENV_STORE.getTokenizerProvider();
+    ZORBA_ASSERT( tokenizer_provider );
     Tokenizer::Numbers no;
-    Tokenizer::ptr tokenizer = tokenizer_provider->getTokenizer( lang, no );
+    Tokenizer::ptr tokenizer;
+    if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
+        ERROR_PARAMS( iso639_1::string_of[ lang ] )
+      );
+
     TokenizeStringIteratorCallback callback;
     tokenizer->tokenize_string(
       value_string.data(), value_string.size(), lang, false, callback

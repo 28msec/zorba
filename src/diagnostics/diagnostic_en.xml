@@ -1775,6 +1775,11 @@
       <value>"$1": langauge not supported for thesaurus</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP8407" name="TOKENIZER_LANG_NOT_SUPPORTED"
+      if="!defined(ZORBA_NO_FULL_TEXT)">
+      <value>"$1": langauge not supported for tokenizer</value>
+    </diagnostic>
+
     <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED">
       <value>"$1": prefix not declared when calling function "$2" from $3</value>
     </diagnostic>

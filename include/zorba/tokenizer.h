@@ -288,11 +288,14 @@ public:
    * Creates a new %Tokenizer.
    *
    * @param lang The language of the text that the tokenizer will tokenize.
-   * @param numbers The Numbers to use.
-   * @return Returns said %Tokenizer.
+   * @param numbers The Numbers to use.  If \c null, \a t is not set.
+   * @param t If not \c null, set to point to a Tokenizer for \a lang.
+   * @return Returns \c true only if this provider can provide a tokenizer for
+   * \a lang.
    */
-  virtual Tokenizer::ptr getTokenizer( locale::iso639_1::type lang,
-                                       Tokenizer::Numbers &numbers ) const = 0;
+  virtual bool getTokenizer( locale::iso639_1::type lang,
+                             Tokenizer::Numbers *numbers = 0,
+                             Tokenizer::ptr *t = 0 ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

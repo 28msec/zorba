@@ -1289,6 +1289,20 @@ void PrinterVisitor::endVisit ( const IsStemLangSupportedIterator& ) {
 // </IsStemLangSupportedIterator>
 
 
+// <IsStopWordIterator>
+void PrinterVisitor::beginVisit ( const IsStopWordIterator& a) {
+  thePrinter.startBeginVisit("IsStopWordIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsStopWordIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsStopWordIterator>
+
+
 // <IsStopWordLangSupportedIterator>
 void PrinterVisitor::beginVisit ( const IsStopWordLangSupportedIterator& a) {
   thePrinter.startBeginVisit("IsStopWordLangSupportedIterator", ++theId);
@@ -1317,18 +1331,18 @@ void PrinterVisitor::endVisit ( const IsThesaurusLangSupportedIterator& ) {
 // </IsThesaurusLangSupportedIterator>
 
 
-// <IsStopWordIterator>
-void PrinterVisitor::beginVisit ( const IsStopWordIterator& a) {
-  thePrinter.startBeginVisit("IsStopWordIterator", ++theId);
+// <IsTokenizerLangSupportedIterator>
+void PrinterVisitor::beginVisit ( const IsTokenizerLangSupportedIterator& a) {
+  thePrinter.startBeginVisit("IsTokenizerLangSupportedIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsStopWordIterator& ) {
+void PrinterVisitor::endVisit ( const IsTokenizerLangSupportedIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsStopWordIterator>
+// </IsTokenizerLangSupportedIterator>
 
 
 // <StemIterator>

@@ -39,6 +39,20 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="IsStopWordIterator">
+  <zorba:function>
+    <zorba:signature localname="is-stop-word" prefix="full-text">
+      <zorba:param>xs:string</zorba:param>    <!-- word -->
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="is-stop-word" prefix="full-text">
+      <zorba:param>xs:string</zorba:param>    <!-- word -->
+      <zorba:param>xs:language</zorba:param>  <!-- lang -->
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <zorba:iterator name="IsStopWordLangSupportedIterator">
   <zorba:function>
     <zorba:signature localname="is-stop-word-lang-supported" prefix="full-text">
@@ -62,15 +76,10 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="IsStopWordIterator">
+<zorba:iterator name="IsTokenizerLangSupportedIterator">
   <zorba:function>
-    <zorba:signature localname="is-stop-word" prefix="full-text">
-      <zorba:param>xs:string</zorba:param>    <!-- word -->
-      <zorba:output>xs:boolean</zorba:output>
-    </zorba:signature>
-    <zorba:signature localname="is-stop-word" prefix="full-text">
-      <zorba:param>xs:string</zorba:param>    <!-- word -->
-      <zorba:param>xs:language</zorba:param>  <!-- lang -->
+    <zorba:signature localname="is-tokenizer-lang-supported" prefix="full-text">
+      <zorba:param>xs:language</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>

@@ -442,6 +442,9 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8406", "\"$1\": langauge not supported for thesaurus" },
 #endif
+#if !defined(ZORBA_NO_FULL_TEXT)
+  { "ZXQP8407", "\"$1\": langauge not supported for tokenizer" },
+#endif
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },

@@ -347,13 +347,16 @@ bool TestTokenizer::send_token( token_t const &token, iso639_1::type lang,
 class TestTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( iso639_1::type, Tokenizer::Numbers& ) const;
+  bool getTokenizer( iso639_1::type, Tokenizer::Numbers* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
-Tokenizer::ptr
-TestTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                     Tokenizer::Numbers &num ) const {
-  return Tokenizer::ptr( new TestTokenizer( num ) );
+bool TestTokenizerProvider::getTokenizer( iso639_1::type lang,
+                                          Tokenizer::Numbers *num,
+                                          Tokenizer::ptr *t ) const {
+  if ( num && t )
+    t->reset( new TestTokenizer( *num ) );
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

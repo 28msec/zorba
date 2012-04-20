@@ -301,14 +301,17 @@ namespace zorba {
     void beginVisit( const IsStemLangSupportedIterator& );
     void endVisit  ( const IsStemLangSupportedIterator& );
 
+    void beginVisit( const IsStopWordIterator& );
+    void endVisit  ( const IsStopWordIterator& );
+
     void beginVisit( const IsStopWordLangSupportedIterator& );
     void endVisit  ( const IsStopWordLangSupportedIterator& );
 
     void beginVisit( const IsThesaurusLangSupportedIterator& );
     void endVisit  ( const IsThesaurusLangSupportedIterator& );
 
-    void beginVisit( const IsStopWordIterator& );
-    void endVisit  ( const IsStopWordIterator& );
+    void beginVisit( const IsTokenizerLangSupportedIterator& );
+    void endVisit  ( const IsTokenizerLangSupportedIterator& );
 
     void beginVisit( const StemIterator& );
     void endVisit  ( const StemIterator& );

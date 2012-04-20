@@ -66,8 +66,8 @@ private:
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( locale::iso639_1::type,
-                               Tokenizer::Numbers& ) const;
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::Numbers* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

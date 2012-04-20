@@ -99,6 +99,28 @@ IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
 // </IsStemLangSupportedIterator>
 
 
+// <IsStopWordIterator>
+IsStopWordIterator::class_factory<IsStopWordIterator>
+IsStopWordIterator::g_class_factory;
+
+
+void IsStopWordIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsStopWordIterator::~IsStopWordIterator() {}
+
+// </IsStopWordIterator>
+
+
 // <IsStopWordLangSupportedIterator>
 IsStopWordLangSupportedIterator::class_factory<IsStopWordLangSupportedIterator>
 IsStopWordLangSupportedIterator::g_class_factory;
@@ -143,12 +165,12 @@ IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
 // </IsThesaurusLangSupportedIterator>
 
 
-// <IsStopWordIterator>
-IsStopWordIterator::class_factory<IsStopWordIterator>
-IsStopWordIterator::g_class_factory;
+// <IsTokenizerLangSupportedIterator>
+IsTokenizerLangSupportedIterator::class_factory<IsTokenizerLangSupportedIterator>
+IsTokenizerLangSupportedIterator::g_class_factory;
 
 
-void IsStopWordIterator::accept(PlanIterVisitor& v) const {
+void IsTokenizerLangSupportedIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -160,9 +182,9 @@ void IsStopWordIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-IsStopWordIterator::~IsStopWordIterator() {}
+IsTokenizerLangSupportedIterator::~IsTokenizerLangSupportedIterator() {}
 
-// </IsStopWordIterator>
+// </IsTokenizerLangSupportedIterator>
 
 
 // <StemIterator>

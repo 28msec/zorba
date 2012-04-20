@@ -76,8 +76,10 @@ void Tokenizer::tokenize_node_impl( Item const &item, iso639_1::type lang,
     switch ( item.getNodeKind() ) {
       case store::StoreConsts::elementNode:
         if ( find_lang_attribute( item, &lang ) ) {
-          TokenizerProvider const &p = *GENV_STORE.getTokenizerProvider();
-          t_ptr = std::move( p.getTokenizer( lang, numbers() ) );
+          TokenizerProvider const *const p = GENV_STORE.getTokenizerProvider();
+          ZORBA_ASSERT( p );
+          if ( !p->getTokenizer( lang, numbers_, &t_ptr ) )
+            break;
           t_raw = t_ptr.get();
         }
         // no break;

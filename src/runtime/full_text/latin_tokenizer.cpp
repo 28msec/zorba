@@ -241,10 +241,17 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::ptr
-LatinTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                      Tokenizer::Numbers &num ) const {
-  return Tokenizer::ptr( new LatinTokenizer( num ) );
+bool LatinTokenizerProvider::getTokenizer( iso639_1::type lang,
+                                           Tokenizer::Numbers *num,
+                                           Tokenizer::ptr *t ) const {
+  switch ( lang ) {
+    case iso639_1::en:
+      if ( num && t )
+        t->reset( new LatinTokenizer( *num ) );
+      return true;
+    default:
+      return false;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

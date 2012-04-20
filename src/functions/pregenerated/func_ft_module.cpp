@@ -61,6 +61,16 @@ PlanIter_t full_text_is_stem_lang_supported::codegen(
   return new IsStemLangSupportedIterator(sctx, loc, argv);
 }
 
+PlanIter_t full_text_is_stop_word::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new IsStopWordIterator(sctx, loc, argv);
+}
+
 PlanIter_t full_text_is_stop_word_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -81,14 +91,14 @@ PlanIter_t full_text_is_thesaurus_lang_supported::codegen(
   return new IsThesaurusLangSupportedIterator(sctx, loc, argv);
 }
 
-PlanIter_t full_text_is_stop_word::codegen(
+PlanIter_t full_text_is_tokenizer_lang_supported::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new IsStopWordIterator(sctx, loc, argv);
+  return new IsTokenizerLangSupportedIterator(sctx, loc, argv);
 }
 
 PlanIter_t full_text_stem::codegen(
@@ -172,6 +182,31 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
+    DECL_WITH_KIND(sctx, full_text_is_stop_word,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_IS_STOP_WORD_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, full_text_is_stop_word,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_IS_STOP_WORD_2);
+
+  }
+
+
+  {
+    
+
     DECL_WITH_KIND(sctx, full_text_is_stop_word_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -209,24 +244,11 @@ void populate_context_ft_module(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, full_text_is_stop_word,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FULL_TEXT_IS_STOP_WORD_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, full_text_is_stop_word,
-        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+    DECL_WITH_KIND(sctx, full_text_is_tokenizer_lang_supported,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","is-tokenizer-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FULL_TEXT_IS_STOP_WORD_2);
+        FunctionConsts::FULL_TEXT_IS_TOKENIZER_LANG_SUPPORTED_1);
 
   }
 
