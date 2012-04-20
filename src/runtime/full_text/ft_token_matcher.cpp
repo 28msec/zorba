@@ -83,8 +83,8 @@ ft_token_matcher::match_stemmer::match_stemmer() :
 void ft_token_matcher::match_stemmer::
 operator()( string_t const &word, iso639_1::type lang,
             string_t *result ) const {
-  internal::Stemmer::ptr stemmer( provider_->get_stemmer( lang ) );
-  if ( stemmer )
+  internal::Stemmer::ptr stemmer;
+  if ( provider_->getStemmer( lang, &stemmer ) )
     stemmer->stem( word, lang, result );
   else
     *result = word;

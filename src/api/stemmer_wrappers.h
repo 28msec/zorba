@@ -51,7 +51,7 @@ public:
   }
 
   // inherited
-  Stemmer::ptr get_stemmer( locale::iso639_1::type lang ) const;
+  bool getStemmer( locale::iso639_1::type, Stemmer::ptr* = 0 ) const;
 private:
   zorba::StemmerProvider const *const api_stemmer_provider_;
 };

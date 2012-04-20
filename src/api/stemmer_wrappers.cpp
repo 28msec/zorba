@@ -64,13 +64,16 @@ StemmerProviderWrapper( zorba::StemmerProvider const *api_stemmer_provider ) :
   ZORBA_ASSERT( api_stemmer_provider_ );
 }
 
-Stemmer::ptr
-StemmerProviderWrapper::get_stemmer( iso639_1::type lang ) const {
-  zorba::Stemmer::ptr api_stemmer( api_stemmer_provider_->getStemmer( lang ) );
-  Stemmer::ptr result;
-  if ( api_stemmer.get() )
-    result.reset( new StemmerWrapper( std::move( api_stemmer ) ) );
-  return std::move( result );
+bool StemmerProviderWrapper::getStemmer( iso639_1::type lang,
+                                         Stemmer::ptr *result ) const {
+  zorba::Stemmer::ptr api_ptr;
+  zorba::Stemmer::ptr *const api_ptr_ptr = result ? &api_ptr : nullptr;
+  if ( api_stemmer_provider_->getStemmer( lang, api_ptr_ptr ) ) {
+    if ( result )
+      result->reset( new StemmerWrapper( std::move( api_ptr ) ) );
+    return true;
+  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

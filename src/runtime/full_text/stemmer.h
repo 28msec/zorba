@@ -91,13 +91,15 @@ public:
   static StemmerProvider const& get_default();
 
   /**
-   * Gets an instance of a Stemmer for the given language.
+   * Gets a Stemmer for the given language.
    *
-   * @param lang The language for the stemmer.
-   * @return Returns said Stemmer or \c nullptr if no stemmer is availabe for
-   * the given language.
+   * @param lang The language to get a Stemmer for.
+   * @param s If not \c null, set to point to a Stemmer for \a lang.
+   * @return Returns \c true only if this provider can provide a stemmer for
+   * \a lang.
    */
-  virtual Stemmer::ptr get_stemmer( locale::iso639_1::type lang ) const;
+  virtual bool getStemmer( locale::iso639_1::type lang,
+                           Stemmer::ptr *s = 0 ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

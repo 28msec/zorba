@@ -125,10 +125,9 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
 
   consumeNext( item, theChildren[0], plan_state );
   try {
-    // TODO: why is this always the default StemmerProvider?
     internal::StemmerProvider const *const provider =
-      &internal::StemmerProvider::get_default();
-    is_supported = provider->get_stemmer( get_lang_from( item, loc ) );
+      GENV_STORE.getStemmerProvider();
+    is_supported = provider->getStemmer( get_lang_from( item, loc ) );
   }
   catch ( XQueryException const &e ) {
     if ( e.diagnostic() != err::FTST0009 )
@@ -247,11 +246,10 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     if ( !error_msg.empty() )
       cerr << "error_msg=" << error_msg << endl;
 #endif
-    cout << typeid(*rsrc.get()).name() << endl;
-    internal::ThesaurusProvider const *const t_provider =
+    internal::ThesaurusProvider const *const provider =
       dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
-    ZORBA_ASSERT( t_provider );
-    is_supported = t_provider->getThesaurus( lang );
+    ZORBA_ASSERT( provider );
+    is_supported = provider->getThesaurus( lang );
   }
   catch ( XQueryException const &e ) {
     if ( e.diagnostic() != err::FTST0009 /* lang not supported by Zorba */ )
@@ -290,8 +288,9 @@ bool StemIterator::nextImpl( store::Item_t &result,
   }
 
   // TODO: why is this always the default StemmerProvider?
-  provider = &internal::StemmerProvider::get_default();
-  if ( stemmer = provider->get_stemmer( lang ) ) {
+  provider = GENV_STORE.getStemmerProvider();
+  ZORBA_ASSERT( provider );
+  if ( provider->getStemmer( lang, &stemmer ) ) {
     stemmer->stem( word, lang, &stem );
     GENV_ITEMFACTORY->createString( result, stem );
     STACK_PUSH( true, state );
@@ -337,7 +336,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   zstring uri = "##default";
   static_context const *sctx;
   zstring synonym;
-  internal::ThesaurusProvider const *t_provider;
+  internal::ThesaurusProvider const *provider;
 
   ThesaurusLookupIteratorState *state;
   DEFAULT_STACK_INIT( ThesaurusLookupIteratorState, state, plan_state );
@@ -388,9 +387,9 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
     );
 
-  t_provider = dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
-  ZORBA_ASSERT( t_provider );
-  if ( !t_provider->getThesaurus( lang, &state->thesaurus_ ) )
+  provider = dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
+  ZORBA_ASSERT( provider );
+  if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
       zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
       ERROR_PARAMS( lang ),

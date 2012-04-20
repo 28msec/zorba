@@ -58,7 +58,7 @@ public:
     /**
      * The URI that uniquely identifies this %Stemmer.
      */
-    char const* uri;
+    char const *uri;
   };
 
   /**
@@ -93,10 +93,12 @@ public:
    * Gets a Stemmer for the given language.
    *
    * @param lang The language to get a Stemmer for.
-   * @return The relevant Stemmer or \c NULL if no stemmer for the given
-   * language is available.
+   * @param s If not \c null, set to point to a Stemmer for \a lang.
+   * @return Returns \c true only if this provider can provide a stemmer for
+   * \a lang.
    */
-  virtual Stemmer::ptr getStemmer( locale::iso639_1::type lang ) const = 0;
+  virtual bool getStemmer( locale::iso639_1::type lang,
+                           Stemmer::ptr *s = 0 ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
