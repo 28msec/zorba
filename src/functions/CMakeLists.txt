@@ -82,5 +82,8 @@ LIST(APPEND FUNCTIONS_SRCS
     func_reflection.cpp
     func_apply.cpp
     func_serialize_impl.cpp
-    func_ft_module_impl.cpp
 )
+
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND FUNCTIONS_SRCS func_ft_module_impl.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
