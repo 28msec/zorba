@@ -19,6 +19,8 @@
 class ItemSequence
 {
   friend class Collection;
+  friend class CollectionManager;
+  friend class StaticCollectionManager;
 private:
   zorba::ItemSequence_t theItemSequence;
 

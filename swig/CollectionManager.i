@@ -26,6 +26,11 @@
     theManager->createCollection(aName.theItem );
   }
 
+  void CollectionManager::createCollection(const Item &aName, const ItemSequence &aContents )
+  {
+    theManager->createCollection(aName.theItem, aContents.theItemSequence );
+  }
+
   void CollectionManager::deleteCollection(const Item &aName )
   {
     theManager->deleteCollection(aName.theItem );
@@ -41,6 +46,10 @@
     return theManager->isAvailableCollection(aName.theItem );
   }
 
+  void CollectionManager::registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler)
+  {
+    theManager->registerDiagnosticHandler(aDiagnosticHandler);
+  }
 
 %}  // end   Implementation
 
