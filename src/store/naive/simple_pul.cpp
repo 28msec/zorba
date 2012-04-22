@@ -2154,10 +2154,13 @@ void CollectionPul::undoRefreshIndexes()
     end = beforeDelta.rend();
     for (; ite != end; ++ite)
     {
+      store::IndexKey* key = (*ite).second;
+
       // If the index takes ownership of the key obj, set the key ptr to null
       // so that the key obj will not be deleted during cleanIndexDeltas().
-      if (!index->insert((*ite).second, (*ite).first))
+      if (!index->insert(key, (*ite).first))
       {
+        assert(key == (*ite).second);
         (*ite).second = NULL;
       }
     }
