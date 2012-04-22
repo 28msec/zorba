@@ -20,10 +20,11 @@
 #include <iostream>
 #include <zorba/file.h>
 
+#include "util/fs_util.h"
+
 namespace zorba {
 
   class file;
-  class dir_iterator;
   class DiagnosticHandler;
 
 
@@ -31,13 +32,11 @@ class DirectoryIteratorImpl : public DirectoryIterator
 {
 private:
 
-  dir_iterator*     theInternalDirIter;
+  fs::iterator          theInternalDirIter;
 
 public:
 
   DirectoryIteratorImpl(std::string const& aPath);
-
-  ~DirectoryIteratorImpl();
 
   bool next(std::string& aPathStr) const;
   void reset();
