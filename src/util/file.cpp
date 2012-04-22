@@ -277,20 +277,6 @@ void file::mkdir() {
 #endif
 }
 
-void file::lsdir(std::vector<std::string> &list) {
-#ifdef ZORBA_WITH_FILE_ACCESS
-  try {
-    fs::iterator dir_iter( c_str() );
-    while ( dir_iter.next() )
-      list.push_back( dir_iter.entry_name() );
-    set_filetype( type_directory );
-  }
-  catch ( fs::exception const &e ) {
-    throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
-  }
-#endif
-}
-
 void file::deep_mkdir() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   vector<file> files;

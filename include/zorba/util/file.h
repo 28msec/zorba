@@ -85,7 +85,6 @@ public: // directory methods
   void mkdir();
   void deep_mkdir();
   void rmdir(bool ignore = true);
-  void lsdir(std::vector<std::string> &list);
 #ifndef _WIN32_WCE
   void chdir();
 #endif
