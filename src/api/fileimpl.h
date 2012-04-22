@@ -32,7 +32,7 @@ class DirectoryIteratorImpl : public DirectoryIterator
 {
 private:
 
-  fs::iterator          theInternalDirIter;
+  mutable fs::iterator  theInternalDirIter;
 
 public:
 

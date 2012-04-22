@@ -36,7 +36,7 @@
 namespace zorba {
 
 DirectoryIteratorImpl::DirectoryIteratorImpl(std::string const& aPath) :
-  theInternalFile( aPath.c_str() )
+  theInternalDirIter( aPath.c_str() )
 {
 }
 

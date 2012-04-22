@@ -214,7 +214,7 @@ public:
   void reset();
 
 private:
-  zstring const dir_path_;
+  zstring dir_path_;
   type ent_type_;
 #ifndef WIN32
   DIR *dir_;
@@ -635,7 +635,8 @@ template<class PathStringType> inline
 void make_absolute( PathStringType &path ) {
   if ( !is_absolute( path ) ) {
 #ifndef WIN32
-    path.insert( 0, 1, '/' );
+    typedef typename PathStringType::size_type size_type;
+    path.insert( static_cast<size_type>(0), static_cast<size_type>(1), '/' );
     path.insert( 0, curdir().c_str() );
 #else
     char temp[ MAX_PATH ];

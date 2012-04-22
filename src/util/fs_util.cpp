@@ -108,11 +108,13 @@ void make_absolute_impl( char const *path, char *abs_path ) {
   to_wchar( path, wpath );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName(
-    wpath, sizeof( wpath ) / sizeof( wpath[0] ), wfull_path, NULL
+    wpath, sizeof( wfull_path ) / sizeof( wfull_path[0] ), wfull_path, NULL
   );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
   to_char( wfull_path, abs_path );
+#else
+  ::strcpy( abs_path, path );
 #endif /* WINCE */
 }
 
@@ -296,11 +298,12 @@ void mkdir( char const *path ) {
 }
 
 iterator::iterator( char const *path ) : dir_path_( path ) {
+  make_absolute( dir_path_ );
 #ifndef WIN32
-  if ( !(dir_ = ::opendir( path )) )
-    throw fs::exception( "iterator()", path );
+  if ( !(dir_ = ::opendir( dir_path_.c_str() )) )
+    throw fs::exception( "iterator()", dir_path_.c_str() );
 #else
-  win32_opendir( path );
+  win32_opendir( dir_path_.c_str() );
 #endif /* WIN32 */
 }
 
