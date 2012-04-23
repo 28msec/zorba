@@ -3935,7 +3935,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {

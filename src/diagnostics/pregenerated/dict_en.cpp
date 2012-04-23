@@ -180,6 +180,7 @@ extern entry const dict_en[] = {
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
+  { "XQST0099", "module contains more than one context item declaration" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
