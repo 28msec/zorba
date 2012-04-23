@@ -38,8 +38,8 @@ namespace zorba {
         AM,   ///< Armenia
         AN,   ///< Netherlands Antilles
         AO,   ///< Angola
-        AQ,   ///< AntarcticA
-        AR,   ///< ArgentinA
+        AQ,   ///< Antarctica
+        AR,   ///< Argentina
         AS,   ///< American Samoa
         AT,   ///< Austria
         AU,   ///< Australia
