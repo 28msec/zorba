@@ -105,7 +105,7 @@
 
 
 #define NODE_SORT_OPT
-
+#define XS_URI "http://www.w3.org/2001/XMLSchema"
 
 namespace zorba
 {
@@ -2009,6 +2009,14 @@ void* import_schema(
 
     if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
+  }
+
+  zstring xsdTNS = zstring(XS_URI);
+  if ( xsdTNS.compare(targetNS)==0 )
+  {
+    // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
+    return no_state;
   }
 
   store::Item_t targetNSItem = NULL;
