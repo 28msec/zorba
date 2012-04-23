@@ -22,6 +22,8 @@ try
 
    replace value of node dml:collection($u:auctions1)[1]/@key with "1",
 
+   dml:delete-nodes-first($u:auctions1, 1),
+
    dml:insert-nodes($u:auctions2, <person id="1"/>),
    dml:insert-nodes($u:auctions2, <person id="1"/>));
   ()
