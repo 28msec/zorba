@@ -124,16 +124,8 @@ Resource*
 ZorbaCollectionURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  switch ( aEntityData->getKind() ) {
-    case EntityData::COLLECTION:
-#ifndef ZORBA_NO_FULL_TEXT
-    case EntityData::THESAURUS:
-#endif /* ZORBA_NO_FULL_TEXT */
-      return nullptr;
-    default:
-      break;
-  }
-
+  if (aEntityData->getKind() != EntityData::COLLECTION)
+    return NULL;
   store::Item_t lName;
   GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
   store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
