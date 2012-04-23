@@ -2015,6 +2015,7 @@ void* import_schema(
   if ( xsdTNS.compare(targetNS)==0 )
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
     return no_state;
   }
 
