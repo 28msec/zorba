@@ -11,6 +11,8 @@ Optimization:
 Bug Fixes/Other Changes:
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
+  * Fixed bug #986075 (encountering flwor expr with no clauses; due to common 
+	  subexression being formed when inlining var in if-then-else expression) 
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed buf #891650 (context size var not always declared within path expr)
   * Fixed bug #948879 (--uri-path doesn't work with fetch:content())

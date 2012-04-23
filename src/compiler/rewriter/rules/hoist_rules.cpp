@@ -373,8 +373,8 @@ static expr_t try_hoisting(
     // cannot be hoisted.
     for (i = h->clauseCount - 1; i >= 0; --i)
     {
-      const forletwin_clause* flc = reinterpret_cast<const forletwin_clause*>
-                                    ((*h->flwor)[i]);
+      const forletwin_clause* flc = 
+      static_cast<const forletwin_clause*>(h->flwor->get_clause(i));
 
       if (flc->get_expr()->is_sequential())
       {
