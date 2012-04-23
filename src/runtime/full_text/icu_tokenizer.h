@@ -64,6 +64,8 @@ private:
 
 class ICU_TokenizerProvider : public TokenizerProvider {
 public:
+  ICU_TokenizerProvider() { }           // needed to work-around compiler bug
+
   // inherited
   bool getTokenizer( locale::iso639_1::type, Tokenizer::Numbers* = 0,
                      Tokenizer::ptr* = 0 ) const;
