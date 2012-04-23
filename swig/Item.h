@@ -23,6 +23,7 @@ class Item
   friend class StaticContext;
   friend class DocumentManager; 
   friend class SingletonIterator;
+  friend class SingletonItemSequence;
   friend class DynamicContext;
   friend class ItemFactory;
   friend class Collection;
