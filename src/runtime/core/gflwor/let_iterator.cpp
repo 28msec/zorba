@@ -27,7 +27,6 @@ namespace zorba
 namespace flwor 
 {
 SERIALIZABLE_CLASS_VERSIONS(LetIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LetIterator)
 
 
 

@@ -24,6 +24,7 @@
 #include <cstdio>
 #include <string>
 #include <time.h>
+#include <vector>
 
 #include <zorba/config.h>
 #include <zorba/file.h>
@@ -84,6 +85,7 @@ public: // directory methods
   void mkdir();
   void deep_mkdir();
   void rmdir(bool ignore = true);
+  void lsdir(std::vector<std::string> &list);
 #ifndef _WIN32_WCE
   void chdir();
 #endif

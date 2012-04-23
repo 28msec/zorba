@@ -24,7 +24,8 @@
 
 #include "types/typeops.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include "diagnostics/assert.h"
 
@@ -33,10 +34,8 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
-END_SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
 
 
 /*******************************************************************************

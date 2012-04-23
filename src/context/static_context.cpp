@@ -23,7 +23,6 @@
 #include <zorba/serialization_callback.h>
 
 #include "functions/udf.h"
-#include "zorbaserialization/serialization_engine.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "util/string_util.h"
@@ -72,6 +71,9 @@
 
 #include "compiler/translator/module_version.h"
 
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
@@ -89,19 +91,14 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
-END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
 SERIALIZABLE_CLASS_VERSIONS(static_context)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
 /**************************************************************************//**
@@ -183,7 +180,7 @@ void PrologOption::serialize(::zorba::serialization::Archiver& ar)
 *******************************************************************************/
 void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     // serialize out: the uri of the module that is used in this plan
 
@@ -273,11 +270,11 @@ const char*
 static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
 const char*
-static_context::ZORBA_MATH_FN_NS = 
+static_context::ZORBA_MATH_FN_NS =
 "http://www.zorba-xquery.com/modules/math";
 
 const char*
-static_context::ZORBA_BASE64_FN_NS = 
+static_context::ZORBA_BASE64_FN_NS =
 "http://www.zorba-xquery.com/modules/converters/base64";
 
 
@@ -286,11 +283,11 @@ static_context::ZORBA_JSON_FN_NS =
 "http://www.zorba-xquery.com/modules/converters/json";
 
 const char*
-static_context::ZORBA_NODEREF_FN_NS = 
+static_context::ZORBA_NODEREF_FN_NS =
 "http://www.zorba-xquery.com/modules/node-reference";
 
 const char*
-static_context::ZORBA_NODEPOS_FN_NS = 
+static_context::ZORBA_NODEPOS_FN_NS =
 "http://www.zorba-xquery.com/modules/node-position";
 
 const char*
@@ -298,121 +295,126 @@ static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
 "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS = 
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS =
 "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 const char*
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS = 
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
 const char*
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS = 
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 const char*
-static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS = 
+static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
 const char*
-static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS = 
+static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 const char*
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS = 
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
 const char*
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS = 
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS =
 "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS = 
+static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
 "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS = 
+static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
 const char*
-static_context::ZORBA_SCHEMA_FN_NS = 
+static_context::ZORBA_SCHEMA_FN_NS =
 "http://www.zorba-xquery.com/modules/schema";
 
 const char*
-static_context::ZORBA_XQDOC_FN_NS = 
+static_context::ZORBA_XQDOC_FN_NS =
 "http://www.zorba-xquery.com/modules/xqdoc";
 
 const char*
-static_context::ZORBA_RANDOM_FN_NS = 
+static_context::ZORBA_RANDOM_FN_NS =
 "http://www.zorba-xquery.com/modules/random";
 
 const char*
-static_context::ZORBA_INTROSP_SCTX_FN_NS = 
+static_context::ZORBA_INTROSP_SCTX_FN_NS =
 "http://www.zorba-xquery.com/modules/introspection/sctx";
 
 const char*
-static_context::ZORBA_REFLECTION_FN_NS = 
+static_context::ZORBA_REFLECTION_FN_NS =
 "http://www.zorba-xquery.com/modules/reflection";
 
 const char*
-static_context::ZORBA_UTIL_FN_NS = 
+static_context::ZORBA_UTIL_FN_NS =
 "http://www.zorba-xquery.com/zorba/util-functions";
 
 const char*
-static_context::ZORBA_SCRIPTING_FN_NS = 
+static_context::ZORBA_SCRIPTING_FN_NS =
 "http://www.zorba-xquery.com/zorba/scripting";
 
 const char*
-static_context::ZORBA_STRING_FN_NS = 
+static_context::ZORBA_STRING_FN_NS =
 "http://www.zorba-xquery.com/modules/string";
 
 const char*
-static_context::ZORBA_URI_FN_NS = 
+static_context::ZORBA_URI_FN_NS =
 "http://www.zorba-xquery.com/modules/uri";
 
 const char*
-static_context::ZORBA_FETCH_FN_NS = 
+static_context::ZORBA_FETCH_FN_NS =
 "http://www.zorba-xquery.com/modules/fetch";
 
 const char*
-static_context::ZORBA_NODE_FN_NS = 
+static_context::ZORBA_NODE_FN_NS =
 "http://www.zorba-xquery.com/modules/node";
 
 const char*
-static_context::ZORBA_XML_FN_NS = 
+static_context::ZORBA_XML_FN_NS =
 "http://www.zorba-xquery.com/modules/xml";
+
+const char*
+static_context::ZORBA_XML_FN_OPTIONS_NS =
+"http://www.zorba-xquery.com/modules/xml-options";
+
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
 const char*
-static_context::XQUERY_OP_NS = 
+static_context::XQUERY_OP_NS =
 "http://www.zorba-xquery.com/internal/xquery-ops";
 
 const char*
-static_context::ZORBA_OP_NS = 
+static_context::ZORBA_OP_NS =
 "http://www.zorba-xquery.com/internal/zorba-ops";
 
 /***************************************************************************//**
   Options-related namespaces
 ********************************************************************************/
-const char* 
-static_context::ZORBA_OPTIONS_NS = 
+const char*
+static_context::ZORBA_OPTIONS_NS =
 "http://www.zorba-xquery.com/options";
 
-const char* 
-static_context::ZORBA_OPTION_WARN_NS = 
+const char*
+static_context::ZORBA_OPTION_WARN_NS =
 "http://www.zorba-xquery.com/options/warnings";
 
-const char* 
-static_context::ZORBA_OPTION_FEATURE_NS = 
+const char*
+static_context::ZORBA_OPTION_FEATURE_NS =
 "http://www.zorba-xquery.com/options/features";
 
-const char* 
-static_context::ZORBA_OPTION_OPTIM_NS = 
+const char*
+static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
-const char* 
-static_context::ZORBA_VERSIONING_NS = 
+const char*
+static_context::ZORBA_VERSIONING_NS =
 "http://www.zorba-xquery.com/options/versioning";
 
 
@@ -450,7 +452,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
-  } 
+  }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -496,7 +498,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
-            ns == ZORBA_RANDOM_FN_NS);
+            ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_XML_FN_NS);
   }
 
   return false;
@@ -527,7 +530,7 @@ zstring static_context::var_name(const store::Item* aVarName)
   if (lVarName == static_context::DOT_POS_VAR_NAME)
   {
     lVarName = "context position";
-  } 
+  }
   else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
   {
     lVarName = "context size";
@@ -715,7 +718,7 @@ static_context::~static_context()
 
   if (theVariablesMap)
     delete theVariablesMap;
-    
+
   if (theImportedPrivateVariablesMap)
     delete theImportedPrivateVariablesMap;
 
@@ -788,7 +791,9 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  size_t lNumURIMappers, lNumURLResolvers;
+  csize lNumURIMappers;
+  csize lNumURLResolvers;
+
   if (ar.is_serializing_out())
   {
     lNumURIMappers = theURIMappers.size();
@@ -814,33 +819,36 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     // callback required but not available
     if ((lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+      ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) {
-      for (size_t i = 0; i < lNumURIMappers; ++i) {
+    if (lNumURIMappers) 
+    {
+      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURIMapper) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_uri_mapper(new URIMapperWrapper(*lURIMapper));
       }
     }
-    if (lNumURLResolvers) {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) {
+
+    if (lNumURLResolvers) 
+    {
+      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURLResolver) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
@@ -963,7 +971,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theContextItemType;
 
   ar & theVariablesMap;
-  ar & theImportedPrivateVariablesMap;     
+  ar & theImportedPrivateVariablesMap;
 
   ar.set_serialize_only_for_eval(true);
   ar & theFunctionMap;
@@ -1464,7 +1472,7 @@ void static_context::add_url_resolver(internal::URLResolver* aResolver)
 
 ********************************************************************************/
 std::auto_ptr<internal::Resource> static_context::resolve_uri(
-    zstring const& aUri, 
+    zstring const& aUri,
     internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
 {
@@ -1496,7 +1504,7 @@ void static_context::get_component_uris(
   internal::EntityData const lData(aEntityKind);
 
   apply_uri_mappers(aUri, &lData, internal::URIMapper::COMPONENT, oComponents);
-  if (oComponents.size() == 0) 
+  if (oComponents.size() == 0)
   {
     oComponents.push_back(aUri);
   }
@@ -1507,9 +1515,9 @@ void static_context::get_component_uris(
 
 ********************************************************************************/
 void static_context::apply_uri_mappers(
-    zstring const& aUri, 
+    zstring const& aUri,
     internal::EntityData const* aEntityData,
-    internal::URIMapper::Kind aMapperKind, 
+    internal::URIMapper::Kind aMapperKind,
     std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
@@ -1525,7 +1533,7 @@ void static_context::apply_uri_mappers(
          mapper != sctx->theURIMappers.end(); mapper++)
     {
       // Only call mappers of the appropriate kind
-      if ((*mapper)->mapperKind() != aMapperKind) 
+      if ((*mapper)->mapperKind() != aMapperKind)
       {
         continue;
       }
@@ -1541,16 +1549,16 @@ void static_context::apply_uri_mappers(
         size_t const lPreNumResultUris = lResultUris.size();
         (*mapper)->mapURI(*uri, aEntityData, *this, lResultUris);
         size_t const lPostNumResultUris = lResultUris.size();
-        if (lPreNumResultUris == lPostNumResultUris) 
+        if (lPreNumResultUris == lPostNumResultUris)
         {
           // Mapper didn't map this URI to anything new, therefore add
           // the original URI to the result list
           lResultUris.push_back(*uri);
         }
-        else 
+        else
         {
           // Check the new entries for DENY_ACCESS.
-          for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) 
+          for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++)
           {
             if (lResultUris.at(i) == internal::URIMapper::DENY_ACCESS) {
               throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
@@ -1574,14 +1582,14 @@ void static_context::apply_uri_mappers(
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
     internal::EntityData const* aEntityData,
-    std::auto_ptr<internal::Resource>& oResource, 
+    std::auto_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
   oErrorMessage = "";
 
   // Iterate through all candidate URLs...
   for (std::vector<zstring>::iterator url = aUrls.begin();
-       url != aUrls.end(); url++) 
+       url != aUrls.end(); url++)
   {
     // We should never try to load the http-client module using its original URI,
     // because that URI starts with http:, so we'll try to load the http-client
@@ -1600,7 +1608,7 @@ void static_context::apply_url_resolvers(
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
-        try 
+        try
         {
           // Take ownership of returned Resource (if any)
           oResource.reset((*resolver)->resolveURL(*url, aEntityData));
@@ -1611,15 +1619,15 @@ void static_context::apply_url_resolvers(
             return;
           }
         }
-        catch (const std::exception& e) 
+        catch (const std::exception& e)
         {
-          if (oErrorMessage == "") 
+          if (oErrorMessage == "")
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
           }
         }
-        catch (...) 
+        catch (...)
         {
           // Not much we can do here except try the rest of the
           // candidate URIs
@@ -2169,7 +2177,7 @@ void static_context::getVariables(
         {
           if (externalVarsOnly)
           {
-            if((*ite).second->is_external())          
+            if((*ite).second->is_external())
               vars.push_back((*ite).second);
           }
           else
@@ -2179,7 +2187,7 @@ void static_context::getVariables(
         }
       }
     }
-    
+
     if (returnPrivateVars && sctx->theImportedPrivateVariablesMap != NULL)
     {
       VariableMap::iterator ite = sctx->theImportedPrivateVariablesMap->begin();
@@ -2199,7 +2207,7 @@ void static_context::getVariables(
         {
           if(externalVarsOnly)
           {
-            if((*ite).second->is_external())          
+            if((*ite).second->is_external())
               vars.push_back((*ite).second);
           }
           else
@@ -3225,11 +3233,11 @@ void static_context::bind_option(
   PrologOption option(qname, value);
 
   store::Item* qname2 = option.theName.getp();
-  
+
   zstring lNamespace = qname2->getNamespace();
 
   // If option namespace starts with zorba options namespace
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) 
+  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
     zstring lLocalName = qname2->getLocalName();
 
@@ -3244,7 +3252,7 @@ void static_context::bind_option(
         process_feature_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_feature_option(lCommaFound ? lVal2 : lVal1, 
+      process_feature_option(lCommaFound ? lVal2 : lVal1,
                              lLocalName == "enable",
                              loc);
     }
@@ -3259,7 +3267,7 @@ void static_context::bind_option(
         process_optim_option(lVal1, lLocalName == "enable", loc);
         lCommaFound = true;
       }
-      process_optim_option(lCommaFound ? lVal2 : lVal1, 
+      process_optim_option(lCommaFound ? lVal2 : lVal1,
                            lLocalName == "enable",
                            loc);
     }
@@ -3287,7 +3295,7 @@ void static_context::bind_option(
         // Re-use "ModuleVersion" class since it does 98% of the work for us;
         // just use a fake URI
         ModuleVersion lOptVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba", value);
-        if (! lOptVersion.is_valid_version()) 
+        if (! lOptVersion.is_valid_version())
         {
           RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
           ERROR_PARAMS(value));
@@ -3296,7 +3304,7 @@ void static_context::bind_option(
         ModuleVersion lZorbaVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba",
                                     ZORBA_VERSION);
 
-        if ( ! lZorbaVersion.satisfies(lOptVersion)) 
+        if ( ! lZorbaVersion.satisfies(lOptVersion))
         {
           RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
           ERROR_PARAMS(value, ZORBA_VERSION));
@@ -3306,7 +3314,7 @@ void static_context::bind_option(
 
     // If the option is in (starts-with) Zorba's own namespace but not known,
     // we raise an error
-    else 
+    else
     {
       RAISE_ERROR(zerr::ZXQP0060_OPTION_NOT_KNOWN, loc,
       ERROR_PARAMS(qname2->getNamespace() + ":" + qname2->getLocalName()));
@@ -3357,7 +3365,7 @@ void static_context::process_warning_option(
   const zstring& name,
   const QueryLoc& loc)
 {
-  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_WARN_NS, loc ); 
+  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_WARN_NS, loc );
 
   std::vector<store::Item_t>::iterator lIter;
 
@@ -3423,7 +3431,7 @@ void static_context::process_feature_option(
     RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
     ERROR_PARAMS(featureName->getStringValue(),
                  ZED(ZDST0060_unknown_namespace),
-                 featureName->getNamespace())); 
+                 featureName->getNamespace()));
   }
 
   feature::kind k;
@@ -3439,7 +3447,7 @@ void static_context::process_feature_option(
     RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
     ERROR_PARAMS(featureName->getStringValue(),
                  ZED(ZDST0060_unknown_localname),
-                 featureName->getLocalName())); 
+                 featureName->getLocalName()));
   }
 }
 
@@ -3455,7 +3463,7 @@ void static_context::process_optim_option(
   if (value != "for-serialization-only")
   {
     RAISE_ERROR(zerr::ZDST0060_FEATURE_NOT_SUPPORTED, loc,
-    ERROR_PARAMS(value, ZED(ZDST0060_unknown_localname), value)); 
+    ERROR_PARAMS(value, ZED(ZDST0060_unknown_localname), value));
   }
 }
 
@@ -3979,11 +3987,11 @@ void static_context::import_module(const static_context* module, const QueryLoc&
         {
           theImportedPrivateVariablesMap = new VariableMap(0, NULL, 8, false);
         }
-        
+
         if (!theImportedPrivateVariablesMap->insert(ve->get_name(), ve))
         {
           throw XQUERY_EXCEPTION_VAR(err::XQST0049, ERROR_PARAMS( ve->get_name()->getStringValue() ), ERROR_LOC( loc ));
-        }            
+        }
       }
     }
   }

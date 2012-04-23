@@ -27,6 +27,8 @@
 #include <zorbamisc/ns_consts.h>
 #include <zorbatypes/numconversions.h>
 
+#include "util/string_util.h"
+
 #include "error.h"
 
 using namespace zorba;

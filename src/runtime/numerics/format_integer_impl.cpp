@@ -164,8 +164,8 @@ void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zs
   static const unsigned int letter_range = 'Z' - 'A' + 1;
   static xs_integer integer_digit(letter_range);
   xs_integer  upper_int = valueInteger/integer_digit;
-  if(upper_int > xs_integer::zero())
-    formatIntegerAZ(upper_int - xs_integer::one(), c0, resultString);
+  if(upper_int > 0)
+    formatIntegerAZ(upper_int - 1, c0, resultString);
   xs_integer  mod_integer = valueInteger % integer_digit;
   xs_int      mod_int = to_xs_int(mod_integer);
   resultString += (c0 + mod_int);
@@ -426,7 +426,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   formatIntegerEnglish(valueInteger/integer_##big_number_name, false, resultString);     \
     resultString += " " #big_number_name;                                                \
     value_mod = valueInteger % integer_##big_number_name;                                  \
-    if(value_mod > xs_integer::zero())                                    \
+    if(value_mod > 0)                                    \
     {                                                                                     \
       resultString += " ";                                                                \
       formatIntegerEnglish(value_mod, is_ordinal, resultString);                          \
@@ -439,7 +439,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   else if (valueInteger >= integer_##decim)                                     \
   {                                                                             \
   value_mod = valueInteger % integer_##decim;                                   \
-    if(value_mod > xs_integer::zero())                          \
+    if(value_mod > 0)                          \
     {                                                                           \
       resultString += decim_cardinal;                                           \
       resultString += "-";                                                      \
@@ -504,7 +504,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   IF_GE_DECIM(3, "three", "third")
   IF_GE_DECIM(2, "two", "second")
   IF_GE_DECIM(1, "one", "first")
-  else if (valueInteger == xs_integer::zero())
+  else if (valueInteger == 0)
   {
     if(!is_ordinal)
       resultString += "zero";
@@ -771,7 +771,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   if (consumeNext(value_item, theChildren[0].getp(), planState))
   {
     valueInteger = value_item->getIntegerValue();
-    if(valueInteger < xs_integer::zero())
+    if(valueInteger < 0)
     {
       valueInteger = -valueInteger;
       is_neg = true;
@@ -811,17 +811,17 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       if((c0 == 'a') || (c0 == 'A'))
       {
         checkOptionalModifier(utf8_picture, 1, &is_ordinal, &is_traditional, utf8_word_terminal);
-        if(valueInteger > xs_integer::zero())
+        if(valueInteger > 0)
         {
           if(is_neg)
             resultString += '-';
-          formatIntegerAZ(valueInteger-xs_integer::one(), c0, resultString);
+          formatIntegerAZ(valueInteger-1, c0, resultString);
         }
       }
       else if((c0 == 'i') || (c0 == 'I'))
       {
         checkOptionalModifier(utf8_picture, 1, &is_ordinal, &is_traditional, utf8_word_terminal);
-        if(valueInteger > xs_integer::zero())
+        if(valueInteger > 0)
         {
           if(is_neg)
             resultString += ("-");
@@ -881,7 +881,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             utf8_result += (*valueit);
           }
           else
-            utf8_result += (0x2080 + *valueit - '0');
+            utf8_result += (unicode::code_point)(0x2080 + *valueit - '0');
         }
       }
       else if((c0 == 0x2460) || //CIRCLED DIGIT ONE  (1-20)

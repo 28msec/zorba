@@ -53,6 +53,9 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/dict.h"
 
 
 namespace zorba {
@@ -158,8 +161,8 @@ var_expr* DynamicContextImpl::get_var_expr(
 
   if (theQuery != NULL)
   {
-    std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
-    std::map<short, static_context_t>::const_iterator ite;
+    CompilerCB::SctxMap& lMap = theQuery->theCompilerCB->theSctxMap;
+    CompilerCB::SctxMap::const_iterator ite;
     for (ite = lMap.begin(); ite != lMap.end(); ++ite)
     {
       var = ite->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
