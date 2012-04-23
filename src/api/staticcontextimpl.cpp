@@ -919,7 +919,7 @@ StaticContextImpl::getFunctionAnnotations(
 
   try
   {
-    for (unsigned int i = 0; i < ann_list->size(); i++)
+    for (csize i = 0; i < ann_list->size(); ++i)
       aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
@@ -932,16 +932,12 @@ StaticContextImpl::getFunctionAnnotations(
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
-  if (theCtx->is_context_item_type_set())
-  {
-    throw ZORBA_EXCEPTION(err::XQST0099);
-  }
   xqtref_t xqType = NULL;
   if (type != NULL) 
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_context_item_type(xqType);
+  theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
 

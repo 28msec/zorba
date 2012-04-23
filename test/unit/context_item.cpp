@@ -144,7 +144,7 @@ int test_3(zorba::Zorba* zorba)
       zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
                                              "integer");
 
-      zorba::Item ctxValue = zorba->getItemFactory()->createString("foo");
+      zorba::Item ctxValue = zorba->getItemFactory()->createInteger(10);
 
       zorba::StaticContext_t sctx = zorba->createStaticContext();
       sctx->setContextItemStaticType(type);
@@ -162,7 +162,7 @@ int test_3(zorba::Zorba* zorba)
   catch (zorba::XQueryException& qe)
   {
     std::cerr << qe << std::endl;
-    if (qe.diagnostic() == zorba::err::XQST0099)
+    if (qe.diagnostic() == zorba::err::XPTY0004)
     {
       return 0;
     }

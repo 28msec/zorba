@@ -109,6 +109,7 @@ void root_static_context::init()
 
   set_default_w3c_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
+  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE, QueryLoc::null);
 
   // TODO move into globalenv? memory leaks?
   add_url_resolver(new internal::FileURLResolver());

@@ -3917,10 +3917,6 @@ void* begin_visit(const CtxItemDecl& v)
     RAISE_ERROR(err::XPST0003, loc,
     ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
 
-  if (theSctx->is_context_item_type_set())
-  {
-    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
-  }
   theHaveContextItemDecl = true;
 
   return no_state;
@@ -3939,7 +3935,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {
