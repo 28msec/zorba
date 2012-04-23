@@ -67,6 +67,27 @@ class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties
 
   std::ostream& debug_out() { return *debug_stream; }
 
+  /**
+    * Before the JVM is started this will return the classpath set by
+    * command line option, the CLASSPATH environment variable and in Zorba
+    * config file.
+    *
+    * After the JVM is started this will contain in addition the paths to jars
+    * used by modules that make use of the JVM.
+    */
+  void getJVMClassPath(std::string & jvmClasspath)
+  { jvmClasspath = theCLASSPATH ; }
+
+  /**
+    * This method should be used to set additional JVM classpath for modules
+    * that make use of JVM. This will overide the classpath set by CLASSPATH
+    * environment variable or Zorba config file.
+    *
+    * Once the JVM is started this method doesn't have any effect.
+    */
+  void setJVMClassPath(const std::string & jvmClasspath)
+  { theCLASSPATH = jvmClasspath; }
+
  protected:
   /**
    * Gets the Operation System folder where the properties of the current 

@@ -175,6 +175,15 @@ public:
         thePos++;
     }
 
+    T& getKeyNonConst() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+
+      HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
+
+      return entry.theItem;
+    }
+
   public:
     iterator() : theHashTab(NULL), thePos(-1) {}
 
@@ -228,11 +237,11 @@ public:
       return entry.theItem;
     }
 
-    const V& getValue() const
+    V& getValue() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
+      HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
 
       return entry.theValue;
     }
@@ -283,16 +292,19 @@ public:
     ar & theHashTabSize;
     ar & theCompareFunction;
     bool sync = false;
-    if(ar.is_serializing_out())
+
+    if (ar.is_serializing_out())
     {
       SYNC_CODE(sync = (theMutexp == &theMutex));
     }
+
     ar.set_is_temp_field(true);
     ar & sync;
     ar.set_is_temp_field(false);
+
     ar & theUseTransfer;
 
-    if(!ar.is_serializing_out())
+    if (!ar.is_serializing_out())
     {
       //simulate constructor
       theNumEntries = 0;
@@ -307,30 +319,23 @@ public:
     }
 
     ulong num_entries = theNumEntries;
+
     ar.set_is_temp_field(true);
     ar & num_entries;
     ar.set_is_temp_field(false);
 
-    if(ar.is_serializing_out())
+    if (ar.is_serializing_out())
     {
       iterator it;
-      ulong i = 0;
-      ar.set_is_temp_field_one_level(true);
-      for(it=begin(); it!=end(); ++it)
+      for (it = begin(); it != end(); ++it)
       {
-        T t = (*it).first;
-        V v = (*it).second;
-        ar & t;
-        ar & v;
-        i++;
+        ar & it.getKeyNonConst();
+        ar & it.getValue();
       }
-      ar.set_is_temp_field_one_level(false);
-      assert(i == num_entries);
     }
     else
     {
-      ar.set_is_temp_field_one_level(true);
-      for(ulong i = 0; i < num_entries; i++)
+      for (ulong i = 0; i < num_entries; ++i)
       {
         T t;
         V v;
@@ -340,9 +345,7 @@ public:
         assert(insert_ret);
         (void)insert_ret;
       }
-      ar.set_is_temp_field_one_level(false);
     }
-
   }
 #endif
 
@@ -452,6 +455,15 @@ void clear()
 {
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
+  clearNoSync();  
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void clearNoSync()
+{
   theNumEntries = 0;
   numCollisions = 0;
 

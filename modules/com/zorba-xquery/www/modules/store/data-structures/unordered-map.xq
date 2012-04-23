@@ -40,7 +40,7 @@ module namespace map = "http://www.zorba-xquery.com/modules/store/data-structure
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
@@ -63,7 +63,7 @@ declare option ver:module-version "2.0";
  :        xs:anyAtomicType.
  : @error zerr:ZSTR0001 if a map with the given name already exists.
  :)
-declare %ann:variadic %ann:sequential function map:create(
+declare %an:variadic %an:sequential function map:create(
   $name as xs:QName,
   $key-type as xs:QName) as empty-sequence() external;
 
@@ -77,7 +77,7 @@ declare %ann:variadic %ann:sequential function map:create(
  :
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
-declare %ann:sequential function map:delete(
+declare %an:sequential function map:delete(
   $name as xs:QName) as empty-sequence() external;
 
 (:~
@@ -107,7 +107,7 @@ declare %ann:sequential function map:delete(
  : @see map:create
  :
  :)
-declare %ann:variadic %ann:sequential function map:insert(
+declare %an:variadic %an:sequential function map:insert(
   $name as xs:QName,
   $value as item()*,
   $key as xs:anyAtomicType?) as empty-sequence() external;
@@ -133,7 +133,7 @@ declare %ann:variadic %ann:sequential function map:insert(
  :
  : @see map:create
  :)
-declare %ann:variadic function map:get(
+declare %an:variadic function map:get(
   $name as xs:QName,
   $key as xs:anyAtomicType?) as item()* external;
 
@@ -158,7 +158,7 @@ declare %ann:variadic function map:get(
  : @see map:create
  :
  :)
-declare %ann:variadic %ann:sequential function map:remove(
+declare %an:variadic %an:sequential function map:remove(
   $name as xs:QName,
   $key as xs:anyAtomicType?) as empty-sequence() external;
 

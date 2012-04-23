@@ -2034,7 +2034,7 @@ bool Schema::isCastableUserUnionTypes(
     return false;
 }
 
-void Schema::serialize(::zorba::serialization::Archiver &ar)
+void Schema::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
 
@@ -2042,24 +2042,32 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    ar & theUdTypesCache;
 
    bool is_grammar_NULL = (theGrammarPool == NULL);
-   ar.set_is_temp_field_one_level(true, true);
+
+   ar.set_is_temp_field(true);
+
    ar & is_grammar_NULL;
+
    unsigned long size_of_size_t = sizeof(size_t);
+
    union
    {
      unsigned long lvalue;
      unsigned char cvalue[4];
-   }le_be_value;
+   } le_be_value;
+
    le_be_value.lvalue = 0x11223344;
-   if(ar.is_serializing_out())
+
+   if (ar.is_serializing_out())
    {
      ar & size_of_size_t;
      ar & le_be_value.cvalue[0];
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       BinMemOutputStream    binmemoutputstream;
+       BinMemOutputStream binmemoutputstream;
        unsigned int  size = 0;
-       unsigned char *binchars = NULL;
+       unsigned char* binchars = NULL;
+
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
@@ -2071,6 +2079,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        }
 
        ar & size;
+
        if(size)
          serialize_array(ar, binchars, size);
      }
@@ -2081,14 +2090,16 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
      unsigned char le_be_value_first_char;
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
-     if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
+     if (size_of_size_t2 != size_of_size_t ||
+         le_be_value_first_char != le_be_value.cvalue[0])
      {
        throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
      }
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       unsigned int  size;
-       unsigned char *binchars;
+       unsigned int size;
+       unsigned char* binchars;
 
        ar & size;
        if(size)
@@ -2106,7 +2117,8 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        theGrammarPool = NULL;
      }
    }
-   ar.set_is_temp_field_one_level(false);
+
+   ar.set_is_temp_field(false);
 #endif
 }
 

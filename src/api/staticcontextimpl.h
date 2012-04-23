@@ -52,7 +52,7 @@ class StaticContextImpl : public StaticContext
 protected:
   static_context_t                    theCtx;
 
-  std::map<short, static_context_t>   theSctxMap;
+  std::map<int, static_context_t>     theSctxMap;
 
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
@@ -280,6 +280,12 @@ public:
 
   virtual void
   getFullLibPath(std::vector<String>& aLibPath) const;
+
+  virtual Item
+  fetch(const String& aURI) const;
+
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const;
 
 protected:
   String

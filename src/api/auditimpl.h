@@ -142,6 +142,8 @@ namespace audit {
     friend class EventImpl;
 
     RecordImpl(EventImpl* event) : m_event(event) {}
+    virtual ~RecordImpl() {}
+    
     EventImpl* m_event;
     std::vector<ObservationImpl> m_parameters;
   };
