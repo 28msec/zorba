@@ -28,7 +28,7 @@ public:
 
   ItemSequence availableCollections();
   void createCollection(const Item &aName );
-  void createCollection(const Item &aName, const ItemSequence &aContents );
+  void createCollection(const Item &aName, const SingletonItemSequence &aContents );
   void deleteCollection(const Item &aName );
   Collection getCollection(const Item &aName );
   bool isAvailableCollection(const Item &aName );

@@ -29,17 +29,17 @@ public:
   ItemSequence contents();
   void deleteNodeFirst();
   void deleteNodeLast();
-  void deleteNodes(const ItemSequence &aNodes );
+  void deleteNodes(const SingletonItemSequence &aNodes );
   void deleteNodesFirst(unsigned long aNumNodes );
   void deleteNodesLast(unsigned long aNumNodes );
   //std::vector< Annotation > getAnnotations():
   Item getName();
   TypeIdentifier getType();
   long long indexOf(const Item &aNode );
-  void insertNodesAfter(const Item &aTarget, const ItemSequence &aNodes );
-  void insertNodesBefore(const Item &aTarget, const ItemSequence &aNodes );
-  void insertNodesFirst(const ItemSequence &aNodes );
-  void insertNodesLast(const ItemSequence &aNodes );
+  void insertNodesAfter(const Item &aTarget, const SingletonItemSequence &aNodes );
+  void insertNodesBefore(const Item &aTarget, const SingletonItemSequence &aNodes );
+  void insertNodesFirst(const SingletonItemSequence &aNodes );
+  void insertNodesLast(const SingletonItemSequence &aNodes );
   bool isStatic();
   //void  registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler );
 };

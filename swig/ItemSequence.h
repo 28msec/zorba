@@ -21,8 +21,10 @@ class ItemSequence
   friend class Collection;
   friend class CollectionManager;
   friend class StaticCollectionManager;
+  friend class SingletonItemSequence;
 private:
   zorba::ItemSequence_t theItemSequence;
+  ItemSequence() {}
 
 public:
   ItemSequence(const ItemSequence& aItemSequence) : theItemSequence(aItemSequence.theItemSequence) {}

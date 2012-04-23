@@ -16,7 +16,7 @@
 #ifndef API_SINGLETON_ITEM_SEQUENCE_H
 #define API_SINGLETON_ITEM_SEQUENCE_H
 
-class SingletonItemSequence
+class SingletonItemSequence: public ItemSequence
 {
   friend class Collection;
   friend class CollectionManager;
