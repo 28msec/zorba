@@ -259,7 +259,7 @@ ZORBA_INTEGER_OP(unsigned long long)
 
 TEMPLATE_DECL(T)
 bool operator==( INTEGER_IMPL(T) const &i, Decimal const &d ) {
-  return d.is_integer() && i.itod() == d.value_;
+  return d.is_xs_integer() && i.itod() == d.value_;
 }
 
 #define ZORBA_INTEGER_OP(OP)                                        \
@@ -366,7 +366,7 @@ typename INTEGER_IMPL(T)::value_type INTEGER_IMPL(T)::ftoi( MAPM const &d ) {
 
 TEMPLATE_DECL(T)
 MAPM INTEGER_IMPL(T)::itod() const {
-  if ( is_long() )
+  if ( is_cxx_long() )
     return static_cast<long>( value_ );
   ztd::itoa_buf_type buf;
   return ztd::itoa( value_, buf );
@@ -376,6 +376,38 @@ MAPM INTEGER_IMPL(T)::itod() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
 uint32_t IntegerImpl::hash() const {
   return Decimal::hash( value_ );
+}
+
+bool IntegerImpl::is_xs_byte() const {
+  static MAPM xs_byte_min( "-128" );
+  static MAPM xs_byte_max( "127" );
+  return value_ >= xs_byte_min && value_ <= xs_byte_max;
+}
+
+bool IntegerImpl::is_xs_short() const {
+  static MAPM xs_short_min( "-32768" );
+  static MAPM xs_short_max( "32767" );
+  return value_ >= xs_short_min && value_ <= xs_short_max;
+}
+
+bool IntegerImpl::is_xs_unsignedByte() const {
+  static MAPM xs_unsignedByte_max( "256" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedByte_max;
+}
+
+bool IntegerImpl::is_xs_unsignedInt() const {
+  static MAPM xs_unsignedInt_max( "4294967295" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedInt_max;
+}
+
+bool IntegerImpl::is_xs_unsignedLong() const {
+  static MAPM xs_unsignedLong_max( "18446744073709551615" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedLong_max;
+}
+
+bool IntegerImpl::is_xs_unsignedShort() const {
+  static MAPM xs_unsignedShort_max( "65536" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedShort_max;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 

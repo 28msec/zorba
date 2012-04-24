@@ -225,9 +225,9 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-static_context* CompilerCB::getStaticContext(short c)
+static_context* CompilerCB::getStaticContext(int c)
 {
-  std::map<short, static_context_t>::iterator lIter;
+  SctxMap::iterator lIter;
   lIter = theSctxMap.find(c);
   assert(lIter != theSctxMap.end());
   return lIter->second.getp();

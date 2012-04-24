@@ -37,7 +37,12 @@ MESSAGE(STATUS "Adding API tests for CTest")
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
   SET (TestName "test/api/${TName}")
-  ZORBA_ADD_TEST(${TestName} APITests ${TName})
+  ZORBA_ADD_TEST(${TestName} APITests ${TName}
+    "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
 ENDFOREACH(test)
+
+# Add importing schema for userdefined_uri_resolution test
+DECLARE_ZORBA_SCHEMA(FILE import-hello.xsd
+  URI http://www.zorba-xquery.com/import-hello TEST_ONLY)
 
 EXPECTED_FAILURE(test/api/test_static_context 3118348)

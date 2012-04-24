@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+%feature("director") DiagnosticHandler;
 
 %{   // start Implementations
 
@@ -21,7 +22,7 @@ class DiagnosticHandler : public zorba::DiagnosticHandler
 {
  private:
   void error (const zorba::ZorbaException &ze) 
-  { 
+  {
     if ( zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze ) ) {
       const XQueryException xe2(xe);
       error(xe2); 
@@ -38,7 +39,8 @@ class DiagnosticHandler : public zorba::DiagnosticHandler
 
  public:
   virtual ~DiagnosticHandler() {}
-  virtual void error(const ZorbaException &ze) {}
+  virtual void error(const ZorbaException &ze) {
+  }
   //virtual void warning(const XQueryWarning &xw) {}
  }; // class DiagnosticHandler
 

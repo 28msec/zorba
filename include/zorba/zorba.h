@@ -34,14 +34,18 @@
 #include <zorba/xquery.h>
 #include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
+#include <zorba/properties_base.h>
 
 namespace zorba {
 
 /**
  * The Zorba class is the single point of access to the %Zorba engine.
  * There exists one instance of the Zorba class per process.
- * It can be used to (1) create and compile queries, (2) create static contexts,
- * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
+ * It can be used to (1) create and compile queries,
+ * (2) create static contexts,
+ * (3) provides access to the XmlDataManager,
+ * (4) provides access to the ItemFactory, and
+ * (5) provides access to the PropertiesGlobal.
  */
 class ZORBA_DLL_PUBLIC Zorba
 {
@@ -301,7 +305,7 @@ class ZORBA_DLL_PUBLIC Zorba
   virtual StaticContext_t
   createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
-  /** \brief Gets the singelton instance of the ItemFactory.
+  /** \brief Gets the singleton instance of the ItemFactory.
    *
    * @return ItemFactory the singleton instance of the ItemFactory.
    */
@@ -310,17 +314,23 @@ class ZORBA_DLL_PUBLIC Zorba
 
   /** \brief Gets the singleton instance of the XmlDataManager object.
    *
-   * @return XmlDataManager the singelton instance of the XmlDataManager.
+   * @return XmlDataManager the singleton instance of the XmlDataManager.
    */
   virtual XmlDataManager*
   getXmlDataManager() = 0;
 
   /** \brief Gets the singleton instance of Zorba's audit provider object.
    *
-   * @return audit::Provider the singelton instance of Zorba's audit provider.
+   * @return audit::Provider the singeleton instance of Zorba's audit provider.
    */
   virtual audit::Provider*
   getAuditProvider() = 0;
+
+  /** \brief Gets the singleton instance of Zorba's properties object.
+   *
+   * @return zorba::Properties the singleton instance of Zorba's properties object.
+   */
+  virtual PropertiesGlobal* getPropertiesGlobal() = 0;
 
 }; /* class Zorba */
 

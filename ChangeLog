@@ -3,14 +3,23 @@ Zorba - The XQuery Processor
 version 2.5
 
 New Features:
+  * fn:available-environment-variables
+  * fn:environment-variables
+  * fn:uri-collection
+  * fn:unparsed-text
+  * fn:unparsed-text-available
   * Extended API for Python, Java, PHP and Ruby.
+  * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
   * Added support for NO_ICU (to not use ICU for unicode processing)
+  * Added XQJ support.
 
 Optimization:
 
 Bug Fixes/Other Changes:
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
+  * Fixed bug #986075 (encountering flwor expr with no clauses; due to common 
+	  subexression being formed when inlining var in if-then-else expression) 
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed buf #891650 (context size var not always declared within path expr)
   * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
@@ -23,8 +32,14 @@ Bug Fixes/Other Changes:
   * Fixed bug #906494 (default compile with D_FILE_OFFSET_BITS=64)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
   * Fixed bug #921458 (file:read-text-lines() blocking)
+  * Fixed bug #981405 (do not hoist expr containing try-catch variables out of the
+          associated try-catch expression)
+  * Fixed bug #947627 (throw XQST0099 if more than one declarations of context item
+	               type in same module)
   * Fixed bug #980526 (no-copy rule bug due to global var being set in "distant" udf)
   * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
+  * Fixed Bug #933490: Error ItemFactoryImpl::createBase64Binary with istream
+  * Fixed bug #867112 (Diagnostic Handler was not working on external APIs)
 
 
 version 2.2

@@ -74,6 +74,8 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
+  { "FOUT1170", "\"$1\": error retrieving resource containing text" },
+  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -178,6 +180,7 @@ extern entry const dict_en[] = {
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
+  { "XQST0099", "module contains more than one context item declaration" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
@@ -411,7 +414,7 @@ extern entry const dict_en[] = {
   { "ZXQP0025", "item creation failed" },
   { "ZXQP0026", "\"$1\": invalid enumerated value for $2" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
-  { "ZXQP0029", "\"$1\": module import not allowed" },
+  { "ZXQP0029", "\"$1\": URI access not allowed" },
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
@@ -746,7 +749,7 @@ extern entry const dict_en[] = {
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
 #if !defined(ZORBA_NO_ICU)
-  { "~UnbalancedChar_3", "missing '$3'" },
+  { "~UnbalancedChar_3", "unbalanced '$3'" },
 #endif
 #if !defined(ZORBA_NO_ICU)
   { "~UnescapedChar_3", "character '$3' must be escaped here" },
