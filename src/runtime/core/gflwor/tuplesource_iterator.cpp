@@ -36,7 +36,6 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
 
 
 bool TupleSourceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const

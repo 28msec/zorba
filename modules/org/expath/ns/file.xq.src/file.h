@@ -316,6 +316,70 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class ReadTextLinesFunction : public FileFunction
+  {
+    public:
+      ReadTextLinesFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "read-text-lines"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+    protected:
+      class LinesItemSequence : public ItemSequence
+      {
+        protected:
+          File_t            theFile;
+          String            theEncoding;
+          const ReadTextLinesFunction* theFunc;
+
+          class LinesIterator : public Iterator
+          {
+            protected:
+              const File_t&     theFile;
+              const String&     theEncoding;
+              const ReadTextLinesFunction* theFunc;
+
+              std::ifstream* theStream;
+
+            public:
+              LinesIterator(
+                  const File_t&,
+                  const String&,
+                  const ReadTextLinesFunction*);
+
+              virtual ~LinesIterator();
+
+              virtual void
+              open();
+
+              virtual bool
+              next(Item&);
+
+              virtual void
+              close();
+
+              virtual bool
+              isOpen() const;
+          };
+
+        public:
+          LinesItemSequence(
+              const File_t& aFile,
+              const String& aEncoding,
+              const ReadTextLinesFunction*);
+
+          Iterator_t
+          getIterator();
+      };
+  };
+
+//*****************************************************************************
+
   class WriteTextFunction : public WriterFileFunction
   {
     public:

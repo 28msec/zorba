@@ -141,6 +141,7 @@
   </xsd:complexType>
 
   <xsd:complexType name="annotation">
+     <xsd:attribute name="prefix" type="xsd:string" use="optional"/>
      <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
      <xsd:attribute name="localname" type="xsd:string" use="optional"/>
      <xsd:attribute name="value" type="xsd:string" use="optional"/>

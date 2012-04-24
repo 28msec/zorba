@@ -26,18 +26,18 @@
 
 #include "system/properties.h"
 
-#include "zorbaserialization/serialization_engine.h"
 #include "functions/udf.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
@@ -225,9 +225,9 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-static_context* CompilerCB::getStaticContext(short c)
+static_context* CompilerCB::getStaticContext(int c)
 {
-  std::map<short, static_context_t>::iterator lIter;
+  SctxMap::iterator lIter;
   lIter = theSctxMap.find(c);
   assert(lIter != theSctxMap.end());
   return lIter->second.getp();

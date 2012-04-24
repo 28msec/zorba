@@ -58,3 +58,5 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 # This is as good a place as any to test this feature
 DECLARE_ZORBA_URI_FILE(FILE "random-file.txt"
   URI "http://www.zorba-xquery.com/random-file" TEST_ONLY)
+
+ADD_SUBDIRECTORY(java)

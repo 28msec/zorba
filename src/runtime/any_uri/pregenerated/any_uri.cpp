@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <ResolveUriIterator>
-const char* ResolveUriIterator::class_name_str = "ResolveUriIterator";
 ResolveUriIterator::class_factory<ResolveUriIterator>
 ResolveUriIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ResolveUriIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ResolveUriIterator::class_versions_count =
-sizeof(ResolveUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ResolveUriIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

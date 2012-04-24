@@ -1586,7 +1586,7 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
 store::Item_t StructuralAnyUriItem::getLevel() const
 {
   store::Item_t lResult;
-  GET_FACTORY().createInteger(lResult, theOrdPath.getLevel());
+  GET_FACTORY().createInteger(lResult, xs_integer(theOrdPath.getLevel()));
   return lResult;
 }
 
@@ -2861,7 +2861,7 @@ xs_integer LongItem::getIntegerValue() const
 }
 
 xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
-  return theValue >= 0 ? theValue : -theValue;
+  return xs_nonNegativeInteger( theValue >= 0 ? theValue : -theValue );
 }
 
 store::Item* LongItem::getType() const
