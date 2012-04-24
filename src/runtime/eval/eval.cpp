@@ -102,6 +102,7 @@ EvalIterator::~EvalIterator()
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   ar.set_serialize_everything();
+
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
@@ -173,6 +174,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // Copy the values of outer vars into the evalDctx
     ulong maxOuterVarId;
     copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
+
+    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // before reseting the state->thePlan. Otherwise, the current state->thePlan
+    // will be destroyed first, and then we will attempt to close it when 
+    // state->thePlanWrapper is reset later. 
+    state->thePlanWrapper = NULL;
 
     // Compile
     state->thePlan = compile(evalCCB,

@@ -55,8 +55,6 @@ using namespace zorba;
 XERCES_CPP_NAMESPACE_USE
 #endif
 
-SERIALIZABLE_CLASS_VERSIONS(TypeManager)
-
 SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
 
 

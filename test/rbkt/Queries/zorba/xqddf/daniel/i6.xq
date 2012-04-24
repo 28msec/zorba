@@ -23,14 +23,14 @@ index_dml:refresh-index($xqddf-test:index2);
 },
 
 {
-index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]/name
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item0"]/name
 },
 
 {
-index_dml:probe-index-range-value($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]
+index_dml:probe-index-range-value($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[@id="item2"]
 },
 {
-rename node dml:collection($xqddf-test:white-collection)[1]/location as "location2";
+rename node dml:collection($xqddf-test:white-collection)[@id="item0"]/location as "location2";
 },
 {
 <newline> a
@@ -38,5 +38,5 @@ rename node dml:collection($xqddf-test:white-collection)[1]/location as "locatio
 },
 
 {
-index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]/name
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item1"]/name
 }

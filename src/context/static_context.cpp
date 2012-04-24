@@ -556,7 +556,7 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -604,7 +604,7 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -657,7 +657,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -791,7 +791,9 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  size_t lNumURIMappers, lNumURLResolvers;
+  csize lNumURIMappers;
+  csize lNumURLResolvers;
+
   if (ar.is_serializing_out())
   {
     lNumURIMappers = theURIMappers.size();
@@ -817,33 +819,36 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     // callback required but not available
     if ((lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+      ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) {
-      for (size_t i = 0; i < lNumURIMappers; ++i) {
+    if (lNumURIMappers) 
+    {
+      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURIMapper) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_uri_mapper(new URIMapperWrapper(*lURIMapper));
       }
     }
-    if (lNumURLResolvers) {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) {
+
+    if (lNumURLResolvers) 
+    {
+      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURLResolver) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
@@ -2224,8 +2229,13 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(const xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t, const QueryLoc& loc)
 {
+  if (theContextItemType != NULL)
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
+  }
+
   theContextItemType = t;
 }
 
@@ -2238,8 +2248,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theContextItemType != NULL)
-      return theContextItemType.getp();
+    if (sctx->theContextItemType != NULL)
+      return sctx->theContextItemType.getp();
 
     sctx = sctx->theParent;
   }

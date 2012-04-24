@@ -100,7 +100,7 @@ import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 import schema namespace json-options =
   "http://www.zorba-xquery.com/modules/converters/json-options";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
@@ -252,7 +252,7 @@ declare %private function json:parse-internal(
   $options as item()?
 ) as element()* external;
 
-declare %ann:streamable %private function json:serialize-internal(
+declare %an:streamable %private function json:serialize-internal(
   $xml as item()*,
   $options as item()?
 ) as xs:string external;

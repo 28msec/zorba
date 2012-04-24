@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 
 %module zorba_api
+%module(directors="1") zorba_api
+
+
+TSRMLS_FETCH(); 
+
 %include "std_string.i"
 %include "std_pair.i"
 %include "exception.i"
@@ -61,7 +66,7 @@ namespace std {
 #include <zorba/serializer.h>
 
   class CompilerHints;
-  //class DiagnosticHandler;
+  class DiagnosticHandler;
   class Store;
   class Zorba;
   class Iterator;
@@ -75,6 +80,7 @@ namespace std {
   class TypeException;
   class UserException;
   class ZorbaException;
+  class XmlDataManager;
 
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
@@ -84,6 +90,7 @@ namespace std {
   #include "StaticContext.h"
   #include "XQuery.h"
   #include "ItemFactory.h"
+  #include "Zorba.h"
   #include "ItemSequence.h"
   #include "Collection.h"
   #include "CollectionManager.h"
@@ -97,6 +104,8 @@ namespace std {
 }
 #endif
 
+/* %include "various.i" required for mapping to Java byte[]*/
+
 //%include "ZorbaStreamProxy.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"
@@ -108,7 +117,7 @@ namespace std {
 %include "XQuery.i"
 %include "Store.i"
 %include "Exceptions.i"
-//%include "DiagnosticHandler.i"
+%include "DiagnosticHandler.i"
 %include "Zorba.i"
 %include "ItemFactory.i"
 %include "ItemSequence.i"
@@ -116,4 +125,3 @@ namespace std {
 %include "CollectionManager.i"
 %include "DocumentManager.i"
 %include "XmlDataManager.i"
-

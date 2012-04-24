@@ -48,7 +48,7 @@ declare %ann:sequential function local:test3() {
 declare %ann:sequential function local:test4() {
   try {
     {
-      let $x as element() := dml:collection($ns:coll_1)[1]
+      let $x as element() := dml:collection($ns:coll_1)[name() eq "a"]
       return
         replace node $x/x with <y/>;
     }
