@@ -630,6 +630,24 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 /*******************************************************************************
 ********************************************************************************/
+int getNodePosition(store::Item_t aNode)
+{
+  int count = 1;
+  store::Iterator_t lIterator = aNode->getParent()->getChildren();
+  store::Item_t lItem;
+  lIterator->open();
+  while(lIterator->next(lItem))
+  {
+    if(lItem->getNodeKind() == aNode->getNodeKind())
+      if(lItem->equals(aNode))
+        break;
+      else
+        count++;
+  }
+  lIterator->close();
+  return count;
+}
+
 bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
@@ -661,7 +679,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
-          zPosition = ztd::to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
           path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
           path += temp;
@@ -684,13 +702,13 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           }
           break;
         case store::StoreConsts::textNode:
-          zPosition = ztd::to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
           path = "text()["+zPosition+"]";
           path += temp;
           break;
         case store::StoreConsts::commentNode:
-          zPosition = ztd::to_string(inNode->getRefCount());
+          zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
           path = "comment()["+zPosition+"]";
           path += temp;
@@ -700,7 +718,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           {
             nodeName = inNode->getNodeName();
             zLocalName = nodeName->getLocalName();
-            zPosition = ztd::to_string(inNode->getRefCount());
+            zPosition = ztd::to_string(getNodePosition(inNode));
             temp = path;
             path = "processing-instruction("+zLocalName+")["+zPosition+"]";
             path += temp;
