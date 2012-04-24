@@ -357,7 +357,7 @@ ostream& flwor_expr::put(ostream& os) const
 
   for (csize i = 0; i < num_clauses(); i++) 
   {
-    const flwor_clause& c = *((*this)[i]);
+    const flwor_clause& c = *(get_clause(i));
 
     switch (c.get_kind())
     {

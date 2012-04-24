@@ -887,7 +887,7 @@ bool begin_visit(flwor_expr& v)
 
         for (csize i = 0; i < numClauses; ++i)
         {
-          const flwor_clause* c = v[i];
+          const flwor_clause* c = v.get_clause(i);
 
           if (c->get_kind() == flwor_clause::for_clause)
           {
@@ -946,7 +946,7 @@ bool begin_visit(flwor_expr& v)
 
       while (i < numClauses)
       {
-        const flwor_clause* c = v[i];
+        const flwor_clause* c = v.get_clause(i);
 
         flwor_clause::ClauseKind k = c->get_kind();
 
@@ -974,8 +974,8 @@ bool begin_visit(flwor_expr& v)
                                  WARN_LOC(c->get_loc())));
 
               if (i > 0 &&
-                  v[i-1]->get_kind() != flwor_clause::order_clause &&
-                  v[i-1]->get_kind() != flwor_clause::group_clause)
+                  v.get_clause(i-1)->get_kind() != flwor_clause::order_clause &&
+                  v.get_clause(i-1)->get_kind() != flwor_clause::group_clause)
               {
                 orderby_clause* mat = 
                 new orderby_clause(v.get_sctx(), 
@@ -991,7 +991,7 @@ bool begin_visit(flwor_expr& v)
 
               if (i == numClauses -1 ||
                   (i < numClauses - 1 &&
-                   v[i+1]->get_kind() != flwor_clause::group_clause))
+                   v.get_clause(i+1)->get_kind() != flwor_clause::group_clause))
               {
                 orderby_clause* mat = 
                 new orderby_clause(v.get_sctx(), 
@@ -1022,7 +1022,7 @@ bool begin_visit(flwor_expr& v)
         ++i;
       }
 
-      const flwor_clause* lastClause = v[v.num_clauses()-1];
+      const flwor_clause* lastClause = v.get_clause(v.num_clauses()-1);
 
       if (v.get_return_expr()->is_sequential() &&
           lastClause->get_kind() != flwor_clause::order_clause &&
@@ -1043,7 +1043,7 @@ bool begin_visit(flwor_expr& v)
 
   for (csize i = 0; i < numClauses; ++i)
   {
-    const flwor_clause* c = v[i];
+    const flwor_clause* c = v.get_clause(i);
 
     switch (c->get_kind())
     {
@@ -1438,7 +1438,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     return new flwor::TupleSourceIterator(sctx, qloc);
   }
 
-  const flwor_clause& c = *(flworExpr[currentClause]);
+  const flwor_clause& c = *(flworExpr.get_clause(currentClause));
 
   FlworClauseVarMap_t clauseVarMap;
 
@@ -1694,13 +1694,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 
-  unsigned numClauses = flworExpr.num_clauses();
+  csize numClauses = flworExpr.num_clauses();
 
   returnIter = pop_itstack();
 
   for (int it = numClauses - 1; it >= 0; --it)
   {
-    const flwor_clause& c = *flworExpr[it];
+    const flwor_clause& c = *flworExpr.get_clause(it);
 
     FlworClauseVarMap_t clauseVarMap;
 

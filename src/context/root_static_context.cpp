@@ -93,8 +93,6 @@ void root_static_context::init()
 
   set_default_function_ns(W3C_FN_NS, true, loc);
 
-  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
@@ -111,6 +109,7 @@ void root_static_context::init()
 
   set_default_w3c_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
+  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE, QueryLoc::null);
 
   // TODO move into globalenv? memory leaks?
   add_url_resolver(new internal::FileURLResolver());

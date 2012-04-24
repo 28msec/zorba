@@ -716,6 +716,13 @@
       <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
     </diagnostic>
 
+    <diagnostic code="XQST0099">
+      <comment>
+        If a module contains more than one context item declaration, a static error is raised [err:XQST0099].
+      </comment>
+      <value>module contains more than one context item declaration</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one

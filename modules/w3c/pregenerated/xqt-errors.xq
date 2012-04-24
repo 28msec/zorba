@@ -766,6 +766,14 @@ declare variable $err:XQST0098 as xs:QName := fn:QName($err:NS, "err:XQST0098");
 
 (:~
  :
+ : If a module contains more than one context item declaration, a static error is raised [err:XQST0099].
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0099 as xs:QName := fn:QName($err:NS, "err:XQST0099");
+
+(:~
+ :
  : It is a static error if a function's annotations contain more than one
  : annotation named \c private or \c public.  It is a static error if a
  : function's annotations contain more than one annotation named \c

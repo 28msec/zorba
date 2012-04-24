@@ -106,7 +106,7 @@
 
 
 #define NODE_SORT_OPT
-
+#define XS_URI "http://www.w3.org/2001/XMLSchema"
 
 namespace zorba
 {
@@ -2012,6 +2012,14 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
+  zstring xsdTNS = zstring(XS_URI);
+  if ( xsdTNS.compare(targetNS)==0 )
+  {
+    // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
+    return no_state;
+  }
+
   store::Item_t targetNSItem = NULL;
   zstring tmp = targetNS;
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
@@ -3530,7 +3538,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
       for (csize i = 0; i < numParams; ++i)
       {
-        const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
+        const let_clause* lc = dynamic_cast<const let_clause*>(flwor->get_clause(i));
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
         ZORBA_ASSERT(argVar != NULL);
         args.push_back(argVar);
@@ -3971,7 +3979,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {
@@ -8754,7 +8762,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // the preds that follow the axis step.
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
-  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
+  const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
   rchandle<relpath_expr> predPathExpr = new relpath_expr(theRootSctx, loc);
   predPathExpr->add_back(new wrapper_expr(theRootSctx, loc, fcOuterDot->get_var()));
   predPathExpr->add_back(axisExpr.getp());
@@ -9927,7 +9935,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
 
-        const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
         expr* flworVarExpr = fc->get_var();
 
         fo_expr_t normExpr;
@@ -10666,7 +10674,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // body, because optimization may remove clauses from the flwor expr
     for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = (*flwor)[i];
+      const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
