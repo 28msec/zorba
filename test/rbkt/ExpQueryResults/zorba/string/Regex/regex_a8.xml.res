@@ -1,0 +1,1 @@
+<fn:analyze-string-result xmlns:fn="http://www.w3.org/2005/xpath-functions"><fn:non-match>aaaa</fn:non-match><fn:match><fn:group nr="1"></fn:group>c</fn:match></fn:analyze-string-result>

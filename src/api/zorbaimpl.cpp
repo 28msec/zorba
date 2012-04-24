@@ -35,6 +35,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
+#include "system/properties.h"
 
 #include "context/static_context.h"
 
@@ -266,6 +267,15 @@ XmlDataManager* ZorbaImpl::getXmlDataManager()
 audit::Provider* ZorbaImpl::getAuditProvider()
 {
   return &audit::PROVIDER_IMPL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PropertiesGlobal* ZorbaImpl::getPropertiesGlobal()
+{
+  return Properties::instance();
 }
 
 

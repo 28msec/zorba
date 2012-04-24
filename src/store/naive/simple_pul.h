@@ -153,7 +153,7 @@ class CollectionPul
 
 protected:
   // Bookeeping
-  Collection                 * theCollection;
+  Collection                       * theCollection;
 
   PULImpl                          * thePul;
 

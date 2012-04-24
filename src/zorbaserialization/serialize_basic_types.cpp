@@ -26,6 +26,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba
@@ -58,28 +59,35 @@ void operator&(Archiver& ar, int& obj)
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type,
-                                &value,
-                                &id,
-                                &is_simple,
-                                &is_class,
-                                &field_treat,
-                                &referencing);
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class,
+                                &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
-    ar.check_simple_field(retval,
-                          type,
-                          "number",
-                          is_simple,
-                          field_treat,
-                          ARCHIVE_FIELD_NORMAL,
-                          id);
+    ar.check_simple_field(retval, type, "number", is_simple,
+                          field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     sscanf(value.c_str(), "%d", &obj);
 
     ar.register_reference(id, field_treat, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, const int& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    char strtemp[30];
+    sprintf(strtemp, "%d", obj);
+
+    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -107,24 +115,12 @@ void operator&(Archiver& ar, uint32_t& obj)
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type,
-                                &value,
-                                &id,
-                                &is_simple,
-                                &is_class,
-                                &field_treat,
-                                &referencing);
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class,
+                                &field_treat, &referencing);
 
-    if(!retval && ar.get_read_optional_field())
-      return;
-
-    ar.check_simple_field(retval,
-                          type,
-                          "unsigned number",
-                          is_simple,
-                          field_treat,
-                          ARCHIVE_FIELD_NORMAL,
-                          id);
+    ar.check_simple_field(retval, type, "unsigned number", is_simple,
+                          field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     sscanf(value.c_str(), "%u", &obj);
 
@@ -156,24 +152,12 @@ void operator&(Archiver& ar, long& obj)
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type,
-                                &value,
-                                &id,
-                                &is_simple,
-                                &is_class,
-                                &field_treat,
-                                &referencing);
+    retval = ar.read_next_field(&type, &value, &id,
+                                &is_simple, &is_class,
+                                &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
-    ar.check_simple_field(retval,
-                          type,
-                          "number",
-                          is_simple,
-                          field_treat,
-                          ARCHIVE_FIELD_NORMAL, 
-                          id);
+    ar.check_simple_field(retval, type, "number", is_simple,
+                          field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     sscanf(value.c_str(), "%ld", &obj);
 
@@ -212,9 +196,6 @@ void operator&(Archiver& ar, unsigned long& obj)
                                 &is_class,
                                 &field_treat,
                                 &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval,
                           type,
@@ -262,9 +243,6 @@ void operator&(Archiver& ar, long long& obj)
                                 &field_treat,
                                 &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval,
                           type,
                           "number",
@@ -306,9 +284,6 @@ void operator&(Archiver& ar, unsigned long long& obj)
     retval = ar.read_next_field(&type, &value, &id, 
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "unsigned number", 
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -344,9 +319,6 @@ void operator&(Archiver& ar, short& obj)
 
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "number", 
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -384,9 +356,6 @@ void operator&(Archiver& ar, unsigned short& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "unsigned number",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -422,9 +391,6 @@ void operator&(Archiver& ar, char& obj)
 
     retval = ar.read_next_field(&type, &value, &id, 
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "char",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -464,9 +430,6 @@ void operator&(Archiver& ar, char*& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "char*",
                           is_simple, field_treat, (ArchiveFieldKind)-1, id);
 
@@ -489,7 +452,7 @@ void operator&(Archiver& ar, char*& obj)
     }
     else if ((obj = (char*)ar.get_reference_value(referencing)) == NULL)// ARCHIVE_FIELD_IS_REFERENCING
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
@@ -520,9 +483,6 @@ void operator&(Archiver& ar, signed char& obj)
 
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "char",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -561,9 +521,6 @@ void operator&(Archiver& ar, unsigned char& obj)
 
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "unsigned char",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -610,9 +567,6 @@ void operator&(Archiver& ar, float& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "float",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -656,9 +610,6 @@ void operator&(Archiver& ar, double& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "double", 
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -692,9 +643,6 @@ void operator&(Archiver& ar, bool& obj)
 
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "bool",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -740,14 +688,27 @@ void operator&(Archiver& ar, std::string& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "string",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     obj = value;
 
     ar.register_reference(id, field_treat, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, const std::string& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -777,9 +738,6 @@ void operator&(Archiver& ar, std::string*& obj)
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
 
-    if(!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_simple_field(retval, type, "std::string*",
                           is_simple, field_treat, (ArchiveFieldKind)-1, id);
 
@@ -802,7 +760,7 @@ void operator&(Archiver& ar, std::string*& obj)
     }
     else if ((obj = (std::string*)ar.get_reference_value(referencing)) == NULL)
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
+      ZORBA_ASSERT(false);
     }
   }
 }
@@ -834,9 +792,6 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len)
 
     retval = ar.read_next_field(&type, &value, &id,
                                 &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_simple_field(retval, type, "char[]",
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);

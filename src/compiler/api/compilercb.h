@@ -139,7 +139,7 @@ public:
     void serialize(::zorba::serialization::Archiver& ar);
   };
 
-  typedef std::map<short, static_context_t> SctxMap;
+  typedef std::map<int, static_context_t> SctxMap;
 
 public:  
   XQueryDiagnostics       * theXQueryDiagnostics;
@@ -194,7 +194,7 @@ public:
 
   bool isSequential() const { return theIsSequential;}
 
-  static_context* getStaticContext(short id);
+  static_context* getStaticContext(int id);
 };
 
 

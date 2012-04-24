@@ -1,0 +1,1 @@
+fn:matches("aaaaab", "(a|b)*ab")

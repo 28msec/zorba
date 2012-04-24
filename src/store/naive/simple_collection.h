@@ -100,7 +100,7 @@ public:
 
   const store::Item* getName() const { return theName.getp(); }
 
-  xs_integer size() const { return theXmlTrees.size(); }
+  xs_integer size() const { return xs_integer( theXmlTrees.size() ); }
 
   bool isDynamic() const { return theIsDynamic; }
 
@@ -110,7 +110,7 @@ public:
 
   store::Iterator_t getIterator();
 
-  void addNode(store::Item* node, xs_integer position = -1);
+  void addNode(store::Item* node, xs_integer position = xs_integer(-1));
 
   xs_integer addNodes(
       std::vector<store::Item_t>& nodes,

@@ -32,6 +32,8 @@ class Archiver;
 
 void operator&(Archiver& ar, int& obj);
 
+void operator&(Archiver& ar, const int& obj);
+
 void operator&(Archiver& ar, uint32_t& obj);
 
 void operator&(Archiver& ar, long& obj);
@@ -60,15 +62,17 @@ void operator&(Archiver& ar, bool& obj);
 
 void operator&(Archiver& ar, std::string& obj);
 
+void operator&(Archiver& ar, const std::string& obj);
+
 void operator&(Archiver& ar, std::string*& obj);
 
-void operator&(Archiver& ar, char*& obj);//like char *p=strdup("io");
+void operator&(Archiver& ar, char*& obj);
 
 void serialize_array(Archiver& ar, unsigned char* obj, int len);
 
 #define  SERIALIZE_ENUM(enum_type, obj)           \
   {                                               \
-    ar.set_is_temp_field_one_level(true);         \
+    ar.set_is_temp_field(true);                   \
                                                   \
     int int_enum = (int)obj;                      \
     ar & int_enum;                                \
@@ -76,7 +80,7 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len);
     if (!ar.is_serializing_out())                 \
       obj = (enum_type)int_enum;                  \
                                                   \
-    ar.set_is_temp_field_one_level(false);        \
+    ar.set_is_temp_field(false);                  \
   }
 
 

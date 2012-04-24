@@ -65,7 +65,7 @@ public:
 
   /************************* Updates on collection ****************************/
 
-  virtual void addNode(store::Item* node, xs_integer position = -1) = 0;
+  virtual void addNode(store::Item* node, xs_integer position = xs_integer(-1)) = 0;
 
   virtual zorba::xs_integer addNodes(
       std::vector<store::Item_t>& nodes,

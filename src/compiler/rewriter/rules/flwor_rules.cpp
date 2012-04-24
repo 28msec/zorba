@@ -166,8 +166,7 @@ expr_t subst_vars(
 }
 
 
-
-/******************************************************************************
+/*******************************************************************************
 
 *******************************************************************************/
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
@@ -186,11 +185,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   expr::FreeVars myVars;
   collect_flw_vars(flwor, myVars);
 
-  const forletwin_clause& flwc =
-  *reinterpret_cast<const forletwin_clause *>(flwor[0]);
-
   csize numClauses = flwor.num_clauses();
   csize numForLetWinClauses = 0;
+
+  // numClauses may be 0 in the case this flwor became a common sub-expression
+  // due to var-inlining inside an if-then-else expr (see test 
+  // zorba/optim/flwor_vars_02.xq)
+  if (numClauses == 0)
+  {
+    return flwor.get_return_expr();
+  }
+
+  const forletwin_clause& flwc = 
+  *static_cast<const forletwin_clause *>(flwor.get_clause(0));
 
   // "for $x in E return $x"  --> "E" //can't have allowing empty
   // "let $x := E return $x"  --> "E"
@@ -476,7 +483,7 @@ static void collect_flw_vars(
 {
   for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
-    const flwor_clause& c = *flwor[i];
+    const flwor_clause& c = *flwor.get_clause(i);
 
     if (c.get_kind() == flwor_clause::for_clause)
     {
@@ -611,7 +618,7 @@ static bool safe_to_fold_single_use(
 
   for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
-    const flwor_clause& clause = *flwor[i];
+    const flwor_clause& clause = *flwor.get_clause(i);
     flwor_clause::ClauseKind kind = clause.get_kind();
 
     if (kind == flwor_clause::for_clause)
@@ -924,7 +931,7 @@ static bool var_in_try_block_or_in_loop(
 
     for (ulong i = 0; i < flwor.num_clauses(); ++i)
     {
-      const flwor_clause& c = *flwor[i];
+      const flwor_clause& c = *flwor.get_clause(i);
 
       if (c.get_kind() == flwor_clause::for_clause ||
           c.get_kind() == flwor_clause::let_clause)
@@ -1262,7 +1269,7 @@ static bool is_subseq_pred(
                                                  err::XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
-            val->getIntegerValue() >= xs_integer::one())
+            val->getIntegerValue() >= 1)
         {
           return true;
         }
@@ -1354,11 +1361,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
     // after where, groupby, or orderby clauses,
     if (!flwor->is_general())
     {
-      ulong numClauses = flwor->num_clauses();
+      csize numClauses = flwor->num_clauses();
 
-      for (ulong i = 0; i < numClauses; ++i)
+      for (csize i = 0; i < numClauses; ++i)
       {
-        const flwor_clause* c = (*flwor)[i];
+        const flwor_clause* c = flwor->get_clause(i);
 
         if (c->get_kind() == flwor_clause::where_clause ||
             c->get_kind() == flwor_clause::group_clause ||
@@ -1369,11 +1376,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
       }
     }
 
-    ulong numClauses = returnFlwor->num_clauses();
-
-    for (ulong i = 0; i < numClauses; ++i)
+    csize numClauses = returnFlwor->num_clauses();
+    
+    for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* c = (*returnFlwor)[i];
+      const flwor_clause* c = returnFlwor->get_clause(i);
 
       if (c->get_kind() == flwor_clause::group_clause ||
           c->get_kind() == flwor_clause::order_clause)
@@ -1382,7 +1389,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
       }
     }
 
-    for (ulong i = 0; i < numClauses; ++i)
+    for (csize i = 0; i < numClauses; ++i)
     {
       flwor->add_clause(returnFlwor->get_clause(i));
     }
@@ -1394,11 +1401,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
  next1:
 
-  ulong numClauses = flwor->num_clauses();
+  csize numClauses = flwor->num_clauses();
 
   // Try to merge an inner flwor that appears in a for/let clause of the outer
   // flwor.
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool merge = false;
     flwor_expr_t nestedFlwor;
