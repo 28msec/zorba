@@ -44,14 +44,24 @@ static void collect_flw_vars(const flwor_expr&, expr::FreeVars&);
 
 static bool is_trivial_expr(const expr*);
 
-static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t,
-        const flwor_expr&);
+static bool safe_to_fold_single_use(
+    var_expr*, 
+    TypeConstants::quantifier_t,
+    const flwor_expr&);
 
-static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool,
-        bool, bool&);
+static bool var_in_try_block_or_in_loop(
+    const var_expr*, 
+    const expr*,
+    bool,
+    bool, bool&);
 
-static bool is_subseq_pred(RewriterContext&, const flwor_expr*,
-        csize whereClausePos, const expr*, var_expr_t&, expr_t&);
+static bool is_subseq_pred(
+    RewriterContext&,
+    const flwor_expr*,
+    csize whereClausePos,
+    const expr*,
+    var_expr_t&,
+    expr_t&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -59,7 +69,7 @@ static bool is_subseq_pred(RewriterContext&, const flwor_expr*,
 
 /******************************************************************************
 
-******************************************************************************/
+*******************************************************************************/
 static void fix_if_annotations(if_expr* ifExpr)
 {
   expr_tools::fix_annotations(ifExpr, ifExpr->get_cond_expr());
@@ -68,7 +78,7 @@ static void fix_if_annotations(if_expr* ifExpr)
 }
 
 
-/******************************************************************************
+/*****************************************************************************
 
 ******************************************************************************/
 class SubstVars : public PrePostRewriteRule
@@ -127,7 +137,7 @@ RULE_REWRITE_POST(SubstVars)
 
 /******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
-******************************************************************************/
+*******************************************************************************/
 expr_t subst_vars(
     const RewriterContext& rCtx0,
     expr* root,
@@ -159,7 +169,7 @@ expr_t subst_vars(
 
 /******************************************************************************
 
-******************************************************************************/
+*******************************************************************************/
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   const QueryLoc& loc = LOC(node);
@@ -177,7 +187,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   collect_flw_vars(flwor, myVars);
 
   const forletwin_clause& flwc =
-    *reinterpret_cast<const forletwin_clause *>(flwor[0]);
+  *reinterpret_cast<const forletwin_clause *>(flwor[0]);
 
   csize numClauses = flwor.num_clauses();
   csize numForLetWinClauses = 0;
@@ -194,7 +204,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
     const wrapper_expr* w =
-      static_cast<const wrapper_expr*>(flwor.get_return_expr());
+    static_cast<const wrapper_expr*>(flwor.get_return_expr());
 
     if (w->get_expr() == flwc.get_var())
       return flwc.get_expr();
@@ -263,36 +273,36 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     else if (c.get_kind() == flwor_clause::for_clause)
     {
       numForLetWinClauses++;
-      for_clause* fr_clause = static_cast<for_clause *>(&c);
+      for_clause* forClause = static_cast<for_clause *>(&c);
 
-      expr* domainExpr = fr_clause->get_expr();
+      expr* domainExpr = forClause->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
-      var_expr* var = fr_clause->get_var();
+      var_expr* var = forClause->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       ulong domainCount = TypeOps::type_max_cnt(tm, *domainType);
-      const var_expr* pvar = fr_clause->get_pos_var();
+      const var_expr* pvar = forClause->get_pos_var();
 
       if (pvar != NULL &&
           expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
-        MODIFY(fr_clause->set_pos_var(NULL));
+        MODIFY(forClause->set_pos_var(NULL));
         pvar = NULL;
       }
 
-      // Cannot substitute a FOR var whose domain is a sequential expr or
+      // Cannot inline a FOR var whose domain is a sequential expr or
       // might contain more than 1 items.
       if (domainExpr->is_sequential() || domainCount >= 2)
         continue;
 
       // FOR clause with 0 cardinality
-      if (domainCount == 0 && ! fr_clause->is_allowing_empty())
+      if (domainCount == 0 && ! forClause->is_allowing_empty())
         return fo_expr::create_seq(sctx, LOC(node));
 
       // FOR clause with cardinality 0 or 1
 
       if (pvar != NULL)
       {
-        if (fr_clause->is_allowing_empty() && domainCount == 0)
+        if (forClause->is_allowing_empty() && domainCount == 0)
         {
           MODIFY(subst_vars(rCtx,
                             node,
@@ -395,8 +405,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         const QueryLoc& loc = var->get_loc();
         var_expr_t fvar =
           new var_expr(sctx, loc, var_expr::for_var, var->get_name());
-        for_clause_t fr_clause = new for_clause(sctx, loc, fvar, domainExpr);
-        flwor.add_clause(i, fr_clause);
+        for_clause_t forClause = new for_clause(sctx, loc, fvar, domainExpr);
+        flwor.add_clause(i, forClause);
 
         subst_vars(rCtx, node, var, fvar.getp());
       }
