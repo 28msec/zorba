@@ -92,6 +92,16 @@ declare option ver:module-version "1.0";
  :       href="https://api.twitter.com/oauth/access_token"/>
  : </sp:service-provider>
  : </pre>
+ : @param $consumer-key Client Identifier, also known as the consumer-key
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $realm Realm that defines the protection space
+ : @param $authorize-url authorize-url
+ : @param $request-token-method request-token-method
+ : @param $request-token-url request-token-url
+ : @param $request-token-callback-url request-token-callback-url
+ : @param $access-token-method access-token-method
+ : @param $access-token-url access-token-url
  : @return instance of the OAuth service provider XML schema.
 :)
 declare function oauth:service-provider(
@@ -137,6 +147,8 @@ validate {
  :   <p:parameter name="oauth_token" value="#" />
  : </p:parameters>
  : </pre>
+ : @param $name parameter name
+ : @param $value parameter value
  : @return instance of the OAuth parameters XML schema.
  :)
 declare function oauth:parameters($name as xs:string, $value as xs:string)
@@ -167,6 +179,9 @@ as element(p:parameters)
  :   <p:parameter name="oauth_token_secret" value="#" />
  : </p:parameters>
  : </pre>
+ : @param $parameters parameters
+ : @param $name parameter name
+ : @param $value parameter value
  : @return instance of the OAuth parameters XML schema.
  :)
 declare function oauth:add-parameter($parameters as schema-element(p:parameters)?, $name as xs:string, $value as xs:string)
@@ -276,6 +291,7 @@ as schema-element(p:parameters)
  : This function is provided for convenience.
  : @see http://tools.ietf.org/html/rfc5849#section-2.3
  : @param $service-provider Contains service provider information
+ : @param $parameters parameters
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :
  : <pre class="ace-static" ace-mode="xquery">
@@ -318,7 +334,8 @@ as schema-element(p:parameters)
  : This function is provided for convenience.
  : @see http://tools.ietf.org/html/rfc5849#section-3
  : @param $protected-resource (Not schema-validated) http:request element with http method and href.
- : @param $request request element containing the client's request
+ : @param $service-provider Information about the service provider
+ : @param $parameters parameters
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :
  : <pre class="ace-static" ace-mode="xquery">

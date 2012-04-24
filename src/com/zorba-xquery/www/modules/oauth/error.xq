@@ -34,32 +34,26 @@ declare option ver:module-version "1.0";
 declare variable $oerr:errNS as xs:string := "http://www.zorba-xquery.com/modules/oauth/errors";
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC001'. This signing method is not implemented yet.
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'OC001'. This signing method is not implemented yet.
 :)
 declare variable $oerr:OC001 as xs:QName := xs:QName("oerr:OC001");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC002'. This signing method is not supported.
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'OC002'. This signing method is not supported.
 :)
 declare variable $oerr:OC002 as xs:QName := xs:QName("oerr:OC002");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC003'. Http 401 error.
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'OC003'. Http 401 error.
 :)
 declare variable $oerr:OC003 as xs:QName := xs:QName("oerr:OC003");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC004'. Http 500 error.
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'OC004'. Http 500 error.
 :)
 declare variable $oerr:OC004 as xs:QName := xs:QName("oerr:OC004");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC004'. Http 500 error.
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'OC004'. Http 500 error.
 :)
 declare variable $oerr:OC005 as xs:QName := xs:QName("oerr:OC005");
-
-declare function oerr:handle($a, $b, $c, $d)
-{
-  ($a, $b, $c, $d)
-};
-
