@@ -112,13 +112,15 @@ declare %an:sequential function pxqdoc:generate-xqdoc-XML(
     if(count($moduleManifests) eq xs:integer(0)) then ();
     else
     {
+      try 
+      {
       for $module in $moduleManifests
       (: note the module version is not supported because of a bug in the fetch for the module URI ending with / :)
       (:let $moduleURI := if(ends-with(data($module/zm:uri),'/')) then data($module/zm:uri) 
                        else if(exists($module/@version)) then concat(data($module/zm:uri),"#",data($module/@version))
                        else data($module/zm:uri):)
       (:let $moduleFetched := fetch:content(trace($moduleURI,"fetch module URI version.."), "MODULE"):)
-      let $moduleURI := if(ends-with(data($module/zm:uri),".xq")) then substring-before(data($module/zm:uri),".xq") else data($module/zm:uri)
+      let $moduleURI := data($module/zm:uri)
       let $moduleFetched := fetch:content($moduleURI, "MODULE")
       let $xqdoc := xqd:xqdoc-content($moduleFetched)
       let $xqdocRelFileName  := pxqdoc:get-filename($moduleURI)
@@ -127,6 +129,15 @@ declare %an:sequential function pxqdoc:generate-xqdoc-XML(
         file:write($xqdocFileName,
                    $xqdoc, 
                    $pxqdoc:serParamXml)
+      }
+      catch *
+      {
+        fn:error($err:UE004,
+                 concat("Error processing module ",
+                        $werr:code,
+                        " - ",
+                        $werr:description))
+      }
     };
   }  
 };
