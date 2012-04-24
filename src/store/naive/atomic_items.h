@@ -842,7 +842,7 @@ protected:
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 
-  StructuralAnyUriItem() {}
+  StructuralAnyUriItem() : theEncodedValue("") {}
 };
 
 
