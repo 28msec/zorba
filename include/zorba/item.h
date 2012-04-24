@@ -374,16 +374,6 @@ public:
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const;
 
-  /** \brief Get the pairs from a JSON Object.
-   *
-   * Note that this function is only available for JSON Objects.
-   *
-   * @return Iterator over the pairs in this object.
-   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
-   */
-  Iterator_t
-  getObjectPairs() const;
-
   /** \brief Get the members of a JSON Array.
    *
    * Note that this function is only available for JSON Arrays.
@@ -394,12 +384,12 @@ public:
   Iterator_t
   getArrayMembers() const;
 
-  /** \brief Returns the value of a JSON Pair with the given name from a JSON Object.
+  /** \brief Returns the value with the given name from a JSON Object.
    *
    * Note that this function is only available for JSON Objects.
    *
-   * @param aName the name of the pair to return.
-   * @return Item the named Pair.
+   * @param aName the name of the value in the Object to return.
+   * @return Item the named value from the Object.
    * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
    */
   Item
@@ -415,26 +405,6 @@ public:
    */
   Item
   getArrayMember(uint32_t aIndex) const;
-
-  /** \brief Returns the name of a JSON Pair.
-   *
-   * Note that this function is only available for JSON Pairs.
-   *
-   * @return Item the name of the Pair.
-   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Pair).
-   */
-  Item
-  getPairName() const;
-
-  /** \brief Returns the value of a JSON Pair.
-   *
-   * Note that this function is only available for JSON Pairs.
-   *
-   * @return Item the value of the Pair.
-   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Pair).
-   */
-  Item
-  getPairValue() const;
 
 #endif /* ZORBA_WITH_JSON */
 

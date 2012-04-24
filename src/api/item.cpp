@@ -474,19 +474,6 @@ Item::getJSONItemKind() const
 }
 
 Iterator_t
-Item::getObjectPairs() const
-{
-  ITEM_TRY
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    // TODO, we should have an error handler here
-    return new StoreIteratorImpl(m_item->getPairs(), nullptr);
-
-  ITEM_CATCH
-  return NULL;
-}
-
-Iterator_t
 Item::getArrayMembers() const
 {
   ITEM_TRY
@@ -530,26 +517,6 @@ Item::getArrayMember(uint32_t aIndex) const
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
       return &*m_item->getMember(lIndex);
-  ITEM_CATCH
-  return Item();
-}
-
-Item
-Item::getPairName() const
-{
-  ITEM_TRY
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-    return &*m_item->getName();
-  ITEM_CATCH
-  return Item();
-}
-
-Item
-Item::getPairValue() const
-{
-  ITEM_TRY
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-    return &*m_item->getValue();
   ITEM_CATCH
   return Item();
 }

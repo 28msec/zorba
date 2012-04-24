@@ -69,57 +69,10 @@ example_1(Zorba* aZorba)
 
 
 /**
- * Test accessing a JSONObject's Object Pairs, as well as the Pairs'
- * names and values
- */
-bool
-example_2(Zorba* aZorba)
-{
-  Iterator_t lIterator, lPairs;
-  XQuery_t lQuery = aZorba->compileQuery("{ \"one\" : 1, \"two\" : 2 }");
-  lIterator = lQuery->iterator();
-  lIterator->open();
-  Item lItem;
-  lIterator->next(lItem);
-
-  // Ensure we got a JSON object
-  if (!lItem.isJSONItem() ||
-      lItem.getJSONItemKind() != store::StoreConsts::jsonObject) {
-    std::cerr << "Item is not JSON object!" << std::endl;
-    return false;
-  }
-
-  // Ensure object has 2 pairs with integer values
-  lPairs = lItem.getObjectPairs();
-  lPairs->open();
-  Item lPair;
-  int count = 0;
-  while (lPairs->next(lPair)) {
-    if (!lPair.isJSONItem() ||
-        lPair.getJSONItemKind() != store::StoreConsts::jsonPair) {
-      std::cerr << "Item is not a JSON pair!" << std::endl;
-    }
-    Item lName = lPair.getPairName();
-    std::cout << "   \"" << lName.getStringValue() << "\": ";
-    Item lValue = lPair.getPairValue();
-    std::cout << lValue.getLongValue() << std::endl;
-    count++;
-  }
-  if (count != 2) {
-    std::cerr << count << " object pairs returned, expecting 2" << std::endl;
-    return false;
-  }
-  lPairs->close();
-  lIterator->close();
-
-  return true;}
-
-
-/**
  * Test accessing a JSONArray's members directly by index
  */
 bool
-example_3(Zorba* aZorba)
+example_2(Zorba* aZorba)
 {
   Iterator_t lIterator;
   XQuery_t lQuery = aZorba->compileQuery("[ 1, 2, 3 ]");
@@ -144,7 +97,7 @@ example_3(Zorba* aZorba)
  * Test accessing a JSONObject's values directly by name
  */
 bool
-example_4(Zorba* aZorba)
+example_3(Zorba* aZorba)
 {
   Iterator_t lIterator;
   XQuery_t lQuery = aZorba->compileQuery("{ \"one\" : 1, \"two\" : 2 }");
@@ -168,7 +121,7 @@ example_4(Zorba* aZorba)
  * Test accessing a non-existent JSONArray member
  */
 bool
-example_5(Zorba* aZorba)
+example_4(Zorba* aZorba)
 {
   Iterator_t lIterator, lMembers;
   XQuery_t lQuery = aZorba->compileQuery("[ 1, 2, 3 ]");
@@ -191,7 +144,7 @@ example_5(Zorba* aZorba)
  * Test accessing a non-existent JSONObject pair value
  */
 bool
-example_6(Zorba* aZorba)
+example_5(Zorba* aZorba)
 {
   Iterator_t lIterator;
   XQuery_t lQuery = aZorba->compileQuery("{ \"one\" : 1, \"two\" : 2 }");
@@ -239,7 +192,7 @@ serialize(Zorba* aZorba, Item aItem, std::string aExpected)
  * Test creating a JSON null value.
  */
 bool
-example_7(Zorba* aZorba)
+example_6(Zorba* aZorba)
 {
   Item lNull = aZorba->getItemFactory()->createJSONNull();
   return serialize(aZorba, lNull, "null");
@@ -249,7 +202,7 @@ example_7(Zorba* aZorba)
  * Test creating some JSON numbers.
  */
 bool
-example_8(Zorba* aZorba)
+example_7(Zorba* aZorba)
 {
   Item lNum = aZorba->getItemFactory()->createJSONNumber(String("12345"));
   if (lNum.getType().getLocalName().compare("integer") != 0) {
@@ -284,7 +237,7 @@ example_8(Zorba* aZorba)
 /**
  * Test creating a JSON object.
  */
-bool example_9(Zorba* aZorba)
+bool example_8(Zorba* aZorba)
 {
   Item lValue = aZorba->getItemFactory()->createJSONNumber("1234");
   Item lName = aZorba->getItemFactory()->createString("name");
@@ -298,7 +251,7 @@ bool example_9(Zorba* aZorba)
 /**
  * Test creating a JSON array.
  */
-bool example_10(Zorba* aZorba)
+bool example_9(Zorba* aZorba)
 {
   std::vector<Item> lMembers;
   for (int i = 1; i <= 4; i++) {
@@ -363,11 +316,6 @@ jsoniq(int argc, char* argv[])
 
     std::cout << "executing jsoniq example 9" << std::endl;
     res = jsoniq_test::example_9(lZorba);
-    if (!res) return 1;
-    std::cout << std::endl;
-
-    std::cout << "executing jsoniq example 10" << std::endl;
-    res = jsoniq_test::example_10(lZorba);
     if (!res) return 1;
     std::cout << std::endl;
   }
