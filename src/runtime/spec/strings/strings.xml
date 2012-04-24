@@ -669,7 +669,7 @@
     fn:analyze-string
   </zorba:description>
 
-  <zorba:function>
+  <zorba:function generateDECL="false">
     <zorba:signature localname="analyze-string" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:string</zorba:param>

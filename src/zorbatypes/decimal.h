@@ -34,8 +34,8 @@
 # define TEMPLATE_DECL(I) /* nothing */
 # define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(I) template<typename I>
-# define INTEGER_IMPL(I)  IntegerImpl<I>
+# define TEMPLATE_DECL(I) template<typename I> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
@@ -106,19 +106,16 @@ public:
    */
   Decimal& operator=( Decimal const &d );
 
-  /**
-   * For every built-in arithmetic type A, assign to this %Decimal.
-   *
-   * @tparam A The built-in arithmetic type.
-   * @param n The arithmetic value to assign.
-   * @return Returns \c *this.
-   */
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,Decimal&>::type
-  operator=( A n );
-
-  // These arithmetic types have to be special-cased.
+  Decimal& operator=( signed char c );
+  Decimal& operator=( char c );
+  Decimal& operator=( short n );
+  Decimal& operator=( int n );
+  Decimal& operator=( long n );
   Decimal& operator=( long long n );
+  Decimal& operator=( unsigned char c );
+  Decimal& operator=( unsigned short n );
+  Decimal& operator=( unsigned int n );
+  Decimal& operator=( unsigned long n );
   Decimal& operator=( unsigned long long n );
 
   Decimal& operator=( char const *s );
@@ -203,7 +200,9 @@ public:
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
-  bool is_integer() const;
+  bool is_xs_int() const;
+  bool is_xs_integer() const;
+  bool is_xs_long() const;
 
   uint32_t hash() const;
 
@@ -222,13 +221,13 @@ public:
 
 private:
   typedef MAPM value_type;
+  typedef long int_cast_type;
+
   value_type value_;
 
   Decimal( value_type const &v ) : value_( v ) { }
 
   static uint32_t hash( value_type const& );
-
-  bool is_xs_long() const;
 
   enum parse_options {
     parse_integer,
@@ -256,29 +255,18 @@ private:
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-inline Decimal::Decimal( char c ) : value_( static_cast<long>( c ) ) {
-}
+#define ZORBA_DECIMAL_CTOR(T) \
+  inline Decimal::Decimal( T n ) : value_( static_cast<int_cast_type>( n ) ) { }
 
-inline Decimal::Decimal( signed char c ) : value_( static_cast<long>( c ) ) {
-}
-
-inline Decimal::Decimal( short n ) : value_( static_cast<long>( n ) ) {
-}
-
-inline Decimal::Decimal( int n ) : value_( static_cast<long>( n ) ) {
-}
-
-inline Decimal::Decimal( long n ) : value_( n ) {
-}
-
-inline Decimal::Decimal( unsigned char c ) : value_( static_cast<long>( c ) ) {
-}
-
-inline Decimal::Decimal( unsigned short n ) : value_( static_cast<long>( n ) ) {
-}
-
-inline Decimal::Decimal( unsigned int n ) : value_( static_cast<long>( n ) ) {
-}
+ZORBA_DECIMAL_CTOR(char)
+ZORBA_DECIMAL_CTOR(signed char)
+ZORBA_DECIMAL_CTOR(short)
+ZORBA_DECIMAL_CTOR(int)
+ZORBA_DECIMAL_CTOR(long)
+ZORBA_DECIMAL_CTOR(unsigned char)
+ZORBA_DECIMAL_CTOR(unsigned short)
+ZORBA_DECIMAL_CTOR(unsigned int)
+#undef ZORBA_DECIMAL_CTOR
 
 inline Decimal::Decimal( char const *s ) {
   parse( s, &value_ );
@@ -296,12 +284,22 @@ inline Decimal& Decimal::operator=( Decimal const &d ) {
   return *this;
 }
 
-template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,Decimal&>::type
-Decimal::operator=( A n ) {
-  value_ = static_cast<long>( n );
-  return *this;
-}
+#define ZORBA_DECIMAL_OP(T)                   \
+  inline Decimal& Decimal::operator=( T n ) { \
+    value_ = static_cast<int_cast_type>( n ); \
+    return *this;                             \
+  }
+
+ZORBA_DECIMAL_OP(signed char)
+ZORBA_DECIMAL_OP(char)
+ZORBA_DECIMAL_OP(short)
+ZORBA_DECIMAL_OP(int)
+ZORBA_DECIMAL_OP(long)
+ZORBA_DECIMAL_OP(unsigned char)
+ZORBA_DECIMAL_OP(unsigned short)
+ZORBA_DECIMAL_OP(unsigned int)
+ZORBA_DECIMAL_OP(unsigned long)
+#undef ZORBA_DECIMAL_OP
 
 inline Decimal& Decimal::operator=( char const *s ) {
   parse( s, &value_ );
@@ -389,13 +387,18 @@ inline uint32_t Decimal::hash() const {
   return hash( value_ );
 }
 
-inline bool Decimal::is_integer() const {
+inline bool Decimal::is_xs_int() const {
+  return value_.is_integer() &&
+         value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
+}
+
+inline bool Decimal::is_xs_integer() const {
   return value_.is_integer() != 0;
 }
 
 inline bool Decimal::is_xs_long() const {
   return value_.is_integer() &&
-         value_ > MAPM::getMinInt64() && value_ < MAPM::getMaxInt64();
+         value_ >= MAPM::getMinInt64() && value_ <= MAPM::getMaxInt64();
 }
 
 inline int Decimal::sign() const {

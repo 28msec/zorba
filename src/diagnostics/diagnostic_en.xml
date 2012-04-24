@@ -716,6 +716,13 @@
       <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
     </diagnostic>
 
+    <diagnostic code="XQST0099">
+      <comment>
+        If a module contains more than one context item declaration, a static error is raised [err:XQST0099].
+      </comment>
+      <value>module contains more than one context item declaration</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one
@@ -1142,7 +1149,23 @@
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
+    </diagnostic>  
+    
+    <diagnostic code="FOUT1170">
+      <comment>
+       Identifier cannot be used to retrive a resource containing text
+      </comment>
+      <value>"$1": error retrieving resource containing text</value>
     </diagnostic>
+    
+    <diagnostic code="FOUT1190">
+      <comment>
+       Retrieved resource contains octets that cannot be decoded into Unicode 
+       using the specified encoding, the resulting characters are not 
+       permitted XML characters or requested encoding not supported
+      </comment>
+      <value>"$1": Cannot decode resource retrieved</value>
+    </diagnostic>  
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
@@ -1675,7 +1698,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0029" name="URI_ACCESS_DENIED">
-      <value>"$1": module import not allowed</value>
+      <value>"$1": URI access not allowed</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0030" name="DEADLOCK">
@@ -3366,7 +3389,7 @@
     </entry>
 
     <entry key="UnbalancedChar_3" if="!defined(ZORBA_NO_ICU)">
-      <value>missing '$3'</value>
+      <value>unbalanced '$3'</value>
     </entry>
 
     <entry key="UnescapedChar_3" if="!defined(ZORBA_NO_ICU)">

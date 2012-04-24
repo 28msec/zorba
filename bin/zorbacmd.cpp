@@ -73,29 +73,25 @@ const char *copyright_str =
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
 OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
+
+
 class URIMapperSerializationCallback : public SerializationCallback
 {
-  private:
-    std::vector<URIMapper*> theURIMappers;
+private:
+  std::vector<URIMapper*>   theURIMappers;
 
-  public:
-    void addURIMapper(URIMapper* lURIMapper)
-    {
-      theURIMappers.push_back(lURIMapper);
-    }
+public:
+  void addURIMapper(URIMapper* mapper) { theURIMappers.push_back(mapper); }
 
-    virtual URIMapper*
-    getURIMapper(size_t i) const
-    {   
-      return theURIMappers[i];
-    }   
+  URIMapper* getURIMapper(size_t i) const { return theURIMappers[i]; }
 };
+
+
 URIMapperSerializationCallback theSerializationCallback;
 
+
 bool
-populateStaticContext(
-    zorba::StaticContext_t& aStaticContext,
-    const ZorbaCMDProperties& aProperties)
+populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& props)
 {
   try
   {
@@ -105,85 +101,107 @@ populateStaticContext(
     // 3. current working directory
     {
       std::vector<String> lModulePath;
-      PathUtil::setPathsOnContext(aProperties, aStaticContext);
+      PathUtil::setPathsOnContext(props, sctx);
     }
 
-    if (aProperties.boundarySpace().size() != 0 )
-      aStaticContext->setBoundarySpacePolicy(
-                         (aProperties.boundarySpace().compare("preserve") == 0
-                          ? preserve_space
-                          : strip_space));
-
-    if (aProperties.constructionMode().size() != 0)
-      aStaticContext->setConstructionMode( aProperties.boundarySpace().compare("preserve") == 0
-                                           ? preserve_cons
-                                           : strip_cons );
-
-    if (aProperties.orderingMode().size() != 0 )
+    if (props.boundarySpace().size() != 0 )
     {
-      aStaticContext->setOrderingMode( aProperties.boundarySpace().compare("ordered") == 0
-                                       ? ordered
-                                       : unordered );
+      sctx->setBoundarySpacePolicy(props.boundarySpace().compare("preserve") == 0 ?
+                                   preserve_space : 
+                                   strip_space);
     }
 
-    if (aProperties.baseUri().size() != 0 )
-      aStaticContext->setBaseURI( aProperties.baseUri() );
+    if (props.constructionMode().size() != 0)
+    {
+      sctx->setConstructionMode(props.boundarySpace().compare("preserve") == 0 ? 
+                                preserve_cons :
+                                strip_cons);
+    }
+
+    if (props.orderingMode().size() != 0 )
+    {
+      sctx->setOrderingMode(props.boundarySpace().compare("ordered") == 0 ?
+                            ordered :
+                            unordered);
+    }
+
+    if (props.baseUri().size() != 0 )
+      sctx->setBaseURI( props.baseUri() );
   }
-  catch (zorba::ZorbaException const& ze) {
+  catch (const zorba::ZorbaException& ze) 
+  {
     std::cerr << ze << std::endl;
     return false;
   }
 
-  if (aProperties.defaultCollation().size() != 0 )
+  if (props.defaultCollation().size() != 0 )
   {
-    try {
-      aStaticContext->addCollation( aProperties.defaultCollation() );
-    } catch (zorba::ZorbaException const&) {
-      std::cerr << "the given collation {" << aProperties.defaultCollation() << "} is not a valid collation." << std::endl;
+    try 
+    {
+      sctx->addCollation( props.defaultCollation() );
+    }
+    catch (zorba::ZorbaException const&)
+    {
+      std::cerr << "the given collation {" << props.defaultCollation()
+                << "} is not a valid collation." << std::endl;
       return false;
     }
-    aStaticContext->setDefaultCollation( aProperties.defaultCollation() );
+
+    sctx->setDefaultCollation( props.defaultCollation() );
+  }
+
+  ZorbaCMDProperties::Options_t::const_iterator lIter = props.optionsBegin();
+  ZorbaCMDProperties::Options_t::const_iterator end = props.optionsEnd();
+  for (; lIter != end; ++lIter)
+  {
+    try 
+    {
+      zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
+      Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
+      sctx->declareOption(lQName, lIter->value);
+    }
+    catch (zorba::ZorbaException const& /* e */) 
+    {
+      std::cerr << "unable to set static context option with qname "
+                << lIter->clark_qname << std::endl;
+      return false;
+    }
+  }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  {
+    ZorbaCMDProperties::FullText_t::const_iterator lIter = props.stopWordsBegin();
+    ZorbaCMDProperties::FullText_t::const_iterator end = props.stopWordsEnd();
+    for (; lIter != end; ++lIter) 
+    {
+      theStopWordsMapper.addMapping(lIter->uri, lIter->value);
+    }
+
+    if (props.serializePlan()) 
+    {
+      theSerializationCallback.addURIMapper(&theStopWordsMapper);
+    }
+    else
+    {
+      sctx->registerURIMapper(&theStopWordsMapper);
+    }
   }
 
   {
-    ZorbaCMDProperties::Options_t::const_iterator lIter = aProperties.optionsBegin();
-    ZorbaCMDProperties::Options_t::const_iterator end = aProperties.optionsEnd();
-    for (; lIter != end; ++lIter)
+    ZorbaCMDProperties::FullText_t::const_iterator lIter = props.thesaurusBegin();
+    ZorbaCMDProperties::FullText_t::const_iterator end = props.thesaurusEnd();
+    for (; lIter != end; ++lIter) 
     {
-      try {
-        zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
-        Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
-        aStaticContext->declareOption(lQName, lIter->value);
-      } catch (zorba::ZorbaException const& /* e */) {
-        std::cerr << "unable to set static context option with qname "
-                  << lIter->clark_qname << std::endl;
-        return false;
-      }
-    }
-  }
-#ifndef ZORBA_NO_FULL_TEXT
-  {
-    ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.stopWordsBegin();
-    ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.stopWordsEnd();
-    for (; lIter != end; ++lIter) {
-      theStopWordsMapper.addMapping(lIter->uri, lIter->value);
-    }
-    if(aProperties.executePlan()) {
-      theSerializationCallback.addURIMapper(&theStopWordsMapper);
-    } else {
-      aStaticContext->registerURIMapper(&theStopWordsMapper);
-    }
-  }
-  {
-    ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
-    ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.thesaurusEnd();
-    for (; lIter != end; ++lIter) {
       theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
-    if(aProperties.executePlan()) {
+
+    if (props.serializePlan()) 
+    {
       theSerializationCallback.addURIMapper(&theStopWordsMapper);
-    } else {
-      aStaticContext->registerURIMapper(&theThesaurusMapper);
+    }
+    else
+    {
+      sctx->registerURIMapper(&theThesaurusMapper);
     }
   }
 #endif
@@ -193,20 +211,21 @@ populateStaticContext(
 
 bool
 populateDynamicContext(
-  Zorba* zorba,
-  zorba::DynamicContext* aDynamicContext,
-  const ZorbaCMDProperties& aProperties)
+    Zorba* zorba,
+    zorba::DynamicContext* aDynamicContext,
+    const ZorbaCMDProperties& props)
 {
-  if ( aProperties.contextItem().size() != 0 ) {
+  if ( props.contextItem().size() != 0 ) 
+  {
     XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
-    std::ifstream lInStream(aProperties.contextItem().c_str());
+    std::ifstream lInStream(props.contextItem().c_str());
     Item lDoc = lXmlMgr->parseXML(lInStream);
     aDynamicContext->setContextItem(lDoc);
   }
 
   ZorbaCMDProperties::ExternalVars_t::const_iterator lIter;
-  ZorbaCMDProperties::ExternalVars_t::const_iterator end = aProperties.externalVarsEnd();
-  for (lIter = aProperties.externalVarsBegin();
+  ZorbaCMDProperties::ExternalVars_t::const_iterator end = props.externalVarsEnd();
+  for (lIter = props.externalVarsBegin();
        lIter != end;
        ++lIter)
   {
@@ -241,20 +260,20 @@ populateDynamicContext(
 bool
 createSerializerOptions(
     Zorba_SerializerOptions_t& lSerOptions,
-    const ZorbaCMDProperties& aProperties)
+    const ZorbaCMDProperties& props)
 {
-  if ( aProperties.indent() )
+  if ( props.indent() )
     lSerOptions.indent = ZORBA_INDENT_YES;
 
-  if ( aProperties.omitXmlDeclaration() )
+  if ( props.omitXmlDeclaration() )
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
-  if ( aProperties.byteOrderMark() )
+  if ( props.byteOrderMark() )
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
 
-  if ( aProperties.serializeHtml() )
+  if ( props.serializeHtml() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
-  else if ( aProperties.serializeText() )
+  else if ( props.serializeText() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
 
   return true;
@@ -265,7 +284,7 @@ createSerializerOptions(
 /// or if not requested, infers -f for file:// queries.
 /// Returns an URI or the empty string.
 std::string
-parseFileURI (bool asPath, const std::string &str)
+parseFileURI(bool asPath, const std::string &str)
 {
   if (asPath)
     return str;
@@ -531,10 +550,25 @@ compileAndExecute(
   unsigned long lNumExecutions = properties.multiple();
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
-  bool compilePlan = properties.compilePlan();
-  bool executePlan = properties.executePlan();
+  bool serializePlan = properties.serializePlan();
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
+
+  std::auto_ptr<std::fstream> planFile;
+  std::fstream* planFilep = NULL;
+
+  if (serializePlan)
+  {
+    std::string planFilePath = qfilepath;
+    planFilePath += ".plan";
+    planFile.reset(new std::fstream(planFilePath.c_str(), 
+                                    std::fstream::in | 
+                                    std::fstream::out |
+                                    std::fstream::trunc |
+                                    std::fstream::binary));
+    planFilep = planFile.get();
+    assert(planFilep->good());
+  }
 
   // default is O1 in the Zorba_CompilerHints constructor
   if (properties.optimizationLevel() == "O0") 
@@ -569,7 +603,14 @@ compileAndExecute(
 
   for (unsigned long i = 0; i < lNumExecutions; ++i)
   {
-    // Perform compilation and create dynamic context only once, unless timing is needed
+    // start the total timer
+    if (doTiming)
+      timing.startTimer(TimingInfo::TOTAL_TIMER, i);
+    
+    //
+    // Compile the query
+    // Compilation is done only once, unless timing is needed
+    //
     if (doTiming || i == 0)
     {
       // go back to the beginning of the stream
@@ -577,38 +618,33 @@ compileAndExecute(
       qfile.seekg(0);
       assert (qfile.tellg() >= 0);
 
-      if (doTiming)
-      {
-        // start the total timer
-        timing.startTimer(TimingInfo::TOTAL_TIMER, i);
-      }
-
-      //
-      // Compile the query
-      //
       try
       {
+        // start the compilation timer
         if (doTiming)
-        {
-          // start the compilation timer
           timing.startTimer(TimingInfo::COMP_TIMER, i);
-        }
 
+        // Create and compile the query
         query = zorbaInstance->createQuery();
         query->registerDiagnosticHandler(&diagnosticHandler);
         query->setFileName(qfilepath);
 
-        if(executePlan) {
-          query->loadExecutionPlan(qfile, &theSerializationCallback);
-        } else {
-          query->compile(qfile, staticContext, lHints);
+        query->compile(qfile, staticContext, lHints);
+
+        // Serialize the execution plan, if requested
+        if (serializePlan) 
+        {
+          planFilep->clear();
+          planFilep->seekp(0);
+
+          query->saveExecutionPlan(*planFilep, ZORBA_USE_BINARY_ARCHIVE);
+
+          planFilep->flush();
         }
 
+        // stop the compilation timer
         if (doTiming)
-        {
-          // stop the compilation timer
           timing.stopTimer(TimingInfo::COMP_TIMER, i);
-        }
       }
       catch (zorba::XQueryException const& qe)
       {
@@ -620,68 +656,69 @@ compileAndExecute(
         std::cerr << ze << std::endl;
         return 12;
       }
-
-      //
-      // Create and populate the dynamic context
-      //
-      zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
-      try
-      {
-        if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
-        {
-          properties.printHelp(std::cout);
-          return 21;
-        }
-      }
-      catch (zorba::XQueryException const& qe)
-      {
-        ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
-        return 22;
-      }
-      catch (zorba::ZorbaException const& ze)
-      {
-        std::cerr << ze << std::endl;
-        return 23;
-      }
     } // if (doTiming || i == 0)
 
-    // libModule assumes compileOnly even if compileOnly is false
+    //
+    // Run the query, unless compileOnly has been requested.
+    //
     if ( ! properties.compileOnly() && ! properties.libModule() )
     {
-      //
-      // Run the query
-      //
       try
       {
+        // start the execution timer
         if (doTiming)
-        {
-          // start the execution timer
           timing.startTimer(TimingInfo::EXEC_TIMER, i);
+
+        // load the execution plan, if requested
+        if (serializePlan) 
+        {
+          planFilep->seekg(0);
+          assert(planFilep->good());
+          
+          query = zorbaInstance->createQuery();
+          query->loadExecutionPlan(*planFilep, &theSerializationCallback);
         }
 
+        // Populate the dynamic context
+        zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
+        try
+        {
+          if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
+          {
+            properties.printHelp(std::cout);
+            return 21;
+          }
+        }
+        catch (zorba::XQueryException const& qe)
+        {
+          ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
+          return 22;
+        }
+        catch (zorba::ZorbaException const& ze)
+        {
+          std::cerr << ze << std::endl;
+          return 23;
+        }
+
+        // run the query
         if (properties.noSerializer())
         {
           query->executeSAX();
         }
         else
         {
-          if (compilePlan) {
-            query->saveExecutionPlan(outputStream, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
-          } else {
-            query->execute(outputStream, &lSerOptions);
-          }
-          if (properties.trailingNl()) {
-            outputStream << std::endl;
-          }
+          query->execute(outputStream, &lSerOptions);
         }
 
+        if (properties.trailingNl()) 
+          outputStream << std::endl;
+ 
+         // stop the execution timer
         if (doTiming)
-        {
-          // stop the execution timer
           timing.stopTimer(TimingInfo::EXEC_TIMER, i);
-        }
 
-        if (i > 0 || lNumExecutions == 1) {
+        if (i > 0 || lNumExecutions == 1) 
+        {
           timing.elapsedLoadWalltime += query->getDocLoadingTime();
           timing.elapsedLoadCputime += query->getDocLoadingUserTime();
         }
@@ -698,12 +735,11 @@ compileAndExecute(
       }
     }
 
-    // only delete the docs from the store if timing is needed
+    //
+    // Delete all loaded docs from the store, if timing has been requested
+    //
     if (doTiming)
     {
-      //
-      // Delete all loaded docs from the store
-      //
       XmlDataManager* store = zorbaInstance->getXmlDataManager();
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
@@ -719,9 +755,11 @@ compileAndExecute(
       }
 
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);
-
-      timing.stopTimer(TimingInfo::TOTAL_TIMER, i);
     }
+
+    // stop the total timer
+    if (doTiming)
+      timing.stopTimer(TimingInfo::TOTAL_TIMER, i);
   } // for each execution
 
   return 0;
@@ -787,6 +825,14 @@ _tmain(int argc, _TCHAR* argv[])
     return 3;
   }
 
+  // Add command line --classpath option in front of config/env CLASSPATH
+  Properties* globalProperties = Properties::instance();
+  std::string cmdJvmClassPath;
+  lProperties.getJVMClassPath(cmdJvmClassPath);
+  std::string configJvmClassPath;
+  globalProperties->getJVMClassPath(configJvmClassPath);
+  globalProperties->setJVMClassPath(cmdJvmClassPath +
+      filesystem_path::get_path_separator() + configJvmClassPath);
 
   // Start the engine
 

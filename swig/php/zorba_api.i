@@ -17,10 +17,17 @@
 #include <iostream>
 
 #if defined(_MSC_VER)
+
 #define PHP_COMPILER_ID "VC9"
 #define strtoll _strtoi64
 #define strtoull _strtoui64
+
+#ifdef ZTS
+#include "zend.h"
+TSRMLS_FETCH();
 #endif
+
+#endif  //_MSC_VER
 
 %}
 
