@@ -901,10 +901,6 @@ flwor_clause* flwor_expr::get_clause(csize i) const
   return theClauses[i].getp();
 }
 
-const flwor_clause* flwor_expr::get_clause(ulong i) const
-{
-  return theClauses[i].getp();
-}
 
 /*******************************************************************************
 
