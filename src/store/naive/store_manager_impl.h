@@ -25,7 +25,7 @@ namespace zorba
 namespace simplestore
 {
 
-class SimpleStore;
+class Store;
 
 
 /*******************************************************************************
@@ -33,13 +33,13 @@ class SimpleStore;
 ********************************************************************************/
 class StoreManagerImpl : public StoreManager
 {
-  friend class SimpleStore;
+  friend class Store;
 
  private:
-  static SimpleStore  * theStore;
+  static Store* theStore;
 
  public:
-  static SimpleStore* getStoreInternal() { return theStore; }
+  static Store* getStoreInternal() { return theStore; }
 };
 
 

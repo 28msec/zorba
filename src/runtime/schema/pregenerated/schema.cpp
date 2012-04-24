@@ -37,15 +37,9 @@ namespace zorba {
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>
-const char* ValidateIterator::class_name_str = "ValidateIterator";
 ValidateIterator::class_factory<ValidateIterator>
 ValidateIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ValidateIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ValidateIterator::class_versions_count =
-sizeof(ValidateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ValidateIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ ValidateIterator::~ValidateIterator() {}
 
 #endif
 // <ZorbaValidateInPlaceIterator>
-const char* ZorbaValidateInPlaceIterator::class_name_str = "ZorbaValidateInPlaceIterator";
 ZorbaValidateInPlaceIterator::class_factory<ZorbaValidateInPlaceIterator>
 ZorbaValidateInPlaceIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ZorbaValidateInPlaceIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaValidateInPlaceIterator::class_versions_count =
-sizeof(ZorbaValidateInPlaceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -85,15 +73,9 @@ ZorbaValidateInPlaceIterator::~ZorbaValidateInPlaceIterator() {}
 
 
 // <ZorbaSchemaTypeIterator>
-const char* ZorbaSchemaTypeIterator::class_name_str = "ZorbaSchemaTypeIterator";
 ZorbaSchemaTypeIterator::class_factory<ZorbaSchemaTypeIterator>
 ZorbaSchemaTypeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ZorbaSchemaTypeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaSchemaTypeIterator::class_versions_count =
-sizeof(ZorbaSchemaTypeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -113,15 +95,9 @@ ZorbaSchemaTypeIterator::~ZorbaSchemaTypeIterator() {}
 
 
 // <ZorbaIsValidatedIterator>
-const char* ZorbaIsValidatedIterator::class_name_str = "ZorbaIsValidatedIterator";
 ZorbaIsValidatedIterator::class_factory<ZorbaIsValidatedIterator>
 ZorbaIsValidatedIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ZorbaIsValidatedIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaIsValidatedIterator::class_versions_count =
-sizeof(ZorbaIsValidatedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

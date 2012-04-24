@@ -1522,7 +1522,7 @@ void PULImpl::getIndicesToRefresh(
     std::vector<store::Index*>& indices,
     std::vector<store::Index*>& truncate_indices)
 {
-  SimpleStore* store = &GET_STORE();
+  Store* store = &GET_STORE();
 
   if (store->getIndices().empty())
     return;

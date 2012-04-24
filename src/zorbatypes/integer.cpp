@@ -31,8 +31,8 @@
 # define TEMPLATE_DECL(T) /* nothing */
 # define INTEGER_IMPL(T)  IntegerImpl
 #else
-# define TEMPLATE_DECL(T) template<typename T>
-# define INTEGER_IMPL(T)  IntegerImpl<T>
+# define TEMPLATE_DECL(T) template<typename T> /* spacer */
+# define INTEGER_IMPL(T)  IntegerImpl<T> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
@@ -55,13 +55,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+TEMPLATE_DECL(I)
+void INTEGER_IMPL(I)::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
-void IntegerImpl::parse( char const *s ) {
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-template<typename IntType>
-void IntegerImpl<IntType>::parse( char const *s ) {
-  value_type const temp = ztd::aton<value_type>( s );
+  value_type const temp( ztd::aton<value_type>( s ) );
   if ( is_too_big( temp ) )
     throw std::invalid_argument(
       BUILD_STRING( '"', temp, "\": unsigned integer too big" )
@@ -177,11 +176,90 @@ ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
 #undef ZORBA_INSTANTIATE
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+
+#define ZORBA_INTEGER_OP(OP,T)                                          \
+  IntegerImpl operator OP( IntegerImpl const &i, T n ) {                \
+    ztd::itoa_buf_type buf;                                             \
+    return i.value_ OP IntegerImpl::value_type( ztd::itoa( n, buf ) );  \
+  }                                                                     \
+  IntegerImpl operator OP( T n, IntegerImpl const &i ) {                \
+    ztd::itoa_buf_type buf;                                             \
+    return IntegerImpl::value_type( ztd::itoa( n, buf ) ) OP i.value_;  \
+  }
+
+ZORBA_INTEGER_OP(+,long long)
+ZORBA_INTEGER_OP(-,long long)
+ZORBA_INTEGER_OP(*,long long)
+ZORBA_INTEGER_OP(%,long long)
+ZORBA_INTEGER_OP(+,unsigned long)
+ZORBA_INTEGER_OP(-,unsigned long)
+ZORBA_INTEGER_OP(*,unsigned long)
+ZORBA_INTEGER_OP(%,unsigned long)
+ZORBA_INTEGER_OP(+,unsigned long long)
+ZORBA_INTEGER_OP(-,unsigned long long)
+ZORBA_INTEGER_OP(*,unsigned long long)
+ZORBA_INTEGER_OP(%,unsigned long long)
+#undef ZORBA_INTEGER_OP
+
+#define ZORBA_INTEGER_OP(T)                                     \
+  IntegerImpl operator/( IntegerImpl const &i, T n ) {          \
+    ztd::itoa_buf_type buf;                                     \
+    IntegerImpl::value_type const temp( ztd::itoa( n, buf ) );  \
+    return IntegerImpl::ftoi( i.value_ / temp );                \
+  }                                                             \
+  IntegerImpl operator/( T n, IntegerImpl const &i ) {          \
+    ztd::itoa_buf_type buf;                                     \
+    IntegerImpl::value_type const temp( ztd::itoa( n, buf ) );  \
+    return IntegerImpl::ftoi( temp / i.value_ );                \
+  }
+
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+#undef ZORBA_INTEGER_OP
+
+#define ZORBA_INTEGER_OP(OP,T)                    \
+  IntegerImpl& IntegerImpl::operator OP( T n ) {  \
+    ztd::itoa_buf_type buf;                       \
+    value_type const temp( ztd::itoa( n, buf ) ); \
+    value_ OP temp;                               \
+    return *this;                                 \
+  }
+
+ZORBA_INTEGER_OP(+=,long long)
+ZORBA_INTEGER_OP(-=,long long)
+ZORBA_INTEGER_OP(*=,long long)
+ZORBA_INTEGER_OP(%=,long long)
+ZORBA_INTEGER_OP(+=,unsigned long)
+ZORBA_INTEGER_OP(-=,unsigned long)
+ZORBA_INTEGER_OP(*=,unsigned long)
+ZORBA_INTEGER_OP(%=,unsigned long)
+ZORBA_INTEGER_OP(+=,unsigned long long)
+ZORBA_INTEGER_OP(-=,unsigned long long)
+ZORBA_INTEGER_OP(*=,unsigned long long)
+ZORBA_INTEGER_OP(%=,unsigned long long)
+#undef ZORBA_INTEGER_OP
+
+#define ZORBA_INTEGER_OP(T) \
+  IntegerImpl& IntegerImpl::operator/=( T n ) {   \
+    ztd::itoa_buf_type buf;                       \
+    value_type const temp( ztd::itoa( n, buf ) ); \
+    value_ = ftoi( value_ / temp );               \
+    return *this;                                 \
+  }
+
+ZORBA_INTEGER_OP(long long)
+ZORBA_INTEGER_OP(unsigned long)
+ZORBA_INTEGER_OP(unsigned long long)
+#undef ZORBA_INTEGER_OP
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 ////////// relational operators ///////////////////////////////////////////////
 
 TEMPLATE_DECL(T)
 bool operator==( INTEGER_IMPL(T) const &i, Decimal const &d ) {
-  return d.is_integer() && i.itod() == d.value_;
+  return d.is_xs_integer() && i.itod() == d.value_;
 }
 
 #define ZORBA_INTEGER_OP(OP)                                        \
@@ -197,7 +275,40 @@ ZORBA_INTEGER_OP(> )
 ZORBA_INTEGER_OP(>=)
 #undef ZORBA_INTEGER_OP
 
-#ifndef ZORBA_WITH_BIG_INTEGER
+#ifdef ZORBA_WITH_BIG_INTEGER
+
+#define ZORBA_INTEGER_OP(OP,T) \
+  bool operator OP( IntegerImpl const &i, T n ) {                       \
+    ztd::itoa_buf_type buf;                                             \
+    return i.value_ OP IntegerImpl::value_type( ztd::itoa( n, buf ) );  \
+  }                                                                     \
+                                                                        \
+  bool operator OP( T n, IntegerImpl const &i ) {                       \
+    ztd::itoa_buf_type buf;                                             \
+    return IntegerImpl::value_type( ztd::itoa( n, buf ) ) OP i.value_;  \
+  }
+
+ZORBA_INTEGER_OP(==,long long)
+ZORBA_INTEGER_OP(!=,long long)
+ZORBA_INTEGER_OP(< ,long long)
+ZORBA_INTEGER_OP(<=,long long)
+ZORBA_INTEGER_OP(> ,long long)
+ZORBA_INTEGER_OP(>=,long long)
+ZORBA_INTEGER_OP(==,unsigned long)
+ZORBA_INTEGER_OP(!=,unsigned long)
+ZORBA_INTEGER_OP(< ,unsigned long)
+ZORBA_INTEGER_OP(<=,unsigned long)
+ZORBA_INTEGER_OP(> ,unsigned long)
+ZORBA_INTEGER_OP(>=,unsigned long)
+ZORBA_INTEGER_OP(==,unsigned long long)
+ZORBA_INTEGER_OP(!=,unsigned long long)
+ZORBA_INTEGER_OP(< ,unsigned long long)
+ZORBA_INTEGER_OP(<=,unsigned long long)
+ZORBA_INTEGER_OP(> ,unsigned long long)
+ZORBA_INTEGER_OP(>=,unsigned long long)
+
+#else /* ZORBA_WITH_BIG_INTEGER */
+
 #define ZORBA_INSTANTIATE(OP)                                           \
   template bool operator OP( INTEGER_IMPL_LL const&, Decimal const& );  \
   template bool operator OP( INTEGER_IMPL_ULL const&, Decimal const& )
@@ -209,6 +320,7 @@ ZORBA_INSTANTIATE(<=);
 ZORBA_INSTANTIATE(> );
 ZORBA_INSTANTIATE(>=);
 #undef ZORBA_INSTANTIATE
+
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 ////////// math functions /////////////////////////////////////////////////////
@@ -230,13 +342,13 @@ Double INTEGER_IMPL(T)::pow( INTEGER_IMPL(T) const &power ) const {
 
 TEMPLATE_DECL(T)
 INTEGER_IMPL(T) INTEGER_IMPL(T)::round( IntegerImpl const &precision ) const {
-  return IntegerImpl( Decimal::round( itod(), precision.itod() ) );
+  return IntegerImpl( Decimal::round2( itod(), precision.itod() ) );
 }
 
 TEMPLATE_DECL(T)
 INTEGER_IMPL(T)
 INTEGER_IMPL(T)::roundHalfToEven( IntegerImpl const &precision ) const {
-  return IntegerImpl( Decimal::roundHalfToEven( itod(), precision.itod() ) );
+  return IntegerImpl( Decimal::roundHalfToEven2( itod(), precision.itod() ) );
 }
 
 ////////// miscellaneous //////////////////////////////////////////////////////
@@ -254,7 +366,7 @@ typename INTEGER_IMPL(T)::value_type INTEGER_IMPL(T)::ftoi( MAPM const &d ) {
 
 TEMPLATE_DECL(T)
 MAPM INTEGER_IMPL(T)::itod() const {
-  if ( is_long() )
+  if ( is_cxx_long() )
     return static_cast<long>( value_ );
   ztd::itoa_buf_type buf;
   return ztd::itoa( value_, buf );
@@ -264,6 +376,38 @@ MAPM INTEGER_IMPL(T)::itod() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
 uint32_t IntegerImpl::hash() const {
   return Decimal::hash( value_ );
+}
+
+bool IntegerImpl::is_xs_byte() const {
+  static MAPM xs_byte_min( "-128" );
+  static MAPM xs_byte_max( "127" );
+  return value_ >= xs_byte_min && value_ <= xs_byte_max;
+}
+
+bool IntegerImpl::is_xs_short() const {
+  static MAPM xs_short_min( "-32768" );
+  static MAPM xs_short_max( "32767" );
+  return value_ >= xs_short_min && value_ <= xs_short_max;
+}
+
+bool IntegerImpl::is_xs_unsignedByte() const {
+  static MAPM xs_unsignedByte_max( "256" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedByte_max;
+}
+
+bool IntegerImpl::is_xs_unsignedInt() const {
+  static MAPM xs_unsignedInt_max( "4294967295" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedInt_max;
+}
+
+bool IntegerImpl::is_xs_unsignedLong() const {
+  static MAPM xs_unsignedLong_max( "18446744073709551615" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedLong_max;
+}
+
+bool IntegerImpl::is_xs_unsignedShort() const {
+  static MAPM xs_unsignedShort_max( "65536" );
+  return value_.sign() >= 0 && value_ <= xs_unsignedShort_max;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 

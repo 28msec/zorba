@@ -340,14 +340,13 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    *        are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE. The binary
    *        format is much smaller than XML format, but is not human readable.
    * @param save_options Specify some options to the plan serializer.
-   *    <ul>Current possible values are: 
-   *      <li>DONT_SAVE_UNUSED_FUNCTIONS (default): 
-   *        to eliminate unused functions and reduce plan size</li>
-   *      <li>SAVE_UNUSED_FUNCTIONS:
+   *    Current possible values are: 
+   *      \li DONT_SAVE_UNUSED_FUNCTIONS (default): 
+   *        to eliminate unused functions and reduce plan size
+   *      \li SAVE_UNUSED_FUNCTIONS:
    *        to save everything, as if the xquery contains an eval instruction.
    *        This is useful if you intend to use StaticContext::containsFunction 
-   *        or StaticContext::findFunctions.</li>
-   *   </ul>
+   *        or StaticContext::findFunctions.
    * @return true if success.
    * @throw ZorbaException if the query has not been compiled or there are
    *        problems serializing the execution plan.

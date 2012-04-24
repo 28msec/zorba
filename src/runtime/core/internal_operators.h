@@ -22,15 +22,19 @@
 
 namespace zorba {
 
-class HoistIteratorState : public PlanIteratorState {
-  public:
-    bool theDone;
+class HoistIteratorState : public PlanIteratorState 
+{
+public:
+  bool theDone;
 
-    void init(PlanState& planState);
-    void reset(PlanState& planState);
+public:
+  void init(PlanState& planState);
+  void reset(PlanState& planState);
 };
 
+
 NARY_ITER_STATE(HoistIterator, HoistIteratorState);
+
 
 NARY_ITER(UnhoistIterator);
 

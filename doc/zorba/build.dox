@@ -158,7 +158,7 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
 - The Windows version of some required packages
   are distributed by other web sites
   (all of them are pointed to from the main package web sites
-  indicated in the \ref required section):
+  indicated in the \ref required_libs section):
   - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
   - CURL: http://curl.haxx.se/download.html
   - Libxslt: http://www.zlatkovic.com/pub/libxml/
@@ -172,7 +172,10 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
   - all the directories pointed by the \c ZORBA_THIRD_PARTY_REQUIREMENTS
     cmake variable
     - e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools",
-      you must build with -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool
+      you must build with 
+      \code
+      -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool
+      \endcode
       and Zorba will find all it needs from Xerces and Iconv.
       (The directory names must contain "xerces" and "iconv" respectively, case insensitive)
   - in the program files directory on your system

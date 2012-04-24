@@ -17,4 +17,4 @@ return
 
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item0"]

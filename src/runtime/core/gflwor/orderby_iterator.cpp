@@ -46,10 +46,9 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(OrderByIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderByIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrderSpec)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderSpec)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

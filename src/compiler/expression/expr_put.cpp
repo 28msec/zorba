@@ -356,7 +356,7 @@ ostream& flwor_expr::put(ostream& os) const
 
   for (csize i = 0; i < num_clauses(); i++) 
   {
-    const flwor_clause& c = *((*this)[i]);
+    const flwor_clause& c = *(get_clause(i));
 
     switch (c.get_kind())
     {
@@ -456,7 +456,8 @@ ostream& eval_expr::put(ostream& os) const
   {
     os << indent << "using $" << theVars[i]->get_name()->getStringValue() << " := [";
     os << endl << inc_indent;
-    theArgs[i]->put(os);
+    if (theArgs[i])
+      theArgs[i]->put(os);
     os << dec_indent << indent << "]" << endl; 
   }
   theExpr->put (os);

@@ -42,7 +42,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 
 
 /*******************************************************************************

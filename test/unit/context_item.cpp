@@ -97,16 +97,9 @@ int test_2(zorba::Zorba* zorba)
     std::ostringstream resultStream;
 
     {
-      zorba::TypeIdentifier_t type =
-      zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
-                                             "integer");
-
       zorba::Item ctxValue = zorba->getItemFactory()->createString("foo");
 
-      zorba::StaticContext_t sctx = zorba->createStaticContext();
-      sctx->setContextItemStaticType(type);
-
-      zorba::XQuery_t query = zorba->compileQuery(queryStream, sctx);
+      zorba::XQuery_t query = zorba->compileQuery(queryStream);
 
       Zorba_SerializerOptions serOptions;
       serOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -138,6 +131,46 @@ int test_2(zorba::Zorba* zorba)
   return 0;
 }
 
+int test_3(zorba::Zorba* zorba)
+{
+  try
+  {
+    std::ifstream queryStream("context_item2.xq");
+    assert(queryStream.good());
+    std::ostringstream resultStream;
+
+    {
+      zorba::TypeIdentifier_t type =
+      zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
+                                             "integer");
+
+      zorba::Item ctxValue = zorba->getItemFactory()->createInteger(10);
+
+      zorba::StaticContext_t sctx = zorba->createStaticContext();
+      sctx->setContextItemStaticType(type);
+
+      zorba::XQuery_t query = zorba->compileQuery(queryStream, sctx);
+
+      zorba::DynamicContext* dctx = query->getDynamicContext();
+      dctx->setContextItem(ctxValue);
+
+      query->execute(resultStream);
+
+      return 5;
+    }
+  }
+  catch (zorba::XQueryException& qe)
+  {
+    std::cerr << qe << std::endl;
+    if (qe.diagnostic() == zorba::err::XPTY0004)
+    {
+      return 0;
+    }
+    return 1;
+  }
+
+  return 2;
+}
 
 int context_item(int argc, char* argv[]) 
 {
@@ -150,9 +183,11 @@ int context_item(int argc, char* argv[])
 
   int result2 = test_2(zorba);
 
+  int result3 = test_3(zorba);
+
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
-  return result1 + result2;
+  return result1 + result2 + result3;
 }
 
 /* vim:set et sw=2 ts=2: */

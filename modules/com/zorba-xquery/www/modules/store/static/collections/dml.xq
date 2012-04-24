@@ -42,7 +42,7 @@ xquery version "3.0";
  :)
 module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -195,7 +195,7 @@ declare updating function cdml:insert-nodes-after(
  : @see cdml:insert-nodes
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes(
+declare %an:sequential function cdml:apply-insert-nodes(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -221,7 +221,7 @@ declare %ann:sequential function cdml:apply-insert-nodes(
  : @see cdml:insert-nodes-first
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-first(
+declare %an:sequential function cdml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -246,7 +246,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-first(
  : @see cdml:insert-nodes-last
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-last(
+declare %an:sequential function cdml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -275,7 +275,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-last(
  : @see cdml:insert-nodes-before
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-before(
+declare %an:sequential function cdml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()*  external;
@@ -305,7 +305,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-before(
  : @see cdml:insert-nodes-after
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-after(
+declare %an:sequential function cdml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()*  external;

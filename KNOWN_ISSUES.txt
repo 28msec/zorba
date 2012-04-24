@@ -37,7 +37,7 @@ Zorba Version 2.0
 * The serializer currently doesn't implement character maps as specified
   (http://www.w3.org/TR/xslt-xquery-serialization/#character-maps)
 
-* In the 2.0 release, setting the CMake variables ZORBA_NO_UNICODE to
+* In the 2.0 release, setting the CMake variables ZORBA_NO_ICU to
   ON is not supported.
 
 * The PHP language binding is not supported on Mac OS X. For details,

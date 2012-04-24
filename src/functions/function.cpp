@@ -29,11 +29,10 @@
 
 #include "diagnostics/assert.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(function)
-END_SERIALIZABLE_CLASS_VERSIONS(function)
 
 
 /*******************************************************************************
@@ -53,7 +52,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
 
-  if(ar.is_loading_hardcoded_objects())
+  if (ar.is_loading_hardcoded_objects())
   {
     // register this hardcoded object to help plan serialization
     function* this_ptr = this;
