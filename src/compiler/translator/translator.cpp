@@ -11746,7 +11746,19 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t;
+  if (qnameItem->getStringValue() == "empty")
+  {
+    t = CTX_TM->create_empty_type();
+  }
+  else if (qnameItem->getStringValue() == "none")
+  {
+    t = CTX_TM->create_none_type();
+  }
+  else
+  {
+    t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  }
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
