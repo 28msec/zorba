@@ -1698,7 +1698,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0029" name="URI_ACCESS_DENIED">
-      <value>"$1": module import not allowed</value>
+      <value>"$1": URI access not allowed</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0030" name="DEADLOCK">

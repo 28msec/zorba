@@ -414,7 +414,7 @@ extern entry const dict_en[] = {
   { "ZXQP0025", "item creation failed" },
   { "ZXQP0026", "\"$1\": invalid enumerated value for $2" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
-  { "ZXQP0029", "\"$1\": module import not allowed" },
+  { "ZXQP0029", "\"$1\": URI access not allowed" },
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
