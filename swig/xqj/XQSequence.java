@@ -42,7 +42,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     private boolean forwardOnly = true;
     private boolean currentItemGet = false;
     private Collection<XQItem> content = new ArrayList<XQItem>();
-    private int position = 0;
+    private int position = 1;
     int size = 0;
     private ItemSequence itemSequence = null;
 
@@ -77,7 +77,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
 
     public XQSequence(org.zorbaxquery.api.Iterator iterator) {
         if (iterator.isOpen()) {
-            org.zorbaxquery.api.Item item = null;
+            org.zorbaxquery.api.Item item = new org.zorbaxquery.api.Item();
             while (iterator.next(item)) {
                 XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
                 content.add(xItem);
@@ -101,7 +101,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
 
     protected ItemSequence getItemSequence() throws XQException {
         if (itemSequence==null) {
-            throw new XQException("This Sequence is not a Zorba ItemSequence object");
+            throw new XQException("This Sequence doesn't come from Zorba ItemSequence object");
         }
         return itemSequence;
     }

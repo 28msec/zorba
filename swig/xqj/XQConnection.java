@@ -506,7 +506,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                 item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_QNAME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(value), type);
+                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
                 break;
             case XQItemType.XQBASETYPE_SHORT:
                 item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort(Short.parseShort(value)), type);

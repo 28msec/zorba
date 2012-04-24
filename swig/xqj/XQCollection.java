@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import javax.xml.xquery.XQException;
 import org.zorbaxquery.api.Collection;
 import javax.xml.xquery.XQItem;
+import javax.xml.xquery.XQSequence;
+import org.zorbaxquery.api.Item;
+import org.zorbaxquery.api.ItemSequence;
 
 public class XQCollection {
 
@@ -43,7 +46,7 @@ public class XQCollection {
 
     public XQSequence contents() throws XQException {
         isClosedXQException();
-        XQSequence result =  new XQSequence(collection.contents().getIterator());
+        XQSequence result =  new org.zorbaxquery.api.xqj.XQSequence(collection.contents().getIterator());
         sequences.add(result);
         return result;
     }
@@ -61,7 +64,8 @@ public class XQCollection {
     public void deleteNodes(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            collection.deleteNodes(aNodes.getItemSequence());
+            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.XQSequence)aNodes).getItemSequence();
+            collection.deleteNodes(sequence);
         } catch (XQException e) {
             throw e;
         }
@@ -95,7 +99,8 @@ public class XQCollection {
     public void insertNodesAfter(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            collection.insertNodesAfter(((org.zorbaxquery.api.xqj.XQItem)aTarget).getZorbaItem(), aNodes.getItemSequence());
+            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.XQSequence)aNodes).getItemSequence();
+            collection.insertNodesAfter(((org.zorbaxquery.api.xqj.XQItem)aTarget).getZorbaItem(), sequence);
         } catch (XQException e) {
             throw e;
         }
@@ -104,7 +109,8 @@ public class XQCollection {
     public void insertNodesBefore(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            collection.insertNodesBefore(((org.zorbaxquery.api.xqj.XQItem)aTarget).getZorbaItem(), aNodes.getItemSequence());
+            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.XQSequence)aNodes).getItemSequence();
+            collection.insertNodesBefore(((org.zorbaxquery.api.xqj.XQItem)aTarget).getZorbaItem(), sequence);
         } catch (XQException e) {
             throw e;
         }
@@ -113,7 +119,9 @@ public class XQCollection {
     public void insertNodesFirst(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            collection.insertNodesFirst(aNodes.getItemSequence());
+            Item item = ((org.zorbaxquery.api.xqj.XQItem)aNodes.getItem()).getZorbaItem();
+            ItemSequence seq = new ItemSequence( item );
+            collection.insertNodesFirst(seq);
         } catch (XQException e) {
             throw e;
         }
@@ -122,7 +130,8 @@ public class XQCollection {
     public void insertNodesLast(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            collection.insertNodesLast(aNodes.getItemSequence());
+            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.XQSequence)aNodes).getItemSequence();
+            collection.insertNodesLast(sequence);
         } catch (XQException e) {
             throw e;
         }
