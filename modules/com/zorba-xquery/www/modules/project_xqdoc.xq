@@ -120,6 +120,7 @@ declare %an:sequential function pxqdoc:generate-xqdoc-XML(
       (:let $moduleFetched := fetch:content(trace($moduleURI,"fetch module URI version.."), "MODULE"):)
       let $moduleURI := if(ends-with(data($module/zm:uri),".xq")) then substring-before(data($module/zm:uri),".xq") else data($module/zm:uri)
       let $moduleFetched := fetch:content($moduleURI, "MODULE")
+      let $moduleFetched := fn:replace($moduleFetched, '&amp;(nbsp|#160);' , codepoints-to-string(160))
       let $xqdoc := xqd:xqdoc-content($moduleFetched)
       let $xqdocRelFileName  := pxqdoc:get-filename($moduleURI)
       let $xqdocFileName := concat($xqdocXMLPath, file:directory-separator(), $xqdocRelFileName, ".xml")
