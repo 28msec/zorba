@@ -473,6 +473,8 @@ void Validator::processChildren(
     const QueryLoc& loc)
 {
   store::Item_t child;
+  bool hasTextNode = false;
+  zstring textNodeValue = zstring("");
 
   while ( children->next(child) )
   {
@@ -485,6 +487,13 @@ void Validator::processChildren(
       switch ( child->getNodeKind() )
       {
       case store::StoreConsts::elementNode:
+        if (hasTextNode)
+        {
+          finishTextNode(sctx, typeManager, schemaValidator, parent,
+                         textNodeValue, loc);
+          textNodeValue = "";
+          hasTextNode = false;
+        }
         processElement(sctx, typeManager, schemaValidator, parent, child, loc);
         break;
 
@@ -498,94 +507,11 @@ void Validator::processChildren(
 
       case store::StoreConsts::textNode:
       {
+        // keep on adding the text
+        hasTextNode = true;
         zstring childStringValue;
         child->getStringValue2(childStringValue);
-        schemaValidator.text(childStringValue);
-
-        store::Item_t typeQName = schemaValidator.getTypeQName();
-
-        store::Item_t validatedTextNode;
-
-        TypeIdentifier_t typeIdentifier =
-          TypeIdentifier::createNamedType(
-            Unmarshaller::newString( typeQName->getNamespace() ),
-            Unmarshaller::newString( typeQName->getLocalName() )
-          );
-
-        //xqType is NULL, create_type can't find it
-        xqtref_t xqType = typeManager->create_type(*typeIdentifier);
-
-#if 0   // enable this to debug children values
-        if ( typeQName.getp() && xqType.getp() )
-        {
-          cout << "     - text: '" << childStringValue << "' T: " <<
-            typeQName->getLocalName() << "\n"; cout.flush();
-          cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
-            (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
-          cout.flush();
-        }
-        else
-          cout << "     - text2: '" << childStringValue << "' tQN: " <<
-            (typeQName ? typeQName->getStringValue() : "NULL") <<
-            " xqT:" << ( xqType.getp() ? xqType.getp()->toString() : "NULL" )
-               << "\n"; cout.flush();
-#endif
-
-        if ( xqType != NULL &&
-             xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
-        {
-          store::NsBindings nsBindings;
-          parent->getNamespaceBindings(nsBindings);
-          std::vector<store::Item_t> typedValues;
-          
-          processTextValue(sctx,
-                           typeManager,
-                           nsBindings,
-                           typeQName,
-                           childStringValue,
-                           typedValues,
-                           loc);
-
-          if ( typedValues.size() == 1 ) // hack around serialization bug
-            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
-                                             typedValues[0]);
-          else
-            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
-                                             typedValues);
-        }
-        else if ( xqType!=NULL &&
-                  (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
-                   xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
-        {
-          // if text not valid the schemaValidator should have already
-          // thrown an error
-
-          // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
-          // section 6.7.4 Construction from a PSVI
-          if ( !utf8::is_whitespace(childStringValue) )
-          {
-            zstring empty;
-            GENV_ITEMFACTORY->createTextNode(validatedTextNode,
-                                             parent,
-                                             empty);
-            //cout << "      -- create empty text : ElementOnly || Empty" << endl;
-          }
-          else 
-          {
-            //cout << "      -- skip this text: (ElemOnly || Empty) && whitespace" << endl;
-          }
-        }
-        else
-          //if ( xqType!=NULL &&
-          //     xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
-        {
-          // if text not valid the schemaValidator should have already
-          // thrown an error
-          GENV_ITEMFACTORY->createTextNode(validatedTextNode,
-                                           parent,
-                                           childStringValue);
-          //cout << "      -- create empty text: Mixed" << endl;
-        }
+        textNodeValue += childStringValue;
       }
       break;
 
@@ -607,7 +533,7 @@ void Validator::processChildren(
       case store::StoreConsts::commentNode:
       {
         //cout << "     - comment: " << child->getStringValue() <<
-        //"\n"; cout.flush();
+        //        "\n"; cout.flush();
         store::Item_t commentNode;
         zstring childStringValue;
         child->getStringValue2(childStringValue);
@@ -625,7 +551,112 @@ void Validator::processChildren(
       }
     }
   }
+
+  if (hasTextNode)
+  {
+    finishTextNode(sctx, typeManager, schemaValidator, parent,
+                   textNodeValue, loc);
+    textNodeValue = "";
+    hasTextNode = false;
+  }
 }
+
+void Validator::finishTextNode(
+    const static_context* sctx,
+    TypeManager* typeManager,
+    EventSchemaValidator& schemaValidator,
+    store::Item* parent,
+    zstring textNodeValue,
+    const QueryLoc& loc)
+{
+  schemaValidator.text(textNodeValue);
+
+  store::Item_t typeQName = schemaValidator.getTypeQName();
+
+  store::Item_t validatedTextNode;
+
+  TypeIdentifier_t typeIdentifier =
+    TypeIdentifier::createNamedType(
+      Unmarshaller::newString( typeQName->getNamespace() ),
+      Unmarshaller::newString( typeQName->getLocalName() )
+    );
+
+  //xqType is NULL, create_type can't find it
+  xqtref_t xqType = typeManager->create_type(*typeIdentifier);
+
+#if 0   // enable this to debug children values
+  if ( typeQName.getp() && xqType.getp() )
+  {
+    cout << "     - text: '" << textNodeValue << "' T: " <<
+      typeQName->getLocalName() << "\n"; cout.flush();
+    cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
+      (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
+    cout.flush();
+  }
+  else
+    cout << "     - text2: '" << textNodeValue << "' tQN: " <<
+      (typeQName ? typeQName->getStringValue() : "NULL") <<
+      " xqT:" << ( xqType.getp() ? xqType.getp()->toString() : "NULL" )
+         << "\n"; cout.flush();
+#endif
+
+  if ( xqType != NULL &&
+       xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+  {
+    store::NsBindings nsBindings;
+    parent->getNamespaceBindings(nsBindings);
+    std::vector<store::Item_t> typedValues;
+
+    processTextValue(sctx,
+                     typeManager,
+                     nsBindings,
+                     typeQName,
+                     textNodeValue,
+                     typedValues,
+                     loc);
+
+    if ( typedValues.size() == 1 ) // hack around serialization bug
+      GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
+                                       typedValues[0]);
+    else
+      GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
+                                       typedValues);
+  }
+  else if ( xqType!=NULL &&
+            (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
+             xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
+  {
+    // if text not valid the schemaValidator should have already
+    // thrown an error
+
+    // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
+    // section 6.7.4 Construction from a PSVI
+    if ( !utf8::is_whitespace(textNodeValue) )
+    {
+      zstring empty;
+      GENV_ITEMFACTORY->createTextNode(validatedTextNode,
+                                       parent,
+                                       empty);
+      //cout << "      -- create empty text : ElementOnly || Empty" << endl;
+    }
+    else
+    {
+      //cout << "      -- skip this text: (ElemOnly || Empty) && whitespace" << endl;
+    }
+  }
+  else
+    //if ( xqType!=NULL &&
+    //     xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
+  {
+    // if text not valid the schemaValidator should have already
+    // thrown an error
+    GENV_ITEMFACTORY->createTextNode(validatedTextNode,
+                                     parent,
+                                     textNodeValue);
+    //cout << "      -- create empty text: Mixed" << endl;
+  }
+}
+
 
 
 void Validator::processNamespaces (
