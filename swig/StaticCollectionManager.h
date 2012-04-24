@@ -22,7 +22,6 @@ private:
   zorba::StaticCollectionManager* theStaticManager;
 
 public:
-  StaticCollectionManager() : theStaticManager(0) {}
   StaticCollectionManager(const StaticCollectionManager& aMgr) : theStaticManager(aMgr.theStaticManager) {}
   StaticCollectionManager(zorba::StaticCollectionManager* aMgr) : theStaticManager(aMgr) {}
 

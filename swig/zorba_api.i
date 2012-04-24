@@ -82,6 +82,7 @@ namespace std {
   class UserException;
   class ZorbaException;
   class XmlDataManager;
+  class StaticCollectionManager;
 
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"

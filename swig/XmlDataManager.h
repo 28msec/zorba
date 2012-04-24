@@ -22,7 +22,6 @@ private:
   zorba::XmlDataManager* theManager;
 
 public:
-  XmlDataManager() : theManager(0) {}
   XmlDataManager(const XmlDataManager& aMgr) : theManager(aMgr.theManager) {}
   XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
 

@@ -22,7 +22,6 @@ private:
   zorba::CollectionManager* theManager;
 
 public:
-  CollectionManager() : theManager(0) {}
   CollectionManager(const CollectionManager& aMgr) : theManager(aMgr.theManager) {}
   CollectionManager(zorba::CollectionManager* aMgr) : theManager(aMgr) {}
 
