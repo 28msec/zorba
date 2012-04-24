@@ -404,46 +404,71 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   // FLWOR with no remaining clauses
+  // A FLWOR without any For Let or Windowing is not valid FLWOR
+  // It must be undone correctly still.
   if (numForLetWinClauses == 0)
   {
-    if (gc != NULL)
-    {
-      const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
-      flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
-      flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
-      for (; gVarsIte != gVarsEnd; ++gVarsIte)
-      {
-        subst_vars(rCtx, flworp, gVarsIte->second.getp(),
-            gVarsIte->first.getp());
-      }
-
-      const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
-      flwor_clause::rebind_list_t::const_iterator ngVarsIte = ngVars.begin();
-      flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
-      for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
-      {
-        subst_vars(rCtx,
-            flworp,
-            ngVarsIte->second.getp(),
-            ngVarsIte->first.getp());
-      }
-    }
-
     expr_t result = flwor.get_return_expr();
-    expr* whereExpr;
 
-    if ((whereExpr = flwor.get_where()) != NULL)
+    for (csize clause_pos = 0; clause_pos < flwor.num_clauses(); clause_pos++)
     {
-      rchandle<if_expr> ifExpr =
-      new if_expr(whereExpr->get_sctx(),
-                  LOC(whereExpr),
-                  whereExpr,
-                  result,
-                  fo_expr::create_seq(whereExpr->get_sctx(),
-                                      LOC(whereExpr)));
-      fix_if_annotations(ifExpr);
+      flwor_clause *clause = flwor.get_clause(clause_pos);
 
-      return ifExpr.getp();
+      if (clause->get_kind() == flwor_clause::group_clause)
+      {
+        gc = static_cast<group_clause*>(clause);
+        const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
+        flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
+        flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
+        for (; gVarsIte != gVarsEnd; ++gVarsIte)
+        {
+          //This rebinds any var seen in any expression throught the flwor
+          //which are also the expressions used in the result
+          //So this also alters the result expr.
+          subst_vars(rCtx, flworp, gVarsIte->second.getp(),
+              gVarsIte->first.getp());
+        }
+
+        const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
+        flwor_clause::rebind_list_t::const_iterator ngVarsIte = ngVars.begin();
+        flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
+        for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
+        {
+          //see subst_vars call on gVarsIte loop above
+          subst_vars(rCtx,
+              flworp,
+              ngVarsIte->second.getp(),
+              ngVarsIte->first.getp());
+        }
+      }
+
+      if (clause->get_kind() == flwor_clause::where_clause)
+      {
+        expr* whereExpr = clause->get_expr();
+
+        rchandle<if_expr> ifExpr =
+        new if_expr(whereExpr->get_sctx(),
+                    LOC(whereExpr),
+                    whereExpr,
+                    result,
+                    fo_expr::create_seq(whereExpr->get_sctx(),
+                                        LOC(whereExpr)));
+        fix_if_annotations(ifExpr);
+
+        result = ifExpr;
+      }
+
+      //since one value is still returned, count variables are changed to 1
+      if(clause->get_kind() == flwor_clause::count_clause)
+      {
+          subst_vars(rCtx,
+              flworp,
+              static_cast<count_clause*>(clause)->get_var(),
+              new const_expr(sctx, loc, xs_integer::one()));
+      }
+
+      //order clauses are fully ignored, as there is nothing left to order.
+
     }
 
     return result;
