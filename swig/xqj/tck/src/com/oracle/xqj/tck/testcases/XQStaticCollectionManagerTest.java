@@ -55,7 +55,7 @@ public class XQStaticCollectionManagerTest  extends XQJTestCase {
         org.zorbaxquery.api.xqj.XQConnection my_xqc;
         StringBuilder strBuilder = new StringBuilder();
         try {
-            BufferedReader in = new BufferedReader(new FileReader("module1.xq"));
+            BufferedReader in = new BufferedReader(new FileReader("tck/module1.xq"));
             String str;
             while ((str = in.readLine()) != null) {
                 strBuilder.append(str);
@@ -101,7 +101,7 @@ public class XQStaticCollectionManagerTest  extends XQJTestCase {
 
         StringBuilder strBuilder = new StringBuilder();
         try {
-            BufferedReader in = new BufferedReader(new FileReader("module1.xq"));
+            BufferedReader in = new BufferedReader(new FileReader("tck/module1.xq"));
             String str;
             while ((str = in.readLine()) != null) {
                 strBuilder.append(str);
