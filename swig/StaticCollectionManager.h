@@ -29,7 +29,7 @@ public:
   ItemSequence availableCollections();
   ItemSequence availableIndexes();
   void createCollection(const Item &aName );
-  void createCollection(const Item &aName, const SingletonItemSequence &aContents );
+  void createCollection(const Item &aName, const ItemSequence &aContents );
   void createIndex( const Item & aQName );
   ItemSequence declaredCollections();
   ItemSequence declaredIndexes();

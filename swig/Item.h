@@ -23,12 +23,12 @@ class Item
   friend class StaticContext;
   friend class DocumentManager; 
   friend class SingletonIterator;
-  friend class SingletonItemSequence;
   friend class DynamicContext;
   friend class ItemFactory;
   friend class Collection;
   friend class CollectionManager;
   friend class StaticCollectionManager;
+  friend class ItemSequence;
 private:
   zorba::Item theItem;
 

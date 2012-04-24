@@ -26,7 +26,7 @@
     theManager->createCollection(aName.theItem );
   }
 
-  void CollectionManager::createCollection(const Item &aName, const SingletonItemSequence &aContents )
+  void CollectionManager::createCollection(const Item &aName, const ItemSequence &aContents )
   {
     theManager->createCollection(aName.theItem, aContents.theItemSequence );
   }

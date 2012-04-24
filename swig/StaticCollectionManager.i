@@ -31,7 +31,7 @@
     theStaticManager->createCollection(aName.theItem );
   }
 
-  void StaticCollectionManager::createCollection(const Item &aName, const SingletonItemSequence &aContents )
+  void StaticCollectionManager::createCollection(const Item &aName, const ItemSequence &aContents )
   {
     theStaticManager->createCollection(aName.theItem, aContents.theItemSequence );
   }

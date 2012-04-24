@@ -16,6 +16,11 @@
 
 %{  // start Implementation
 
+  ItemSequence::ItemSequence(const Item &aItem)
+  {
+    theItemSequence = new zorba::SingletonItemSequence(aItem.theItem);
+  }
+
   Iterator ItemSequence::getIterator()
   {
     return Iterator( theItemSequence->getIterator() );

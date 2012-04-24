@@ -31,7 +31,7 @@
     theCollection->deleteNodeLast();
   }
 
-  void Collection::deleteNodes(const SingletonItemSequence &aNodes )
+  void Collection::deleteNodes(const ItemSequence &aNodes )
   {
     theCollection->deleteNodes( aNodes.theItemSequence );
   }
@@ -61,22 +61,22 @@
     return theCollection->indexOf( aNode.theItem );
   }
 
-  void Collection::insertNodesAfter(const Item &aTarget, const SingletonItemSequence &aNodes )
+  void Collection::insertNodesAfter(const Item &aTarget, const ItemSequence &aNodes )
   {
     theCollection->insertNodesAfter( aTarget.theItem, aNodes.theItemSequence );
   }
 
-  void Collection::insertNodesBefore(const Item &aTarget, const SingletonItemSequence &aNodes )
+  void Collection::insertNodesBefore(const Item &aTarget, const ItemSequence &aNodes )
   {
     theCollection->insertNodesBefore( aTarget.theItem, aNodes.theItemSequence );
   }
 
-  void Collection::insertNodesFirst(const SingletonItemSequence &aNodes )
+  void Collection::insertNodesFirst(const ItemSequence &aNodes )
   {
     theCollection->insertNodesFirst( aNodes.theItemSequence );
   }
 
-  void Collection::insertNodesLast(const SingletonItemSequence &aNodes )
+  void Collection::insertNodesLast(const ItemSequence &aNodes )
   {
     theCollection->insertNodesLast( aNodes.theItemSequence );
   }

@@ -61,7 +61,6 @@ ELSE (NOT PHP5_FOUND)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticCollectionManager.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticCollectionManager.h" COPYONLY)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../DocumentManager.h" "${CMAKE_CURRENT_BINARY_DIR}/DocumentManager.h" COPYONLY)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemSequence.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemSequence.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../SingletonItemSequence.h" "${CMAKE_CURRENT_BINARY_DIR}/SingletonItemSequence.h" COPYONLY)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Zorba.h" "${CMAKE_CURRENT_BINARY_DIR}/Zorba.h" COPYONLY)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
