@@ -53,15 +53,26 @@ endif (ICU_LIBRARY)
 
 # Discover the version.
 IF (NOT ICU_INCLUDE STREQUAL "")
-  FIND_PATH(ICUVERHPPPATH NAMES unicode/fuvernum.h PATHS ${ICU_INCLUDE}
-    NO_DEFAULT_PATH)
+  # ICU 3.x has the relevant #defines in uversion.h; 4.x uses uvernum.h.
+  FIND_PATH(ICUVERHPPPATH NAMES unicode/uvernum.h unicode/uversion.h
+    PATHS ${ICU_INCLUDE} NO_DEFAULT_PATH)
 
   IF ( ${ICUVERHPPPATH} STREQUAL ICUVERHPPPATH-NOTFOUND )
     SET(ICU_VERSION "0")
     MESSAGE(STATUS "Found ICU but unable to determine version - assuming version 0")
   ELSE( ${ICUVERHPPPATH} STREQUAL ICUVERHPPPATH-NOTFOUND )
-    FILE(READ ${ICUVERHPPPATH}/unicode/uvernum.h ICUVERHPP)
-  
+    SET (ICUVERHPP)
+    # One of these files has to exist, or else ICUVERHPPPATH wouldn't be set.
+    # If uvernum.h exists, it has the data we want; otherwise, that data is
+    # in uversion.h.
+    FOREACH (header uvernum.h uversion.h)
+      SET (headerfile "${ICUVERHPPPATH}/unicode/${header}")
+      IF (EXISTS "${headerfile}")
+	FILE(READ "${headerfile}" ICUVERHPP)
+	BREAK()
+      ENDIF (EXISTS "${headerfile}")
+    ENDFOREACH (header)
+
     STRING(REGEX MATCH "\n *#define U_ICU_VERSION_MAJOR_NUM +[0-9]+" ICUVERMAJ 
       ${ICUVERHPP}) 
     STRING(REGEX MATCH "\n *#define U_ICU_VERSION_MINOR_NUM +[0-9]+" ICUVERMIN 
