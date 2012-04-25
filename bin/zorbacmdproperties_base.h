@@ -29,9 +29,9 @@ namespace zorbacmd
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase
 {
 protected:
-  const char **get_all_options () const
+  const char** get_all_options () const
   {
-    static const char *result [] = {
+    static const char* result [] = {
       "--timing", "--output-file", "--serialization-parameter",
       "--serialize-html", "--serialize-text", "--indent", "--print-query",
       "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
@@ -42,7 +42,7 @@ protected:
       "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo",
       "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath",
       "--option", "--trailing-nl", "--stop-words", "--thesaurus",
-      "--compile-plan", "--execute-plan", NULL };
+      "--compile-plan", "--execute-plan --serialize-plan", NULL };
     return result;
   }
 
@@ -85,6 +85,8 @@ protected:
   std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
   bool theSerializePlan;
+  bool theSavePlan;
+  bool theLoadPlan;
 
   void initialize () 
   {
@@ -110,6 +112,8 @@ protected:
     theTimeout = -1;
     theTrailingNl = false;
     theSerializePlan = false;
+    theSavePlan = false;
+    theLoadPlan = false;
   }
 
 public:
@@ -152,6 +156,8 @@ public:
   const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
   const bool& serializePlan () const { return theSerializePlan; }
+  const bool& loadPlan () const { return theLoadPlan; }
+  const bool& savePlan () const { return theSavePlan; }
 
   std::string load_argv (int argc, const char **argv) 
   {
@@ -412,6 +418,14 @@ public:
       {
         theSerializePlan = true;
       }
+      else if (strcmp (*argv, "--compile-plan") == 0)
+      {
+        theSavePlan = true;
+      }
+      else if (strcmp (*argv, "--execute-plan") == 0)
+      {
+        theLoadPlan = true;
+      }
       else if (strcmp (*argv, "--") == 0)
       {
         copy_args (++argv);
@@ -472,7 +486,9 @@ public:
         "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
         "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
         "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
-        "--serialize-plan, -cs\nSerialize and then load the query execution plan.\n\n"
+        "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
+        "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
+        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
         ;
   }
 
