@@ -551,6 +551,7 @@ static_context::static_context()
   theParent(NULL),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
+  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -599,6 +600,7 @@ static_context::static_context(static_context* parent)
   theParent(parent),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
+  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -652,6 +654,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theParent(NULL),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
+  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -699,6 +702,9 @@ static_context::~static_context()
 {
   if (theImportedBuiltinModules)
     delete theImportedBuiltinModules;
+
+  if (theBlockedBuiltinModules)
+    delete theBlockedBuiltinModules;
 
   if (theExternalModulesMap)
   {
@@ -1128,6 +1134,46 @@ bool static_context::is_imported_builtin_module(const zstring& ns)
       {
         if (*ite == ns)
           return true;
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::add_blocked_builtin_module(const zstring& ns)
+{
+  if (theBlockedBuiltinModules == NULL)
+  {
+    theBlockedBuiltinModules = new std::vector<zstring>;
+  }
+
+  theBlockedBuiltinModules->push_back(ns);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool static_context::is_blocked_builtin_module(const zstring& ns)
+{
+  static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    std::vector<zstring>* lBlockedModules = sctx->theBlockedBuiltinModules;
+    if (lBlockedModules != NULL)
+    {
+      if (std::find(lBlockedModules->begin(), lBlockedModules->end(), ns)
+          != lBlockedModules->end())
+      {
+        return true;
       }
     }
 

@@ -500,6 +500,8 @@ protected:
 
   std::vector<zstring>                  * theImportedBuiltinModules;
 
+  std::vector<zstring>                  * theBlockedBuiltinModules;
+
   BaseUriInfo                           * theBaseUriInfo;
 
   ztd::auto_vector<internal::URIMapper>   theURIMappers;
@@ -632,6 +634,10 @@ public:
   void add_imported_builtin_module(const zstring& ns);
 
   bool is_imported_builtin_module(const zstring& ns);
+
+  void add_blocked_builtin_module(const zstring& ns);
+
+  bool is_blocked_builtin_module(const zstring& ns);
 
   //
   // Base uri

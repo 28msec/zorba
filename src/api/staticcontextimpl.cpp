@@ -696,6 +696,18 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::blockBuiltInModule(const String& aModuleNS)
+{
+  const zstring& ns = Unmarshaller::getInternalString(aModuleNS);
+
+  theCtx->add_blocked_builtin_module(ns);
+}
+
+
+/*******************************************************************************
  URI Mapper
 *******************************************************************************/
 void
@@ -704,6 +716,7 @@ StaticContextImpl::registerURIMapper(URIMapper* aMapper)
   // QQQ memory management?
   theCtx->add_uri_mapper(new URIMapperWrapper(*aMapper));
 }
+
 
 /*******************************************************************************
  URL Resolver

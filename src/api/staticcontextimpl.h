@@ -165,6 +165,9 @@ public:
   getDocumentType(const String& aDocUri) const;
 
   virtual void
+  blockBuiltInModule(const String& aModuleNS);
+
+  virtual void
   registerURIMapper(URIMapper* aMapper);
 
   virtual void
