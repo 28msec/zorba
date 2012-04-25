@@ -434,11 +434,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
       for (; gVarsIte != gVarsEnd; ++gVarsIte)
       {
-        //This rebinds any var seen in any expression throught the flwor
-        //which are also the expressions used in the result
-        //So this also alters the result expr.
-        subst_vars(rCtx, flworp, gVarsIte->second.getp(),
+        /*
+         subst_vars(rCtx, flworp, gVarsIte->second.getp(),
             gVarsIte->first.getp());
+        */
+        var_expr_t gVar_name = gVarsIte->first;
+        expr_t gVar_value = gVarsIte->second;
+
+        let_clause* letClause = new let_clause(gVar_name->get_sctx(),
+                                                gVar_name->get_loc(),
+                                                gVar_name,
+                                                gVar_value);
+
+        flwor.add_clause(1, letClause);
       }
 
       const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
@@ -446,17 +454,27 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
       for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
       {
-        //see subst_vars call on gVarsIte loop above
-        subst_vars(rCtx,
+        /*
+         subst_vars(rCtx,
             flworp,
             ngVarsIte->second.getp(),
             ngVarsIte->first.getp());
+            */
+        var_expr_t ngVar_name = ngVarsIte->first;
+        expr_t ngVar_value = ngVarsIte->second;
+
+        let_clause* letClause = new let_clause(ngVar_name->get_sctx(),
+                                                ngVar_name->get_loc(),
+                                                ngVar_name,
+                                                ngVar_value);
+
+        flwor.add_clause(1, letClause);
       }
 
       flwor.remove_clause(0);
 
       modified = true;
-      continue;
+      break;
     }
 
     if (clause->get_kind() == flwor_clause::where_clause)
@@ -529,6 +547,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     return ifExpr;
   }
+
+  if (flwor.num_clauses() < 1)
+    return flwor.get_return_expr();
 
   return modified ? node : NULL;
 }
