@@ -556,7 +556,7 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -604,7 +604,7 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -657,7 +657,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -2229,8 +2229,13 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(const xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t, const QueryLoc& loc)
 {
+  if (theContextItemType != NULL)
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
+  }
+
   theContextItemType = t;
 }
 
@@ -2243,8 +2248,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theContextItemType != NULL)
-      return theContextItemType.getp();
+    if (sctx->theContextItemType != NULL)
+      return sctx->theContextItemType.getp();
 
     sctx = sctx->theParent;
   }

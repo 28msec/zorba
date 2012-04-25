@@ -419,7 +419,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     ulong numClauses = flworExpr->num_clauses();
     for (ulong i = 0; i < numClauses; ++i)
     {
-      if ((*flworExpr)[i]->get_kind() == flwor_clause::order_clause)
+      if (flworExpr->get_clause(i)->get_kind() == flwor_clause::order_clause)
       {
         orderby_clause* obc = reinterpret_cast<orderby_clause*>
                               (flworExpr->get_clause(i));

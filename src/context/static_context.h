@@ -801,7 +801,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(const xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
   const XQType* get_context_item_type() const;
 
