@@ -145,7 +145,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 
   serialize_baseclass(ar, (function*)this);
   ar & theLoc;
-  ar & theBodyExpr;
+  //ar & theBodyExpr;
   ar & theArgVars;
   ar & theScriptingKind;
   ar & theIsExiting;
