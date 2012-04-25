@@ -1936,8 +1936,11 @@ void CollectionPul::computeIndexAfterDeltas()
       store::IndexDelta::iterator end = afterDelta.end();
       for (; ite != end; ++ite)
       {
-        if ((*ite).first.getp() == (*docIte))
+        XmlNode* node = static_cast<XmlNode*>((*ite).first.getp());
+
+        if (node->getRoot() == (*docIte))
         {
+          delete ite->second;
           afterDelta.erase(ite);
           break;
         }
@@ -1948,8 +1951,11 @@ void CollectionPul::computeIndexAfterDeltas()
       end = beforeDelta.end();
       for (; ite != end; ++ite)
       {
-        if ((*ite).first.getp() == (*docIte))
+        XmlNode* node = static_cast<XmlNode*>((*ite).first.getp());
+
+        if (node->getRoot() == (*docIte))
         {
+          delete ite->second;
           beforeDelta.erase(ite);
           break;
         }
