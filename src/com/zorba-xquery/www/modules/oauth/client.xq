@@ -34,7 +34,6 @@ import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac";
 import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
-import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
 
 import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 
@@ -384,7 +383,7 @@ as item()*
  :)
 declare %private %an:nondeterministic function oauth:timestamp() as xs:decimal
 {
-  let $current-dateTime := fn:adjust-dateTime-to-timezone(date:current-dateTime(), xs:dayTimeDuration('PT0H'))
+  let $current-dateTime := fn:adjust-dateTime-to-timezone(current-dateTime(), xs:dayTimeDuration('PT0H'))
   let $duration := $current-dateTime - xs:dateTime("1970-01-01T00:00:00Z")
   return fn:round($duration div xs:dayTimeDuration('PT1S'))
 };
