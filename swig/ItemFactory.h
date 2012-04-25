@@ -23,7 +23,6 @@ class ItemFactory
   private:
     zorba::ItemFactory* theItemFactory;
   public:
-    ItemFactory(): theItemFactory(0) {}
     ItemFactory(zorba::ItemFactory* aItemFactory) : theItemFactory(aItemFactory) {}
     ItemFactory(const ItemFactory& aItemFactory) : theItemFactory(aItemFactory.theItemFactory) {}
 
