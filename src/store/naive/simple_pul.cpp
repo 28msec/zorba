@@ -1931,26 +1931,26 @@ void CollectionPul::computeIndexAfterDeltas()
 
       // Remove from the before and after deltas any entries for the deleted doc.
       // This is required for the undo to work correctly.
-      indexDelta = theAfterIndexDeltas[i];
-      store::IndexDelta::iterator ite = indexDelta.begin();
-      store::IndexDelta::iterator end = indexDelta.end();
+      store::IndexDelta& afterDelta = theAfterIndexDeltas[i];
+      store::IndexDelta::iterator ite = afterDelta.begin();
+      store::IndexDelta::iterator end = afterDelta.end();
       for (; ite != end; ++ite)
       {
         if ((*ite).first.getp() == (*docIte))
         {
-          indexDelta.erase(ite);
+          afterDelta.erase(ite);
           break;
         }
       }
 
-      indexDelta = theBeforeIndexDeltas[i];
-      ite = indexDelta.begin();
-      end = indexDelta.end();
+      store::IndexDelta& beforeDelta = theBeforeIndexDeltas[i];
+      ite = beforeDelta.begin();
+      end = beforeDelta.end();
       for (; ite != end; ++ite)
       {
         if ((*ite).first.getp() == (*docIte))
         {
-          indexDelta.erase(ite);
+          beforeDelta.erase(ite);
           break;
         }
       }
