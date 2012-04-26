@@ -69,6 +69,7 @@
 #include "functions/udf.h"
 #include "functions/external_function.h"
 #include "functions/func_ft_module.h"
+#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 

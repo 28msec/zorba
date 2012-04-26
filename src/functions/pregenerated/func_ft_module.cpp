@@ -151,12 +151,6 @@ PlanIter_t full_text_thesaurus_lookup::codegen(
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
-
-#endif
-#ifndef ZORBA_NO_FULL_TEXT
-
-#endif
-#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_tokenize_string::codegen(
   CompilerCB*,
   static_context* sctx,

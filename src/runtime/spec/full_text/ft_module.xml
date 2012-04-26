@@ -167,21 +167,6 @@
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 
-  <zorba:function generateCodegen="false" generateDECL="false">
-
-    <zorba:signature localname="tokenize" prefix="full-text">
-      <zorba:param>node()</zorba:param>       <!-- doc -->
-      <zorba:output>node()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="tokenize" prefix="full-text">
-      <zorba:param>node()</zorba:param>       <!-- doc -->
-      <zorba:param>xs:language</zorba:param>  <!-- lang -->
-      <zorba:output>node()*</zorba:output>
-    </zorba:signature>
-
-  </zorba:function>
-
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
@@ -192,30 +177,6 @@
 
 <zorba:iterator name="TokenizerPropertiesIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
-
-  <zorba:function generateCodegen="false" generateDECL="false">
-
-    <zorba:signature localname="tokenizer-properties" prefix="full-text">
-      <zorba:output>node()</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="tokenizer-properties" prefix="full-text">
-      <zorba:param>xs:language</zorba:param>  <!-- lang -->
-      <zorba:output>node()</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <!-- 
-       ! Mark the function as accessing the dyn ctx so that it won't be
-       ! const-folded. We must prevent const-folding because the function
-       ! returns a node that is validated with a schema that may not be
-       ! imported in the module where the function is invoked from.
-      -->
-      <zorba:accessesDynCtx returnValue="true"/>
-    </zorba:methods>
-
-  </zorba:function>
-
 </zorba:iterator>
 
 <zorba:iterator name="TokenizeStringIterator"

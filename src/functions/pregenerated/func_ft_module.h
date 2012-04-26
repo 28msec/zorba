@@ -198,40 +198,6 @@ public:
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 
-//full-text:tokenize
-class full_text_tokenize : public function
-{
-public:
-  full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifndef ZORBA_NO_FULL_TEXT
-
-//full-text:tokenizer-properties
-class full_text_tokenizer_properties : public function
-{
-public:
-  full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifndef ZORBA_NO_FULL_TEXT
-
 //full-text:tokenize-string
 class full_text_tokenize_string : public function
 {
