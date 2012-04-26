@@ -284,11 +284,14 @@ public:
     UP_LIST_CREATE_INDEX
   };
 
-  typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
+  typedef std::vector<CollectionPul*> CollectionPuls;
+
+  typedef std::map<const QNameItem*, csize> CollectionPulMap;
 
 protected:
   // XQUF and collection primitives, grouped by the collection that is being updated.
-  CollectionPulMap                   theCollectionPuls;
+  CollectionPuls                     theCollectionPuls;
+  CollectionPulMap                   theCollectionPulsMap;
   CollectionPul                    * theNoCollectionPul;
   CollectionPul                    * theLastPul;
   const QNameItem                  * theLastCollection;

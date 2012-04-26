@@ -107,28 +107,6 @@ class XmlNodeTokenizerCallback;
               << store::StoreConsts::toString(getNodeKind()))
 
 
-#ifndef NDEBUG
-
-#define NODE_TRACE(level, msg)                \
-{                                             \
-  if (level <= GET_STORE().getTraceLevel())   \
-    std::cout << msg << std::endl;            \
-}
-
-#define NODE_TRACE1(msg) NODE_TRACE(1, msg);
-#define NODE_TRACE2(msg) NODE_TRACE(2, msg);
-#define NODE_TRACE3(msg) NODE_TRACE(3, msg);
-
-#else
-
-#define NODE_TRACE(msg)
-#define NODE_TRACE1(msg)
-#define NODE_TRACE2(msg)
-#define NODE_TRACE3(msg)
-
-#endif
-
-
 /*******************************************************************************
 
   theRefCount    : It is the sum of theRefCounts of all the nodes belonging to

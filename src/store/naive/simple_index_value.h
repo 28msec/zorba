@@ -88,6 +88,8 @@ protected:
 public:
   const XQPCollator* getCollator(ulong i) const;
 
+  virtual bool isTreeIndex() = 0;
+
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
@@ -142,6 +144,8 @@ protected:
   ~ValueHashIndex();
 
 public:
+  bool isTreeIndex() { return false; }
+
   void clear();
 
   ulong size() const;
@@ -227,6 +231,8 @@ protected:
   ~ValueTreeIndex();
 
 public:
+  bool isTreeIndex() { return true; }
+
   void clear();
 
   ulong size() const;
