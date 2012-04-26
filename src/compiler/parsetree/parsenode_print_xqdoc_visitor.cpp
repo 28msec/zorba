@@ -24,12 +24,19 @@
 #include <compiler/parsetree/parsenode_visitor.h>
 
 #include <compiler/parser/xqdoc_comment.h>
+
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/dict.h"
+
 #include "types/root_typemanager.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
+
 #include "system/globalenv.h"
 
 using namespace std;
@@ -133,7 +140,10 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
-      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+      store::Item_t lAttrPrefixItem, lAttrNamespaceItem, lAttrLocalnameItem;
+
+      zstring lPrefix = lAnn->get_qname()->get_prefix();
+      theFactory->createString(lAttrPrefixItem, lPrefix);
 
       lTmp = lAnn->get_qname()->get_prefix();
       lTmp = theNamespaceMap[lTmp];
@@ -142,12 +152,19 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       lTmp = lAnn->get_qname()->get_localname();
       theFactory->createString(lAttrLocalnameItem, lTmp);
 
+      store::Item_t lPrefixQName;
+      theFactory->createQName(lPrefixQName, "", "", "prefix");
       store::Item_t lNamespaceQName;
       theFactory->createQName(lNamespaceQName, "", "", "namespace");
       store::Item_t lLocalnameQName;
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
+     
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lPrefixQName, lAnnotationElem, lPrefixQName,
+        lTypeName, lAttrPrefixItem);
      
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
@@ -170,8 +187,11 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
 {
   map<zstring, zstring>::iterator ite = theNamespaceSchemaMap.find(aPrefix);
-  return ((ite != theNamespaceSchemaMap.end()) ||
-          (ite->second ==  aNamespace));
+  if(ite != theNamespaceSchemaMap.end())
+  {
+    return (ite->second == aNamespace);
+  }
+  return false;
 }
 
 void print_namespaces()

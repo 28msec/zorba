@@ -1,0 +1,1 @@
+fn:unparsed-text-lines("pi.xml", "encoding")

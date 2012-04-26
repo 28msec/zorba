@@ -49,19 +49,19 @@ CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-xml.xq
                 ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-xml.xq COPYONLY)
 
 #   Add the modules_svg command for which a working zorba cmd is required.
-  ADD_CUSTOM_TARGET(modules_svg
-    ${ZORBA_EXE}
-      --omit-xml-declaration
-      -f
-      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
-      -e "\"xqdocXMLPath:=${CMAKE_CURRENT_BINARY_DIR}/xml\""
-      -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
-      COMMENT "Building module dependencies SVG..."
-  )
-  SET_TARGET_PROPERTIES (modules_svg PROPERTIES
-    EXCLUDE_FROM_DEFAULT_BUILD 1
-    FOLDER "Docs"
-  )
-  ADD_DEPENDENCIES(modules_svg "xqdoc-zorba")
+#  ADD_CUSTOM_TARGET(modules_svg
+#    ${ZORBA_EXE}
+#      --omit-xml-declaration
+#      -f
+#      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
+#      -e "\"xqdocXMLPath:=${CMAKE_CURRENT_BINARY_DIR}/xml\""
+#      -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
+#      COMMENT "Building module dependencies SVG..."
+#  )
+#  SET_TARGET_PROPERTIES (modules_svg PROPERTIES
+#    EXCLUDE_FROM_DEFAULT_BUILD 1
+#    FOLDER "Docs"
+#  )
+#  ADD_DEPENDENCIES(modules_svg "xqdoc-zorba")
 
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)

@@ -1505,7 +1505,7 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
 store::Item_t StructuralAnyUriItem::getLevel() const
 {
   store::Item_t lResult;
-  GET_FACTORY().createInteger(lResult, theOrdPath.getLevel());
+  GET_FACTORY().createInteger(lResult, xs_integer(theOrdPath.getLevel()));
   return lResult;
 }
 
@@ -2785,7 +2785,7 @@ xs_integer LongItem::getIntegerValue() const
 }
 
 xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
-  return theValue >= 0 ? theValue : -theValue;
+  return xs_nonNegativeInteger( theValue >= 0 ? theValue : -theValue );
 }
 
 store::Item* LongItem::getType() const
@@ -3356,7 +3356,7 @@ const char*
 Base64BinaryItem::getBase64BinaryValue(size_t& size) const
 {
   size = theValue.size();
-  return &theValue[0];
+  return size > 0 ? &theValue[0] : "";
 }
 
 
@@ -3383,6 +3383,10 @@ void Base64BinaryItem::getStringValue2(zstring& val) const
 
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
+  if (theValue.empty())
+  {
+    return;
+  }
   if (theIsEncoded)
   {
     buf.insert(buf.size(), &theValue[0], theValue.size());
@@ -3535,14 +3539,22 @@ void StreamableBase64BinaryItem::materialize() const
   if (isSeekable())
   {
     lStream.seekg(0, std::ios::end);
-    size_t len = lStream.tellg();
+    std::streampos len = lStream.tellg();
     lStream.seekg(0, std::ios::beg);
+    if (len < 0)
+    {
+      throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
+    }
+    if (len == 0)
+    {
+      return;
+    }
     s->theValue.reserve(len);
     char buf[1024];
     while (lStream.good())
     {
       lStream.read(buf, 1024);
-      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+      s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
     }
   }
   else
@@ -3551,8 +3563,11 @@ void StreamableBase64BinaryItem::materialize() const
     while (lStream.good())
     {
       lStream.read(buf, 4048);
-      s->theValue.reserve(s->theValue.size() + lStream.gcount());
-      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+      if (lStream.gcount() > 0)
+      {
+        s->theValue.reserve(s->theValue.size() + lStream.gcount());
+        s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
+      }
     }
   }
 }

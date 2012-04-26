@@ -21,6 +21,7 @@ SET(UNIT_TEST_SRCS
   unit_tests.cpp
   test_uri.cpp
   json_parser.cpp
+  test_fs_iterator.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
@@ -30,9 +31,9 @@ IF (NOT ZORBA_NO_FULL_TEXT)
     tokenizer.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
-IF (NOT ZORBA_NO_UNICODE)
+IF (NOT ZORBA_NO_ICU)
   LIST (APPEND UNIT_TEST_SRCS
     test_icu_streambuf.cpp)
-ENDIF (NOT ZORBA_NO_UNICODE)
+ENDIF (NOT ZORBA_NO_ICU)
 
 # vim:set et sw=2 tw=2:

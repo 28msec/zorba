@@ -33,7 +33,7 @@ import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zm = "http://www.zorba-xquery.com/manifest";
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
@@ -58,7 +58,7 @@ declare variable $pxqdoc:serParamXml :=
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %ann:sequential function pxqdoc:delete-XML-dir(
+declare %an:sequential function pxqdoc:delete-XML-dir(
   $xqdocPath as xs:string)
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
@@ -70,7 +70,7 @@ declare %ann:sequential function pxqdoc:delete-XML-dir(
   else ();
 };
 
-declare %private %ann:nondeterministic function pxqdoc:load-manifest(
+declare %private %an:nondeterministic function pxqdoc:load-manifest(
   $zorbaManifestPath as xs:string)
 {
   try 
@@ -90,7 +90,7 @@ declare %private %ann:nondeterministic function pxqdoc:load-manifest(
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
+declare %an:sequential function pxqdoc:generate-xqdoc-XML(
   $zorbaManifestPath as xs:string,
   $xqdocPath as xs:string)
 {
@@ -112,14 +112,17 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
     if(count($moduleManifests) eq xs:integer(0)) then ();
     else
     {
+      try 
+      {
       for $module in $moduleManifests
       (: note the module version is not supported because of a bug in the fetch for the module URI ending with / :)
       (:let $moduleURI := if(ends-with(data($module/zm:uri),'/')) then data($module/zm:uri) 
                        else if(exists($module/@version)) then concat(data($module/zm:uri),"#",data($module/@version))
                        else data($module/zm:uri):)
       (:let $moduleFetched := fetch:content(trace($moduleURI,"fetch module URI version.."), "MODULE"):)
-      let $moduleURI := if(ends-with(data($module/zm:uri),".xq")) then substring-before(data($module/zm:uri),".xq") else data($module/zm:uri)
+      let $moduleURI := data($module/zm:uri)
       let $moduleFetched := fetch:content($moduleURI, "MODULE")
+      let $moduleFetched := fn:replace($moduleFetched, '&amp;(nbsp|#160);' , codepoints-to-string(160))
       let $xqdoc := xqd:xqdoc-content($moduleFetched)
       let $xqdocRelFileName  := pxqdoc:get-filename($moduleURI)
       let $xqdocFileName := concat($xqdocXMLPath, file:directory-separator(), $xqdocRelFileName, ".xml")
@@ -127,6 +130,15 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
         file:write($xqdocFileName,
                    $xqdoc, 
                    $pxqdoc:serParamXml)
+      }
+      catch *
+      {
+        fn:error($err:UE004,
+                 concat("Error processing module ",
+                        $werr:code,
+                        " - ",
+                        $werr:description))
+      }
     };
   }  
 };

@@ -178,7 +178,7 @@ namespace zorba
 	
     inline long get_walltime_in_millis(const walltime& t)
     {
-      return t.time * 1000 + t.millitm;
+      return (long)(t.time * 1000 + t.millitm);
     }
 
 #else /* not Windows, and no clock_gettime() */

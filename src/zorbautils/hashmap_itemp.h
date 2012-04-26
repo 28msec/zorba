@@ -26,7 +26,9 @@
 #include "zorbatypes/collation_manager.h"
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 #endif
 
 #include "store/api/item.h"

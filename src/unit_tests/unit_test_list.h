@@ -29,6 +29,7 @@ namespace zorba {
     int test_string( int, char*[] );
     int test_unique_ptr( int, char*[] );
     int mem_sizeof( int, char*[] );
+    int test_fs_iterator( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
     int test_stemmer( int, char*[] );
     int test_thesaurus( int, char*[] );
@@ -37,9 +38,9 @@ namespace zorba {
     /**
      * ADD NEW UNIT TESTS HERE
      */
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     int test_icu_streambuf( int, char*[] );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
     int json_parser( int, char*[] );
 
     void initializeTestList();

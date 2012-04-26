@@ -965,7 +965,14 @@ void OrdPath::insertInto(
   while (dewey1[compPos] == dewey2[compPos])
   {
     ++compPos;
-    ZORBA_ASSERT(compPos < numComps1 && compPos < numComps2);
+    ZORBA_ASSERT_WITH_MSG(compPos < numComps1 && compPos < numComps2,      \
+                          "Involved Parameters: "                          \
+                       << "Parent: " << parent.show().c_str() << ", "      \
+                       << "Sib1: " << sib1.show().c_str() << ", "          \
+                       << "Sib2: " << sib2.show().c_str() << ", "          \
+                       << "compPos: " << compPos << ", "                   \
+                       << "numComps1: " << numComps1 << ", "               \
+                       << "numComps2: " << numComps2 << ".");
   }
 
   int32_t comp1 = dewey1[compPos];
@@ -973,7 +980,14 @@ void OrdPath::insertInto(
   bool odd1 = (comp1 % 2 != 0);
   bool odd2 = (comp2 % 2 != 0);
 
-  ZORBA_ASSERT(comp1 < comp2);
+  ZORBA_ASSERT_WITH_MSG(comp1 < comp2,                                  \
+                       "Involved Parameters: "                          \
+                    << "Parent: " << parent.show().c_str() << ", "      \
+                    << "Sib1: " << sib1.show().c_str() << ", "          \
+                    << "Sib2: " << sib2.show().c_str() << ", "          \
+                    << "comp1: " << comp1 << ", "                       \
+                    << "comp2: " << comp2 << ", "                       \
+                    << "compPos: " << compPos << ".");
 
   ulong diff = comp2 - comp1;
 

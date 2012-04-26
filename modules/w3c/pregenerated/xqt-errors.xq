@@ -766,6 +766,14 @@ declare variable $err:XQST0098 as xs:QName := fn:QName($err:NS, "err:XQST0098");
 
 (:~
  :
+ : If a module contains more than one context item declaration, a static error is raised [err:XQST0099].
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0099 as xs:QName := fn:QName($err:NS, "err:XQST0099");
+
+(:~
+ :
  : It is a static error if a function's annotations contain more than one
  : annotation named \c private or \c public.  It is a static error if a
  : function's annotations contain more than one annotation named \c
@@ -1237,6 +1245,24 @@ declare variable $err:FOTY0014 as xs:QName := fn:QName($err:NS, "err:FOTY0014");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FOTY0015 as xs:QName := fn:QName($err:NS, "err:FOTY0015");
+
+(:~
+ :
+ : Identifier cannot be used to retrive a resource containing text
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
+
+(:~
+ :
+ : Retrieved resource contains octets that cannot be decoded into Unicode 
+ : using the specified encoding, the resulting characters are not 
+ : permitted XML characters or requested encoding not supported
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
 
 (:~
  :
