@@ -29,7 +29,7 @@
 
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store_defs.h"
 #include "shared_types.h"
 #include "tree_id.h"

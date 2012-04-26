@@ -25,7 +25,7 @@
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
