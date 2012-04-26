@@ -280,7 +280,9 @@ void file::mkdir() {
 void file::lsdir(std::vector<std::string> &list) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
-    fs::lsdir( c_str(), list );
+    fs::iterator dir_iter( c_str() );
+    while ( dir_iter.next() )
+      list.push_back( dir_iter.entry_name() );
     set_filetype( type_directory );
   }
   catch ( fs::exception const &e ) {

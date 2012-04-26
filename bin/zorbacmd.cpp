@@ -177,7 +177,7 @@ populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& pr
       theStopWordsMapper.addMapping(lIter->uri, lIter->value);
     }
 
-    if (props.serializePlan()) 
+    if (props.serializePlan() || props.loadPlan()) 
     {
       theSerializationCallback.addURIMapper(&theStopWordsMapper);
     }
@@ -195,7 +195,7 @@ populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& pr
       theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
 
-    if (props.serializePlan()) 
+    if (props.serializePlan() || props.loadPlan())
     {
       theSerializationCallback.addURIMapper(&theStopWordsMapper);
     }
@@ -551,6 +551,8 @@ compileAndExecute(
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
   bool serializePlan = properties.serializePlan();
+  bool savePlan = properties.savePlan();
+  bool loadPlan = properties.loadPlan();
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
@@ -559,6 +561,12 @@ compileAndExecute(
 
   if (serializePlan)
   {
+    if (savePlan || loadPlan)
+    {
+      std::cerr << "The --serialize-plan option cannot be used together with the --compile-plan or --execute-plan options" << std::endl;
+      exit(1);
+    }
+
     std::string planFilePath = qfilepath;
     planFilePath += ".plan";
     planFile.reset(new std::fstream(planFilePath.c_str(), 
@@ -568,6 +576,12 @@ compileAndExecute(
                                     std::fstream::binary));
     planFilep = planFile.get();
     assert(planFilep->good());
+  }
+
+  if (savePlan && loadPlan)
+  {
+    std::cerr << "The --compile-plan and --execute-plan options cannot be used together" << std::endl;
+    exit(1);
   }
 
   // default is O1 in the Zorba_CompilerHints constructor
@@ -629,17 +643,24 @@ compileAndExecute(
         query->registerDiagnosticHandler(&diagnosticHandler);
         query->setFileName(qfilepath);
 
-        query->compile(qfile, staticContext, lHints);
-
-        // Serialize the execution plan, if requested
-        if (serializePlan) 
+        if (loadPlan) 
         {
-          planFilep->clear();
-          planFilep->seekp(0);
+          query->loadExecutionPlan(qfile, &theSerializationCallback);
+        }
+        else
+        {
+          query->compile(qfile, staticContext, lHints);
 
-          query->saveExecutionPlan(*planFilep, ZORBA_USE_BINARY_ARCHIVE);
+          // Serialize the execution plan, if requested
+          if (serializePlan) 
+          {
+            planFilep->clear();
+            planFilep->seekp(0);
 
-          planFilep->flush();
+            query->saveExecutionPlan(*planFilep, ZORBA_USE_BINARY_ARCHIVE);
+
+            planFilep->flush();
+          }
         }
 
         // stop the compilation timer
@@ -704,6 +725,12 @@ compileAndExecute(
         if (properties.noSerializer())
         {
           query->executeSAX();
+        }
+        else if (savePlan)
+        {
+          query->saveExecutionPlan(outputStream,
+                                   ZORBA_USE_BINARY_ARCHIVE,
+                                   SAVE_UNUSED_FUNCTIONS);
         }
         else
         {

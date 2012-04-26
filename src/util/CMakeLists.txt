@@ -17,7 +17,6 @@ SET(UTIL_SRCS
   dynamic_bitset.cpp
   error_util.cpp
   file.cpp
-  dir.cpp
   fs_util.cpp
   indent.cpp
   json_parser.cpp
