@@ -89,15 +89,16 @@ namespace zorba {
             {
               assert(i1.getType().getLocalName() == "QName");
               assert(i2.getType().getLocalName() == "QName");
-	      if (i1.getNamespace().compare(i2.getNamespace()) < 0)
-		{
-		  return true;
-		}
-	      if (i1.getNamespace().compare(i2.getNamespace()) > 0)
-		{
-		  return false;
-		} 
-	      // Namespaces are equal, comparing local names.
+	          int lNamespaceComparison = i1.getNamespace().compare(i2.getNamespace());
+              if (lNamespaceComparison < 0)
+              {
+                return true;
+              }
+              if (lNamespaceComparison > 0)
+              {
+                return false;
+	          } 
+	          // Namespaces are equal, comparing local names.
               return (i1.getLocalName().compare(i2.getLocalName()) < 0);
             }
           };
