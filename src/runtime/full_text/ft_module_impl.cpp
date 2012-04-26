@@ -184,8 +184,8 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8405_STOP_WORDS_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( lang ),
+      err::FTST0009,
+      ERROR_PARAMS( lang, ZED( BadStopWordsLang ) ),
       ERROR_LOC( loc )
     );
   GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
@@ -348,7 +348,6 @@ bool StemIterator::nextImpl( store::Item_t &result,
     lang = get_lang_from( item, loc );
   }
 
-  // TODO: why is this always the default StemmerProvider?
   provider = GENV_STORE.getStemmerProvider();
   ZORBA_ASSERT( provider );
   if ( provider->getStemmer( lang, &stemmer ) ) {
@@ -357,8 +356,8 @@ bool StemIterator::nextImpl( store::Item_t &result,
     STACK_PUSH( true, state );
   } else {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8404_STEM_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( lang ),
+      err::FTST0009,
+      ERROR_PARAMS( lang, ZED( BadStemmerLang ) ),
       ERROR_LOC( loc )
     );
   }
@@ -460,8 +459,8 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( provider );
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( lang ),
+      err::FTST0009,
+      ERROR_PARAMS( lang, ZED( BadThesaurusLang ) ),
       ERROR_LOC( loc )
     );
 
@@ -655,8 +654,8 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( tokenizer_provider );
   if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( iso639_1::string_of[ lang ] )
+      err::FTST0009,
+      ERROR_PARAMS( iso639_1::string_of[ lang ], ZED( BadTokenizerLang ) )
     );
   tokenizer->properties( &props );
 
@@ -800,8 +799,8 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     Tokenizer::ptr tokenizer;
     if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
       throw XQUERY_EXCEPTION(
-        zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
-        ERROR_PARAMS( iso639_1::string_of[ lang ] )
+        err::FTST0009,
+        ERROR_PARAMS( iso639_1::string_of[ lang ], ZED( BadTokenizerLang ) )
       );
 
     TokenizeStringIteratorCallback callback;

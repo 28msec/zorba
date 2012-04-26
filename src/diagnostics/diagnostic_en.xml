@@ -791,7 +791,19 @@
        raise this error and instead provide some other implementation-defined
        behavior.
       </comment>
-      <value>"$1": unsupported language</value>
+      <value>"$1": unsupported language${ 2}</value>
+      <entry key="BadStopWordsLang">
+        <value>for current stop words</value>
+      </entry>
+      <entry key="BadStemmerLang">
+        <value>for current stemmer</value>
+      </entry>
+      <entry key="BadThesaurusLang">
+        <value>for given thesaurus</value>
+      </entry>
+      <entry key="BadTokenizerLang">
+        <value>for current tokenizer</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FTDY0016" if="!defined(ZORBA_NO_FULL_TEXT)">
@@ -1765,26 +1777,6 @@
         The thesaurus data contains an unexpected value.
       </comment>
      <value>thesaurus data error${: 1}</value>
-    </diagnostic>
-
-    <diagnostic code="ZXQP8404" name="STEM_LANG_NOT_SUPPORTED"
-      if="!defined(ZORBA_NO_FULL_TEXT)">
-      <value>"$1": langauge not supported for stemming</value>
-    </diagnostic>
-
-    <diagnostic code="ZXQP8405" name="STOP_WORDS_LANG_NOT_SUPPORTED"
-      if="!defined(ZORBA_NO_FULL_TEXT)">
-      <value>"$1": langauge not supported for stop-words</value>
-    </diagnostic>
-
-    <diagnostic code="ZXQP8406" name="THESAURUS_LANG_NOT_SUPPORTED"
-      if="!defined(ZORBA_NO_FULL_TEXT)">
-      <value>"$1": langauge not supported for thesaurus</value>
-    </diagnostic>
-
-    <diagnostic code="ZXQP8407" name="TOKENIZER_LANG_NOT_SUPPORTED"
-      if="!defined(ZORBA_NO_FULL_TEXT)">
-      <value>"$1": langauge not supported for tokenizer</value>
     </diagnostic>
 
     <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED">

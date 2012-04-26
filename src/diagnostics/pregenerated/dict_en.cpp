@@ -89,7 +89,7 @@ extern entry const dict_en[] = {
   { "FTST0008", "\"$1\": unknown stop-word list" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
-  { "FTST0009", "\"$1\": unsupported language" },
+  { "FTST0009", "\"$1\": unsupported language${ 2}" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
@@ -434,18 +434,6 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8403", "thesaurus data error${: 1}" },
 #endif
-#if !defined(ZORBA_NO_FULL_TEXT)
-  { "ZXQP8404", "\"$1\": langauge not supported for stemming" },
-#endif
-#if !defined(ZORBA_NO_FULL_TEXT)
-  { "ZXQP8405", "\"$1\": langauge not supported for stop-words" },
-#endif
-#if !defined(ZORBA_NO_FULL_TEXT)
-  { "ZXQP8406", "\"$1\": langauge not supported for thesaurus" },
-#endif
-#if !defined(ZORBA_NO_FULL_TEXT)
-  { "ZXQP8407", "\"$1\": langauge not supported for tokenizer" },
-#endif
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
@@ -523,6 +511,10 @@ extern entry const dict_en[] = {
   { "~ExprReturnsTooManyUpdateLists", "expression does not return a pending update list" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+  { "~FTST0009_BadStemmerLang", "for current stemmer" },
+  { "~FTST0009_BadStopWordsLang", "for current stop words" },
+  { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
+  { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },

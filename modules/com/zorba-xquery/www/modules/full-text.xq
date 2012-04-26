@@ -509,7 +509,7 @@ declare function ft:is-stem-lang-supported( $lang as xs:language )
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$word</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
- : @error zerr:ZXQP8405 if <code>$lang</code> is not supported for stop-words.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-3.xq
  :)
@@ -523,10 +523,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
  : The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return <code>true</code> only if <code>$word</code> is a stop-word.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
- : @error zerr:ZXQP8405 if <code>ft:current-lang()</code> is not supported for
- : stop-words specifically.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-2.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-4.xq
  :)
@@ -593,9 +590,7 @@ declare function ft:is-tokenizer-lang-supported( $lang as xs:language )
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$word</code>.
  : @return the stem of <code>$word</code>.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
- : @error zerr:ZXQP8404 if <code>$lang</code> is not supported for stemming
- : specifically.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-1.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-2.xq
  :)
@@ -609,10 +604,7 @@ declare function ft:stem( $word as xs:string, $lang as xs:language )
  : The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return the stem of <code>$word</code>.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
- : @error zerr:ZXQP8404 if <code>ft:current-lang()</code> is not supported for
- : stemming specifically.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-3.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-stem-4.xq
  :)
@@ -637,15 +629,12 @@ declare function ft:strip-diacritics( $string as xs:string )
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
  : by the currently running version of Zorba.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data.
- : @error zerr:ZXQP8406 if <code>ft:current-lang()</code> is not supported for
- : thesaurus look-up specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-1.xq
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
@@ -660,7 +649,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$phrase</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
@@ -670,8 +659,6 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
- : @error zerr:ZXQP8406 if <code>$lang</code> is not supported for thesaurus
- : look-up specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-2.xq
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
@@ -687,8 +674,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one the one returned by <code>ft:current-lang()</code>.
  : @return the original and related phrases.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported in
- : general.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
@@ -698,8 +684,6 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
- : @error zerr:ZXQP8406 if <code>ft:current-lang()</code> is not supported for
- : thesaurus look-up specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-3.xq
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
@@ -718,7 +702,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @return the original and related phrases.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
@@ -726,8 +710,6 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
- : @error zerr:ZXQP8406 if <code>$lang</code> is not supported for thesaurus
- : look-up specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-4.xq
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
@@ -754,7 +736,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : <code>$level-most</code> is either negative or too large.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
@@ -762,8 +744,6 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
  : that of the CPU on which Zorba is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
- : @error zerr:ZXQP8406 if <code>$lang</code> is not supported for thesaurus
- : look-up specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-5.xq
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
@@ -812,9 +792,7 @@ declare function ft:tokenize( $node as node() )
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
- : @error zerr:ZXQP8407 if <code>$lang</code> is not supported for
- : tokenization specifically.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-string-1.xq
  :)
 declare function ft:tokenize-string( $string as xs:string,
@@ -829,10 +807,7 @@ declare function ft:tokenize-string( $string as xs:string,
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
- : @error zerr:ZXQP8407 if <code>ft:current_lang()</code> is not supported for
- : tokenization specifically.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-string-2.xq
  :)
 declare function ft:tokenize-string( $string as xs:string )
@@ -844,8 +819,7 @@ declare function ft:tokenize-string( $string as xs:string )
  :
  : @param $lang The langauage of the tokenizer to get the properties of.
  : @return said properties.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
- : @error zerr:ZXQP8407 if <code>$lang</code> is not supported for
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : tokenization specifically.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-1.xq
  :)
@@ -858,10 +832,7 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  : returned by <code>ft:current-lang()</code>.
  :
  : @return said properties.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
- : @error zerr:ZXQP8407 if <code>ft:current_lang()</code> is not supported for
- : tokenization specifically.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-2.xq
  :)
 declare function ft:tokenizer-properties()

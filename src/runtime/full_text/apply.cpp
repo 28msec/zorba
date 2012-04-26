@@ -1234,8 +1234,8 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   internal::Thesaurus::ptr thesaurus;
   if ( !t_provider->getThesaurus( qt0.lang(), &thesaurus ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8406_THESAURUS_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ] )
+      err::FTST0009,
+      ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ], ZED( BadThesaurusLang ) )
     );
 
   internal::Thesaurus::iterator::ptr t_synonyms(
@@ -1255,8 +1255,8 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   Tokenizer::ptr tokenizer;
   if ( !provider->getTokenizer( qt0.lang(), &t_num, &tokenizer ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP8407_TOKENIZER_LANG_NOT_SUPPORTED,
-      ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ] )
+      err::FTST0009,
+      ERROR_PARAMS( iso639_1::string_of[ qt0.lang() ], ZED( BadTokenizerLang ) )
     );
 
   for ( zstring synonym; t_synonyms->next( &synonym ); ) {
