@@ -2255,11 +2255,13 @@ void CollectionPul::applyUpdates()
 {
   csize numIncrementalIndices = theIncrementalIndices.size();
 
+#if 0
   if (theCollection != NULL)
   {
     std::cout << "applying PUL for collection " 
               << theCollection->getName()->getStringValue() << std::endl;
   }
+#endif
 
   if (numIncrementalIndices > 0)
   {
@@ -2397,11 +2399,13 @@ void CollectionPul::applyUpdates()
     throw;
   }
 
+#if 0
   if (theCollection != NULL)
   {
     std::cout << "applied PUL for collection " 
               << theCollection->getName()->getStringValue() << std::endl << std::endl;
   }
+#endif
 }
 
 
