@@ -83,5 +83,5 @@ echo "Cleaning up work directory... $untar_dir"
 rm -rf "$untar_dir"
 
 echo Done.
-echo Now re-run CMake in the build directory to pick up thesaurus tests.
+
 # vim:set et sw=2 ts=2:
