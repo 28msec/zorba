@@ -269,7 +269,6 @@ public:
    * Constructor. Specify the Entity Kind you wish to map. Optionally,
    * specify whether this should be a CANDIDATE or COMPONENT mapper;
    * default is CANDIDATE.
-   * QQQ COMPONENT is no longer used; delete?
    */
   OneToOneURIMapper(EntityData::Kind aEntityKind,
                     URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);

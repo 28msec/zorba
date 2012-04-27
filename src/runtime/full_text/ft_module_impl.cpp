@@ -256,18 +256,9 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
 
-    vector<zstring> comp_uris;
-    sctx->get_component_uris(
-      uri, internal::EntityData::THESAURUS, comp_uris
-    );
-    if ( comp_uris.size() != 1 )
-      throw XQUERY_EXCEPTION(
-        err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-      );
-
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
-      comp_uris.front(), internal::EntityData::THESAURUS, error_msg
+      uri, internal::EntityData::THESAURUS, error_msg
     );
     if ( !rsrc.get() )
       throw XQUERY_EXCEPTION(
@@ -404,7 +395,6 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
 #ifdef ZORBA_NO_FULL_TEXT
   return false;
 #else
-  vector<zstring> comp_uris;
   zstring error_msg;
   store::Item_t item;
   iso639_1::type lang;
@@ -448,16 +438,8 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
     }
   }
 
-  sctx->get_component_uris(
-    uri, internal::EntityData::THESAURUS, comp_uris
-  );
-  if ( comp_uris.size() != 1 )
-    throw XQUERY_EXCEPTION(
-      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-    );
-
   rsrc = sctx->resolve_uri(
-    comp_uris.front(), internal::EntityData::THESAURUS, error_msg
+    uri, internal::EntityData::THESAURUS, error_msg
   );
   if ( !rsrc.get() )
     throw XQUERY_EXCEPTION(
