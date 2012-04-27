@@ -111,7 +111,7 @@ public:
   void loadProlog (const std::string & aProlog, const CompilerHints &hints);
 
   StaticCollectionManager getStaticCollectionManager();
-  void getExternalVariables(Iterator& vars) const;
+  void getExternalVariables(Iterator vars) const;
   
   TypeIdentifier getCollectionType(const std::string &aCollectionUri);
   TypeIdentifier getDocumentType(const std::string &aDocUri);

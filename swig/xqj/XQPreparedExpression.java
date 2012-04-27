@@ -138,7 +138,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public QName[] getAllExternalVariables() throws XQException {
         isClosedXQException();
         Collection<QName> result = new ArrayList<QName>();
-        Iterator iter = new Iterator();
+        Iterator iter = null;
         query.getExternalVariables(iter);
         iter.open();
         Item item = new Item();
@@ -153,7 +153,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     
     private boolean isExternal(String varName) {
         boolean found=false;
-        Iterator iter = new Iterator();
+        Iterator iter = null;
         query.getExternalVariables(iter);
         iter.open();
         Item item = new Item();
@@ -172,7 +172,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         
         Collection<QName> result = new ArrayList<QName>();
-        Iterator iter = new Iterator();
+        Iterator iter = null;
         query.getExternalVariables(iter);
         Item item = new Item();
         iter.open();
@@ -204,7 +204,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         XQSequenceType result = null;
-        Iterator iter = new Iterator();
+        Iterator iter = null;
         query.getExternalVariables(iter);
         iter.open();
         Item item = new Item();
@@ -280,7 +280,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
             type = ((org.zorbaxquery.api.xqj.XQConnection)connection).createAtomicType(XQItemType.XQBASETYPE_STRING);
         }
         try {
-            Iterator iter = new Iterator();
+            Iterator iter = null;
             boolean found = false;
             query.getExternalVariables(iter);
             Item tmpItem = new Item();

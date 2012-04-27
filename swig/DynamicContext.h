@@ -30,7 +30,7 @@ public:
   Item 	getCurrentDateTime ();
   Item 	getDefaultCollection ();
   int 	getImplicitTimezone ();
-  bool 	getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator& aIterator);
+  bool 	getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator aIterator);
   
   bool setContextItem (Item& aItem);
   bool setCurrentDateTime (Item& aDateTimeItem);
