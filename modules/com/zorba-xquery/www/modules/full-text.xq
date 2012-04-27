@@ -330,10 +330,8 @@ xquery version "3.0";
  : For general information about Zorba's implementation of tokenization,
  : including what constitutes a token,
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
+ : @author Paul J. Lucas
  :)
-
-(:===========================================================================:)
-
 module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
 
 import schema namespace ft-schema =
