@@ -189,7 +189,9 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
       err::FTST0009,
-      ERROR_PARAMS( lang, ZED( BadStopWordsLang ) ),
+      ERROR_PARAMS(
+        iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
+      ),
       ERROR_LOC( loc )
     );
   GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
@@ -356,7 +358,9 @@ bool StemIterator::nextImpl( store::Item_t &result,
   } else {
     throw XQUERY_EXCEPTION(
       err::FTST0009,
-      ERROR_PARAMS( lang, ZED( BadStemmerLang ) ),
+      ERROR_PARAMS(
+        iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
+      ),
       ERROR_LOC( loc )
     );
   }
@@ -451,7 +455,9 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009,
-      ERROR_PARAMS( lang, ZED( BadThesaurusLang ) ),
+      ERROR_PARAMS(
+        iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
+      ),
       ERROR_LOC( loc )
     );
 
@@ -647,7 +653,9 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009,
-      ERROR_PARAMS( iso639_1::string_of[ lang ], ZED( BadTokenizerLang ) )
+      ERROR_PARAMS(
+        iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
+      )
     );
   tokenizer->properties( &props );
 
@@ -795,7 +803,9 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
       throw XQUERY_EXCEPTION(
         err::FTST0009,
-        ERROR_PARAMS( iso639_1::string_of[ lang ], ZED( BadTokenizerLang ) )
+        ERROR_PARAMS(
+          iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
+        )
       );
 
     TokenizeStringIteratorCallback callback;
