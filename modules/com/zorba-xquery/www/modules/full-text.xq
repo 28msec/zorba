@@ -819,7 +819,6 @@ declare function ft:tokenize-string( $string as xs:string )
  : @return said properties.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
  : tokenization specifically.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-1.xq
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )
   as element(ft-schema:tokenizer-properties) external;
@@ -831,7 +830,6 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  :
  : @return said properties.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenizer-properties-2.xq
  :)
 declare function ft:tokenizer-properties()
   as element(ft-schema:tokenizer-properties) external;
