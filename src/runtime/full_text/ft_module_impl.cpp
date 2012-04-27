@@ -91,7 +91,9 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
 #ifdef ZORBA_NO_FULL_TEXT
   return false;
 #else
-  iso639_1::type const lang = get_lang_from( getStaticContext() );
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  iso639_1::type const lang = get_lang_from( sctx );
   zstring lang_string( iso639_1::string_of[ lang ] );
 
   PlanIteratorState *state;
@@ -165,13 +167,15 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
 #else
   store::Item_t item;
   iso639_1::type lang;
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
   ft_stop_words_set::ptr stop_words;
   zstring word;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  lang = get_lang_from( getStaticContext() );
+  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -250,6 +254,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   try {
     iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
 
     vector<zstring> comp_uris;
     sctx->get_component_uris(
@@ -331,13 +336,16 @@ bool StemIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang;
   internal::StemmerProvider const *provider;
+  static_context const *sctx;
   internal::Stemmer::ptr stemmer;
   zstring word, stem;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  lang = get_lang_from( getStaticContext() );
+  sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -410,6 +418,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( ThesaurusLookupIteratorState, state, plan_state );
 
   sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
   lang = get_lang_from( sctx );
   state->at_least_ = 0;
   state->at_most_ = numeric_limits<internal::Thesaurus::level_type>::max();
@@ -510,12 +519,11 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *sctx;
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
   TokenizerProvider const *tokenizer_provider;
   store::Item_t type_name;
   zstring value_string;
-
-  sctx = getStaticContext();
 
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
@@ -529,6 +537,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
+    ZORBA_ASSERT( tokenizer_provider );
     state->doc_tokens_ =
       state->doc_item_->getTokens( *tokenizer_provider, no, lang );
 
@@ -643,7 +652,8 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   sctx = getStaticContext();
-  lang = get_lang_from( getStaticContext() );
+  ZORBA_ASSERT( sctx );
+  lang = get_lang_from( sctx );
 
   if ( theChildren.size() > 0 ) {
     consumeNext( item, theChildren[0], plan_state );
@@ -777,12 +787,15 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
 #else
   store::Item_t item;
   iso639_1::type lang;
+  static_context const *sctx;
   zstring value_string;
 
   TokenizeStringIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeStringIteratorState, state, plan_state );
 
-  lang = get_lang_from( getStaticContext() );
+  sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  lang = get_lang_from( sctx );
 
   if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( value_string );
