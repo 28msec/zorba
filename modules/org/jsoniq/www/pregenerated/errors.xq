@@ -81,6 +81,7 @@ declare variable $jerr:JNTY0004 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0004
 declare variable $jerr:JNTY0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0007");
 
 (:~
+ :error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence
 :)
 declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011");
 

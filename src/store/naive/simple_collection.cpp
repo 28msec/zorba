@@ -150,7 +150,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
   }
   else
   {
-    theXmlTrees.insert(theXmlTrees.begin() + to_xs_unsignedInt(pos), item);
+    theXmlTrees.insert(theXmlTrees.begin() + lPosition, item);
   }
 
 #ifdef ZORBA_WITH_JSON

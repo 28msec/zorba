@@ -2563,6 +2563,7 @@
     </diagnostic>
 
     <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence</comment>
       <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
 

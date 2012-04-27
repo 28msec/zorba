@@ -817,9 +817,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_available_environment_variables_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","available-environment-variables"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
@@ -828,9 +828,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_environment_variable_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","environment-variable"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -840,9 +840,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -852,9 +852,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -865,9 +865,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_available_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -877,9 +877,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_available_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -890,9 +890,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_lines_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -902,9 +902,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_unparsed_text_lines_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 

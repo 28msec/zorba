@@ -420,7 +420,7 @@ PlanIter_t static_collections_dml_truncate::codegen(
   const zstring& ns = getName()->getNamespace();
 
   bool const dynamic =
-    ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
+    ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
   return new ZorbaTruncateCollectionIterator(sctx, loc, argv, dynamic);
 }

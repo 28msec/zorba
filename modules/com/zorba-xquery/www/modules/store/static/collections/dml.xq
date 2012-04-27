@@ -17,7 +17,7 @@ xquery version "3.0";
 :)
 
 (:~
- : This modules provides a set of functions to modify a collection and retrieve the nodes
+ : This modules provides a set of functions to modify a collection and retrieve the items
  : contained in a particular collection.
  :
  : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
@@ -68,6 +68,8 @@ declare option ver:module-version "2.0";
  : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :
+ : @deprecated please use the cdml:insert#2 function
+ :
  :)
 declare updating function 
 cdml:insert-nodes($name as xs:QName, $content as node()*) external;
@@ -115,6 +117,8 @@ cdml:insert($name as xs:QName, $content as item()*) external;
  : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :
+ : @deprecated please use the cdml:insert-first#2 function
+ :
  :)
 declare updating function 
 cdml:insert-nodes-first($name as xs:QName, $content as node()*)  external;
@@ -159,6 +163,8 @@ cdml:insert-first($name as xs:QName, $content as item()*) external;
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
  :        in the collection declaration) according to the rules for SequenceType Matching.
+ :
+ : @deprecated please use the cdml:insert-last#2 function
  :
  :)
 declare updating function 
@@ -209,6 +215,8 @@ cdml:insert-last($name as xs:QName, $content as item()*)  external;
  :        in the collection declaration) according to the rules for SequenceType Matching.
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in
  :        the collection $name.
+ :
+ : @deprecated please use the cdml:insert-before#3 function
  :
  :)
 declare updating function 
@@ -269,6 +277,8 @@ cdml:insert-before($name as xs:QName, $target as item(), $content as item()*) ex
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in
  :        the collection $name.
  :
+ : @deprecated please use the cdml:insert-after#3 function
+ :
  :)
 declare updating function 
 cdml:insert-nodes-after(
@@ -302,7 +312,7 @@ cdml:insert-nodes-after(
  :
  :)
 declare updating function 
-cdml:insert-after($name as xs:QName, $target as node(), $content as item()*) external;
+cdml:insert-after($name as xs:QName, $target as item(), $content as item()*) external;
 
 
 (:~
@@ -324,6 +334,8 @@ cdml:insert-after($name as xs:QName, $target as node(), $content as item()*) ext
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :
  : @see cdml:insert-nodes
+ :
+ : @deprecated please use the cdml:apply-insert#2 function
  :
  :)
 declare %an:sequential function 
@@ -353,10 +365,6 @@ cdml:apply-insert-nodes($name as xs:QName, $content as node()*) as node()* exter
 declare %an:sequential function 
 cdml:apply-insert($name as xs:QName, $content as item()*) as item()* external;
 
-declare %an:sequential function cdml:apply-insert-nodes(
-  $name as xs:QName,
-  $content as node()*) as node()*  external;
-
 (:~
  : This function does the same as the insert-nodes-first function except
  : it immediately applies the resulting pending updates and returns the
@@ -377,6 +385,8 @@ declare %an:sequential function cdml:apply-insert-nodes(
  :        rules for SequenceType Matching.
  :
  : @see cdml:insert-nodes-first
+ :
+ : @deprecated please use the cdml:apply-insert-first#2 function
  :
  :)
 declare %an:sequential function 
@@ -410,10 +420,6 @@ cdml:apply-insert-nodes-first(
 declare %an:sequential function 
 cdml:apply-insert-first($name as xs:QName, $content as item()*) as item()* external;
 
-declare %an:sequential function cdml:apply-insert-nodes-first(
-  $name as xs:QName,
-  $content as node()*) as node()*  external;
-
 (:~
  : This function does the same as the insert-nodes-last function except
  : it immediately applies the resulting pending updates and returns the
@@ -433,6 +439,8 @@ declare %an:sequential function cdml:apply-insert-nodes-first(
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :
  : @see cdml:insert-nodes-last
+ :
+ : @deprecated please use the cdml:apply-insert-last#2 function
  :
  :)
 declare %an:sequential function 
@@ -490,6 +498,8 @@ cdml:apply-insert-last($name as xs:QName, $content as item()*) as item()*  exter
  :        the collection $name.
  :
  : @see cdml:insert-nodes-before
+ :
+ : @deprecated please use the cdml:apply-insert-before#3 function
  :
  :)
 declare %an:sequential function 
@@ -557,6 +567,8 @@ cdml:apply-insert-before(
  :
  : @see cdml:insert-nodes-after
  :
+ : @deprecated please use the cdml:apply-insert-after#3 function
+ :
  :)
 declare %an:sequential function 
 cdml:apply-insert-nodes-after(
@@ -615,6 +627,8 @@ cdml:apply-insert-after(
  :        collection or not all nodes of the $target sequence belong to the same
  :        collection.
  :
+ : @deprecated please use the cdml:delete#1 function
+ :
  :)
 declare updating function 
 cdml:delete-nodes($target as node()*)  external;
@@ -656,6 +670,8 @@ cdml:delete($target as item()*)  external;
  :        const or append-only.
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDDY0011 If the collection is empty.
+ :
+ : @deprecated please use the cdml:delete-first#1 function
  :
  :)
 declare updating function 
@@ -700,6 +716,8 @@ cdml:delete-first($name as xs:QName) external;
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
+ : @deprecated please use the cdml:delete-first#2 function
+ :
  :)
 declare updating function 
 cdml:delete-nodes-first($name as xs:QName, $number as xs:integer)  external;
@@ -743,6 +761,8 @@ cdml:delete-first($name as xs:QName, $number as xs:integer)  external;
  :        append-only, or queue.
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDDY0011 If the collection is empty.
+ :
+ : @deprecated please use the cdml:delete-last#1 function
  :)
 declare updating function 
 cdml:delete-node-last($name as xs:QName)  external;
@@ -783,6 +803,8 @@ cdml:delete-last($name as xs:QName)  external;
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
+ : @deprecated please use the cdml:delete-last#2 function
+ :
  :)
 declare updating function 
 cdml:delete-nodes-last($name as xs:QName, $number as xs:integer)  external;
@@ -811,6 +833,9 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
 (:~
  : The truncate function is an updating function that deletes the
  : entire contents of collection.
+ :
+ : Please note that applying this function can not be undone in case
+ : an error happens during the application of the containing PUL.
  :
  : @param $name The name of the collection whose content to delete
  :
@@ -858,7 +883,7 @@ cdml:collection-name($item as item()) as xs:QName external;
 
 (:~
  : The index-of function returns the position of the given item (node or 
- : json item) within its containing the collection.
+ : json item) within its containing collection.
  :
  : @param $node The item to retrieve the index for.
  :
@@ -869,4 +894,4 @@ cdml:collection-name($item as item()) as xs:QName external;
  :
  :)
 declare function 
-cdml:index-of($item as item()) as xs:integer  external;
+cdml:index-of($item as item()) as xs:integer external;

@@ -1269,9 +1269,9 @@ void populate_context_collections(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
@@ -1280,9 +1280,9 @@ void populate_context_collections(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
