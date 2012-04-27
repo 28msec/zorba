@@ -23,7 +23,6 @@ private:
   bool closed;
 
 public:
-  XQuery():closed(false) {}
   XQuery(const XQuery& aXQuery) : theQuery(aXQuery.theQuery), closed(aXQuery.closed) {}
   XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery), closed(false) {}
 

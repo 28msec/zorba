@@ -19,13 +19,12 @@
 
 class ItemFactory
 {
-
+  friend Zorba;
   private:
     zorba::ItemFactory* theItemFactory;
-  public:
     ItemFactory(zorba::ItemFactory* aItemFactory) : theItemFactory(aItemFactory) {}
+  public:
     ItemFactory(const ItemFactory& aItemFactory) : theItemFactory(aItemFactory.theItemFactory) {}
-
     Item 	createAnyURI (const std::string &aURI);
     Item 	createAttributeNode (Item& aParent, Item& aNodeName, Item& aTypeName, Item& aTypedValue);
 #ifndef SWIGRUBY

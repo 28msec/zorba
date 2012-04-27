@@ -22,9 +22,7 @@ class Zorba
   zorba::Zorba* theZorba;
   Zorba(zorba::Zorba* aZorba) : theZorba(aZorba){};
  public:
-  Zorba():theZorba(0){}
   Zorba(const Zorba& aZorba) : theZorba(aZorba.theZorba) {};
-  
   static Zorba getInstance(const Store&);
   StaticContext createStaticContext();
   XQuery createQuery();

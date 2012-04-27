@@ -21,6 +21,15 @@
     theItemSequence = new zorba::SingletonItemSequence(aItem.theItem);
   }
 
+  ItemSequence::ItemSequence(const Iterator &aIterator)
+  {
+    zorba::Item item;
+    aIterator.theIterator->open();
+    aIterator.theIterator->next(item);
+    aIterator.theIterator->close();
+    theItemSequence = new zorba::SingletonItemSequence(item);
+  }
+
   Iterator ItemSequence::getIterator()
   {
     return Iterator( theItemSequence->getIterator() );

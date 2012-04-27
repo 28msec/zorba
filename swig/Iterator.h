@@ -31,7 +31,6 @@ protected:
   bool theConsumed;
 public:
   // constructors
-  Iterator() {}
   Iterator(const Iterator& anIterator)
     : theIterator(anIterator.theIterator),
       theItem(anIterator.theItem),

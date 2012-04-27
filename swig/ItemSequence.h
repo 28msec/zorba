@@ -29,6 +29,7 @@ public:
   ItemSequence(const ItemSequence& aItemSequence) : theItemSequence(aItemSequence.theItemSequence) {}
   ItemSequence(zorba::ItemSequence_t aItemSequence) : theItemSequence(aItemSequence) {}
   ItemSequence(const Item &aItem);
+  ItemSequence(const Iterator &aIterator);
   Iterator getIterator();
 
 };

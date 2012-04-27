@@ -18,13 +18,13 @@
 
 class CollectionManager
 {
+friend Collection;
+friend XmlDataManager;
 private:
   zorba::CollectionManager* theManager;
-
+  CollectionManager(zorba::CollectionManager* aMgr) : theManager(aMgr) {}
 public:
   CollectionManager(const CollectionManager& aMgr) : theManager(aMgr.theManager) {}
-  CollectionManager(zorba::CollectionManager* aMgr) : theManager(aMgr) {}
-
   ItemSequence availableCollections();
   void createCollection(const Item &aName );
   void createCollection(const Item &aName, const ItemSequence &aContents );

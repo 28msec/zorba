@@ -18,6 +18,8 @@
 
 class XmlDataManager
 {
+friend CollectionManager;
+
 private:
   zorba::XmlDataManager* theManager;
 
